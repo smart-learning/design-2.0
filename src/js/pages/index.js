@@ -3,6 +3,8 @@ import { Text, View } from 'react-native';
 import { Link } from 'react-router-native';
 
 export default () => <View>
-	<Text>Login</Text>
-	<Link to="/"><Text>Back to index</Text></Link>
-</View>;
+	<Text>Welass App 2.0 Ready</Text>
+	<Link to="/login">
+		<Text>: login</Text>
+	</Link>
+</View>
