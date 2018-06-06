@@ -1,5 +1,5 @@
 import React from "react";
-import S from "../../../styles/common";
+import Styles from "../../../styles/common";
 import {Image, Text, View} from "react-native";
 import {createStackNavigator} from "react-navigation";
 import HomeSubScreen1 from "./HomeSubScreen1";
@@ -27,7 +27,7 @@ HomeScreen.navigationOptions = {
     drawerIcon: ({ tintColor }) => (
         <Image
             source={require('../../../images/chats-icon.png')}
-            style={[S.sidebarIcon, {tintColor: tintColor}]}
+            style={[Styles.sidebarIcon, {tintColor: tintColor}]}
         />
     ),
 };

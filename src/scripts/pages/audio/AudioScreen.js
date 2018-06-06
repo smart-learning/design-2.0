@@ -1,5 +1,5 @@
 import React from "react";
-import S from "../../../styles/common";
+import Styles from "../../../styles/common";
 import {Image, Text, View} from "react-native";
 
 export default class AudioScreen extends React.Component {
@@ -8,13 +8,13 @@ export default class AudioScreen extends React.Component {
         drawerIcon: ({ tintColor }) => (
             <Image
                 source={require('../../../images/chats-icon.png')}
-                style={[S.sidebarIcon, {tintColor: tintColor}]}
+                style={[Styles.sidebarIcon, {tintColor: tintColor}]}
             />
         ),
     };
 
     render() {
-        return <View style={S.container}>
+        return <View style={Styles.container}>
             <Text>오디오북</Text>
         </View>
     }
