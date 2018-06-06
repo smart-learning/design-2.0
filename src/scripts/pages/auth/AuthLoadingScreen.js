@@ -1,7 +1,7 @@
 import React from 'react';
 import {AsyncStorage} from 'react-native';
 import {ActivityIndicator, StatusBar, View} from "react-native";
-import S from "../../../styles/common";
+import Styles from "../../../styles/common";
 
 
 class AuthLoadingScreen extends React.Component {
@@ -21,7 +21,7 @@ class AuthLoadingScreen extends React.Component {
     // Render any loading content that you like here
     render() {
         return (
-            <View style={S.container}>
+            <View style={Styles.container}>
                 <ActivityIndicator />
                 <StatusBar barStyle="default" />
             </View>

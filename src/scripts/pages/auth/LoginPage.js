@@ -1,5 +1,5 @@
 import React from 'react';
-import S from "../../../styles/common";
+import Styles from "../../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import {AsyncStorage, Button, Text} from "react-native";
 
@@ -14,7 +14,7 @@ class LoginPage extends React.Component {
 
 
     render() {
-        return <SafeAreaView style={[ S.container, {backgroundColor: '#ecf0f1'}]}>
+        return <SafeAreaView style={[ Styles.container, {backgroundColor: '#ecf0f1'}]}>
 
             <Text>LOGIN</Text>
             <Button
