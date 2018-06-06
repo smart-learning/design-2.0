@@ -1,7 +1,7 @@
 import React from 'react';
 import {AsyncStorage} from 'react-native';
 import {ActivityIndicator, StatusBar, View} from "react-native";
-import S from "../../styles/common";
+import S from "../../../styles/common";
 
 
 class AuthLoadingScreen extends React.Component {
@@ -14,6 +14,7 @@ class AuthLoadingScreen extends React.Component {
     bootstrapAsync = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
 
+        alert(userToken);
         this.props.navigation.navigate(userToken ? 'Home' : 'Login');
     };
 
