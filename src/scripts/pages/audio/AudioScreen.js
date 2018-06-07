@@ -8,7 +8,7 @@ export default class AudioScreen extends React.Component {
         drawerIcon: ({ tintColor }) => (
             <Image
                 source={require('../../../images/chats-icon.png')}
-                style={[Styles.sidebarIcon, {tintColor: tintColor}]}
+                style={[Styles.size24, {tintColor: tintColor}]}
             />
         ),
     };

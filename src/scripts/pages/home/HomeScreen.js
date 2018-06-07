@@ -1,29 +1,39 @@
 import React from "react";
-import {Image} from "react-native";
+import {Image, Text} from "react-native";
 import {createStackNavigator} from "react-navigation";
 import HomeSubScreen1 from "./HomeSubScreen1";
 import HomeSubScreen2 from "./HomeSubScreen2";
 import Styles from "../../../styles/common";
+import HeaderWithSearch from "../../commons/HeaderWithSearch";
 
 const HomeScreen = createStackNavigator({
 
         HomeScreen1: {
             screen: HomeSubScreen1,
-            // navigationOptions: ({ navigation }) => ({
-            //     title: `서브페이지 스택 헤더1`,
-            // }),
+            navigationOptions: ({ navigation, navigationOptions }) => ({
+                headerTitle: <HeaderWithSearch/>
+            }),
         },
 
         HomeScreen2: {
             screen: HomeSubScreen2,
-            // navigationOptions: ({ navigation }) => ({
-            //     title: `서브페이지 스택 헤더2`,
-            // }),
+            navigationOptions: ({ navigation }) => ({
+                title: `서브페이지 스택 헤더2`,
+            }),
         }
     },
 
     {
-        headerMode: 'none'
+        /* The header config from HomeScreen is now here */
+        navigationOptions: {
+            headerStyle: {
+                backgroundColor: '#f4511e',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+        },
     }
 );
 
@@ -33,7 +43,7 @@ HomeScreen.navigationOptions = ({navigation})=>({
     drawerIcon: ({tintColor}) => (
         <Image
             source={require('../../../images/chats-icon.png')}
-            style={[Styles.sidebarIcon, {tintColor: tintColor}]}
+            style={[Styles.size24, {tintColor: tintColor}]}
         />
     )
 });

@@ -9,9 +9,13 @@ export default class VideoScreen extends React.Component {
         drawerIcon: ({ tintColor }) => (
             <Image
                 source={require('../../../images/chats-icon.png')}
-                style={[Styles.sidebarIcon, {tintColor: tintColor}]}
+                style={[Styles.size24, {tintColor: tintColor}]}
             />
         ),
+
+        headerTitle: <View>
+            <Text>헤더.....</Text>
+        </View>
     };
 
     render() {

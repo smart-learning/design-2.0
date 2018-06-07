@@ -20,12 +20,12 @@ class MyScreen extends React.Component {
 }
 
 const MyScreenSet = createSwitchNavigator({
-    MyScreen:{
-        screen: MyScreen
-    },
-
     Auth:{
         screen: AuthLoadingScreen
+    },
+
+    MyScreen:{
+        screen: MyScreen
     }
 });
 
@@ -34,7 +34,7 @@ MyScreenSet.navigationOptions = {
     drawerIcon: ({ tintColor }) => (
         <Image
             source={require('../../../images/chats-icon.png')}
-            style={[Styles.sidebarIcon, {tintColor: tintColor}]}
+            style={[Styles.size24, {tintColor: tintColor}]}
         />
     ),
 };

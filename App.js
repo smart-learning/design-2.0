@@ -1,5 +1,5 @@
 import React from 'react';
-import {createDrawerNavigator, DrawerActions } from "react-navigation";
+import {createDrawerNavigator, createStackNavigator, createSwitchNavigator, DrawerActions} from "react-navigation";
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
@@ -7,18 +7,21 @@ import MyScreen from './src/scripts/pages/my/MyScreen';
 import Playground from "./src/scripts/pages/Playground";
 import {Button, View} from "react-native";
 import Store from "./src/js/store";
+import LoginPage from "./src/scripts/pages/auth/LoginPage";
 
 class App extends React.Component {
 
 
     render() {
-        return <View style={{flex:1}}>
-            <AppDrawer ref={ navigatorRef => { Store.drawer = navigatorRef  } }/>
-            <View style={{ position:'absolute', bottom:0, right:0 }}>
+        return <View style={{flex: 1}}>
+            <AppDrawer ref={navigatorRef => {
+                Store.drawer = navigatorRef
+            }}/>
+            <View style={{position: 'absolute', bottom: 20, right: 100}}>
                 <Button title="Open Side"
-                    onPress={()=>{
-                        Store.drawer.dispatch( DrawerActions.toggleDrawer() )
-                    }}
+                        onPress={() => {
+                            Store.drawer.dispatch(DrawerActions.toggleDrawer())
+                        }}
                 />
             </View>
         </View>
@@ -45,12 +48,12 @@ const AppDrawer = createDrawerNavigator(
 
         Playground: {
             screen: Playground,
-        }
-    },
+        },
 
-    {
-        headerMode:'float'
+        Login: {
+            screen: LoginPage,
+        }
     }
 );
 
-export default App
+export default App;
