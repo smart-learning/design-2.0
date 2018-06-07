@@ -16,7 +16,7 @@ class AuthLoadingScreen extends React.Component {
 
         // alert('userToken:' + userToken );
 
-        this.props.navigation.navigate(userToken ? 'MyScreen' : 'Login');
+        this.props.navigation.navigate(userToken ? 'AuthorizedMyScreen' : 'Login');
     };
 
     // Render any loading content that you like here
