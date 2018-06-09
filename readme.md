@@ -20,3 +20,10 @@ yarn android
 # or
 yarn ios
 ```
+
+https://beomi.github.io/2016/11/15/ReactNative-Translation-01-getting-started/
+
+
+
+
+react-native link

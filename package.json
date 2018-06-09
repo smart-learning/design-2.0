@@ -6,16 +6,12 @@
     "axios": "^0.18.0",
     "jest-expo": "~27.0.0",
     "react-devtools": "^3.2.3",
-    "react-native-scripts": "1.14.0",
+    "react-native-cli": "^2.0.1",
     "react-test-renderer": "16.3.1",
     "watchman": "^1.0.0"
   },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
     "test": "jest"
   },
   "jest": {
@@ -26,8 +22,9 @@
     "mobx": "^4.3.1",
     "mobx-react": "^5.2.0",
     "react": "16.3.1",
-    "react-native": "~0.55.2",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-27.0.0.tar.gz",
     "react-native-elements": "^0.19.1",
+    "react-native-video": "2.2.0",
     "react-navigation": "^2.1.0"
   }
 }
