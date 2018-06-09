@@ -20,3 +20,6 @@ yarn android
 # or
 yarn ios
 ```
+
+
+react-native link

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Button, StatusBar, Text, View} from "react-native";
 import Styles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
+import VideoPack from "../commons/VideoPack";
+import Video from "react-native-video";
 
 class Playground extends Component {
 
@@ -13,6 +15,9 @@ class Playground extends Component {
                     title="Home screen"
                     onPress={() => this.props.navigation.navigate('HomeScreen')}
                 />
+
+                <VideoPack/>
+
 
             </SafeAreaView>
     }

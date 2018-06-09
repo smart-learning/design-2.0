@@ -4,7 +4,7 @@ import Styles from "../../styles/common";
 import IcBars from "../../images/ic-bars.png"
 import IcSearch from "../../images/ic-search.png"
 import logo from "../../images/logo-white.png"
-import Store from "../../js/store";
+import Store from "./store";
 import {DrawerActions} from "react-navigation";
 
 class HeaderWithSearch extends Component {

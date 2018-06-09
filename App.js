@@ -6,7 +6,7 @@ import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreen from './src/scripts/pages/my/MyScreen';
 import Playground from "./src/scripts/pages/Playground";
 import {Button, View} from "react-native";
-import Store from "./src/js/store";
+import Store from "./src/scripts/commons/store";
 import LoginPage from "./src/scripts/pages/auth/LoginPage";
 
 class App extends React.Component {
