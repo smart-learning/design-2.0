@@ -8,6 +8,7 @@ import Playground from "./src/scripts/pages/Playground";
 import {Button, View} from "react-native";
 import Store from "./src/scripts/commons/store";
 import LoginPage from "./src/scripts/pages/auth/LoginPage";
+import VideoTest from "./src/scripts/pages/VideoTest";
 
 class App extends React.Component {
 
@@ -52,6 +53,10 @@ const AppDrawer = createDrawerNavigator(
 
         Login: {
             screen: LoginPage,
+        },
+
+        VideoTest:{
+            screen: VideoTest,
         }
     }
 );
