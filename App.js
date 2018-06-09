@@ -53,10 +53,6 @@ const AppDrawer = createDrawerNavigator(
 
         Login: {
             screen: LoginPage,
-        },
-
-        VideoTest:{
-            screen: VideoTest,
         }
     }
 );

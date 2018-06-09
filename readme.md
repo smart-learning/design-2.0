@@ -23,4 +23,5 @@ yarn ios
 
 https://beomi.github.io/2016/11/15/ReactNative-Translation-01-getting-started/
 
+(ios/android 디렉토리 없으면) react-native eject
 react-native link
