@@ -1,6 +1,6 @@
 import React from "react";
 import Styles from "../../../styles/common";
-import {AsyncStorage, Button, Image, Text, View} from "react-native";
+import { AsyncStorage, Button, Image, Text, View} from "react-native";
 import {createSwitchNavigator} from "react-navigation";
 import AuthLoadingScreen from "../auth/AuthLoadingScreen";
 
