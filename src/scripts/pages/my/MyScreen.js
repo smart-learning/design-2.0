@@ -1,54 +1,27 @@
 import React from "react";
-import Styles from "../../../styles/common";
-import { AsyncStorage, Button, Image, Text, View} from "react-native";
 import {createSwitchNavigator} from "react-navigation";
 import AuthLoadingScreen from "../auth/AuthLoadingScreen";
+import {NAV_OPTS_DRAWER} from "../../commons/store";
+import MyInfoScreen from "./MyInfoScreen";
 
-class MyScreen extends React.Component {
 
-    logout = async () => {
-        await AsyncStorage.clear();
-        this.props.navigation.navigate('Auth');
-    }
 
-    getToken = async () => {
-        const userToken = await AsyncStorage.getItem('userToken');
+const MyScreenSet = createSwitchNavigator(
+	{
+		Auth: {
+			screen: AuthLoadingScreen
+		},
 
-        alert('userToken-:' + userToken );
-    };
+		AuthorizedMyScreen: {
+			screen: MyInfoScreen
+		}
+	},
 
-    render() {
-        return <View style={Styles.container}>
-            <Text>마이</Text>
-            <Button title="Logout" onPress={this.logout}/>
-            <Button title="Token" onPress={this.getToken}/>
-        </View>
-    }
-}
-
-const MyScreenSet = createSwitchNavigator({
-        Auth: {
-            screen: AuthLoadingScreen
-        },
-
-        AuthorizedMyScreen: {
-            screen: MyScreen
-        }
-    },
-
-    {
-        initialRouteName:'Auth'
-    }
+	{
+		initialRouteName: 'Auth'
+	}
 );
 
-MyScreenSet.navigationOptions = {
-    drawerLabel: '마이',
-    drawerIcon: ({tintColor}) => (
-        <Image
-            source={require('../../../images/chats-icon.png')}
-            style={[Styles.size24, {tintColor: tintColor}]}
-        />
-    ),
-};
+MyScreenSet.navigationOptions = NAV_OPTS_DRAWER;
 
 export default MyScreenSet;

@@ -8,13 +8,20 @@ yarn
 npm i
 ```
 
+## Major Package
+```
+- react-navigation:  https://reactnavigation.org/
+- react-native-video:
+
+```
+
 ## 실행 전 세팅
 
 참고: https://beomi.github.io/2016/11/15/ReactNative-Translation-01-getting-started/
 
 ```
-(ios/android 디렉토리 없으면) yarn eject
-yarn link
+yarn eject # ios/android 디렉토리 없을 경우에만
+yarn link # 실행 후 제대로 연결됬는지 콘솔 메시지 확인
 ```
 
 ## 실행
@@ -22,12 +29,14 @@ yarn link
 실행을 위해서는 watchman이 필요하다.  
 https://facebook.github.io/watchman/docs/install.html
 
+
 ```
 yarn start
 # start 한 후 에뮬레이터 실행
 yarn android
 # or
 yarn ios
+
 ```
 
 개발 환경은

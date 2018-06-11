@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {Text, View} from "react-native";
-import Styles from "../../styles/common";
+import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import Video from "react-native-video";
+import VideoPack from "../commons/VideoPack";
 
 
 /*
@@ -11,12 +12,10 @@ import Video from "react-native-video";
 * */
 class VideoTest extends Component {
     render() {
-        return <SafeAreaView style={[ Styles.container, {backgroundColor: '#ecf0f1'}]}>
+        return <SafeAreaView style={[ CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
 
             <Text>VIDEO TEST</Text>
-            <Video
-                source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
-            />
+            <VideoPack/>
 
         </SafeAreaView>
     }

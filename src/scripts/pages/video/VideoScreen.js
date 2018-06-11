@@ -1,26 +1,20 @@
 import React from "react";
-import Styles from "../../../styles/common";
-import {Image, Text, View} from "react-native";
+import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_EACH, NAV_OPTS_DRAWER} from "../../commons/store";
+import {createStackNavigator} from "react-navigation";
+import SamplePage from "../SamplePage";
 
 
-export default class VideoScreen extends React.Component {
-    static navigationOptions = {
-        drawerLabel: '동영상 강의',
-        drawerIcon: ({ tintColor }) => (
-            <Image
-                source={require('../../../images/chats-icon.png')}
-                style={[Styles.size24, {tintColor: tintColor}]}
-            />
-        ),
+const VideoScreen = createStackNavigator({
 
-        headerTitle: <View>
-            <Text>헤더.....</Text>
-        </View>
-    };
+		VideoScreen1: {
+			screen: SamplePage,
+			navigationOptions: NAV_OPTS_MAIN,
+		}
+	},
 
-    render() {
-        return <View style={Styles.container}>
-            <Text>동영상 강의 페이지</Text>
-        </View>
-    }
-}
+	{ navigationOptions: NAV_OPTS_COMMON }
+);
+
+VideoScreen.navigationOptions = NAV_OPTS_DRAWER;
+
+export default VideoScreen;
