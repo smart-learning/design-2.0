@@ -3,7 +3,7 @@ import {Image, Text} from "react-native";
 import {createStackNavigator} from "react-navigation";
 import HomeSubScreen1 from "./HomeSubScreen1";
 import HomeSubScreen2 from "./HomeSubScreen2";
-import Styles from "../../../styles/common";
+import CommonStyles from "../../../styles/common";
 import HeaderWithSearch from "../../commons/HeaderWithSearch";
 
 const HomeScreen = createStackNavigator({
@@ -45,7 +45,7 @@ HomeScreen.navigationOptions = ({navigation})=>({
     drawerIcon: ({tintColor}) => (
         <Image
             source={require('../../../images/chats-icon.png')}
-            style={[Styles.size24, {tintColor: tintColor}]}
+            style={[CommonStyles.size24, {tintColor: tintColor}]}
         />
     )
 });
