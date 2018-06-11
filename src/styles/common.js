@@ -7,8 +7,7 @@ import {StyleSheet} from "react-native";
 export const COLOR_PRIMARY = '#00b870';
 export const COLOR_SECOND = '#0000'; // 이것도 임시에여. 마음껏 수정부탁드립니다.
 
-export default StyleSheet.create({
-
+const commonStyle = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#CCCCCC',
@@ -34,3 +33,9 @@ export default StyleSheet.create({
 	}
 
 });
+
+// default export 만 import 한 상태에서도 속성을 사용할 수 있도록 하기 위해 한번 더 할당
+commonStyle.COLOR_PRIMARY = COLOR_PRIMARY;
+commonStyle.COLOR_SECOND = COLOR_SECOND;
+
+export default commonStyle;
