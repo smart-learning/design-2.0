@@ -51,6 +51,13 @@ const AppDrawer = createDrawerNavigator(
             screen: Playground,
         },
 
+		June:{
+        	screen: VideoTest,
+		},
+
+
+
+		// invisible screens
         Login: {
             screen: LoginPage,
         }
