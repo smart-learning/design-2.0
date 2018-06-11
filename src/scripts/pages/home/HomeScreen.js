@@ -25,17 +25,17 @@ const HomeScreen = createStackNavigator({
 
     {
         /* The header config from HomeScreen is now here */
-        navigationOptions: {
-            headerStyle: {
-                backgroundColor: '#00b870',
-                paddingLeft: 15,
-                paddingRight: 15,
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-                fontWeight: 'bold',
-            },
-        },
+        // navigationOptions: {
+        //     headerStyle: {
+        //         backgroundColor: '#00b870',
+        //         paddingLeft: 15,
+        //         paddingRight: 15,
+        //     },
+        //     headerTintColor: '#fff',
+        //     headerTitleStyle: {
+        //         fontWeight: 'bold',
+        //     },
+        // },
     }
 );
 
