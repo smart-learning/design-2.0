@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Text, View, Image, TouchableOpacity} from "react-native";
-import Styles from "../../styles/common";
+import CommonStyles from "../../styles/common";
 import IcBars from "../../images/ic-bars.png"
 import IcSearch from "../../images/ic-search.png"
 import logo from "../../images/logo-white.png"
@@ -9,16 +9,16 @@ import {DrawerActions} from "react-navigation";
 
 class HeaderWithSearch extends Component {
     render() {
-        return <View style={ Styles.alignJustify }>
+        return <View style={ CommonStyles.alignJustify }>
             <TouchableOpacity
                 onPress={() => {
                     Store.drawer.dispatch(DrawerActions.toggleDrawer())
                 }}
             >
-                <Image source={IcBars} style={ Styles.size24 }/>
+                <Image source={IcBars} style={ CommonStyles.size24 }/>
             </TouchableOpacity>
-            <Image source={logo} style={ Styles.headerLogo }/>
-            <Image source={IcSearch} style={ Styles.size24 }/>
+            <Image source={logo} style={ CommonStyles.headerLogo }/>
+            <Image source={IcSearch} style={ CommonStyles.size24 }/>
         </View>
     }
 }

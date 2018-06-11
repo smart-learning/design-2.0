@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Text, View} from "react-native";
-import Styles from "../../styles/common";
+import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import Video from "react-native-video";
 
@@ -11,7 +11,7 @@ import Video from "react-native-video";
 * */
 class VideoTest extends Component {
     render() {
-        return <SafeAreaView style={[ Styles.container, {backgroundColor: '#ecf0f1'}]}>
+        return <SafeAreaView style={[ CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
 
             <Text>VIDEO TEST</Text>
             <Video

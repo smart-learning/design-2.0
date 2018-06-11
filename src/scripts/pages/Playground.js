@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button, StatusBar, Text, View} from "react-native";
-import Styles from "../../styles/common";
+import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import VideoPack from "../commons/VideoPack";
 import Video from "react-native-video";
@@ -8,7 +8,7 @@ import Video from "react-native-video";
 class Playground extends Component {
 
     render() {
-        return <SafeAreaView style={[ Styles.container, {backgroundColor: '#ecf0f1'}]}>
+        return <SafeAreaView style={[ CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
 
                 <Text>PLAYGROUND</Text>
                 <Button
