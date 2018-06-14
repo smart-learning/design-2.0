@@ -52,9 +52,25 @@ yarn ios
 
 참조: https://facebook.github.io/react-native/docs/debugging.html
 
+### JS Debug
+
 `console.log`를 확인하기 위해서는 다음 순서대로 진행한다. iOS 기준.
 
 1. http://localhost:8081/debugger-ui 페이지에 접근한다. 메트로 번들러가 실행중이어야 한다.
 2. 시뮬레이터에서 `Cmd+D` 를 누른다.
 3. `Remote JS Debugging` 메뉴를 선택
 4. 앱을 새로고침(`Cmd+R`) 해보면 웹 인스펙터 내에서 로그를 확인할 수 있다.
+
+### View Debug
+
+`react-devtools`를 npm global로 설치한다
+
+```
+(sudo) npm i -g react-devtools
+```
+
+실행
+
+```
+react-devtools
+```
