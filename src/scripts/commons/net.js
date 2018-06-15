@@ -28,5 +28,30 @@ export default {
 				},
 			]);
 		});
-	}
+	},
+
+	getVideoClipList(){
+		return new Promise( (resolve, reject)=>{
+			resolve([
+				{
+					key: '0',
+					title: '4차 산업혁명! 변화의 시작, 포노 사피엔스',
+					subTitle: '[강좌] 4차 산업혁명, 변화의 방향과 대응전략',
+					authorInfo: '강연 만족도 만점의 대표스피커, 성균관대 최재붕 교수',
+					paragraph: '강의 클립 설명',
+					viewCount: '000',
+					starCount: '0.0',
+				},
+				{
+					key: '1',
+					title: '생각은 어떻게 탄생하는가?',
+					subTitle: '[강좌] 데니스홍의 불가능을 가능으로 만드는 힘',
+					authorInfo: '로멜라연구소장, UCLA 기계공학학과 데니스홍 교수',
+					paragraph: '강의 클립 설명',
+					viewCount: '000',
+					starCount: '0.0',
+				},
+			]);
+		});
+	},
 }

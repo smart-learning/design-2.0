@@ -3,6 +3,7 @@ import {Button, StatusBar, Text, View, FlatList} from "react-native";
 import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import VideoItemCourse from "./video/VideoItemCourse";
+import VideoItemClip from "./video/VideoItemClip";
 import Net from "../commons/net";
 // import VideoPack from "../commons/VideoPack";
 // import Video from "react-native-video";
@@ -15,6 +16,7 @@ class Playground extends Component {
 
 		this.state = {
 			videoCourseData: null,
+			videoClipData: null,
 		};
 	}
 
@@ -22,9 +24,13 @@ class Playground extends Component {
 	componentDidMount() {
 		Net.getVideoCourseList()
 			.then(data => {
-				// alert( data );
 				this.setState({videoCourseData: data})
-			})
+			});
+
+		Net.getVideoClipList()
+			.then(data => {
+				this.setState({videoClipData: data})
+			});
 	}
 
 	render() {
@@ -49,6 +55,20 @@ class Playground extends Component {
 												 viewCount={item.viewCount}
 												 starCount={item.starCount}
 												 reviewCount={item.reviewCount}/>
+				}
+			/>
+
+			<FlatList
+				style={{width: '100%'}}
+				data={this.state.videoClipData}
+				renderItem={
+					({item}) => <VideoItemClip title={item.title}
+												 subTitle={item.subTitle}
+												 authorInfo={item.authorInfo}
+												 paragraph={item.paragraph}
+												 thumbnail={item.thumbnail}
+												 viewCount={item.viewCount}
+												 starCount={item.starCount}/>
 				}
 			/>
 		</SafeAreaView>
