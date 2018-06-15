@@ -46,6 +46,24 @@ class Playground extends Component {
 
 			<FlatList
 				style={{width: '100%'}}
+				data={[
+					{key: 'Devin'},
+					{key: 'Jackson'},
+					{key: 'James'},
+					{key: 'Joel'},
+					{key: 'John'},
+					{key: 'Jillian'},
+					{key: 'Jimmy'},
+					{key: 'Julie'},
+				]}
+				horizontal={true}
+				renderItem={
+					({item}) => <Text>{item.key}</Text>
+				}
+			/>
+
+			<FlatList
+				style={{width: '100%'}}
 				data={this.state.videoCourseData}
 				renderItem={
 					({item}) => <VideoItemCourse title={item.title}

@@ -54,4 +54,31 @@ export default {
 			]);
 		});
 	},
+
+	getBookList(){
+		return new Promise( (resolve, reject)=>{
+			resolve([
+				{
+					key: '0',
+					title: '명견만리_인구, 경제, 북한, 의료 편',
+					authorInfo: 'KBS 명견만리 제작팀',
+					Time: '06시간 12분',
+					paragraph: '책 설명',
+					viewCount: '000',
+					heartCount: '00',
+					commentCount: '00',
+				},
+				{
+					key: '1',
+					title: '미움받을 용기',
+					authorInfo: '기시미 이치로',
+					Time: '06시간 32분',
+					paragraph: '책 설명',
+					viewCount: '000',
+					heartCount: '00',
+					commentCount: '00',
+				},
+			]);
+		});
+	},
 }

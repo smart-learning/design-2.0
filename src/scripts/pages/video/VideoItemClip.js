@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
 	thumbnail: {
 		position: 'relative',
 		width: '100%',
-		paddingTop: '15%',
-		paddingBottom: '15%',
+		paddingTop: '20%',
+		paddingBottom: '20%',
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
