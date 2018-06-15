@@ -15,7 +15,6 @@ import IcStarActive from "../../../images/ic-star.png";
 import IcView from "../../../images/ic-view-light.png";
 import Dummy from "../../../images/dummy-videocourse.png";
 import IcPlay from "../../../images/ic-play.png";
-import Store from "../../commons/store";
 import {DrawerActions} from "react-navigation";
 import CommonStyles from "../../../styles/common";
 
@@ -31,11 +30,11 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	title: {
-		fontSize: 22,
+		fontSize: 18,
 		color: COLOR_PRIMARY,
 	},
 	subTitle: {
-		fontSize: 16,
+		fontSize: 14,
 		color: '#999999'
 	},
 	thumbnail: {
@@ -48,39 +47,75 @@ const styles = StyleSheet.create({
 	},
 	courseCount: {
 		position: 'absolute',
-		bottom: '14%',
+		bottom: '30%',
 		left: '11.5%',
-		fontSize: 16,
+		fontSize: 14,
 		color: '#ffffff'
 	},
 	play: {
 		position: 'absolute',
-		top: '75%',
 		right: 20,
 		width: 50,
 		height: 50,
 	},
+	btnGroup: {
+		width: '100%',
+		height: 50,
+		backgroundColor: '#222222',
+	},
+	alignJustify: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		// justifyContent: 'center',
+	},
+	btnSetSmall: {
+		width: 18,
+		height: 18,
+	},
+	btnSetLarge: {
+		width: 24,
+		height: 24,
+	},
+	countText: {
+		paddingLeft: 3,
+		paddingRight: 7,
+		fontSize: 12,
+		color: '#ffffff',
+	}
 });
 
 export default class VideoItemCourse extends React.Component {
-
 	render() {
 		return <View style={styles.itemContainer}>
 			{/*타이틀*/}
-			<Text style={styles.title}>Title</Text>
+			<Text style={styles.title}>
+				{this.props.title}
+			</Text>
 			{/*서브타이틀*/}
-			<Text style={styles.subTitle}>sub title</Text>
+			<Text style={styles.subTitle}>
+				{this.props.subTitle}
+			</Text>
 			{/*썸네일*/}
 			<ImageBackground source={Dummy} style={styles.thumbnail}>
-				<Text style={styles.courseCount}>11개 강의</Text>
-				<Image source={ IcPlay } style={styles.play}/>
+				<Text style={styles.courseCount}>
+					{this.props.courseCount}
+					개 강의
+				</Text>
+				<Image source={IcPlay} style={styles.play}/>
 			</ImageBackground>
-			<View>
-				<Image source={ IcView }/>
-				<Image source={ IcStar }/>
-				<Image source={ IcComment }/>
-				<Image source={ IcPin }/>
-				<Image source={ IcShare }/>
+			<View style={styles.btnGroup}>
+				<View style={styles.alignJustify}>
+
+					<Image source={IcView} style={styles.btnSetSmall}/>
+					<Text style={ styles.countText }>조회수 {this.props.viewCount}</Text>
+					<Image source={IcStar} style={styles.btnSetSmall}/>
+					<Text style={ styles.countText }>별점 {this.props.starCount}</Text>
+					<Image source={IcComment} style={styles.btnSetSmall}/>
+					<Text style={ styles.countText }>리뷰 {this.props.reviewCount}</Text>
+					<Image source={IcPin} style={ [styles.btnSetLarge, {marginLeft: 'auto'}] }/>
+					<Image source={IcShare} style={styles.btnSetLarge}/>
+				</View>
 			</View>
 		</View>
 	}
