@@ -3,59 +3,56 @@ import {Button, StatusBar, Text, View, FlatList} from "react-native";
 import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import VideoItemCourse from "./video/VideoItemCourse";
+import Net from "../commons/net";
 // import VideoPack from "../commons/VideoPack";
 // import Video from "react-native-video";
 // import VideoItemCourse from "/video/VideoItemCourse"
 
 class Playground extends Component {
 
-    render() {
-        return <SafeAreaView style={[ CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
+	constructor(props) {
+		super(props);
 
-                <Text>PLAYGROUND</Text>
-                <Button
-                    title="Home screen"
-                    onPress={() => this.props.navigation.navigate('HomeScreen')}
-                />
+		this.state = {
+			videoCourseData: null,
+		};
+	}
 
-                {/*<VideoPack/>*/}
+
+	componentDidMount() {
+		Net.getVideoCourseList()
+			.then(data => {
+				// alert( data );
+				this.setState({videoCourseData: data})
+			})
+	}
+
+	render() {
+		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
+
+			<Text>PLAYGROUND</Text>
+			<Button
+				title="Home screen"
+				onPress={() => this.props.navigation.navigate('HomeScreen')}
+			/>
+
+			{/*<VideoPack/>*/}
 
 			<FlatList
-				style={{ width: '100%' }}
-				data={[
-					{
-						key: '0',
-						title: '쓸데 없는 것을 비워 삶의 가치를 배로 만드는 직장인 미니멀라이프 10가지 실천방법',
-						subTitle: '심플라이프, 단순한 학교 탁진현 칼럼니스트',
-						thumbnail: '',
-						courseCount: '00',
-						viewCount: '000',
-						starCount: '0.0',
-						reviewCount: '0',
-					},
-					{
-						key: '1',
-						title: '실무에서 바로 적용 가능한 엑셀 프로그램 핵심 정리!',
-						subTitle: '혜윰 케이비 김철 대표',
-						thumbnail: '',
-						courseCount: '00',
-						viewCount: '000',
-						starCount: '0.0',
-						reviewCount: '0',
-					},
-				]}
+				style={{width: '100%'}}
+				data={this.state.videoCourseData}
 				renderItem={
-					({item}) => <VideoItemCourse title = { item.title }
-														 subTitle = { item.subTitle }
-														 thumbnail = { item.thumbnail }
-														 courseCount = { item.courseCount }
-														 viewCount = { item.viewCount }
-														 starCount = { item.starCount }
-														 reviewCount = { item.reviewCount }/>
+					({item}) => <VideoItemCourse title={item.title}
+												 subTitle={item.subTitle}
+												 thumbnail={item.thumbnail}
+												 courseCount={item.courseCount}
+												 viewCount={item.viewCount}
+												 starCount={item.starCount}
+												 reviewCount={item.reviewCount}/>
 				}
 			/>
-            </SafeAreaView>
-    }
+		</SafeAreaView>
+	}
 }
 
 
