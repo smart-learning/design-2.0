@@ -29,3 +29,4 @@ yarn-debug.log*
 yarn-error.log*
 src/scripts/.DS_Store
 src/images/.DS_Store
+.DS_Store
