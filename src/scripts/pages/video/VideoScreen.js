@@ -1,14 +1,14 @@
 import React from "react";
 import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_EACH, NAV_OPTS_DRAWER} from "../../commons/store";
 import {createStackNavigator} from "react-navigation";
-import SamplePage from "../SamplePage";
+import VideoList from "./VideoList";
 
 
 const VideoScreen = createStackNavigator({
 
-		VideoScreen1: {
-			screen: SamplePage,
-			navigationOptions: NAV_OPTS_MAIN,
+		VideoList: {
+			screen: VideoList,
+			navigationOptions: NAV_OPTS_EACH,
 		}
 	},
 

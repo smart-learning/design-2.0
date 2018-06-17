@@ -6,19 +6,18 @@ import {
 	View,
 	StyleSheet,
 } from "react-native";
-import {COLOR_PRIMARY} from "../../../styles/common";
+import { COLOR_PRIMARY } from "../../../styles/common";
+import IcFilm from "../../../images/icons/film.png"
 import IcComment from "../../../images/ic-comment-light.png"
 import IcPin from "../../../images/ic-pin-light.png";
 import IcShare from "../../../images/ic-share-light.png";
-import IcStar from "../../../images/ic-star-light.png";
-import IcStarActive from "../../../images/ic-star.png";
-import IcView from "../../../images/ic-view-light.png";
-import Dummy from "../../../images/dummy-videocourse.png";
+import IcStar from "../../../images/icons/star.png";
+import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
-import {DrawerActions} from "react-navigation";
+import { DrawerActions } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
 	itemContainer: {
 		width: '100%',
 		paddingTop: 30,
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		marginBottom: 10,
 	},
-	title: {
+	headline: {
 		fontSize: 18,
 		color: COLOR_PRIMARY,
 	},
@@ -40,12 +39,12 @@ const styles = StyleSheet.create({
 	thumbnail: {
 		position: 'relative',
 		width: '100%',
-		paddingTop: '21%',
-		paddingBottom: '21%',
+		paddingTop: '19%',
+		paddingBottom: '19%',
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	courseCount: {
+	clipCount: {
 		position: 'absolute',
 		bottom: '30%',
 		left: '11.5%',
@@ -67,7 +66,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		alignItems: 'center',
-		// justifyContent: 'center',
 	},
 	btnSetSmall: {
 		width: 18,
@@ -83,23 +81,32 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		color: '#ffffff',
 	}
-});
+} );
 
 export default class VideoItemCourse extends React.Component {
 	render() {
+		console.log( this.props );
+		console.log( this.props.thumbnail );
 		return <View style={styles.itemContainer}>
 			{/*타이틀*/}
-			<Text style={styles.title}>
-				{this.props.title}
+			<Text style={styles.headline}>
+				{this.props.headline}
 			</Text>
 			{/*서브타이틀*/}
 			<Text style={styles.subTitle}>
-				{this.props.subTitle}
+				{this.props.teacherHeadline}
+				{this.props.teacherName}
 			</Text>
 			{/*썸네일*/}
-			<ImageBackground source={Dummy} style={styles.thumbnail}>
-				<Text style={styles.courseCount}>
-					{this.props.courseCount}
+			<ImageBackground
+				source={{ uri: this.props.thumbnail }}
+				resizeMode="cover"
+				style={styles.thumbnail}>
+				<Text>
+					{this.props.title}
+				</Text>
+				<Text style={styles.clipCount}>
+					{this.props.clipCount}
 					개 강의
 				</Text>
 				<Image source={IcPlay} style={styles.play}/>
@@ -108,12 +115,12 @@ export default class VideoItemCourse extends React.Component {
 				<View style={styles.alignJustify}>
 
 					<Image source={IcView} style={styles.btnSetSmall}/>
-					<Text style={ styles.countText }>조회수 {this.props.viewCount}</Text>
+					<Text style={styles.countText}>조회수 {this.props.hitCount}</Text>
 					<Image source={IcStar} style={styles.btnSetSmall}/>
-					<Text style={ styles.countText }>별점 {this.props.starCount}</Text>
+					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
-					<Text style={ styles.countText }>리뷰 {this.props.reviewCount}</Text>
-					<Image source={IcPin} style={ [styles.btnSetLarge, {marginLeft: 'auto'}] }/>
+					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
+					<Image source={IcPin} style={[ styles.btnSetLarge, { marginLeft: 'auto' } ]}/>
 					<Image source={IcShare} style={styles.btnSetLarge}/>
 				</View>
 			</View>
