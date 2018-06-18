@@ -9,6 +9,7 @@ import {SafeAreaView} from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import net from "../../commons/net";
 import VideoItemCourse from "./VideoItemCourse";
+import VideoCategory from "./VideoCategory";
 
 export default class VideoList extends React.Component {
 
@@ -47,23 +48,8 @@ export default class VideoList extends React.Component {
 				<View>
 					<Text>인기 | 신규 & Toggle 위치</Text>
 				</View>
-				<FlatList
-					style={{width: '100%'}}
-					data={[
-						{key: 'Devin'},
-						{key: 'Jackson'},
-						{key: 'James'},
-						{key: 'Joel'},
-						{key: 'John'},
-						{key: 'Jillian'},
-						{key: 'Jimmy'},
-						{key: 'Julie'},
-					]}
-					horizontal={true}
-					renderItem={
-						({item}) => <Text>{item.key}</Text>
-					}
-				/>
+
+				<VideoCategory/>
 
 				<FlatList
 					style={{width: '100%'}}
