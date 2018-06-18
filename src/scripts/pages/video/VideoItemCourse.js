@@ -85,8 +85,8 @@ const styles = StyleSheet.create( {
 
 export default class VideoItemCourse extends React.Component {
 	render() {
-		console.log( this.props );
-		console.log( this.props.thumbnail );
+		// console.log( this.props );
+		// console.log( this.props.thumbnail );
 		return <View style={styles.itemContainer}>
 			{/*타이틀*/}
 			<Text style={styles.headline}>
