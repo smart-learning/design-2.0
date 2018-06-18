@@ -18,17 +18,18 @@
 	},
 	"dependencies": {
 		"babel-preset-react-native-stage-0": "^1.0.1",
-		"mobx": "^4.3.1",
-		"mobx-react": "^5.2.0",
 		"jest": "^23.1.0",
 		"jest-react-native": "^18.0.0",
+		"mobx": "^4.3.1",
+		"mobx-react": "^5.2.0",
 		"react": "16.3.1",
 		"react-devtools": "^3.2.3",
 		"react-native": "^0.55.4",
 		"react-native-asyncstorage": "^1.0.0",
+		"react-native-cli": "^2.0.1",
+		"react-native-elements": "^0.19.1",
 		"react-native-video": "2.2.0",
 		"react-navigation": "^2.1.0",
-		"react-native-cli": "^2.0.1",
 		"react-test-renderer": "16.3.1",
 		"watchman": "^1.0.0"
 	}
