@@ -28,7 +28,7 @@ export default class HorizontalCategory extends React.Component {
 			]}
 			horizontal={true}
 			renderItem={
-				({item}) => <Touchable></Touchable><Text>{item.key}</Text>
+				({item}) => <Text>{item.key}</Text>
 			}
 		/>
 	}
