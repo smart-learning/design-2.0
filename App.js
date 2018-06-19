@@ -25,6 +25,8 @@ class App extends React.Component {
                         }}
                 />
             </View>
+
+
         </View>
     }
 }

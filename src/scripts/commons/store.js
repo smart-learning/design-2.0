@@ -2,8 +2,10 @@ import React from 'react';
 import { observable } from 'mobx';
 import HeaderWithSearch from "./HeaderWithSearch";
 import SearchButton from "./SearchButton";
-import {Image} from "react-native";
+import {Image, TouchableOpacity} from "react-native";
 import CommonStyle from "../../styles/common";
+import {DrawerActions} from "react-navigation";
+import HomeButton from "./HomeButton";
 
 
 
@@ -27,7 +29,8 @@ export const NAV_OPTS_MAIN = ({ navigation, navigationOptions })=>({
 export const NAV_OPTS_EACH = ({ navigation, navigationOptions} )=>{
 	return {
 		headerTitle: navigation.state.routeName,
-		headerRight: <SearchButton/>
+		headerRight: <SearchButton/>,
+		headerLeft: <HomeButton/>
 	}
 }
 
