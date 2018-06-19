@@ -74,3 +74,20 @@ yarn ios
 ```
 react-devtools
 ```
+
+
+### iOS Http 허용
+```
+info.plist NSExceptionDomains에 추가합니다.
+
+<key>ec2-contents-api.welaa.co.kr</key>
+<dict>
+	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+	<true/>
+</dict>
+<key>ec2-52-78-197-242.ap-northeast-2.compute.amazonaws.com</key>
+<dict>
+	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+	<true/>
+</dict>
+```
