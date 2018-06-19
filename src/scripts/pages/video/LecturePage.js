@@ -9,8 +9,9 @@ import {
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import net from "../../commons/net";
-import VideoItemCourse from "./VideoItemCourse";
 import VideoCategory from "./VideoCategory";
+import Lecture from "../../components/video/Lecture";
+import LectureDetailPage from "./LectureDetailPage";
 
 export default class CourseList extends React.Component {
 
@@ -46,8 +47,8 @@ export default class CourseList extends React.Component {
 				<View>
 					<Text>인기 | 신규 & Toggle 위치</Text>
 					{/*<Button*/}
-						{/*onPress={()=>this.props.navigation.navigate('ClipList')}*/}
-						{/*title="강의클립 전체보기"*/}
+					{/*onPress={()=>this.props.navigation.navigate('ClipList')}*/}
+					{/*title="강의클립 전체보기"*/}
 					{/*/>*/}
 				</View>
 
@@ -55,7 +56,7 @@ export default class CourseList extends React.Component {
 
 				<View>
 					<Button
-						onPress={()=>this.props.navigation.navigate('CourseItemList')}
+						onPress={() => this.props.navigation.navigate( 'LectureDetailPage' )}
 						title="강좌 강의클립 목록"
 					/>
 				</View>
@@ -64,17 +65,17 @@ export default class CourseList extends React.Component {
 					style={{ width: '100%' }}
 					data={this.state.videoCourseData.items}
 					renderItem={
-						( { item } ) => <VideoItemCourse key={item.id}
-														 navigation={this.props.navigation}
-														 headline={item.headline}
-														 teacherHeadline={item.teacher.headline}
-														 teacherName={item.teacher.name}
-														 title={item.title}
-														 thumbnail={item.images.wide}
-														 clipCount={item.clip_count}
-														 hitCount={item.hit_count}
-														 starAvg={item.star_avg}
-														 reviewCount={item.review_count}/>
+						( { item } ) => <Lecture key={item.id}
+												 navigation={this.props.navigation}
+												 headline={item.headline}
+												 teacherHeadline={item.teacher.headline}
+												 teacherName={item.teacher.name}
+												 title={item.title}
+												 thumbnail={item.images.wide}
+												 clipCount={item.clip_count}
+												 hitCount={item.hit_count}
+												 starAvg={item.star_avg}
+												 reviewCount={item.review_count}/>
 					}
 				/>
 			</ScrollView>

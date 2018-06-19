@@ -5,7 +5,6 @@ import {
 	Text,
 	View,
 	StyleSheet,
-	Button,
 } from "react-native";
 import { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
@@ -15,30 +14,11 @@ import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
-import { DrawerActions } from "react-navigation";
-import CommonStyles from "../../../styles/common";
 
 const styles = StyleSheet.create( {
 	itemContainer: {
 		width: '100%',
-		paddingTop: 20,
-		paddingRight: 20,
-		paddingBottom: 20,
-		paddingLeft: 20,
 		position: 'relative',
-		backgroundColor: '#ffffff',
-		marginBottom: 10,
-	},
-	headline: {
-		fontSize: 16,
-		fontWeight: 'bold',
-		color: COLOR_PRIMARY,
-	},
-	subTitle: {
-		fontSize: 12,
-		fontWeight: 'bold',
-		color: '#999999',
-		marginBottom: 20,
 	},
 	thumbnail: {
 		position: 'relative',
@@ -107,27 +87,9 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default class VideoItemCourse extends React.Component {
+export default class Summary extends React.Component {
 	render() {
-		// console.log( this.props );
-		// console.log( this.props.thumbnail );
 		return <View style={styles.itemContainer}>
-			<View>
-				<Button
-					onPress={()=>this.props.navigation.navigate('CourseItemList')}
-					title="강좌 강의클립 목록"
-				/>
-			</View>
-			{/*타이틀*/}
-			<Text style={styles.headline}>
-				{this.props.headline}
-			</Text>
-			{/*서브타이틀*/}
-			<Text style={styles.subTitle}>
-				{this.props.teacherHeadline}
-				{this.props.teacherName}
-			</Text>
-			{/*썸네일*/}
 			<ImageBackground
 				source={{ uri: this.props.thumbnail }}
 				resizeMode="cover"

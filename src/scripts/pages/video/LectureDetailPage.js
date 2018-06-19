@@ -2,7 +2,7 @@ import React from "react";
 import CommonStyles from "../../../styles/common";
 import {Button, Image, Text, View} from "react-native";
 
-export default class CourseItemList extends React.Component {
+export default class LectureDetailPage extends React.Component {
 
 	render() {
 		return <View style={CommonStyles.container}>
