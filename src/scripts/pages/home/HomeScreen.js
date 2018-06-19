@@ -2,7 +2,7 @@ import React from "react";
 import {createStackNavigator} from "react-navigation";
 import HomeSubScreen1 from "./HomeSubScreen1";
 import HomeSubScreen2 from "./HomeSubScreen2";
-import {NAV_OPTS_EACH, NAV_OPTS_MAIN, NAV_OPTS_COMMON, NAV_OPTS_DRAWER} from "../../commons/store";
+import {NAV_OPTS_EACH, NAV_OPTS_MAIN, NAV_OPTS_DRAWER, NAV_OPTS_COMMON} from "../../commons/nav";
 
 
 const HomeScreen = createStackNavigator({

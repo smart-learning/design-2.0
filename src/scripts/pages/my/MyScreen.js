@@ -1,7 +1,7 @@
 import React from "react";
 import {createSwitchNavigator} from "react-navigation";
 import AuthLoadingScreen from "../auth/AuthLoadingScreen";
-import {NAV_OPTS_DRAWER} from "../../commons/store";
+import {NAV_OPTS_DRAWER} from "../../commons/nav";
 import MyInfoScreen from "./MyInfoScreen";
 
 

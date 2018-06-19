@@ -1,5 +1,5 @@
 import React from "react";
-import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_EACH, NAV_OPTS_DRAWER} from "../../commons/store";
+import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_EACH, NAV_OPTS_DRAWER} from "../../commons/nav";
 import {createStackNavigator} from "react-navigation";
 import LecturePage from "./LecturePage";
 import LectureDetailPage from "./LectureDetailPage";

@@ -1,5 +1,5 @@
 import React from 'react';
-import {createDrawerNavigator, createStackNavigator, createSwitchNavigator, DrawerActions} from "react-navigation";
+import {createDrawerNavigator, DrawerActions} from "react-navigation";
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
@@ -7,8 +7,8 @@ import MyScreen from './src/scripts/pages/my/MyScreen';
 import Playground from "./src/scripts/pages/Playground";
 import {Button, View} from "react-native";
 import Store from "./src/scripts/commons/store";
-import LoginPage from "./src/scripts/pages/auth/LoginPage";
 import VideoTest from "./src/scripts/pages/VideoTest";
+import LoginPage from "./src/scripts/pages/auth/LoginPage";
 
 class App extends React.Component {
 
@@ -53,13 +53,11 @@ const AppDrawer = createDrawerNavigator(
             screen: Playground,
         },
 
-		June:{
+        June:{
         	screen: VideoTest,
-		},
+        },
 
-
-
-		// invisible screens
+        // invisible screens
         Login: {
             screen: LoginPage,
         }

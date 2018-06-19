@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Image, View} from "react-native";
-import Styles from "../../styles/common";
-import IcSearch from "../../images/ic-search.png"
+import Styles from "../../../styles/common";
+import IcSearch from "../../../images/ic-search.png"
 
 class SearchButton extends Component {
     render() {
