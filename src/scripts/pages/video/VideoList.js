@@ -23,20 +23,20 @@ export default class VideoList extends React.Component {
 	}
 
 	componentDidMount() {
-		return fetch( 'http://ec2-contents-api.welaa.co.kr/api/v1.0/video-courses' )
-			.then( ( response ) => response.json() )
-			.then( ( responseJson ) => {
-				responseJson.items.forEach( element => {
-					element.key = element.id.toString();
-				} );
-
-				this.setState( {
-					videoCourseData: responseJson
-				} )
-			} )
-			.catch( ( error ) => {
-				console.error( error );
-			} );
+		// return fetch( 'http://ec2-contents-api.welaa.co.kr/api/v1.0/video-courses' )
+			// .then( ( response ) => response.json() )
+			// .then( ( responseJson ) => {
+			// 	responseJson.items.forEach( element => {
+			// 		element.key = element.id.toString();
+			// 	} );
+            //
+			// 	this.setState( {
+			// 		videoCourseData: responseJson
+			// 	} )
+			// } )
+			// .catch( ( error ) => {
+			// 	console.error( error );
+			// } );
 	}
 
 	render() {

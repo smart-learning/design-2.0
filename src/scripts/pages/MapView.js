@@ -1,4 +1,13 @@
-import { requireNativeComponent } from 'react-native';
+import React from 'react';
+import {requireNativeComponent, View} from 'react-native';
+
+class MapView extends React.Component {
+    render() {
+        return <RNTMap {...this.props}/>;
+    }
+}
 
 
-module.exports = requireNativeComponent('RNTMap', null);
+let RNTMap = requireNativeComponent('RnnModuleSample', null);
+
+export default MapView;
