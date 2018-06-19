@@ -1,11 +1,11 @@
 import React from 'react';
 import { observable } from 'mobx';
-import HeaderWithSearch from "./HeaderWithSearch";
-import SearchButton from "./SearchButton";
+import HeaderWithSearch from "../components/HeaderWithSearch";
+import SearchButton from "../components/SearchButton";
 import {Image, TouchableOpacity} from "react-native";
 import CommonStyle from "../../styles/common";
 import {DrawerActions} from "react-navigation";
-import HomeButton from "./HomeButton";
+import HomeButton from "../components/HomeButton";
 
 
 

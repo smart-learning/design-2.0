@@ -1,5 +1,5 @@
 import React from "react";
-import HorizontalCategory from "../../commons/HorizontalCategory";
+import HorizontalCategory from "../../components/HorizontalCategory";
 
 export default class VideoCategory extends React.Component {
 	render() {

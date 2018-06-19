@@ -5,6 +5,7 @@ import {
 	Text,
 	View,
 	StyleSheet,
+	Button,
 } from "react-native";
 import { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
@@ -111,6 +112,12 @@ export default class VideoItemCourse extends React.Component {
 		// console.log( this.props );
 		// console.log( this.props.thumbnail );
 		return <View style={styles.itemContainer}>
+			<View>
+				<Button
+					onPress={()=>this.props.navigation.navigate('CourseItemList')}
+					title="강좌 강의클립 목록"
+				/>
+			</View>
 			{/*타이틀*/}
 			<Text style={styles.headline}>
 				{this.props.headline}

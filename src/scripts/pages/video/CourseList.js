@@ -45,10 +45,10 @@ export default class CourseList extends React.Component {
 			<ScrollView style={{ width: '100%' }}>
 				<View>
 					<Text>인기 | 신규 & Toggle 위치</Text>
-					<Button
-						onPress={()=>this.props.navigation.navigate('ClipList')}
-						title="강의클립 전체보기"
-					/>
+					{/*<Button*/}
+						{/*onPress={()=>this.props.navigation.navigate('ClipList')}*/}
+						{/*title="강의클립 전체보기"*/}
+					{/*/>*/}
 				</View>
 
 				<VideoCategory/>
@@ -65,6 +65,7 @@ export default class CourseList extends React.Component {
 					data={this.state.videoCourseData.items}
 					renderItem={
 						( { item } ) => <VideoItemCourse key={item.id}
+														 navigation={this.props.navigation}
 														 headline={item.headline}
 														 teacherHeadline={item.teacher.headline}
 														 teacherName={item.teacher.name}

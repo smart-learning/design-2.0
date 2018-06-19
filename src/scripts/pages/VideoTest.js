@@ -3,8 +3,8 @@ import {Modal, Text, TouchableHighlight, View} from "react-native";
 import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import Video from "react-native-video";
-import VideoPack from "../commons/VideoPack";
-import ModalFrame from "../commons/ModalFrame";
+import VideoPack from "../components/VideoPack";
+import ModalFrame from "../components/ModalFrame";
 // import RnnModuleSample from "rnn-module-sample"
 // import CustomModule from 'react-native-custom-module';
 import MapView from './MapView';
