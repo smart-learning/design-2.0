@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
-import IcComment from "../../../images/ic-comment-light.png"
+import IcComment from "../../../images/icons/commenting.png"
 import IcPin from "../../../images/ic-pin-light.png";
 import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/icons/star.png";
@@ -20,46 +20,69 @@ import CommonStyles from "../../../styles/common";
 const styles = StyleSheet.create( {
 	itemContainer: {
 		width: '100%',
-		paddingTop: 30,
-		paddingRight: 30,
-		paddingBottom: 30,
-		paddingLeft: 30,
+		paddingTop: 20,
+		paddingRight: 20,
+		paddingBottom: 20,
+		paddingLeft: 20,
 		position: 'relative',
 		backgroundColor: '#ffffff',
 		marginBottom: 10,
 	},
 	headline: {
-		fontSize: 18,
+		fontSize: 16,
+		fontWeight: 'bold',
 		color: COLOR_PRIMARY,
 	},
 	subTitle: {
-		fontSize: 14,
-		color: '#999999'
+		fontSize: 12,
+		fontWeight: 'bold',
+		color: '#999999',
+		marginBottom: 20,
 	},
 	thumbnail: {
 		position: 'relative',
 		width: '100%',
-		paddingTop: '19%',
-		paddingBottom: '19%',
+		paddingTop: '22%',
+		paddingBottom: '22%',
 		justifyContent: 'center',
 		alignItems: 'center',
+	},
+	thumbnailTitle: {
+		position: 'absolute',
+		top: 15,
+		left: '5%',
+		width: '70%',
+		fontSize: 18,
+		fontWeight: '800',
+		color: '#ffffff',
+		textShadowColor: 'rgba(0, 0, 0, 0.8)',
+		textShadowOffset: {width: 1, height: 2},
+		textShadowRadius: 4,
+	},
+	clipIcon: {
+		position: 'absolute',
+		bottom: '30%',
+		left: '5%',
 	},
 	clipCount: {
 		position: 'absolute',
 		bottom: '30%',
 		left: '11.5%',
 		fontSize: 14,
+		fontWeight: 'bold',
 		color: '#ffffff'
 	},
 	play: {
 		position: 'absolute',
-		right: 20,
-		width: 50,
-		height: 50,
+		right: 15,
+		width: 42,
+		height: 42,
 	},
 	btnGroup: {
 		width: '100%',
-		height: 50,
+		height: 40,
+		paddingRight: 12,
+		paddingLeft: 12,
 		backgroundColor: '#222222',
 	},
 	alignJustify: {
@@ -68,8 +91,8 @@ const styles = StyleSheet.create( {
 		alignItems: 'center',
 	},
 	btnSetSmall: {
-		width: 18,
-		height: 18,
+		width: 12,
+		height: 12,
 	},
 	btnSetLarge: {
 		width: 24,
@@ -102,9 +125,10 @@ export default class VideoItemCourse extends React.Component {
 				source={{ uri: this.props.thumbnail }}
 				resizeMode="cover"
 				style={styles.thumbnail}>
-				<Text>
+				<Text style={styles.thumbnailTitle}>
 					{this.props.title}
 				</Text>
+				<Image source={IcFilm} style={[styles.btnSetSmall, styles.clipIcon]}/>
 				<Text style={styles.clipCount}>
 					{this.props.clipCount}
 					개 강의

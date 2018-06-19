@@ -30,9 +30,9 @@ export const NAV_OPTS_EACH = ({ navigation, navigationOptions} )=>{
 	return {
 		headerTitle: navigation.state.routeName,
 		headerRight: <SearchButton/>,
-		headerLeft: <HomeButton/>
+		// headerLeft: <HomeButton/>
 	}
-}
+};
 
 
 const DRAWER_LABEL = {

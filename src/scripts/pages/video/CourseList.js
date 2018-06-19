@@ -2,6 +2,7 @@ import React from "react";
 import {
 	Text,
 	View,
+	Button,
 	FlatList,
 	ScrollView,
 } from "react-native";
@@ -11,7 +12,7 @@ import net from "../../commons/net";
 import VideoItemCourse from "./VideoItemCourse";
 import VideoCategory from "./VideoCategory";
 
-export default class VideoList extends React.Component {
+export default class CourseList extends React.Component {
 
 	constructor( props ) {
 		super( props );
@@ -23,20 +24,20 @@ export default class VideoList extends React.Component {
 	}
 
 	componentDidMount() {
-		// return fetch( 'http://ec2-contents-api.welaa.co.kr/api/v1.0/video-courses' )
-			// .then( ( response ) => response.json() )
-			// .then( ( responseJson ) => {
-			// 	responseJson.items.forEach( element => {
-			// 		element.key = element.id.toString();
-			// 	} );
-            //
-			// 	this.setState( {
-			// 		videoCourseData: responseJson
-			// 	} )
-			// } )
-			// .catch( ( error ) => {
-			// 	console.error( error );
-			// } );
+		fetch( 'http://ec2-contents-api.welaa.co.kr/api/v1.0/video-courses' )
+			.then( ( response ) => response.json() )
+			.then( ( responseJson ) => {
+				responseJson.items.forEach( element => {
+					element.key = element.id.toString();
+				} );
+
+				this.setState( {
+					videoCourseData: responseJson
+				} )
+			} )
+			.catch( ( error ) => {
+				console.error( error );
+			} );
 	}
 
 	render() {
@@ -44,9 +45,20 @@ export default class VideoList extends React.Component {
 			<ScrollView style={{ width: '100%' }}>
 				<View>
 					<Text>인기 | 신규 & Toggle 위치</Text>
+					<Button
+						onPress={()=>this.props.navigation.navigate('ClipList')}
+						title="강의클립 전체보기"
+					/>
 				</View>
 
 				<VideoCategory/>
+
+				<View>
+					<Button
+						onPress={()=>this.props.navigation.navigate('CourseItemList')}
+						title="강좌 강의클립 목록"
+					/>
+				</View>
 
 				<FlatList
 					style={{ width: '100%' }}
