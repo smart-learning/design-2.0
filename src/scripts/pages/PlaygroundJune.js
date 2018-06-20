@@ -14,7 +14,7 @@ import {SafeAreaView} from "react-navigation";
 * Acount: test/test
 * http://www.media-drm.com/Demo1.aspx
 * */
-class VideoTest extends Component {
+class PlaygroundJune extends Component {
 
 
 	constructor(){
@@ -38,18 +38,9 @@ class VideoTest extends Component {
 
             <Text>VIDEO TEST</Text>
             {/*<VideoPack/>*/}
-
-
-            {/*<MapView style={{flex: 1, backgroundColor:'red'}}/>*/}
-
-
-			{/*<ModalFrame>*/}
-				{/*<Text>모달자식노무색히</Text>*/}
-			{/*</ModalFrame>*/}
-
         </SafeAreaView>
     }
 }
 
 
-export default VideoTest;
+export default PlaygroundJune;

@@ -10,7 +10,6 @@ export const COLOR_SECOND = '#0000'; // 이것도 임시에여. 마음껏 수정
 const commonStyle = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#CCCCCC',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},

@@ -33,6 +33,7 @@
     "jest-react-native": "^18.0.0",
     "mobx": "^4.3.1",
     "mobx-react": "^5.2.0",
+    "moment": "^2.22.2",
     "react": "16.3.1",
     "react-devtools": "^3.2.3",
     "react-native": "^0.55.4",
@@ -42,7 +43,7 @@
     "react-native-video": "2.2.0",
     "react-navigation": "^2.3.1",
     "react-test-renderer": "16.3.1",
-    "watchman": "^1.0.0",
-    "rnn-module-sample": "https://github.com/kyejune/rnn-module-sample.git"
+    "rnn-module-sample": "https://github.com/kyejune/rnn-module-sample.git",
+    "watchman": "^1.0.0"
   }
 }

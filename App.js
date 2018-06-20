@@ -5,13 +5,12 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreen from './src/scripts/pages/my/MyScreen';
 import Playground from "./src/scripts/pages/Playground";
-import {Button, View} from "react-native";
+import {Button, Modal, Text, View} from "react-native";
 import Store from "./src/scripts/commons/store";
-import VideoTest from "./src/scripts/pages/VideoTest";
+import PlaygroundJune from "./src/scripts/pages/PlaygroundJune";
 import LoginPage from "./src/scripts/pages/auth/LoginPage";
 
 class App extends React.Component {
-
 
     render() {
         return <View style={{flex: 1}}>
@@ -25,8 +24,6 @@ class App extends React.Component {
                         }}
                 />
             </View>
-
-
         </View>
     }
 }
@@ -54,7 +51,7 @@ const AppDrawer = createDrawerNavigator(
         },
 
         June:{
-        	screen: VideoTest,
+        	screen: PlaygroundJune,
         },
 
         // invisible screens

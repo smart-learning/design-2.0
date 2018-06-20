@@ -1,6 +1,7 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
 import {Button, Text, View} from "react-native";
+import AdvertisingSection from "../../components/AdvertisingSection";
 
 export default class HomeSubScreen1 extends React.Component {
 
@@ -12,6 +13,8 @@ export default class HomeSubScreen1 extends React.Component {
                 onPress={()=>this.props.navigation.navigate('HomeScreen2', {title:'새 타이틀'})}
                 title="서브페이지2로.."
             />
+
+			<AdvertisingSection/>
 
         </View>
     }
