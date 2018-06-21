@@ -24,7 +24,7 @@ export const NAV_OPTS_MAIN = ({ navigation, navigationOptions })=>({
 export const NAV_OPTS_EACH = ({ navigation, navigationOptions} )=>{
 
 	return {
-		title: navigation.state.params.title || navigation.state.routeName,
+		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
 		headerRight: <SearchButton/>
 	}
 
