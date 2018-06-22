@@ -33,11 +33,22 @@ const styles = StyleSheet.create( {
 } );
 
 export default class Lecture extends React.Component {
+	constructor( props ) {
+		super( props );
+
+		this.changePage = this.changePage.bind(this);
+	}
+
+	changePage() {
+		this.props.navigation.navigate( 'LectureDetailPage', { id: this.props.id } );
+	}
+
 	render() {
+		console.log( 'this.changePage', this.changePage );
 		return <View style={styles.itemContainer}>
 			<View>
 				<Button
-					onPress={() => this.props.navigation.navigate( 'LectureDetailPage' )}
+					onPress={this.changePage}
 					title="강좌 강의클립 목록"
 				/>
 			</View>
