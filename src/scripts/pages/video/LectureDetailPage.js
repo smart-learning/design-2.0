@@ -6,37 +6,32 @@ import {
 	Image,
 	Text,
 	View,
-	StyleSheet
+	StyleSheet,
+	ImageBackground
 } from "react-native";
 import Swiper from 'react-native-swiper';
+import Dummy1 from '../../../images/swiper-dummy-1.png';
+import Dummy2 from '../../../images/swiper-dummy-2.png';
 
 const styles = StyleSheet.create({
 	wrapper: {
 	},
-	slide1: {
+	slide: {
 		flex: 1,
+		height: '60%',
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#9DD6EB',
 	},
-	slide2: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#97CAE5',
-	},
-	slide3: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#92BBD9',
-	},
 	text: {
-		color: '#fff',
-		fontSize: 30,
-		fontWeight: 'bold',
-	}
-})
+		width: '100%',
+		paddingTop: '42%',
+		paddingBottom: '42%',
+		// color: '#fff',
+		// fontSize: 30,
+		// fontWeight: 'bold',
+	},
+});
 
 export default class LectureDetailPage extends React.Component {
 
@@ -46,15 +41,14 @@ export default class LectureDetailPage extends React.Component {
 			<Text>{this.props.navigation.state.params.id}</Text>
 			<Text>하트/리뷰/뷰</Text>
 			<Text>이미지스와이퍼</Text>
-			<Swiper style={styles.wrapper} showsButtons={true}>
-				<View style={styles.slide1}>
-					<Text style={styles.text}>Swiper1</Text>
+			<Swiper style={styles.wrapper} showsButtons={false} >
+				<View style={styles.slide}>
+					{/*<Text style={styles.text}>Swiper1</Text>*/}
+					<ImageBackground source={Dummy1} resizeMode="cover" style={ styles.text }/>
 				</View>
-				<View style={styles.slide2}>
-					<Text style={styles.text}>Swiper2</Text>
-				</View>
-				<View style={styles.slide3}>
-					<Text style={styles.text}>Swiper3</Text>
+				<View style={styles.slide}>
+					{/*<Text style={styles.text}>Swiper2</Text>*/}
+					<ImageBackground source={Dummy2} resizeMode="cover" style={ styles.text }/>
 				</View>
 			</Swiper>
 			);
