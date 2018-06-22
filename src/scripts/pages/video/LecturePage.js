@@ -8,10 +8,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
-import net from "../../commons/net";
 import VideoCategory from "./VideoCategory";
 import Lecture from "../../components/video/Lecture";
-import LectureDetailPage from "./LectureDetailPage";
+import net from "../../commons/net";
 
 export default class CourseList extends React.Component {
 
@@ -19,26 +18,15 @@ export default class CourseList extends React.Component {
 		super( props );
 
 		this.state = {
-			videoCourseData: {},
-			videoClipData: null,
+			videoCourseData: {}
 		};
 	}
 
-	componentDidMount() {
-		fetch( 'http://ec2-contents-api.welaa.co.kr/api/v1.0/video-courses' )
-			.then( ( response ) => response.json() )
-			.then( ( responseJson ) => {
-				responseJson.items.forEach( element => {
-					element.key = element.id.toString();
-				} );
-
-				this.setState( {
-					videoCourseData: responseJson
-				} )
-			} )
-			.catch( ( error ) => {
-				console.error( error );
-			} );
+	async componentDidMount() {
+		const result = await net.getLectureList();
+		this.setState( {
+			videoCourseData: result
+		} );
 	}
 
 	render() {
@@ -56,7 +44,7 @@ export default class CourseList extends React.Component {
 
 				<View>
 					<Button
-						onPress={() => this.props.navigation.navigate( 'LectureDetailPage' )}
+						onPress={this.changePage}
 						title="강좌 강의클립 목록"
 					/>
 				</View>
@@ -65,7 +53,7 @@ export default class CourseList extends React.Component {
 					style={{ width: '100%' }}
 					data={this.state.videoCourseData.items}
 					renderItem={
-						( { item } ) => <Lecture key={item.id}
+						( { item } ) => <Lecture id={item.id}
 												 navigation={this.props.navigation}
 												 headline={item.headline}
 												 teacherHeadline={item.teacher.headline}
@@ -82,3 +70,4 @@ export default class CourseList extends React.Component {
 		</SafeAreaView>
 	}
 }
+
