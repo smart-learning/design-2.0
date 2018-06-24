@@ -5,6 +5,7 @@ import {StyleSheet} from "react-native";
 * '속성이름_구분값' 의 형태로 자주 쓰는 값들 정의
 * */
 export const COLOR_PRIMARY = '#00b870';
+export const TEXT_PRIMARY = '#14C27A';
 export const COLOR_SECOND = '#0000'; // 이것도 임시에여. 마음껏 수정부탁드립니다.
 
 const commonStyle = StyleSheet.create({
@@ -12,6 +13,7 @@ const commonStyle = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
+		position: 'relative',
 	},
 
 	headerLogo: {

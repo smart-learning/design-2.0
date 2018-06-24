@@ -106,7 +106,6 @@ export default class Summary extends React.Component {
 			</ImageBackground>
 			<View style={styles.btnGroup}>
 				<View style={styles.alignJustify}>
-
 					<Image source={IcView} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>조회수 {this.props.hitCount}</Text>
 					<Image source={IcStar} style={styles.btnSetSmall}/>
