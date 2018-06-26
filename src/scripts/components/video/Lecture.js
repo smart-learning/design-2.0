@@ -3,7 +3,7 @@ import {
 	Text,
 	View,
 	StyleSheet,
-	Button,
+	TouchableOpacity,
 } from "react-native";
 import { COLOR_PRIMARY } from "../../../styles/common";
 import Summary from "./Summary";
@@ -36,7 +36,7 @@ export default class Lecture extends React.Component {
 	constructor( props ) {
 		super( props );
 
-		this.changePage = this.changePage.bind(this);
+		this.changePage = this.changePage.bind( this );
 	}
 
 	changePage() {
@@ -46,21 +46,17 @@ export default class Lecture extends React.Component {
 	render() {
 		console.log( 'this.changePage', this.changePage );
 		return <View style={styles.itemContainer}>
-			<View>
-				<Button
-					onPress={this.changePage}
-					title="강좌 강의클립 목록"
-				/>
-			</View>
 			{/*타이틀*/}
-			<Text style={styles.headline}>
-				{this.props.headline}
-			</Text>
-			{/*서브타이틀*/}
-			<Text style={styles.subTitle}>
-				{this.props.teacherHeadline}
-				{this.props.teacherName}
-			</Text>
+			<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
+				<Text style={styles.headline}>
+					{this.props.headline}
+				</Text>
+				{/*서브타이틀*/}
+				<Text style={styles.subTitle}>
+					{this.props.teacherHeadline}
+					{this.props.teacherName}
+				</Text>
+			</TouchableOpacity>
 			{/*썸네일*/}
 			<Summary type="lecture"
 					 title={this.props.title}
@@ -68,7 +64,9 @@ export default class Lecture extends React.Component {
 					 clipCount={this.props.clipCount}
 					 hitCount={this.props.hitCount}
 					 starAvg={this.props.starAvg}
-					 reviewCount={this.props.reviewCount}/>
+					 reviewCount={this.props.reviewCount}
+					 onPress={this.changePage}
+			/>
 		</View>
 	}
 }
