@@ -5,6 +5,7 @@ import {
 	Text,
 	View,
 	StyleSheet,
+	TouchableOpacity,
 } from "react-native";
 import { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
@@ -90,20 +91,22 @@ const styles = StyleSheet.create( {
 export default class Summary extends React.Component {
 	render() {
 		return <View style={styles.itemContainer}>
-			<ImageBackground
-				source={{ uri: this.props.thumbnail }}
-				resizeMode="cover"
-				style={styles.thumbnail}>
-				<Text style={styles.thumbnailTitle}>
-					{this.props.title}
-				</Text>
-				<Image source={IcFilm} style={[styles.btnSetSmall, styles.clipIcon]}/>
-				<Text style={styles.clipCount}>
-					{this.props.clipCount}
-					개 강의
-				</Text>
-				<Image source={IcPlay} style={styles.play}/>
-			</ImageBackground>
+			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
+				<ImageBackground
+					source={{ uri: this.props.thumbnail }}
+					resizeMode="cover"
+					style={styles.thumbnail}>
+					<Text style={styles.thumbnailTitle}>
+						{this.props.title}
+					</Text>
+					<Image source={IcFilm} style={[styles.btnSetSmall, styles.clipIcon]}/>
+					<Text style={styles.clipCount}>
+						{this.props.clipCount}
+						개 강의
+					</Text>
+					<Image source={IcPlay} style={styles.play}/>
+				</ImageBackground>
+			</TouchableOpacity>
 			<View style={styles.btnGroup}>
 				<View style={styles.alignJustify}>
 					<Image source={IcView} style={styles.btnSetSmall}/>

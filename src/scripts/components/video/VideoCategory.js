@@ -3,8 +3,8 @@ import {
 	FlatList,
 	View,
 	Text,
-	Button,
 	StyleSheet,
+	TouchableOpacity,
 } from "react-native";
 
 const styles = StyleSheet.create( {
@@ -24,7 +24,7 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default class HorizontalCategory extends React.Component {
+export default class VideoCategory extends React.Component {
 	constructor( props ) {
 		super( props );
 
@@ -42,24 +42,16 @@ export default class HorizontalCategory extends React.Component {
 	render() {
 		return <FlatList
 			style={styles.categoryContainer}
-			data={[
-				{ key: 'Devin' },
-				{ key: 'Jackson' },
-				{ key: 'James' },
-				{ key: 'Joel' },
-				{ key: 'John' },
-				{ key: 'Jillian' },
-				{ key: 'Jimmy' },
-				{ key: 'Julie' },
-			]}
+			data={this.props.data}
 			horizontal={true}
 			showsHorizontalScrollIndicator={false}
 			renderItem={
 				( { item } ) => <View style={styles.categoryItem}>
-					<Button
-						onPress={this.test}
-						style={styles.categoryText}
-						title={item.key}/>
+					<TouchableOpacity activeOpacity={0.9}
+									  onPress={this.test}
+					>
+						<Text style={styles.categoryText}>{item.title}</Text>
+					</TouchableOpacity>
 				</View>
 			}
 		/>
