@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
-import VideoCategory from "./VideoCategory";
+import VideoCategory from "../../components/video/VideoCategory";
 import Lecture from "../../components/video/Lecture";
 import net from "../../commons/net";
 
@@ -54,6 +54,8 @@ const styles = StyleSheet.create( {
 		paddingRight: 10,
 		borderWidth: 1,
 		borderColor: '#CBCBCB',
+	},
+	clipButtonText: {
 		fontSize: 12,
 		color: '#585858',
 	}
@@ -98,7 +100,7 @@ export default class CourseList extends React.Component {
 						</View>
 						<TouchableOpacity activeOpacity={0.9} style={{ marginLeft: 'auto' }}>
 							<View style={styles.clipButton} borderRadius={3}>
-								<Text>강의클립 전체보기</Text>
+								<Text style={styles.clipButtonText}>강의클립 전체보기</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
