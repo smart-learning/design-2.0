@@ -34,16 +34,19 @@
     "mobx": "^4.3.1",
     "mobx-react": "^5.2.0",
     "moment": "^2.22.2",
+    "npm": "^6.1.0",
     "react": "16.3.1",
     "react-devtools": "^3.2.3",
     "react-native": "^0.55.4",
     "react-native-asyncstorage": "^1.0.0",
     "react-native-cli": "^2.0.1",
+    "react-native-elements": "^0.19.1",
+    "react-native-fbsdk": "^0.7.0",
+    "react-native-kakao-signin": "^1.0.4",
     "react-native-swiper": "^1.5.13",
     "react-native-video": "2.2.0",
     "react-navigation": "^2.3.1",
     "react-test-renderer": "16.3.1",
-    "rnn-module-sample": "https://github.com/kyejune/rnn-module-sample.git",
     "watchman": "^1.0.0"
   }
 }

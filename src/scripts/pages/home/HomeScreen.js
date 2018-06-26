@@ -15,7 +15,7 @@ const HomeScreen = createStackNavigator({
 
         HomeScreen2: {
             screen: HomeSubScreen2,
-            navigationOptions: NAV_OPTS_EACH, // 로고없이 서브타이틀과 검색버튼을 가질 페이지용 헤더 설정
+            navigationOptions: NAV_OPTS_MAIN, // 로고없이 서브타이틀과 검색버튼을 가질 페이지용 헤더 설정
         }
     },
 

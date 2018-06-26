@@ -61,7 +61,7 @@ yarn ios
 3. `Remote JS Debugging` 메뉴를 선택
 4. 앱을 새로고침(`Cmd+R`) 해보면 웹 인스펙터 내에서 로그를 확인할 수 있다.
 
-### View Debug
+### View Debugj
 
 `react-devtools`를 npm global로 설치한다
 
@@ -74,6 +74,89 @@ yarn ios
 ```
 react-devtools
 ```
+
+
+
+### Package Setting
+
+##### Before Setting...
+```
+npm run link를 한번에 쓰지 마시고, 뒤에 패키지 명을 붙여서 한 모듈씩 테스트 부탁드립니다.
+xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는것을 추천합니다.
+``` 
+
+
+##### [Android Studio]
+
+###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
+```
+- gradle 업데이트하겠냐고 물어보면 무시해주세요. 
+  classpath 'com.android.tools.build:gradle:2.2.3'
+
+- https://github.com/facebook/react-native-fbsdk 의 andorid > 0.29 의 세팅을 따릅니다.
+  ( 이때 AppEventsLogger 작업은 필요 업습니다. )
+  
+- strings.xml 에 
+  <string name="facebook_app_id">428306967643083</string> 
+  추가
+
+- AndroidManifest.xml 에
+  <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+  추가
+
+- build.graddle 세팅은
+  compileSdkVersion 26, buildToolsVersion "27.0.3"
+  minSdkVersion 16, targetSdkVersion 22 
+  가 테스트할때의 기준입니다.
+  
+- 컴파일이 무사하게 되면,
+  OS X: keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
+  다음 명령을 돌려서 나온 해시키를 앱 관리자에게 전달합니다.( 현재는, kyejune )
+```
+
+
+##### - Kakao Login
+```
+- https://github.com/sunyrora/react-native-kakao-signin 
+
+- 다음에 내용들을 해당 파일에 추가합니다.
+
+- AdnroidManifest.xml
+  <meta-data android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_app_key" />
+  
+- res/values/string.xml ( 생성 )
+  <resources>
+  	<string name="kakao_app_key">6b9977f1c9a6be61e0980e40cf7eefe5</string>
+  </resources>
+
+- build.gradle ( android )
+  allproject repositories 에
+  maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
+  추가
+
+- 컴파일시 KakaoLoginpackage.java에 override관련 에러가 나면 해당 부분을 삭제합니다. 
+   
+```
+
+
+#### [Xcode]
+
+###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
+###### - https://developers.facebook.com/docs/ios/getting-started/
+```
+ - api key는 428306967643083 입니다 .
+ - bundle identifier: org.reactjs.native.example.WelaaaV2 를 사용합니다.
+ - https://developers.facebook.com/docs/ios/getting-started/ 를 따릅니다.
+ - RCTFBSDK.xcodeproj Frameworks에 파일들이 링크가 깨져서 들어오면 위 파일에서 찾아서 대체
+ - KaKaoSDK 가 추가 되어 있는데도 인식을 못한다면, 따로 SDK를 받아서 BuildSetting->Framework search path
+```
+
+##### - Kakao Login
+```
+ - https://github.com/sunyrora/react-native-kakao-signin
+ - https://developers.kakao.com/docs/ios#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1 
+```
+
 
 
 ### iOS Http 허용

@@ -4,6 +4,8 @@ import CommonStyle from "../../styles/common";
 import HeaderWithSearch from "../components/header/HeaderWithSearch";
 import SearchButton from "../components/header/SearchButton";
 import {Image} from "react-native";
+import HomeButton from "../components/header/HomeButton";
+import logo from "../../images/logo-white.png"
 
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
@@ -18,7 +20,9 @@ export const NAV_OPTS_COMMON = {
 };
 
 export const NAV_OPTS_MAIN = ({ navigation, navigationOptions })=>({
-	headerTitle: <HeaderWithSearch/>
+	headerLeft: <HomeButton/>,
+	headerTitle: <Image source={logo} style={ CommonStyle.headerLogo }/>,
+	headerRight: <SearchButton/>
 });
 
 export const NAV_OPTS_EACH = ({ navigation, navigationOptions} )=>{

@@ -101,6 +101,7 @@ class AdvertisingSection extends Component {
 				transparent={true}
 				visible={ modalId === 'a' }
 				style={this.style.container}
+				onRequestClose={()=>{}}
 			>
 
 				<View style={this.style.frame}>
@@ -123,6 +124,7 @@ class AdvertisingSection extends Component {
 				transparent={true}
 				visible={ modalId === 'b' }
 				style={this.style.container}
+				onRequestClose={()=>{}}
 			>
 
 				<View style={this.style.frame}>
