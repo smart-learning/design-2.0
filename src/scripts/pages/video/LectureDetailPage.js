@@ -3,14 +3,13 @@ import store from "../../commons/store";
 import CommonStyles from "../../../styles/common";
 import { TEXT_PRIMARY } from "../../../styles/common";
 import {
-	Button,
 	Image,
 	Text,
 	View,
 	StyleSheet,
 	ImageBackground,
 	Dimensions,
-	ScrollView
+	ScrollView,
 } from "react-native";
 import Swiper from 'react-native-swiper';
 import IcStar from "../../../images/icons/star.png";
@@ -20,6 +19,7 @@ import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
 import DummyTeacher from '../../../images/dummy-teacher.jpg';
 import net from "../../commons/net";
+import BtnMore from "../../components/BtnMore";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -39,7 +39,6 @@ const styles = StyleSheet.create( {
 		height: 40,
 		paddingRight: 12,
 		paddingLeft: 12,
-		backgroundColor: '#222222',
 	},
 	alignJustify: {
 		flex: 1,
@@ -99,8 +98,10 @@ const styles = StyleSheet.create( {
 		fontSize: 16,
 		fontWeight: 'bold',
 		color: '#FFF894',
-	}
+	},
 } );
+
+const btnStyle = { margin: 15, color: '#ffffff' };
 
 export default class LectureDetailPage extends React.Component {
 	constructor( props ) {
@@ -108,7 +109,12 @@ export default class LectureDetailPage extends React.Component {
 
 		this.state = {
 			slideHeight: null,
+			lectureView: false,
+			teacherView: false,
 		};
+
+		this.lectureMore = this.lectureMore.bind( this );
+		this.teacherMore = this.teacherMore.bind( this );
 	}
 
 	componentDidMount() {
@@ -117,6 +123,30 @@ export default class LectureDetailPage extends React.Component {
 		this.setState( {
 			slideHeight: windowWidth * 0.833
 		} );
+	}
+
+	lectureMore() {
+		if ( this.state.lectureView === false ) {
+			this.setState( {
+				lectureView: true,
+			} );
+		} else {
+			this.setState( {
+				lectureView: false,
+			} );
+		}
+	}
+
+	teacherMore() {
+		if ( this.state.teacherView === false ) {
+			this.setState( {
+				teacherView: true,
+			} );
+		} else {
+			this.setState( {
+				teacherView: false,
+			} );
+		}
 	}
 
 	render() {
@@ -161,6 +191,7 @@ export default class LectureDetailPage extends React.Component {
 						'평생 직장의 시대는 가고, 평생 이직의 시대가 왔다! 언젠가 한 번은 이직해야 한다면 경력 관리 및 이직 전략을 어떻게 세워야 할까? 모든 직장인에게 필요한 커리어 관리와
 						성공적인 이직 노하우 대공개!
 					</Text>
+					{this.state.lectureView === true &&
 					<Text style={styles.textNormal}>
 						기업이 경력자를 평가하고 채용하는 관점은 신입과는 전혀 다릅니다. 자신의 가치를 스스로 알고, 이것을 명확하게 표현할 수 있을 때, 현재 속해 있는 회사에서 인정 받고,
 						성공적으로 이직할 수 있습니다. 경력직의 이력서, 자기소개서, 경력 기술서 및 면접 방법은 물론, 성장을 위한 진짜 커리어를 쌓는 지혜까지..!{"\n"}
@@ -175,8 +206,9 @@ export default class LectureDetailPage extends React.Component {
 						- 성공적인 경력이직의 실제 사례를 알고 싶은 사람들{"\n"}
 						- 언젠가 이직을 할 수도 있겠다는 생각에 한 번쯤 경력 이직 관련 강의를 들어보고 싶은 사람들{"\n"}
 					</Text>
-					<Text>더 알아보기</Text>
+					}
 				</View>
+				<BtnMore onPress={this.lectureMore}/>
 				{/* /강좌 소개글 */}
 
 				{/* 강사 */}
@@ -189,6 +221,7 @@ export default class LectureDetailPage extends React.Component {
 				<Text style={styles.teacherTitle}>
 					유튜브 취업 관련 강의 조회수 1위 신길자 취업 컨설턴트
 				</Text>
+				{this.state.teacherView === true &&
 				<Text style={styles.textNormal}>
 					10년 이상 경력의 취업 전문 컨설턴트!{"\n"}
 					{"\n"}
@@ -199,6 +232,8 @@ export default class LectureDetailPage extends React.Component {
 					취준생들을 합격으로 이끌어주고 있다. KBS, MBC, 한국경제TV등 대한민국 다수의 매체에 출연, 취업 정보 제공 및 취업 강의를 진행하였다. 신길자 취업 컨설턴트가 전하는
 					양질의 취업 노하우는 취업 준비로 힘들어하는 모든 취준생들의 길잡이가 되어줄 것이다.
 				</Text>
+				}
+				<BtnMore onPress={this.teacherMore}/>
 				{/* /강사 */}
 				{/* 강의클립 목차 */}
 				<View style={styles.sectionLine}>
