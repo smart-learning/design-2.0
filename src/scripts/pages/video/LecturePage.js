@@ -67,14 +67,17 @@ export default class CourseList extends React.Component {
 		super( props );
 
 		this.state = {
-			videoCourseData: {}
+			videoCourseData: {},
+			videoCategoryData: {}
 		};
 	}
 
 	async componentDidMount() {
-		const result = await net.getLectureList();
+		const resultVideoCourseData = await net.getLectureList();
+		const resultVideoCategoryData = await net.getLectureCategory();
 		this.setState( {
-			videoCourseData: result
+			videoCourseData: resultVideoCourseData,
+			videoCategoryData: resultVideoCategoryData,
 		} );
 	}
 
@@ -106,7 +109,7 @@ export default class CourseList extends React.Component {
 					</View>
 				</View>
 
-				<VideoCategory/>
+				<VideoCategory data={this.state.videoCategoryData.items}/>
 
 				<FlatList
 					style={{ width: '100%' }}

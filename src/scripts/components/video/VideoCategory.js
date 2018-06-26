@@ -42,16 +42,7 @@ export default class VideoCategory extends React.Component {
 	render() {
 		return <FlatList
 			style={styles.categoryContainer}
-			data={[
-				{ key: 'Devin' },
-				{ key: 'Jackson' },
-				{ key: 'James' },
-				{ key: 'Joel' },
-				{ key: 'John' },
-				{ key: 'Jillian' },
-				{ key: 'Jimmy' },
-				{ key: 'Julie' },
-			]}
+			data={this.props.data}
 			horizontal={true}
 			showsHorizontalScrollIndicator={false}
 			renderItem={
@@ -59,7 +50,7 @@ export default class VideoCategory extends React.Component {
 					<TouchableOpacity activeOpacity={0.9}
 									  onPress={this.test}
 					>
-						<Text style={styles.categoryText}>{item.key}</Text>
+						<Text style={styles.categoryText}>{item.title}</Text>
 					</TouchableOpacity>
 				</View>
 			}

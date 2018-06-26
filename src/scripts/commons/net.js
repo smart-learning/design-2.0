@@ -3,6 +3,22 @@ const VERSION = 'v1.0';
 const API_PREFIX = `${HOST}/${VERSION}/`;
 
 export default {
+	getLectureCategory() {
+		return new Promise( ( resolve, reject ) => {
+			fetch( API_PREFIX + 'video-courses/categories' )
+				.then( ( response ) => response.json() )
+				.then( ( responseJson ) => {
+					responseJson.items.forEach( element => {
+						element.key = element.id.toString();
+					} );
+					resolve( responseJson );
+				} )
+				.catch( ( error ) => {
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
 
 	getLectureList() {
 		return new Promise( ( resolve, reject ) => {
