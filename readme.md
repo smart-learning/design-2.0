@@ -91,7 +91,7 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 ###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
 ```
 - gradle 업데이트하겠냐고 물어보면 무시해주세요. 
-  classpath 'com.android.tools.build:gradle:2.2.3'
+  build.gradle( project:WelaaaV2 )에 classpath 'com.android.tools.build:gradle:2.2.3' 기준으로 작업합니다. 
 
 - https://github.com/facebook/react-native-fbsdk 의 andorid > 0.29 의 세팅을 따릅니다.
   ( 이때 AppEventsLogger 작업은 필요 업습니다. )
@@ -104,20 +104,23 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
   <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
   추가
 
-- build.graddle 세팅은
+- build.graddle(Module:app) 세팅은
   compileSdkVersion 26, buildToolsVersion "27.0.3"
   minSdkVersion 16, targetSdkVersion 22 
   가 테스트할때의 기준입니다.
   
 - 컴파일이 무사하게 되면,
   OS X: keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
-  다음 명령을 돌려서 나온 해시키를 앱 관리자에게 전달합니다.( 현재는, kyejune )
+
+  다음 명령을 돌려서 나온 해시키와 페이스북 로그인용 이메일 계정을 앱 관리자에게 전달합니다.( 현재는, kyejune )
+  관리자가 개발자로 등록하면, 본인 페이스북으로 알림이 가고 승인 후 로그인 가능합니다.
 ```
 
 
 ##### - Kakao Login
 ```
-- https://github.com/sunyrora/react-native-kakao-signin 
+- 밑에 내용들로 해결이 안될때 하단 URL을 참고해주세요. react-native-kakao를 정식 지원하는게 아니라 에러가 발생할 수 있습니다.
+  https://github.com/sunyrora/react-native-kakao-signin
 
 - 다음에 내용들을 해당 파일에 추가합니다.
 
@@ -135,6 +138,8 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
   추가
 
 - 컴파일시 KakaoLoginpackage.java에 override관련 에러가 나면 해당 부분을 삭제합니다. 
+
+- 페이스북때 생성한 해시키를 개발자페이지에서 추가 합니다.( 관리자에게 요청 )
    
 ```
 
