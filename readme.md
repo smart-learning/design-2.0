@@ -162,7 +162,7 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 
 ##### - Kakao Login
 ```
- - https://github.com/sunyrora/react-native-kakao-signin
+ - https://github.com/sunyrora/react-native-kakao-signin 에 코드 주석부분만 참고해서 추가해주세요.
  - Build Setting > Other Linker Flags 에 -all_load 추가
  - https://developers.kakao.com/docs/ios#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1 
 ```
