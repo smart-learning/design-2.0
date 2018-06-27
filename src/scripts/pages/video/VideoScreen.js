@@ -3,6 +3,7 @@ import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_EACH, NAV_OPTS_DRAWER} from "..
 import {createStackNavigator} from "react-navigation";
 import LecturePage from "./LecturePage";
 import LectureDetailPage from "./LectureDetailPage";
+import ClipPage from "./ClipPage";
 
 
 const VideoScreen = createStackNavigator({
@@ -15,7 +16,14 @@ const VideoScreen = createStackNavigator({
 			screen: LectureDetailPage,
 			navigationOptions: NAV_OPTS_EACH,
 		},
-	
+		ClipPage: {
+			screen: ClipPage,
+			navigationOptions: NAV_OPTS_MAIN,
+		},
+		// ClipDetailPage: {
+		// 	screen: ClipDetailPage,
+		// 	navigationOptions: NAV_OPTS_EACH,
+		// },
 	},
 
 	{ navigationOptions: NAV_OPTS_COMMON }

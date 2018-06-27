@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import VideoCategory from "../../components/video/VideoCategory";
-import Lecture from "../../components/video/Lecture";
+import Clip from "../../components/video/Clip";
 import net from "../../commons/net";
 
 const styles = StyleSheet.create( {
@@ -61,22 +61,22 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default class CourseList extends React.Component {
+export default class ClipPage extends React.Component {
 
 	constructor( props ) {
 		super( props );
 
 		this.state = {
-			videoCourseData: {},
+			videoClipData: {},
 			videoCategoryData: {}
 		};
 	}
 
 	async componentDidMount() {
-		const resultVideoCourseData = await net.getLectureList();
+		const resultvideoClipData = await net.getLectureList();
 		const resultVideoCategoryData = await net.getLectureCategory();
 		this.setState( {
-			videoCourseData: resultVideoCourseData,
+			videoClipData: resultvideoClipData,
 			videoCategoryData: resultVideoCategoryData,
 		} );
 	}
@@ -104,11 +104,11 @@ export default class CourseList extends React.Component {
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{ marginLeft: 'auto' }}
 										  onPress={() => {
-											  this.props.navigation.navigate( 'ClipPage' )
+											  this.props.navigation.navigate( 'LecturePage' )
 										  }}
 						>
 							<View style={styles.clipButton} borderRadius={3}>
-								<Text style={styles.clipButtonText}>강의클립 전체보기</Text>
+								<Text style={styles.clipButtonText}>강좌로 모아보기</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
@@ -118,9 +118,9 @@ export default class CourseList extends React.Component {
 
 				<FlatList
 					style={{ width: '100%' }}
-					data={this.state.videoCourseData.items}
+					data={this.state.videoClipData.items}
 					renderItem={
-						( { item } ) => <Lecture id={item.id}
+						( { item } ) => <Clip id={item.id}
 												 navigation={this.props.navigation}
 												 headline={item.headline}
 												 teacherHeadline={item.teacher.headline}
