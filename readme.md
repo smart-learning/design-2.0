@@ -93,7 +93,7 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 - gradle 업데이트하겠냐고 물어보면 무시해주세요. 
   build.gradle( project:WelaaaV2 )에 classpath 'com.android.tools.build:gradle:2.2.3' 기준으로 작업합니다. 
 
-- https://github.com/facebook/react-native-fbsdk 의 andorid > 0.29 의 세팅을 따릅니다.
+- https://github.com/facebook/react-native-fbsdk 의 0.29버전 이상의 세팅을 따릅니다.
   ( 이때 AppEventsLogger 작업은 필요 업습니다. )
   
 - strings.xml 에 
@@ -110,7 +110,8 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
   가 테스트할때의 기준입니다.
   
 - 컴파일이 무사하게 되면,
-  OS X: keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
+  OS X 기준으로, 
+  keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
 
   다음 명령을 돌려서 나온 해시키와 페이스북 로그인용 이메일 계정을 앱 관리자에게 전달합니다.( 현재는, kyejune )
   관리자가 개발자로 등록하면, 본인 페이스북으로 알림이 가고 승인 후 로그인 가능합니다.
@@ -127,17 +128,17 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 - AdnroidManifest.xml
   <meta-data android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_app_key" />
   
-- res/values/string.xml ( 생성 )
+- res/values/string.xml
   <resources>
   	<string name="kakao_app_key">6b9977f1c9a6be61e0980e40cf7eefe5</string>
   </resources>
 
-- build.gradle ( android )
+- build.gradle( project:WelaaaV2 )
   allproject repositories 에
   maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
   추가
 
-- 컴파일시 KakaoLoginpackage.java에 override관련 에러가 나면 해당 부분을 삭제합니다. 
+- 컴파일시 KakaoLoginpackage.java에 override관련 에러가 나면 해당 메서드를 삭제합니다. 
 
 - 페이스북때 생성한 해시키를 개발자페이지에서 추가 합니다.( 관리자에게 요청 )
    
@@ -146,19 +147,23 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 
 #### [Xcode]
 
+###### - Facebook, Kakao 각각의 SDK를 따로 다운받아 적당한곳에 위치해주세요. 
+         BuildSetting->Framework search path 에 해당 경로를 추가 해줍니다.
+
 ###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
 ###### - https://developers.facebook.com/docs/ios/getting-started/
+
 ```
+ - https://developers.facebook.com/docs/ios/getting-started/ 2단계부터 5단계까지 작업합니다.
  - api key는 428306967643083 입니다 .
  - bundle identifier: org.reactjs.native.example.WelaaaV2 를 사용합니다.
- - https://developers.facebook.com/docs/ios/getting-started/ 를 따릅니다.
- - RCTFBSDK.xcodeproj Frameworks에 파일들이 링크가 깨져서 들어오면 위 파일에서 찾아서 대체
- - KaKaoSDK 가 추가 되어 있는데도 인식을 못한다면, 따로 SDK를 받아서 BuildSetting->Framework search path
+ - RCTFBSDK.xcodeproj Frameworks에 파일들이 링크가 깨져서 들어오면 다운받은 SDK로 대체
 ```
 
 ##### - Kakao Login
 ```
  - https://github.com/sunyrora/react-native-kakao-signin
+ - Build Setting > Other Linker Flags 에 -all_load 추가
  - https://developers.kakao.com/docs/ios#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1 
 ```
 
