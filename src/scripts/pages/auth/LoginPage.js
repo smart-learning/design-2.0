@@ -10,12 +10,13 @@ import {
 	StyleSheet,
 	View
 } from "react-native";
-import { LoginButton, AccessToken } from "react-native-fbsdk";
+import { LoginManager, LoginButton, AccessToken } from "react-native-fbsdk";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
 import EmailAuthPack from "../../components/auth/EmailAuthPack";
 import logo from '../../../images/logo-en-primary.png';
 import bgLogin from '../../../images/bg-signup.jpg';
 import icFb from '../../../images/ic-fb.png';
+import FBLoginButton from "../../components/auth/FBLoginButton";
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -111,26 +112,7 @@ class LoginPage extends React.Component {
 					{/*/>*/}
 
 
-					<LoginButton
-						onLoginFinished={
-							( error, result ) => {
-								if ( error ) {
-									alert( "login has error: " + result.error );
-								} else if ( result.isCancelled ) {
-									alert( "login is cancelled." );
-								} else {
-									AccessToken.getCurrentAccessToken().then(
-										( data ) => {
-											alert( data.accessToken.toString() )
-										}
-									)
-								}
-							}
-						}
-						onLogoutFinished={() => alert( "logout." )}
-						borderRadius={4}
-						style={ styles.FbButton }
-					/>
+					<FBLoginButton/>
 
 
 					<KakaoLoginButton/>
