@@ -15,7 +15,6 @@ import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
 import EmailAuthPack from "../../components/auth/EmailAuthPack";
 import logo from '../../../images/logo-en-primary.png';
 import bgLogin from '../../../images/bg-signup.jpg';
-import icKakao from '../../../images/ic-kakao.png';
 import icFb from '../../../images/ic-fb.png';
 
 const styles = StyleSheet.create( {
@@ -60,6 +59,26 @@ const styles = StyleSheet.create( {
 		fontWeight: 'bold',
 		textAlign: 'center',
 		color: '#ffffff'
+	},
+	FbButton: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '100%',
+		height: 48,
+		marginTop: 10,
+		backgroundColor: '#25479b',
+	},
+	FbImage: {
+		width: 22,
+		height: 20,
+		marginRight: 5,
+	},
+	FbText: {
+		lineHeight: 48,
+		fontSize: 16,
+		fontWeight: 'bold',
+		color: '#ffffff',
 	}
 } );
 
@@ -108,7 +127,11 @@ class LoginPage extends React.Component {
 								}
 							}
 						}
-						onLogoutFinished={() => alert( "logout." )}/>
+						onLogoutFinished={() => alert( "logout." )}
+						borderRadius={4}
+						style={ styles.FbButton }
+					/>
+
 
 					<KakaoLoginButton/>
 

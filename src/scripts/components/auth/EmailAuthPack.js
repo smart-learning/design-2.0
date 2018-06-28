@@ -74,11 +74,12 @@ class EmailAuthPack extends Component {
 					}/>
 			</View>
 
-			<TouchableOpacity activeOpacity={0.9}
-							  borderRadius={4}
-							  style={ styles.btnSubmit }
-			>
-				<Text style={ styles.textSubmit }>윌라 계정으로</Text>
+			<TouchableOpacity activeOpacity={0.9}>
+				<View borderRadius={4}
+					  style={ styles.btnSubmit }
+				>
+					<Text style={ styles.textSubmit }>윌라 계정으로</Text>
+				</View>
 			</TouchableOpacity>
 
 			<View style={ styles.linkWrap }>
