@@ -1,7 +1,39 @@
 import React, { Component } from 'react';
-import {Text, TouchableOpacity} from "react-native";
+import {
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+	Image,
+} from "react-native";
 import {AccessToken, LoginManager} from "react-native-fbsdk";
+import icFb from '../../../images/ic-fb.png';
 
+const styles = StyleSheet.create( {
+	FbButtonWrap: {
+		width: '100%',
+	},
+	FbButton: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '100%',
+		height: 48,
+		marginTop: 10,
+		backgroundColor: '#25479b',
+	},
+	FbImage: {
+		width: 22,
+		height: 20,
+		marginRight: 5,
+	},
+	FbText: {
+		lineHeight: 48,
+		fontSize: 16,
+		fontWeight: 'bold',
+		color: '#ffffff',
+	}
+} );
 class FBLoginButton extends Component {
 
 
@@ -25,8 +57,15 @@ class FBLoginButton extends Component {
 	}
 
     render() {
-        return <TouchableOpacity onPress={ this.handleFacebookLogin }>
-				<Text>페이스북 로그인 버튼</Text>
+        return <TouchableOpacity
+			activeOpacity={0.9}
+			onPress={ this.handleFacebookLogin }
+			style={ styles.FbButtonWrap }
+		>
+			<View style={ styles.FbButton } borderRadius={4}>
+				<Image source={ icFb } style={ styles.FbImage }/>
+				<Text style={ styles.FbText }>Facebook 계정으로</Text>
+			</View>
             </TouchableOpacity>;
     }
 }
