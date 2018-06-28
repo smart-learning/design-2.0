@@ -2,13 +2,12 @@ import React from 'react';
 import CommonStyles from "../../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import {
-	AsyncStorage,
-	Button,
+	Keyboard,
 	Text,
 	Image,
 	ImageBackground,
 	StyleSheet,
-	View
+	View, KeyboardAvoidingView
 } from "react-native";
 import { LoginManager, LoginButton, AccessToken } from "react-native-fbsdk";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
@@ -96,8 +95,27 @@ class LoginPage extends React.Component {
 	// 	this.props.navigation.navigate( 'MyScreen' );
 	// };
 
+
+	componentDidMount(){
+		this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
+		this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+	}
+
+	componentWillUnmount() {
+		this.keyboardWillShowSub.remove();
+		this.keyboardWillHideSub.remove();
+	}
+
+	keyboardWillShow = (event) => {
+		console.log('키보드 나옴');
+	};
+
+	keyboardWillHide = (event) => {
+		console.log('키보드 들어감');
+	};
+
 	render() {
-		return <SafeAreaView style={[ CommonStyles.container, styles.loginContainer ]}>
+		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
 			<View style={styles.logoWrap}>
 				<Image source={logo} style={styles.logo}></Image>
 			</View>
@@ -123,7 +141,7 @@ class LoginPage extends React.Component {
 				</View>
 
 			</ImageBackground>
-		</SafeAreaView>
+		</KeyboardAvoidingView>
 	}
 }
 
