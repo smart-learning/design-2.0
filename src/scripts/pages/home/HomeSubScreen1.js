@@ -14,6 +14,11 @@ export default class HomeSubScreen1 extends React.Component {
                 title="서브페이지2로.."
             />
 
+			<Button title="외부 페이지 로그인 테스트" onPress={
+				()=> this.props.navigation.navigate('Auth', { requestScreenName:'AuthorizedMyScreen' } ) }
+
+			/>
+
 			<AdvertisingSection/>
 
         </View>

@@ -46,7 +46,8 @@ class FBLoginButton extends Component {
 				} else {
 					AccessToken.getCurrentAccessToken().then(
 						( data ) => {
-							alert( data.accessToken.toString() )
+							//alert( data.accessToken.toString() )
+							this.props.onAccess( data.accessToken.toString() );
 						}
 					)
 				}

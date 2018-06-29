@@ -1,24 +1,23 @@
 import React from 'react';
-import {AsyncStorage} from 'react-native';
 import {ActivityIndicator, StatusBar, View} from "react-native";
 import Styles from "../../../styles/common";
+import Store from "../../../scripts/commons/store";
 
 /*
 * 로그인 검증용 페이지
 * */
 class AuthLoadingScreen extends React.Component {
-	constructor() {
-		super();
-		this.bootstrapAsync();
-	}
 
 	// Fetch the token from storage then navigate to our appropriate place
-	bootstrapAsync = async () => {
-		const userToken = await AsyncStorage.getItem('userToken');
+	componentDidMount(){
 
-		// alert('userToken:' + userToken );
+		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
 
-		this.props.navigation.navigate(userToken ? 'AuthorizedMyScreen' : 'Login');
+		if( Store.token )
+			this.props.navigation.navigate(requestScreenName);
+		else
+			this.props.navigation.navigate('Login', { requestScreenName: requestScreenName });
+
 	};
 
 	// Render any loading content that you like here
