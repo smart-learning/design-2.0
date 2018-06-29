@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
-import VideoCategory from "../../components/video/VideoCategory";
 import Lecture from "../../components/video/Lecture";
 import net from "../../commons/net";
+import PageCategory from "../../components/PageCategory";
 
 const styles = StyleSheet.create( {
 	toggleGroup: {
@@ -114,7 +114,7 @@ export default class CourseList extends React.Component {
 					</View>
 				</View>
 
-				<VideoCategory data={this.state.videoCategoryData.items}/>
+				<PageCategory data={this.state.videoCategoryData.items}/>
 
 				<FlatList
 					style={{ width: '100%' }}
