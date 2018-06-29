@@ -1,17 +1,10 @@
 import React from 'react';
-import CommonStyles from "../../../styles/common";
 import {
-	Keyboard,
 	Text,
-	Image,
-	ImageBackground,
 	StyleSheet,
 	View, KeyboardAvoidingView, AsyncStorage, Button
 } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
-import EmailAuthPack from "../../components/auth/EmailAuthPack";
-import logo from '../../../images/logo-en-primary.png';
-import bgLogin from '../../../images/bg-signup.jpg';
 import FBLoginButton from "../../components/auth/FBLoginButton";
 import Store from '../../../scripts/commons/store';
 
@@ -91,9 +84,17 @@ class SignUpPage extends React.Component {
 
 				<Button title="이메일 간편가입" onPress={() => this.props.navigation.navigate('EmailSignUpForm')}/>
 
+				<Button title="개인보고정책" onPress={()=> this.props.navigation.navigate('SignUpPolicy')}/>
 			</View>
 
 		</View>
+	}
+}
+
+
+SignUpPage.navigationOptions =()=>{
+	return {
+		header: null
 	}
 }
 
