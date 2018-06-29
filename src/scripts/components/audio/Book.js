@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default class AudioItem extends React.Component {
+export default class Book extends React.Component {
 	render() {
 		return <View style={ styles.itemContainer }>
 			<View style={ [ styles.alignJustify, styles.itemInfo ] }>
