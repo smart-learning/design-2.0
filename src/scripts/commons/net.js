@@ -54,9 +54,9 @@ export default {
 		} );
 	},
 
-	getLectureClipList() {
+	getLectureClipList( id ) {
 		return new Promise( ( resolve, reject ) => {
-			fetch( API_PREFIX + id + '/video-clips' )
+			fetch( API_PREFIX + 'video-courses/' + id + '/video-clips' )
 				.then( ( response ) => response.json() )
 				.then( ( responseJson ) => {
 					responseJson.items.forEach( element => {
