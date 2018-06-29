@@ -1,5 +1,5 @@
 import React from "react";
-import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_EACH, NAV_OPTS_DRAWER} from "../../commons/nav";
+import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_STACK_WITH_SEARCH, NAV_OPTS_DRAWER} from "../../commons/nav";
 import {createStackNavigator} from "react-navigation";
 import LecturePage from "./LecturePage";
 import LectureDetailPage from "./LectureDetailPage";
@@ -14,7 +14,7 @@ const VideoScreen = createStackNavigator({
 		},
 		LectureDetailPage: {
 			screen: LectureDetailPage,
-			navigationOptions: NAV_OPTS_EACH,
+			navigationOptions: NAV_OPTS_STACK_WITH_SEARCH,
 		},
 		ClipPage: {
 			screen: ClipPage,
@@ -22,7 +22,7 @@ const VideoScreen = createStackNavigator({
 		},
 		// ClipDetailPage: {
 		// 	screen: ClipDetailPage,
-		// 	navigationOptions: NAV_OPTS_EACH,
+		// 	navigationOptions: NAV_OPTS_STACK_WITH_SEARCH,
 		// },
 	},
 

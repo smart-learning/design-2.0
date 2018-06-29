@@ -25,7 +25,13 @@ export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({
 	headerRight: <SearchButton/>
 });
 
-export const NAV_OPTS_EACH = ({navigation, navigationOptions}) => {
+export const NAV_OPTS_STACK = ({navigation, navigationOptions}) => {
+	return {
+		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
+	}
+};
+
+export const NAV_OPTS_STACK_WITH_SEARCH = ({navigation, navigationOptions}) => {
 	return {
 		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
 		headerRight: <SearchButton/>

@@ -1,7 +1,13 @@
 import React from "react";
 import {createStackNavigator, createSwitchNavigator} from "react-navigation";
 import AuthLoadingScreen from "../auth/AuthLoadingScreen";
-import {NAV_OPTS_COMMON, NAV_OPTS_DRAWER, NAV_OPTS_EACH, NAV_OPTS_MAIN} from "../../commons/nav";
+import {
+	NAV_OPTS_COMMON,
+	NAV_OPTS_DRAWER,
+	NAV_OPTS_STACK_WITH_SEARCH,
+	NAV_OPTS_MAIN,
+	NAV_OPTS_STACK
+} from "../../commons/nav";
 import MyInfoHome from "./MyInfoHome";
 import LoginPage from "../auth/LoginPage";
 import FindPasswordPage from "../auth/FindPasswordPage";
@@ -33,7 +39,7 @@ const MyScreens = createSwitchNavigator(
 
 					SignUpPolicy: {
 						screen: SignUpPolicy,
-						navigationOptions: NAV_OPTS_EACH,
+						navigationOptions: NAV_OPTS_STACK,
 					}
 				},
 
