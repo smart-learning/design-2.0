@@ -20,6 +20,23 @@ export default {
 		} );
 	},
 
+	getAudioBookCategory() {
+		return new Promise( ( resolve, reject ) => {
+			fetch( API_PREFIX + 'audiobooks/categories' )
+				.then( ( response ) => response.json() )
+				.then( ( responseJson ) => {
+					responseJson.items.forEach( element => {
+						element.key = element.id.toString();
+					} );
+					resolve( responseJson );
+				} )
+				.catch( ( error ) => {
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
+
 	getLectureList() {
 		return new Promise( ( resolve, reject ) => {
 			fetch( API_PREFIX + 'video-courses' )
