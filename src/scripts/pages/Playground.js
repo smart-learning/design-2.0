@@ -4,7 +4,6 @@ import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import VideoItemClip from "./video/VideoItemClip";
 import Net from "../commons/net";
-import AudioItem from "./audio/AudioItem";
 // import VideoPack from "../commons/VideoPack";
 // import Video from "react-native-video";
 
@@ -16,7 +15,6 @@ class Playground extends Component {
 		this.state = {
 			videoCourseData: null,
 			videoClipData: null,
-			audioBookData: null,
 		};
 	}
 
