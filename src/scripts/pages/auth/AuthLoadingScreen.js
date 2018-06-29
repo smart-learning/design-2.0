@@ -11,7 +11,7 @@ class AuthLoadingScreen extends React.Component {
 	// Fetch the token from storage then navigate to our appropriate place
 	componentDidMount(){
 
-		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
+		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'MyInfoHome');
 
 		if( Store.token )
 			this.props.navigation.navigate(requestScreenName);
