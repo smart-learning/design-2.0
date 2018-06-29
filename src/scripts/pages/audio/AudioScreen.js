@@ -1,13 +1,13 @@
 import React from "react";
 import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_DRAWER} from "../../commons/nav";
 import {createStackNavigator} from "react-navigation";
-import SamplePage from "../SamplePage";
+import AudioBookPage from "./AudioBookPage";
 
 
 const AudioScreen = createStackNavigator({
 
 		AudioScreen1: {
-			screen: SamplePage,
+			screen: AudioBookPage,
 			navigationOptions: NAV_OPTS_MAIN,
 		}
 	},
