@@ -122,7 +122,7 @@ export default class AudioBookPage extends React.Component {
 					data={this.state.resultAudioBookData.items}
 					renderItem={
 						( { item } ) => <Book id={item.id}
-											  type="recommend"
+											  type="best"
 											  navigation={this.props.navigation}
 											  title={item.title}
 											  bannerColor={item.banner_color}
