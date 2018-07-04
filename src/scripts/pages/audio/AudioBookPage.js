@@ -6,10 +6,12 @@ import {
 	View,
 	ScrollView,
 	TouchableOpacity,
+	FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
+import Book from "../../components/audio/Book";
 
 const styles = StyleSheet.create( {
 	toggleGroup: {
@@ -65,14 +67,17 @@ export default class AudioBookPage extends React.Component {
 		super( props );
 
 		this.state = {
-			audioCategoryData: {}
+			audioCategoryData: {},
+			resultAudioBookData: {}
 		};
 	}
 
 	async componentDidMount() {
 		const resultAudioCategoryData = await net.getAudioBookCategory();
+		const resultAudioBookData = await net.getAudioBookList();
 		this.setState( {
 			audioCategoryData: resultAudioCategoryData,
+			resultAudioBookData: resultAudioBookData,
 		} );
 	}
 
@@ -112,8 +117,23 @@ export default class AudioBookPage extends React.Component {
 
 				<PageCategory data={this.state.audioCategoryData.items}/>
 
-
-				<Text>audiobooks</Text>
+				<FlatList
+					style={{ width: '100%' }}
+					data={this.state.resultAudioBookData.items}
+					renderItem={
+						( { item } ) => <Book id={item.id}
+											  type="recommend"
+											  navigation={this.props.navigation}
+											  title={item.title}
+											  bannerColor={item.banner_color}
+											  bookThumbnail={item.images.book}
+											  teacherName={item.teacher.name}
+											  memo={item.memo_top}
+											  likeCount={item.like_count}
+											  hitCount={item.hit_count}
+											  reviewCount={item.review_count}/>
+					}
+				/>
 			</ScrollView>
 		</SafeAreaView>
 	}
