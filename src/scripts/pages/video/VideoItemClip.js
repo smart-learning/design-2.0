@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import {COLOR_PRIMARY} from "../../../styles/common";
 import IcComment from "../../../images/ic-comment-light.png"
-import IcPin from "../../../images/ic-pin-light.png";
+import IcPin from "../../../images/ic-pin-light-line.png";
 import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/ic-star-light.png";
 import IcStarActive from "../../../images/ic-star.png";
