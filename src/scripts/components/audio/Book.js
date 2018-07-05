@@ -9,9 +9,11 @@ import {
 import { DrawerActions } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import IcComment from "../../../images/ic-comment-dark.png"
-import IcPin from "../../../images/ic-pin-grey.png";
+import IcPin from "../../../images/ic-pin-grey-fill.png";
+import IcPinDarkLine from "../../../images/ic-pin-dark-line.png";
 import IcShare from "../../../images/ic-share-grey.png";
 import IcHeart from "../../../images/ic-heart-pink.png";
+import IcHeartLine from "../../../images/ic-heart-pink-line.png";
 import IcView from "../../../images/ic-view-dark.png";
 
 const styles = StyleSheet.create( {
@@ -68,6 +70,8 @@ const styles = StyleSheet.create( {
 		color: '#000000',
 	},
 	bookAuthorRecommend: {
+		paddingTop: 5,
+		paddingBottom: 5,
 		fontSize: 12,
 		color: '#4A4A4A',
 	},
@@ -111,6 +115,52 @@ const styles = StyleSheet.create( {
 		marginRight: 5,
 		backgroundColor: '#C6C6C6',
 	},
+	btnSetSmall: {
+		width: 17,
+		height: 17,
+	},
+	btnSetLarge: {
+		width: 24,
+		height: 24,
+	},
+	countText: {
+		paddingLeft: 3,
+		paddingRight: 7,
+		fontSize: 12,
+		color: '#4A4A4A',
+	},
+	countWrap: {
+		position: 'absolute',
+		left: 20,
+		bottom: 20,
+	},
+	recommendButtonWrap: {
+		position: 'absolute',
+		left: 0,
+		bottom: 0,
+	},
+	recommendButton: {
+		marginRight: 6,
+	},
+	recommendPriceWrap: {
+		paddingTop: 2,
+		paddingRight: 7,
+		paddingBottom: 2,
+		paddingLeft: 7,
+		backgroundColor: '#787878',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	recommendPrice: {
+		fontSize: 12,
+		color: '#ffffff',
+	},
+	recommendPriceOrigin: {
+		textDecorationLine: 'line-through',
+	},
+	recommendPriceSale: {
+		color: '#ff4f72',
+	}
 } );
 
 export default class Book extends React.Component {
@@ -151,9 +201,27 @@ export default class Book extends React.Component {
 				}
 				{this.props.type === 'recommend' &&
 				<View style={styles.bookInfoWrap}>
-					<Text style={styles.bookTitleRecommend}>{this.props.title}</Text>
+					<Text style={styles.bookTitleRecommend} numberOfLines={1}
+						  ellipsizeMode={'tail'}>{this.props.title}</Text>
 					<Text style={styles.bookAuthorRecommend}>{this.props.teacherName}</Text>
-					<Text>하트 핀</Text>
+					<View style={[ styles.alignJustify, styles.recommendButtonWrap ]}>
+						<Image source={IcHeartLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
+						<Image source={IcPinDarkLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
+						{/*{this.props.isFree === 'true' &&*/}
+						{/*<View style={styles.recommendPriceWrap} borderRadius={2}>*/}
+							{/*<Text style={styles.recommendPrice}>무료</Text>*/}
+						{/*</View>*/}
+						{/*}*/}
+						{/*{this.props.isFree === 'false' &&*/}
+						<View style={styles.recommendPriceWrap} borderRadius={2}>
+							<Text style={styles.recommendPrice}>
+								₩11,900/
+								<Text style={styles.recommendPriceOrigin}>₩11,900</Text>
+								<Text style={styles.recommendPriceSale}>(0%)</Text>
+							</Text>
+						</View>
+						{/*}*/}
+					</View>
 				</View>
 				}
 			</View>
@@ -164,6 +232,14 @@ export default class Book extends React.Component {
 				{this.props.type === 'recommend' &&
 				<Text style={styles.bookMemoRecommend} numberOfLines={3} ellipsizeMode={'tail'}>{this.props.memo}</Text>
 				}
+				<View style={[ styles.alignJustify, styles.countWrap ]}>
+					<Image source={IcView} style={styles.btnSetSmall}/>
+					<Text style={styles.countText}>{this.props.hitCount}</Text>
+					<Image source={IcHeart} style={styles.btnSetSmall}/>
+					<Text style={styles.countText}>{this.props.likeCount}</Text>
+					<Image source={IcComment} style={styles.btnSetSmall}/>
+					<Text style={styles.countText}>{this.props.reviewCount}</Text>
+				</View>
 			</View>
 			<View style={styles.bookThumbnail}>
 				<Image source={{ uri: this.props.bookThumbnail }} style={styles.bookThumbnailSize}/>

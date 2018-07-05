@@ -129,6 +129,7 @@ export default class AudioBookPage extends React.Component {
 											  bookThumbnail={item.images.book}
 											  teacherName={item.teacher.name}
 											  memo={item.memo_top}
+											  isFree={item.is_free}
 											  likeCount={item.like_count}
 											  hitCount={item.hit_count}
 											  reviewCount={item.review_count}/>
