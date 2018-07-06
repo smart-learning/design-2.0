@@ -10,6 +10,7 @@ import {
 	ImageBackground,
 	Dimensions,
 	ScrollView,
+	FlatList,
 } from "react-native";
 import Swiper from 'react-native-swiper';
 import IcStar from "../../../images/icons/star.png";
@@ -20,6 +21,7 @@ import Dummy2 from '../../../images/dummy-swiper-2.png';
 import DummyTeacher from '../../../images/dummy-teacher.jpg';
 import net from "../../commons/net";
 import BtnMore from "../../components/BtnMore";
+import Chapter from "../../components/video/Chapter";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -111,18 +113,29 @@ export default class LectureDetailPage extends React.Component {
 			slideHeight: null,
 			lectureView: false,
 			teacherView: false,
+			lectureClipData: {},
 		};
 
 		this.lectureMore = this.lectureMore.bind( this );
 		this.teacherMore = this.teacherMore.bind( this );
 	}
 
+	async loadLectureClipData() {
+		const resultLectureClipData = await net.getLectureClipList( this.props.navigation.state.params.id );
+
+		this.setState( {
+			lectureClipData: resultLectureClipData,
+		} );
+	}
+
 	componentDidMount() {
 		let windowWidth = Dimensions.get( 'window' ).width;
 
 		this.setState( {
-			slideHeight: windowWidth * 0.833
+			slideHeight: windowWidth * 0.833,
 		} );
+
+		this.loadLectureClipData();
 	}
 
 	lectureMore() {
@@ -239,6 +252,22 @@ export default class LectureDetailPage extends React.Component {
 				<View style={styles.sectionLine}>
 					<Text style={styles.sectionTitle}>강의클립 목차</Text>
 				</View>
+
+				{/*<FlatList*/}
+					{/*style={{ width: '100%' }}*/}
+					{/*data={this.state.lectureClipData.items}*/}
+					{/*renderItem={*/}
+						{/*( { item } ) => <Chapter id={item.id}*/}
+												 {/*title={item.title}*/}
+												 {/*paragraph={item.memo}*/}
+												 {/*thumbnail={item.images.wide}*/}
+												 {/*clipCount={item.clip_count}*/}
+												 {/*hitCount={item.hit_count}*/}
+												 {/*starAvg={item.star_avg}*/}
+												 {/*reviewCount={item.review_count}*/}
+												 {/*playTime={item.play_time}/>*/}
+					{/*}*/}
+				{/*/>*/}
 				{/* /강의클립 목차 */}
 				<Text>공유버튼</Text>
 				{/*<Button*/}
