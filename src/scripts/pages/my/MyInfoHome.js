@@ -16,9 +16,9 @@ export default class MyInfoHome extends React.Component {
 	render() {
 		return <View style={Styles.container}>
 
-			<Image
-				style={{ position:'absolute', top:0, width:'100%', height:'50%' }}
-				source={ { uri:"https://t1.daumcdn.net/cfile/tistory/99361E475B24737B2D"}}/>
+			{/*<Image*/}
+				{/*style={{ position:'absolute', top:0, width:'100%', height:'50%' }}*/}
+				{/*source={ { uri:"https://t1.daumcdn.net/cfile/tistory/99361E475B24737B2D"}}/>*/}
 
 
 			<Text>내정보</Text>

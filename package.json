@@ -42,11 +42,12 @@
     "react-native-cli": "^2.0.1",
     "react-native-elements": "^0.19.1",
     "react-native-fbsdk": "^0.7.0",
-    "react-native-kakao-signin": "^1.0.4",
+    "react-native-kakao-signin": "https://github.com/kyejune/react-native-kakao-signin.git",
     "react-native-swiper": "^1.5.13",
     "react-native-video": "2.2.0",
     "react-navigation": "^2.3.1",
     "react-test-renderer": "16.3.1",
+    "rnn-module-ui-sample": "https://github.com/kyejune/rnn-module-ui-sample.git",
     "watchman": "^1.0.0"
   }
 }
