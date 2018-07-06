@@ -1,17 +1,18 @@
-const HOST = 'http://ec2-contents-api.welaa.co.kr/api';
+import axios from 'axios';
+
+const HOST = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev/api';
 const VERSION = 'v1.0';
 const API_PREFIX = `${HOST}/${VERSION}/`;
 
 export default {
 	getLectureCategory() {
 		return new Promise( ( resolve, reject ) => {
-			fetch( API_PREFIX + 'video-courses/categories' )
-				.then( ( response ) => response.json() )
-				.then( ( responseJson ) => {
-					responseJson.items.forEach( element => {
+			axios.get( API_PREFIX + 'contents/video-courses/categories' )
+				.then( ( response ) => {
+					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
-					resolve( responseJson );
+					resolve( response.data );
 				} )
 				.catch( ( error ) => {
 					console.error( error );
@@ -22,13 +23,12 @@ export default {
 
 	getLectureList() {
 		return new Promise( ( resolve, reject ) => {
-			fetch( API_PREFIX + 'video-courses' )
-				.then( ( response ) => response.json() )
-				.then( ( responseJson ) => {
-					responseJson.items.forEach( element => {
+			axios.get( API_PREFIX + 'contents/video-courses' )
+				.then( ( response ) => {
+					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
-					resolve( responseJson );
+					resolve( response.data );
 				} )
 				.catch( ( error ) => {
 					console.error( error );
@@ -39,13 +39,12 @@ export default {
 
 	getLectureClipList() {
 		return new Promise( ( resolve, reject ) => {
-			fetch( API_PREFIX + id + '/video-clips' )
-				.then( ( response ) => response.json() )
-				.then( ( responseJson ) => {
-					responseJson.items.forEach( element => {
+			axios.get( API_PREFIX + id + '/video-clips' )
+				.then( ( response ) => {
+					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
-					resolve( responseJson );
+					resolve( response.data );
 				} )
 				.catch( ( error ) => {
 					console.error( error );
