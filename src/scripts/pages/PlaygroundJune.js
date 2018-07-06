@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
-import {Modal, Text, TouchableHighlight, View} from "react-native";
+import {Button, Modal, Text, TouchableHighlight, View} from "react-native";
 import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
-// import Video from "react-native-video";
-// import VideoPack from "../components/VideoPack";
-// import ModalFrame from "../components/ModalFrame";
-// import RnnModuleSample from "rnn-module-sample"
-// import CustomModule from 'react-native-custom-module';
-// import MapView from './MapView';
-
+import { ImageView, RNAudioPlayer} from 'rnn-module-ui-sample';
 
 /*
 * Acount: test/test
@@ -16,28 +10,30 @@ import {SafeAreaView} from "react-navigation";
 * */
 class PlaygroundJune extends Component {
 
-
-	constructor(){
-		super();
-
-		// alert( RnnModuleSample + CustomModule );
-
-		// RnnModuleSample.callback((error, list) => {
-		// 	if (error) {
-		// 		//error
-		// 	} else {
-		// 		alert( list );
-		// 		//array list returned [...]
-		// 	}
-		// });
+	onPlay = () =>{
+		// alert('play');
+		RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
 	}
 
 
     render() {
+
+
+
+
         return <SafeAreaView style={[ CommonStyles.container, {backgroundColor: '#cccccc'}]}>
 
             <Text>VIDEO TEST</Text>
-            {/*<VideoPack/>*/}
+
+			<Button title="재생"
+					onPress={ this.onPlay }
+			/>
+
+			<ImageView
+				style={{ width:100, height:100 }}
+				src={[{ uri: "https://pbs.twimg.com/tweet_video_thumb/Dg3sOjuV4AEtzIR.jpg", width:100, height:100}]}
+			/>
+
         </SafeAreaView>
     }
 }

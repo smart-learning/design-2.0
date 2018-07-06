@@ -1,20 +1,19 @@
 import React from 'react';
 import CommonStyles from "../../../styles/common";
-import { SafeAreaView } from "react-navigation";
 import {
 	Keyboard,
 	Text,
 	Image,
 	ImageBackground,
 	StyleSheet,
-	View, KeyboardAvoidingView
+	View, KeyboardAvoidingView, AsyncStorage
 } from "react-native";
-import { LoginManager, LoginButton, AccessToken } from "react-native-fbsdk";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
 import EmailAuthPack from "../../components/auth/EmailAuthPack";
 import logo from '../../../images/logo-en-primary.png';
 import bgLogin from '../../../images/bg-signup.jpg';
 import FBLoginButton from "../../components/auth/FBLoginButton";
+import Store from '../../../scripts/commons/store';
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -63,21 +62,12 @@ const styles = StyleSheet.create( {
 
 
 class LoginPage extends React.Component {
-
-
-	static navigationOptions = {
-		drawerLabel: () => null
-	};
-
-	// login = async () => {
-	// 	await AsyncStorage.setItem( 'userToken', 'temp-token' );
-	// 	this.props.navigation.navigate( 'MyScreen' );
-	// };
-
-
+	
 	componentDidMount(){
 		this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
 		this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+
+		console.log( this.props.navigation );
 	}
 
 	componentWillUnmount() {
@@ -87,37 +77,51 @@ class LoginPage extends React.Component {
 
 	keyboardWillShow = (event) => {
 		console.log('키보드 나옴');
-	};
+	}
 
 	keyboardWillHide = (event) => {
 		console.log('키보드 들어감');
-	};
+	}
+
+	onAccessToken( type, token ){
+
+		Store.setToken( type, token );
+
+		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
+		this.props.navigation.navigate( requestScreenName );
+	}
 
 	render() {
 		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
+
 			<View style={styles.logoWrap}>
-				<Image source={logo} style={styles.logo}></Image>
+				<Image source={logo} style={styles.logo}/>
 			</View>
 			<ImageBackground source={bgLogin}
 							 style={styles.background}
 			>
 				<View style={styles.contentWrap}>
 					<Text style={styles.headline}>LOGIN</Text>
-					{/*<Button*/}
-						{/*title="Login"*/}
-						{/*onPress={this.login}*/}
-					{/*/>*/}
 
-					<FBLoginButton/>
+					<FBLoginButton
+						onAccess={ token => this.onAccessToken( 'facebook', token ) }
+					/>
 
-					<KakaoLoginButton/>
+					<KakaoLoginButton
+						onAccess={ token => this.onAccessToken( 'kakao', token ) }
+					/>
 
 					<Text style={ styles.bulletText }>OR</Text>
 
-					<EmailAuthPack/>
+					<EmailAuthPack
+						onAccess={ token => this.onAccessToken( 'email', token ) }
+						onNavigate={ routerName => this.props.navigation.navigate( routerName ) }
+					/>
+
 				</View>
 
 			</ImageBackground>
+
 		</KeyboardAvoidingView>
 	}
 }

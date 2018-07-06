@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage } from "react-native";
 import {COLOR_PRIMARY} from "../../../styles/common";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	contentContainer: {
@@ -56,25 +57,33 @@ class EmailAuthPack extends Component {
 		}
 	}
 
+
+	login=()=>{
+		this.props.onAccess( 'temp-email-token' );
+	}
+
 	render() {
 		return <View style={ styles.contentContainer }>
+
 			<View borderRadius={4} style={ styles.inputWrap }>
 				<TextInput
 					style={ styles.input }
 					value={this.state.email}
-					onChangeText={text =>
-						this.setState( { email: text } )
-					}/>
+					onChangeText={text =>{
+						this.setState( { email: text } );
+					}}/>
 				<View style={ styles.inputBr }/>
 				<TextInput
 					style={ styles.input }
 					value={this.state.password}
-					onChangeText={text =>
+					onChangeText={text =>{
 						this.setState( { password: text } )
-					}/>
+					}}/>
 			</View>
 
-			<TouchableOpacity activeOpacity={0.9}>
+			<TouchableOpacity activeOpacity={0.9}
+							  onPress={ this.login }
+			>
 				<View borderRadius={4}
 					  style={ styles.btnSubmit }
 				>
@@ -83,14 +92,21 @@ class EmailAuthPack extends Component {
 			</TouchableOpacity>
 
 			<View style={ styles.linkWrap }>
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity
+					activeOpacity={0.9}
+					onPress={ ()=> this.props.onNavigate('FindPassword') }
+				>
 					<Text style={ styles.btnLinkText }>비밀번호 찾기</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity
+					activeOpacity={0.9}
+					onPress={ ()=>this.props.onNavigate('SignUp') }
+				>
 					<Text style={ styles.btnLinkText }>무료 계정만들기</Text>
 				</TouchableOpacity>
 			</View>
+
 		</View>
 	}
 }

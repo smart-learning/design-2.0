@@ -1,17 +1,17 @@
 import React from "react";
+import CommonStyles from "../../../styles/common";
 import {
+	StyleSheet,
 	Text,
 	View,
-	Button,
-	FlatList,
 	ScrollView,
-	TouchableOpacity, StyleSheet,
+	TouchableOpacity,
+	FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
-import CommonStyles from "../../../styles/common";
-import Lecture from "../../components/video/Lecture";
-import net from "../../commons/net";
 import PageCategory from "../../components/PageCategory";
+import net from "../../commons/net";
+import Book from "../../components/audio/Book";
 
 const styles = StyleSheet.create( {
 	toggleGroup: {
@@ -47,7 +47,7 @@ const styles = StyleSheet.create( {
 		height: 17,
 		backgroundColor: '#CFCFCF',
 	},
-	clipButton: {
+	myButton: {
 		paddingTop: 3,
 		paddingBottom: 3,
 		paddingLeft: 10,
@@ -55,31 +55,32 @@ const styles = StyleSheet.create( {
 		borderWidth: 1,
 		borderColor: '#CBCBCB',
 	},
-	clipButtonText: {
+	myButtonText: {
 		fontSize: 12,
 		color: '#585858',
 	}
 } );
 
-export default class CourseList extends React.Component {
+export default class AudioBookPage extends React.Component {
 
 	constructor( props ) {
 		super( props );
 
 		this.state = {
-			videoCourseData: {},
-			videoCategoryData: {}
+			audioCategoryData: {},
+			resultAudioBookData: {}
 		};
 	}
 
 	async componentDidMount() {
-		const resultVideoCourseData = await net.getLectureList();
-		const resultVideoCategoryData = await net.getLectureCategory();
+		const resultAudioCategoryData = await net.getAudioBookCategory();
+		const resultAudioBookData = await net.getAudioBookList();
 		this.setState( {
-			videoCourseData: resultVideoCourseData,
-			videoCategoryData: resultVideoCategoryData,
+			audioCategoryData: resultAudioCategoryData,
+			resultAudioBookData: resultAudioBookData,
 		} );
 	}
+
 
 	render() {
 		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
@@ -104,37 +105,37 @@ export default class CourseList extends React.Component {
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{ marginLeft: 'auto' }}
 										  onPress={() => {
-											  this.props.navigation.navigate( 'ClipPage' )
+											  this.props.navigation.navigate( 'MyAudioBookPage' )
 										  }}
 						>
-							<View style={styles.clipButton} borderRadius={3}>
-								<Text style={styles.clipButtonText}>강의클립 전체보기</Text>
+							<View style={styles.myButton} borderRadius={3}>
+								<Text style={styles.myButtonText}>내 오디오북 보기</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
 				</View>
 
-				<PageCategory data={this.state.videoCategoryData.items}/>
+				<PageCategory data={this.state.audioCategoryData.items}/>
 
 				<FlatList
 					style={{ width: '100%' }}
-					data={this.state.videoCourseData.items}
+					data={this.state.resultAudioBookData.items}
 					renderItem={
-						( { item } ) => <Lecture id={item.id}
-												 navigation={this.props.navigation}
-												 headline={item.headline}
-												 teacherHeadline={item.teacher.headline}
-												 teacherName={item.teacher.name}
-												 title={item.title}
-												 thumbnail={item.images.wide}
-												 clipCount={item.clip_count}
-												 hitCount={item.hit_count}
-												 starAvg={item.star_avg}
-												 reviewCount={item.review_count}/>
+						( { item } ) => <Book id={item.id}
+											  type="best"
+											  navigation={this.props.navigation}
+											  title={item.title}
+											  bannerColor={item.banner_color}
+											  bookThumbnail={item.images.book}
+											  teacherName={item.teacher.name}
+											  memo={item.memo_top}
+											  isFree={item.is_free}
+											  likeCount={item.like_count}
+											  hitCount={item.hit_count}
+											  reviewCount={item.review_count}/>
 					}
 				/>
 			</ScrollView>
 		</SafeAreaView>
 	}
 }
-

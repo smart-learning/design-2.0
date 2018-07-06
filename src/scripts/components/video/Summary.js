@@ -10,7 +10,7 @@ import {
 import { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
 import IcComment from "../../../images/icons/commenting.png"
-import IcPin from "../../../images/ic-pin-light.png";
+import IcPin from "../../../images/ic-pin-light-line.png";
 import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
