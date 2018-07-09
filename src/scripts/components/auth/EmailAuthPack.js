@@ -18,6 +18,7 @@ const styles = StyleSheet.create( {
 	input: {
 		width: '100%',
 		height: 40,
+		paddingLeft: 15,
 	},
 	btnSubmit: {
 		width: '100%',
@@ -75,6 +76,7 @@ class EmailAuthPack extends Component {
 				<View style={ styles.inputBr }/>
 				<TextInput
 					style={ styles.input }
+					secureTextEntry={ true }
 					value={this.state.password}
 					onChangeText={text =>{
 						this.setState( { password: text } )
