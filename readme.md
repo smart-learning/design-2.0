@@ -147,17 +147,18 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 
 #### [Xcode]
 
-###### - Facebook, Kakao 각각의 SDK를 따로 다운받아 적당한곳에 위치해주세요. 
-         BuildSetting->Framework search path 에 해당 경로를 추가 해줍니다.
+###### - Facebook, Kakao 각각의 SDK를 따로 다운받아 적당한 곳에 위치해주세요.
+         Build Settings -> Search Paths -> Framework Search Paths 에 해당 SDK 경로를 추가 해줍니다.
+         ex) ~/Documents/FacebookSDK
 
 ###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
 ###### - https://developers.facebook.com/docs/ios/getting-started/
 
 ```
- - https://developers.facebook.com/docs/ios/getting-started/ 2단계부터 5단계까지 작업합니다.
- - api key는 428306967643083 입니다 .
- - bundle identifier: org.reactjs.native.example.WelaaaV2 를 사용합니다.
- - RCTFBSDK.xcodeproj Frameworks에 파일들이 링크가 깨져서 들어오면 다운받은 SDK로 대체
+- https://developers.facebook.com/docs/ios/getting-started/ 2단계부터 5단계까지 작업합니다.
+- api id는 428306967643083 입니다 .
+- General -> Identity -> Bundle Identifier는 org.reactjs.native.example.WelaaaV2 를 사용합니다.
+- Frameworks 폴더 내부의 frameworks 파일들이 빨간색으로 표시가 된다면 Finder를 이용하여 다운받은 SDK 파일을 끌어서 넣습니다.(상단 링크의 3단계 참고)
 ```
 
 ##### - Kakao Login
