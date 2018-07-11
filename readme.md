@@ -152,21 +152,26 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
          ex) ~/Documents/FacebookSDK
 
 ###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
+
+##### - Facebook Login
+
 ###### - https://developers.facebook.com/docs/ios/getting-started/
 
 ```
-- https://developers.facebook.com/docs/ios/getting-started/ 2단계부터 5단계까지 작업합니다.
+- 상단 링크의 2단계부터 5단계까지 작업합니다.
 - api id는 428306967643083 입니다 .
 - General -> Identity -> Bundle Identifier는 org.reactjs.native.example.WelaaaV2 를 사용합니다.
 - Frameworks 폴더 내부의 frameworks 파일들이 빨간색으로 표시가 된다면 Finder를 이용하여 다운받은 SDK 파일을 끌어서 넣습니다.(상단 링크의 3단계 참고)
 ```
 
 ##### - Kakao Login
+
+###### - https://github.com/sunyrora/react-native-kakao-signin
+###### - https://developers.kakao.com/docs/ios#시작하기
 ```
- - https://github.com/sunyrora/react-native-kakao-signin 에 코드 주석부분만 참고해서 추가해주세요.
- - Build Setting > Other Linker Flags 에 -all_load 추가
- - https://developers.kakao.com/docs/ios#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1 
-   를 참고하여 '프로젝트에 내 앱 설정' 을 작업합니다. 
+ - 상단 첫번째 링크의 코드 주석부분만 참고해서 추가해주세요.
+ - Build Settings -> Other Linker Flags 에 -all_load 을 추가합니다.
+ - 상단 두번째 링크의 '프로젝트에 내 앱 설정' 을 작업합니다.
 ```
 
 
