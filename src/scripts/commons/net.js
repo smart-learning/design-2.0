@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-const HOST = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev/api';
+const HOST = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
+const TYPE = 'api';
 const VERSION = 'v1.0';
-const API_PREFIX = `${HOST}/${VERSION}/`;
+const API_PREFIX = `${HOST}/${TYPE}/${VERSION}/`;
 
 export default {
 	getLectureCategory() {
