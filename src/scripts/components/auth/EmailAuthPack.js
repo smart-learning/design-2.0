@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage } from "react-native";
-import {COLOR_PRIMARY} from "../../../styles/common";
-import {withNavigation} from "react-navigation";
+import { COLOR_PRIMARY } from "../../../styles/common";
+import { withNavigation } from "react-navigation";
+import net from "../../commons/net";
+import store from "../../commons/store";
+import axios from "axios";
 
 const styles = StyleSheet.create( {
 	contentContainer: {
@@ -55,57 +58,72 @@ class EmailAuthPack extends Component {
 		this.state = {
 			email: null,
 			password: null,
-		}
+		};
+
+		this.login = this.login.bind( this );
 	}
 
+	login() {
+		console.log( this.state.email );
+		console.log( this.state.password );
 
-	login=()=>{
-		this.props.onAccess( 'temp-email-token' );
-	}
+		const resultAuthToken = net.getAuthToken( this.state.email, this.state.password );
+		resultAuthToken
+			.then( data => {
+				// resolve 될 경우
+				store.authToken = data;
+				axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + store.authToken.access_token;
+				this.props.navigation.navigate( 'MyInfoHome' );
+			} )
+			.catch( error => {
+				// reject 될 경우
+				alert( '로그인 실패' )
+			} );
+	};
 
 	render() {
-		return <View style={ styles.contentContainer }>
+		return <View style={styles.contentContainer}>
 
-			<View borderRadius={4} style={ styles.inputWrap }>
+			<View borderRadius={4} style={styles.inputWrap}>
 				<TextInput
-					style={ styles.input }
+					style={styles.input}
 					value={this.state.email}
-					onChangeText={text =>{
+					onChangeText={text => {
 						this.setState( { email: text } );
 					}}/>
-				<View style={ styles.inputBr }/>
+				<View style={styles.inputBr}/>
 				<TextInput
-					style={ styles.input }
-					secureTextEntry={ true }
+					style={styles.input}
+					secureTextEntry={true}
 					value={this.state.password}
-					onChangeText={text =>{
+					onChangeText={text => {
 						this.setState( { password: text } )
 					}}/>
 			</View>
 
 			<TouchableOpacity activeOpacity={0.9}
-							  onPress={ this.login }
+							  onPress={this.login}
 			>
 				<View borderRadius={4}
-					  style={ styles.btnSubmit }
+					  style={styles.btnSubmit}
 				>
-					<Text style={ styles.textSubmit }>윌라 계정으로</Text>
+					<Text style={styles.textSubmit}>윌라 계정으로</Text>
 				</View>
 			</TouchableOpacity>
 
-			<View style={ styles.linkWrap }>
+			<View style={styles.linkWrap}>
 				<TouchableOpacity
 					activeOpacity={0.9}
-					onPress={ ()=> this.props.onNavigate('FindPassword') }
+					onPress={() => this.props.onNavigate( 'FindPassword' )}
 				>
-					<Text style={ styles.btnLinkText }>비밀번호 찾기</Text>
+					<Text style={styles.btnLinkText}>비밀번호 찾기</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity
 					activeOpacity={0.9}
-					onPress={ ()=>this.props.onNavigate('SignUp') }
+					onPress={() => this.props.onNavigate( 'SignUp' )}
 				>
-					<Text style={ styles.btnLinkText }>무료 계정만들기</Text>
+					<Text style={styles.btnLinkText}>무료 계정만들기</Text>
 				</TouchableOpacity>
 			</View>
 

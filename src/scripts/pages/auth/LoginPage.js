@@ -83,13 +83,13 @@ class LoginPage extends React.Component {
 		console.log('키보드 들어감');
 	}
 
-	onAccessToken( type, token ){
-
-		Store.setToken( type, token );
-
-		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
-		this.props.navigation.navigate( requestScreenName );
-	}
+	// onAccessToken( type, token ){
+    //
+	// 	Store.setToken( type, token );
+    //
+	// 	let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
+	// 	this.props.navigation.navigate( requestScreenName );
+	// }
 
 	render() {
 		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
@@ -114,8 +114,9 @@ class LoginPage extends React.Component {
 					<Text style={ styles.bulletText }>OR</Text>
 
 					<EmailAuthPack
-						onAccess={ token => this.onAccessToken( 'email', token ) }
+						// onAccess={ token => this.onAccessToken( 'email', token ) }
 						onNavigate={ routerName => this.props.navigation.navigate( routerName ) }
+						navigation={this.props.navigation}
 					/>
 
 				</View>

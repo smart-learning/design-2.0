@@ -8,7 +8,8 @@ class Store{
 
     token = null;
     tokenType = null;
-	setToken = ( type, token )=>{
+
+    setToken = ( type, token )=>{
 
 		this.token = token;
 		this.tokenType = type;
@@ -22,6 +23,7 @@ class Store{
 
 	@observable auth = undefined;
 
+	@observable authToken = undefined;
 }
 
 console.log( '<<<<<< new Store >>>>');

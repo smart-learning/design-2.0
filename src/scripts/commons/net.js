@@ -1,9 +1,14 @@
 import axios from 'axios';
+import store from "./store";
 
 const HOST = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
 const TYPE = 'api';
 const VERSION = 'v1.0';
 const API_PREFIX = `${HOST}/${TYPE}/${VERSION}/`;
+
+const clientId = 'wyk27OuFanxIcxzGRO68F13n';
+const clientSecret = 'IcQUptRiZBe3mqLbx8BIB7dqfySP52J4He6TmMXnnzupUNIj';
+const authBasicCode = btoa( `${clientId}:${clientSecret}` );
 
 export default {
 	getLectureCategory() {
@@ -106,8 +111,8 @@ export default {
 	// },
 
 	getVideoClipList() {
-		return new Promise((resolve, reject) => {
-			resolve([
+		return new Promise( ( resolve, reject ) => {
+			resolve( [
 				{
 					key: '0',
 					title: '4차 산업혁명! 변화의 시작, 포노 사피엔스',
@@ -126,13 +131,13 @@ export default {
 					viewCount: '000',
 					starCount: '0.0',
 				},
-			]);
-		});
+			] );
+		} );
 	},
 
 	getBookList() {
-		return new Promise((resolve, reject) => {
-			resolve([
+		return new Promise( ( resolve, reject ) => {
+			resolve( [
 				{
 					key: '0',
 					title: '명견만리_인구, 경제, 북한, 의료 편',
@@ -155,7 +160,34 @@ export default {
 					commentCount: '00',
 					itemColor: '#F4E69F',
 				},
-			]);
-		});
+			] );
+		} );
 	},
+
+	getAuthToken( email, password ) {
+		const params = new URLSearchParams();
+		params.set( 'username', email );
+		params.set( 'password', password );
+		params.set( 'scope', 'profile' );
+		params.set( 'grant_type', 'password' );
+
+		return new Promise( ( resolve, reject ) => {
+			axios.post( HOST + '/oauth/token', params, {
+				headers: {
+					'Authorization': 'Basic ' + authBasicCode,
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			} )
+
+				.then( response => {
+					console.log( response.data );
+					resolve( response.data );
+				} )
+				.catch( ( error ) => {
+					alert( '로그인 실패' )
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	}
 }
