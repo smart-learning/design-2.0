@@ -88,6 +88,7 @@ class EmailAuthPack extends Component {
 				<TextInput
 					style={styles.input}
 					value={this.state.email}
+					autoCapitalize={false}
 					onChangeText={text => {
 						this.setState( { email: text } );
 					}}/>
@@ -95,6 +96,7 @@ class EmailAuthPack extends Component {
 				<TextInput
 					style={styles.input}
 					secureTextEntry={true}
+					autoCapitalize={false}
 					value={this.state.password}
 					onChangeText={text => {
 						this.setState( { password: text } )
