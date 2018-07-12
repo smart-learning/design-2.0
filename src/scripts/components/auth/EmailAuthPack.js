@@ -70,14 +70,12 @@ class EmailAuthPack extends Component {
 		const resultAuthToken = net.getAuthToken( this.state.email, this.state.password );
 		resultAuthToken
 			.then( data => {
-				// resolve 될 경우
 				store.authToken = data;
 				axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + store.authToken.access_token;
 				this.props.navigation.navigate( 'MyInfoHome' );
 			} )
 			.catch( error => {
-				// reject 될 경우
-				alert( '로그인 실패' )
+				alert( '아이디나 비밀번호를 확인하세요.' );
 			} );
 	};
 
