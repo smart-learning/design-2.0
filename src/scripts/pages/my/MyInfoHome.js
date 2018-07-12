@@ -1,7 +1,7 @@
 import Styles from "../../../styles/common";
 import {AsyncStorage, Button, Image, Text, View} from "react-native";
 import React from "react";
-import Store from '../../../scripts/commons/store';
+import store from '../../../scripts/commons/store';
 
 /*
 * 로그인 후 보여지는 화면
@@ -9,7 +9,7 @@ import Store from '../../../scripts/commons/store';
 export default class MyInfoHome extends React.Component {
 
 	logout=()=>{
-		Store.clearToken();
+		store.clearToken();
 		this.props.navigation.navigate('Login');
 	}
 
