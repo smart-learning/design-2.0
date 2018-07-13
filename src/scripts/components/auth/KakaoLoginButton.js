@@ -48,14 +48,11 @@ class KakaoLoginButton extends React.Component {
 	signInOut = async ()=>{
 		const { RNKaKaoSignin } = NativeModules;
 
-
 		let kakaoAccessToken = await RNKaKaoSignin.signIn();
 
 		// alert( kakaoAccessToken );
 
 		this.setState({ token: kakaoAccessToken });
-
-
 		this.props.onAccess( kakaoAccessToken );
 	}
 

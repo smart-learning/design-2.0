@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage, Alert } from "react-native";
 import { COLOR_PRIMARY } from "../../../styles/common";
 import { withNavigation } from "react-navigation";
 import net from "../../commons/net";
@@ -60,22 +60,18 @@ class EmailAuthPack extends Component {
 			password: null,
 		};
 
-		this.login = this.login.bind( this );
+		this.handleLogin = this.handleLogin.bind( this );
 	}
 
-	login() {
-		console.log( this.state.email );
-		console.log( this.state.password );
-
+	handleLogin() {
 		const resultAuthToken = net.getAuthToken( this.state.email, this.state.password );
 		resultAuthToken
 			.then( data => {
-				store.authToken = data;
-				axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + store.authToken.access_token;
-				this.props.navigation.navigate( 'MyInfoHome' );
+				let welaaaAuthData = JSON.stringify( data );
+				this.props.onAccess( welaaaAuthData );
 			} )
 			.catch( error => {
-				alert( '아이디나 비밀번호를 확인하세요.' );
+				Alert.alert( '아이디나 비밀번호를 확인하세요.' );
 			} );
 	};
 
@@ -86,7 +82,7 @@ class EmailAuthPack extends Component {
 				<TextInput
 					style={styles.input}
 					value={this.state.email}
-					autoCapitalize={ 'none' }
+					autoCapitalize={'none'}
 					onChangeText={text => {
 						this.setState( { email: text } );
 					}}/>
@@ -94,7 +90,7 @@ class EmailAuthPack extends Component {
 				<TextInput
 					style={styles.input}
 					secureTextEntry={true}
-					autoCapitalize={ 'none' }
+					autoCapitalize={'none'}
 					value={this.state.password}
 					onChangeText={text => {
 						this.setState( { password: text } )
@@ -102,7 +98,7 @@ class EmailAuthPack extends Component {
 			</View>
 
 			<TouchableOpacity activeOpacity={0.9}
-							  onPress={this.login}
+							  onPress={this.handleLogin}
 			>
 				<View borderRadius={4}
 					  style={styles.btnSubmit}

@@ -6,14 +6,16 @@ import {
 	Image,
 	ImageBackground,
 	StyleSheet,
-	View, KeyboardAvoidingView, AsyncStorage
+	View, KeyboardAvoidingView,
+	AsyncStorage,
+	Alert
 } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
 import EmailAuthPack from "../../components/auth/EmailAuthPack";
 import logo from '../../../images/logo-en-primary.png';
 import bgLogin from '../../../images/bg-signup.jpg';
 import FBLoginButton from "../../components/auth/FBLoginButton";
-import Store from '../../../scripts/commons/store';
+import store from '../../../scripts/commons/store';
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -83,13 +85,20 @@ class LoginPage extends React.Component {
 		console.log('키보드 들어감');
 	}
 
-	// onAccessToken( type, token ){
-    //
-	// 	Store.setToken( type, token );
-    //
-	// 	let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
-	// 	this.props.navigation.navigate( requestScreenName );
-	// }
+	setWelaaaAuthAndRedirect( auth ) {
+		store.welaaaAuth = auth;
+
+		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
+		this.props.navigation.navigate( requestScreenName );
+	}
+
+	onSocialToken( type, token ){
+		store.socialType = type;
+		store.socialToken = token;
+
+		// TODO: 소셜토큰 받아오기 성공 이후 소셜 토큰을 이용한 welaaa auth 처리 필요합니다
+		Alert.alert( '소셜토큰 받아오기 성공. 이후 소셜 토큰을 이용한 welaaa auth 처리 필요합니다' );
+	}
 
 	render() {
 		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
@@ -104,19 +113,18 @@ class LoginPage extends React.Component {
 					<Text style={styles.headline}>LOGIN</Text>
 
 					<FBLoginButton
-						onAccess={ token => this.onAccessToken( 'facebook', token ) }
+						onAccess={ token => this.onSocialToken( 'facebook', token ) }
 					/>
 
 					<KakaoLoginButton
-						onAccess={ token => this.onAccessToken( 'kakao', token ) }
+						onAccess={ token => this.onSocialToken( 'kakao', token ) }
 					/>
 
 					<Text style={ styles.bulletText }>OR</Text>
 
 					<EmailAuthPack
-						// onAccess={ token => this.onAccessToken( 'email', token ) }
+						onAccess={ auth => this.setWelaaaAuthAndRedirect( auth ) }
 						onNavigate={ routerName => this.props.navigation.navigate( routerName ) }
-						navigation={this.props.navigation}
 					/>
 
 				</View>

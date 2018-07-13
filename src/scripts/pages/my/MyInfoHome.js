@@ -9,7 +9,7 @@ import store from '../../../scripts/commons/store';
 export default class MyInfoHome extends React.Component {
 
 	logout=()=>{
-		store.clearToken();
+		store.clearTokens();
 		this.props.navigation.navigate('Login');
 	}
 
