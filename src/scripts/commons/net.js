@@ -79,7 +79,7 @@ export default {
 
 	getLectureClipList( id ) {
 		return new Promise( ( resolve, reject ) => {
-			axios.get( API_PREFIX + id + '/video-clips' )
+			axios.get( API_PREFIX + id + 'video-clips' )
 				.then( ( response ) => {
 					response.data.items.forEach( element => {
 						element.key = element.id.toString();
@@ -184,7 +184,7 @@ export default {
 					resolve( response.data );
 				} )
 				.catch( ( error ) => {
-					alert( '로그인 실패' )
+					alert( '로그인 실패' );
 					console.error( error );
 					reject( error );
 				} );
