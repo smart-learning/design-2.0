@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import {COLOR_PRIMARY} from "../../../styles/common";
 import IcComment from "../../../images/ic-comment-light.png"
-import IcPin from "../../../images/ic-pin-light-line.png";
 import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/ic-star-light.png";
 import IcStarActive from "../../../images/ic-star.png";
@@ -129,7 +128,6 @@ export default class VideoItemClip extends React.Component {
 				<View style={styles.alignJustify}>
 					<Image source={IcStar} style={styles.btnSetLarge}/>
 					<Image source={IcComment} style={styles.btnSetLarge}/>
-					<Image source={IcPin} style={styles.btnSetLarge}/>
 					<Image source={IcShare} style={styles.btnSetLarge}/>
 				</View>
 			</View>

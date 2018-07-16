@@ -9,8 +9,6 @@ import {
 import { DrawerActions } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import IcComment from "../../../images/ic-comment-dark.png"
-import IcPin from "../../../images/ic-pin-grey-fill.png";
-import IcPinDarkLine from "../../../images/ic-pin-dark-line.png";
 import IcShare from "../../../images/ic-share-grey.png";
 import IcHeart from "../../../images/ic-heart-pink.png";
 import IcHeartLine from "../../../images/ic-heart-pink-line.png";
@@ -177,9 +175,6 @@ export default class Book extends React.Component {
 			{this.props.type === 'best' &&
 			<View style={[ styles.alignJustify, styles.socialButtonWrap ]}>
 				<TouchableOpacity activeOpacity={0.9}>
-					<Image source={IcPin} style={styles.socialButton}/>
-				</TouchableOpacity>
-				<TouchableOpacity activeOpacity={0.9}>
 					<Image source={IcShare} style={styles.socialButton}/>
 				</TouchableOpacity>
 			</View>
@@ -206,7 +201,6 @@ export default class Book extends React.Component {
 					<Text style={styles.bookAuthorRecommend}>{this.props.teacherName}</Text>
 					<View style={[ styles.alignJustify, styles.recommendButtonWrap ]}>
 						<Image source={IcHeartLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
-						<Image source={IcPinDarkLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
 						{/*{this.props.isFree === 'true' &&*/}
 						{/*<View style={styles.recommendPriceWrap} borderRadius={2}>*/}
 							{/*<Text style={styles.recommendPrice}>무료</Text>*/}

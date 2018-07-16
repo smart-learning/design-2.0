@@ -10,7 +10,6 @@ import {
 import { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
 import IcComment from "../../../images/icons/commenting.png"
-import IcPin from "../../../images/ic-pin-light-line.png";
 import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
@@ -115,8 +114,7 @@ export default class Summary extends React.Component {
 					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
-					<Image source={IcPin} style={[ styles.btnSetLarge, { marginLeft: 'auto' } ]}/>
-					<Image source={IcShare} style={styles.btnSetLarge}/>
+					<Image source={IcShare} style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
 				</View>
 			</View>
 		</View>
