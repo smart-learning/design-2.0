@@ -30,13 +30,12 @@ export default {
 
 	getAudioBookCategory() {
 		return new Promise( ( resolve, reject ) => {
-			fetch( API_PREFIX + 'audiobooks/categories' )
-				.then( ( response ) => response.json() )
-				.then( ( responseJson ) => {
-					responseJson.items.forEach( element => {
+			axios.get( API_PREFIX + 'audiobooks/categories' )
+				.then( ( response ) => {
+					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
-					resolve( responseJson );
+					resolve( response.data );
 				} )
 				.catch( ( error ) => {
 					console.error( error );
