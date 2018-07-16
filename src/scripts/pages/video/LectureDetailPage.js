@@ -135,7 +135,7 @@ export default class LectureDetailPage extends React.Component {
 			slideHeight: windowWidth * 0.833,
 		} );
 
-		this.loadLectureClipData();
+		// this.loadLectureClipData();
 	}
 
 	lectureMore() {

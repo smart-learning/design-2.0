@@ -37,7 +37,10 @@ const styles = StyleSheet.create( {
 		fontWeight: '800',
 		color: '#ffffff',
 		textShadowColor: 'rgba(0, 0, 0, 0.8)',
-		textShadowOffset: {width: 1, height: 2},
+		textShadowOffset: {
+			width: 1,
+			height: 2
+		},
 		textShadowRadius: 4,
 	},
 	clipIcon: {
