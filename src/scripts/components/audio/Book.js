@@ -219,7 +219,7 @@ export default class Book extends React.Component {
 				</View>
 				}
 			</View>
-			<View style={[ { backgroundColor: this.props.bannerColor }, styles.itemContent ]}>
+			<View style={[ { backgroundColor: this.props.bannerColor.trim() }, styles.itemContent ]}>
 				{this.props.type === 'best' &&
 				<Text style={styles.bookMemoBest} numberOfLines={3} ellipsizeMode={'tail'}>{this.props.memo}</Text>
 				}
