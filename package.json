@@ -27,6 +27,7 @@
 		"preset": "react-native"
 	},
 	"dependencies": {
+		"Base64": "^1.0.1",
 		"axios": "^0.18.0",
 		"babel-preset-react-native-stage-0": "^1.0.1",
 		"jest": "^23.1.0",
