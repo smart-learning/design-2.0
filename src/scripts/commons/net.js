@@ -30,8 +30,9 @@ export default {
 
 	getAudioBookCategory() {
 		return new Promise( ( resolve, reject ) => {
-			axios.get( API_PREFIX + 'audiobooks/categories' )
+			axios.get( API_PREFIX + 'contents/audiobooks/categories' )
 				.then( ( response ) => {
+					console.log( response.data );
 					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
@@ -62,8 +63,9 @@ export default {
 
 	getAudioBookList() {
 		return new Promise( ( resolve, reject ) => {
-			axios.get( API_PREFIX + 'audiobooks' )
+			axios.get( API_PREFIX + 'contents/audiobooks' )
 				.then( ( response ) => {
+					console.log( response.data );
 					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
