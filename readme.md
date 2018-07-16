@@ -190,4 +190,9 @@ info.plist NSExceptionDomains에 추가합니다.
 	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 	<true/>
 </dict>
+<key>welaaa.co.kr</key>
+<dict>
+	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+	<true/>
+</dict>
 ```
