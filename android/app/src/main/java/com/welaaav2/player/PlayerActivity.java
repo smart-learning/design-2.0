@@ -2461,6 +2461,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 						welean_blank_line2.setVisibility(View.VISIBLE);
 						welean_blank_line.setVisibility(View.VISIBLE);
 
+                        sleeperNum = 15;
+
 						sleepstart();
 						mBtnSleeper.setVisibility(View.INVISIBLE);
 						mBtnSleep_Active.setVisibility(View.VISIBLE);
