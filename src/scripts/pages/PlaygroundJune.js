@@ -5,7 +5,6 @@ import {SafeAreaView} from "react-navigation";
 import { ImageView, RNAudioPlayer} from 'rnn-module-ui-sample';
 
 import {NativeModules} from 'react-native';
-// module.exports = NativeModules.ToastExample;
 
 /*
 * Acount: test/test
