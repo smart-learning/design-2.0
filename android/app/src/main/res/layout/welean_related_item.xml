@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/related_item_main"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    tools:context="kr.co.influential.youngkangapp.WelaaaPlayer"
+    android:orientation="horizontal">
+
+    <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/listWrap_groupTitle"-->
+        <!--android:paddingTop="23dp"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:paddingRight="20dp"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentLeft="true">-->
+
+
+            <!--<ImageView-->
+                <!--android:id="@+id/groupTitle_image"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:src="@drawable/ic_video_series_on"/>-->
+
+            <!--<TextView-->
+                <!--android:text="타이틀이 들어갑니다."-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/groupTitle_text"-->
+                <!--android:textColor="@color/movie_view_list_group_title_color"-->
+                <!--android:paddingLeft="7dp"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:textSize="@dimen/downloadlist_lecture_title_font_size" />-->
+
+
+    <!--</LinearLayout>-->
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listWrap"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+
+        android:descendantFocusability="blocksDescendants">
+
+        <!--android:background="@layout/listviewselect"-->
+
+    <!--android:layout_below="@id/listWrap_groupTitle"-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+
+            android:id="@+id/listWrapSub"
+
+            >
+
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                >
+
+                <ImageView
+                    android:id="@+id/sumnailImg"
+                    android:layout_width="50dp"
+                    android:layout_height="70dp"
+                    android:background="@layout/listviewselectimage"/>
+
+                <ImageView
+                    android:id="@+id/sumnailImg_listview_select"
+                    android:layout_width="50dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/ic_select"
+                    android:visibility="gone"
+                    />
+
+            </FrameLayout>
+            <!--android:src="@drawable/sampleimg"/>-->
+
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+
+                android:paddingTop="10dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    >
+
+                    <TextView
+                        android:text="타이틀이 들어갑니다."
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/related_Title"
+                        android:textSize="16sp"
+                        android:textColor="#4a4a4a"
+                        android:letterSpacing="-0.03"
+                        android:lineSpacingExtra="2sp" />
+
+                    <TextView
+                        android:text="지식 시리즈 타이틀 "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/related_teacherName"
+                        android:paddingRight="8dp"
+                        android:textSize="12sp"
+                        android:textColor="#999999"
+                        android:letterSpacing="-0.04"
+                        android:lineSpacingExtra="3sp" />
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="7.8dp"
+                        >
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:background="@drawable/icon_view_eye_white"
+                            android:layout_gravity="center|center_horizontal"
+                            />
+
+                        <TextView
+                            android:text=""
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/related_viewcnt"
+
+                            android:textSize="11sp"
+                            android:textColor="#ffffff"
+                            android:letterSpacing="-0.04"
+
+                            android:layout_marginLeft="4dp"
+                            />
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:background="@drawable/icon_star_green_small"
+                            android:layout_gravity="center|center_horizontal"
+                            />
+
+                        <TextView
+                            android:text=""
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/related_myrepucnt"
+
+                            android:textSize="11sp"
+                            android:textColor="#ffffff"
+                            android:letterSpacing="-0.04"
+
+                            android:layout_marginLeft="4dp"
+                            />
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:background="@drawable/icon_review"
+                            android:layout_gravity="center|center_horizontal"
+                            />
+
+                        <TextView
+                            android:text=""
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/related_reviewcnt"
+
+                            android:textSize="11sp"
+                            android:textColor="#ffffff"
+                            android:letterSpacing="-0.04"
+
+                            android:layout_marginLeft="4dp"
+                            />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!--   1줄짜리 경계라인 -->
+    <RelativeLayout
+        android:id="@+id/download_list_blank_line2"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/listWrap"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#efefef" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,1143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/TAG_UNLOCK_UI_LAYOUT"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+<RelativeLayout
+    android:id="@+id/welean_wrap_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/weleanButtonGroupBg"
+    />
+
+    <RelativeLayout
+        android:id="@+id/welean_audio_mode_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/audio_mode_backgroundimg"
+            android:scaleType="fitXY"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/wrap_welean_icon_headphone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_above="@+id/PLAY_BUTTON_GROUP"
+        android:gravity="center_vertical|center_horizontal">
+
+        <ImageView
+            android:layout_width="240dp"
+            android:layout_height="188dp"
+            android:id="@+id/img_headphone"
+            android:background="@drawable/headphones"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/wrap_welean_icon_headphone_land"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_above="@+id/PLAY_BUTTON_GROUP"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="65dp"
+        android:gravity="right">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="77dp"
+            android:id="@+id/img_headphone_land"
+            android:background="@drawable/headphones"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/wrap_welean_icon_headphone_audiobook"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_above="@+id/PLAY_BUTTON_GROUP"
+        android:gravity="center_vertical|center_horizontal">
+
+        <ImageView
+            android:layout_width="240dp"
+            android:layout_height="188dp"
+            android:id="@+id/img_headphone_audiobook"
+            android:background="@drawable/audiobook_headphone"/>
+    </RelativeLayout>
+
+    <!--   1줄짜리 경계라인 -->
+    <RelativeLayout
+        android:id="@+id/welean_blank_line2"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/SMART_BUTTON_WRAP"
+        android:layout_height="1dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/MOVING_SPACE"
+        android:layout_above="@+id/SMART_BUTTON_WRAP">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/blank_space"/>
+
+    </RelativeLayout>
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_above="@+id/SMART_BUTTON_WRAP"-->
+        <!--android:gravity="right"-->
+        <!--android:id="@+id/SLEEPER_WRAP">-->
+
+        <!--<Button-->
+            <!--android:layout_width="35dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:id="@+id/BTN_SLEEPINGMODE"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:background="@drawable/item_sleep"-->
+            <!--android:layout_marginRight="@dimen/welean_btn_sleeper_icon_margin" />-->
+    <!--</RelativeLayout>-->
+
+    <RelativeLayout
+        android:id="@+id/SMART_BUTTON_WRAP"
+        android:orientation="horizontal"
+        android:background="#B3272230"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_above="@+id/SUB_TITLS_VIEW"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+                <Button
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:id="@+id/BTN_AUTOPLAY"
+                    android:background="@drawable/item_autoplay"/>
+                <Button
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:id="@+id/BTN_AUTOPLAY_CANCEL"
+                    android:background="@drawable/item_autoplay_cancel"
+                    android:visibility="invisible"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/subtitles_btn_wrap">
+                <Button
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:background="@drawable/item_subtitls_off"
+                    android:visibility="gone"
+                    android:id="@+id/BTN_SMI_OFF"/>
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:background="@drawable/item_subtitls"
+                    android:id="@+id/BTN_SMI_ON"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/audiovideo_btn_wrap">
+                <Button
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:id="@+id/BTN_AUDIO"
+                    android:layout_margin="@dimen/welean_btn_smart_icon_margin"
+                    android:background="@drawable/item_audio"
+                    android:visibility="visible" />
+                <Button
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:id="@+id/BTN_VIDEO"
+                    android:layout_margin="@dimen/welean_btn_smart_icon_margin"
+                    android:background="@drawable/item_video"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/download_btn_wrap">
+            <Button
+                android:layout_width="@dimen/welean_btn_smart_icon_size"
+                android:layout_height="@dimen/welean_btn_smart_icon_size"
+                android:id="@+id/BTN_DOWNLOAD"
+                android:layout_margin="@dimen/welean_btn_smart_icon_margin"
+                android:background="@drawable/item_download" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/SLEEPWRAP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/sleeptext"
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:gravity="bottom|center"
+                    android:paddingBottom="5dp"
+                    android:text=" "
+                    android:textSize="8sp" />
+
+                <Button
+                    android:id="@+id/BTN_SLEEPINGMODE"
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:background="@drawable/item_timmer" />
+
+                <Button
+                    android:id="@+id/BTN_SLEEPACTIVE"
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:background="@drawable/item_timmer_active"
+                    android:visibility="invisible" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                android:layout_width="@dimen/welean_btn_smart_icon_size"
+                android:layout_height="@dimen/welean_btn_smart_icon_size"
+                android:id="@+id/BTN_ROCK"
+                android:background="@drawable/item_lock" />
+                <Button
+                    android:layout_width="@dimen/welean_btn_smart_icon_size"
+                    android:layout_height="@dimen/welean_btn_smart_icon_size"
+                    android:id="@+id/BTN_UNROCK_IN"
+                    android:background="@drawable/item_unlock_in"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+<!--   1줄짜리 경계라인 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/subtitls_longview_full_height"
+        android:id="@+id/SUB_TITLS_VIEW_LONG"
+        android:layout_above="@+id/welean_blank_line2"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/subtitls_shortview_height"
+        android:id="@+id/SUB_TITLS_VIEW"
+        android:gravity="bottom"
+        android:layout_above="@+id/CONTROL_WRAP_BG"
+        android:background="@color/subtitle_long_back_ground_color"
+        android:padding="@dimen/subtitls_view_padding"
+        android:visibility="gone"  />
+
+    <RelativeLayout
+        android:id="@+id/welean_blank_line"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/SMART_BUTTON_WRAP"
+        android:layout_height="1dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/PLAY_BUTTON_GROUP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/MOVING_SPACE"
+        android:layout_marginBottom="40dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/welean_btn_backward_height"
+            android:gravity="right|center_vertical">
+
+            <!--<Button-->
+                <!--android:layout_width="35dp"-->
+                <!--android:layout_height="35dp"-->
+                <!--android:id="@+id/BTN_SLEEPingmode"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:background="@drawable/item_sleep"-->
+                <!--android:layout_marginRight="@dimen/welean_btn_sleeper_icon_margin" />-->
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/play_button_g">
+
+            <Button
+                android:layout_width="@dimen/welean_btn_backward_width"
+                android:layout_height="@dimen/welean_btn_backward_height"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/WELAAA_ICON_SPEED"
+                android:background="@drawable/icon_speed_10"/>
+
+            <Button
+                android:text="@string/txt_backwardforward"
+                android:layout_width="@dimen/welean_btn_backward_width"
+                android:layout_height="@dimen/welean_btn_backward_height"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/CDN_TAG_BTN_BACKWARD"
+                android:background="@drawable/item_backward"/>
+
+            <Button
+                android:layout_width="@dimen/welean_btn_pause_width"
+                android:layout_height="@dimen/welean_btn_pause_width"
+                android:id="@+id/WELEAN_BTN_PAUSE"
+                android:background="@drawable/item_pause"/>
+
+            <Button
+                android:layout_width="@dimen/welean_btn_pause_width"
+                android:layout_height="@dimen/welean_btn_pause_width"
+                android:id="@+id/WELEAN_BTN_PLAY"
+                android:background="@drawable/item_play"
+                android:visibility="gone"/>
+
+            <Button
+                android:text="@string/txt_backwardforward"
+                android:layout_width="@dimen/welean_btn_backward_width"
+                android:layout_height="@dimen/welean_btn_backward_height"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/CDN_TAG_BTN_FORWARD"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/item_forward"/>
+
+            <Button
+                android:layout_width="@dimen/welean_btn_backward_width"
+                android:layout_height="@dimen/welean_btn_backward_height"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/WELAAA_ICON_LIST"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/icon_list"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/wrap_welean_play_network_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:visibility="visible"
+        android:layout_above="@+id/SMART_BUTTON_WRAP"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:id="@+id/wrap_welean_play_network_type_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#c8c8c8"
+            android:lineSpacingExtra="8sp"
+            android:gravity="center_horizontal"
+            android:text="LTE/3G 재생"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/CONTROL_WRAP_BG"
+        android:background="@color/smartButtonWrapBg"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@id/exo_position"
+                style="@style/txt_time_style"
+                android:layout_alignParentLeft="true"
+                android:gravity="left|center_vertical"
+                android:tag="TAG_WELEAN_TEXT_CUR_TIME"
+                android:text="00:00"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" />
+
+            <com.google.android.exoplayer2.ui.DefaultTimeBar
+
+                android:id="@id/exo_progress"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="26dp" />
+
+            <TextView
+                android:id="@id/exo_duration"
+                style="@style/text_play_time_style"
+                android:gravity="left|center_vertical"
+                android:tag="WELEAN_TAG_TOTAL_TIME"
+                android:text="00:00"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_height="match_parent"
+                android:textSize="12sp"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="15dip" />
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                >
+
+                <Button
+                    android:id="@+id/welaaa_volume_btn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/icon_volumn"
+                    android:layout_marginBottom="3dp"
+                    />
+
+                <Button
+                    android:id="@+id/welaaa_volume_btn_active"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/icon_volumn_active"
+                    android:layout_marginBottom="3dp"
+                    android:visibility="invisible"
+                    />
+
+            </RelativeLayout>
+
+
+
+
+        </LinearLayout>
+
+
+
+</RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/GENERAL_BUTTON_GROUP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/smartButtonWrapBg">
+        <!--android:background="@color/PopupNotifyBacground"-->
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/BTN_CLOSE_LINEAR"
+                >
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+
+                    android:layout_marginLeft="20dp"
+
+
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/BTN_CLOSE"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+
+                        android:background="@drawable/close" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="80dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="강좌타이틀"
+                    android:id="@+id/welean_videogroptitle"
+                    android:gravity="left"
+                    android:layout_marginTop="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="11sp"
+                    android:textColor="#ffffff"
+                    />
+
+                <TextView
+                    android:text="강의 타이틀"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/welean_videotitle"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textSize="15sp"
+                    android:textColor="#ffffff" />
+            </LinearLayout>
+
+            <!--<Button-->
+                <!--android:layout_width="35.33dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:id="@+id/BTN_SOCAIL"-->
+                <!--android:background="@drawable/btn_so"/>-->
+
+            <!--<Button-->
+                <!--android:layout_width="42dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:id="@+id/BTN_LIKEIT"-->
+                <!--android:background="@drawable/item_heart"/>-->
+
+            <!--<Button-->
+                <!--android:layout_width="42dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:id="@+id/BTN_PLUS"-->
+                <!--android:background="@drawable/item_plus" />-->
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
+    >
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@drawable/related_shadow_box"-->
+            <!--android:orientation="vertical"-->
+
+            <!--android:id="@+id/related_box_linear"-->
+            <!--&gt;-->
+
+            <ImageView
+                android:id="@+id/RELATED_BUTTON_GROUP"
+                android:layout_width="34dp"
+                android:layout_height="74dp"
+                android:layout_centerInParent="true"
+                android:layout_alignParentRight="true"
+                android:alpha="0.75"
+                android:background="@drawable/button"/>
+
+        <!--</LinearLayout>-->
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/MYREPU_BUTTON_GROUP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+
+        android:layout_gravity="right|center_vertical"
+        android:gravity="right"
+        >
+
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
+
+            android:background="@drawable/myrepu_shadow_box"
+
+            android:orientation="vertical"
+            android:layout_gravity="right|center_vertical"
+
+            android:id="@+id/myrepu_box_linear"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="나의 별점"
+                android:id="@+id/myrepu_text"
+
+                android:textSize="11sp"
+                android:textColor="#ffffff"
+                android:lineSpacingExtra="9sp"
+                android:layout_gravity="center|center_horizontal"
+
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="2dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/myrepu_linear"
+                android:gravity="center"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_star_green_small"
+                    android:layout_gravity="center|center_horizontal"
+                    android:layout_marginBottom="2dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="나의 별점"
+                    android:id="@+id/myrepu_star"
+
+                    android:textSize="11sp"
+                    android:textColor="#ffffff"
+                    android:lineSpacingExtra="9sp"
+                    android:layout_gravity="center|center_horizontal"
+                    android:layout_marginLeft="2dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/myrepu_linear_update"
+                android:gravity="center"
+                android:visibility="gone"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_star_green_small"
+                    android:layout_gravity="center|center_horizontal"
+                    android:layout_marginBottom="2dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="별점 주기"
+                    android:id="@+id/myrepu_star_update"
+
+                    android:textSize="11sp"
+                    android:textColor="#ffffff"
+                    android:lineSpacingExtra="9sp"
+                    android:layout_gravity="center|center_horizontal"
+                    android:layout_marginLeft="1dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/blank_speed_view"
+        android:visibility="invisible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/blank_Rock_view"
+        android:visibility="invisible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+    <Button
+        android:layout_width="@dimen/welean_btn_smart_icon_size"
+        android:layout_height="@dimen/welean_btn_smart_icon_size"
+        android:id="@+id/BTN_UNROCK"
+        android:gravity="center_horizontal"
+        android:minHeight="@dimen/welean_btn_smart_icon_size"
+        android:minWidth="@dimen/welean_btn_smart_icon_size"
+        android:background="@drawable/item_unlock" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/blank_sleeper_view"
+        android:visibility="invisible"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/welean_audio_mode_bg">
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:gravity="bottom"
+        android:id="@+id/SLEEPWRAP_LAYOUT_LAND"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:layout_above="@+id/CONTROL_WRAP_BG">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/media_controller_sleepmode_title"
+                android:gravity="center_horizontal|center"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_timmer"
+                    android:clickable="false"
+                    />
+                <TextView
+                    android:id="@+id/sleeptextTitle_land"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:text="Sleep Timer"
+                    android:gravity="left|center"
+                    android:textSize="13sp"
+                    />
+
+                <ImageView
+                    android:id="@+id/sleepCancelButton_land"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|center"
+                    android:background="@drawable/icon_player_close_pressed"
+                    android:layout_marginRight="30dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@color/media_controller_sleepmode_subtitle_off"
+                    >
+
+                    <TextView
+                        android:id="@+id/sleeptext15_land"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:text="15분"
+                        android:gravity="center_horizontal|center"
+                        android:background="@drawable/sleep_textview_selector"
+                        android:textSize="15sp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp">
+                        <View
+                            android:layout_width="wrap_content"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="17.8dp"
+                            android:layout_marginRight="17.8dp"
+                            android:background="@color/media_controller_sleepmode_subtitle_line" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@color/media_controller_sleepmode_subtitle_off">
+
+                    <TextView
+                        android:id="@+id/sleeptext30_land"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:text="30분"
+                        android:gravity="center_horizontal|center"
+                        android:background="@drawable/sleep_textview_selector"
+                        android:textSize="15sp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp">
+                        <View
+                            android:layout_width="wrap_content"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="17.8dp"
+                            android:layout_marginRight="17.8dp"
+                            android:background="@color/media_controller_sleepmode_subtitle_line" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/sleeptext45_land"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:text="45분"
+                    android:gravity="center_horizontal|center"
+                    android:background="@drawable/sleep_textview_selector"
+                    android:textSize="15sp" />
+
+
+
+                <TextView
+                    android:id="@+id/sleeptext60_land"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:text="1시간"
+                    android:gravity="center_horizontal|center"
+                    android:background="@drawable/sleep_textview_selector"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/SLEEPWRAP_LAYOUT"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/subtitls_longview_height"
+        android:layout_above="@+id/CONTROL_WRAP_BG"
+        android:layout_gravity="center"
+        android:gravity="bottom"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/media_controller_sleepmode_title"
+                android:gravity="center_horizontal|center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_timmer"
+                    android:clickable="false" />
+
+                <TextView
+                    android:id="@+id/sleeptextTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:gravity="left|center"
+                    android:text="Sleep Timer"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:id="@+id/sleepCancelButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/icon_player_close_pressed"
+                    android:gravity="center_horizontal|center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/media_controller_sleepmode_subtitle_off"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/sleeptext15"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/sleep_textview_selector"
+                    android:gravity="center_horizontal|center"
+                    android:text="15분"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp">
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/media_controller_sleepmode_subtitle_line" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/sleeptext30"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/sleep_textview_selector"
+                    android:gravity="center_horizontal|center"
+                    android:text="30분"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp">
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/media_controller_sleepmode_subtitle_line" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/sleeptext45"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/sleep_textview_selector"
+                    android:gravity="center_horizontal|center"
+                    android:text="45분"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp">
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/media_controller_sleepmode_subtitle_line" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/sleeptext60"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/sleep_textview_selector"
+                    android:gravity="center_horizontal|center"
+                    android:text="1시간"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ARROW_LAYOUT"
+
+        android:layout_above="@+id/CONTROL_WRAP_BG"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/arrow_button_g">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="5">
+
+                <Button
+                    android:id="@+id/leftArrowButton"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/camera_retake_2_left"
+                    android:layout_gravity="left"
+                    android:alpha="0.27"
+                    android:layout_marginLeft="20dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/rightArrowButton"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:gravity="right"
+                    android:background="@drawable/camera_retake_2_right"
+                    android:alpha="0.27"
+                    android:layout_marginRight="20dp"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/VOLUME_CONTROL_BAR"
+        android:orientation="horizontal"
+        android:background="#B3272230"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_above="@+id/SUB_TITLS_VIEW"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+
+        android:visibility="invisible"
+        >
+
+        <SeekBar
+            android:id="@+id/VOLUME_SEEK_BAR"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:progressDrawable="@drawable/progress_horizontal_custom_volume_bar"
+            android:maxHeight="40dp"
+            android:minHeight="40dp"
+            android:thumbTint="@android:color/transparent"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/VOLUME_SEEK_TITLE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#91ffffff"
+                android:gravity="center_horizontal"
+
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
