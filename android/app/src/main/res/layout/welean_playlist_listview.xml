@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentTop="true"
-    tools:context="kr.co.influential.youngkangapp.WelaaaPlayer">
+    >
 
         <ListView
             android:layout_width="match_parent"

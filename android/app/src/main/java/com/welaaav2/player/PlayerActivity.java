@@ -5,7 +5,7 @@
  * The SDK is based on Exo player library
  */
 
-package com.welaaav2.player;
+package com.welaaav2;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -34,16 +36,20 @@ import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.CookieManager;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -96,20 +102,28 @@ import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
-import com.welaaav2.R;
-import com.welaaav2.cast.CastControllerActivity;
-import com.welaaav2.pallycon.PlayStatus;
-import com.welaaav2.util.CustomDialog;
-import com.welaaav2.util.HttpCon;
-import com.welaaav2.util.Logger;
-import com.welaaav2.util.Preferences;
-import com.welaaav2.util.Utils;
+import com.welaaav2.player.AudioBookPlayerListAdapter;
+import com.welaaav2.player.NewWebPlayerInfo;
+import com.welaaav2.player.PlayerListAdapter;
+import com.welaaav2.player.SubtitlsInfo;
+import com.welaaav2.player.WebPlayerInfo;
+import com.welaaav2.utility.CustomDialog;
+import com.welaaav2.utility.HttpCon;
+import com.welaaav2.utility.Logger;
+import com.welaaav2.utility.Preferences;
+import com.welaaav2.utility.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.ref.WeakReference;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -315,6 +329,25 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	private String fontSize = "";
 
 	public String mUserStar = "";
+
+	private String cId="";
+	public int mLastViewTime = 0;
+	private Boolean mIsDownloadBind = false;
+	private Boolean mIsPlayerBind = false;
+	public  Boolean mIsAudioBook = false;
+	public  String PLAY_STATE= "STREAMMING" ; // STREAMMING,LOCAL
+	public  String CON_CLASS="1"; //video:1, audiobook:2
+	public  String PLAY_MODE="video"; //(CON_CLASS => video의 audioMode,videoMode
+	private String startPosition="";
+
+	private WebPlayerInfo mWebPlayerInfo = null;
+	private NewWebPlayerInfo mNewWebPlayerInfo = null;
+
+	private ProgressBar audioItemProgressBar;
+
+	private PlayerListAdapter lectureListItemdapter;
+	private AudioBookPlayerListAdapter lectureAudioBookListItemdapter;
+	private ArrayList<JSONObject> lastViewListArray = new ArrayList<JSONObject>();
 
 	private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
 
@@ -574,21 +607,24 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		mediaDataSourceFactory = buildDataSourceFactory();
 
 		Log.d(TAG, "onCreate(): mPlayStatus.mPosition: " + mPlayStatus.mPosition);
+		audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
 
 		// 베이스 레이아웃
 		setBaseUI();
-
 		// 자막 레이아웃
 		setSubtitlsUI();
-
 		// 버튼 클릭 준비
 		buttonInit();
-
 		// Volume Controller Init
 		initControls();
-
 		// 별점 뷰 셋팅 하기
 		setMyrepuSetUI();
+		//오디오북 or 오디오모드에서 보이는 이미지
+		setAudioModeImageUI();
+		// 네트워크 상태 , 다운로드 상태 출력
+		setDownloadHandlering();
+		//플레이리스트UI
+		setLectureItem();
 
 		mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -1915,7 +1951,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		}
 	}
 
-	private static class SleepTimeThreader extends Thread {
+	private static class SleepTimeThreader extends Thread{
 		public SleepTimeThreader(Runnable runnable){
 			super(runnable);
 		}
@@ -2117,7 +2153,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					break;
 
 					case R.id.welaaa_volume_btn:
-
 						mBtnVolume.setVisibility(View.INVISIBLE);
 						mBtnVolumeActive.setVisibility(View.VISIBLE);
 
@@ -2134,14 +2169,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 						int nMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 						int progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-						int progressInt = Math.round(100/nMax)*progress;
+						int progressInt = Math.round(100 / nMax) * progress;
 
-						if(progressInt>89){
+						if (progressInt > 89) {
 							progressInt = 100;
-						}
 
 						mTextViewVolumeText.setText(progressInt + "%");
-
+					}
 						break;
 
 					case R.id.welaaa_volume_btn_active:
@@ -2172,9 +2206,129 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 						break;
 
-					case R.id.myrepu_box_linear:
-						alertMyRepuWindow("강의클립이 흥미로우셨나요?","회원님의 의견이 더 좋은 강의를 만드는 원동력이 됩니다! ",1,1 , 0);
+					case R.id.myrepu_box_linear: {
+							alertMyRepuWindow("강의클립이 흥미로우셨나요?", "회원님의 의견이 더 좋은 강의를 만드는 원동력이 됩니다! ", 1, 1, 0);
+						}
 						break;
+
+					case R.id.BTN_AUDIO: {
+						int indexOfVideoRenderer = -1;
+						for (int i = 0; i < player.getRendererCount(); i++) {
+							if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+								indexOfVideoRenderer = i;
+								break;
+							}
+						}
+
+						trackSelector.setRendererDisabled(indexOfVideoRenderer, true);
+
+						audioModeBackgroundLayout.setVisibility(View.VISIBLE); //이미지보이고
+						audioModeIconHeadset.setVisibility(View.VISIBLE); //아이콘보이고
+						mButtonAudio.setVisibility(View.INVISIBLE); //오디오버튼아이콘 안보이고
+						mButtonVideo.setVisibility(View.VISIBLE); //비디오버튼아이콘 보이고
+					}
+					break;
+
+					case R.id.BTN_VIDEO: {
+
+						int indexOfVideoRenderer = -1;
+						for (int i = 0; i < player.getRendererCount(); i++) {
+							if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+								indexOfVideoRenderer = i;
+								break;
+							}
+						}
+
+						trackSelector.setRendererDisabled(indexOfVideoRenderer, false);
+
+						audioModeBackgroundLayout.setVisibility(View.GONE);
+						audioModeIconHeadset.setVisibility(View.GONE);
+						mButtonAudio.setVisibility(View.VISIBLE);
+						mButtonVideo.setVisibility(View.INVISIBLE);
+					}
+					break;
+
+					case  R.id.BTN_DOWNLOAD:
+					{
+//						if(Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+//						}else {
+//							if(mWelaaaPlayer!=null){
+//								if(mWelaaaPlayer.getwebPlayerInfo().getAudiobookbuy().equals("N")){
+//									Utils.logToast(getApplicationContext() , getApplicationContext().getString(R.string.info_perview_audio_mode)) ;
+//
+//									return;
+//								}
+//							}
+//						}
+
+//						if(!mWelaaaPlayer.mPreview){
+//							String ckey = "";
+//
+//							if(Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+//								ckey = mWelaaaPlayer.getNewWebPlayerInfo().getCkey()[getContentId()];
+//							}else {
+//								ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
+//							}
+//
+//							try {
+//								if(mWelaaaPlayer.ContentManager().existCid(ckey)){  // null return
+//									Utils.logToast(getApplicationContext() , "이미 다운로드하셨습니다.");
+//								}else{
+//									alertDownloadWindow("알림" , "다운로드를 받으시겠습니까?" , "확인" , "취소" , 1);
+//								}
+//
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//							}
+//						}else{
+//							Utils.logToast(getApplicationContext() , getApplicationContext().getString(R.string.info_perview_mode)) ;
+//						}
+
+						Logger.e(TAG + " BTN_DOWNLOAD ");
+						alertDownloadWindow("알림" , "다운로드를 받으시겠습니까?" , "확인" , "취소" , 1);
+
+					}
+					break;
+
+					case  R.id.WELAAA_ICON_LIST:
+					{
+						boolean previewPlaymode =Preferences.getWelaaaPreviewPlay(getApplicationContext());
+
+						if(previewPlaymode){
+							// 구현 전입니다
+							Utils.logToast(getApplicationContext() , getApplicationContext().getString(R.string.info_perview_mode)) ;
+						}else{
+							if(CON_CLASS.equals("1")) {
+								// PlayerController 에서 호출되는 내용이 없었다 //
+
+								String F_Token = Preferences.getWelaaaLoginToken(getApplicationContext());
+								String weburl = WELEARN_WEB_URL + "/usingapp/play_list.php"	 + "?f_token=" + F_Token;
+
+//								SendlastedViewListasyncTask sendlastedViewListasyncTask = new SendlastedViewListasyncTask();
+//								if(Build.VERSION.SDK_INT >= 11){
+//									sendlastedViewListasyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, weburl );
+//								}
+//								else{
+//									sendlastedViewListasyncTask.execute(weburl);
+//								}
+
+
+								updateContentList();
+							}
+
+							if(CON_CLASS.equals("2") || PLAY_MODE.equals("audio")) {
+								mButtonGroupLayout.setVisibility(View.VISIBLE);
+							}
+
+							mPlaylistGroupLayout.setVisibility(View.VISIBLE);
+							mPlaylistGroupLayout.startAnimation(mAniSlideShow);
+
+							// 일시정지
+							player.setPlayWhenReady(false);
+						}
+					}
+					break;
+
 				}
 
 			} catch (Exception e) {
@@ -2817,6 +2971,51 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		}
 	}
 
+	public CustomDialog mCustomDialog;
+	public void alertDownloadWindow(String title, String massage, String str2, String str1 , final int alertWindowId){
+
+		Logger.e(TAG + " BTN_DOWNLOAD alertDownloadWindow");
+
+		// 1 download
+		// 2 download Pause , Stop ? Cancel ?
+
+		View.OnClickListener leftListner= new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mCustomDialog.dismiss();
+			}
+		};
+
+		View.OnClickListener rightListner= new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				switch(alertWindowId) {
+
+					case 1:
+						// 권한 정보를 확인하고 다운로드를 실행합니다.
+						// 권한 정보 /usingapp/contents_each_author.php
+//						mWelaaaPlayer.goDownloadCheckViewLimitdate();
+						// 다운로드 startService 로 처리가 되는 구간
+						mCustomDialog.dismiss();
+						break;
+					case 2:
+						mCustomDialog.dismiss();
+						mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
+						mBtnDownload.setOnClickListener(click_control);
+
+
+						break;
+				}
+
+
+			}
+		};
+
+		mCustomDialog = new CustomDialog(PlayerActivity.this , title,massage,str1,str2,leftListner,rightListner);
+		mCustomDialog.show();
+	}
+
 	// 별점 주기
 	// 커스텀 팝업
 	public CustomDialog mMyReCustomDialog;
@@ -3027,7 +3226,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 			}
 
-			mMyReCustomDialog = new CustomDialog(getApplicationContext() , meassge,  title , rightListner , type , ckey , thumNailUrl , remainTime);
+			mMyReCustomDialog = new CustomDialog(PlayerActivity.this , meassge,  title , rightListner , type , ckey , thumNailUrl , remainTime);
 			mMyReCustomDialog.show();
 		}catch (Exception e){
 			e.printStackTrace();
@@ -3068,5 +3267,772 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 				}
 			}
 		}
+	}
+
+	/*******************************************************************
+	 * 오디오모드 or 오디오북일 경우 보여지는 백그라운드 이미지
+	 *******************************************************************/
+	public void setAudioModeImageUI(){
+
+		try{
+			audioModeBackgroundLayout = findViewById(R.id.welean_audio_mode_bg);
+			ImageView audioModeBackgroundImg = findViewById(R.id.audio_mode_backgroundimg);
+			String url = "";
+
+			if(Utils.isAirModeOn(getApplicationContext())){
+
+
+			}else{
+				if(Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+					// 동영상 강의 별로 이미지가 있습니다.
+//					if(mWelaaaPlayer.getNewWebPlayerInfo().getGroup_img()[getContentId()].contains("://")){
+//						url = mWelaaaPlayer.getNewWebPlayerInfo().getGroup_img()[getContentId()];
+//					}else{
+//						url = "http://"+mWelaaaPlayer.getNewWebPlayerInfo().getGroup_img()[getContentId()];
+//
+				}else {
+				    // 오디오북 은 클립립별 이미지가 없고
+//					if(mWelaaaPlayer.getNewWebPlayerInfo().getGroup_img()[getContentId()].contains("://")){
+//						url = mWelaaaPlayer.getwebPlayerInfo().getGroupImg();
+//					}else{
+//						url = "http://"+mWelaaaPlayer.getwebPlayerInfo().getGroupImg();
+//					}
+				}
+			}
+
+			url = "http://welaaa.co.kr/contentsUpImage/20170731000721_2.png";
+
+			Glide
+					.with(getApplicationContext())
+					.load(url)
+					.centerCrop()
+					.placeholder(null)
+					.crossFade()
+					.into(audioModeBackgroundImg);
+
+			// audioBook mode , video/audio mode
+			if(CON_CLASS.equals("1")) {
+				audioModeIconHeadset = findViewById(R.id.wrap_welean_icon_headphone);
+			}else if(CON_CLASS.equals("2")){
+				audioModeIconHeadset = findViewById(R.id.wrap_welean_icon_headphone_audiobook);
+			}
+
+			// 지식영상 오디오모드 의 경우 ?
+			if(CON_CLASS.equals("1")) {
+				if(Preferences.getWelaaaPlayAudioUsed(getApplicationContext())){
+
+				}
+			}else{
+				// 오디오북 의 경우 아래 옵션으로 백그라운드 갱신되지 않는걸까 ????
+				// 매번 갱신되지 않도록 ? 깜박 거림 방지 ??
+
+				if(audioModeBackgroundLayout!=null){
+					audioModeBackgroundLayout.setVisibility(View.INVISIBLE);
+				}
+
+				if(audioModeIconHeadset!=null){
+					audioModeIconHeadset.setVisibility(View.INVISIBLE);
+				}
+			}
+		}catch (Exception e ){
+			e.printStackTrace();
+
+			Logger.e(TAG + " 20170904 setAudioModeImageUI Exception " + e.toString());
+		}
+	}
+
+	/*******************************************************************
+	 * 다운로드 모드 , 네트워크 판단 , 출력
+	 *******************************************************************/
+	public void setDownloadHandlering(){
+
+		// 2017.08.31 지식영상 재생이 완료 된 상태 ,
+		// 백그라운드로 내려가고 , 포그라운드로 다시 올라올때
+		// ArrayIndexOutOdBoundException 발생 됨
+		// http://crashes.to/s/63b70e2087d
+		try{
+			ConnectivityManager cmgr = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+
+			TextView play_network_type_text = findViewById(R.id.wrap_welean_play_network_type_text);
+
+			String nTitle = "";
+			String ckey = "";
+
+			if(Utils.isAirModeOn(getApplicationContext())){
+				nTitle = "다운로드 파일로 재생";
+			}else{
+				if(Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+//					ckey = mWelaaaPlayer.getNewWebPlayerInfo().getCkey()[getContentId()];
+				}else {
+//					ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
+				}
+
+				// 다운로드 프로세스 관련 확인 .
+//				if(mWelaaaPlayer.ContentManager().existCid(ckey)){
+//					nTitle = "다운로드 파일로 재생";
+//					mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download_done));
+//				}else{
+
+					mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
+
+					try{
+						if(netInfo.isConnected() && netInfo.getTypeName().equals("WIFI")){
+							nTitle = "Wi-Fi 재생";
+						}else if(netInfo.isConnected() && netInfo.getTypeName().equals("MOBILE")){
+							nTitle = "LTE/3G 재생";
+						}
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+//				}
+			}
+
+			play_network_type_text.setText(nTitle);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public WebPlayerInfo getwebPlayerInfo(){
+		return mWebPlayerInfo;
+	}
+	public NewWebPlayerInfo getNewWebPlayerInfo() { return mNewWebPlayerInfo; }
+
+	public void setLectureItem() {
+
+		if(lectureAudioBookListItemdapter!=null)lectureAudioBookListItemdapter=null;
+		lectureAudioBookListItemdapter = new AudioBookPlayerListAdapter(getApplicationContext(),this);
+
+		try{
+			if(CON_CLASS!=null){
+				// AudioBook 은 현재 상태 유지 합니다
+				if (CON_CLASS.equals("2")){
+					ListView lecturListView = findViewById(R.id.weleanplaylistview);
+
+					String[] a = null;
+					String[] b = null;
+					String[] c = null;
+					String[] d = null;
+					String[] e = null;
+					String[] f = null;
+					String[] g = null;
+					String[] audioPreview = null;
+					String audioBookBuy = null;
+					String audioBookBuy_limitdate = null;
+
+					if(Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+						a = getNewWebPlayerInfo().getCplay_time();
+						b = getNewWebPlayerInfo().getCname();
+						c = getNewWebPlayerInfo().getCurl();
+					}else {
+						a = getwebPlayerInfo().getCplayTime();
+						b = getwebPlayerInfo().getCname();
+						c = getwebPlayerInfo().getCurl();
+
+						d = getwebPlayerInfo().getA_depth();
+						e = getwebPlayerInfo().getHistory_endtime();
+						f = getwebPlayerInfo().getFirst_play();
+						g = getwebPlayerInfo().getCkey();
+						audioPreview = getwebPlayerInfo().getAudio_preview();
+						audioBookBuy = getwebPlayerInfo().getAudiobookbuy();
+						audioBookBuy_limitdate = getwebPlayerInfo().getAudiobookbuy();
+					}
+
+					for (int i = 0; i < a.length; i++) {
+
+						try{
+							a[i] = a[i].substring(3,8);
+						}catch (Exception ex){
+							ex.printStackTrace();
+						}
+
+						if(d[i].equals("1")){
+							// 1depth index
+
+							if(c[i].contains(".mp4")){
+								if(audioBookBuy.equals("Y")){
+									if(e[i].equals("9999999")){
+										// 재생 완료 상태
+										lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "7");
+									}else  if(e[i].equals("")){
+										// 재생 이력 없음
+										lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "2");
+									}else{
+										// 재생 중
+										lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "8");
+									}
+								}else{
+									if(audioPreview[i].equals("Y")){
+										if(e[i].equals("9999999")){
+											// 재생 완료 상태
+//                                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "7");
+											lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "31");
+										}else  if(e[i].equals("")){
+											// 재생 이력 없음
+//                                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "2");
+											lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "32");
+										}else{
+											// 재생 중
+//                                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "8");
+											lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "33");
+										}
+									}else{
+										lectureAudioBookListItemdapter.add("", "", b[i], "", "" , "" , "1");
+									}
+								}
+							}else{
+								lectureAudioBookListItemdapter.add("", "", b[i], "", "" , "" , "1");
+							}
+
+						}else if(d[i].equals("2")){
+							// 2depth index
+							if(c[i].contains(".mp4") ){
+
+								if(audioBookBuy.equals("Y")){
+
+									if(Preferences.getWelaaaPlayerOnClickPos(getApplicationContext())>0){
+										if(i == Preferences.getWelaaaPlayerOnClickPos(getApplicationContext())){
+											// Title 강조
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "13");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "14");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "15");
+											}
+										}else{
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "9");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "4");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "10");
+											}
+										}
+									}else{
+										if(g[i].equals( getwebPlayerInfo().getCkey()[getContentId()]) ){
+											// Title 강조
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "13");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "14");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "15");
+											}
+										}else{
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "9");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "4");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "10");
+											}
+										}
+									}
+
+								}else{
+									if(audioPreview[i].equals("Y")){
+
+										if(g[i].equals( getwebPlayerInfo().getCkey()[getContentId()] )){
+											// Title 강조
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "13");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "24");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "14");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "23");
+											}else{
+												// 재생 중
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "15");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "22");
+											}
+										}else{
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "9");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "21");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "4");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "20");
+											}else{
+												// 재생 중
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "10");
+												//
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "19");
+											}
+										}
+									}else{
+										lectureAudioBookListItemdapter.add("", "", b[i], "", "" , "" , "3");
+									}
+								}
+							}else{
+								lectureAudioBookListItemdapter.add("", "", b[i], "", "" , "" , "3");
+							}
+
+						}else if(d[i].equals("3") || d[i].equals("4") || d[i].equals("5") ){
+							// 3depth index
+
+							if(c[i].contains(".mp4") ){
+
+								if(audioBookBuy.equals("Y")){
+
+									if(Preferences.getWelaaaPlayerOnClickPos(getApplicationContext())>0){
+										if(i == Preferences.getWelaaaPlayerOnClickPos(getApplicationContext())){
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "16");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "17");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "18");
+											}
+
+										}else{
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "11");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "6");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "12");
+											}
+										}
+									}else{
+										//
+
+										if(g[i].equals( getwebPlayerInfo().getCkey()[getContentId()])){
+											// Title 강조
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "16");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "17");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "18");
+											}
+										}else{
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "11");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "6");
+											}else{
+												// 재생 중
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "12");
+											}
+										}
+
+									}
+
+								}else {
+
+									if(audioPreview[i].equals("Y")){
+										if(g[i].equals( getwebPlayerInfo().getCkey()[getContentId()] )){
+											// Title 강조
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "16");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "25");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "17");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "26");
+											}else{
+												// 재생 중
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "18");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "27");
+											}
+										}else{
+											if(e[i].equals("9999999")){
+												// 재생 완료 상태
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "11");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "28");
+											}else  if(e[i].equals("")){
+												// 재생 이력 없음
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "6");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "29");
+											}else{
+												// 재생 중
+//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "12");
+												lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "30");
+											}
+										}
+									}else{
+										lectureAudioBookListItemdapter.add("", "", b[i], "", "" , "" , "5");
+									}
+								}
+							}else{
+								lectureAudioBookListItemdapter.add("", "", b[i], "", "" , "" , "5");
+							}
+						}
+					}
+
+					lecturListView.setAdapter(lectureAudioBookListItemdapter);
+
+					int position = 0 ;
+
+					if(Preferences.getWelaaaPlayerOnClickPos(getApplicationContext())>0){
+						position = Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()) ;
+
+						lecturListView.setSelection(position);
+					}else{
+						position = Integer.parseInt(getwebPlayerInfo().getCalign()[getContentId()]);
+
+						lecturListView.setSelection(position-1);
+					}
+
+					lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+						@Override
+						public void onScrollStateChanged(AbsListView absListView, int i) {
+							// scroll Start 1
+							// scroll Ing 2
+							// scroll Stop 0
+						}
+
+						@Override
+						public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+							//
+							// i : 현재 포지션
+							// i1 : 뷰상에서 보여지는 포지션 전체 값
+							// i2 : listView 전체 값
+
+							audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
+							audioItemProgressBar.setVisibility(View.VISIBLE);
+
+							if(i==0){
+								audioItemProgressBar.setProgress( 1 );
+							}
+
+							if(i>0 && i<30){
+//                                mlistViewProgress.sendEmptyMessageDelayed(0,200);
+
+								audioItemProgressBar.setProgress( ((i)*100/i2)  );
+
+							}
+
+							if(i>30){
+//                                mlistViewProgress.sendEmptyMessageDelayed(0,200);
+
+								audioItemProgressBar.setProgress( ((i+i1)*100/i2)  );
+
+							}
+
+						}
+					});
+//            강좌타이틀
+					TextView list_grop_title = findViewById(R.id.list_group_title);
+					String gTitle = "";
+
+					if(Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+
+						gTitle = getNewWebPlayerInfo().getGroup_title()[getContentId()].replaceAll("<br>", "");
+
+					}else {
+						gTitle = getwebPlayerInfo().getGroupTitle().replaceAll("<br>", "");
+					}
+
+					list_grop_title.setText(gTitle);
+
+				}
+
+				boolean previewPlaymode =Preferences.getWelaaaPreviewPlay(getApplicationContext());
+
+				// 초기화 ??
+				Logger.i(TAG + "20160901 previewPlaymode :" + previewPlaymode );
+				// 여기로 들어오면 안되는데요 ..
+				// 로그인 상태라면 ?
+				// 또는 viewContents?ckey=189 로 호출될 때 ..
+				// 또는 previewPlaymode 는 동영상 지식영상 컨텐츠의 경우만
+
+				if(previewPlaymode && CON_CLASS.equals("1")) {
+
+					if (lectureListItemdapter != null) lectureListItemdapter = null;
+					lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
+
+					ListView lecturListView = findViewById(R.id.weleanplaylistview);
+
+					String[] a = null;
+					String[] b = null;
+					String[] c = null;
+					String[] d = null;
+					String[] e = null;
+					String[] f = null;
+
+					try {
+						if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+							a = getNewWebPlayerInfo().getCplay_time();
+							b = getNewWebPlayerInfo().getCname();
+							c = getNewWebPlayerInfo().getCurl();
+							d = getNewWebPlayerInfo().getGroup_title();
+							e = getNewWebPlayerInfo().getGroup_teachername();
+							f = getNewWebPlayerInfo().getEnd_time();
+						}
+
+						for (int i = 0; i < a.length; i++) {
+
+							a[i] = a[i].substring(3, 8);
+
+							lectureListItemdapter.add(a[i], c[i], b[i], d[i], e[i], f[i], "1");
+
+						}
+
+						lecturListView.setAdapter(lectureListItemdapter);
+
+						lecturListView.setSelection(0);
+
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	private static String readAll(Reader rd) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		int cp;
+		while ((cp = rd.read()) != -1) {
+			sb.append((char) cp);
+		}
+		return sb.toString();
+	}
+
+	public void updateContentList() {
+
+		StringBuffer sb = new StringBuffer();
+
+		try {
+			InputStream is = getAssets().open("contentsinfo28.json");
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			String jsonText = readAll(rd);
+			JSONObject json = new JSONObject(jsonText);
+
+			String group_title = json.getString("group_title");
+			String group_memo = json.getString("group_memo");
+			String group_teachername = json.getString("group_teachername");
+			String group_teachermemo = json.getString("group_teachermemo");
+			String group_img = json.getString("group_img");
+			String group_previewcontent = json.getString("group_previewcontent");
+			String allplay_time = json.getString("allplay_time");
+			String contentscnt = json.getString("contentscnt");
+			String hitcnt = json.getString("hitcnt");
+			String likecnt = json.getString("likecnt");
+			String zzimcnt = json.getString("zzimcnt");
+			String staravg = json.getString("staravg");
+			String con_class = json.getString("con_class");
+			String downloadcnt = json.getString("downloadcnt");
+			String audiobookbuy = json.getString("audiobookbuy");
+			String audiobookbuy_limitdate = json.getString("audiobookbuy_limitdate");
+
+
+			sb.append("group_title=" + group_title);
+			sb.append("&group_memo=" + group_memo);
+			sb.append("&group_teachername=" + group_teachername);
+			sb.append("&group_teachermemo=" + group_teachermemo);
+			sb.append("&group_img=" + group_img);
+			sb.append("&group_previewcontent=" + group_previewcontent);
+			sb.append("&allplay_time=" + allplay_time);
+			sb.append("&contentscnt=" + contentscnt);
+			sb.append("&hitcnt=" + hitcnt);
+			sb.append("&likecnt=" + likecnt);
+			sb.append("&zzimcnt=" + zzimcnt);
+			sb.append("&staravg=" + staravg);
+			sb.append("&con_class=" + con_class);
+			sb.append("&downloadcnt=" + downloadcnt);
+			sb.append("&audiobookbuy=" + audiobookbuy);
+			sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
+
+			//contentsinfo의 값은 배열로 구성 되어있으므로 JSON 배열생성
+			JSONArray jArr = json.getJSONArray("contentsinfo");
+
+			//배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
+			for (int i = 0; i < jArr.length(); i++) {
+
+				json = jArr.getJSONObject(i);
+				//값을 추출함
+				String ckey = json.getString("ckey");
+				String cname = json.getString("cname");
+				String cmemo = json.getString("cmemo");
+				String curl = json.getString("curl");
+				String cplay_time = json.getString("cplay_time");
+				String cpay = json.getString("cpay");
+				String cpay_money = json.getString("cpay_money");
+				String clist_img = json.getString("clist_img");
+				String chitcnt = json.getString("chitcnt");
+				String csmi = json.getString("csmi");
+
+				String a_depth = json.getString("a_depth");
+				String history_endtime = json.getString("history_endtime");
+
+				String first_play = json.getString("first_play");
+				String calign = json.getString("calign");
+				String audio_preview = json.getString("audio_preview");
+
+				sb.append("&ckey=" + ckey);
+				sb.append("&cname=" + cname);
+				sb.append("&cmemo=" + cmemo);
+				sb.append("&curl=" + curl);
+				sb.append("&cplay_time=" + cplay_time);
+				sb.append("&cpay=" + cpay);
+				sb.append("&cpay_money=" + cpay_money);
+				sb.append("&clist_img=" + clist_img);
+				sb.append("&chitcnt=" + chitcnt);
+				sb.append("&history_endtime=" + history_endtime);
+				sb.append("&a_depth=" + a_depth);
+				sb.append("&first_play=" + first_play);
+				sb.append("&calign=" + calign);
+				sb.append("&audio_preview=" + audio_preview);
+
+				if (csmi.equals("")) {
+					sb.append("&csmi=" + "none");
+				} else {
+					sb.append("&csmi=" + csmi);
+				}
+			}
+
+			if(mWebPlayerInfo!=null) {
+				mWebPlayerInfo=null;
+			}
+
+			mWebPlayerInfo = new WebPlayerInfo(sb.toString());
+			// 화면 그리기 ..
+			callbackWebPlayerInfo("player_list_icon" , "");
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void callbackWebPlayerInfo(String methodName , String params){
+		try{
+			//
+			if(methodName.equals("player_list_icon")){
+
+				ListView lecturListView = findViewById(R.id.weleanplaylistview);
+				lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+					@Override
+					public void onScrollStateChanged(AbsListView absListView, int i) {}
+
+					@Override
+					public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+						audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
+						audioItemProgressBar.setProgressDrawable( Utils.getDrawable(getApplicationContext() , R.drawable.progress_horizontal_custom_movie_bar) );
+						audioItemProgressBar.setVisibility(View.VISIBLE);
+
+						if(i==0){
+							audioItemProgressBar.setProgress( 1 );
+						}
+
+						if(i>0 && i<30){
+							audioItemProgressBar.setProgress( ((i+i1)*100/i2)  );
+						}
+
+						if(i>30){
+							audioItemProgressBar.setProgress( ((i+i1)*100/i2)  );
+						}
+					}
+				});
+
+				String currentPosition = "";
+				String itemArrayTotalCnt = "";
+
+				InputStream is = getAssets().open("contentsinfo28.json");
+				BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+				String jsonText = readAll(rd);
+				JSONObject json = new JSONObject(jsonText);
+
+				JSONArray itemArray = json.getJSONArray("contentsinfo");
+
+				int currentListKey = Integer.parseInt(Preferences.getWelaaaRecentPlayListUse(getApplicationContext()));
+
+				if(currentListKey>0) {
+
+				}else{
+					String playListCount = Preferences.getWelaaaPlayListCount(getApplicationContext()) ;
+					String[] currentPosition2 =  playListCount.split(":");
+					currentListKey = itemArray.length() - Integer.parseInt(currentPosition2[0]);
+				}
+
+				currentPosition = String.valueOf( itemArray.length() - currentListKey );
+
+				for (int i = 0; i < itemArray.length(); i++) {
+					JSONObject objItem = itemArray.getJSONObject(i);
+
+					lastViewListArray.add(i , objItem);
+
+					String playListType = "";
+
+					// 마이 윌라 // 최근 재생 리스트를 통해서 들어오는
+					// 상태 값이 있어야 할 것 같습니다
+					// Integer.parseInt(objItem.getString("listkey"))
+
+					if(Integer.parseInt(currentPosition) ==  (itemArray.length() - Integer.parseInt(objItem.getString("listkey")))  ) {
+
+						if(objItem.getString("end_time").equals("0") || objItem.getString("end_time").equals("")){
+							playListType = "4";
+						}else if(objItem.getString("end_time").equals("9999999")) {
+							playListType = "5";
+						}else{
+							playListType = "6";
+						}
+
+					}else{
+
+						if(objItem.getString("end_time").equals("0") || objItem.getString("end_time").equals("")){
+							playListType = "1";
+						}else if(objItem.getString("end_time").equals("9999999")) {
+							playListType = "3";
+						}else{
+							playListType = "2";
+						}
+					}
+
+					lectureListItemdapter.add(objItem.getString("cplay_time"),objItem.getString("curl"),objItem.getString("cname"),objItem.getString("grouptitle"),objItem.getString("teachername") ,  objItem.getString("end_time") , playListType ) ;
+
+
+					lecturListView.setAdapter(lectureListItemdapter);
+				}
+
+				lecturListView.setSelection(Integer.parseInt(currentPosition));
+				Preferences.setWelaaaRecentPlayListUse(getApplicationContext() , false , "0");
+
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public int getContentId(){
+		Logger.i(TAG + ":doAutoPlay getContentId " + Preferences.getWelaaaPlayListCId(getApplication()) );
+		return Preferences.getWelaaaPlayListCId(getApplication());
 	}
 }

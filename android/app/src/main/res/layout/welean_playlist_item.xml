@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/PLAYLISTITEM"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
+    android:background="@color/last_view_list_background_color"
+    >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
+            <TextView
+                android:text="동영상타이틀"
+                android:textColor="#efefef"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/titleTxt"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:layout_weight="7"
+                android:paddingRight="22dp"
+                android:layout_gravity="center|center_horizontal"
+                android:textSize="15sp"/>
+
+            <ImageView
+               android:id="@+id/playbtnimageview"
+               android:layout_width="20dp"
+               android:layout_height="20dp"
+               android:layout_gravity="center|center_horizontal"
+               android:background="@drawable/icon_video_play" />
+
+            <TextView
+                android:text="00:00:00"
+                android:textColor="#9b9b9b"
+                android:paddingLeft="10dp"
+                android:paddingRight="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/totalTime"
+                android:layout_gravity="center|center_horizontal"
+                 />
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            >
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:background="#706d76" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="7.5dp"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:text="동영상그룹타이틀"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:id="@+id/groupTitleTxt"
+                android:ellipsize="end"
+                android:textSize="13sp"
+                android:textColor="#bba693"
+                android:lineSpacingExtra="7sp"
+                android:maxLines="1"/>
+
+            <TextView
+                android:text="강사명"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:id="@+id/teacherName"
+                android:ellipsize="end"
+                android:textSize="13sp"
+                android:textColor="#706d76"
+                android:lineSpacingExtra="7sp"
+                android:maxLines="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
