@@ -196,3 +196,15 @@ info.plist NSExceptionDomains에 추가합니다.
 	<true/>
 </dict>
 ```
+
+## Native Environment Settings
+### android
+- Gradle version >= **4.4**
+- Android plugin for Gradle version = **3.1.3**
+- compileSdkVersion = **26**
+- buildToolsVersion = **"27.0.3"**
+- supportLibVersion = **"27.1.1"**
+- minSdkVersion = **19**
+- targetSdkVersion = **22**
+
+### iOS
