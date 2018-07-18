@@ -3,6 +3,8 @@ import {Button, Modal, Text, TouchableHighlight, View} from "react-native";
 import CommonStyles from "../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import { ImageView, RNAudioPlayer} from 'rnn-module-ui-sample';
+import {NAV_OPTS_DRAWER} from "../commons/nav";
+import VideoScreen from "./video/VideoScreen";
 
 import {NativeModules} from 'react-native';
 
@@ -44,5 +46,6 @@ class PlaygroundJune extends Component {
     }
 }
 
+PlaygroundJune.navigationOptions = NAV_OPTS_DRAWER;
 
 export default PlaygroundJune;
