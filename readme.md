@@ -201,7 +201,7 @@ info.plist NSExceptionDomains에 추가합니다.
 ### android
 - Gradle version >= **4.4**
 - Android plugin for Gradle version = **3.1.3**
-- compileSdkVersion = **26**
+- compileSdkVersion = **27**
 - buildToolsVersion = **"27.0.3"**
 - supportLibVersion = **"27.1.1"**
 - minSdkVersion = **19**
