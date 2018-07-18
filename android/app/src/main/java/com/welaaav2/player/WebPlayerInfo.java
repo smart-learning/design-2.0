@@ -1,6 +1,6 @@
 package com.welaaav2.player;
 
-import com.welaaav2.utility.Logger;
+import com.welaaav2.util.Logger;
 
 import java.io.Serializable;
 
