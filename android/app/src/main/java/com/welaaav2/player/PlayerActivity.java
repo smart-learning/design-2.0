@@ -5,7 +5,7 @@
  * The SDK is based on Exo player library
  */
 
-package com.welaaav2;
+package com.welaaav2.player;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -102,16 +102,14 @@ import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
-import com.welaaav2.player.AudioBookPlayerListAdapter;
-import com.welaaav2.player.NewWebPlayerInfo;
-import com.welaaav2.player.PlayerListAdapter;
-import com.welaaav2.player.SubtitlsInfo;
-import com.welaaav2.player.WebPlayerInfo;
-import com.welaaav2.utility.CustomDialog;
-import com.welaaav2.utility.HttpCon;
-import com.welaaav2.utility.Logger;
-import com.welaaav2.utility.Preferences;
-import com.welaaav2.utility.Utils;
+import com.welaaav2.R;
+import com.welaaav2.cast.CastControllerActivity;
+import com.welaaav2.pallycon.PlayStatus;
+import com.welaaav2.util.CustomDialog;
+import com.welaaav2.util.HttpCon;
+import com.welaaav2.util.Logger;
+import com.welaaav2.util.Preferences;
+import com.welaaav2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

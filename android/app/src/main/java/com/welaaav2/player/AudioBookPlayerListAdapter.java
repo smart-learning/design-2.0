@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.welaaav2.PlayerActivity;
 import com.welaaav2.R;
 
 import java.util.ArrayList;
