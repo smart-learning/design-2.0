@@ -27,7 +27,9 @@
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentStart="true"
 		android:layout_alignParentTop="true"
-		android:id="@+id/LAYOUT_BUTTON_GROUP" />
+		android:id="@+id/LAYOUT_BUTTON_GROUP">
+		<include layout="@layout/welean_button_group"/>
+	</FrameLayout>
 
 	<FrameLayout
 		android:layout_width="match_parent"

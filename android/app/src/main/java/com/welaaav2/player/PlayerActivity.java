@@ -1441,7 +1441,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 		//컨트롤버튼그룹
 		mButtonGroupLayout = findViewById(R.id.LAYOUT_BUTTON_GROUP);
-		mLayout.inflate (R.layout.welean_button_group, mButtonGroupLayout, true);
+//		mLayout.inflate (R.layout.welean_button_group, mButtonGroupLayout, true);
 
 		mPlaylistGroupLayout = findViewById(R.id.LAYOUT_PLAYLIST_GROUP);
 		mLayout.inflate (R.layout.welean_playlist, mPlaylistGroupLayout, true);
