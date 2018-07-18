@@ -1,9 +1,9 @@
 // 네비게이션 기본 속성 옵션
 import React from "react";
-import {Button} from "react-native";
+import {Button, Text} from "react-native";
 import CommonStyle from "../../styles/common";
 import SearchButton from "../components/header/SearchButton";
-import {Image} from "react-native";
+import {Image, View} from "react-native";
 import HomeButton from "../components/header/HomeButton";
 import logo from "../../images/logo-white.png"
 
@@ -88,12 +88,27 @@ export const NAV_OPTS_DRAWER = ({navigation, navigationOptions}) => {
 		icon: require('../../images/chats-icon.png')
 	};
 
-	return {
+
+	let option = {
 		drawerLabel: label,
-		drawerIcon: ({tintColor}) => (
-			<Image
-				source={icon}
-				style={[CommonStyle.size24, {tintColor: tintColor}]}/>
-		)
+		drawerIcon: ({tintColor, focused}) => ( <Image
+			source={icon}
+			style={[CommonStyle.size24, {tintColor: tintColor}]}/>
+	)};
+
+
+	// TODO: Custom Drawer 메뉴 구현( June으로 샘플구현해둠 ) drawLabel 에 react element 를 반환하는함수를 재정의
+	// README: https://reactnavigation.org/docs/en/drawer-navigator.html
+	if( label === "June" ){
+		console.log('커스텀 메뉴 생성');
+		option = {
+			drawerLabel: ()=> (<View style={{ flex:1, backgroundColor:'#FF0000' }}>
+				<Text>커스텀 드로어 메뉴 ~~~~ </Text>
+			</View>
+			)
+		}
 	}
+
+
+	return option;
 }
