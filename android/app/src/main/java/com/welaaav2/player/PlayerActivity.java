@@ -605,6 +605,23 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		mediaDataSourceFactory = buildDataSourceFactory();
 
 		Log.d(TAG, "onCreate(): mPlayStatus.mPosition: " + mPlayStatus.mPosition);
+
+		if(lectureListItemdapter!=null)lectureListItemdapter=null;
+		lectureListItemdapter = new PlayerListAdapter(getApplicationContext(),this);
+
+		if(lectureAudioBookListItemdapter!=null)lectureAudioBookListItemdapter=null;
+		lectureAudioBookListItemdapter = new AudioBookPlayerListAdapter(getApplicationContext(),this);
+
+		// 추천 콘텐츠 뷰 그릴 때 사용 예정입니다.
+//		if(listSameSeriesAdapter!=null)listSameSeriesAdapter=null;
+//		listSameSeriesAdapter = new PlayerListSameSeriesAdapter(context,this);
+//
+//		if(listSameCategoryAdapter!=null)listSameCategoryAdapter=null;
+//		listSameCategoryAdapter = new PlayerListSameCategoryAdapter(context,this);
+//
+//		if(listPopClipAdapter!=null)listPopClipAdapter=null;
+//		listPopClipAdapter = new PlayerListPopClipAdapter(context,this);
+
 		audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
 
 		// 베이스 레이아웃
@@ -623,6 +640,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		setDownloadHandlering();
 		//플레이리스트UI
 		setLectureItem();
+		//sleep Timer
+		setSleeperUI();
 
 		mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -1431,6 +1450,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		mLayout.inflate (R.layout.welean_playlist_listview, mPlaylistwrap, true);
 
 		mButtonGroupLayout.setVisibility(View.VISIBLE);
+//		mPlaylistGroupLayout.setVisibility(View.VISIBLE);
 		mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
 
 		mRelatedListGroupLayout = findViewById(R.id.LAYOUT_RELATEDLIST_GROUP);
@@ -1888,6 +1908,19 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		startSleepTimeThread();
 	}
 
+	public String timeToString(double time)
+	{
+		int nTotal=(int)(time /1000.0D);
+		int nHour = nTotal/3600;
+		int nMin = (nTotal/60)%60;
+		int nSec = nTotal%60;
+
+		if (nHour > 0){
+			return String.format("%02d:%02d:%02d", nHour,nMin,nSec);
+		}
+		return String.format("%02d:%02d", nMin,nSec);
+	}
+
 	static final class SleepTimeHandler extends Handler {
 
 		private final WeakReference<PlayerActivity> mController;
@@ -1895,19 +1928,31 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 			mController= new WeakReference<PlayerActivity>(controller);
 		}
 		public void handleMessage(Message msg) {
-//			sleeptimerText.setText(mController.get().timeToString(mController.get().timesleep));
+			sleeptimerText.setText(mController.get().timeToString(mController.get().timesleep));
 
 			if(mController.get().timesleep<=0)
 			{
 				mSleeperHandler.removeCallbacksAndMessages(null);
 
 				try{
-					
-//					if(mController.get().mWelaaaPlayer!=null){
-//						mController.get().mWelaaaPlayer.finishForSleeper();
+
+//					if(Preferences.getWelaaaPlayerSleepMode()) {
+//						Utils.logToast(getApplication(), getString(R.string.info_finish_resons_leepmode));
 //
-//						// stopFlag set true
-//						mController.get().stopSleepTimeThread();
+//						try{
+//							stopSleepTimeThread();
+//
+//							Preferences.setWelaaaPlayEnd(getApplication(),true);
+//
+//							Preferences.setWelaaaPlayerSleepMode(getApplication(), false);
+//							Preferences.setWelaaaPlayAudioUsed(getApplication(), false);
+//
+//							// 리소스 모니터링 후 종료 확인 합니다. 나중에 다시 확인 해주세요!
+//							finish();
+//
+//						}catch (Exception e){
+//							e.printStackTrace();
+//						}
 //					}
 
 				}catch (Exception e){
@@ -2311,7 +2356,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 //								}
 
 
-								updateContentList();
+								updateContentList("movie");
 							}
 
 							if(CON_CLASS.equals("2") || PLAY_MODE.equals("audio")) {
@@ -2324,6 +2369,190 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 							// 일시정지
 							player.setPlayWhenReady(false);
 						}
+					}
+					break;
+
+					case  R.id.BTN_SLEEPINGMODE:
+					{
+						msleep_view.setVisibility(View.VISIBLE);
+
+						RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+						RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+						RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+						RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+						welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+						welean_blank_line = findViewById(R.id.welean_blank_line);
+						RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+						play_button_group.setVisibility(View.INVISIBLE);
+						smart_button_wrap.setVisibility(View.INVISIBLE);
+						welean_blank_line2.setVisibility(View.INVISIBLE);
+						welean_blank_line.setVisibility(View.INVISIBLE);
+
+						setSleeper();
+					}
+					break;
+
+					case  R.id.BTN_SLEEPACTIVE:
+					{
+						Preferences.setWelaaaPlayerSleepMode(getApplicationContext(),false);
+						mBtnSleeper.setVisibility(View.VISIBLE);
+						mBtnSleep_Active.setVisibility(View.INVISIBLE);
+						sleeptimerText.setVisibility(View.INVISIBLE);
+						cancelSleeper();
+					}
+					break;
+
+					case R.id.sleeptextTitle:
+					{
+						msleep_view.setVisibility(View.INVISIBLE);
+
+						RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+						RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+						RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+						RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+						welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+						welean_blank_line = findViewById(R.id.welean_blank_line);
+						RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+						play_button_group.setVisibility(View.VISIBLE);
+						smart_button_wrap.setVisibility(View.VISIBLE);
+						welean_blank_line2.setVisibility(View.VISIBLE);
+						welean_blank_line.setVisibility(View.VISIBLE);
+
+					}
+					break;
+
+					case R.id.sleeptextTitle_land:
+					{
+						msleep_view.setVisibility(View.INVISIBLE);
+
+						RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+						RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+						RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+						RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+						welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+						welean_blank_line = findViewById(R.id.welean_blank_line);
+						RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+						play_button_group.setVisibility(View.VISIBLE);
+						smart_button_wrap.setVisibility(View.VISIBLE);
+						welean_blank_line2.setVisibility(View.VISIBLE);
+						welean_blank_line.setVisibility(View.VISIBLE);
+
+					}
+
+					break;
+
+					case R.id.sleeptext15:
+					{
+						msleep_view.setVisibility(View.INVISIBLE);
+
+						RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+						RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+						RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+						RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+						welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+						welean_blank_line = findViewById(R.id.welean_blank_line);
+						RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+						play_button_group.setVisibility(View.VISIBLE);
+						smart_button_wrap.setVisibility(View.VISIBLE);
+						welean_blank_line2.setVisibility(View.VISIBLE);
+						welean_blank_line.setVisibility(View.VISIBLE);
+
+						sleepstart();
+						mBtnSleeper.setVisibility(View.INVISIBLE);
+						mBtnSleep_Active.setVisibility(View.VISIBLE);
+						sleeptimerText.setVisibility(View.VISIBLE);
+						Preferences.setWelaaaPlayerSleepMode(getApplicationContext(),true);
+					}
+					break;
+
+					case R.id.sleeptext30:
+					{
+						msleep_view.setVisibility(View.INVISIBLE);
+
+						RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+						RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+						RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+						RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+						welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+						welean_blank_line = findViewById(R.id.welean_blank_line);
+						RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+						play_button_group.setVisibility(View.VISIBLE);
+						smart_button_wrap.setVisibility(View.VISIBLE);
+						welean_blank_line2.setVisibility(View.VISIBLE);
+						welean_blank_line.setVisibility(View.VISIBLE);
+						//-- 2017.05.04
+
+						sleeperNum = 30;
+
+						sleepstart();
+						mBtnSleeper.setVisibility(View.INVISIBLE);
+						mBtnSleep_Active.setVisibility(View.VISIBLE);
+						sleeptimerText.setVisibility(View.VISIBLE);
+						Preferences.setWelaaaPlayerSleepMode(getApplicationContext(),true);
+
+					}
+					break;
+
+					case R.id.sleeptext45:
+					{
+						msleep_view.setVisibility(View.INVISIBLE);
+
+						RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+						RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+						RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+						RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+						welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+						welean_blank_line = findViewById(R.id.welean_blank_line);
+						RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+						play_button_group.setVisibility(View.VISIBLE);
+						smart_button_wrap.setVisibility(View.VISIBLE);
+						welean_blank_line2.setVisibility(View.VISIBLE);
+						welean_blank_line.setVisibility(View.VISIBLE);
+						//-- 2017.05.04
+
+						sleeperNum = 45;
+
+						sleepstart();
+						mBtnSleeper.setVisibility(View.INVISIBLE);
+						mBtnSleep_Active.setVisibility(View.VISIBLE);
+						sleeptimerText.setVisibility(View.VISIBLE);
+						Preferences.setWelaaaPlayerSleepMode(getApplicationContext(),true);
+
+					}
+					break;
+
+					case R.id.sleeptext60:
+					{
+						msleep_view.setVisibility(View.INVISIBLE);
+
+						RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+						RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+						RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+						RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+						welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+						welean_blank_line = findViewById(R.id.welean_blank_line);
+						RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+						play_button_group.setVisibility(View.VISIBLE);
+						smart_button_wrap.setVisibility(View.VISIBLE);
+						welean_blank_line2.setVisibility(View.VISIBLE);
+						welean_blank_line.setVisibility(View.VISIBLE);
+						//-- 2017.05.04
+
+						sleeperNum = 60;
+
+						sleepstart();
+						mBtnSleeper.setVisibility(View.INVISIBLE);
+						mBtnSleep_Active.setVisibility(View.VISIBLE);
+						sleeptimerText.setVisibility(View.VISIBLE);
+						Preferences.setWelaaaPlayerSleepMode(getApplicationContext(),true);
+
 					}
 					break;
 
@@ -2505,7 +2734,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					play_button_group.setVisibility(View.INVISIBLE);
 					general_button_group.setVisibility(View.INVISIBLE);
 					myrepu_button_group.setVisibility(View.INVISIBLE);
-//                    control_wrap_bg.setVisibility(VISIBLE);
+//                    control_wrap_bg.setVisibility(View.VISIBLE);
 					smart_button_wrap.setVisibility(View.GONE);  // Full Screen
 					welean_blank_line2.setVisibility(View.GONE);
 					welean_blank_line.setVisibility(View.INVISIBLE);
@@ -2732,7 +2961,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 						play_button_group.setVisibility(View.VISIBLE);
 						general_button_group.setVisibility(View.VISIBLE);
 						myrepu_button_group.setVisibility(View.VISIBLE);
-//                        control_wrap_bg.setVisibility(VISIBLE);
+//                        control_wrap_bg.setVisibility(View.VISIBLE);
 						smart_button_wrap.setVisibility(View.VISIBLE);
 						welean_blank_line2.setVisibility(View.VISIBLE);
 						welean_blank_line.setVisibility(View.VISIBLE);
@@ -2749,13 +2978,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 						Logger.i(TAG + "msubtitls_view.setVisibility() " + msubtitls_view.getVisibility() );
 
 //                        if(msubtitls_view.getVisibility() == View.VISIBLE){
-//                            play_button_group.setVisibility(INVISIBLE);
-//                            general_button_group.setVisibility(INVISIBLE);
-////                        control_wrap_bg.setVisibility(VISIBLE);
-//                            smart_button_wrap.setVisibility(INVISIBLE);
-//                            welean_blank_line2.setVisibility(INVISIBLE);
-//                            welean_blank_line.setVisibility(INVISIBLE);
-//                            welean_wrap_bg.setVisibility(INVISIBLE);
+//                            play_button_group.setVisibility(View.INVISIBLE);
+//                            general_button_group.setVisibility(View.INVISIBLE);
+////                        control_wrap_bg.setVisibility(View.VISIBLE);
+//                            smart_button_wrap.setVisibility(View.INVISIBLE);
+//                            welean_blank_line2.setVisibility(View.INVISIBLE);
+//                            welean_blank_line.setVisibility(View.INVISIBLE);
+//                            welean_wrap_bg.setVisibility(View.INVISIBLE);
 //                        }
 					}
 					@Override
@@ -3811,6 +4040,25 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		}
 	}
 
+
+	public void setSleeperUI(){
+
+		mblank_sleeper_view = findViewById(R.id.blank_sleeper_view);
+		mblank_sleeper_view.setVisibility(View.INVISIBLE);
+
+		msleep_view = findViewById(R.id.SLEEPWRAP_LAYOUT);
+		msleep_view.setVisibility(View.INVISIBLE);
+	}
+
+	public void setSleeperUILand(){
+
+		mblank_sleeper_view = findViewById(R.id.blank_sleeper_view);
+		mblank_sleeper_view.setVisibility(View.INVISIBLE);
+
+		msleep_view = findViewById(R.id.SLEEPWRAP_LAYOUT_LAND);
+		msleep_view.setVisibility(View.INVISIBLE);
+	}
+
 	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int cp;
@@ -3820,118 +4068,199 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		return sb.toString();
 	}
 
-	public void updateContentList() {
+	public void updateContentList(String type) {
 
 		StringBuffer sb = new StringBuffer();
 
-		try {
-			InputStream is = getAssets().open("contentsinfo28.json");
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			String jsonText = readAll(rd);
-			JSONObject json = new JSONObject(jsonText);
+		try{
+            if(type.equals("movie")){
 
-			String group_title = json.getString("group_title");
-			String group_memo = json.getString("group_memo");
-			String group_teachername = json.getString("group_teachername");
-			String group_teachermemo = json.getString("group_teachermemo");
-			String group_img = json.getString("group_img");
-			String group_previewcontent = json.getString("group_previewcontent");
-			String allplay_time = json.getString("allplay_time");
-			String contentscnt = json.getString("contentscnt");
-			String hitcnt = json.getString("hitcnt");
-			String likecnt = json.getString("likecnt");
-			String zzimcnt = json.getString("zzimcnt");
-			String staravg = json.getString("staravg");
-			String con_class = json.getString("con_class");
-			String downloadcnt = json.getString("downloadcnt");
-			String audiobookbuy = json.getString("audiobookbuy");
-			String audiobookbuy_limitdate = json.getString("audiobookbuy_limitdate");
+                InputStream is = getAssets().open("play_list.json");
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+                String jsonText = readAll(rd);
+                JSONObject json = new JSONObject(jsonText);
+
+                JSONArray jArr = json.getJSONArray("contentsinfo");
+
+                //배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
+                for (int i=0; i<jArr.length(); i++){
+
+                    //i번째 배열 할당
+                    json = jArr.getJSONObject(i);
+
+                    //값을 추출함
+                    String grouptitle = json.getString("grouptitle");
+                    String teachername = json.getString("teachername");
+                    String con_class = json.getString("con_class");
+                    String end_time = json.getString("end_time");
+                    String groupkey = json.getString("groupkey");
+
+                    String group_img = json.getString("group_img");
+                    String group_hitcnt = json.getString("group_hitcnt");
+                    String group_likecnt = json.getString("group_likecnt");
+                    String group_zzimcnt = json.getString("group_zzimcnt");
+                    String ckey = json.getString("ckey");
+
+                    String cname = json.getString("cname");
+                    String cmemo = json.getString("cmemo");
+                    String clist_img = json.getString("clist_img");
+                    String curl = json.getString("curl");
+                    String cplay_time = json.getString("cplay_time");
+
+                    String cpay = json.getString("cpay");
+                    String cpay_money = json.getString("cpay_money");
+                    String ccon_class = json.getString("ccon_class");
+                    String csmi = json.getString("csmi");
+
+                    sb.append("&grouptitle="+grouptitle);
+                    sb.append("&teachername="+teachername);
+                    sb.append("&con_class="+con_class);
+                    sb.append("&end_time="+end_time);
+                    sb.append("&groupkey="+groupkey);
+
+                    sb.append("&group_img="+group_img);
+                    sb.append("&group_hitcnt="+group_hitcnt);
+                    sb.append("&group_likecnt="+group_likecnt);
+                    sb.append("&group_zzimcnt="+group_zzimcnt);
+                    sb.append("&ckey="+ckey);
+
+                    sb.append("&cname="+cname);
+                    sb.append("&cmemo="+cmemo);
+                    sb.append("&clist_img="+clist_img);
+                    sb.append("&curl="+curl);
+                    sb.append("&cplay_time="+cplay_time);
+
+                    sb.append("&cpay="+cpay);
+                    sb.append("&cpay_money="+cpay_money);
+                    sb.append("&ccon_class="+ccon_class);
+
+                    if(csmi.equals("")) {
+                        sb.append("&csmi="+"none");
+                    }else {
+                        sb.append("&csmi="+csmi);
+                    }
+                }
+
+                if(mNewWebPlayerInfo!=null) {
+                    mNewWebPlayerInfo=null;
+                }
+
+                mNewWebPlayerInfo = new NewWebPlayerInfo(sb.toString());
+                // 화면 그리기 ..
+                callbackWebPlayerInfo(type , "");
 
 
-			sb.append("group_title=" + group_title);
-			sb.append("&group_memo=" + group_memo);
-			sb.append("&group_teachername=" + group_teachername);
-			sb.append("&group_teachermemo=" + group_teachermemo);
-			sb.append("&group_img=" + group_img);
-			sb.append("&group_previewcontent=" + group_previewcontent);
-			sb.append("&allplay_time=" + allplay_time);
-			sb.append("&contentscnt=" + contentscnt);
-			sb.append("&hitcnt=" + hitcnt);
-			sb.append("&likecnt=" + likecnt);
-			sb.append("&zzimcnt=" + zzimcnt);
-			sb.append("&staravg=" + staravg);
-			sb.append("&con_class=" + con_class);
-			sb.append("&downloadcnt=" + downloadcnt);
-			sb.append("&audiobookbuy=" + audiobookbuy);
-			sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
+            }else if(type.equals("audio")){
 
-			//contentsinfo의 값은 배열로 구성 되어있으므로 JSON 배열생성
-			JSONArray jArr = json.getJSONArray("contentsinfo");
+			        InputStream is = getAssets().open("contentsinfo28.json");
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+                    String jsonText = readAll(rd);
+                    JSONObject json = new JSONObject(jsonText);
 
-			//배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
-			for (int i = 0; i < jArr.length(); i++) {
+                    String group_title = json.getString("group_title");
+                    String group_memo = json.getString("group_memo");
+                    String group_teachername = json.getString("group_teachername");
+                    String group_teachermemo = json.getString("group_teachermemo");
+                    String group_img = json.getString("group_img");
+                    String group_previewcontent = json.getString("group_previewcontent");
+                    String allplay_time = json.getString("allplay_time");
+                    String contentscnt = json.getString("contentscnt");
+                    String hitcnt = json.getString("hitcnt");
+                    String likecnt = json.getString("likecnt");
+                    String zzimcnt = json.getString("zzimcnt");
+                    String staravg = json.getString("staravg");
+                    String con_class = json.getString("con_class");
+                    String downloadcnt = json.getString("downloadcnt");
+                    String audiobookbuy = json.getString("audiobookbuy");
+                    String audiobookbuy_limitdate = json.getString("audiobookbuy_limitdate");
 
-				json = jArr.getJSONObject(i);
-				//값을 추출함
-				String ckey = json.getString("ckey");
-				String cname = json.getString("cname");
-				String cmemo = json.getString("cmemo");
-				String curl = json.getString("curl");
-				String cplay_time = json.getString("cplay_time");
-				String cpay = json.getString("cpay");
-				String cpay_money = json.getString("cpay_money");
-				String clist_img = json.getString("clist_img");
-				String chitcnt = json.getString("chitcnt");
-				String csmi = json.getString("csmi");
 
-				String a_depth = json.getString("a_depth");
-				String history_endtime = json.getString("history_endtime");
+                    sb.append("group_title=" + group_title);
+                    sb.append("&group_memo=" + group_memo);
+                    sb.append("&group_teachername=" + group_teachername);
+                    sb.append("&group_teachermemo=" + group_teachermemo);
+                    sb.append("&group_img=" + group_img);
+                    sb.append("&group_previewcontent=" + group_previewcontent);
+                    sb.append("&allplay_time=" + allplay_time);
+                    sb.append("&contentscnt=" + contentscnt);
+                    sb.append("&hitcnt=" + hitcnt);
+                    sb.append("&likecnt=" + likecnt);
+                    sb.append("&zzimcnt=" + zzimcnt);
+                    sb.append("&staravg=" + staravg);
+                    sb.append("&con_class=" + con_class);
+                    sb.append("&downloadcnt=" + downloadcnt);
+                    sb.append("&audiobookbuy=" + audiobookbuy);
+                    sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
 
-				String first_play = json.getString("first_play");
-				String calign = json.getString("calign");
-				String audio_preview = json.getString("audio_preview");
+                    //contentsinfo의 값은 배열로 구성 되어있으므로 JSON 배열생성
+                    JSONArray jArr = json.getJSONArray("contentsinfo");
 
-				sb.append("&ckey=" + ckey);
-				sb.append("&cname=" + cname);
-				sb.append("&cmemo=" + cmemo);
-				sb.append("&curl=" + curl);
-				sb.append("&cplay_time=" + cplay_time);
-				sb.append("&cpay=" + cpay);
-				sb.append("&cpay_money=" + cpay_money);
-				sb.append("&clist_img=" + clist_img);
-				sb.append("&chitcnt=" + chitcnt);
-				sb.append("&history_endtime=" + history_endtime);
-				sb.append("&a_depth=" + a_depth);
-				sb.append("&first_play=" + first_play);
-				sb.append("&calign=" + calign);
-				sb.append("&audio_preview=" + audio_preview);
+                    //배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
+                    for (int i = 0; i < jArr.length(); i++) {
 
-				if (csmi.equals("")) {
-					sb.append("&csmi=" + "none");
-				} else {
-					sb.append("&csmi=" + csmi);
-				}
-			}
+                        json = jArr.getJSONObject(i);
+                        //값을 추출함
+                        String ckey = json.getString("ckey");
+                        String cname = json.getString("cname");
+                        String cmemo = json.getString("cmemo");
+                        String curl = json.getString("curl");
+                        String cplay_time = json.getString("cplay_time");
+                        String cpay = json.getString("cpay");
+                        String cpay_money = json.getString("cpay_money");
+                        String clist_img = json.getString("clist_img");
+                        String chitcnt = json.getString("chitcnt");
+                        String csmi = json.getString("csmi");
 
-			if(mWebPlayerInfo!=null) {
-				mWebPlayerInfo=null;
-			}
+                        String a_depth = json.getString("a_depth");
+                        String history_endtime = json.getString("history_endtime");
 
-			mWebPlayerInfo = new WebPlayerInfo(sb.toString());
-			// 화면 그리기 ..
-			callbackWebPlayerInfo("player_list_icon" , "");
+                        String first_play = json.getString("first_play");
+                        String calign = json.getString("calign");
+                        String audio_preview = json.getString("audio_preview");
 
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+                        sb.append("&ckey=" + ckey);
+                        sb.append("&cname=" + cname);
+                        sb.append("&cmemo=" + cmemo);
+                        sb.append("&curl=" + curl);
+                        sb.append("&cplay_time=" + cplay_time);
+                        sb.append("&cpay=" + cpay);
+                        sb.append("&cpay_money=" + cpay_money);
+                        sb.append("&clist_img=" + clist_img);
+                        sb.append("&chitcnt=" + chitcnt);
+                        sb.append("&history_endtime=" + history_endtime);
+                        sb.append("&a_depth=" + a_depth);
+                        sb.append("&first_play=" + first_play);
+                        sb.append("&calign=" + calign);
+                        sb.append("&audio_preview=" + audio_preview);
+
+                        if (csmi.equals("")) {
+                            sb.append("&csmi=" + "none");
+                        } else {
+                            sb.append("&csmi=" + csmi);
+                        }
+                    }
+
+                    if(mWebPlayerInfo!=null) {
+                        mWebPlayerInfo=null;
+                    }
+
+                    mWebPlayerInfo = new WebPlayerInfo(sb.toString());
+                    // 화면 그리기 ..
+                    callbackWebPlayerInfo(type , "");
+
+            }
+        }catch (Exception e){
+		    e.printStackTrace();
+        }
+
+
+
 	}
 
 	public void callbackWebPlayerInfo(String methodName , String params){
 		try{
 			//
-			if(methodName.equals("player_list_icon")){
+			if(methodName.equals("movie")){
 
 				ListView lecturListView = findViewById(R.id.weleanplaylistview);
 				lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -3962,7 +4291,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 				String currentPosition = "";
 				String itemArrayTotalCnt = "";
 
-				InputStream is = getAssets().open("contentsinfo28.json");
+				InputStream is = getAssets().open("play_list.json");
 				BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 				String jsonText = readAll(rd);
 				JSONObject json = new JSONObject(jsonText);
@@ -4013,8 +4342,16 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 						}
 					}
 
-					lectureListItemdapter.add(objItem.getString("cplay_time"),objItem.getString("curl"),objItem.getString("cname"),objItem.getString("grouptitle"),objItem.getString("teachername") ,  objItem.getString("end_time") , playListType ) ;
+					Logger.e(TAG + " listkey :: " + objItem.getString("listkey") );
+					Logger.e(TAG + " cplay_time :: " + objItem.getString("cplay_time") );
+					Logger.e(TAG + " curl :: " + objItem.getString("curl") );
+					Logger.e(TAG + " cname :: " + objItem.getString("cname") );
+					Logger.e(TAG + " grouptitle :: " + objItem.getString("grouptitle") );
+					Logger.e(TAG + " teachername :: " + objItem.getString("teachername") );
+					Logger.e(TAG + " end_time :: " + objItem.getString("end_time") );
+					Logger.e(TAG + " playListType :: " + playListType );
 
+					lectureListItemdapter.add(objItem.getString("cplay_time"),objItem.getString("curl"),objItem.getString("cname"),objItem.getString("grouptitle"),objItem.getString("teachername") ,  objItem.getString("end_time") , playListType );
 
 					lecturListView.setAdapter(lectureListItemdapter);
 				}
@@ -4022,15 +4359,76 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 				lecturListView.setSelection(Integer.parseInt(currentPosition));
 				Preferences.setWelaaaRecentPlayListUse(getApplicationContext() , false , "0");
 
-			}
+			}else if(methodName.equals("audio")){
+
+            }
 
 		}catch (Exception e){
 			e.printStackTrace();
+
+			Logger.e(TAG + " Exception :: " + e.toString() );
 		}
 	}
 
 	public int getContentId(){
 		Logger.i(TAG + ":doAutoPlay getContentId " + Preferences.getWelaaaPlayListCId(getApplication()) );
 		return Preferences.getWelaaaPlayListCId(getApplication());
+	}
+
+
+	/*******************************************************************
+	 * sleeper timer
+	 *******************************************************************/
+	public void setSleeper(){
+
+
+		mblank_sleeper_view.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (sleeperNum !=0) {
+					sleepstart();
+					mBtnSleeper.setVisibility(View.INVISIBLE);
+					mBtnSleep_Active.setVisibility(View.VISIBLE);
+					sleeptimerText.setVisibility(View.VISIBLE);
+					Preferences.setWelaaaPlayerSleepMode(getApplicationContext(),true);
+				}
+
+				mblank_sleeper_view.setVisibility(View.INVISIBLE);
+			}
+		});
+	}
+
+	public void cancelSleeper(){
+		Utils.logToast(getApplicationContext(),"취침모드해제");
+		sleeperNum=0;
+		timesleep=0;
+
+		sleeptimerText.setText("");
+
+		stopSleepTimeThread();
+	}
+
+	/********************************************************
+	 * sleeping mode 시간이 완료되면 부르는 함수
+	 ********************************************************/
+	public void finishForSleeper(){
+		if(Preferences.getWelaaaPlayerSleepMode(getApplication())) {
+			Utils.logToast(getApplication(), getString(R.string.info_finish_resons_leepmode));
+
+			try{
+				stopSleepTimeThread();
+
+				Preferences.setWelaaaPlayEnd(getApplication(),true);
+
+				Preferences.setWelaaaPlayerSleepMode(getApplication(), false);
+				Preferences.setWelaaaPlayAudioUsed(getApplication(), false);
+
+				// 리소스 모니터링 후 종료 확인 합니다. 나중에 다시 확인 해주세요!
+				finish();
+
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 }
