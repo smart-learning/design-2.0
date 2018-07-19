@@ -139,8 +139,6 @@
 
     <string name="info_download_title">다운로드를 받으시겠습니까?</string>
 
-    <string name="info_dial_title2">이어듣겠습니까</string>
-    <string name="info_dial_continue">이어듣기</string>
     <string name="info_dial_first">처음부터</string>
 
     <string name="info_dial_submit_next">다음에 하기</string>
@@ -185,4 +183,14 @@
 
     <string name="auto_play_option">연속재생이 해제 되었습니다.</string>
     <string name="auto_play_option_on">연속재생이 설정 되었습니다.</string>
+
+    <string name="info_dial_title1">이어보시겠습니까</string>
+    <string name="info_dial_title2">이어듣겠습니까</string>
+
+    <string name="info_dial_continue1">이어보기</string>
+    <string name="info_dial_continue">이어듣기</string>
+
+    <string name="info_dial_finish_dialog_finish">홈화면</string>
+    <string name="info_dial_finish_dialog_finish_back">강좌 계속 보기</string>
+    <string name="info_dial_finish_dialog_doAutoPlay">다음 영상 재생</string>
 </resources>

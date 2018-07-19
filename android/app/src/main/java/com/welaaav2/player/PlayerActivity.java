@@ -129,6 +129,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 /**
@@ -349,6 +350,16 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	private AudioBookPlayerListAdapter lectureAudioBookListItemdapter;
 	private ArrayList<JSONObject> lastViewListArray = new ArrayList<JSONObject>();
 
+	private final int FLAG_DAIALOG_VIDEO = 1;
+	private final int FLAG_DAIALOG_AUDIO = 2;
+	private final int FLAG_DIALOG_ONCOMPLETION = 3;
+	private final int FINISHACTIVITY_REQUEST_CODE = 1002;
+	private final int WELAAAPLAYER_AUDIOBOOK_CODE = 1006;
+	private final int WELAAAPLAYER_WISEVIDEO_CODE = 1007;
+	private final int FINISHACTIVITY_SUGGEST_REQUEST_CODE = 1008;
+	private final int WELAAAPLAYER_SUGGEST_CODE = 1009;
+	private final int WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER = 1010;
+
 	private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
 
 	// TODO : must implement ExoPlayer.EventListener
@@ -388,13 +399,19 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					break;
 				case ExoPlayer.STATE_READY:
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_READY)");
+
 					if( playWhenReady ) {
 						Log.d(TAG, "State: Ready and Playing");
 						mPlayStatus.mCurrentState = PlayStatus.STATE_PLAYING;
+
+						// startTimerSeekBar ! 타이머를 돌리고 . 자막 싱크를 맞춥니다.
+						mCurrentTimeHandler.sendEmptyMessageDelayed(0 , 100);
 					}
 					else {
 						Log.d(TAG, "State: Ready and Pausing");
 						mPlayStatus.mCurrentState = PlayStatus.STATE_PAUSED;
+
+						// stopTimerSeekbar ! 타이머를 멈춥니다.
 					}
 
 					break;
@@ -606,8 +623,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 		mediaDataSourceFactory = buildDataSourceFactory();
 
-		Log.d(TAG, "onCreate(): mPlayStatus.mPosition: " + mPlayStatus.mPosition);
-
 		if(lectureListItemdapter!=null)lectureListItemdapter=null;
 		lectureListItemdapter = new PlayerListAdapter(getApplicationContext(),this);
 
@@ -646,6 +661,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		setLectureItem();
 		//sleep Timer
 		setSleeperUI();
+		//플레이어 타이틀
+		setPlayerTitle();
 
 		mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -2164,6 +2181,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 					case R.id.BTN_SMI_ON:
 					{
+
+//						simpleExoPlayerView.setVisibility(View.VISIBLE);
+
 						// 미리 보기 모드에서는 자막 모드를 지원 하지 않습니다.
 //						if(!mWelaaaPlayer.mPreview){
 							mBtnSubtitlesOff.setVisibility(View.VISIBLE);
@@ -2623,12 +2643,17 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 					break;
 
+					case R.id.BUTTON_PLAYLIST_CLOSE_LINEAR:
+						finish();
+						break;
+					case R.id.BTN_CLOSE_LINEAR:
+						finish();
+						break;
+
 				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
-
-				Logger.e(TAG + " onClick Exception " + e.toString());
 			}
 		}
 	};
@@ -2649,6 +2674,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	// stopTimerSeekbar 로 제어가 됨 ..
 	// 동영상 모드의 경우는 onPlayerStateChanged 에 따라서 제어 하면 되지 않을까요 ??
 	public void autoTxtScroll(int current){
+
+		Logger.e(TAG + " autoTxtScroll current " + current);
 
 		if(hasSubTitlsJesonUrl) {
 			int emfontcolor = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_emfont_color);
@@ -3271,7 +3298,122 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		}
 	}
 
+	/******************************
+	 * CustomDialog
+	 ******************************/
 	public CustomDialog mCustomDialog;
+
+	public void creatDialog(final int windowId){
+
+		View.OnClickListener leftListner= new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mCustomDialog.dismiss();
+				switch (windowId) {
+					case FLAG_DAIALOG_VIDEO:
+						break;
+					case FLAG_DAIALOG_AUDIO:
+						break;
+					case FLAG_DIALOG_ONCOMPLETION:
+						break;
+					case WELAAAPLAYER_SUGGEST_CODE:
+						finish();
+						break;
+					case WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER:
+						break;
+				}
+			}
+		};
+
+		View.OnClickListener rightListner= new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mCustomDialog.dismiss();
+				switch (windowId) {
+					case FLAG_DAIALOG_VIDEO:
+						break;
+					case FLAG_DAIALOG_AUDIO:
+						break;
+
+					case FLAG_DIALOG_ONCOMPLETION:
+						//자동재생일때 다음영상재생
+						// doAutoPlay 류의 프로세스를 만들어주세요 .
+						break;
+
+					case WELAAAPLAYER_SUGGEST_CODE:
+
+						Animation fadeout = null;
+
+						fadeout = AnimationUtils.loadAnimation(getApplication(), R.anim.slide_out_left);
+
+						mRelatedListGroupLayout.startAnimation(fadeout);
+						mRelatedListGroupLayout.setVisibility(View.GONE);
+
+						if(PLAY_MODE!=null){
+							if(PLAY_MODE.equals("audio")){
+								audioModeBackgroundLayout.setVisibility(VISIBLE); //이미지보이고
+								audioModeIconHeadset.setVisibility(VISIBLE); //아이콘보이고
+							}
+						}
+
+						break;
+
+					case WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER:
+
+						fadeout = AnimationUtils.loadAnimation(getApplication(), R.anim.slide_out_left);
+
+						mRelatedListGroupLayout.startAnimation(fadeout);
+						mRelatedListGroupLayout.setVisibility(GONE);
+
+						if(PLAY_MODE!=null){
+							if(PLAY_MODE.equals("audio")){
+								audioModeBackgroundLayout.setVisibility(VISIBLE); //이미지보이고
+								audioModeIconHeadset.setVisibility(VISIBLE); //아이콘보이고
+							}
+						}
+						break;
+
+				}
+			}
+		};
+		if(mCustomDialog!=null) mCustomDialog = null;
+
+
+		if(windowId == WELAAAPLAYER_SUGGEST_CODE) {
+
+//            mCustomDialog = new CustomDialog(this,getString(R.string.info_dial_submit_title),getString(R.string.info_dial_finish_title),getString(R.string.info_dial_finish_dialog_finish),getString(R.string.info_dial_finish_dialog_doAutoPlay),leftListner,rightListner);
+//            mCustomDialog = new CustomDialog(this, getString(R.string.info_dial_submit_title), getString(R.string.info_dial_submit_title), getString(R.string.info_dial_finish_dialog_finish), getString(R.string.info_dial_finish_dialog_doAutoPlay), leftListner, rightListner, "relatedView");
+			mCustomDialog = new CustomDialog(this,getString(R.string.info_dial_submit_back_title),getString(R.string.info_dial_submit_title),getString(R.string.info_dial_finish_dialog_finish),getString(R.string.info_dial_finish_dialog_finish_back),leftListner,rightListner,"relatedView");
+
+		}else if(windowId == WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER){
+
+//            mCustomDialog = new CustomDialog(this,getString(R.string.info_dial_submit_title),getString(R.string.info_dial_finish_title),getString(R.string.info_dial_finish_dialog_finish),getString(R.string.info_dial_finish_dialog_doAutoPlay),leftListner,rightListner);
+			mCustomDialog = new CustomDialog(this,getString(R.string.info_dial_submit_back_title),getString(R.string.info_dial_submit_title),getString(R.string.info_dial_finish_dialog_finish),getString(R.string.info_dial_finish_dialog_finish_back),leftListner,rightListner,"relatedView");
+
+		}else{
+			if(windowId != FLAG_DIALOG_ONCOMPLETION){
+
+				if(CON_CLASS!=null){
+					if(CON_CLASS.equals("1")){
+						mCustomDialog = new CustomDialog(this,getString(R.string.info_dial_notice),getString(R.string.info_dial_title1),getString(R.string.info_dial_continue1),getString(R.string.info_dial_first),leftListner,rightListner);
+					}else{
+						mCustomDialog = new CustomDialog(this,getString(R.string.info_dial_notice),getString(R.string.info_dial_title2),getString(R.string.info_dial_continue),getString(R.string.info_dial_first),leftListner,rightListner);
+					}
+				}
+
+			}else{
+				mCustomDialog = new CustomDialog(this,getString(R.string.info_dial_submit_title),getString(R.string.info_dial_submit_text),getString(R.string.info_dial_submit_button),getString(R.string.info_dial_submit_next),leftListner,rightListner);
+			}
+		}
+
+
+
+		if(mCustomDialog!=null){
+			mCustomDialog.show();
+		}
+	}
+
+//	public CustomDialog mCustomDialog;
 	public void alertDownloadWindow(String title, String massage, String str2, String str1 , final int alertWindowId){
 
 		Logger.e(TAG + " BTN_DOWNLOAD alertDownloadWindow");
@@ -4620,21 +4762,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 						}
 					}
 
-//					Logger.e(TAG + " listkey :: " + objItem.getString("listkey") );
-//					Logger.e(TAG + " cplay_time :: " + objItem.getString("cplay_time") );
-//					Logger.e(TAG + " curl :: " + objItem.getString("curl") );
-//					Logger.e(TAG + " cname :: " + objItem.getString("cname") );
-//					Logger.e(TAG + " grouptitle :: " + objItem.getString("grouptitle") );
-//					Logger.e(TAG + " teachername :: " + objItem.getString("teachername") );
-//					Logger.e(TAG + " end_time :: " + objItem.getString("end_time") );
-//					Logger.e(TAG + " playListType :: " + playListType );
-
 					lectureListItemdapter.add(objItem.getString("cplay_time"),objItem.getString("curl"),objItem.getString("cname"),objItem.getString("grouptitle"),objItem.getString("teachername") ,  objItem.getString("end_time") , playListType );
-
 					lecturListView.setAdapter(lectureListItemdapter);
 				}
-
-				Logger.e(TAG + " lecturListView :: setAdapter ");
 
 				lecturListView.setSelection(Integer.parseInt(currentPosition));
 				Preferences.setWelaaaRecentPlayListUse(getApplicationContext() , false , "0");
@@ -4645,13 +4775,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 		}catch (Exception e){
 			e.printStackTrace();
-
-			Logger.e(TAG + " Exception :: " + e.toString() );
 		}
 	}
 
 	public int getContentId(){
-		Logger.i(TAG + ":doAutoPlay getContentId " + Preferences.getWelaaaPlayListCId(getApplication()) );
 		return Preferences.getWelaaaPlayListCId(getApplication());
 	}
 
@@ -4712,9 +4839,29 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		}
 	}
 
+	/****************************************************************************
+	 * 컨트롤러의 상단 타이틀부분 텍스트 set
+	 ****************************************************************************/
+	public void setPlayerTitle(){
+		if(mNewWebPlayerInfo!=null){
+
+			String groupTitle = mNewWebPlayerInfo.getGroup_title()[getContentId()];
+			String clipTitle = mNewWebPlayerInfo.getCname()[getContentId()];
+
+			setVideoGroupTitle( groupTitle , clipTitle );
+		}else{
+
+			if(mWebPlayerInfo!=null){
+				setVideoGroupTitle( mWebPlayerInfo.getGroupTitle() , mWebPlayerInfo.getCname()[getContentId()] );
+			}
+		}
+
+	}
+
 	@Override
 	public void onBackPressed() {
 
+		// 최근 재생 리스트가 있는 경우
 		if (mPlaylistGroupLayout.getVisibility() == VISIBLE) {
 			if(mPlaylistGroupLayout!=null) mPlaylistGroupLayout.startAnimation(mAniSlideHide);
 			if(mPlaylistGroupLayout!=null)mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
@@ -4723,7 +4870,72 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 			player.setPlayWhenReady(true);
 		}else{
 			// 종료 시나리오 생각 하기 ..
-
+			if(CON_CLASS!=null){
+				// 동영상 강좌 /강의 모드
+                // 두번째 BackPress 가 들어올 떄 .
+				if(CON_CLASS.equals("1")){
+					creatDialog(WELAAAPLAYER_SUGGEST_CODE);
+				}
+			}
 		}
 	}
+
+	/*******************************************************************
+	 * 컨트롤바 화면의 타이틀 텍스트 set
+	 *******************************************************************/
+	public void setVideoGroupTitle(String str1, String str2)
+	{
+		try{
+			TextView title1 = findViewById(R.id.welean_videogroptitle);
+			title1.setText(str1.replaceAll("<br>",""));
+
+			TextView title2 = findViewById(R.id.welean_videotitle);
+			title2.setText(str2);
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	/*******************************************************************
+	 * Current Position Sync Subtitle Position
+	 *******************************************************************/
+	private int oldMoveScrollCheckNum=0;
+	private int mCurrenttime=0;
+
+	Handler mCurrentTimeHandler = new Handler(){
+		@SuppressWarnings("unchecked")
+		@Override
+		public void handleMessage(Message msg) {
+			try {
+
+				mCurrenttime = (int) player.getCurrentPosition();
+
+				Logger.e(TAG + " mCurrentTime Handler " + mCurrenttime);
+
+				if (hasSubTitlsJesonUrl) {
+					if (mSubtitlstime != null) {
+						for (int i = 0; i < mSubtitlstime.length - 2; i++) {
+							if (mSubtitlstime[i] < mCurrenttime  && mCurrenttime < mSubtitlstime[i + 1]) {
+								if (oldMoveScrollCheckNum != i){
+									moveScrollCheck = true;
+									oldMoveScrollCheckNum = i;
+									autoTextScrollNum = i;
+								}
+
+								if (moveScrollCheck){
+									autoTxtScroll(mCurrenttime);
+								}
+							}
+						}
+					}
+
+					mCurrentTimeHandler.sendEmptyMessageDelayed(0 , 100);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
 }
