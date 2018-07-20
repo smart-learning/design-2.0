@@ -45,6 +45,11 @@
         </activity>
 
         <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="1d5ac13b6c753ebfaa1f3f3859e8ca98b29cc75f"
+            />
+
+        <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.welaaav2.cast.CastOptionsProvider" />
     </application>

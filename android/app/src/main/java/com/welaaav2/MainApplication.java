@@ -2,16 +2,18 @@ package com.welaaav2;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.welaaav2.react.module.RNNativePlayerModule;
 import com.welaaav2.react.pakcage.RNNativePlayerPackage;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -44,5 +46,14 @@ public class MainApplication extends Application implements ReactApplication {
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
+
+//        Fabric.with(this, new Crashlytics.Builder()
+//                .core(new CrashlyticsCore.Builder()
+//                        .disabled(BuildConfig.DEBUG)
+//                        .build())
+//                .build());
+
+        Fabric.with(this, new Crashlytics());
     }
+
 }

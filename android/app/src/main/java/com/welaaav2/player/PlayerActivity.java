@@ -25,6 +25,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -106,6 +108,7 @@ import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.pallycon.PlayStatus;
 import com.welaaav2.util.CustomDialog;
+import com.welaaav2.util.HLVAdapter;
 import com.welaaav2.util.HttpCon;
 import com.welaaav2.util.Logger;
 import com.welaaav2.util.Preferences;
@@ -252,17 +255,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	private Button mBtnSubtitleTextNormal=null;
 	private Button mBtnSubtitleTextBig=null;
 
-	private ImageView mSpeedImage=null;
-
 	private Animation mAniSlideShow=null;
 	private Animation mAniSlideHide=null;
 
-//	private PlayerListAdapter lectureListItemdapter;
-//	private AudioBookPlayerListAdapter lectureAudioBookListItemdapter;
-//
-//	private PlayerListSameSeriesAdapter listSameSeriesAdapter;
-//	private PlayerListSameCategoryAdapter listSameCategoryAdapter;
-//	private PlayerListPopClipAdapter listPopClipAdapter;
+	private PlayerListSameSeriesAdapter listSameSeriesAdapter;
+	private PlayerListSameCategoryAdapter listSameCategoryAdapter;
+	private PlayerListPopClipAdapter listPopClipAdapter;
 
 	private RelativeLayout mMovingspace=null;
 
@@ -359,6 +357,54 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	private final int FINISHACTIVITY_SUGGEST_REQUEST_CODE = 1008;
 	private final int WELAAAPLAYER_SUGGEST_CODE = 1009;
 	private final int WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER = 1010;
+
+	RecyclerView mRecyclerView;
+	RecyclerView.LayoutManager mLayoutManager;
+	RecyclerView.Adapter mAdapter;
+	ArrayList<String> alName;
+	ArrayList<String> alImage;
+
+	RecyclerView mRecyclerView2;
+	RecyclerView.LayoutManager mLayoutManager2;
+	RecyclerView.Adapter mAdapter2;
+	ArrayList<String> alName2;
+	ArrayList<String> alImage2;
+
+	RecyclerView mRecyclerView3;
+	RecyclerView.LayoutManager mLayoutManager3;
+	RecyclerView.Adapter mAdapter3;
+	ArrayList<String> alName3;
+	ArrayList<String> alImage3;
+
+	ArrayList<String> alTeacherName;
+	ArrayList<String> alTeacherName2;
+	ArrayList<String> alTeacherName3;
+
+	ArrayList<String> alTotalTime;
+	ArrayList<String> alTotalTime2;
+	ArrayList<String> alTotalTime3;
+
+	ArrayList<String> alEndTime;
+	ArrayList<String> alEndTime2;
+	ArrayList<String> alEndTime3;
+
+	ArrayList<String> alViewCnt;
+	ArrayList<String> alViewCnt2;
+	ArrayList<String> alViewCnt3;
+
+	ArrayList<String> alStarCnt;
+	ArrayList<String> alStarCnt2;
+	ArrayList<String> alStarCnt3;
+
+	ArrayList<String> alReplyCnt;
+	ArrayList<String> alReplyCnt2;
+	ArrayList<String> alReplyCnt3;
+
+	ArrayList<String> alCkeyCnt;
+	ArrayList<String> alCkeyCnt2;
+	ArrayList<String> alCkeyCnt3;
+
+	private ArrayList<JSONObject> suggestListArray1 = new ArrayList<JSONObject>();
 
 	private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
 
@@ -630,18 +676,20 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		lectureAudioBookListItemdapter = new AudioBookPlayerListAdapter(getApplicationContext(),this);
 
 		// 추천 콘텐츠 뷰 그릴 때 사용 예정입니다.
-//		if(listSameSeriesAdapter!=null)listSameSeriesAdapter=null;
-//		listSameSeriesAdapter = new PlayerListSameSeriesAdapter(context,this);
-//
-//		if(listSameCategoryAdapter!=null)listSameCategoryAdapter=null;
-//		listSameCategoryAdapter = new PlayerListSameCategoryAdapter(context,this);
-//
-//		if(listPopClipAdapter!=null)listPopClipAdapter=null;
-//		listPopClipAdapter = new PlayerListPopClipAdapter(context,this);
+		if(listSameSeriesAdapter!=null)listSameSeriesAdapter=null;
+		listSameSeriesAdapter = new PlayerListSameSeriesAdapter(getApplicationContext(),this);
+
+		if(listSameCategoryAdapter!=null)listSameCategoryAdapter=null;
+		listSameCategoryAdapter = new PlayerListSameCategoryAdapter(getApplicationContext(),this);
+
+		if(listPopClipAdapter!=null)listPopClipAdapter=null;
+		listPopClipAdapter = new PlayerListPopClipAdapter(getApplicationContext(),this);
 
 		audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
 
-		// 초기 과정 데이터 값 셋팅 getAssets contentsinfo28.json
+		// 초기 과정 데이터 값 셋팅 동영상 강의 /강좌 베이스 getAssets contentsinfo28.json
+		// 추천 뷰 출력
+		// 초기 과정 데이터 값 셋팅 오디오북 베이스 getAssets contentsinfo62.json
 		initContentList("movie");
 		// 베이스 레이아웃
 		setBaseUI();
@@ -663,6 +711,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		setSleeperUI();
 		//플레이어 타이틀
 		setPlayerTitle();
+		// 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
+		setRelatedUI();
 
 		mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -1862,7 +1912,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 //		mTextCurTime = findViewById(R.id.WELEAN_TEXT_CUR_TIME);
 //		mTextTotalTime = findViewById(R.id.WELEAN_TOTAL_TIME);
 		mSeekBar = findViewById(R.id.exo_progress);
-		mRelatedViewBtn.setVisibility(View.GONE);
+		mRelatedViewBtn.setVisibility(View.VISIBLE);
 
 		// audioBook mode , video/audio mode
 
@@ -2650,6 +2700,59 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 						finish();
 						break;
 
+					case R.id.RELATED_BUTTON_GROUP:
+
+						if(CON_CLASS!=null){
+							Animation fadeout = null;
+							fadeout = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+
+							mRelatedViewBtn.startAnimation(fadeout);
+
+							fadeout.setAnimationListener(new Animation.AnimationListener() {
+								@Override
+								public void onAnimationStart(Animation animation) {
+									mRelatedViewBtn.setVisibility(GONE);
+								}
+
+								@Override
+								public void onAnimationEnd(Animation animation) {
+
+									mRelatedViewBtn.setVisibility(GONE);
+									if(CON_CLASS.equals("1")){
+
+										mButtonPause.setVisibility(GONE);
+										mButtonPlay.setVisibility(VISIBLE);
+
+										setBackGroungLayout(true);
+										Animation fadeout = null;
+										fadeout = null;
+										fadeout = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+
+										mRelatedListGroupLayout.startAnimation(fadeout);
+
+										Animation textBlink = null;
+										textBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink_animation);
+
+										mRelatedListBlinkText.startAnimation(textBlink);
+										mRelatedListGroupLayout.setVisibility(VISIBLE);
+
+//										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
+										player.setPlayWhenReady(false);
+									}
+								}
+								@Override
+								public void onAnimationRepeat(Animation animation) {
+
+								}
+							});
+
+						}
+					break;
+
+					case R.id.BUTTON_RELATEDLIST_TOP_CLOSE:
+						creatDialog(WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER);
+					break;
+
 				}
 
 			} catch (Exception e) {
@@ -3267,6 +3370,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 //							// http://crashes.to/s/d9fb8aa7b19
 //						}
 //					}
+
+					loadRelatedData();
+
 				}catch ( Exception e ){
 					e.printStackTrace();
 				}
@@ -3274,7 +3380,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 		};
 
-//		setRelatedUIHandler.sendEmptyMessageDelayed(0,500);
+		setRelatedUIHandler.sendEmptyMessageDelayed(0,500);
 
 		return;
 	}
@@ -4911,8 +5017,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 				mCurrenttime = (int) player.getCurrentPosition();
 
-				Logger.e(TAG + " mCurrentTime Handler " + mCurrenttime);
-
 				if (hasSubTitlsJesonUrl) {
 					if (mSubtitlstime != null) {
 						for (int i = 0; i < mSubtitlstime.length - 2; i++) {
@@ -4938,4 +5042,180 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		}
 	};
 
+	public void loadRelatedData(){
+		try {
+			InputStream is = getAssets().open("playlist_suggest56.json");
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			String jsonText = readAll(rd);
+			JSONObject jsonResult = new JSONObject(jsonText);
+			JSONArray itemArray = jsonResult.getJSONArray("data");
+
+			for (int i = 0; i < itemArray.length(); i++) {
+				JSONObject objItem = itemArray.getJSONObject(i);
+
+				objItem.getString("title");
+
+				TextView same_series_title = findViewById(R.id.same_series_title);
+				TextView same_category_title = findViewById(R.id.same_category_title);
+				TextView pop_title = findViewById(R.id.pop_title);
+
+				if(i==0){
+					same_series_title.setText(objItem.getString("title"));
+				}else if(i==1){
+					same_category_title.setText(objItem.getString("title"));
+				}else if(i==2){
+					pop_title.setText(objItem.getString("title"));
+				}
+
+				JSONArray suggestObj = objItem.getJSONArray("data");
+
+				for(int j=0 ; j < suggestObj.length() ; j++) {
+					JSONObject suggestObjItem = suggestObj.getJSONObject(j);
+
+					suggestObjItem.put("suggestTitle" , objItem.getString("title") );
+					suggestObjItem.put("listkey" , i );
+
+//                                Logger.e(TAG + " 20170902 :: suggest " + suggestObjItem.getString("suggestTitle") +
+//                                suggestObjItem.getString("cname") + " " +i + " " + suggestObjItem.getString("ckey"));
+
+					suggestListArray1.add(i, suggestObjItem );
+				}
+			}
+
+			alName = new ArrayList<>();
+			alImage = new ArrayList<>();
+			alTeacherName = new ArrayList<>();
+			alTotalTime = new ArrayList<>();
+			alEndTime = new ArrayList<>();
+			alViewCnt = new ArrayList<>();
+			alStarCnt = new ArrayList<>();
+			alReplyCnt = new ArrayList<>();
+			alCkeyCnt = new ArrayList<>();
+
+			alName2 = new ArrayList<>();
+			alImage2 = new ArrayList<>();
+			alTeacherName2 = new ArrayList<>();
+			alTotalTime2 = new ArrayList<>();
+			alEndTime2 = new ArrayList<>();
+			alViewCnt2 = new ArrayList<>();
+			alStarCnt2 = new ArrayList<>();
+			alReplyCnt2 = new ArrayList<>();
+			alCkeyCnt2 = new ArrayList<>();
+
+			alName3 = new ArrayList<>();
+			alImage3 = new ArrayList<>();
+			alTeacherName3 = new ArrayList<>();
+			alTotalTime3 = new ArrayList<>();
+			alEndTime3 = new ArrayList<>();
+			alViewCnt3 = new ArrayList<>();
+			alStarCnt3 = new ArrayList<>();
+			alReplyCnt3 = new ArrayList<>();
+			alCkeyCnt3 = new ArrayList<>();
+
+			int k =0;
+			int l =0;
+			int m =0;
+
+			try{
+				for(int j = suggestListArray1.size()-1; j >=0  ; j--){
+
+					if(suggestListArray1.get(j).getString("listkey").equals("0") ){
+						alName.add(k, suggestListArray1.get(j).getString("cname") );
+						alImage.add(k, suggestListArray1.get(j).getString("clist_img") );
+						alTeacherName.add(k, suggestListArray1.get(j).getString("teachername") );
+						alTotalTime.add(k, suggestListArray1.get(j).getString("cplay_time") );
+						alEndTime.add(k, suggestListArray1.get(j).getString("end_time") );
+						alViewCnt.add(k, suggestListArray1.get(j).getString("chitcnt") );
+						alStarCnt.add(k, suggestListArray1.get(j).getString("cstarcnt") );
+						alReplyCnt.add(k, suggestListArray1.get(j).getString("creviewcnt") );
+						alCkeyCnt.add(k, suggestListArray1.get(j).getString("ckey") );
+						k++;
+					}
+
+					if(suggestListArray1.get(j).getString("listkey").equals("1") ){
+						alName2.add(l , suggestListArray1.get(j).getString("cname") );
+						alImage2.add(l, suggestListArray1.get(j).getString("clist_img") );
+						alTeacherName2.add(l, suggestListArray1.get(j).getString("teachername") );
+						alTotalTime2.add(l, suggestListArray1.get(j).getString("cplay_time") );
+						alEndTime2.add(l, suggestListArray1.get(j).getString("end_time") );
+						alViewCnt2.add(l, suggestListArray1.get(j).getString("chitcnt") );
+						alStarCnt2.add(l, suggestListArray1.get(j).getString("cstarcnt") );
+						alReplyCnt2.add(l, suggestListArray1.get(j).getString("creviewcnt") );
+						alCkeyCnt2.add(l, suggestListArray1.get(j).getString("ckey") );
+						l++;
+					}
+
+					if(suggestListArray1.get(j).getString("listkey").equals("2") ){
+						alName3.add(m , suggestListArray1.get(j).getString("cname") );
+						alImage3.add(m, suggestListArray1.get(j).getString("clist_img") );
+						alTeacherName3.add(m, suggestListArray1.get(j).getString("teachername") );
+						alTotalTime3.add(m, suggestListArray1.get(j).getString("cplay_time") );
+						alEndTime3.add(m, suggestListArray1.get(j).getString("end_time") );
+						alViewCnt3.add(m, suggestListArray1.get(j).getString("chitcnt") );
+						alStarCnt3.add(m, suggestListArray1.get(j).getString("cstarcnt") );
+						alReplyCnt3.add(m, suggestListArray1.get(j).getString("creviewcnt") );
+						alCkeyCnt3.add(m, suggestListArray1.get(j).getString("ckey") );
+						m++;
+					}
+
+				}
+
+				k =0;
+				l =0;
+				m =0;
+
+				String ckey = "";
+				try{
+					if(Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
+						ckey = getNewWebPlayerInfo().getCkey()[getContentId()];
+					}else {
+						ckey = getwebPlayerInfo().getCkey()[getContentId()];
+					}
+				}catch (Exception ECkey){
+					ECkey.printStackTrace();
+				}
+
+				mRecyclerView = findViewById(R.id.related_recyclerView1);
+				mRecyclerView.setHasFixedSize(true);
+
+				// The number of Columns
+				mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+				mRecyclerView.setLayoutManager(mLayoutManager);
+
+				mAdapter = new HLVAdapter(getApplicationContext(), PlayerActivity.this , alName , alImage , alTeacherName ,
+						alTotalTime , alEndTime , alViewCnt , alStarCnt , alReplyCnt , alCkeyCnt , ckey);
+				mRecyclerView.setAdapter(mAdapter);
+
+				// Calling the RecyclerView 1
+				mRecyclerView2 = findViewById(R.id.related_recyclerView2);
+				mRecyclerView2.setHasFixedSize(true);
+
+				// The number of Columns
+				mLayoutManager2 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+				mRecyclerView2.setLayoutManager(mLayoutManager2);
+
+				mAdapter2 = new HLVAdapter(getApplicationContext(), PlayerActivity.this , alName2, alImage2 , alTeacherName2 ,
+						alTotalTime2 , alEndTime2 , alViewCnt2 , alStarCnt2 , alReplyCnt2 , alCkeyCnt2 , ckey);
+				mRecyclerView2.setAdapter(mAdapter2);
+
+				// Calling the RecyclerView 1
+				mRecyclerView3 = findViewById(R.id.related_recyclerView3);
+				mRecyclerView3.setHasFixedSize(true);
+
+				// The number of Columns
+				mLayoutManager3 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+				mRecyclerView3.setLayoutManager(mLayoutManager3);
+
+				mAdapter3 = new HLVAdapter(getApplicationContext(), PlayerActivity.this , alName3, alImage3 ,alTeacherName3 ,
+						alTotalTime3 , alEndTime3 , alViewCnt3 , alStarCnt3 , alReplyCnt3 , alCkeyCnt3 , ckey);
+				mRecyclerView3.setAdapter(mAdapter3);
+
+			}catch (Exception e3){
+				e3.printStackTrace();
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
 }
