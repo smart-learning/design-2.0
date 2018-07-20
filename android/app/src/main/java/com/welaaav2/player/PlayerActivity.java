@@ -65,6 +65,7 @@ import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
 import com.google.android.exoplayer2.drm.KeysExpiredException;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -104,6 +105,7 @@ import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
+import com.welaaav2.MainApplication;
 import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.pallycon.PlayStatus;
@@ -113,6 +115,7 @@ import com.welaaav2.util.HttpCon;
 import com.welaaav2.util.Logger;
 import com.welaaav2.util.Preferences;
 import com.welaaav2.util.Utils;
+import com.welaaav2.util.WeContentManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -449,6 +452,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					if( playWhenReady ) {
 						Log.d(TAG, "State: Ready and Playing");
 						mPlayStatus.mCurrentState = PlayStatus.STATE_PLAYING;
+
+						if(mButtonPause!=null)mButtonPause.setVisibility(View.VISIBLE);
+						if(mButtonPlay!=null)mButtonPlay.setVisibility(View.GONE);
 
 						// startTimerSeekBar ! 타이머를 돌리고 . 자막 싱크를 맞춥니다.
 						mCurrentTimeHandler.sendEmptyMessageDelayed(0 , 100);
@@ -1010,7 +1016,16 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		}
 
 		MediaSource mediaSource = buildMediaSource(uri);
-		player.prepare(mediaSource);
+		MediaSource mediaSource1 = buildMediaSource( Uri.parse("https://yoophi.com/public/contents/DASH_0028_002_mp4/stream.mpd") );
+		MediaSource mediaSource2 = buildMediaSource( Uri.parse("https://yoophi.com/public/contents/DASH_0028_003_mp4/stream.mpd") );
+
+		ConcatenatingMediaSource concatenatingMediaSource =
+				new ConcatenatingMediaSource(mediaSource , mediaSource1 , mediaSource2);
+
+//		LoopingMediaSource compositeSource =
+//				new LoopingMediaSource(concatenatingMediaSource);
+
+		player.prepare(concatenatingMediaSource);
 //		updateButtonVisibilities();
 	}
 
@@ -2249,6 +2264,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 //							Utils.logToast(mAppcontext , mAppcontext.getString(R.string.info_perview_mode)) ;
 //						}
 
+						// 1.Call setController Show Time out 0 , disable timeout
+						// 2.Call setController Hide On Touch false
+						simpleExoPlayerView.setControllerShowTimeoutMs(0);
+						simpleExoPlayerView.setControllerHideOnTouch(false);
+
 					}
 					break;
 
@@ -2261,6 +2281,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 						final int positoinY = getTextviewHeight() * getTextViewNumber();
 						mscrollview.scrollTo(0,positoinY);
+
+						simpleExoPlayerView.setControllerShowTimeoutMs(10000);
+						simpleExoPlayerView.setControllerHideOnTouch(true);
 
 					}
 					break;
@@ -3477,8 +3500,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 								audioModeIconHeadset.setVisibility(VISIBLE); //아이콘보이고
 							}
 						}
-						break;
 
+						setBackGroungLayout(false);
+
+						player.setPlayWhenReady(true);
+
+						break;
 				}
 			}
 		};
@@ -4969,9 +4996,22 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 		// 최근 재생 리스트가 있는 경우
 		if (mPlaylistGroupLayout.getVisibility() == VISIBLE) {
-			if(mPlaylistGroupLayout!=null) mPlaylistGroupLayout.startAnimation(mAniSlideHide);
-			if(mPlaylistGroupLayout!=null)mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
-			if(mButtonGroupLayout!=null)mButtonGroupLayout.setVisibility(VISIBLE);
+			if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+			if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+			if (mButtonGroupLayout != null) mButtonGroupLayout.setVisibility(VISIBLE);
+
+			player.setPlayWhenReady(true);
+
+		// 추천 뷰 콘텐츠 뷰가 활성화 인 경우
+		}else if (mRelatedListGroupLayout.getVisibility() == VISIBLE) {
+
+			Animation fadeout = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+
+			if (mRelatedListGroupLayout != null) mRelatedListGroupLayout.startAnimation(fadeout);
+			if (mRelatedListGroupLayout != null) mRelatedListGroupLayout.setVisibility(View.INVISIBLE);
+			if (mButtonGroupLayout != null) mButtonGroupLayout.setVisibility(VISIBLE);
+
+			setBackGroungLayout(false);
 
 			player.setPlayWhenReady(true);
 		}else{
@@ -5217,5 +5257,14 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+	}
+
+	/******************************
+	 * Comment   : 등록된 컨텐츠 매니져
+	 ******************************/
+	public WeContentManager ContentManager()
+	{
+		MainApplication myApp = (MainApplication) getApplicationContext();
+		return myApp.getContentMgr();
 	}
 }

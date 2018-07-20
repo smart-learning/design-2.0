@@ -26,8 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:use_controller="true"
-        app:fastforward_increment="30000"
-        app:rewind_increment="30000"
+        app:show_timeout="10000"
         app:controller_layout_id="@layout/exo_playback_control_view_welaaa"/>
 
     <!--app:show_timeout="10000"-->
