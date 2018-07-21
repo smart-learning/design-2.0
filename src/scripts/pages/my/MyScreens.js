@@ -11,10 +11,11 @@ import {
 import MyInfoHome from "./MyInfoHome";
 import LoginPage from "../auth/LoginPage";
 import FindPasswordPage from "../auth/FindPasswordPage";
-import SignUpPage from "../auth/SignUpPage";
+import SignUpLandingPage from "../auth/SignUpLandingPage";
 import EmailSignUpForm from "../auth/EmailSignUpForm";
 import MyInfoScreens from "./MyInfoScreens";
-import SignUpPolicy from "../auth/SignUpPolicy";
+import Policy from "../auth/PolicyPage";
+import Privacy from "../auth/PrivacyPage";
 
 
 const MyScreens = createSwitchNavigator(
@@ -34,11 +35,16 @@ const MyScreens = createSwitchNavigator(
 		SignUp: {
 			screen: createStackNavigator({
 					SignUpPage: {
-						screen: SignUpPage
+						screen: SignUpLandingPage
 					},
 
-					SignUpPolicy: {
-						screen: SignUpPolicy,
+					PolicyPage: {
+						screen: Policy,
+						navigationOptions: NAV_OPTS_STACK,
+					},
+
+					PrivacyPage: {
+						screen: Privacy,
 						navigationOptions: NAV_OPTS_STACK,
 					}
 				},
