@@ -10,6 +10,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.welaaav2.player.service.PlayerServiceManager;
 import com.welaaav2.react.pakcage.RNNativePlayerPackage;
 import com.welaaav2.util.WeContentManager;
 
@@ -21,6 +22,9 @@ import io.fabric.sdk.android.Fabric;
 public class MainApplication extends Application implements ReactApplication {
 
     private WeContentManager content_manager=null;
+
+    private PlayerServiceManager playerServiceManager;
+
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
@@ -70,6 +74,9 @@ public class MainApplication extends Application implements ReactApplication {
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        playerServiceManager = new PlayerServiceManager(this);
+        playerServiceManager.bind();
     }
 
     public WeContentManager initContentManager()
@@ -86,4 +93,7 @@ public class MainApplication extends Application implements ReactApplication {
         return content_manager;
     }
 
+    public PlayerServiceManager getPlayerServiceManager() {
+        return playerServiceManager;
+    }
 }

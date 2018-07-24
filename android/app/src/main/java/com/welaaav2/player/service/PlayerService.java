@@ -1,67 +1,62 @@
 package com.welaaav2.player.service;
 
-import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Binder;
 import android.os.IBinder;
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.welaaav2.common.Constants;
+import com.welaaav2.player.core.PlayerManager;
 
 /**
  * https://developer.android.com/guide/components/bound-services.html?hl=ko#Lifecycle
  */
 public class PlayerService extends Service implements AudioManager.OnAudioFocusChangeListener {
-    private NotificationManager notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
+    private final IBinder binder = new PlayerBinder();
+    private AudioManager audioManager;
+    private PlayerManager playerManager;
 
-    private final RemoteCallbackList<IPlayerAidlInterfaceCallback> callbacks = new RemoteCallbackList<>();
-
-    private final IPlayerAidlInterface.Stub binder = new IPlayerAidlInterface.Stub() {
-        @Override
-        public void play() throws RemoteException {
+    class PlayerBinder extends Binder {
+        PlayerService getService() {
+            return PlayerService.this;
         }
-
-        @Override
-        public void pause() throws RemoteException  {
-
-        }
-
-        @Override
-        public void seekTo(int position) throws RemoteException  {
-
-        }
-
-        @Override
-        public boolean isPlaying() throws RemoteException  {
-            return false;
-        }
-
-        @Override
-        public boolean registerCallback(IPlayerAidlInterfaceCallback callback) throws RemoteException  {
-            return callbacks.register(callback);
-        }
-
-        @Override
-        public boolean unregisterCallback(IPlayerAidlInterfaceCallback callback) throws RemoteException  {
-            return callbacks.unregister(callback);
-        }
-    };
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i("jungon", "onCreate:" + getClass().getSimpleName());
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        playerManager = new PlayerManager(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
         Log.i("jungon", "onStartCommand: " + action);
-        return super.onStartCommand(intent, flags, startId);
+        if (TextUtils.isEmpty(action)) {
+            return START_NOT_STICKY;
+        }
+
+        int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
+        if (Constants.ACTION_PLAY.equals(action)) {
+
+        } else if (Constants.ACTION_PUASE.equals(action)) {
+
+        } else if (Constants.ACTION_STOP.equals(action)) {
+
+        }
+        return START_NOT_STICKY;
     }
 
     @Nullable
@@ -74,9 +69,6 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
     @Override
     public boolean onUnbind(Intent intent) {
         Log.i("jungon", "onUnbind");
-        if (callbacks.getRegisteredCallbackCount() == 0) {
-            callbacks.kill();
-        }
         return super.onUnbind(intent);
     }
 
@@ -84,17 +76,19 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
     public void onDestroy() {
         super.onDestroy();
         Log.i("jungon", "onDestroy:" + getClass().getSimpleName());
-        callbacks.kill();
+        playerManager.releasePlayer();
+        playerManager = null;
     }
 
     @Override
     public void onAudioFocusChange(int focusChange) {
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
-            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
+                break;
+
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 // Lost focus for a short time, but we have to stop
                 // playback. We don't release the media player because playback
@@ -108,11 +102,7 @@ public class PlayerService extends Service implements AudioManager.OnAudioFocusC
         }
     }
 
-    private void initialize() {
-        // TODO: 2018. 7. 21. initialize player and so on
-    }
-
-    private void release() {
-        // TODO: 2018. 7. 21. release player and so on
+    public PlayerManager getPlayerManager() {
+        return playerManager;
     }
 }

@@ -167,7 +167,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-cast-framework:15.0.0"
 
     // exoplayer2
-    implementation "com.google.android.exoplayer:exoplayer:2.6.1"
+    implementation "com.google.android.exoplayer:exoplayer:2.8.2"
 
     // PallyCon SDK
     implementation "org.bouncycastle:bcprov-jdk15on:1.59"
@@ -177,7 +177,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
     // fabric
-    compile('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
         transitive = true;
     }
 

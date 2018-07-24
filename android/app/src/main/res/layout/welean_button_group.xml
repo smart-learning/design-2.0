@@ -347,13 +347,13 @@
             <Button
                 android:layout_width="@dimen/welean_btn_pause_width"
                 android:layout_height="@dimen/welean_btn_pause_width"
-                android:id="@+id/WELEAN_BTN_PAUSE"
+                android:id="@+id/exo_pause"
                 android:background="@drawable/item_pause"/>
 
             <Button
                 android:layout_width="@dimen/welean_btn_pause_width"
                 android:layout_height="@dimen/welean_btn_pause_width"
-                android:id="@+id/WELEAN_BTN_PLAY"
+                android:id="@+id/exo_play"
                 android:background="@drawable/item_play"
                 android:visibility="gone"/>
 

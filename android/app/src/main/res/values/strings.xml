@@ -21,6 +21,8 @@
 
     <string name="error_unsupported_audio">Media includes audio tracks, but none are playable by this device</string>
 
+    <string name="error_generic">Playback failed</string>
+
     <string name="app_id">1CDBBCB6</string>
     <string name="media_route_menu_title">Cast</string>
 

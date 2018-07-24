@@ -24,7 +24,6 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -55,12 +54,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
 import com.google.android.exoplayer2.drm.KeysExpiredException;
@@ -75,9 +72,8 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -105,10 +101,13 @@ import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
+import com.welaaav2.BaseActivity;
 import com.welaaav2.MainApplication;
 import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.pallycon.PlayStatus;
+import com.welaaav2.player.core.PlayerManager;
+import com.welaaav2.player.service.PlayerServiceManager;
 import com.welaaav2.util.CustomDialog;
 import com.welaaav2.util.HLVAdapter;
 import com.welaaav2.util.HttpCon;
@@ -142,7 +141,7 @@ import static android.view.View.VISIBLE;
  * Created by PallyconTeam
  */
 
-public class PlayerActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlayerActivity extends BaseActivity implements View.OnClickListener {
 
 	private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
 
@@ -162,13 +161,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	private DataSource.Factory mediaDataSourceFactory;
 	private DefaultBandwidthMeter bandwidthMeter;
 	private DefaultTrackSelector trackSelector;
-	private SimpleExoPlayerView simpleExoPlayerView;
+	private PlayerView simpleExoPlayerView;
 	private SimpleExoPlayer player;
 	private boolean shouldAutoPlay;
 	private Handler eventHandler;
 	private PallyconWVMSDK WVMAgent;
 	private LinearLayout debugRootView;
-	private TrackSelectionHelper trackSelectionHelper;
 
 	//
 	private LayoutInflater mLayout=null;
@@ -345,6 +343,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	private WebPlayerInfo mWebPlayerInfo = null;
 	private NewWebPlayerInfo mNewWebPlayerInfo = null;
 
+	private PlayerServiceManager playerServiceManager;
+
 	private ProgressBar audioItemProgressBar;
 
 	private PlayerListAdapter lectureListItemdapter;
@@ -411,42 +411,45 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 	private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
 
-	// TODO : must implement ExoPlayer.EventListener
-	private Player.EventListener playerEventListener = new Player.EventListener() {
-
+	private class PlayerEventListener extends Player.DefaultEventListener {
 		@Override
-		public void onTimelineChanged(Timeline timeline, Object manifest) {
-			//TODO: Please refer to the ExoPlayer guide.
-			Log.d(TAG, "onTimelineChanged()!!");
-		}
+		public void onPlayerError(ExoPlaybackException error) {
+			String errorString;
+			if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+				Exception cause = error.getRendererException();
+				errorString = cause.toString();
 
-		@Override
-		public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-			//TODO: Please refer to the ExoPlayer guide.
-			Log.d(TAG, "onTracksChanged()!!");
-		}
+			} else if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+				Exception cause = error.getSourceException();
+				errorString = cause.toString();
 
-		@Override
-		public void onLoadingChanged(boolean isLoading) {
-			//TODO: Please refer to the ExoPlayer guide.
-			Log.d(TAG, "onLoadingChanged(" + isLoading + ")");
+			} else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
+				Exception cause = error.getUnexpectedException();
+				errorString = cause.toString();
+			} else {
+				errorString = error.toString();
+			}
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
+			builder.setTitle("Play Error");
+			builder.setMessage(errorString);
+			builder.setPositiveButton("OK", null);
+			Dialog dialog = builder.create();
+			dialog.show();
 		}
 
 		@Override
 		public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-			//TODO: Please refer to the ExoPlayer guide.
-//			updateButtonVisibilities();
-
 			switch( playbackState ) {
-				case ExoPlayer.STATE_IDLE:
+				case Player.STATE_IDLE:
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_IDLE)");
 					mPlayStatus.mCurrentState = PlayStatus.STATE_IDLE;
 					break;
-				case ExoPlayer.STATE_BUFFERING:
+				case Player.STATE_BUFFERING:
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_BUFFERING)");
 					mPlayStatus.mCurrentState = PlayStatus.STATE_BUFFERING;
 					break;
-				case ExoPlayer.STATE_READY:
+				case Player.STATE_READY:
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_READY)");
 
 					if( playWhenReady ) {
@@ -467,7 +470,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					}
 
 					break;
-				case ExoPlayer.STATE_ENDED:
+				case Player.STATE_ENDED:
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_ENDED)");
 					mPlayStatus.mCurrentState = PlayStatus.STATE_IDLE;
 					break;
@@ -475,65 +478,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", UNKNOWN)");
 					mPlayStatus.mCurrentState = PlayStatus.STATE_IDLE;
 			}
-		}
-
-		@Override
-		public void onRepeatModeChanged(int repeatMode) {
 
 		}
-
-		@Override
-		public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-
-		}
-
-		@Override
-		public void onPlayerError(ExoPlaybackException e) {
-			// TODO: Check the types of errors that occur inside the player.
-			String errorString;
-			if (e.type == ExoPlaybackException.TYPE_RENDERER) {
-				Exception cause = e.getRendererException();
-				errorString = cause.toString();
-
-			} else if (e.type == ExoPlaybackException.TYPE_SOURCE) {
-				Exception cause = e.getSourceException();
-				errorString = cause.toString();
-
-			} else if (e.type == ExoPlaybackException.TYPE_UNEXPECTED) {
-				Exception cause = e.getUnexpectedException();
-				errorString = cause.toString();
-			} else {
-				errorString = e.toString();
-			}
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
-			builder.setTitle("Play Error");
-			builder.setMessage(errorString);
-			builder.setPositiveButton("OK", null);
-			Dialog dialog = builder.create();
-			dialog.show();
-		}
-
-		@Override
-		public void onPositionDiscontinuity(int reason) {
-
-		}
-
-		@Override
-		public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-		}
-
-		@Override
-		public void onSeekProcessed() {
-
-		}
-
-//		@Override
-//		public void onPositionDiscontinuity() {
-//			Log.d(TAG, "onPositionDiscontinuity");
-//		}
-	};
+	}
 
 	// TODO : must implement PallyconEventListener
 	private PallyconEventListener pallyconEventListener = new PallyconEventListener() {
@@ -559,7 +506,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 				}
 			}
 
-			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PlayerActivity.this);
+			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
 			alertBuilder.setTitle("License Info");
 			alertBuilder.setMessage(stringBuilder.toString());
 			alertBuilder.setPositiveButton("OK", null);
@@ -645,6 +592,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 //		com.google.android.exoplayer2.ui.SimpleExoPlayerView
 		simpleExoPlayerView = findViewById(R.id.player_view);
 		simpleExoPlayerView.requestFocus();
+
+		playerServiceManager = getPlayerServiceManager();
 
 		//// Chromecast
 		mCastContext = CastContext.getSharedInstance(this);
@@ -864,23 +813,41 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		if( mPlayStatus.mCurrentState == PlayStatus.STATE_PLAYING )
 			shouldAutoPlay = true;
 
-		if (Util.SDK_INT <= 23 || player == null) {
-			try {
-				initializePlayer();
-			} catch (PallyconDrmException e) {
-				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-				finish();
-			} catch (PallyconEncrypterException e) {
-				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-				finish();
-			} catch (JSONException e) {
-				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-				finish();
-			}
-		} else {
-			simpleExoPlayerView.setUseController(true);
-			player.setPlayWhenReady(shouldAutoPlay);
-		}
+//		if (Util.SDK_INT <= 23 || player == null) {
+//			try {
+//				initializePlayer();
+//			} catch (PallyconDrmException e) {
+//				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+//				finish();
+//			} catch (PallyconEncrypterException e) {
+//				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+//				finish();
+//			} catch (JSONException e) {
+//				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+//				finish();
+//			}
+//		} else {
+//			simpleExoPlayerView.setUseController(true);
+//			player.setPlayWhenReady(shouldAutoPlay);
+//		}
+
+		Intent intent = getIntent();
+		PlayerManager.Content content = new PlayerManager.Content();
+		content.uri = intent.getData();
+		content.drmSchemeUuid = UUID.fromString(intent.getStringExtra(PlayerActivity.DRM_SCHEME_UUID_EXTRA));
+		content.drmLicenseUrl = intent.getStringExtra(DRM_LICENSE_URL);
+		content.multiSession = intent.getBooleanExtra(PlayerActivity.DRM_MULTI_SESSION, false);
+		content.userId = intent.getStringExtra(PlayerActivity.DRM_USERID);
+		content.cId = intent.getStringExtra(PlayerActivity.DRM_CID);
+		content.oId = intent.getStringExtra(PlayerActivity.DRM_OID);
+		content.customData = intent.getStringExtra(PlayerActivity.DRM_CUSTOME_DATA);
+		content.token = intent.getStringExtra(PlayerActivity.DRM_TOKEN);
+
+		playerServiceManager.setPallconEventListener(pallyconEventListener);
+		playerServiceManager.setSource(content);
+		playerServiceManager.initializePlayer();
+		playerServiceManager.addPlayerEventListener(new PlayerEventListener());
+		playerServiceManager.setPlayerView(simpleExoPlayerView);
 	}
 
 	@Override
@@ -907,6 +874,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		mPlayStatus.clear();
 
 		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		playerServiceManager.releasePlayer();
 	}
 
 	@Override
@@ -942,7 +915,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 			TrackSelection.Factory adaptiveTrackSelectionFactory =
 					new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
 			trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
-			trackSelectionHelper = new TrackSelectionHelper(trackSelector, adaptiveTrackSelectionFactory);
 
 			if (intent.hasExtra(DRM_SCHEME_UUID_EXTRA)) {
 				drmSchemeUuid = UUID.fromString(intent.getStringExtra(DRM_SCHEME_UUID_EXTRA));
@@ -993,7 +965,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 			player = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector);
 			// TODO : Set Pallycon drmSessionManager for listener.
-			player.addListener(playerEventListener);
+//			player.addListener(playerEventListener);
 
 			// TODO : Set Sercurity API to protect media recording by screen recorder
 			SurfaceView view = (SurfaceView)simpleExoPlayerView.getVideoSurfaceView();
@@ -1514,10 +1486,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 	public void onClick(View view) {
 		if (view.getParent() == debugRootView) {
 			MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-			if (mappedTrackInfo != null) {
-				trackSelectionHelper.showSelectionDialog(
-						this, ((Button) view).getText(), mappedTrackInfo, (int) view.getTag());
-			}
 		}
 	}
 	//// end of Chromecast
@@ -1805,8 +1773,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		mAniSlideShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
 		mAniSlideHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
-		mButtonPlay = findViewById(R.id.WELEAN_BTN_PLAY);
-		mButtonPause = findViewById(R.id.WELEAN_BTN_PAUSE);
+//		mButtonPlay = findViewById(R.id.WELEAN_BTN_PLAY);
+//		mButtonPause = findViewById(R.id.WELEAN_BTN_PAUSE);
 		mBtnForward = findViewById(R.id.CDN_TAG_BTN_FORWARD);
 		mBtnBackward = findViewById(R.id.CDN_TAG_BTN_BACKWARD);
 		mBtnClosed = findViewById(R.id.BTN_CLOSE);
@@ -1960,8 +1928,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 //        TextView lecture = (TextView)findViewById(R.id.BUTTON_LECTURE);
 //        lecture.setTextColor(colorGreen);
 
-		mButtonPlay.setOnClickListener(click_control);
-		mButtonPause.setOnClickListener(click_control);
+//		mButtonPlay.setOnClickListener(click_control);
+//		mButtonPause.setOnClickListener(click_control);
 		mBtnForward.setOnClickListener(click_control);
 		mBtnBackward.setOnClickListener(click_control);
 		mBtnClosed.setOnClickListener(click_control);
@@ -2226,7 +2194,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					}
 					break;
 
-					case R.id.WELEAN_BTN_PAUSE:
+					case R.id.exo_pause:
 					{
 						player.setPlayWhenReady(false);
 
@@ -2235,7 +2203,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 					}
 					break;
 
-					case R.id.WELEAN_BTN_PLAY:
+					case R.id.exo_play:
 					{
 						player.setPlayWhenReady(true);
 
