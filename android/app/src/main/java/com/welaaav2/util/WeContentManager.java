@@ -32,7 +32,7 @@ public class WeContentManager extends SQLiteOpenHelper {
             "downloadListUrl text not null, contentPath text not null, downloadContext text not null, modified text, " +
             "filepath text not null, RESOLUTION integer default 1,OVERWRITE integer default 0, UPDATERIGHT integer default 0, " +
             "PLAYTIME integer default 0,totalSize text, gTitle text not null, cTitle text not null, groupImg text not null, " +
-            "sumnailImg text not null, audioVidoType text not null, groupTeacherName text not null, cPlayTime text not null , " +
+            "thumbnailImg text not null, audioVideoType text not null, groupTeacherName text not null, cPlayTime text not null , " +
             "groupContentScnt text not null , groupAllPlayTime text not null , view_limitdate text not null ); ";
 
     private  final String PROGRESS_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS PROGRESS (_id integer primary key autoincrement, " +
