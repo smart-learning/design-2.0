@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 });
 
 
-class SignUpPage extends React.Component {
+class SignUpLandingPage extends React.Component {
 
 	onAccessToken(type, token) {
 
@@ -92,11 +92,11 @@ class SignUpPage extends React.Component {
 }
 
 
-SignUpPage.navigationOptions =()=>{
+SignUpLandingPage.navigationOptions =()=>{
 	return {
 		header: null
 	}
 }
 
 
-export default SignUpPage;
+export default SignUpLandingPage;
