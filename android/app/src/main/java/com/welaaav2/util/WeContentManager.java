@@ -341,7 +341,8 @@ public class WeContentManager extends SQLiteOpenHelper {
     public ArrayList<HashMap<String, Object>> getContentDownLoadList(String gid) throws Exception
     {
         if(!db.isOpen()) openDb();
-        String query = "SELECT cId, filepath, totalSize, gTitle, cTitle, sumnailImg, audioVidoType, gId , groupTeacherName , cPlayTime FROM DOWNLOAD WHERE gId='"+gid+"'AND NOT totalSize is NULL";
+        String query = "SELECT cId, filepath, totalSize, gTitle, cTitle, sumnailImg, audioVidoType, gId , groupTeacherName ," +
+                " cPlayTime FROM DOWNLOAD WHERE gId='"+gid+"'AND NOT totalSize is NULL";
         Cursor c = db.rawQuery(query, null);
         return CursorToDataTable(c);
     }

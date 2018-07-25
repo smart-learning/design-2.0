@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
-import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.gms.cast.framework.CastButtonFactory;
 import com.google.android.gms.cast.framework.CastContext;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
@@ -44,9 +43,9 @@ import com.pallycon.widevinelibrary.PallyconDownloadTask;
 import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
-import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import com.welaaav2.R;
 import com.welaaav2.player.PlayerActivity;
+import com.welaaav2.util.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -377,6 +376,8 @@ public class PallyConMainActivity extends AppCompatActivity implements PallyconD
                             boolean result = downloadTask.isDownloadCompleted();
                             if (result == true) {
                                 Uri localUri = downloadTask.getLocalUri(content.uri, content.name);
+
+                                Logger.e(TAG + " localUrl is " + localUri );
                                 intent.setData(localUri);
                                 intent.putExtra(PlayerActivity.CONTENTS_TITLE, content.name);
                                 //intent.putExtra(PlayerActivity.THUMB_URL, content.thumbUrl);

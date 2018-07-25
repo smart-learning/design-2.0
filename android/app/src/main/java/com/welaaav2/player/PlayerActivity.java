@@ -2205,7 +2205,7 @@ public class PlayerActivity extends BaseActivity {
 							}
 
 							// 일시정지
-							player.setPlayWhenReady(false);
+							playerManager.setPlayWhenReady(false);
 						}
 					}
 					break;
@@ -2461,7 +2461,7 @@ public class PlayerActivity extends BaseActivity {
 										mRelatedListGroupLayout.setVisibility(VISIBLE);
 
 //										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
-										player.setPlayWhenReady(false);
+										playerManager.setPlayWhenReady(false);
 									}
 								}
 
@@ -3200,6 +3200,7 @@ public class PlayerActivity extends BaseActivity {
 						setBackGroungLayout(false);
 
 						playerManager.setPlayWhenReady(true);
+
 						break;
 				}
 			}
