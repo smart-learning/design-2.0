@@ -35,7 +35,6 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
@@ -55,34 +54,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.drm.DrmSessionManager;
-import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
 import com.google.android.exoplayer2.drm.KeysExpiredException;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.cast.CastDevice;
@@ -99,33 +77,25 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
-import com.pallycon.widevinelibrary.PallyconDownloadTask;
-import com.pallycon.widevinelibrary.PallyconDrmException;
-import com.pallycon.widevinelibrary.PallyconEncrypterException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
-import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import com.welaaav2.BaseActivity;
 import com.welaaav2.MainApplication;
 import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.download.DownloadService;
-import com.welaaav2.pallycon.DownloadCallbackImpl;
 import com.welaaav2.pallycon.PlayStatus;
 import com.welaaav2.player.core.PlayerManager;
-import com.welaaav2.player.service.PlayerServiceManager;
 import com.welaaav2.util.CustomDialog;
 import com.welaaav2.util.HLVAdapter;
 import com.welaaav2.util.HttpCon;
 import com.welaaav2.util.Logger;
-import com.welaaav2.util.ONotificationManager;
 import com.welaaav2.util.Preferences;
 import com.welaaav2.util.Utils;
 import com.welaaav2.util.WeContentManager;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -150,7 +120,7 @@ import static android.view.View.VISIBLE;
  * Created by PallyconTeam
  */
 
-public class PlayerActivity extends BaseActivity implements View.OnClickListener {
+public class PlayerActivity extends BaseActivity {
 
 	private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
 
@@ -167,17 +137,9 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 	public static final String THUMB_URL = "thumb_url";
 	public static final String PREFER_EXTENSION_DECODERS = "prefer_extension_decoders";
 
-	private DataSource.Factory mediaDataSourceFactory;
-	private DefaultBandwidthMeter bandwidthMeter;
-	private DefaultTrackSelector trackSelector;
 	private PlayerView simpleExoPlayerView;
-	private SimpleExoPlayer player;
 	private boolean shouldAutoPlay;
-	private Handler eventHandler;
-	private PallyconWVMSDK WVMAgent;
-	private LinearLayout debugRootView;
 
-	//
 	private LayoutInflater mLayout = null;
 	private FrameLayout mButtonGroupLayout = null;
 	public FrameLayout mPlaylistGroupLayout = null;
@@ -352,7 +314,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 	private WebPlayerInfo mWebPlayerInfo = null;
 	private NewWebPlayerInfo mNewWebPlayerInfo = null;
 
-	private PlayerServiceManager playerServiceManager;
+	private PlayerManager playerManager;
 
 	private ProgressBar audioItemProgressBar;
 
@@ -602,7 +564,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 		simpleExoPlayerView = findViewById(R.id.player_view);
 		simpleExoPlayerView.requestFocus();
 
-		playerServiceManager = getPlayerServiceManager();
+		playerManager = getPlayerManager();
 
 		//// Chromecast
 		mCastContext = CastContext.getSharedInstance(this);
@@ -627,11 +589,6 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 		bNowOnChromecast = false;
 		bCreated = true;
 		//// CC
-
-		eventHandler = new Handler();
-		bandwidthMeter = new DefaultBandwidthMeter();
-
-		mediaDataSourceFactory = buildDataSourceFactory();
 
 		if (lectureListItemdapter != null) lectureListItemdapter = null;
 		lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
@@ -852,11 +809,11 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 		content.customData = intent.getStringExtra(PlayerActivity.DRM_CUSTOME_DATA);
 		content.token = intent.getStringExtra(PlayerActivity.DRM_TOKEN);
 
-		playerServiceManager.setPallconEventListener(pallyconEventListener);
-		playerServiceManager.setSource(content);
-		playerServiceManager.initializePlayer();
-		playerServiceManager.addPlayerEventListener(new PlayerEventListener());
-		playerServiceManager.setPlayerView(simpleExoPlayerView);
+		playerManager.setPallyconEventListener(pallyconEventListener);
+		playerManager.setSource(content);
+		playerManager.initializePlayer();
+		playerManager.addPlayerEventListener(new PlayerEventListener());
+		playerManager.setPlayerView(simpleExoPlayerView);
 	}
 
 	@Override
@@ -868,7 +825,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 		//// CC
 
 		if (Util.SDK_INT <= 23) {
-			releasePlayer();
+			playerManager.releasePlayer();
 		}
 
 		super.onPause();
@@ -877,7 +834,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 	@Override
 	protected void onStop() {
 		if (Util.SDK_INT > 23) {
-			releasePlayer();
+			playerManager.releasePlayer();
 		}
 
 		mPlayStatus.clear();
@@ -894,200 +851,16 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		playerServiceManager.releasePlayer();
 	}
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-			try {
-				initializePlayer();
-			} catch (PallyconDrmException e) {
-				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-				finish();
-			} catch (PallyconEncrypterException e) {
-				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-				finish();
-			} catch (JSONException e) {
-				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-				finish();
-			}
+			playerManager.initializePlayer();
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.storage_permission_denied, Toast.LENGTH_LONG).show();
 			finish();
 		}
-	}
-
-	private void initializePlayer() throws PallyconDrmException, PallyconEncrypterException, JSONException {
-		UUID drmSchemeUuid = null;
-		Intent intent = getIntent();
-		Uri uri = intent.getData();
-
-		if (uri == null || uri.toString().length() < 1)
-			throw new PallyconDrmException("The content url is missing");
-
-		if (player == null) {
-			TrackSelection.Factory adaptiveTrackSelectionFactory =
-					new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
-			trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
-
-			if (intent.hasExtra(DRM_SCHEME_UUID_EXTRA)) {
-				drmSchemeUuid = UUID.fromString(intent.getStringExtra(DRM_SCHEME_UUID_EXTRA));
-			}
-
-			DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
-			if (drmSchemeUuid != null) {
-				String drmLicenseUrl = intent.getStringExtra(DRM_LICENSE_URL);
-				boolean multiSession = intent.getBooleanExtra(DRM_MULTI_SESSION, false);
-				try {
-					// TODO : Acquire Pallycon Widevine module.
-					WVMAgent = PallyconWVMSDKFactory.getInstance(this);
-					WVMAgent.setPallyconEventListener(pallyconEventListener);
-				} catch (PallyconDrmException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					String userId = intent.getStringExtra(DRM_USERID);
-					String cid = intent.getStringExtra(DRM_CID);
-					String oid = intent.getStringExtra(DRM_OID);
-					String token = intent.getStringExtra(DRM_TOKEN);
-					String customData = intent.getStringExtra(DRM_CUSTOME_DATA);
-					// TODO : Create Pallycon drmSessionManager to get into ExoPlayerFactory
-
-					if (token.equals("") == false) {
-						drmSessionManager = WVMAgent.createDrmSessionManagerByToken(drmSchemeUuid, drmLicenseUrl, uri, userId, cid, token, multiSession);
-					} else if (customData.equals("") == false) {
-						drmSessionManager = WVMAgent.createDrmSessionManagerByCustomData(drmSchemeUuid, drmLicenseUrl, uri, customData, multiSession);
-					} else if (userId == null || userId.length() < 1) {
-						drmSessionManager = WVMAgent.createDrmSessionManagerByProxy(drmSchemeUuid, drmLicenseUrl, uri, cid, multiSession);
-					} else {
-						drmSessionManager = WVMAgent.createDrmSessionManager(drmSchemeUuid, drmLicenseUrl, uri, userId, cid, oid, multiSession);
-					}
-
-				} catch (PallyconDrmException e) {
-					e.printStackTrace();
-					throw e;
-				}
-			}
-
-			boolean preferExtensionDecoders = intent.getBooleanExtra(PREFER_EXTENSION_DECODERS, false);
-			@DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
-
-			// TODO : Set Pallycon drmSessionManager for drm controller.
-			DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(this,
-					drmSessionManager, extensionRendererMode);
-
-			player = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector);
-			// TODO : Set Pallycon drmSessionManager for listener.
-//			player.addListener(playerEventListener);
-
-			// TODO : Set Sercurity API to protect media recording by screen recorder
-			SurfaceView view = (SurfaceView) simpleExoPlayerView.getVideoSurfaceView();
-			if (Build.VERSION.SDK_INT >= 17) {
-				view.setSecure(true);
-			}
-
-			simpleExoPlayerView.setPlayer(player);
-			if (mPlayStatus.mPosition > 0)
-				player.seekTo(mPlayStatus.mPosition);
-			player.setPlayWhenReady(shouldAutoPlay);
-
-			if (mPlayStatus.mPosition > 0)
-				player.seekTo(mPlayStatus.mPosition);
-			player.setPlayWhenReady(shouldAutoPlay);
-		}
-
-		if (Util.maybeRequestReadExternalStoragePermission(this, uri)) {
-			return;
-		}
-
-		MediaSource mediaSource = buildMediaSource(uri);
-		MediaSource mediaSource1 = buildMediaSource(Uri.parse("https://yoophi.com/public/contents/DASH_0028_002_mp4/stream.mpd"));
-		MediaSource mediaSource2 = buildMediaSource(Uri.parse("https://yoophi.com/public/contents/DASH_0028_003_mp4/stream.mpd"));
-
-		ConcatenatingMediaSource concatenatingMediaSource =
-				new ConcatenatingMediaSource(mediaSource, mediaSource1, mediaSource2);
-
-//		LoopingMediaSource compositeSource =
-//				new LoopingMediaSource(concatenatingMediaSource);
-
-		player.prepare(concatenatingMediaSource);
-//		updateButtonVisibilities();
-	}
-
-	private void releasePlayer() {
-		if (player != null) {
-			shouldAutoPlay = player.getPlayWhenReady();
-			player.release();
-			player = null;
-			trackSelector = null;
-		}
-	}
-
-	private void updateButtonVisibilities() {
-		debugRootView.removeAllViews();
-
-		if (player == null) {
-			return;
-		}
-
-		MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-		if (mappedTrackInfo == null) {
-			return;
-		}
-
-		if (mappedTrackInfo == null) {
-			return;
-		}
-
-		for (int i = 0; i < mappedTrackInfo.length; i++) {
-			TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(i);
-			if (trackGroups.length != 0) {
-				Button button = new Button(this);
-				String label;
-				switch (player.getRendererType(i)) {
-					case C.TRACK_TYPE_AUDIO:
-						label = "Audio";
-						break;
-					case C.TRACK_TYPE_VIDEO:
-						label = "Video";
-						break;
-					case C.TRACK_TYPE_TEXT:
-						label = "Text";
-						break;
-					default:
-						continue;
-				}
-				button.setText(label);
-				button.setTag(i);
-				button.setOnClickListener(this);
-				debugRootView.addView(button, debugRootView.getChildCount() - 1);
-			}
-		}
-	}
-
-	private MediaSource buildMediaSource(Uri uri) {
-		int type = Util.inferContentType(uri.getLastPathSegment());
-		switch (type) {
-			case C.TYPE_DASH:
-				return new DashMediaSource(uri, buildDataSourceFactory(), new DefaultDashChunkSource.Factory(mediaDataSourceFactory), eventHandler, null);
-			case C.TYPE_OTHER:
-				return new ExtractorMediaSource(uri, mediaDataSourceFactory, new DefaultExtractorsFactory(), eventHandler, null);
-			case C.TYPE_HLS:
-			case C.TYPE_SS:
-			default:
-				throw new IllegalStateException("Unsupported type: " + type);
-		}
-	}
-
-	private DataSource.Factory buildDataSourceFactory() {
-		HttpDataSource.Factory httpDataSourceFactory = buildHttpDataSourceFactory();
-		return new DefaultDataSourceFactory(this, null, httpDataSourceFactory);
-	}
-
-	private HttpDataSource.Factory buildHttpDataSourceFactory() {
-		return new DefaultHttpDataSourceFactory(Util.getUserAgent(this, "ExoPlayerSample"), null);
 	}
 
 	//// Chromecast
@@ -1215,6 +988,9 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 				boolean playWhenReady = true;
 
 				mPlayStatus.mScreen = PlayStatus.SCREEN_CAST;
+
+				Player player = playerManager.getPlayer();
+
 				if (player != null) {
 					mPlayStatus.mPosition = player.getCurrentPosition();
 					playWhenReady = player.getPlayWhenReady();
@@ -1239,17 +1015,11 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 				// enable ui of local player
 				simpleExoPlayerView.setUseController(true);
 
+				Player player = playerManager.getPlayer();
+
 				if (player == null) {
 					Log.d(TAG, "[CAST] no local player. initializing...");
-					try {
-						initializePlayer();
-					} catch (PallyconDrmException e) {
-						e.printStackTrace();
-					} catch (PallyconEncrypterException e) {
-						e.printStackTrace();
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
+					playerManager.initializePlayer();
 				}
 
 				// seek position of local player to position of remote player
@@ -1499,12 +1269,6 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 		return false;
 	}
 
-	@Override
-	public void onClick(View view) {
-		if (view.getParent() == debugRootView) {
-			MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-		}
-	}
 	//// end of Chromecast
 
 	public void setBaseUI() {
@@ -2149,6 +1913,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 		public void onClick(View v) {
 
 			try {
+				Player player = playerManager.getPlayer();
 
 				switch (v.getId()) {
 					case R.id.BTN_AUTOPLAY: {
@@ -2209,24 +1974,6 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 
 					case R.id.CDN_TAG_BTN_FORWARD: {
 						player.seekTo(player.getCurrentPosition() + 10000);
-					}
-					break;
-
-					case R.id.exo_pause:
-					{
-						player.setPlayWhenReady(false);
-
-						if (mButtonPause != null) mButtonPause.setVisibility(View.GONE);
-						if (mButtonPlay != null) mButtonPlay.setVisibility(View.VISIBLE);
-					}
-					break;
-
-					case R.id.exo_play:
-					{
-						player.setPlayWhenReady(true);
-
-						if (mButtonPause != null) mButtonPause.setVisibility(View.VISIBLE);
-						if (mButtonPlay != null) mButtonPlay.setVisibility(View.GONE);
 					}
 					break;
 
@@ -2377,15 +2124,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 					break;
 
 					case R.id.BTN_AUDIO: {
-						int indexOfVideoRenderer = -1;
-						for (int i = 0; i < player.getRendererCount(); i++) {
-							if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
-								indexOfVideoRenderer = i;
-								break;
-							}
-						}
-
-						trackSelector.setRendererDisabled(indexOfVideoRenderer, true);
+						playerManager.setRendererDisabled(true);
 
 						audioModeBackgroundLayout.setVisibility(View.VISIBLE); //이미지보이고
 						audioModeIconHeadset.setVisibility(View.VISIBLE); //아이콘보이고
@@ -2395,16 +2134,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 					break;
 
 					case R.id.BTN_VIDEO: {
-
-						int indexOfVideoRenderer = -1;
-						for (int i = 0; i < player.getRendererCount(); i++) {
-							if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
-								indexOfVideoRenderer = i;
-								break;
-							}
-						}
-
-						trackSelector.setRendererDisabled(indexOfVideoRenderer, false);
+						playerManager.setRendererDisabled(false);
 
 						audioModeBackgroundLayout.setVisibility(View.GONE);
 						audioModeIconHeadset.setVisibility(View.GONE);
@@ -3477,8 +3207,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 
 						setBackGroungLayout(false);
 
-						player.setPlayWhenReady(true);
-
+						playerManager.setPlayWhenReady(true);
 						break;
 				}
 			}
@@ -3532,8 +3261,10 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 				switch (alertWindowId) {
 
 					case 1:
-						contentDownload();
-						mCustomDialog.dismiss();
+						if (Util.SDK_INT >= 26) {
+							contentDownload();
+							mCustomDialog.dismiss();
+						}
 						break;
 				}
 
@@ -3547,8 +3278,10 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 				switch (alertWindowId) {
 
 					case 1:
-						contentDownload();
-						mCustomDialog.dismiss();
+						if (Util.SDK_INT >= 26) {
+							contentDownload();
+							mCustomDialog.dismiss();
+						}
 						break;
 					case 2:
 						mCustomDialog.dismiss();
@@ -4967,6 +4700,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 
 	@Override
 	public void onBackPressed() {
+		Player player = playerManager.getPlayer();
 
 		// 최근 재생 리스트가 있는 경우
 		if (mPlaylistGroupLayout.getVisibility() == VISIBLE) {
@@ -5028,7 +4762,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 		@Override
 		public void handleMessage(Message msg) {
 			try {
-
+				Player player = playerManager.getPlayer();
 				mCurrenttime = (int) player.getCurrentPosition();
 
 				if (hasSubTitlsJesonUrl) {

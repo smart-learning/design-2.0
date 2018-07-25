@@ -12,6 +12,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.welaaav2.player.core.PlayerManager;
 import com.welaaav2.player.service.PlayerServiceManager;
 import com.welaaav2.react.pakcage.RNNativePlayerPackage;
 import com.welaaav2.util.ONotificationManager;
@@ -100,5 +101,9 @@ public class MainApplication extends Application implements ReactApplication {
 
     public PlayerServiceManager getPlayerServiceManager() {
         return playerServiceManager;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return playerServiceManager.getPlayerManager();
     }
 }

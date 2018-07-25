@@ -222,6 +222,30 @@ public class PlayerManager {
         }
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setRendererDisabled(boolean isDisabled) {
+        int indexOfVideoRenderer = -1;
+        for (int i = 0; i < player.getRendererCount(); i++) {
+            if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+                indexOfVideoRenderer = i;
+                break;
+            }
+        }
+
+        DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
+        parametersBuilder.setRendererDisabled(indexOfVideoRenderer, isDisabled);
+        trackSelector.setParameters(parametersBuilder);
+    }
+
+    public void setPlayWhenReady(boolean playWhenReady) {
+        if (player != null) {
+            player.setPlayWhenReady(playWhenReady);
+        }
+    }
+
     private DrmSessionManager<FrameworkMediaCrypto> createDrmSessionManager()
             throws PallyconDrmException {
         Uri uri = content.uri;
@@ -302,17 +326,17 @@ public class PlayerManager {
 
     public static class Content {
         public Uri uri;
-        public String name = "";
+        public String name;
         public UUID drmSchemeUuid;
-        public String drmLicenseUrl = "";
-        public String userId = "";
-        public String cId = "";
-        public String oId = "";
-        public String token = "";
-        public String thumbUrl = "";
-        public String customData = "";
+        public String drmLicenseUrl;
+        public String userId;
+        public String cId;
+        public String oId;
+        public String token;
+        public String thumbUrl;
+        public String customData;
         public boolean multiSession;
 
-        public Content() {}
+        public Content() { }
     }
 }

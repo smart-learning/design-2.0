@@ -7,9 +7,6 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.welaaav2.player.core.PlayerManager;
 
 public class PlayerServiceManager {
@@ -55,63 +52,10 @@ public class PlayerServiceManager {
         return isServiceConnected;
     }
 
-    public void initializePlayer() {
+    public PlayerManager getPlayerManager() {
         if (isServiceConnected) {
-            service.getPlayerManager().initializePlayer();
+            return service.getPlayerManager();
         }
-    }
-
-    public void releasePlayer() {
-        if (isServiceConnected) {
-            service.getPlayerManager().releasePlayer();
-        }
-    }
-
-    public void setSource(PlayerManager.Content content) {
-        if (isServiceConnected) {
-            service.getPlayerManager().setSource(content);
-        }
-    }
-
-    public void setPlayerView(PlayerView playerView) {
-        if (isServiceConnected) {
-            service.getPlayerManager().setPlayerView(playerView);
-        }
-    }
-
-    public void addPlayerEventListener(Player.EventListener listener) {
-        if (isServiceConnected) {
-            service.getPlayerManager().addPlayerEventListener(listener);
-        }
-    }
-
-    public void setPallconEventListener(PallyconEventListener listener) {
-        if (isServiceConnected) {
-            service.getPlayerManager().setPallyconEventListener(listener);
-        }
-    }
-
-    public void onStart() {
-        if (isServiceConnected) {
-            service.getPlayerManager().onStart();
-        }
-    }
-
-    public void onResume() {
-        if (isServiceConnected) {
-            service.getPlayerManager().onResume();
-        }
-    }
-
-    public void onPause() {
-        if (isServiceConnected) {
-            service.getPlayerManager().onPause();
-        }
-    }
-
-    public void onStop() {
-        if (isServiceConnected) {
-            service.getPlayerManager().onStop();
-        }
+        return new PlayerManager(context);
     }
 }
