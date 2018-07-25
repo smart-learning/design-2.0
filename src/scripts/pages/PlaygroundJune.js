@@ -22,7 +22,14 @@ class PlaygroundJune extends Component {
 		}
 		NativeModules.RNNativePlayer.play(args);
 	}
-
+	onDownload = () =>{
+		// alert('play');
+		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
+		var args = {
+			uri: "uri"
+		}
+		NativeModules.RNNativePlayer.download(args);
+	}
 
     render() {
 
@@ -35,6 +42,10 @@ class PlaygroundJune extends Component {
 
 			<Button title="재생"
 					onPress={ this.onPlay }
+			/>
+			
+			<Button title="다운로드"
+					onPress={ this.onDownload }
 			/>
 
 			{/* <ImageView

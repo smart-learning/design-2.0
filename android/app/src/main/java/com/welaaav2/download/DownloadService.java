@@ -1,26 +1,36 @@
 package com.welaaav2.download;
 
+import android.app.Dialog;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.NetworkOnMainThreadException;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
+import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.pallycon.widevinelibrary.NetworkConnectedException;
 import com.pallycon.widevinelibrary.PallyconDownloadException;
 import com.pallycon.widevinelibrary.PallyconDownloadTask;
 import com.welaaav2.MainApplication;
+import com.welaaav2.R;
+import com.welaaav2.pallycon.DownloadCallbackImpl;
 import com.welaaav2.util.Logger;
-import com.welaaav2.util.ONotificationManager;
 import com.welaaav2.util.Utils;
 import com.welaaav2.util.WeContentManager;
 import com.welaaav2.util.WelaaaBroadcastReceiver;
 
+@RequiresApi(Build.VERSION_CODES.O)
 public class DownloadService extends IntentService implements PallyconDownloadTask.PallyconDownloadEventListener {
 
 	public static final String TAG = "DownloadService";
@@ -37,6 +47,11 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 
 	public static boolean stopped = false;
 
+	private PallyconDownloadTask downloadTask;
+	private Handler eventHandler = new Handler();
+	public RemoteViews remoteViews = null;
+	private static int notifId = 2;
+
 	@Override
 	public void onPreExecute() {
 		// TODO: Configure the UI to be displayed on the screen before starting the download.
@@ -45,16 +60,32 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 	@Override
 	public void onPostExecute() {
 		// TODO: Release the UI after the download is complete.
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+			Logger.e(TAG + " 1 onPostExecute ");
+
+
+
+		}
+
 	}
 
 	@Override
-	public void onProgressUpdate(String s, long l, long l1, int i, int i1, int i2) {
+	public void onProgressUpdate(String fileName, long downloadedSize, long totalSize, int percent, int totalCount, int currentCount) {
 		// TODO: Use the download progress data to update the download UI in real time.
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+			Logger.e(TAG + " 1 onProgressUpdate fileName " + fileName + " percent " + percent );
+			remoteViews.setProgressBar(R.id.DownloadServiceProgressBar,100, percent, false);
+			remoteViews.setTextViewText(R.id.Downloadservice_title_progress ,  percent + "%" );
+
+		}
 	}
 
 	@Override
-	public void onProgressUpdate(String s, int i, int i1, int i2) {
+	public void onProgressUpdate(String fileName, int totalCount, int currentCount, int percent) {
 		// TODO: Use the download progress data to update the download UI in real time.
+		Logger.e(TAG + " 2 onProgressUpdate fileName " + fileName + " percent " + percent );
 	}
 
 	@Override
@@ -172,7 +203,46 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 
 			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-				ONotificationManager.sendNotification(this, 1, ONotificationManager.Channel.DOWNLOAD, "contents", "Download Progress");
+				String drm_content_uri_extra = intent.getStringExtra("drm_content_uri_extra");
+				String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
+
+				try {
+					// TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
+					DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
+					downloadTask = new PallyconDownloadTask(DownloadService.this, Uri.parse(drm_content_uri_extra)
+							, drm_content_name_extra, DownloadService.this, eventHandler, downloadCallback);
+
+				} catch (PallyconDownloadException e) {
+
+					Toast.makeText(DownloadService.this, e.getMessage(), Toast.LENGTH_LONG).show();
+				}
+
+				try {
+					// TODO: Check that the content has already been downloaded.
+					boolean result = downloadTask.isDownloadCompleted();
+					if (result == true) {
+						// 다운로드 콘텐츠는 어떻게 할까 ? 가만히 ?
+						Toast.makeText(DownloadService.this, "isExist File ", Toast.LENGTH_LONG).show();
+					} else {
+						// DownLoad !
+						downloadTask.execute();
+
+					}
+
+				} catch (NetworkOnMainThreadException e) {
+					e.printStackTrace();
+					showSimpleDialog("Code Error", "you have got main thread network permission!");
+
+				} catch (PallyconDownloadException e) {
+					e.printStackTrace();
+					showSimpleDialog("Download Error", e.getMessage());
+
+				} catch (NetworkConnectedException e) {
+					e.printStackTrace();
+					showSimpleDialog("Network Error", e.getMessage());
+
+				}
+
 			}else{
 				// Notification 관련 내용 ..
 			}
@@ -202,5 +272,14 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 	public boolean onUnbind(Intent intent) {
 		Logger.i(TAG+":onUnbind");
 		return super.onUnbind(intent);
+	}
+
+	private void showSimpleDialog(String title, String message) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(title);
+		builder.setMessage(message);
+		builder.setPositiveButton("OK", null);
+		Dialog dialog = builder.create();
+		dialog.show();
 	}
 }

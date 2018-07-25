@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -103,7 +102,6 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
-import com.pallycon.widevinelibrary.PallyconDownloadTask;
 import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEncrypterException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
@@ -114,13 +112,11 @@ import com.welaaav2.MainApplication;
 import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.download.DownloadService;
-import com.welaaav2.pallycon.DownloadCallbackImpl;
 import com.welaaav2.pallycon.PlayStatus;
 import com.welaaav2.util.CustomDialog;
 import com.welaaav2.util.HLVAdapter;
 import com.welaaav2.util.HttpCon;
 import com.welaaav2.util.Logger;
-import com.welaaav2.util.ONotificationManager;
 import com.welaaav2.util.Preferences;
 import com.welaaav2.util.Utils;
 import com.welaaav2.util.WeContentManager;
@@ -157,6 +153,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
 	public static final String TAG = "pallycon_sampleapp";
 	public static final String CONTENTS_TITLE = "contents_title";
+	public static final String DRM_CONTENT_URI_EXTRA = "drm_content_uri_extra";
+	public static final String DRM_CONTENT_NAME_EXTRA = "drm_content_name_extra";
 	public static final String DRM_SCHEME_UUID_EXTRA = "drm_scheme_uuid";
 	public static final String DRM_LICENSE_URL = "drm_license_url";
 	public static final String DRM_USERID = "drm_userid";
@@ -5271,31 +5269,15 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 		return myApp.getContentMgr();
 	}
 
-	@RequiresApi(Build.VERSION_CODES.O)
 	public void contentDownload() {
-		// Why ?
-
-//		try{
-//			ONotificationManager.sendNotification(this, 1, ONotificationManager.Channel.DOWNLOAD, "contents", "Download Progress");
-//
-//			Logger.e(TAG + " contentDownload 123");
-//		}catch (Exception e){
-//			e.printStackTrace();
-//			Logger.e(TAG + " contentDownload Exception " + e.toString());
-//		}
 
 		DownloadService.stopped = false;
 
 		Intent service = new Intent(PlayerActivity.this, DownloadService.class);
 
-		service.putExtra(PlayerActivity.DRM_SCHEME_UUID_EXTRA, "");
-		service.putExtra(PlayerActivity.DRM_LICENSE_URL, "");
-		service.putExtra(PlayerActivity.DRM_MULTI_SESSION, "");
-		service.putExtra(PlayerActivity.DRM_USERID, "");
-		service.putExtra(PlayerActivity.DRM_CID, "");
-		service.putExtra(PlayerActivity.DRM_OID, "");
-		service.putExtra(PlayerActivity.DRM_CUSTOME_DATA, "");
-		service.putExtra(PlayerActivity.DRM_TOKEN, "");
+		service.putExtra(PlayerActivity.DRM_CONTENT_URI_EXTRA, "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
+		service.putExtra(PlayerActivity.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
+
 
 		startService(service);
 		bindService(service, downloadConnection, getApplicationContext().BIND_AUTO_CREATE);
