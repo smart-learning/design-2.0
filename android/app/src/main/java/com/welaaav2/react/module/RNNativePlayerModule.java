@@ -10,7 +10,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.welaaav2.download.DownloadService;
 import com.welaaav2.pallycon.PallyConMainActivity;
+import com.welaaav2.player.PlayerActivity;
 
 import javax.annotation.Nullable;
 
@@ -40,9 +42,19 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void download(ReadableMap content) {
         ContextWrapper contextWrapper = new ContextWrapper(getReactApplicationContext());
-        Intent intent = new Intent(contextWrapper, PallyConMainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        contextWrapper.startActivity(intent);
+//        Intent intent = new Intent(contextWrapper, PallyConMainActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        contextWrapper.startActivity(intent);
+
+        // 인텐트를 통해서 전환이 되는 케이스입니다.
+
+        Intent service = new Intent(contextWrapper, DownloadService.class);
+
+        service.putExtra(PlayerActivity.DRM_CONTENT_URI_EXTRA, "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
+        service.putExtra(PlayerActivity.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
+
+        contextWrapper.startService(service);
+        // 데이터 바인딩 없이 ? 일단 테스트 하고 확인 하도록 합시다.
     }
 
     @ReactMethod

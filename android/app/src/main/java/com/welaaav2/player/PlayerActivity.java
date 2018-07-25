@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -126,6 +125,8 @@ public class PlayerActivity extends BaseActivity {
 
 	public static final String TAG = "pallycon_sampleapp";
 	public static final String CONTENTS_TITLE = "contents_title";
+	public static final String DRM_CONTENT_URI_EXTRA = "drm_content_uri_extra";
+	public static final String DRM_CONTENT_NAME_EXTRA = "drm_content_name_extra";
 	public static final String DRM_SCHEME_UUID_EXTRA = "drm_scheme_uuid";
 	public static final String DRM_LICENSE_URL = "drm_license_url";
 	public static final String DRM_USERID = "drm_userid";
@@ -4975,31 +4976,15 @@ public class PlayerActivity extends BaseActivity {
 		return myApp.getContentMgr();
 	}
 
-	@RequiresApi(Build.VERSION_CODES.O)
 	public void contentDownload() {
-		// Why ?
-
-//		try{
-//			ONotificationManager.sendNotification(this, 1, ONotificationManager.Channel.DOWNLOAD, "contents", "Download Progress");
-//
-//			Logger.e(TAG + " contentDownload 123");
-//		}catch (Exception e){
-//			e.printStackTrace();
-//			Logger.e(TAG + " contentDownload Exception " + e.toString());
-//		}
 
 		DownloadService.stopped = false;
 
 		Intent service = new Intent(PlayerActivity.this, DownloadService.class);
 
-		service.putExtra(PlayerActivity.DRM_SCHEME_UUID_EXTRA, "");
-		service.putExtra(PlayerActivity.DRM_LICENSE_URL, "");
-		service.putExtra(PlayerActivity.DRM_MULTI_SESSION, "");
-		service.putExtra(PlayerActivity.DRM_USERID, "");
-		service.putExtra(PlayerActivity.DRM_CID, "");
-		service.putExtra(PlayerActivity.DRM_OID, "");
-		service.putExtra(PlayerActivity.DRM_CUSTOME_DATA, "");
-		service.putExtra(PlayerActivity.DRM_TOKEN, "");
+		service.putExtra(PlayerActivity.DRM_CONTENT_URI_EXTRA, "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
+		service.putExtra(PlayerActivity.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
+
 
 		startService(service);
 		bindService(service, downloadConnection, getApplicationContext().BIND_AUTO_CREATE);
