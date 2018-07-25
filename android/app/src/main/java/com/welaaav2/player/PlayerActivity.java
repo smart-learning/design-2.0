@@ -799,21 +799,12 @@ public class PlayerActivity extends BaseActivity {
 //		}
 
 		Intent intent = getIntent();
-		PlayerManager.Content content = new PlayerManager.Content();
-		content.uri = intent.getData();
-		content.drmSchemeUuid = UUID.fromString(intent.getStringExtra(PlayerActivity.DRM_SCHEME_UUID_EXTRA));
-		content.drmLicenseUrl = intent.getStringExtra(DRM_LICENSE_URL);
-		content.multiSession = intent.getBooleanExtra(PlayerActivity.DRM_MULTI_SESSION, false);
-		content.userId = intent.getStringExtra(PlayerActivity.DRM_USERID);
-		content.cId = intent.getStringExtra(PlayerActivity.DRM_CID);
-		content.oId = intent.getStringExtra(PlayerActivity.DRM_OID);
-		content.customData = intent.getStringExtra(PlayerActivity.DRM_CUSTOME_DATA);
-		content.token = intent.getStringExtra(PlayerActivity.DRM_TOKEN);
+		PlayerManager.Content content = PlayerManager.Content.fromIntent(intent);
 
 		playerManager.setPallyconEventListener(pallyconEventListener);
+		playerManager.addPlayerEventListener(new PlayerEventListener());
 		playerManager.setSource(content);
 		playerManager.initializePlayer();
-		playerManager.addPlayerEventListener(new PlayerEventListener());
 		playerManager.setPlayerView(simpleExoPlayerView);
 	}
 
@@ -4758,6 +4749,7 @@ public class PlayerActivity extends BaseActivity {
 	private int oldMoveScrollCheckNum = 0;
 	private int mCurrenttime = 0;
 
+	// TODO: 2018. 7. 25. memory leak
 	Handler mCurrentTimeHandler = new Handler() {
 		@SuppressWarnings("unchecked")
 		@Override

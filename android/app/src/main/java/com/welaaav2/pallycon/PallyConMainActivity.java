@@ -255,31 +255,31 @@ public class PallyConMainActivity extends AppCompatActivity implements PallyconD
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
         StrictMode.setThreadPolicy(pol);
 
-        try {
-            site = createSite();
-            WVMAgent = PallyconWVMSDKFactory.getInstance(this);
-            WVMAgent.init(this, eventHandler, site.siteId, site.siteKey);
-        } catch (PallyconDrmException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        } catch (IOException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
+//        try {
+//            site = createSite();
+//            WVMAgent = PallyconWVMSDKFactory.getInstance(this);
+//            WVMAgent.init(this, eventHandler, site.siteId, site.siteKey);
+//        } catch (PallyconDrmException e) {
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+//            finish();
+//            return;
+//        } catch (IOException e) {
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+//            finish();
+//            return;
+//        }
 
-        try {
-            boolean isL1 = WVMAgent.isL1WidevineAvailable(MimeTypes.VIDEO_H264);
-            if(isL1 == true) {
-                Log.d(TAG, "L1 WideVine");
-            } else {
-                Log.d(TAG, "L3 WideVine");
-            }
-
-        } catch (PallyconDrmException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            boolean isL1 = WVMAgent.isL1WidevineAvailable(MimeTypes.VIDEO_H264);
+//            if(isL1 == true) {
+//                Log.d(TAG, "L1 WideVine");
+//            } else {
+//                Log.d(TAG, "L3 WideVine");
+//            }
+//
+//        } catch (PallyconDrmException e) {
+//            e.printStackTrace();
+//        }
 
         try {
             dataListView = (ExpandableListView) findViewById(R.id.data_list);
