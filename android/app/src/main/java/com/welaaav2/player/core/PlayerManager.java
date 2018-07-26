@@ -112,6 +112,8 @@ public class PlayerManager {
         trackSelectorParameters = new DefaultTrackSelector.ParametersBuilder().build();
         clearStartPosition();
 
+        content = new Content();
+
         try {
             Site site = createSite();
             WVMAgent = PallyconWVMSDKFactory.getInstance(context);
@@ -127,7 +129,7 @@ public class PlayerManager {
         pallyconEventListener = DEFAULT_PALLYCON_EVENT_LISTENER;
     }
 
-    public void initializePlayer() {
+    public void initializePlayer() throws Exception {
         if (player == null) {
             @DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
                     DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
@@ -139,18 +141,28 @@ public class PlayerManager {
             trackSelector = new DefaultTrackSelector(trackSelectionFactory);
             trackSelector.setParameters(trackSelectorParameters);
 
-            DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
+            DrmSessionManager<FrameworkMediaCrypto> drmSessionManager;
             try {
                 drmSessionManager = createDrmSessionManager();
             } catch (PallyconDrmException e) {
                 e.printStackTrace();
+                throw e;
+            }
+
+            try {
+                mediaSource = buildMediaSource(content.uri);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                throw e;
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+                throw e;
             }
 
             player = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, drmSessionManager);
             player.addListener(playerEventListener);
             player.setPlayWhenReady(startAutoPlay);
 
-            mediaSource = buildMediaSource(content.uri);
             boolean haveStartPosition = startWindow != C.INDEX_UNSET;
             if (haveStartPosition) {
                 player.seekTo(startWindow, startPosition);
@@ -168,9 +180,6 @@ public class PlayerManager {
             mediaSource = null;
             trackSelector = null;
         }
-
-        playerEventListener = DEFAULT_PLAYER_EVENT_LISTENER;
-        pallyconEventListener = DEFAULT_PALLYCON_EVENT_LISTENER;
     }
 
     private void updateTrackSelectorParameters() {
@@ -195,13 +204,21 @@ public class PlayerManager {
 
     public void onStart() {
         if (Util.SDK_INT > 23) {
-            initializePlayer();
+            try {
+                initializePlayer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void onResume() {
-        if (Util.SDK_INT <= 23 || player == null) {
-            initializePlayer();
+        if (Util.SDK_INT <= 23) {
+            try {
+                initializePlayer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -217,11 +234,18 @@ public class PlayerManager {
         }
     }
 
-    public void setSource(Content content) {
-        this.content = content;
+    public void setSource(Content content) throws NullPointerException {
+        if (!this.content.uri.equals(content.uri)) {
+            this.content = content;
+            clearStartPosition();
+        }
     }
 
     private MediaSource buildMediaSource(Uri uri) {
+        if (uri.getLastPathSegment() == null) {
+            throw new IllegalArgumentException("Argument is invalid");
+        }
+
         @C.ContentType int type = Util.inferContentType(uri.getLastPathSegment());
         switch (type) {
             case C.TYPE_DASH:
@@ -397,7 +421,19 @@ public class PlayerManager {
         public String customData;
         public boolean multiSession;
 
-        public Content() { }
+        public Content() {
+            uri = Uri.parse("");
+            name = "";
+            drmSchemeUuid = UUID.randomUUID();
+            drmLicenseUrl = "";
+            userId = "";
+            cId = "";
+            oId = "";
+            token = "";
+            thumbUrl = "";
+            customData = "";
+            multiSession = false;
+        }
 
         public Content(Uri uri,
                        String name,

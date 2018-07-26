@@ -706,25 +706,6 @@ public class PlayerActivity extends BaseActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-//		if (Util.SDK_INT > 23) {
-//			try {
-//				try {
-//					initializePlayer();
-//				} catch (PallyconEncrypterException e) {
-//					Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-//					finish();
-//				} catch (JSONException e) {
-//					Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-//					finish();
-//				} catch (PallyconDrmException e) {
-//					Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-//					finish();
-//				}
-//
-//			} catch (RuntimeException e) {
-//
-//			}
-//		}
 	}
 
 	@Override
@@ -780,32 +761,19 @@ public class PlayerActivity extends BaseActivity {
 		if (mPlayStatus.mCurrentState == PlayStatus.STATE_PLAYING)
 			shouldAutoPlay = true;
 
-//		if (Util.SDK_INT <= 23 || player == null) {
-//			try {
-//				initializePlayer();
-//			} catch (PallyconDrmException e) {
-//				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-//				finish();
-//			} catch (PallyconEncrypterException e) {
-//				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-//				finish();
-//			} catch (JSONException e) {
-//				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-//				finish();
-//			}
-//		} else {
-//			simpleExoPlayerView.setUseController(true);
-//			player.setPlayWhenReady(shouldAutoPlay);
-//		}
-
 		Intent intent = getIntent();
 		PlayerManager.Content content = PlayerManager.Content.fromIntent(intent);
 
-		playerManager.setPallyconEventListener(pallyconEventListener);
-		playerManager.addPlayerEventListener(new PlayerEventListener());
-		playerManager.setSource(content);
-		playerManager.initializePlayer();
-		playerManager.setPlayerView(simpleExoPlayerView);
+		try {
+			playerManager.setPallyconEventListener(pallyconEventListener);
+			playerManager.addPlayerEventListener(new PlayerEventListener());
+			playerManager.setSource(content);
+			playerManager.initializePlayer();
+			playerManager.setPlayerView(simpleExoPlayerView);
+		} catch (Exception e) {
+			e.printStackTrace();
+			finish();
+		}
 	}
 
 	@Override
@@ -816,18 +784,14 @@ public class PlayerActivity extends BaseActivity {
 		}
 		//// CC
 
-		if (Util.SDK_INT <= 23) {
-			playerManager.releasePlayer();
-		}
+		playerManager.onPause();
 
 		super.onPause();
 	}
 
 	@Override
 	protected void onStop() {
-		if (Util.SDK_INT > 23) {
-			playerManager.releasePlayer();
-		}
+		playerManager.onStop();
 
 		mPlayStatus.clear();
 
@@ -848,7 +812,12 @@ public class PlayerActivity extends BaseActivity {
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-			playerManager.initializePlayer();
+			try {
+				playerManager.initializePlayer();
+			} catch (Exception e) {
+				e.printStackTrace();
+				finish();
+			}
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.storage_permission_denied, Toast.LENGTH_LONG).show();
 			finish();
@@ -1011,7 +980,12 @@ public class PlayerActivity extends BaseActivity {
 
 				if (player == null) {
 					Log.d(TAG, "[CAST] no local player. initializing...");
-					playerManager.initializePlayer();
+					try {
+						playerManager.initializePlayer();
+					} catch (Exception e) {
+						e.printStackTrace();
+						finish();
+					}
 				}
 
 				// seek position of local player to position of remote player
