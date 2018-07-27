@@ -8,11 +8,15 @@ import {
 	Image,
 } from "react-native";
 import icKakao from '../../../images/ic-kakao.png';
+import icKakaoLight from '../../../images/ic-kakao-light.png';
 
 const styles = StyleSheet.create( {
 	kakaoButtonWrap: {
 		width: '100%',
 	},
+} );
+
+const loginStyles = StyleSheet.create( {
 	kakaoButton: {
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -32,6 +36,28 @@ const styles = StyleSheet.create( {
 		fontSize: 16,
 		fontWeight: 'bold',
 		color: '#3C1E1E',
+	}
+} );
+
+const landingStyles = StyleSheet.create( {
+	kakaoButton: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '100%',
+		height: 40,
+		marginTop: 10,
+	},
+	kakaoImage: {
+		width: 22,
+		height: 20,
+		marginRight: 25,
+	},
+	kakaoText: {
+		lineHeight: 40,
+		fontSize: 15,
+		fontWeight: 'bold',
+		color: '#ffffff',
 	}
 } );
 
@@ -62,10 +88,24 @@ class KakaoLoginButton extends React.Component {
 			onPress={ this.signInOut }
 			style={ styles.kakaoButtonWrap }
 		>
-			<View style={ styles.kakaoButton } borderRadius={4}>
-				<Image source={ icKakao } style={ styles.kakaoImage }/>
-				<Text style={ styles.kakaoText }>{ this.state.token?'카카오 로그아웃':'Kakaotalk 계정으로' }</Text>
+
+			{this.props.type === 'login' &&
+			<View style={ loginStyles.kakaoButton } borderRadius={4}>
+				<Image source={ icKakao } style={ loginStyles.kakaoImage }/>
+				<Text style={ loginStyles.kakaoText }>{ this.state.token?'카카오 로그아웃':'Kakaotalk 계정으로' }</Text>
 			</View>
+			}
+			{this.props.type === 'landing' &&
+			<View style={ landingStyles.kakaoButton }
+				  borderWidth={1}
+				  borderStyle={'solid'}
+				  borderColor={'#ffffff'}
+				  borderRadius={4}
+			>
+				<Image source={ icKakaoLight } style={ landingStyles.kakaoImage }/>
+				<Text style={ landingStyles.kakaoText }>{ this.state.token?'카카오 로그아웃':'카카오톡 계정으로' }</Text>
+			</View>
+			}
 		</TouchableOpacity>;
     }
 }
