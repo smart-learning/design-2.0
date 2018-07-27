@@ -1,5 +1,5 @@
 import React from "react";
-import {createStackNavigator} from "react-navigation";
+import { createStackNavigator, createSwitchNavigator } from "react-navigation";
 import {
 	NAV_OPTS_STACK_WITH_SEARCH,
 	NAV_OPTS_MAIN,
@@ -10,23 +10,35 @@ import {
 import SignUpLandingPage from "./SignUpLandingPage";
 import Policy from "./PolicyPage";
 import Privacy from "./PrivacyPage";
+import LoginPage from "./LoginPage";
 
 
-const LandingScreen = createStackNavigator({
+const LandingScreen = createSwitchNavigator({
 
-		LandingPage: {
-			screen: SignUpLandingPage,
+		Landing: {
+			screen: createStackNavigator({
+					LandingPage: {
+						screen: SignUpLandingPage,
+					},
+
+					PolicyPage: {
+						screen: Policy,
+						navigationOptions: NAV_OPTS_STACK,
+					},
+
+					PrivacyPage: {
+						screen: Privacy,
+						navigationOptions: NAV_OPTS_STACK,
+					},
+				},
+
+				{navigationOptions: NAV_OPTS_COMMON}
+			),
 		},
 
-		PolicyPage: {
-			screen: Policy,
-			navigationOptions: NAV_OPTS_STACK,
+		Login: {
+			screen: LoginPage,
 		},
-
-		PrivacyPage: {
-			screen: Privacy,
-			navigationOptions: NAV_OPTS_STACK,
-		}
 	},
 
 	{ navigationOptions: NAV_OPTS_COMMON }
