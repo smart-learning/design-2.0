@@ -8,6 +8,7 @@ import Playground from "./src/scripts/pages/Playground";
 import {Button, Modal, Text, View} from "react-native";
 import Store from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune";
+import BottomControllerPage from './src/scripts/pages/BottomControllerPage'
 
 class App extends React.Component {
 
@@ -78,6 +79,9 @@ const AppDrawer = createDrawerNavigator(
 			screen: PlaygroundJune,
 		},
 
+		BottomControllerTEST: {
+			screen: BottomControllerPage,
+		}
 	}
 );
 
