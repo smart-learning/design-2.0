@@ -205,6 +205,7 @@ info.plist NSExceptionDomains에 추가합니다.
 - buildToolsVersion = **"27.0.3"**
 - supportLibVersion = **"27.1.1"**
 - minSdkVersion = **19**
-- targetSdkVersion = **22**
+- targetSdkVersion = **26**
+- exoplayer2 = **2.8.2**
 
 ### iOS
