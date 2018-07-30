@@ -7,6 +7,9 @@
 
 package com.welaaav2.player;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -51,7 +54,6 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -93,10 +95,6 @@ import com.welaaav2.util.Logger;
 import com.welaaav2.util.Preferences;
 import com.welaaav2.util.Utils;
 import com.welaaav2.util.WeContentManager;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,9 +109,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Created by PallyconTeam
@@ -557,15 +554,13 @@ public class PlayerActivity extends BaseActivity {
 
 		setContentView(R.layout.activity_player);
 
-//		debugRootView = findViewById(R.id.controls_root);
+		getPlayerServiceManager().bind();
 
 		shouldAutoPlay = true;
 
 //		com.google.android.exoplayer2.ui.SimpleExoPlayerView
 		simpleExoPlayerView = findViewById(R.id.player_view);
 		simpleExoPlayerView.requestFocus();
-
-		playerManager = getPlayerManager();
 
 		//// Chromecast
 		mCastContext = CastContext.getSharedInstance(this);
@@ -761,6 +756,8 @@ public class PlayerActivity extends BaseActivity {
 		if (mPlayStatus.mCurrentState == PlayStatus.STATE_PLAYING)
 			shouldAutoPlay = true;
 
+		playerManager = getPlayerManager();
+
 		Intent intent = getIntent();
 		PlayerManager.Content content = PlayerManager.Content.fromIntent(intent);
 
@@ -807,6 +804,8 @@ public class PlayerActivity extends BaseActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+
+		getPlayerServiceManager().unBind();
 	}
 
 	@Override

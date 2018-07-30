@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.support.multidex.MultiDex;
-
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.react.ReactApplication;
@@ -17,11 +16,9 @@ import com.welaaav2.player.service.PlayerServiceManager;
 import com.welaaav2.react.pakcage.RNNativePlayerPackage;
 import com.welaaav2.util.ONotificationManager;
 import com.welaaav2.util.WeContentManager;
-
+import io.fabric.sdk.android.Fabric;
 import java.util.Arrays;
 import java.util.List;
-
-import io.fabric.sdk.android.Fabric;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -82,7 +79,6 @@ public class MainApplication extends Application implements ReactApplication {
         }
 
         playerServiceManager = new PlayerServiceManager(this);
-        playerServiceManager.bind();
     }
 
     public WeContentManager initContentManager()
