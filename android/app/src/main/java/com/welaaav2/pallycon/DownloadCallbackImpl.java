@@ -151,6 +151,15 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 							notificationManager.notify(notifId , mbuilder.build());
 						}else{
 							notificationManager.cancel(notifId);
+
+							Handler handler = new Handler(context.getMainLooper());
+
+							handler.post(new Runnable() {
+								@Override
+								public void run() {
+//									showSimpleToast(context, "다운로드가 완료되었습니다.");
+								}
+							});
 						}
 
 

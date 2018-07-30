@@ -137,6 +137,7 @@ public class PlayerActivity extends BaseActivity {
 	public static final String DRM_MULTI_SESSION = "drm_multi_session";
 	public static final String THUMB_URL = "thumb_url";
 	public static final String PREFER_EXTENSION_DECODERS = "prefer_extension_decoders";
+	public static final String DOWNLOAD_SERVICE_TYPE = "drm_delete";
 
 	private PlayerView simpleExoPlayerView;
 	private boolean shouldAutoPlay;
@@ -165,8 +166,7 @@ public class PlayerActivity extends BaseActivity {
 	private TextView mTextTotalTime = null;
 	private TextView mTextCurTime = null;
 	private DefaultTimeBar mSeekBar = null;
-	public Button mButtonPlay = null;
-	public Button mButtonPause = null;
+
 	private Button mBtnForward = null;
 	private Button mBtnBackward = null;
 	public Button mButtonAudio = null;
@@ -429,9 +429,6 @@ public class PlayerActivity extends BaseActivity {
 						Log.d(TAG, "State: Ready and Playing");
 						mPlayStatus.mCurrentState = PlayStatus.STATE_PLAYING;
 
-						if (mButtonPause != null) mButtonPause.setVisibility(View.VISIBLE);
-						if (mButtonPlay != null) mButtonPlay.setVisibility(View.GONE);
-
 						// startTimerSeekBar ! 타이머를 돌리고 . 자막 싱크를 맞춥니다.
 						mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
 					} else {
@@ -445,6 +442,14 @@ public class PlayerActivity extends BaseActivity {
 				case Player.STATE_ENDED:
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_ENDED)");
 					mPlayStatus.mCurrentState = PlayStatus.STATE_IDLE;
+
+					playerManager.releasePlayer();
+					try {
+						playerManager.initializePlayer();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					break;
 				default:
 					Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", UNKNOWN)");
@@ -556,8 +561,6 @@ public class PlayerActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_player);
-
-//		debugRootView = findViewById(R.id.controls_root);
 
 		shouldAutoPlay = true;
 
@@ -1199,6 +1202,7 @@ public class PlayerActivity extends BaseActivity {
 				.setContentType("application/dash+xml")
 				.setMetadata(movieMetadata)
 				.setCustomData(castCustomData)
+				.setCustomData(castCustomData)
 				.build();
 	}
 
@@ -1242,16 +1246,14 @@ public class PlayerActivity extends BaseActivity {
 
 		//컨트롤버튼그룹
 		mButtonGroupLayout = findViewById(R.id.LAYOUT_BUTTON_GROUP);
-//		mLayout.inflate (R.layout.welean_button_group, mButtonGroupLayout, true);
 
 		mPlaylistGroupLayout = findViewById(R.id.LAYOUT_PLAYLIST_GROUP);
 		mLayout.inflate(R.layout.welean_playlist, mPlaylistGroupLayout, true);
-		//List 정보를 등록 하기 위한 ..
+
 		LinearLayout mPlaylistwrap = findViewById((R.id.playlistparent));
 		mLayout.inflate(R.layout.welean_playlist_listview, mPlaylistwrap, true);
 
 		mButtonGroupLayout.setVisibility(View.VISIBLE);
-//		mPlaylistGroupLayout.setVisibility(View.VISIBLE);
 		mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
 
 		mRelatedListGroupLayout = findViewById(R.id.LAYOUT_RELATEDLIST_GROUP);
@@ -1432,8 +1434,6 @@ public class PlayerActivity extends BaseActivity {
 			mlongScrollTimeview.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 				@Override
 				public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-//					Log.d("ScrollView","scrollX_"+i+"_scrollY_"+i1+"_oldScrollX_"+i2+"_oldScrollY_"+i3);
-
 					mlongScrollview.setScrollY(i1);
 				}
 
@@ -1460,11 +1460,9 @@ public class PlayerActivity extends BaseActivity {
 	public void setSubTitleJson(int i) {
 
 		String subTitlsWebUrl = "none";
-		Logger.i(TAG + ": SET :: setSuTitleJson i[" + i + "]");
 
 		try {
 			if (Utils.isAirModeOn(getApplicationContext())) {
-				Logger.i(TAG + ": setSuTitleJson subTitlsWebUrl NONE");
 				setNoneSubtilteText();
 				hasSubTitlsJesonUrl = false;
 			} else {
@@ -1485,13 +1483,10 @@ public class PlayerActivity extends BaseActivity {
 					}
 				}
 
-				Logger.i(TAG + ": SET :: setSuTitleJson subTitlsWebUrl[" + subTitlsWebUrl + "]");
-
 				if (!subTitlsWebUrl.equals("none")) {
 					new SubtitlsJeson(subTitlsWebUrl, this);
 					hasSubTitlsJesonUrl = true;
 				} else {
-					Logger.i(TAG + ": setSuTitleJson subTitlsWebUrl NONE");
 					setNoneSubtilteText();
 					hasSubTitlsJesonUrl = false;
 				}
@@ -1499,11 +1494,9 @@ public class PlayerActivity extends BaseActivity {
 		} catch (Exception e) {
 			e.printStackTrace();
 
-			Logger.i(TAG + ": setSuTitleJson subTitlsWebUrl Exception ");
 			setNoneSubtilteText();
 			hasSubTitlsJesonUrl = false;
 		}
-
 	}
 
 
@@ -1520,8 +1513,6 @@ public class PlayerActivity extends BaseActivity {
 		mAniSlideShow = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
 		mAniSlideHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
-//		mButtonPlay = findViewById(R.id.WELEAN_BTN_PLAY);
-//		mButtonPause = findViewById(R.id.WELEAN_BTN_PAUSE);
 		mBtnForward = findViewById(R.id.CDN_TAG_BTN_FORWARD);
 		mBtnBackward = findViewById(R.id.CDN_TAG_BTN_BACKWARD);
 		mBtnClosed = findViewById(R.id.BTN_CLOSE);
@@ -1591,22 +1582,18 @@ public class PlayerActivity extends BaseActivity {
 
 		// 자동 재생 설정 여부에 따라 분기 처리 ..
 		if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-			Logger.i(TAG + ":AUTOPLAY");
 			mBtnAutoplay.setVisibility(View.INVISIBLE);
 			mBtnAutoplayCancel.setVisibility(View.VISIBLE);
 		} else {
-			Logger.i(TAG + ":NOT AUTOPLAY");
 			mBtnAutoplay.setVisibility(View.VISIBLE);
 			mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
 		}
 
 		if (Preferences.getWelaaaPlayerSleepMode(getApplicationContext())) {
-			Logger.i(TAG + ":SLEEP MODE");
 			mBtnSleeper.setVisibility(View.INVISIBLE);
 			mBtnSleep_Active.setVisibility(View.VISIBLE);
 			sleeptimerText.setVisibility(View.VISIBLE);
 		} else {
-			Logger.i(TAG + ":NOT SLEEP MODE");
 			mBtnSleeper.setVisibility(View.VISIBLE);
 			mBtnSleep_Active.setVisibility(View.INVISIBLE);
 			sleeptimerText.setVisibility(View.INVISIBLE);
@@ -1629,18 +1616,17 @@ public class PlayerActivity extends BaseActivity {
 		}
 
 		try {
-//			if(getApplicationContext().ContentManager().existCid(ckey)){
-////            mBtnDownload.setEnabled(false);
-//				mBtnDownload.setAlpha(0.5f);
-//			}else{
-//				mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
-//			}
+
+			if(ContentManager().existCid(ckey)){
+//            mBtnDownload.setEnabled(false);
+				mBtnDownload.setAlpha(0.5f);
+			}else{
+				mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-//		mTextCurTime = findViewById(R.id.WELEAN_TEXT_CUR_TIME);
-//		mTextTotalTime = findViewById(R.id.WELEAN_TOTAL_TIME);
 		mSeekBar = findViewById(R.id.exo_progress);
 		mRelatedViewBtn.setVisibility(View.VISIBLE);
 
@@ -1675,8 +1661,6 @@ public class PlayerActivity extends BaseActivity {
 //        TextView lecture = (TextView)findViewById(R.id.BUTTON_LECTURE);
 //        lecture.setTextColor(colorGreen);
 
-//		mButtonPlay.setOnClickListener(click_control);
-//		mButtonPause.setOnClickListener(click_control);
 		mBtnForward.setOnClickListener(click_control);
 		mBtnBackward.setOnClickListener(click_control);
 		mBtnClosed.setOnClickListener(click_control);
@@ -1738,10 +1722,6 @@ public class PlayerActivity extends BaseActivity {
 
 		mRelatedViewTopCloseBtn.setOnClickListener(click_control);
 
-//		if (mSeekBar != null)
-//		{
-//			mSeekBar.setMax(1000);
-//		}
 	}
 
 	static double timesleep = 0;
@@ -2417,9 +2397,6 @@ public class PlayerActivity extends BaseActivity {
 
 									mRelatedViewBtn.setVisibility(GONE);
 									if (CON_CLASS.equals("1")) {
-
-										mButtonPause.setVisibility(GONE);
-										mButtonPlay.setVisibility(VISIBLE);
 
 										setBackGroungLayout(true);
 										Animation fadeout = null;

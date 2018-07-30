@@ -25,6 +25,8 @@ import com.pallycon.widevinelibrary.PallyconDownloadTask;
 import com.welaaav2.MainApplication;
 import com.welaaav2.R;
 import com.welaaav2.pallycon.DownloadCallbackImpl;
+import com.welaaav2.player.NewWebPlayerInfo;
+import com.welaaav2.player.WebPlayerInfo;
 import com.welaaav2.util.Logger;
 import com.welaaav2.util.Utils;
 import com.welaaav2.util.WeContentManager;
@@ -37,10 +39,10 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 
 	public WelaaaBroadcastReceiver playerBroadcastReceiver;
 
-	final String ACTION_PLAY ="DownloadService.remoteViews.onClick_play";
-	final String ACTION_PAUSE ="DownloadService.remoteViews.onClick_pause";
-	final String ACTION_CLOSE ="DownloadService.remoteViews.onClick_close";
-	final String ACTION_GOPLAYER ="DownloadService.remoteViews.onClick_goplayer";
+	final String ACTION_PLAY = "DownloadService.remoteViews.onClick_play";
+	final String ACTION_PAUSE = "DownloadService.remoteViews.onClick_pause";
+	final String ACTION_CLOSE = "DownloadService.remoteViews.onClick_close";
+	final String ACTION_GOPLAYER = "DownloadService.remoteViews.onClick_goplayer";
 
 	private Context mcontext;
 	private final IBinder mBinder = new MainServiceBinder();
@@ -51,6 +53,10 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 	private Handler eventHandler = new Handler();
 	public RemoteViews remoteViews = null;
 	private static int notifId = 2;
+	private Handler mHandler = null;
+
+	private WebPlayerInfo mWebPlayerInfo = null;
+	private NewWebPlayerInfo mNewWebPlayerInfo = null;
 
 	@Override
 	public void onPreExecute() {
@@ -60,11 +66,15 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 	@Override
 	public void onPostExecute() {
 		// TODO: Release the UI after the download is complete.
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
 			Logger.e(TAG + " 1 onPostExecute ");
 
-
+			try {
+//				ContentManager().downloadAdd();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 		}
 
@@ -73,11 +83,11 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 	@Override
 	public void onProgressUpdate(String fileName, long downloadedSize, long totalSize, int percent, int totalCount, int currentCount) {
 		// TODO: Use the download progress data to update the download UI in real time.
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-			Logger.e(TAG + " 1 onProgressUpdate fileName " + fileName + " percent " + percent );
-			remoteViews.setProgressBar(R.id.DownloadServiceProgressBar,100, percent, false);
-			remoteViews.setTextViewText(R.id.Downloadservice_title_progress ,  percent + "%" );
+			Logger.e(TAG + " 1 onProgressUpdate fileName " + fileName + " percent " + percent);
+			remoteViews.setProgressBar(R.id.DownloadServiceProgressBar, 100, percent, false);
+			remoteViews.setTextViewText(R.id.Downloadservice_title_progress, percent + "%");
 
 		}
 	}
@@ -85,7 +95,7 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 	@Override
 	public void onProgressUpdate(String fileName, int totalCount, int currentCount, int percent) {
 		// TODO: Use the download progress data to update the download UI in real time.
-		Logger.e(TAG + " 2 onProgressUpdate fileName " + fileName + " percent " + percent );
+		Logger.e(TAG + " 2 onProgressUpdate fileName " + fileName + " percent " + percent);
 	}
 
 	@Override
@@ -114,7 +124,7 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 		}
 	}
 
-	private PendingIntent pendingIntent (String clickinfo){
+	private PendingIntent pendingIntent(String clickinfo) {
 		Intent newIntent = new Intent();
 		newIntent.setAction(clickinfo);
 		PendingIntent pIntent = PendingIntent.getBroadcast(this, 0, newIntent, 0);
@@ -124,7 +134,7 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		return super.onStartCommand(intent,flags,startId);
+		return super.onStartCommand(intent, flags, startId);
 	}
 
 	@Override
@@ -136,10 +146,118 @@ public class DownloadService extends IntentService implements PallyconDownloadTa
 	@Override
 	protected void onHandleIntent(@Nullable Intent intent) {
 
-		Logger.e(TAG + "onHandleIntent intent ");
+		String drm_content_uri_extra = intent.getStringExtra("drm_content_uri_extra");
+		String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
+		boolean drm_delete = intent.getBooleanExtra("drm_delete" , false);
 
-		setDownloadServiceListener();
-		doStuff(intent);
+//		String gId, String cId, String userId, String customerId, String downloadListUrl, String contentPath,
+//				String downloadContext , String filepath, int resolution, boolean overwrite, boolean updateright, int PlayTime, String gTitle, String cTitle, String groupImg, String sumnailImg, String audioVideoType,
+//				String groupTeacherName , String cPlayTime , String groupContentScnt , String groupAllPlayTime ,
+//				String view_limitdate
+//
+//		"type" : "streaming",
+//				"uri": "https://yoophi.com/public/contents/DASH_0028_001_mp4/stream.mpd",
+//				"name": "140년 지속 성장을 이끈 MLB 사무국의 전략",
+//				"drmSchemeUuid": "widevine",
+//				"drmLicenseUrl": "http://tokyo.pallycon.com/ri/licenseManager.do",
+//				"userId": "valid-user",
+//				"cid": "0028_001",
+//				"oid": "order id",
+//				"token": ""
+//
+//		/*
+//		 * 동영상 강의 / 강좌 베이스
+//		 */
+//		mNewWebPlayerInfo.getGroup_key();	// Group code gkey
+//		mNewWebPlayerInfo.getCkey();		// Clip code Ckey
+//		mNewWebPlayerInfo.getCcon_class();	// 동영상 , 오디오북 구분 값
+//		mNewWebPlayerInfo.getGroup_title();	// 동영상 강의 타이틀 , 오디오북 타이틀
+//		mNewWebPlayerInfo.getClist_img();	// 동영상 강좌 다운로드 썸네일
+//		mNewWebPlayerInfo.getGroup_img();	// 오디오북 다운로드 썸네일
+//		mNewWebPlayerInfo.get	// 오디오북 다운로드 썸네일
+
+		if(drm_delete){
+			// delete
+
+				// TODO: Remove content file (mpd, video, audio).
+				try {
+					downloadTask = new PallyconDownloadTask(getApplicationContext(), Uri.parse(drm_content_uri_extra), drm_content_name_extra, DownloadService.this, eventHandler, null);
+					downloadTask.removeDownloadContent();
+
+					Handler mHandler = new Handler(getMainLooper());
+					mHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(getApplicationContext(), R.string.info_dial_delete_download, Toast.LENGTH_LONG).show();
+						}
+					});
+
+				} catch (PallyconDownloadException e) {
+					Handler mHandler = new Handler(getMainLooper());
+					mHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+						}
+					});
+
+					return;
+				}
+		}else{
+
+			try {
+				// TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
+				DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
+				downloadTask = new PallyconDownloadTask(DownloadService.this, Uri.parse(drm_content_uri_extra)
+						, drm_content_name_extra, DownloadService.this, eventHandler, downloadCallback);
+
+			} catch (PallyconDownloadException e) {
+
+				Toast.makeText(DownloadService.this, e.getMessage(), Toast.LENGTH_LONG).show();
+			}
+
+			try {
+				// TODO: Check that the content has already been downloaded.
+				boolean result = downloadTask.isDownloadCompleted();
+				if (result == true) {
+					// 다운로드 콘텐츠는 어떻게 할까 ? 가만히 ?
+//                Toast.makeText(DownloadService.this, "isExist File ", Toast.LENGTH_LONG).show();
+//				Toast.makeText(getApplicationContext(), "isExist File ", Toast.LENGTH_LONG).show();
+// create a handler to post messages to the main thread
+					Handler mHandler = new Handler(getMainLooper());
+					mHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(getApplicationContext(), R.string.info_dial_already_download, Toast.LENGTH_SHORT).show();
+						}
+					});
+//							Logger.e(TAG + " Download Already ! ");
+//							Utils.logToast( getApplicationContext() , " 다운로드가 중지 됩니다. " );
+
+				} else {
+					// DownLoad !
+//                downloadTask.execute();
+                	setDownloadServiceListener();
+					doStuff(intent);
+				}
+
+			} catch (NetworkOnMainThreadException e) {
+				e.printStackTrace();
+				showSimpleDialog("Code Error", "you have got main thread network permission!");
+
+			} catch (PallyconDownloadException e) {
+				e.printStackTrace();
+				showSimpleDialog("Download Error", e.getMessage());
+
+			} catch (NetworkConnectedException e) {
+				e.printStackTrace();
+				showSimpleDialog("Network Error", e.getMessage());
+
+			}
+		}
+
+//		setDownloadServiceListener();
+//		doStuff(intent);
 	}
 
 	/****************************************************************************
