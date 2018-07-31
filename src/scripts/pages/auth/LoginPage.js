@@ -64,10 +64,10 @@ const styles = StyleSheet.create( {
 
 
 class LoginPage extends React.Component {
-	
-	componentDidMount(){
-		this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
-		this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+
+	componentDidMount() {
+		this.keyboardWillShowSub = Keyboard.addListener( 'keyboardWillShow', this.keyboardWillShow );
+		this.keyboardWillHideSub = Keyboard.addListener( 'keyboardWillHide', this.keyboardWillHide );
 
 		console.log( this.props.navigation );
 	}
@@ -77,22 +77,22 @@ class LoginPage extends React.Component {
 		this.keyboardWillHideSub.remove();
 	}
 
-	keyboardWillShow = (event) => {
-		console.log('키보드 나옴');
+	keyboardWillShow = ( event ) => {
+		console.log( '키보드 나옴' );
 	}
 
-	keyboardWillHide = (event) => {
-		console.log('키보드 들어감');
+	keyboardWillHide = ( event ) => {
+		console.log( '키보드 들어감' );
 	}
 
 	setWelaaaAuthAndRedirect( auth ) {
 		store.welaaaAuth = auth;
 
-		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'HomeScreen');
+		let requestScreenName = this.props.navigation.getParam( 'requestScreenName', 'HomeScreen' );
 		this.props.navigation.navigate( requestScreenName );
 	}
 
-	onSocialToken( type, token ){
+	onSocialToken( type, token ) {
 		store.socialType = type;
 		store.socialToken = token;
 
@@ -113,18 +113,20 @@ class LoginPage extends React.Component {
 					<Text style={styles.headline}>LOGIN</Text>
 
 					<FBLoginButton
-						onAccess={ token => this.onSocialToken( 'facebook', token ) }
+						onAccess={token => this.onSocialToken( 'facebook', token )}
+						type={'login'}
 					/>
 
 					<KakaoLoginButton
-						onAccess={ token => this.onSocialToken( 'kakao', token ) }
+						onAccess={token => this.onSocialToken( 'kakao', token )}
+						type={'login'}
 					/>
 
-					<Text style={ styles.bulletText }>OR</Text>
+					<Text style={styles.bulletText}>OR</Text>
 
 					<EmailAuthPack
-						onAccess={ auth => this.setWelaaaAuthAndRedirect( auth ) }
-						onNavigate={ routerName => this.props.navigation.navigate( routerName ) }
+						onAccess={auth => this.setWelaaaAuthAndRedirect( auth )}
+						onNavigate={routerName => this.props.navigation.navigate( routerName )}
 					/>
 
 				</View>
