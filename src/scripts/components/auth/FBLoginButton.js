@@ -8,11 +8,15 @@ import {
 } from "react-native";
 import {AccessToken, LoginManager} from "react-native-fbsdk";
 import icFb from '../../../images/ic-fb.png';
+import icFbBox from '../../../images/ic-fb-box.png';
 
 const styles = StyleSheet.create( {
 	FbButtonWrap: {
 		width: '100%',
 	},
+} );
+
+const loginStyles = StyleSheet.create( {
 	FbButton: {
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -30,6 +34,28 @@ const styles = StyleSheet.create( {
 	FbText: {
 		lineHeight: 48,
 		fontSize: 16,
+		fontWeight: 'bold',
+		color: '#ffffff',
+	}
+} );
+
+const landingStyles = StyleSheet.create( {
+	FbButton: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '100%',
+		height: 40,
+		marginTop: 10,
+	},
+	FbImage: {
+		width: 22,
+		height: 20,
+		marginRight: 25,
+	},
+	FbText: {
+		lineHeight: 40,
+		fontSize: 15,
 		fontWeight: 'bold',
 		color: '#ffffff',
 	}
@@ -63,10 +89,23 @@ class FBLoginButton extends Component {
 			onPress={ this.handleFacebookLogin }
 			style={ styles.FbButtonWrap }
 		>
-			<View style={ styles.FbButton } borderRadius={4}>
-				<Image source={ icFb } style={ styles.FbImage }/>
-				<Text style={ styles.FbText }>Facebook 계정으로</Text>
+			{this.props.type === 'login' &&
+			<View style={ loginStyles.FbButton } borderRadius={4}>
+				<Image source={ icFb } style={ loginStyles.FbImage }/>
+				<Text style={ loginStyles.FbText }>Facebook 계정으로</Text>
 			</View>
+			}
+			{this.props.type === 'landing' &&
+			<View style={ landingStyles.FbButton }
+				  borderWidth={1}
+				  borderStyle={'solid'}
+				  borderColor={'#ffffff'}
+				  borderRadius={4}
+				  >
+				<Image source={ icFbBox } style={ landingStyles.FbImage }/>
+				<Text style={ landingStyles.FbText }>페이스북 계정으로</Text>
+			</View>
+			}
             </TouchableOpacity>;
     }
 }
