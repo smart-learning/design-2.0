@@ -347,13 +347,13 @@
             <Button
                 android:layout_width="@dimen/welean_btn_pause_width"
                 android:layout_height="@dimen/welean_btn_pause_width"
-                android:id="@+id/WELEAN_BTN_PAUSE"
+                android:id="@+id/exo_pause"
                 android:background="@drawable/item_pause"/>
 
             <Button
                 android:layout_width="@dimen/welean_btn_pause_width"
                 android:layout_height="@dimen/welean_btn_pause_width"
-                android:id="@+id/WELEAN_BTN_PLAY"
+                android:id="@+id/exo_play"
                 android:background="@drawable/item_play"
                 android:visibility="gone"/>
 
@@ -435,9 +435,18 @@
             <com.google.android.exoplayer2.ui.DefaultTimeBar
 
                 android:id="@id/exo_progress"
-                android:layout_width="0dp"
+                android:layout_width="300dp"
+                android:layout_height="20dp"
+                android:layout_alignParentTop="true"
+                android:maxHeight="20dp"
+                android:minHeight="20dp"
+                android:progressDrawable="@drawable/progress_horizontal_custom"
                 android:layout_weight="1"
-                android:layout_height="26dp" />
+                android:max="1"
+                android:thumb="@drawable/thumb"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:thumbOffset="0dp" />
 
             <TextView
                 android:id="@id/exo_duration"

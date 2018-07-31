@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
-    tools:context="kr.co.influential.youngkangapp.WelaaaPlayer"
+
     android:orientation="horizontal">
 
     <!--<LinearLayout-->

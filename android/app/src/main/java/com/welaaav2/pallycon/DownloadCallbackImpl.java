@@ -1,14 +1,21 @@
 package com.welaaav2.pallycon;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.pallycon.widevinelibrary.NetworkConnectedException;
 import com.pallycon.widevinelibrary.PallyconDownloadException;
 import com.pallycon.widevinelibrary.PallyconDownloadTask;
+import com.welaaav2.R;
+import com.welaaav2.util.ONotificationManager;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -27,7 +34,13 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 	private String TAG = "pallycon_callback";
 	private Context context;
 
-	DownloadCallbackImpl(Context context) {
+	public RemoteViews remoteViews = null;
+	private static int notifId = 2;
+
+	final String ACTION_PAUSE ="DownloadService.remoteViews.onClick_pause";
+	final String ACTION_CLOSE ="DownloadService.remoteViews.onClick_close";
+
+	public DownloadCallbackImpl(Context context) {
 		this.context = context;
 	}
 
@@ -42,7 +55,26 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 		long totalContentBytes = 0;
 		long downloadedBytes = 0;
 
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+		NotificationCompat.Builder mbuilder = null;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			mbuilder = new NotificationCompat.Builder(context , ONotificationManager.Channel.DOWNLOAD);
+		}else{
+			mbuilder = new NotificationCompat.Builder(context);
+		}
+
 		try {
+			remoteViews = new RemoteViews(context.getPackageName(), R.layout.welean_download_notify);
+			remoteViews.setTextViewText(R.id.Downloadservice_title , "Welaaa Download ");
+			remoteViews.setProgressBar(R.id.DownloadServiceProgressBar , 100 , 0 , false);
+			remoteViews.setImageViewResource(R.id.imageView_icon,R.drawable.notifiy_logo_download);
+			remoteViews.setOnClickPendingIntent(R.id.btn_remote_close,pendingIntent(ACTION_CLOSE));
+
+			mbuilder.setCustomContentView(remoteViews);
+			mbuilder.setSmallIcon(R.drawable.notifiy_logo_download);
+
+			notificationManager.notify(notifId , mbuilder.build());
+
 			URL url = new URL(currentUrl);
 			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -65,6 +97,7 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 				Log.e(TAG, url.getFile() + " is already downloaded");
 				if(currentCount != -1) {
 					Log.e(TAG, "update your progressbar to 100%");
+					notificationManager.cancel(notifId);
 				}
 				return true;
 			}
@@ -77,6 +110,9 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 				Log.e(TAG, url.getFile() + " is already downloaded");
 				if(currentCount != -1) {
 					Log.e(TAG, "update your progressbar to 100%");
+
+					notificationManager.cancel(notifId);
+
 				}
 				return true;
 			} else {
@@ -107,6 +143,26 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 					oldPercent = percent;
 
 					if(currentCount != -1) {
+
+						if(percent<100){
+							remoteViews.setProgressBar(R.id.DownloadServiceProgressBar,100, percent, false);
+							remoteViews.setTextViewText(R.id.Downloadservice_title_progress ,  percent + "%" );
+
+							notificationManager.notify(notifId , mbuilder.build());
+						}else{
+							notificationManager.cancel(notifId);
+
+							Handler handler = new Handler(context.getMainLooper());
+
+							handler.post(new Runnable() {
+								@Override
+								public void run() {
+//									showSimpleToast(context, "다운로드가 완료되었습니다.");
+								}
+							});
+						}
+
+
 						Handler handler = new Handler(context.getMainLooper());
 						final int updatePercent = oldPercent;
 						handler.post(new Runnable() {
@@ -162,5 +218,13 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 			mToast.setText( msg );
 		}
 		mToast.show();
+	}
+
+	private PendingIntent pendingIntent (String clickinfo){
+		Intent newIntent = new Intent();
+		newIntent.setAction(clickinfo);
+		PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, newIntent, 0);
+
+		return pIntent;
 	}
 }

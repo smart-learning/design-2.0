@@ -1,7 +1,5 @@
 package com.welaaav2.player;
 
-import com.welaaav2.util.Logger;
-
 import java.io.Serializable;
 
 /**
@@ -89,117 +87,97 @@ public class NewWebPlayerInfo implements Serializable {
             if(param.startsWith("listkey=")) {
                 String _listkey = param.substring("listkey=".length());
                 csmi[arr20Idx] = _listkey;
-                Logger.i(TAG + " : listkey:" + csmi[arr20Idx]);
                 ++arr20Idx;
             }else if (param.startsWith("grouptitle=")) {
 
                 String _group_title = param.substring("grouptitle=".length());
                 group_title[arr1Idx]= _group_title;
-                Logger.i(TAG + " : grouptitle:"+_group_title);
                 ++arr1Idx;
 
             }else if (param.startsWith("teachername=")){
 
                 String _group_teachername = param.substring("teachername=".length());
                 group_teachername[arr2Idx]= _group_teachername;
-                Logger.i(TAG + " : teachername:"+_group_teachername);
                 ++arr2Idx;
 
             }else if(param.startsWith("con_class=")){
 
                 String _con_class = param.substring("con_class=".length());
                 con_class[arr3Idx]= _con_class;
-                Logger.i(TAG + " : con_class:" + _con_class);
                 ++arr3Idx;
 
             }else if(param.startsWith("end_time=")){
 
                 String _end_time= param.substring("end_time=".length());
                 end_time[arr4Idx]=_end_time;
-                Logger.i(TAG + " : end_time:" + _end_time);
                 ++arr4Idx;
 
             }else if(param.startsWith("groupkey=")){
 
                 String _groupkey = param.substring("groupkey=".length());
                 group_key[arr5Idx]=_groupkey;
-                Logger.i(TAG + " : groupkey:" + group_key[arr5Idx]);
                 ++arr5Idx;
 
             }else if(param.startsWith("group_img=")){
 
                 String _group_img = param.substring("group_img=".length());
                 group_img[arr6Idx]=_group_img;
-                Logger.i(TAG + " : curl:" + group_img[arr6Idx]);
                 ++arr6Idx;
 
             }else if(param.startsWith("group_hitcnt=")){
                 String _group_hitcnt = param.substring("group_hitcnt=".length());
                 group_hitcnt[arr7Idx]=_group_hitcnt;
-                Logger.i(TAG + " : group_hitcnt:" + group_hitcnt[arr7Idx]);
                 ++arr7Idx;
 
             }else if(param.startsWith("group_likecnt=")){
                 String _group_likecnt = param.substring("group_likecnt=".length());
                 group_likecnt[arr8Idx]=_group_likecnt;
-                Logger.i(TAG + " : group_likecnt:" + group_likecnt[arr8Idx]);
                 ++arr8Idx;
 
             }else if(param.startsWith("group_zzimcnt=")){
                 String _group_zzimcnt = param.substring("group_zzimcnt=".length());
                 group_zzimcnt[arr9Idx]= _group_zzimcnt;
-                Logger.i(TAG + " : group_zzimcnt:" + group_zzimcnt[arr9Idx]);
                 ++arr9Idx;
 
             }else if(param.startsWith("ckey=")){
                 String _ckey = param.substring("ckey=".length());
                 ckey[arr10Idx]= _ckey;
-                Logger.i(TAG + " : ckey:" + ckey[arr10Idx]);
                 ++arr10Idx;
             }else if(param.startsWith("cname=")){
                 String _cname = param.substring("cname=".length());
                 cname[arr11Idx]= _cname;
-                Logger.i("cname:" + cname[arr11Idx]);
                 ++arr11Idx;
             }else if(param.startsWith("cmemo=")){
                 String _cmemo = param.substring("cmemo=".length());
                 cmemo[arr12Idx]= _cmemo;
-                Logger.i(TAG + " : cmemo:" + cmemo[arr12Idx]);
                 ++arr12Idx;
             }else if(param.startsWith("clist_img=")) {
                 String _clist_img = param.substring("clist_img=".length());
                 clist_img[arr13Idx] = _clist_img;
-                Logger.i(TAG + " : clist_img:" + clist_img[arr13Idx]);
                 ++arr13Idx;
             }else if(param.startsWith("curl=")) {
                 String _curl = param.substring("curl=".length());
                 curl[arr14Idx] = _curl;
-                Logger.i(TAG + " : curl:" + curl[arr14Idx]);
                 ++arr14Idx;
             }else if(param.startsWith("cplay_time=")) {
                 String _cplay_time = param.substring("cplay_time=".length());
                 cplay_time[arr15Idx] = _cplay_time;
-                Logger.i(TAG + " : cplay_time:" + cplay_time[arr15Idx]);
                 ++arr15Idx;
             }else if(param.startsWith("cpay=")) {
                 String _cpay = param.substring("cpay=".length());
                 cpay[arr16Idx] = _cpay;
-                Logger.i(TAG + " : cpay:" + cpay[arr16Idx]);
                 ++arr16Idx;
             }else if(param.startsWith("cpay_money=")) {
                 String _cpay_money = param.substring("cpay_money=".length());
                 cpay_money[arr17Idx] = _cpay_money;
-                Logger.i(TAG + " : cpay_money:" + cpay_money[arr17Idx]);
                 ++arr17Idx;
             }else if(param.startsWith("ccon_class=")) {
                 String _ccon_class = param.substring("ccon_class=".length());
                 ccon_class[arr18Idx] = _ccon_class;
-                Logger.i(TAG + " : ccon_class:" + ccon_class[arr18Idx]);
                 ++arr18Idx;
             }else if(param.startsWith("csmi=")) {
                 String _csmi = param.substring("csmi=".length());
                 csmi[arr19Idx] = _csmi;
-                Logger.i(TAG + " : csmi:" + csmi[arr19Idx]);
                 ++arr19Idx;
             }
         }

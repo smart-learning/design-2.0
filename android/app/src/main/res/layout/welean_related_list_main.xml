@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentTop="true"
-    tools:context="kr.co.influential.youngkangapp.WelaaaPlayer">
+    >
 
     <!-- 60  dp 짜리 투명 뷰를 만들고 터치 이벤트만 받아서 처리한다 ? 60X60 으로 ?? -->
 

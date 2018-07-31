@@ -22,7 +22,25 @@ class PlaygroundJune extends Component {
 		}
 		NativeModules.RNNativePlayer.play(args);
 	}
+	onDownload = () =>{
+		// alert('play');
+		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
+		var args = {
+			uri: "uri",
+			DOWNLOAD_SERVICE_TYPE:"false"
 
+		}
+		NativeModules.RNNativePlayer.download(args);
+	}
+	onDownloadDelete = () =>{
+		// alert('play');
+		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
+		var args = {
+			uri: "uri",
+			DOWNLOAD_SERVICE_TYPE:"true"
+		}
+		NativeModules.RNNativePlayer.downloadDelete(args);
+	}
 
     render() {
 
@@ -36,7 +54,14 @@ class PlaygroundJune extends Component {
 			<Button title="재생"
 					onPress={ this.onPlay }
 			/>
+			
+			<Button title="RN => DownloadService Call"
+					onPress={ this.onDownload }
+			/>
 
+			<Button title="RN => Delete DownloadService Call"
+					onPress={ this.onDownloadDelete }
+			/>
 			{/* <ImageView
 				style={{ width:100, height:100 }}
 				src={[{ uri: "https://pbs.twimg.com/tweet_video_thumb/Dg3sOjuV4AEtzIR.jpg", width:100, height:100}]}

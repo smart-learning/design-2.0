@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".MainApplication"
@@ -44,9 +45,24 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".download.DownloadService" />
+
+        <receiver
+            android:name=".util.WelaaaBroadcastReceiver"
+            android:enabled="true" >
+        </receiver>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="1d5ac13b6c753ebfaa1f3f3859e8ca98b29cc75f"
+            />
+
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.welaaav2.cast.CastOptionsProvider" />
+
+        <!-- service -->
+        <service android:name=".player.service.PlayerService" android:exported="false" />
     </application>
 
 </manifest>

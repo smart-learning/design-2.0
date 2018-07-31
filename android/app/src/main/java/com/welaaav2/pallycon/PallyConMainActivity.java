@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
-import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.gms.cast.framework.CastButtonFactory;
 import com.google.android.gms.cast.framework.CastContext;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
@@ -44,9 +43,9 @@ import com.pallycon.widevinelibrary.PallyconDownloadTask;
 import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
-import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import com.welaaav2.R;
 import com.welaaav2.player.PlayerActivity;
+import com.welaaav2.util.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -255,31 +254,31 @@ public class PallyConMainActivity extends AppCompatActivity implements PallyconD
         StrictMode.ThreadPolicy pol = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
         StrictMode.setThreadPolicy(pol);
 
-        try {
-            site = createSite();
-            WVMAgent = PallyconWVMSDKFactory.getInstance(this);
-            WVMAgent.init(this, eventHandler, site.siteId, site.siteKey);
-        } catch (PallyconDrmException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        } catch (IOException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
+//        try {
+//            site = createSite();
+//            WVMAgent = PallyconWVMSDKFactory.getInstance(this);
+//            WVMAgent.init(this, eventHandler, site.siteId, site.siteKey);
+//        } catch (PallyconDrmException e) {
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+//            finish();
+//            return;
+//        } catch (IOException e) {
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+//            finish();
+//            return;
+//        }
 
-        try {
-            boolean isL1 = WVMAgent.isL1WidevineAvailable(MimeTypes.VIDEO_H264);
-            if(isL1 == true) {
-                Log.d(TAG, "L1 WideVine");
-            } else {
-                Log.d(TAG, "L3 WideVine");
-            }
-
-        } catch (PallyconDrmException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            boolean isL1 = WVMAgent.isL1WidevineAvailable(MimeTypes.VIDEO_H264);
+//            if(isL1 == true) {
+//                Log.d(TAG, "L1 WideVine");
+//            } else {
+//                Log.d(TAG, "L3 WideVine");
+//            }
+//
+//        } catch (PallyconDrmException e) {
+//            e.printStackTrace();
+//        }
 
         try {
             dataListView = (ExpandableListView) findViewById(R.id.data_list);
@@ -377,6 +376,8 @@ public class PallyConMainActivity extends AppCompatActivity implements PallyconD
                             boolean result = downloadTask.isDownloadCompleted();
                             if (result == true) {
                                 Uri localUri = downloadTask.getLocalUri(content.uri, content.name);
+
+                                Logger.e(TAG + " localUrl is " + localUri );
                                 intent.setData(localUri);
                                 intent.putExtra(PlayerActivity.CONTENTS_TITLE, content.name);
                                 //intent.putExtra(PlayerActivity.THUMB_URL, content.thumbUrl);

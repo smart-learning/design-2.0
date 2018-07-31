@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentTop="true"
-    tools:context="kr.co.influential.youngkangapp.WelaaaPlayer">
+    tools:context=".player.PlayerActivity"
+    >
 
     <LinearLayout
         android:id="@+id/wrap_list"
