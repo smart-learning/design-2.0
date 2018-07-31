@@ -81,6 +81,10 @@ const AppDrawer = createDrawerNavigator(
 
 		BottomControllerTEST: {
 			screen: BottomControllerPage,
+		},
+
+		AndroidNativeCall : {
+			screen: PlaygroundJune,
 		}
 	}
 );

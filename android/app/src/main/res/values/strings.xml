@@ -195,4 +195,8 @@
     <string name="info_dial_finish_dialog_finish">홈화면</string>
     <string name="info_dial_finish_dialog_finish_back">강좌 계속 보기</string>
     <string name="info_dial_finish_dialog_doAutoPlay">다음 영상 재생</string>
+
+    <string name="info_dial_already_download">이미 다운로드하셨습니다.</string>
+    <string name="info_dial_complete_download">다운로드가 완료되었습니다.</string>
+    <string name="info_dial_delete_download">삭제 되었습니다.</string>
 </resources>
