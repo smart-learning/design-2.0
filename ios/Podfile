@@ -30,7 +30,5 @@ target 'WelaaaV2' do
   # Realm Swift
   #pod 'RealmSwift'
 
-  pod 'RNIap', :path => '../node_modules/react-native-iap'
-
 end
 use_frameworks!
