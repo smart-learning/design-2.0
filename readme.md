@@ -5,9 +5,15 @@
 참고: https://beomi.github.io/2016/11/15/ReactNative-Translation-01-getting-started/
 
 ```
+# Homebrew 설치 필요. (https://brew.sh/)
+$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
 $ brew install node
 $ brew install watchman
 $ npm install -g react-native-cli
+
+# Xcode에서 CocoaPods을 사용하므로 설치합니다.
+$ sudo gem install cocoapods
 ```
 
 ## Install
@@ -165,11 +171,15 @@ iOS는 CocoaPods으로 세팅하였습니다.
 ```
 경로 : ~/Documents/PallyCon-FairPlay-iOS-SDK/PallyConFPSSDK.framework
 # in Xcode
-General - Embedded Binaries에 '+'로 추가.
+프로젝트 TARGETS - General - Embedded Binaries에 '+'로 추가.
 프로젝트 TARGETS의 Build Settings 탭에 Enable Bitcode를 No로 설정
 Build Options에서 "Always Embed Swift Standard Libraries"를 YES
 ```
 
+###### PlayerKit
+```
+SWIFT_VERSION = 4.1
+```
 ### iOS Http 허용
 ```
 info.plist NSExceptionDomains에 추가합니다.
