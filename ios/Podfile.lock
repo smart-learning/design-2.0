@@ -1,0 +1,119 @@
+PODS:
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - Crashlytics (3.10.5):
+    - Fabric (~> 1.7.9)
+  - Fabric (1.7.9)
+  - FBSDKCoreKit (4.35.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.35.0):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.35.0):
+    - FBSDKCoreKit (~> 4.35.0)
+  - Firebase/Core (5.4.1):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.0.1)
+  - Firebase/CoreOnly (5.4.1):
+    - FirebaseCore (= 5.0.6)
+  - Firebase/Messaging (5.4.1):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (= 3.0.3)
+  - FirebaseAnalytics (5.0.1):
+    - FirebaseCore (~> 5.0)
+    - FirebaseInstanceID (~> 3.0)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - nanopb (~> 0.3)
+  - FirebaseCore (5.0.6):
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+  - FirebaseInstanceID (3.1.1):
+    - FirebaseCore (~> 5.0)
+  - FirebaseMessaging (3.0.3):
+    - FirebaseCore (~> 5.0)
+    - FirebaseInstanceID (~> 3.0)
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - Protobuf (~> 3.1)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - GoogleToolboxForMac/Logger (2.1.4):
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - KakaoOpenSDK (1.9.0):
+    - KakaoOpenSDK/KakaoCommon (= 1.9.0)
+    - KakaoOpenSDK/KakaoLink (= 1.9.0)
+    - KakaoOpenSDK/KakaoMessageTemplate (= 1.9.0)
+    - KakaoOpenSDK/KakaoNavi (= 1.9.0)
+    - KakaoOpenSDK/KakaoOpenSDK (= 1.9.0)
+    - KakaoOpenSDK/KakaoS2 (= 1.9.0)
+  - KakaoOpenSDK/KakaoCommon (1.9.0)
+  - KakaoOpenSDK/KakaoLink (1.9.0):
+    - KakaoOpenSDK/KakaoCommon
+  - KakaoOpenSDK/KakaoMessageTemplate (1.9.0)
+  - KakaoOpenSDK/KakaoNavi (1.9.0):
+    - KakaoOpenSDK/KakaoCommon
+  - KakaoOpenSDK/KakaoOpenSDK (1.9.0)
+  - KakaoOpenSDK/KakaoS2 (1.9.0):
+    - KakaoOpenSDK/KakaoCommon
+  - nanopb (0.3.8):
+    - nanopb/decode (= 0.3.8)
+    - nanopb/encode (= 0.3.8)
+  - nanopb/decode (0.3.8)
+  - nanopb/encode (0.3.8)
+  - PlayerKit (1.3.0)
+  - Protobuf (3.6.0)
+
+DEPENDENCIES:
+  - Bolts
+  - Crashlytics
+  - Fabric
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKShareKit
+  - Firebase/Core
+  - Firebase/Messaging
+  - KakaoOpenSDK
+  - PlayerKit
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Bolts
+    - Crashlytics
+    - Fabric
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - FBSDKShareKit
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseInstanceID
+    - FirebaseMessaging
+    - GoogleToolboxForMac
+    - KakaoOpenSDK
+    - nanopb
+    - PlayerKit
+    - Protobuf
+
+SPEC CHECKSUMS:
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
+  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
+  FBSDKCoreKit: 1a5b2e3ceb5ca827a53c54aa5f4a3480efff80d2
+  FBSDKLoginKit: 00a3d65d1226852f9d76dcddff01981e5e6d9c38
+  FBSDKShareKit: 2ddbd7e6432023fff957af62e23a3671b84319f7
+  Firebase: 355bd535bfdacaa82a7fe8d9784115edefd6fc03
+  FirebaseAnalytics: b3628aea54c50464c32c393fb2ea032566e7ecc2
+  FirebaseCore: 4c28e3b9708ba48a765e76515f913a71596eb5dd
+  FirebaseInstanceID: f3f0657372592ecdfdfe2cac604a5a75758376a6
+  FirebaseMessaging: f43eb0c0e1da096e659de6f713038e74862a62cd
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  KakaoOpenSDK: 6d658510bf1e51dd8765ad000130138407c72612
+  nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  PlayerKit: b23b30a9fe306fb8790dfd1a9f91352d38163c84
+  Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
+
+PODFILE CHECKSUM: e55ed3401316762fe2ea99a1d8dcb6cbb81b3cd7
+
+COCOAPODS: 1.5.3
