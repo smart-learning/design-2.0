@@ -1,27 +1,28 @@
 # Welaaa App 2.0
 
-## Install
-
-```
-yarn
-# or
-npm i
-```
-
-## Major Package
-```
-- react-navigation:  https://reactnavigation.org/
-- react-native-video:
-
-```
-
 ## 실행 전 세팅
 
 참고: https://beomi.github.io/2016/11/15/ReactNative-Translation-01-getting-started/
 
 ```
-yarn eject # ios/android 디렉토리 없을 경우에만
-yarn link # 실행 후 제대로 연결됬는지 콘솔 메시지 확인
+$ brew install node
+$ brew install watchman
+$ npm install -g react-native-cli
+```
+
+## Install
+
+```
+$ cd welaaa2
+$ npm i
+$ cd ios
+$ make bootstrap # CocoaPods을 자동으로 세팅하여 Pods/ 을 구성합니다.
+$ open WelaaaV2.xcworkspace
+```
+
+## Major Package
+```
+- react-navigation:  https://reactnavigation.org/
 ```
 
 ## 실행
@@ -147,54 +148,31 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 
 #### [Xcode]
 
-###### - Facebook, Kakao 각각의 SDK를 따로 다운받아 적당한 곳에 위치해주세요.
-         Build Settings -> Search Paths -> Framework Search Paths 에 해당 SDK 경로를 추가 해줍니다.
-         ex) ~/Documents/FacebookSDK
-
-###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
-
-##### - Facebook Login
-
-###### - https://developers.facebook.com/docs/ios/getting-started/
+###### Facebook Login
 
 ```
-- 상단 링크의 2단계부터 5단계까지 작업합니다.
-- api id는 428306967643083 입니다 .
-- General -> Identity -> Bundle Identifier는 org.reactjs.native.example.WelaaaV2 를 사용합니다.
-- Frameworks 폴더 내부의 frameworks 파일들이 빨간색으로 표시가 된다면 Finder를 이용하여 다운받은 SDK 파일을 끌어서 넣습니다.(상단 링크의 3단계 참고)
+https://developers.facebook.com/docs/ios/getting-started/advanced?locale=ko_KR
+iOS는 CocoaPods으로 세팅하였습니다.
 ```
 
-##### - Kakao Login
+###### - Kakao Login
 
-###### - https://github.com/sunyrora/react-native-kakao-signin
-###### - https://developers.kakao.com/docs/ios#시작하기
 ```
- - 상단 첫번째 링크의 코드 주석부분만 참고해서 추가해주세요.
- - Build Settings -> Other Linker Flags 에 -all_load 을 추가합니다.
- - 상단 두번째 링크의 '프로젝트에 내 앱 설정' 을 작업합니다.
+iOS는 CocoaPods으로 세팅하였습니다.
 ```
 
-
+###### PallyConFPSSDK
+```
+경로 : ~/Documents/PallyCon-FairPlay-iOS-SDK/PallyConFPSSDK.framework
+# in Xcode
+General - Embedded Binaries에 '+'로 추가.
+프로젝트 TARGETS의 Build Settings 탭에 Enable Bitcode를 No로 설정
+Build Options에서 "Always Embed Swift Standard Libraries"를 YES
+```
 
 ### iOS Http 허용
 ```
 info.plist NSExceptionDomains에 추가합니다.
-
-<key>ec2-contents-api.welaa.co.kr</key>
-<dict>
-	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-	<true/>
-</dict>
-<key>ec2-52-78-197-242.ap-northeast-2.compute.amazonaws.com</key>
-<dict>
-	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-	<true/>
-</dict>
-<key>welaaa.co.kr</key>
-<dict>
-	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-	<true/>
-</dict>
 ```
 
 ## Native Environment Settings
