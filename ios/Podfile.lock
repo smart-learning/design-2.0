@@ -1,4 +1,19 @@
 PODS:
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
+    - AFNetworking/NSURLSession
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
     - Bolts/Tasks (= 1.9.0)
@@ -64,8 +79,10 @@ PODS:
   - nanopb/encode (0.3.8)
   - PlayerKit (1.3.0)
   - Protobuf (3.6.0)
+  - SAMKeychain (1.5.3)
 
 DEPENDENCIES:
+  - AFNetworking (~> 3.0)
   - Bolts
   - Crashlytics
   - Fabric
@@ -76,9 +93,11 @@ DEPENDENCIES:
   - Firebase/Messaging
   - KakaoOpenSDK
   - PlayerKit
+  - SAMKeychain
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - AFNetworking
     - Bolts
     - Crashlytics
     - Fabric
@@ -95,8 +114,10 @@ SPEC REPOS:
     - nanopb
     - PlayerKit
     - Protobuf
+    - SAMKeychain
 
 SPEC CHECKSUMS:
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
   Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
@@ -113,7 +134,8 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   PlayerKit: b23b30a9fe306fb8790dfd1a9f91352d38163c84
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
+  SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
 
-PODFILE CHECKSUM: e55ed3401316762fe2ea99a1d8dcb6cbb81b3cd7
+PODFILE CHECKSUM: ffc44087b01b0af3c218444b48a7012b87edb83c
 
 COCOAPODS: 1.5.3
