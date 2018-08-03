@@ -35,5 +35,11 @@ target 'WelaaaV2' do
 
   # KeyChain
   pod 'SAMKeychain'
+
+  # Toast message
+  pod 'Toast', '~> 4.0.0'
+
+  # Showing images from web
+  pod 'SDWebImage', '~> 4.0'
 end
 use_frameworks!

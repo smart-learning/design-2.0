@@ -12,15 +12,15 @@
 
 + (IFSleepTimerManager *) sharedInstance;
 
-- (void)startTimer: (NSDate *) stopDate
-   stopEpisodeMode: (BOOL) isStop;
+- (void) startTimer : (NSDate *) stopDate
+    stopEpisodeMode : (BOOL) isStop;
 
-- (void)stopTimer;
+- (void) stopTimer;
 
 @end
 
 @protocol IFSleepTimerManagerDelegate <NSObject>
 @optional
-- (void) secondFromSleepTimerManager: (NSInteger) second;
+- (void) secondFromSleepTimerManager : (NSInteger) second;
 - (void) finishFromSleepTimerManager;
 @end

@@ -39,6 +39,37 @@
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
 		EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081E22113ED84006D3F6C /* NSString+GC.m */; };
 		EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0821C2113F89B006D3F6C /* IFSleepTimerManager.m */; };
+		EFE0824F2114185D006D3F6C /* IFRateView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082232114185D006D3F6C /* IFRateView.m */; };
+		EFE082502114185D006D3F6C /* UIAlertController+Showable.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082242114185D006D3F6C /* UIAlertController+Showable.m */; };
+		EFE082512114185D006D3F6C /* IFTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082292114185D006D3F6C /* IFTimerView.m */; };
+		EFE082522114185D006D3F6C /* IFTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0822C2114185D006D3F6C /* IFTimerButton.m */; };
+		EFE082532114185D006D3F6C /* IFPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0822E2114185D006D3F6C /* IFPlayerButton.m */; };
+		EFE082542114185D006D3F6C /* IFTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082312114185D006D3F6C /* IFTouchView.m */; };
+		EFE082552114185D006D3F6C /* IFMediaPlayerScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082342114185D006D3F6C /* IFMediaPlayerScriptView.m */; };
+		EFE082562114185D006D3F6C /* IFScriptControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082362114185D006D3F6C /* IFScriptControlView.m */; };
+		EFE082572114185D006D3F6C /* IFPlayerScriptItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082372114185D006D3F6C /* IFPlayerScriptItemView.m */; };
+		EFE082582114185D006D3F6C /* IFPlayerScriptCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082382114185D006D3F6C /* IFPlayerScriptCell.m */; };
+		EFE082592114185D006D3F6C /* IFDrmPlayerUiView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0823C2114185D006D3F6C /* IFDrmPlayerUiView.m */; };
+		EFE0825A2114185D006D3F6C /* IFRecommendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0823E2114185D006D3F6C /* IFRecommendViewController.m */; };
+		EFE0825B2114185D006D3F6C /* CollectionViewCellBox.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082422114185D006D3F6C /* CollectionViewCellBox.m */; };
+		EFE0825C2114185D006D3F6C /* InnerShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082452114185D006D3F6C /* InnerShadowView.m */; };
+		EFE0825D2114185D006D3F6C /* IFCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082462114185D006D3F6C /* IFCollectionView.m */; };
+		EFE0825E2114185D006D3F6C /* IFDrmMiniPlayerUiView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082472114185D006D3F6C /* IFDrmMiniPlayerUiView.m */; };
+		EFE0825F2114185D006D3F6C /* IFDrmPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082482114185D006D3F6C /* IFDrmPlayer.m */; };
+		EFE082602114185D006D3F6C /* IFContentsPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082492114185D006D3F6C /* IFContentsPlayerView.m */; };
+		EFE082612114185D006D3F6C /* IFPlayListPopupViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0824C2114185D006D3F6C /* IFPlayListPopupViewCell.m */; };
+		EFE082622114185D006D3F6C /* IFPlayListPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0824D2114185D006D3F6C /* IFPlayListPopupView.m */; };
+		EFE08265211419EF006D3F6C /* UIImage+TintColor.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE08263211419EF006D3F6C /* UIImage+TintColor.m */; };
+		EFE082D221142645006D3F6C /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082A921142644006D3F6C /* UIActionSheet+Blocks.m */; };
+		EFE08313211430E7006D3F6C /* DbContentAudioGroupItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */; };
+		EFE08314211430E7006D3F6C /* DbContentVideoGroupItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830E211430E7006D3F6C /* DbContentVideoGroupItemModel.m */; };
+		EFE08315211430E7006D3F6C /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830F211430E7006D3F6C /* DownloadManager.m */; };
+		EFE08316211430E7006D3F6C /* DbContentDownloadItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE08311211430E7006D3F6C /* DbContentDownloadItemModel.m */; };
+		EFE08317211430E7006D3F6C /* DbManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE08312211430E7006D3F6C /* DbManager.m */; };
+		EFE0835621144239006D3F6C /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832721144239006D3F6C /* IAPHelper.m */; };
+		EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832821144239006D3F6C /* NSString+Base64.m */; };
+		EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */; };
+		EFE0835921144239006D3F6C /* IAPShare.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832E21144239006D3F6C /* IAPShare.m */; };
 		FEB4A0A1AA6341EE8ED27C0B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC83BF071F44EB699826325 /* libRCTFBSDK.a */; };
 /* End PBXBuildFile section */
 
@@ -385,6 +416,68 @@
 		EFE081E42113ED84006D3F6C /* NSString+GC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GC.h"; sourceTree = "<group>"; };
 		EFE0821C2113F89B006D3F6C /* IFSleepTimerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSleepTimerManager.m; sourceTree = "<group>"; };
 		EFE0821D2113F89B006D3F6C /* IFSleepTimerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSleepTimerManager.h; sourceTree = "<group>"; };
+		EFE082212114185D006D3F6C /* IFRateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRateView.h; sourceTree = "<group>"; };
+		EFE082222114185D006D3F6C /* UIAlertController+Showable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Showable.h"; sourceTree = "<group>"; };
+		EFE082232114185D006D3F6C /* IFRateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRateView.m; sourceTree = "<group>"; };
+		EFE082242114185D006D3F6C /* UIAlertController+Showable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Showable.m"; sourceTree = "<group>"; };
+		EFE082252114185D006D3F6C /* IFDrmPlayerUiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDrmPlayerUiView.h; sourceTree = "<group>"; };
+		EFE082262114185D006D3F6C /* IFDrmMiniPlayerUiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDrmMiniPlayerUiView.h; sourceTree = "<group>"; };
+		EFE082272114185D006D3F6C /* IFDrmPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDrmPlayer.h; sourceTree = "<group>"; };
+		EFE082292114185D006D3F6C /* IFTimerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTimerView.m; sourceTree = "<group>"; };
+		EFE0822A2114185D006D3F6C /* IFTimerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTimerButton.h; sourceTree = "<group>"; };
+		EFE0822B2114185D006D3F6C /* IFTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTimerView.h; sourceTree = "<group>"; };
+		EFE0822C2114185D006D3F6C /* IFTimerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTimerButton.m; sourceTree = "<group>"; };
+		EFE0822E2114185D006D3F6C /* IFPlayerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPlayerButton.m; sourceTree = "<group>"; };
+		EFE0822F2114185D006D3F6C /* IFTouchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTouchView.h; sourceTree = "<group>"; };
+		EFE082302114185D006D3F6C /* IFPlayerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPlayerButton.h; sourceTree = "<group>"; };
+		EFE082312114185D006D3F6C /* IFTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTouchView.m; sourceTree = "<group>"; };
+		EFE082322114185D006D3F6C /* IFContentsPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFContentsPlayerView.h; sourceTree = "<group>"; };
+		EFE082342114185D006D3F6C /* IFMediaPlayerScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMediaPlayerScriptView.m; sourceTree = "<group>"; };
+		EFE082352114185D006D3F6C /* IFPlayerScriptCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPlayerScriptCell.h; sourceTree = "<group>"; };
+		EFE082362114185D006D3F6C /* IFScriptControlView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFScriptControlView.m; sourceTree = "<group>"; };
+		EFE082372114185D006D3F6C /* IFPlayerScriptItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPlayerScriptItemView.m; sourceTree = "<group>"; };
+		EFE082382114185D006D3F6C /* IFPlayerScriptCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPlayerScriptCell.m; sourceTree = "<group>"; };
+		EFE082392114185D006D3F6C /* IFMediaPlayerScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMediaPlayerScriptView.h; sourceTree = "<group>"; };
+		EFE0823A2114185D006D3F6C /* IFScriptControlView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFScriptControlView.h; sourceTree = "<group>"; };
+		EFE0823B2114185D006D3F6C /* IFPlayerScriptItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPlayerScriptItemView.h; sourceTree = "<group>"; };
+		EFE0823C2114185D006D3F6C /* IFDrmPlayerUiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDrmPlayerUiView.m; sourceTree = "<group>"; };
+		EFE0823E2114185D006D3F6C /* IFRecommendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRecommendViewController.m; sourceTree = "<group>"; };
+		EFE0823F2114185D006D3F6C /* IFCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCollectionView.h; sourceTree = "<group>"; };
+		EFE082402114185D006D3F6C /* IFRecommendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRecommendViewController.h; sourceTree = "<group>"; };
+		EFE082422114185D006D3F6C /* CollectionViewCellBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCellBox.m; sourceTree = "<group>"; };
+		EFE082432114185D006D3F6C /* InnerShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnerShadowView.h; sourceTree = "<group>"; };
+		EFE082442114185D006D3F6C /* CollectionViewCellBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewCellBox.h; sourceTree = "<group>"; };
+		EFE082452114185D006D3F6C /* InnerShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnerShadowView.m; sourceTree = "<group>"; };
+		EFE082462114185D006D3F6C /* IFCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCollectionView.m; sourceTree = "<group>"; };
+		EFE082472114185D006D3F6C /* IFDrmMiniPlayerUiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDrmMiniPlayerUiView.m; sourceTree = "<group>"; };
+		EFE082482114185D006D3F6C /* IFDrmPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDrmPlayer.m; sourceTree = "<group>"; };
+		EFE082492114185D006D3F6C /* IFContentsPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFContentsPlayerView.m; sourceTree = "<group>"; };
+		EFE0824B2114185D006D3F6C /* IFPlayListPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPlayListPopupView.h; sourceTree = "<group>"; };
+		EFE0824C2114185D006D3F6C /* IFPlayListPopupViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPlayListPopupViewCell.m; sourceTree = "<group>"; };
+		EFE0824D2114185D006D3F6C /* IFPlayListPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPlayListPopupView.m; sourceTree = "<group>"; };
+		EFE0824E2114185D006D3F6C /* IFPlayListPopupViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPlayListPopupViewCell.h; sourceTree = "<group>"; };
+		EFE08263211419EF006D3F6C /* UIImage+TintColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TintColor.m"; sourceTree = "<group>"; };
+		EFE08264211419EF006D3F6C /* UIImage+TintColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TintColor.h"; sourceTree = "<group>"; };
+		EFE082A921142644006D3F6C /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
+		EFE082D121142645006D3F6C /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
+		EFE08309211430E7006D3F6C /* DbContentVideoGroupItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbContentVideoGroupItemModel.h; sourceTree = "<group>"; };
+		EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbContentAudioGroupItemModel.m; sourceTree = "<group>"; };
+		EFE0830B211430E7006D3F6C /* DownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadManager.h; sourceTree = "<group>"; };
+		EFE0830C211430E7006D3F6C /* DbManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbManager.h; sourceTree = "<group>"; };
+		EFE0830D211430E7006D3F6C /* DbContentDownloadItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbContentDownloadItemModel.h; sourceTree = "<group>"; };
+		EFE0830E211430E7006D3F6C /* DbContentVideoGroupItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbContentVideoGroupItemModel.m; sourceTree = "<group>"; };
+		EFE0830F211430E7006D3F6C /* DownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadManager.m; sourceTree = "<group>"; };
+		EFE08310211430E7006D3F6C /* DbContentAudioGroupItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbContentAudioGroupItemModel.h; sourceTree = "<group>"; };
+		EFE08311211430E7006D3F6C /* DbContentDownloadItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbContentDownloadItemModel.m; sourceTree = "<group>"; };
+		EFE08312211430E7006D3F6C /* DbManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbManager.m; sourceTree = "<group>"; };
+		EFE0832721144239006D3F6C /* IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPHelper.m; sourceTree = "<group>"; };
+		EFE0832821144239006D3F6C /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
+		EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
+		EFE0832A21144239006D3F6C /* IAPShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPShare.h; sourceTree = "<group>"; };
+		EFE0832B21144239006D3F6C /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		EFE0832C21144239006D3F6C /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
+		EFE0832D21144239006D3F6C /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
+		EFE0832E21144239006D3F6C /* IAPShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPShare.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -480,6 +573,9 @@
 		13B07FAE1A68108700A75B9A /* WelaaaV2 */ = {
 			isa = PBXGroup;
 			children = (
+				EFE0832621144239006D3F6C /* Payments */,
+				EFE08308211430E7006D3F6C /* DownloadManager */,
+				EFE0821F2114185D006D3F6C /* ContentsPlayer */,
 				EF13DA2A2113D95000CFED8A /* Utils */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -637,6 +733,10 @@
 				EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */,
 				EFE0821D2113F89B006D3F6C /* IFSleepTimerManager.h */,
 				EFE0821C2113F89B006D3F6C /* IFSleepTimerManager.m */,
+				EFE08264211419EF006D3F6C /* UIImage+TintColor.h */,
+				EFE08263211419EF006D3F6C /* UIImage+TintColor.m */,
+				EFE082D121142645006D3F6C /* UIActionSheet+Blocks.h */,
+				EFE082A921142644006D3F6C /* UIActionSheet+Blocks.m */,
 			);
 			name = Utils;
 			path = WelaaaV2/Utils;
@@ -676,6 +776,144 @@
 				EF9A98AB2111452000EA3A8E /* libRNKaKaoSignin.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EFE0821F2114185D006D3F6C /* ContentsPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				EFE0822D2114185D006D3F6C /* Component */,
+				EFE0824A2114185D006D3F6C /* PlayListView */,
+				EFE0823D2114185D006D3F6C /* RelatedContentsView */,
+				EFE082332114185D006D3F6C /* ScriptView */,
+				EFE082202114185D006D3F6C /* StarRatingView */,
+				EFE082282114185D006D3F6C /* TimerView */,
+				EFE082322114185D006D3F6C /* IFContentsPlayerView.h */,
+				EFE082492114185D006D3F6C /* IFContentsPlayerView.m */,
+				EFE082272114185D006D3F6C /* IFDrmPlayer.h */,
+				EFE082482114185D006D3F6C /* IFDrmPlayer.m */,
+				EFE082252114185D006D3F6C /* IFDrmPlayerUiView.h */,
+				EFE0823C2114185D006D3F6C /* IFDrmPlayerUiView.m */,
+				EFE082262114185D006D3F6C /* IFDrmMiniPlayerUiView.h */,
+				EFE082472114185D006D3F6C /* IFDrmMiniPlayerUiView.m */,
+			);
+			name = ContentsPlayer;
+			path = WelaaaV2/ContentsPlayer;
+			sourceTree = "<group>";
+		};
+		EFE082202114185D006D3F6C /* StarRatingView */ = {
+			isa = PBXGroup;
+			children = (
+				EFE082212114185D006D3F6C /* IFRateView.h */,
+				EFE082232114185D006D3F6C /* IFRateView.m */,
+				EFE082222114185D006D3F6C /* UIAlertController+Showable.h */,
+				EFE082242114185D006D3F6C /* UIAlertController+Showable.m */,
+			);
+			path = StarRatingView;
+			sourceTree = "<group>";
+		};
+		EFE082282114185D006D3F6C /* TimerView */ = {
+			isa = PBXGroup;
+			children = (
+				EFE0822B2114185D006D3F6C /* IFTimerView.h */,
+				EFE082292114185D006D3F6C /* IFTimerView.m */,
+				EFE0822A2114185D006D3F6C /* IFTimerButton.h */,
+				EFE0822C2114185D006D3F6C /* IFTimerButton.m */,
+			);
+			path = TimerView;
+			sourceTree = "<group>";
+		};
+		EFE0822D2114185D006D3F6C /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				EFE0822F2114185D006D3F6C /* IFTouchView.h */,
+				EFE082312114185D006D3F6C /* IFTouchView.m */,
+				EFE082302114185D006D3F6C /* IFPlayerButton.h */,
+				EFE0822E2114185D006D3F6C /* IFPlayerButton.m */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
+		EFE082332114185D006D3F6C /* ScriptView */ = {
+			isa = PBXGroup;
+			children = (
+				EFE0823A2114185D006D3F6C /* IFScriptControlView.h */,
+				EFE082362114185D006D3F6C /* IFScriptControlView.m */,
+				EFE082392114185D006D3F6C /* IFMediaPlayerScriptView.h */,
+				EFE082342114185D006D3F6C /* IFMediaPlayerScriptView.m */,
+				EFE0823B2114185D006D3F6C /* IFPlayerScriptItemView.h */,
+				EFE082372114185D006D3F6C /* IFPlayerScriptItemView.m */,
+				EFE082352114185D006D3F6C /* IFPlayerScriptCell.h */,
+				EFE082382114185D006D3F6C /* IFPlayerScriptCell.m */,
+			);
+			path = ScriptView;
+			sourceTree = "<group>";
+		};
+		EFE0823D2114185D006D3F6C /* RelatedContentsView */ = {
+			isa = PBXGroup;
+			children = (
+				EFE082412114185D006D3F6C /* CustomView */,
+				EFE082402114185D006D3F6C /* IFRecommendViewController.h */,
+				EFE0823E2114185D006D3F6C /* IFRecommendViewController.m */,
+				EFE0823F2114185D006D3F6C /* IFCollectionView.h */,
+				EFE082462114185D006D3F6C /* IFCollectionView.m */,
+			);
+			path = RelatedContentsView;
+			sourceTree = "<group>";
+		};
+		EFE082412114185D006D3F6C /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				EFE082432114185D006D3F6C /* InnerShadowView.h */,
+				EFE082452114185D006D3F6C /* InnerShadowView.m */,
+				EFE082442114185D006D3F6C /* CollectionViewCellBox.h */,
+				EFE082422114185D006D3F6C /* CollectionViewCellBox.m */,
+			);
+			path = CustomView;
+			sourceTree = "<group>";
+		};
+		EFE0824A2114185D006D3F6C /* PlayListView */ = {
+			isa = PBXGroup;
+			children = (
+				EFE0824B2114185D006D3F6C /* IFPlayListPopupView.h */,
+				EFE0824D2114185D006D3F6C /* IFPlayListPopupView.m */,
+				EFE0824E2114185D006D3F6C /* IFPlayListPopupViewCell.h */,
+				EFE0824C2114185D006D3F6C /* IFPlayListPopupViewCell.m */,
+			);
+			path = PlayListView;
+			sourceTree = "<group>";
+		};
+		EFE08308211430E7006D3F6C /* DownloadManager */ = {
+			isa = PBXGroup;
+			children = (
+				EFE08309211430E7006D3F6C /* DbContentVideoGroupItemModel.h */,
+				EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */,
+				EFE0830B211430E7006D3F6C /* DownloadManager.h */,
+				EFE0830F211430E7006D3F6C /* DownloadManager.m */,
+				EFE0830C211430E7006D3F6C /* DbManager.h */,
+				EFE08312211430E7006D3F6C /* DbManager.m */,
+				EFE0830D211430E7006D3F6C /* DbContentDownloadItemModel.h */,
+				EFE08311211430E7006D3F6C /* DbContentDownloadItemModel.m */,
+				EFE08310211430E7006D3F6C /* DbContentAudioGroupItemModel.h */,
+				EFE0830E211430E7006D3F6C /* DbContentVideoGroupItemModel.m */,
+			);
+			name = DownloadManager;
+			path = WelaaaV2/DownloadManager;
+			sourceTree = "<group>";
+		};
+		EFE0832621144239006D3F6C /* Payments */ = {
+			isa = PBXGroup;
+			children = (
+				EFE0832D21144239006D3F6C /* IAPHelper.h */,
+				EFE0832721144239006D3F6C /* IAPHelper.m */,
+				EFE0832A21144239006D3F6C /* IAPShare.h */,
+				EFE0832E21144239006D3F6C /* IAPShare.m */,
+				EFE0832C21144239006D3F6C /* NSString+Base64.h */,
+				EFE0832821144239006D3F6C /* NSString+Base64.m */,
+				EFE0832B21144239006D3F6C /* SFHFKeychainUtils.h */,
+				EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */,
+			);
+			name = Payments;
+			path = WelaaaV2/Payments;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1144,6 +1382,8 @@
 				"${BUILT_PRODUCTS_DIR}/PlayerKit/PlayerKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/SAMKeychain/SAMKeychain.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1157,6 +1397,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PlayerKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SAMKeychain.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1174,16 +1416,47 @@
 				EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */,
 				EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */,
 				EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */,
+				EFE082512114185D006D3F6C /* IFTimerView.m in Sources */,
+				EFE0835621144239006D3F6C /* IAPHelper.m in Sources */,
+				EFE082612114185D006D3F6C /* IFPlayListPopupViewCell.m in Sources */,
+				EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */,
+				EFE08315211430E7006D3F6C /* DownloadManager.m in Sources */,
+				EFE08313211430E7006D3F6C /* DbContentAudioGroupItemModel.m in Sources */,
 				EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */,
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
+				EFE082572114185D006D3F6C /* IFPlayerScriptItemView.m in Sources */,
+				EFE082D221142645006D3F6C /* UIActionSheet+Blocks.m in Sources */,
+				EFE082502114185D006D3F6C /* UIAlertController+Showable.m in Sources */,
+				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */,
+				EFE082622114185D006D3F6C /* IFPlayListPopupView.m in Sources */,
 				EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */,
+				EFE0825F2114185D006D3F6C /* IFDrmPlayer.m in Sources */,
+				EFE082582114185D006D3F6C /* IFPlayerScriptCell.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,
+				EFE08316211430E7006D3F6C /* DbContentDownloadItemModel.m in Sources */,
+				EFE082532114185D006D3F6C /* IFPlayerButton.m in Sources */,
 				EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				EFE08317211430E7006D3F6C /* DbManager.m in Sources */,
+				EFE0825A2114185D006D3F6C /* IFRecommendViewController.m in Sources */,
+				EFE08265211419EF006D3F6C /* UIImage+TintColor.m in Sources */,
+				EFE0825E2114185D006D3F6C /* IFDrmMiniPlayerUiView.m in Sources */,
+				EFE0824F2114185D006D3F6C /* IFRateView.m in Sources */,
+				EFE0825B2114185D006D3F6C /* CollectionViewCellBox.m in Sources */,
+				EFE08314211430E7006D3F6C /* DbContentVideoGroupItemModel.m in Sources */,
+				EFE082562114185D006D3F6C /* IFScriptControlView.m in Sources */,
 				EF7D6F8D2113E6D600B71BEB /* common.m in Sources */,
+				EFE082602114185D006D3F6C /* IFContentsPlayerView.m in Sources */,
+				EFE082552114185D006D3F6C /* IFMediaPlayerScriptView.m in Sources */,
+				EFE082542114185D006D3F6C /* IFTouchView.m in Sources */,
+				EFE0825D2114185D006D3F6C /* IFCollectionView.m in Sources */,
 				EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */,
+				EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */,
+				EFE0825C2114185D006D3F6C /* InnerShadowView.m in Sources */,
+				EFE082592114185D006D3F6C /* IFDrmPlayerUiView.m in Sources */,
+				EFE082522114185D006D3F6C /* IFTimerButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
