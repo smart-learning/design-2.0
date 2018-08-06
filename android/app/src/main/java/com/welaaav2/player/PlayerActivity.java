@@ -87,7 +87,6 @@ import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.download.DownloadService;
 import com.welaaav2.pallycon.PlayStatus;
-import com.welaaav2.player.core.PlayerManager;
 import com.welaaav2.util.CustomDialog;
 import com.welaaav2.util.HLVAdapter;
 import com.welaaav2.util.HttpCon;
@@ -806,18 +805,6 @@ public class PlayerActivity extends BasePlayerActivity {
     }
 
     Intent intent = getIntent();
-    PlayerManager.Content content = PlayerManager.Content.fromIntent(intent);
-
-//		try {
-//			playerManager.setPallyconEventListener(pallyconEventListener);
-//			playerManager.addPlayerEventListener(new PlayerEventListener());
-//			playerManager.setSource(content);
-//			playerManager.initializePlayer();
-//			playerManager.setPlayerView(simpleExoPlayerView);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			finish();
-//		}
 
     mediaSessionConnection.getTransportControls()
         .playFromUri(intent.getData(), intent.getExtras());
