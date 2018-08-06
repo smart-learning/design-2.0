@@ -1,6 +1,7 @@
 package com.welaaav2;
 
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
 import android.support.multidex.MultiDex;
@@ -11,8 +12,8 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.welaaav2.player.core.PlayerManager;
-import com.welaaav2.player.service.PlayerServiceManager;
+import com.welaaav2.player.MediaSessionConnection;
+import com.welaaav2.player.service.MediaService;
 import com.welaaav2.react.pakcage.RNNativePlayerPackage;
 import com.welaaav2.util.ONotificationManager;
 import com.welaaav2.util.WeContentManager;
@@ -24,7 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
 
     private WeContentManager content_manager=null;
 
-    private PlayerServiceManager playerServiceManager;
+    private MediaSessionConnection mediaSessionConnection;
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
@@ -78,7 +79,9 @@ public class MainApplication extends Application implements ReactApplication {
             ONotificationManager.createChannel(this);
         }
 
-        playerServiceManager = new PlayerServiceManager(this);
+        Context context = getApplicationContext();
+        mediaSessionConnection = MediaSessionConnection
+            .getInstance(context, new ComponentName(context, MediaService.class));
     }
 
     public WeContentManager initContentManager()
@@ -95,11 +98,7 @@ public class MainApplication extends Application implements ReactApplication {
         return content_manager;
     }
 
-    public PlayerServiceManager getPlayerServiceManager() {
-        return playerServiceManager;
-    }
-
-    public PlayerManager getPlayerManager() {
-        return playerServiceManager.getPlayerManager();
+    public MediaSessionConnection getMediaSessionConnection() {
+        return mediaSessionConnection;
     }
 }

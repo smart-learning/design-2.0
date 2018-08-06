@@ -63,7 +63,7 @@
 
         <!-- service -->
         <service
-          android:name=".player.service.PlayerService"
+          android:name=".player.service.MediaService"
           android:exported="true"
           android:enabled="true">
             <intent-filter>
