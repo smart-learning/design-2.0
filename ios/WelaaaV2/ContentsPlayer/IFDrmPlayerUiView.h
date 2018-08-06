@@ -3,8 +3,8 @@
 #import <Toast/UIView+Toast.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
-#import "UIImage+TintColor.h"
 #import "UIActionSheet+Blocks.h"
+#import "UIImage+TintColor.h"
 #import "ApiManager.h"
 #import "IFPlayerButton.h"
 #import "IFMediaPlayerScriptView.h"

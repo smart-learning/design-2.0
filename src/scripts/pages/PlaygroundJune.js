@@ -45,7 +45,7 @@ class PlaygroundJune extends Component {
 			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
 		}
 		NativeModules.RNNativePlayer.play(args);
-		//NativeModules.RNNativePlayer.download(args);
+		//NativeModules.CreateContact.presentContact;
 	}
 
 

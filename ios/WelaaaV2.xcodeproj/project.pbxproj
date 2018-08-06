@@ -25,8 +25,10 @@
 		7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */; };
 		EF3C6E3721118DBD00EBC878 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */; };
 		EF3C6E3821118DBD00EBC878 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EF4A906E21182A1A00228EB1 /* ContentPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4A906D21182A1A00228EB1 /* ContentPlayerViewController.m */; };
 		EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F522113E6D500B71BEB /* LogManager.m */; };
 		EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7A2113E6D500B71BEB /* ApiManager.m */; };
 		EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */; };
@@ -60,7 +62,6 @@
 		EFE082612114185D006D3F6C /* IFPlayListPopupViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0824C2114185D006D3F6C /* IFPlayListPopupViewCell.m */; };
 		EFE082622114185D006D3F6C /* IFPlayListPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0824D2114185D006D3F6C /* IFPlayListPopupView.m */; };
 		EFE08265211419EF006D3F6C /* UIImage+TintColor.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE08263211419EF006D3F6C /* UIImage+TintColor.m */; };
-		EFE082D221142645006D3F6C /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE082A921142644006D3F6C /* UIActionSheet+Blocks.m */; };
 		EFE08313211430E7006D3F6C /* DbContentAudioGroupItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */; };
 		EFE08314211430E7006D3F6C /* DbContentVideoGroupItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830E211430E7006D3F6C /* DbContentVideoGroupItemModel.m */; };
 		EFE08315211430E7006D3F6C /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830F211430E7006D3F6C /* DownloadManager.m */; };
@@ -70,6 +71,8 @@
 		EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832821144239006D3F6C /* NSString+Base64.m */; };
 		EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */; };
 		EFE0835921144239006D3F6C /* IAPShare.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832E21144239006D3F6C /* IAPShare.m */; };
+		EFE0F3B12117E25700D4558B /* CreateContact.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0F3B02117E25700D4558B /* CreateContact.m */; };
+		EFE0F3B62117E69C00D4558B /* MediaController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0F3B52117E69C00D4558B /* MediaController.m */; };
 		FEB4A0A1AA6341EE8ED27C0B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC83BF071F44EB699826325 /* libRCTFBSDK.a */; };
 /* End PBXBuildFile section */
 
@@ -392,7 +395,11 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		AEEDDD9F7C5CBB53DA7FCD50 /* Pods-WelaaaV2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WelaaaV2.release.xcconfig"; path = "Pods/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2.release.xcconfig"; sourceTree = "<group>"; };
 		E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WelaaaV2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
+		EF2EB8D3211598ED00127D35 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
+		EF4A906C21182A1A00228EB1 /* ContentPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentPlayerViewController.h; sourceTree = "<group>"; };
+		EF4A906D21182A1A00228EB1 /* ContentPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerViewController.m; sourceTree = "<group>"; };
 		EF7D6F522113E6D500B71BEB /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogManager.m; sourceTree = "<group>"; };
 		EF7D6F7A2113E6D500B71BEB /* ApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiManager.m; sourceTree = "<group>"; };
 		EF7D6F7B2113E6D500B71BEB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
@@ -458,8 +465,6 @@
 		EFE0824E2114185D006D3F6C /* IFPlayListPopupViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPlayListPopupViewCell.h; sourceTree = "<group>"; };
 		EFE08263211419EF006D3F6C /* UIImage+TintColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TintColor.m"; sourceTree = "<group>"; };
 		EFE08264211419EF006D3F6C /* UIImage+TintColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TintColor.h"; sourceTree = "<group>"; };
-		EFE082A921142644006D3F6C /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
-		EFE082D121142645006D3F6C /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		EFE08309211430E7006D3F6C /* DbContentVideoGroupItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbContentVideoGroupItemModel.h; sourceTree = "<group>"; };
 		EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbContentAudioGroupItemModel.m; sourceTree = "<group>"; };
 		EFE0830B211430E7006D3F6C /* DownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadManager.h; sourceTree = "<group>"; };
@@ -478,6 +483,11 @@
 		EFE0832C21144239006D3F6C /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
 		EFE0832D21144239006D3F6C /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
 		EFE0832E21144239006D3F6C /* IAPShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPShare.m; sourceTree = "<group>"; };
+		EFE0F3AF2117E25700D4558B /* CreateContact.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreateContact.h; sourceTree = "<group>"; };
+		EFE0F3B02117E25700D4558B /* CreateContact.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateContact.m; sourceTree = "<group>"; };
+		EFE0F3B22117E5F900D4558B /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		EFE0F3B42117E69C00D4558B /* MediaController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaController.h; sourceTree = "<group>"; };
+		EFE0F3B52117E69C00D4558B /* MediaController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,6 +583,7 @@
 		13B07FAE1A68108700A75B9A /* WelaaaV2 */ = {
 			isa = PBXGroup;
 			children = (
+				EFE0F3872117E23500D4558B /* Test */,
 				EFE0832621144239006D3F6C /* Payments */,
 				EFE08308211430E7006D3F6C /* DownloadManager */,
 				EFE0821F2114185D006D3F6C /* ContentsPlayer */,
@@ -617,6 +628,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EFE0F3B22117E5F900D4558B /* Contacts.framework */,
 				EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */,
@@ -735,8 +747,8 @@
 				EFE0821C2113F89B006D3F6C /* IFSleepTimerManager.m */,
 				EFE08264211419EF006D3F6C /* UIImage+TintColor.h */,
 				EFE08263211419EF006D3F6C /* UIImage+TintColor.m */,
-				EFE082D121142645006D3F6C /* UIActionSheet+Blocks.h */,
-				EFE082A921142644006D3F6C /* UIActionSheet+Blocks.m */,
+				EF2EB8D3211598ED00127D35 /* UIActionSheet+Blocks.h */,
+				EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */,
 			);
 			name = Utils;
 			path = WelaaaV2/Utils;
@@ -914,6 +926,20 @@
 			);
 			name = Payments;
 			path = WelaaaV2/Payments;
+			sourceTree = "<group>";
+		};
+		EFE0F3872117E23500D4558B /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				EFE0F3AF2117E25700D4558B /* CreateContact.h */,
+				EFE0F3B02117E25700D4558B /* CreateContact.m */,
+				EFE0F3B42117E69C00D4558B /* MediaController.h */,
+				EFE0F3B52117E69C00D4558B /* MediaController.m */,
+				EF4A906C21182A1A00228EB1 /* ContentPlayerViewController.h */,
+				EF4A906D21182A1A00228EB1 /* ContentPlayerViewController.m */,
+			);
+			name = Test;
+			path = WelaaaV2/Test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1417,17 +1443,19 @@
 				EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */,
 				EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */,
 				EFE082512114185D006D3F6C /* IFTimerView.m in Sources */,
+				EFE0F3B62117E69C00D4558B /* MediaController.m in Sources */,
 				EFE0835621144239006D3F6C /* IAPHelper.m in Sources */,
 				EFE082612114185D006D3F6C /* IFPlayListPopupViewCell.m in Sources */,
 				EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */,
+				EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */,
 				EFE08315211430E7006D3F6C /* DownloadManager.m in Sources */,
 				EFE08313211430E7006D3F6C /* DbContentAudioGroupItemModel.m in Sources */,
 				EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */,
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
 				EFE082572114185D006D3F6C /* IFPlayerScriptItemView.m in Sources */,
-				EFE082D221142645006D3F6C /* UIActionSheet+Blocks.m in Sources */,
 				EFE082502114185D006D3F6C /* UIAlertController+Showable.m in Sources */,
 				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
+				EFE0F3B12117E25700D4558B /* CreateContact.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */,
 				EFE082622114185D006D3F6C /* IFPlayListPopupView.m in Sources */,
@@ -1457,6 +1485,7 @@
 				EFE0825C2114185D006D3F6C /* InnerShadowView.m in Sources */,
 				EFE082592114185D006D3F6C /* IFDrmPlayerUiView.m in Sources */,
 				EFE082522114185D006D3F6C /* IFTimerButton.m in Sources */,
+				EF4A906E21182A1A00228EB1 /* ContentPlayerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1550,6 +1579,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 168B47C7C2C22FD2962B5333 /* Pods-WelaaaV2.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1591,6 +1621,7 @@
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AEEDDD9F7C5CBB53DA7FCD50 /* Pods-WelaaaV2.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
