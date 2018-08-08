@@ -5,6 +5,7 @@ import {SafeAreaView} from "react-navigation";
 import { ImageView, RNAudioPlayer} from 'rnn-module-ui-sample';
 import {NAV_OPTS_DRAWER} from "../commons/nav";
 import VideoScreen from "./video/VideoScreen";
+import Device from '../../scripts/commons/device';
 
 /*
 * Acount: test/test
@@ -29,6 +30,14 @@ class PlaygroundJune extends Component {
 
 			<Button title="재생"
 					onPress={ this.onPlay }
+			/>
+
+			<Button title="디바이스언어"
+					onPress={ ()=>{ alert( Device.getLocale() ) } }
+			/>
+
+			<Button title="디바이스변수가져오기"
+					onPress={ ()=>{ alert( Device.getPlatformValue('test_var') ) } }
 			/>
 
 			<ImageView
