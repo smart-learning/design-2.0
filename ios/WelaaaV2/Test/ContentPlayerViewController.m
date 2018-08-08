@@ -16,32 +16,16 @@ NSDictionary *_args;
 {
   [super viewDidLoad];
   // Do any additional setup after loading the view from its nib.
-  //self.view.backgroundColor = [UIColor greenColor];
-  
-  NSLog(@"  type          : %@", [_args objectForKey : @"type"]); // streaming or download
-  NSLog(@"  uri           : %@", [_args objectForKey : @"uri"]);  // content path
-  NSLog(@"  name          : %@", [_args objectForKey : @"name"]);
-  NSLog(@"  drmSchemeUuid : %@", [_args objectForKey : @"drmSchemeUuid"]);
-  NSLog(@"  drmLicenseUrl : %@", [_args objectForKey : @"drmLicenseUrl"]);
-  NSLog(@"  userId        : %@", [_args objectForKey : @"userId"]);
-  NSLog(@"  cid           : %@", [_args objectForKey : @"cid"]);
-  NSLog(@"  oid           : %@", [_args objectForKey : @"oid"]);
-  NSLog(@"  token         : %@", [_args objectForKey : @"token"]);
-  NSLog(@"  webToken      : %@", [_args objectForKey : @"webToken"]);
-  
-  
-  // 1. initialize a PallyConFPS SDK. PallyConFPS SDK 객체를 생성합니다.
+  [self.view setBackgroundColor : [UIColor grayColor]];
+  // PallyConFPS SDK 객체를 생성합니다.
   _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
                                             siteKey : PALLYCON_SITE_KEY
                                  fpsLicenseDelegate : self
                                               error : nil             ];
-  
-  
 }
 
 - (void) viewDidAppear : (BOOL) animated
 {
-  //////
   NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ]; // CONTENT_PATH
   AVURLAsset *urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
                                                   options : nil       ];
@@ -56,28 +40,37 @@ NSDictionary *_args;
   AVPlayerItem *playerItem = [ AVPlayerItem playerItemWithAsset : urlAsset ];
   playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
   AVPlayer *player = [ AVPlayer playerWithPlayerItem : playerItem ];
-  AVPlayerViewController *playerController = [AVPlayerViewController new];
-  playerController.player = player;
+  _playerController = [[AVPlayerViewController alloc] init];
+  _playerController.player = player;
   //playerController.videoGravity = AVLayerVideoGravityResize;            // 가로세로 비율을 무시하고 레이어의 경계를 채우기 위해 비디오를 늘리도록 지정합니다.
-  playerController.videoGravity = AVLayerVideoGravityResizeAspect;      // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
+  _playerController.videoGravity = AVLayerVideoGravityResizeAspect;      // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
   //playerController.videoGravity = AVLayerVideoGravityResizeAspectFill;  // 가로세로 비율을 유지하고 레이어의 경계를 채우도록 지정합니다.
   
-  playerController.showsPlaybackControls = YES; // NO : 재생 컨트롤 UI컴포넌트가 나오지 않음.
+  _playerController.showsPlaybackControls = NO; // NO : 재생 컨트롤 UI컴포넌트가 나오지 않음.
   
-  [self presentViewController : playerController
+  [self presentViewController : _playerController
                      animated : YES
                    completion : nil];
   
   [ [NSNotificationCenter defaultCenter] addObserver : self
                                             selector : @selector(videoPlayBackDidFinish:)
                                                 name : AVPlayerItemDidPlayToEndTimeNotification
-                                              object : [playerController.player currentItem]  ];
+                                              object : [_playerController.player currentItem]  ];
   
   
-  [playerController.player play];   // 플레이어 재생 실행
+  [_playerController.player play];   // 플레이어 재생 실행
   //[playerController.player setRate : 14.0]; // 시작 시간 위치
   //[playerController.player setMuted : true];
   //[playerController.player pause];  // 플레이어 재생 정지
+  
+  
+  
+  UIButton *sampleButton = [UIButton buttonWithType : UIButtonTypeCustom];
+  [sampleButton setFrame : CGRectMake(20, 10, 52, 52)];
+  [sampleButton setTitle : @"Button Title"
+                forState : UIControlStateNormal];
+  [_playerController.view addSubview : sampleButton];
+  
 }
 
 - (void) setContentData : (NSDictionary *) args
@@ -133,18 +126,87 @@ NSDictionary *_args;
                                                    name : AVPlayerItemDidPlayToEndTimeNotification
                                                  object : nil                                     ];
   
-  //[self.avVideoController.view removeFromSuperview];
+  _playerController.player = nil;
+  //[self.playerController.view removeFromSuperview];
   //self.avVideoController = nil;
-  UIAlertController *alertController;
-  alertController = [ UIAlertController alertControllerWithTitle : @"Video Playback"
-                                                         message : @"Just finished the video playback. The video is now removed."
-                                                  preferredStyle : UIAlertControllerStyleAlert                                  ];
   
-  UIAlertAction *okayAction = [ UIAlertAction actionWithTitle : @"OK"
-                                                        style : UIAlertActionStyleDefault
-                                                      handler : nil                     ];
-  [alertController addAction : okayAction];
-  [self presentViewController:alertController animated:YES completion:nil];
+  [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+}
+
+
+#pragma mark - download implementaions
+
+- (void) downloadContent : (NSString * _Nonnull) contentId
+  didFinishDownloadingTo : (NSURL * _Nonnull) location
+{
+}
+
+- (void) downloadContent : (NSString * _Nonnull) contentId
+                 didLoad : (CMTimeRange) timeRange
+   totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
+ timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
+{
+}
+
+- (void)  downloadContent : (NSString * _Nonnull) contentId
+didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
+      subtitleDisplayName : (NSString * _Nonnull) subtitleDisplayName
+{
+}
+
+- (void) downloadContent : (NSString * _Nonnull) contentId
+        didStopWithError : (NSError * _Nullable) error
+{
+}
+
+- (void) encodeWithCoder : (nonnull NSCoder *) aCoder
+{
+}
+
+- (void) traitCollectionDidChange : (nullable UITraitCollection *) previousTraitCollection
+{
+}
+
+- (void) preferredContentSizeDidChangeForChildContentContainer : (nonnull id<UIContentContainer>) container
+{
+}
+
+- (CGSize) sizeForChildContentContainer : (nonnull id<UIContentContainer>)container
+                withParentContainerSize : (CGSize)parentSize
+{
+  return CGSizeMake(0, 0);
+}
+
+- (void) systemLayoutFittingSizeDidChangeForChildContentContainer : (nonnull id<UIContentContainer>) container
+{
+}
+
+- (void) viewWillTransitionToSize : (CGSize) size
+        withTransitionCoordinator : (nonnull id<UIViewControllerTransitionCoordinator>) coordinator
+{
+}
+
+- (void) willTransitionToTraitCollection : (nonnull UITraitCollection *) newCollection
+               withTransitionCoordinator : (nonnull id<UIViewControllerTransitionCoordinator>) coordinator
+{
+}
+
+- (void) didUpdateFocusInContext : (nonnull UIFocusUpdateContext *) context
+        withAnimationCoordinator : (nonnull UIFocusAnimationCoordinator *) coordinator
+{
+}
+
+- (void) setNeedsFocusUpdate
+{
+}
+
+- (BOOL) shouldUpdateFocusInContext : (nonnull UIFocusUpdateContext *) context
+{
+  return false;
+}
+
+- (void) updateFocusIfNeeded
+{
 }
 
 @end

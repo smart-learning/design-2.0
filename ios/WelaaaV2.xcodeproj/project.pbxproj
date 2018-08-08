@@ -17,7 +17,6 @@
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		5D2A6FC4AE30619FDFF422A3 /* Pods_WelaaaV2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */; };
@@ -29,6 +28,7 @@
 		EF3C6E3721118DBD00EBC878 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */; };
 		EF3C6E3821118DBD00EBC878 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EF4A906E21182A1A00228EB1 /* ContentPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4A906D21182A1A00228EB1 /* ContentPlayerViewController.m */; };
+		EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5D544A211936F8008F60B4 /* Images.xcassets */; };
 		EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F522113E6D500B71BEB /* LogManager.m */; };
 		EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7A2113E6D500B71BEB /* ApiManager.m */; };
 		EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */; };
@@ -379,7 +379,6 @@
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = WelaaaV2/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = WelaaaV2/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WelaaaV2/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = WelaaaV2/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = WelaaaV2/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
@@ -400,6 +399,7 @@
 		EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 		EF4A906C21182A1A00228EB1 /* ContentPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentPlayerViewController.h; sourceTree = "<group>"; };
 		EF4A906D21182A1A00228EB1 /* ContentPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerViewController.m; sourceTree = "<group>"; };
+		EF5D544A211936F8008F60B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WelaaaV2/Images.xcassets; sourceTree = "<group>"; };
 		EF7D6F522113E6D500B71BEB /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogManager.m; sourceTree = "<group>"; };
 		EF7D6F7A2113E6D500B71BEB /* ApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiManager.m; sourceTree = "<group>"; };
 		EF7D6F7B2113E6D500B71BEB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
@@ -597,7 +597,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				EF5D544A211936F8008F60B4 /* Images.xcassets */,
 			);
 			name = WelaaaV2;
 			sourceTree = "<group>";
@@ -1338,8 +1338,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */,
 				EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

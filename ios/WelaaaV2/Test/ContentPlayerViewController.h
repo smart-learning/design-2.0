@@ -6,7 +6,7 @@
 @interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate, PallyConFPSDownloadDelegate>
 
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
-
+@property AVPlayerViewController *playerController;
 - (void) setContentData : (NSDictionary *) args;
 
 @end

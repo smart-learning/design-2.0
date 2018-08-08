@@ -43,7 +43,6 @@
 		"react-native-cli": "^2.0.1",
 		"react-native-elements": "^0.19.1",
 		"react-native-fbsdk": "^0.7.0",
-		"react-native-iap": "^1.3.5",
 		"react-native-kakao-signin": "git+https://github.com/kyejune/react-native-kakao-signin.git",
 		"react-native-swiper": "^1.5.13",
 		"react-navigation": "^2.3.1",
