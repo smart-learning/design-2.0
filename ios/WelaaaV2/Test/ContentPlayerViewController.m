@@ -13,6 +13,8 @@
   
     UIButton  *_closeButton;
     UIButton  *_rateStarButton;
+    UIButton  *_touchButton01;
+    UIButton  *_touchButton02;
   
     UILabel   *_courseTitleLabel;   // 전체 강좌명
     UILabel   *_lectureTitleLabel;  // 강좌 내 강의명
@@ -38,8 +40,26 @@
 
 - (void) viewDidAppear : (BOOL) animated
 {
+    //
+    // contentView 구성 시작.
+    _touchButton01 = [UIButton buttonWithType : UIButtonTypeCustom];
+    _touchButton01.frame = self.view.bounds;
+    [_touchButton01 addTarget : self
+                       action : @selector(pressedShowButton)
+             forControlEvents : UIControlEventTouchUpInside];
+    [self.view addSubview : _touchButton01];
+  
     _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
     [self.view addSubview : _contentView];
+
+    _touchButton02 = [UIButton buttonWithType : UIButtonTypeCustom];
+    _touchButton02.frame = _contentView.bounds;
+    [_touchButton02 addTarget : self
+                       action : @selector(pressedHideButton)
+             forControlEvents : UIControlEventTouchUpInside];
+    [_contentView addSubview : _touchButton02];
+    // contentView 구성 끝.
+    //
   
     NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ]; // CONTENT_PATH
     AVURLAsset *urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
@@ -186,7 +206,7 @@
     _courseTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _courseTitleLabel.adjustsFontSizeToFitWidth = NO;
     _courseTitleLabel.text = [_args objectForKey : @"name"];
-    [_topView addSubview: _courseTitleLabel];
+    [_topView addSubview : _courseTitleLabel];
   
     frame.origin.x = CGRectGetMaxX(_closeButton.frame) + 10.f;
     frame.origin.y = CGRectGetMaxY(_courseTitleLabel.frame) + 2.f;
@@ -195,85 +215,85 @@
   
     _lectureTitleLabel = [[UILabel alloc] initWithFrame: frame];
     _lectureTitleLabel.backgroundColor = [UIColor clearColor];
-    _lectureTitleLabel.font = [UIFont fontWithName: @"SpoqaHanSans" size: 15];
+    _lectureTitleLabel.font = [UIFont fontWithName : @"SpoqaHanSans" size : 15];
     _lectureTitleLabel.textColor = UIColorFromRGB(0xffffff, 1.f);
     _lectureTitleLabel.textAlignment = NSTextAlignmentLeft;
     _lectureTitleLabel.numberOfLines = 1;
     _lectureTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _lectureTitleLabel.adjustsFontSizeToFitWidth = NO;
     _lectureTitleLabel.text = [_args objectForKey : @"name"];
-    [_topView addSubview: _lectureTitleLabel];
+    [_topView addSubview : _lectureTitleLabel];
   
-  // 탑뷰내의 별점주기 버튼
-  // 플레이어 시작과 동시에 별점과 콘텐츠 타입 등을 조회합니다.
-  NSString *starQueryUrl;
-#if APPSTORE | ADHOC
-  starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", BASE_DOMAIN];
-#else
-  starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", TEST_DOMAIN];
-#endif
-  NSString *post = [NSString stringWithFormat : @"ckey=582"];
-  NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
+    // 탑뷰내의 별점주기 버튼
+    // 플레이어 시작과 동시에 별점과 콘텐츠 타입 등을 조회합니다.
+    NSString *starQueryUrl;
+  #if APPSTORE | ADHOC
+    starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", BASE_DOMAIN];
+  #else
+    starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", TEST_DOMAIN];
+  #endif
+    NSString *post = [NSString stringWithFormat : @"ckey=582"];
+    NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
   
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-  [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", starQueryUrl]]];
-  [request setHTTPBody : postData];
-  [request setHTTPMethod : @"POST"];
-  NSError *error;
-  NSURLResponse *resp = nil;
-  // 비동기방식이 아닌 동기방식으로 접속합니다.
-  NSData *data = [self sendSynchronousRequest:request returningResponse:&resp error:&error];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", starQueryUrl]]];
+    [request setHTTPBody : postData];
+    [request setHTTPMethod : @"POST"];
+    NSError *error;
+    NSURLResponse *resp = nil;
+    // 비동기방식이 아닌 동기방식으로 접속합니다.
+    NSData *data = [self sendSynchronousRequest:request returningResponse:&resp error:&error];
   
-  NSString *jsonData = [[NSString alloc] initWithData: data
-                                             encoding: NSUTF8StringEncoding];
+    NSString *jsonData = [[NSString alloc] initWithData : data
+                                               encoding : NSUTF8StringEncoding];
   
-  NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData: [jsonData dataUsingEncoding: NSUTF8StringEncoding]
-                                                               options: NSJSONReadingAllowFragments
-                                                                 error: &error];
+    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                                 options : NSJSONReadingAllowFragments
+                                                                   error : &error];
   
-  NSDictionary *dataDictionary = jsonResponse[@"data"];
-  NSDictionary *infoDictionary = jsonResponse[@"info"];
-  NSString *userStar = [dataDictionary objectForKey: @"user_star"];
-  BOOL isUserLoggedIn = [dataDictionary objectForKey: @"user_logged_in"];
-  NSString *cconClassStar = [infoDictionary objectForKey: @"ccon_class"]; // 1 = video clip, 2 = audiobook
+    NSDictionary *dataDictionary = jsonResponse[@"data"];
+    NSDictionary *infoDictionary = jsonResponse[@"info"];
+    NSString *userStar = [dataDictionary objectForKey : @"user_star"];
+    BOOL isUserLoggedIn = [dataDictionary objectForKey : @"user_logged_in"];
+    NSString *cconClassStar = [infoDictionary objectForKey : @"ccon_class"]; // 1 = video clip, 2 = audiobook
   
-  userStar = @""; //1~5
-  isUserLoggedIn = YES;
-  cconClassStar = @"1";
-  NSLog(@"    [initSubviewsWithAudioMode] userStar = %@", userStar);
-  NSLog(@"    [initSubviewsWithAudioMode] isUserLoggedIn? %@", isUserLoggedIn ? @"TRUE" : @"FALSE");
-  NSLog(@"    [initSubviewsWithAudioMode] ccon_class = %@", cconClassStar);
-  // 로그인된 상태이면서 동시에 강의 클립이라면 일단 별점주기 버튼을 그립니다.
-  if ( isUserLoggedIn && [cconClassStar isEqualToString: @"1"] )
-  {
-    _rateStarButton = [UIButton buttonWithType: UIButtonTypeCustom];
-    _rateStarButton.frame = CGRectMake(CGRectGetMaxX(_topView.frame)-80, 10, 60, 40);
-    [_rateStarButton setImage: [UIImage imageNamed: @"icon_star_green_small"]
-                     forState: UIControlStateNormal];
-    _rateStarButton.titleLabel.font = [UIFont fontWithName: @"SpoqaHanSans" size: 11];
-    _rateStarButton.layer.borderWidth = 1.0f;
-    _rateStarButton.layer.cornerRadius = 6.0f;
-    
-    // 로그인한 계정으로 해당 강의클립에 대한 등록된 별점이 없다면 '별점 주기'버튼을 그려줍니다.
-    if ( [userStar isEqualToString: @""] )
+    userStar = @""; // 1~5
+    isUserLoggedIn = YES;
+    cconClassStar = @"1";
+    NSLog(@"    [initSubviewsWithAudioMode] userStar = %@", userStar);
+    NSLog(@"    [initSubviewsWithAudioMode] isUserLoggedIn? %@", isUserLoggedIn ? @"TRUE" : @"FALSE");
+    NSLog(@"    [initSubviewsWithAudioMode] ccon_class = %@", cconClassStar);
+    // 로그인된 상태이면서 동시에 강의 클립이라면 일단 별점주기 버튼을 그립니다.
+    if ( isUserLoggedIn && [cconClassStar isEqualToString : @"1"] )
     {
-      [_rateStarButton setTitle: @"별점 주기" forState: UIControlStateNormal];
-      _rateStarButton.layer.borderColor = [UIColor grayColor].CGColor;
+        _rateStarButton = [UIButton buttonWithType : UIButtonTypeCustom];
+        _rateStarButton.frame = CGRectMake(CGRectGetMaxX(_topView.frame)-80, 10, 60, 40);
+        [_rateStarButton setImage : [UIImage imageNamed: @"icon_star_green_small"]
+                         forState : UIControlStateNormal];
+        _rateStarButton.titleLabel.font = [UIFont fontWithName : @"SpoqaHanSans" size : 11];
+        _rateStarButton.layer.borderWidth = 1.0f;
+        _rateStarButton.layer.cornerRadius = 6.0f;
+      
+        // 로그인한 계정으로 해당 강의클립에 대한 등록된 별점이 없다면 '별점 주기'버튼을 그려줍니다.
+        if ( [userStar isEqualToString : @""] )
+        {
+            [_rateStarButton setTitle : @"별점 주기" forState : UIControlStateNormal];
+            _rateStarButton.layer.borderColor = [UIColor grayColor].CGColor;
+        }
+        else
+        {
+            NSString *myStarStr = [NSString stringWithFormat : @" %@%@", userStar, @".0"];
+            [_rateStarButton setTitle : myStarStr forState : UIControlStateNormal];
+            _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
+        }
+      
+        [_rateStarButton addTarget : self
+                            action : @selector(pressedRateStarButton)
+                  forControlEvents : UIControlEventTouchUpInside];
+        [_topView addSubview : _rateStarButton];
     }
-    else
-    {
-      NSString *myStarStr = [NSString stringWithFormat: @" %@%@", userStar, @".0"];
-      [_rateStarButton setTitle: myStarStr forState: UIControlStateNormal];
-      _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
-    }
-    
-    [_rateStarButton addTarget: self
-                        action: @selector(pressedRateStarButton)
-              forControlEvents: UIControlEventTouchUpInside];
-    [_topView addSubview: _rateStarButton];
-  }
   
-    [_contentView addSubview: _topView];
+    [_contentView addSubview : _topView];
 }
 
 #pragma mark - selectors
@@ -286,6 +306,16 @@
 - (void) pressedRateStarButton
 {
   ;
+}
+
+- (void) pressedShowButton
+{
+    [self setPlayerUIHidden : NO];
+}
+
+- (void) pressedHideButton
+{
+    [self setPlayerUIHidden : YES];
 }
 
 #pragma mark - Private Methods
@@ -318,6 +348,66 @@
     *error = err;
   
     return data;
+}
+
+- (void) setPlayerUIHidden : (BOOL) hidden
+{
+  /*
+    NSLog(@"    [setPlayerUIHidden] 이벤트가 발생하여 플레이어 컨트롤러가 사라집니다.");
+    self.view.userInteractionEnabled = NO;
+    self.view.backgroundColor = hidden ? [UIColor clearColor] : UIColorFromRGB(0x000000, 0.5f);
+  
+    _contentView.hidden = NO;
+    _contentView.alpha = hidden ? 1.f : 0.f;
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      _contentView.alpha = hidden ? 0.f : 1.f;
+                       
+                                      if ( !hidden )
+                                      {
+                                          [self setPositionScriptToHideView : hidden];
+                                      }
+                                   }
+                     completion : ^(BOOL finished)
+                                  {
+                                      _contentView.hidden = hidden;
+                                      self.view.userInteractionEnabled = YES;
+       
+                                      if ( hidden )
+                                      {
+                                          [self setPositionScriptToHideView : hidden];
+                                      }
+                                  }];
+  */
+}
+
+- (void) setPositionScriptToHideView : (BOOL) hidden
+{
+  /*
+    if ( _scriptView.status == IfMediaPlayerScriptViewModeText )
+    {
+        if ( hidden == YES )
+        {
+            CGRect frame = _scriptView.frame;
+            frame.origin.y = self.frame.size.height - frame.size.height;
+          
+            [UIView animateWithDuration: 0.3f
+                                  delay: 0
+                                options: UIViewAnimationOptionAllowUserInteraction
+                             animations: ^{
+                                              _scriptView.frame = frame;
+                                          }
+                             completion: ^(BOOL finished) {} ];
+        }
+        else
+        {
+            [self setScriptViewFrameWithStatus: _scriptView.status];
+        }
+    }
+  */
 }
 
 #pragma mark - download implementaions
