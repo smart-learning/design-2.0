@@ -80,18 +80,20 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 // 홈버튼 두번 눌렀을때, 인앱구매할때, 화면 쓸어내릴때, 화면 쓸어올릴때 등등.
 - (void) applicationWillResignActive : (UIApplication *) application
 {
-    UIView *colorView = [ [UIView alloc] initWithFrame : [self.window frame] ];
-    colorView.tag = 9999;
-    CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
-    CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
-    CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
-    UIColor *color = [UIColor colorWithHue : hue
-                                saturation : saturation
-                                brightness : brightness
-                                     alpha : 1        ];
-    colorView.backgroundColor = color;
-    [self.window addSubview : colorView];
-    [self.window bringSubviewToFront : colorView];
+    // Load Multitask App Switcher Image.
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame : [self.window frame]];
+    imageView.tag = 9999;
+    // // iPhone X일 경우 다른 사이즈의 이미지파일로 교체하도록 분기처리 해야합니다.
+    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    {
+        [imageView setImage : [UIImage imageNamed : @"iPhoneXBackgroundImage"]];
+    }
+    else
+    {
+        [imageView setImage : [UIImage imageNamed : @"iPhoneBackgroundImage"]];
+    }
+  
+    [self.window addSubview : imageView];
 }
 
 //
