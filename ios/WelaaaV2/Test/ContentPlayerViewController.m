@@ -8,22 +8,27 @@
 
 @interface ContentPlayerViewController()
 {
-    UIView *_topView;
-    UIButton *_closeButton;
-    UILabel *_topTitleLabel01;
-    UILabel *_topTitleLabel02;
-    UIButton *_rateStarButton;
+    UIView    *_contentView;        // PlayerLayer, TopBar, BottomBar 등을 표시하는 최상단 Layer, PlayerLayer에 여러 view를 add하면 사라지기 때문.
+    UIView    *_topView;            // 상단 메뉴 바.
+  
+    UIButton  *_closeButton;
+    UIButton  *_rateStarButton;
+  
+    UILabel   *_courseTitleLabel;   // 전체 강좌명
+    UILabel   *_lectureTitleLabel;  // 강좌 내 강의명
+  
+    NSDictionary *_args;
 }
 @end
 
 @implementation ContentPlayerViewController
-NSDictionary *_args;
 
 - (void) viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self.view setBackgroundColor : [UIColor grayColor]];
+    [self.view setBackgroundColor : [UIColor blackColor]]; // grayColor
+  
     // PallyConFPS SDK 객체를 생성합니다.
     _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
                                               siteKey : PALLYCON_SITE_KEY
@@ -33,6 +38,9 @@ NSDictionary *_args;
 
 - (void) viewDidAppear : (BOOL) animated
 {
+    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
+    [self.view addSubview : _contentView];
+  
     NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ]; // CONTENT_PATH
     AVURLAsset *urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
                                                     options : nil       ];
@@ -47,28 +55,26 @@ NSDictionary *_args;
     AVPlayerItem *playerItem = [ AVPlayerItem playerItemWithAsset : urlAsset ];
     playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
     AVPlayer *player = [ AVPlayer playerWithPlayerItem : playerItem ];
-    _playerController = [[AVPlayerViewController alloc] init];
-    _playerController.player = player;
-    //playerController.videoGravity = AVLayerVideoGravityResize;            // 가로세로 비율을 무시하고 레이어의 경계를 채우기 위해 비디오를 늘리도록 지정합니다.
-    _playerController.videoGravity = AVLayerVideoGravityResizeAspect;      // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
-    //playerController.videoGravity = AVLayerVideoGravityResizeAspectFill;  // 가로세로 비율을 유지하고 레이어의 경계를 채우도록 지정합니다.
   
-    _playerController.showsPlaybackControls = NO; // NO : 재생 컨트롤 UI컴포넌트가 나오지 않음.
+    // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
+    _playerLayer = [AVPlayerLayer playerLayerWithPlayer : player];
+    _playerLayer.frame = _contentView.bounds;
+  //[_playerLayer setVideoGravity : AVLayerVideoGravityResize];           // 가로세로 비율을 무시하고 레이어의 경계를 채우기 위해 비디오를 늘리도록 지정합니다.
+    [_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspect];     // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
+  //[_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspectFill]; // 가로세로 비율을 유지하고 레이어의 경계를 채우도록 지정합니다.
   
-    [self presentViewController : _playerController
-                       animated : YES
-                     completion : nil];
+    [_contentView.layer addSublayer : _playerLayer];
+  
+    [player play];   // 플레이어 재생 실행
+  //[player setRate : 14.0]; // 시작 시간 위치
+  //[player setMuted : true];
+  //[player pause];  // 플레이어 재생 정지
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
                                                   name : AVPlayerItemDidPlayToEndTimeNotification
-                                                object : [_playerController.player currentItem]  ];
+                                                object : [player currentItem]  ];
   
-  
-    [_playerController.player play];   // 플레이어 재생 실행
-    //[playerController.player setRate : 14.0]; // 시작 시간 위치
-    //[playerController.player setMuted : true];
-    //[playerController.player pause];  // 플레이어 재생 정지
     [self drawPlayerControlHeader];
 }
 
@@ -125,11 +131,11 @@ NSDictionary *_args;
                                                      name : AVPlayerItemDidPlayToEndTimeNotification
                                                    object : nil                                     ];
   
-    _playerController.player = nil;
+    _playerLayer.player = nil;
     //[self.playerController.view removeFromSuperview];
     //self.avVideoController = nil;
   
-    [_playerController dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+    [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
 }
 
 #pragma mark - Drawing Player UI components
@@ -171,32 +177,32 @@ NSDictionary *_args;
     frame.size.width = self.view.frame.size.width - (frame.origin.x + 10) - 70;   // 별점주기 버튼 때문에 프레임 넓이 조정.
     frame.size.height = 13.f;
   
-    _topTitleLabel01 = [[UILabel alloc] initWithFrame : frame];
-    _topTitleLabel01.backgroundColor = [UIColor clearColor];
-    _topTitleLabel01.font = [UIFont fontWithName : @"SpoqaHanSans" size : 11];
-    _topTitleLabel01.textColor = UIColorFromRGB(0xffffff, 0.5f);
-    _topTitleLabel01.textAlignment = NSTextAlignmentLeft;
-    _topTitleLabel01.numberOfLines = 1;
-    _topTitleLabel01.lineBreakMode = NSLineBreakByTruncatingTail;
-    _topTitleLabel01.adjustsFontSizeToFitWidth = NO;
-    _topTitleLabel01.text = [_args objectForKey : @"name"];
-    [_topView addSubview: _topTitleLabel01];
+    _courseTitleLabel = [[UILabel alloc] initWithFrame : frame];
+    _courseTitleLabel.backgroundColor = [UIColor clearColor];
+    _courseTitleLabel.font = [UIFont fontWithName : @"SpoqaHanSans" size : 11];
+    _courseTitleLabel.textColor = UIColorFromRGB(0xffffff, 0.5f);
+    _courseTitleLabel.textAlignment = NSTextAlignmentLeft;
+    _courseTitleLabel.numberOfLines = 1;
+    _courseTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    _courseTitleLabel.adjustsFontSizeToFitWidth = NO;
+    _courseTitleLabel.text = [_args objectForKey : @"name"];
+    [_topView addSubview: _courseTitleLabel];
   
     frame.origin.x = CGRectGetMaxX(_closeButton.frame) + 10.f;
-    frame.origin.y = CGRectGetMaxY(_topTitleLabel01.frame) + 2.f;
+    frame.origin.y = CGRectGetMaxY(_courseTitleLabel.frame) + 2.f;
     frame.size.width = self.view.frame.size.width - (frame.origin.x + 10) - 70;   // 별점주기 버튼 때문에 프레임 넓이 조정.
     frame.size.height = 18.f;
   
-    _topTitleLabel02 = [[UILabel alloc] initWithFrame: frame];
-    _topTitleLabel02.backgroundColor = [UIColor clearColor];
-    _topTitleLabel02.font = [UIFont fontWithName: @"SpoqaHanSans" size: 15];
-    _topTitleLabel02.textColor = UIColorFromRGB(0xffffff, 1.f);
-    _topTitleLabel02.textAlignment = NSTextAlignmentLeft;
-    _topTitleLabel02.numberOfLines = 1;
-    _topTitleLabel02.lineBreakMode = NSLineBreakByTruncatingTail;
-    _topTitleLabel02.adjustsFontSizeToFitWidth = NO;
-    _topTitleLabel02.text = [_args objectForKey : @"name"];
-    [_topView addSubview: _topTitleLabel02];
+    _lectureTitleLabel = [[UILabel alloc] initWithFrame: frame];
+    _lectureTitleLabel.backgroundColor = [UIColor clearColor];
+    _lectureTitleLabel.font = [UIFont fontWithName: @"SpoqaHanSans" size: 15];
+    _lectureTitleLabel.textColor = UIColorFromRGB(0xffffff, 1.f);
+    _lectureTitleLabel.textAlignment = NSTextAlignmentLeft;
+    _lectureTitleLabel.numberOfLines = 1;
+    _lectureTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    _lectureTitleLabel.adjustsFontSizeToFitWidth = NO;
+    _lectureTitleLabel.text = [_args objectForKey : @"name"];
+    [_topView addSubview: _lectureTitleLabel];
   
   // 탑뷰내의 별점주기 버튼
   // 플레이어 시작과 동시에 별점과 콘텐츠 타입 등을 조회합니다.
@@ -267,7 +273,7 @@ NSDictionary *_args;
     [_topView addSubview: _rateStarButton];
   }
   
-    [_playerController.view addSubview: _topView];
+    [_contentView addSubview: _topView];
 }
 
 #pragma mark - selectors
