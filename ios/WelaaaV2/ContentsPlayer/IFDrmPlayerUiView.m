@@ -87,7 +87,7 @@
                                isAuthor: isAuthor
                                    ckey: ckeyToQuery];
     }
-    
+  
     return self;
 }
 

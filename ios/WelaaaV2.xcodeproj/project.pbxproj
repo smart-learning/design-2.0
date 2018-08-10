@@ -46,6 +46,8 @@
 		EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */; };
 		EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */; };
 		EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9A983A211144A800EA3A8E /* RNNativePlayer.m */; };
+		EF9BAE8C211D27F10063FE2C /* ContentPlayerTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */; };
+		EF9BAE8D211D27F40063FE2C /* ContentPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */; };
 		EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */; };
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
 		EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081E22113ED84006D3F6C /* NSString+GC.m */; };
@@ -433,6 +435,10 @@
 		EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "WelaaaV2/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EF9A9839211144A800EA3A8E /* RNNativePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNNativePlayer.h; path = WelaaaV2/RNNativePlayer.h; sourceTree = "<group>"; };
 		EF9A983A211144A800EA3A8E /* RNNativePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNNativePlayer.m; path = WelaaaV2/RNNativePlayer.m; sourceTree = "<group>"; };
+		EF9BAE88211D1DED0063FE2C /* ContentPlayerTouchView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentPlayerTouchView.h; sourceTree = "<group>"; };
+		EF9BAE89211D1DED0063FE2C /* ContentPlayerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentPlayerButton.h; sourceTree = "<group>"; };
+		EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerTouchView.m; sourceTree = "<group>"; };
+		EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerButton.m; sourceTree = "<group>"; };
 		EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+LocalizedError.m"; sourceTree = "<group>"; };
 		EFE081AA2113EB0C006D3F6C /* NSError+LocalizedError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+LocalizedError.h"; sourceTree = "<group>"; };
 		EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Blocks.m"; sourceTree = "<group>"; };
@@ -826,6 +832,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		EF9BAE60211D1D9C0063FE2C /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				EF9BAE88211D1DED0063FE2C /* ContentPlayerTouchView.h */,
+				EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */,
+				EF9BAE89211D1DED0063FE2C /* ContentPlayerButton.h */,
+				EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		EFE0821F2114185D006D3F6C /* ContentsPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -967,6 +984,7 @@
 		EFE0F3872117E23500D4558B /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				EF9BAE60211D1D9C0063FE2C /* Components */,
 				EFE0F3AF2117E25700D4558B /* CreateContact.h */,
 				EFE0F3B02117E25700D4558B /* CreateContact.m */,
 				EFE0F3B42117E69C00D4558B /* MediaController.h */,
@@ -1509,7 +1527,9 @@
 				EFE082582114185D006D3F6C /* IFPlayerScriptCell.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,
 				EFE08316211430E7006D3F6C /* DbContentDownloadItemModel.m in Sources */,
+				EF9BAE8C211D27F10063FE2C /* ContentPlayerTouchView.m in Sources */,
 				EFE082532114185D006D3F6C /* IFPlayerButton.m in Sources */,
+				EF9BAE8D211D27F40063FE2C /* ContentPlayerButton.m in Sources */,
 				EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				EFE08317211430E7006D3F6C /* DbManager.m in Sources */,
