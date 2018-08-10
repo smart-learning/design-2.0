@@ -31,7 +31,12 @@ RCT_EXPORT_MODULE();
 
 - (void) downloadSomething : (NSDictionary *) args
 {
-    ;
+  // 다운로드 테스트
+  
+  ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
+  
+  [playerViewController downloadSomething:args];
+  
 }
 
 

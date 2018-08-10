@@ -16,4 +16,6 @@
 
 - (void) setContentData : (NSDictionary *) args;
 
+- (void) downloadSomething : (NSDictionary *) args;  // 테스트를 위해 추가 by Yohan
+
 @end

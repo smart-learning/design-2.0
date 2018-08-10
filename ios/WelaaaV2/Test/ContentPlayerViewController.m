@@ -133,6 +133,8 @@
 
 - (void) downloadSomething : (NSDictionary *) args
 {
+  
+  NSLog(@"downloadSomething");
     // 1. initialize a PallyConFPS SDK. PallyConFPS SDK 객체를 생성합니다.
     _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
                                               siteKey : PALLYCON_SITE_KEY
@@ -140,7 +142,7 @@
                                                 error : nil             ];
   
     NSURL *contentUrl = [ NSURL URLWithString : [args objectForKey : @"uri"] ]; // CONTENT_PATH
-  
+  NSLog(@"contentUrl : %@", [contentUrl absoluteString]);
   
     // 2. DownloadTask 객체 생성합니다.
     // 콘텐츠 다운로드를 위해 DownloadTask 객체를 생성해서 사용합니다.
@@ -822,6 +824,8 @@
 - (void) downloadContent : (NSString * _Nonnull) contentId
   didFinishDownloadingTo : (NSURL * _Nonnull) location
 {
+  NSLog(@"download contentId : %@, location : %@",contentId, location.absoluteString);
+  
 }
 
 - (void) downloadContent : (NSString * _Nonnull) contentId
@@ -829,17 +833,20 @@
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
+  NSLog(@"download totalTimeRangesLoaded : ");
 }
 
 - (void)  downloadContent : (NSString * _Nonnull) contentId
 didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       subtitleDisplayName : (NSString * _Nonnull) subtitleDisplayName
 {
+  NSLog(@"download contentId : %@, didStartDownloadWithAsset : %@",contentId, asset.URL.absoluteString);
 }
 
 - (void) downloadContent : (NSString * _Nonnull) contentId
         didStopWithError : (NSError * _Nullable) error
 {
+  NSLog(@"download contentId : %@, error code : %ld",contentId, [error code]);
 }
 
 - (void) encodeWithCoder : (nonnull NSCoder *) aCoder
