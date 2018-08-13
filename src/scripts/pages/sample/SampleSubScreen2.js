@@ -2,7 +2,7 @@ import React from "react";
 import Styles from "../../../styles/common";
 import {Button, Text, View} from "react-native";
 
-export default class HomeSubScreen2 extends React.Component {
+export default class SampleSubScreen2 extends React.Component {
 
 	constructor(props){
 		super(props);
@@ -15,13 +15,13 @@ export default class HomeSubScreen2 extends React.Component {
 
 	}
 
-    render() {
-        return <View style={Styles.container}>
-            <Text>홈 서브페이지2</Text>
-            <Button
-                onPress={()=>this.props.navigation.goBack()}
-                title="뒤로"
-            />
-        </View>
-    }
+	render() {
+		return <View style={Styles.container}>
+			<Text>샘플 서브페이지2</Text>
+			<Button
+				onPress={()=>this.props.navigation.goBack()}
+				title="뒤로"
+			/>
+		</View>
+	}
 }
