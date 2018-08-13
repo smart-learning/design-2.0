@@ -10,7 +10,8 @@
 # dependencies
 /node_modules
 /android
-/ios
+/ios/*
+!/ios/WelaaaV2/AppDelegate.m
 
 # misc
 .env.local
