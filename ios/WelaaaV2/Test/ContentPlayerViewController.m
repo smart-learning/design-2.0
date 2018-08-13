@@ -690,6 +690,36 @@
   // hide 방식을 "[self.view bringSubviewToFront: _statusView];" 처럼 하는 것은 어떨까?
 }
 
+- (void) pressedPlayButton
+{
+    NSLog(@"  플레이어 재생 버튼!!");
+}
+
+- (void) pressedPauseButton
+{
+    NSLog(@"  플레이어 정지 버튼!!");
+}
+
+- (void) pressedRwButton
+{
+    NSLog(@"  플레이어 뒤로 가기 버튼!!");
+}
+
+- (void) pressedFfButton
+{
+    NSLog(@"  플레이어 앞으로 가기 버튼!!");
+}
+
+- (void) pressedSpeedButton
+{
+    NSLog(@"  플레이어 재생속도 조절 버튼!!");
+}
+
+- (void) pressedListButton
+{
+    NSLog(@"  플레이어 재생 리스트 버튼!!");
+}
+
 #pragma mark - Slider action
 - (void) seekbarDragBegin : (id) sender
 {

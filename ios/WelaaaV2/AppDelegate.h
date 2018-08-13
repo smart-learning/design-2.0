@@ -20,6 +20,6 @@
 
 - (void) saveContext;
 - (NSManagedObjectContext *) managedObjectContext;
-- (void) showToast: (NSString *) text;
+- (void) showToast : (NSString *) text;
 
 @end
