@@ -36,6 +36,10 @@ typedef void (^kErrorBlock)(NSError *error);
                                    success : (kDictionaryCompleteBlock) onSuccess
                                    failure : (kErrorBlock) onFailure;
 
++ (NSData *) sendSynchronousRequest : (NSURLRequest *) request
+                  returningResponse : (NSURLResponse **) response
+                              error : (NSError **) error;
+
 - (void) setReachabilityStatusChangeBlock : (void (^)(NSInteger status)) block;
 - (BOOL) isConnectionWifi;
 - (BOOL) isConnectionCellular;

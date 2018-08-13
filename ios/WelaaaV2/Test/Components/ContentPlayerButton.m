@@ -102,40 +102,40 @@
     }
 }
 
-- (void) setStatus: (NSInteger) status
+- (void) setStatus : (NSInteger) status
 {
     _status = status;
     [self layoutSubviews];
 }
 
-- (void) setText: (NSString *) text
+- (void) setText : (NSString *) text
 {
     _textLabel.text = text;
     _textLabel.hidden = nullStr(text);
 }
 
-- (void) setImage: (NSString *) Image
+- (void) setImage : (NSString *) Image
 {
     if ( !nullStr(Image) )
     {
-        _normalImage = [UIImage imageNamed: Image];
-        _highlightedImage = [UIImage imageNamed: Image];
+        _normalImage = [UIImage imageNamed : Image];
+        _highlightedImage = [UIImage imageNamed : Image];
         
         _imageView.image = _normalImage;
     }
 }
 
-- (void) pressedButton: (id) sender
+- (void) pressedButton : (id) sender
 {
     if ( _maxActiveCount > 1 )
     {
-        [self setStatus: ((_status + 1) >= _maxActiveCount ? 0 : _status + 1)];
+        [self setStatus : ((_status + 1) >= _maxActiveCount ? 0 : _status + 1)];
     }
 
-    if ( [self.delegate respondsToSelector: @selector(pressedPlayerButtonWithId:status:)] )
+    if ( [self.delegate respondsToSelector : @selector(pressedPlayerButtonWithId:status:)] )
     {
-        [self.delegate pressedPlayerButtonWithId: _buttonId
-                                          status: _status];
+        [self.delegate pressedPlayerButtonWithId : _buttonId
+                                          status : _status];
     }
 }
 

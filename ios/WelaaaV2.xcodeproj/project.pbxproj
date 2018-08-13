@@ -44,6 +44,8 @@
 		EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F802113E6D600B71BEB /* AddressBookManager.m */; };
 		EF7D6F8D2113E6D600B71BEB /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F862113E6D600B71BEB /* common.m */; };
 		EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */; };
+		EF90FB75212150260036C2E0 /* StarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF90FB7321214F5D0036C2E0 /* StarRatingView.m */; };
+		EF90FB762121502A0036C2E0 /* UIAlertController+Showable.m in Sources */ = {isa = PBXBuildFile; fileRef = EF90FB7121214F5C0036C2E0 /* UIAlertController+Showable.m */; };
 		EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */; };
 		EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9A983A211144A800EA3A8E /* RNNativePlayer.m */; };
 		EF9BAE8C211D27F10063FE2C /* ContentPlayerTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */; };
@@ -432,6 +434,10 @@
 		EF7D6F852113E6D600B71BEB /* ApiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiManager.h; sourceTree = "<group>"; };
 		EF7D6F862113E6D600B71BEB /* common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
 		EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMessageNoticeView.m; sourceTree = "<group>"; };
+		EF90FB7121214F5C0036C2E0 /* UIAlertController+Showable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Showable.m"; sourceTree = "<group>"; };
+		EF90FB7221214F5C0036C2E0 /* StarRatingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StarRatingView.h; sourceTree = "<group>"; };
+		EF90FB7321214F5D0036C2E0 /* StarRatingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StarRatingView.m; sourceTree = "<group>"; };
+		EF90FB7421214F5D0036C2E0 /* UIAlertController+Showable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Showable.h"; sourceTree = "<group>"; };
 		EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "WelaaaV2/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EF9A9839211144A800EA3A8E /* RNNativePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNNativePlayer.h; path = WelaaaV2/RNNativePlayer.h; sourceTree = "<group>"; };
 		EF9A983A211144A800EA3A8E /* RNNativePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNNativePlayer.m; path = WelaaaV2/RNNativePlayer.m; sourceTree = "<group>"; };
@@ -807,6 +813,17 @@
 			path = Contact;
 			sourceTree = "<group>";
 		};
+		EF90FB4921214F2A0036C2E0 /* RatingView */ = {
+			isa = PBXGroup;
+			children = (
+				EF90FB7221214F5C0036C2E0 /* StarRatingView.h */,
+				EF90FB7321214F5D0036C2E0 /* StarRatingView.m */,
+				EF90FB7421214F5D0036C2E0 /* UIAlertController+Showable.h */,
+				EF90FB7121214F5C0036C2E0 /* UIAlertController+Showable.m */,
+			);
+			path = RatingView;
+			sourceTree = "<group>";
+		};
 		EF9A9849211144F200EA3A8E /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -985,6 +1002,7 @@
 			isa = PBXGroup;
 			children = (
 				EF9BAE60211D1D9C0063FE2C /* Components */,
+				EF90FB4921214F2A0036C2E0 /* RatingView */,
 				EFE0F3AF2117E25700D4558B /* CreateContact.h */,
 				EFE0F3B02117E25700D4558B /* CreateContact.m */,
 				EFE0F3B42117E69C00D4558B /* MediaController.h */,
@@ -1504,7 +1522,9 @@
 			files = (
 				EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */,
 				EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */,
+				EF90FB762121502A0036C2E0 /* UIAlertController+Showable.m in Sources */,
 				EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */,
+				EF90FB75212150260036C2E0 /* StarRatingView.m in Sources */,
 				EFE082512114185D006D3F6C /* IFTimerView.m in Sources */,
 				EFE0F3B62117E69C00D4558B /* MediaController.m in Sources */,
 				EFE0835621144239006D3F6C /* IAPHelper.m in Sources */,

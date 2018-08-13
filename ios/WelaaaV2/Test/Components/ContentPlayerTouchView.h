@@ -14,7 +14,7 @@
 
 @protocol ContentPlayerTouchViewDelegate <NSObject>
 @optional
-- (void) puiTouchActionView: (ContentPlayerTouchView *) view
-             didTouchAction: (id) sender;
+- (void) puiTouchActionView : (ContentPlayerTouchView *) view
+             didTouchAction : (id) sender;
 
 @end

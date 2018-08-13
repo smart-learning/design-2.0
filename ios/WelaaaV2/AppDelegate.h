@@ -9,15 +9,17 @@
 #import <CoreData/CoreData.h>
 
 #import "common.h"
+#import <Toast/UIView+Toast.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
-
+@property (strong, nonatomic) UINavigationController *navigationController;
 @property (readonly, strong) NSPersistentContainer *persistentContainer;
 @property (nonatomic, assign) BOOL readyForPushMessage;
 
 - (void) saveContext;
 - (NSManagedObjectContext *) managedObjectContext;
+- (void) showToast: (NSString *) text;
 
 @end

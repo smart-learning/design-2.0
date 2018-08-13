@@ -3,7 +3,7 @@
 
 @implementation ContentPlayerTouchView
 
-- (void) setTouchEffect: (BOOL) isTouch
+- (void) setTouchEffect : (BOOL) isTouch
 {
     if ( isTouch )
     {
@@ -24,37 +24,37 @@
 
 - (void) onTouchAction
 {
-    if ( [self.delegate respondsToSelector:@selector(puiTouchActionView:didTouchAction:)] )
+    if ( [self.delegate respondsToSelector : @selector(puiTouchActionView:didTouchAction:)] )
     {
-        [self.delegate puiTouchActionView: self
-                           didTouchAction: nil];
+        [self.delegate puiTouchActionView : self
+                           didTouchAction : nil];
     }
 }
 
 #pragma touch event
-- (void) touchesBegan: (NSSet *) touches
-            withEvent: (UIEvent *) event
+- (void) touchesBegan : (NSSet *) touches
+            withEvent : (UIEvent *) event
 {
-    [self setTouchEffect: YES];
+    [self setTouchEffect : YES];
 }
 
-- (void) touchesMoved: (NSSet *) touches
-            withEvent: (UIEvent *) event
+- (void) touchesMoved : (NSSet *) touches
+            withEvent : (UIEvent *) event
 {
     return ;
 }
 
-- (void) touchesEnded: (NSSet *) touches
-            withEvent: (UIEvent *) event
+- (void) touchesEnded : (NSSet *) touches
+            withEvent : (UIEvent *) event
 {
-    [self setTouchEffect: NO];
+    [self setTouchEffect : NO];
     [self onTouchAction];
 }
 
-- (void) touchesCancelled: (NSSet *) touches
-                withEvent: (UIEvent *) event
+- (void) touchesCancelled : (NSSet *) touches
+                withEvent : (UIEvent *) event
 {
-    [self setTouchEffect: NO];
+    [self setTouchEffect : NO];
 }
 
 @end

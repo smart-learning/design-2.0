@@ -9,6 +9,7 @@
 @interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate>
 {
     BOOL _isAudioMode;
+    BOOL _statusBarHidden;
   
     UIView *_contentView;            // PlayerLayer, TopBar, BottomBar 등을 표시하는 최상단 Layer, PlayerLayer에 여러 view를 add하면 사라지기 때문.
     UIView *_topView;                // 상단 메뉴 바.
@@ -47,6 +48,9 @@
     ContentPlayerButton *_lockButton;
   
     NSDictionary *_args;
+  
+    StarRatingView *_rateView;
+    NSString *_currentStar;
 }
 @end
 
@@ -63,6 +67,8 @@
                                               siteKey : PALLYCON_SITE_KEY
                                    fpsLicenseDelegate : self
                                                 error : nil             ];
+  
+    _statusBarHidden = YES;  // Status Bar 표시
 }
 
 - (void) viewDidAppear : (BOOL) animated
@@ -188,6 +194,17 @@
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
 }
 
+#pragma mark - statusbar control methods..
+- (UIStatusBarStyle) preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
+- (BOOL) prefersStatusBarHidden
+{
+    return _statusBarHidden;
+}
+
 #pragma mark - Drawing Player UI components
 
 - (void) drawPlayerControlHeader
@@ -210,7 +227,7 @@
     [_closeButton setImage : [UIImage imageNamed : @"button_player_close"]
                   forState : UIControlStateNormal];
     [_closeButton addTarget : self
-                     action : @selector(pressedCloseButton:)
+                     action : @selector(pressedCloseButton)
            forControlEvents : UIControlEventTouchUpInside];
     [_topView addSubview : _closeButton];
   
@@ -272,7 +289,9 @@
     NSError *error;
     NSURLResponse *resp = nil;
     // 비동기방식이 아닌 동기방식으로 접속합니다.
-    NSData *data = [self sendSynchronousRequest:request returningResponse:&resp error:&error];
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
   
     NSString *jsonData = [[NSString alloc] initWithData : data
                                                encoding : NSUTF8StringEncoding];
@@ -645,14 +664,19 @@
 
 #pragma mark - selectors
 
-- (void) pressedCloseButton : (id) sender
+- (void) pressedCloseButton
 {
-  ;
+    AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    [app showToast : @"미니플레이어로 변환합니다."];
+    NSLog(@"  [pressedCloseButton] 미니플레이어로 변환합니다.");
 }
 
 - (void) pressedRateStarButton
 {
-  ;
+    NSLog(@"  별점주기 팝업 띄우기!!");
+    // 기존 방식대로 하면 아래와 같은 경고 발생됨.
+    //" Warning: Attempt to present <UIAlertController: 0x15a802000> on <UIViewController: 0x157f0a260> whose view is not in the window hierarchy! "
+    // 따라서 기존과는 다른 방식으로 뷰를 띄워야 할듯...
 }
 
 - (void) pressedShowButton
@@ -663,6 +687,7 @@
 - (void) pressedHideButton
 {
     [self setPlayerUIHidden : YES];
+  // hide 방식을 "[self.view bringSubviewToFront: _statusView];" 처럼 하는 것은 어떨까?
 }
 
 #pragma mark - Slider action
@@ -730,36 +755,6 @@
 }
 
 #pragma mark - Private Methods
-// 추후에 Utils 쪽으로 이동시킬 계획입니다.
-- (NSData *) sendSynchronousRequest : (NSURLRequest *) request
-                  returningResponse : (NSURLResponse **) response
-                              error : (NSError **) error
-{
-    NSError __block *err = NULL;
-    NSData __block *data;
-    BOOL __block reqProcessed = false;
-    NSURLResponse __block *resp;
-  
-    [[[NSURLSession sharedSession] dataTaskWithRequest : request
-                                     completionHandler : ^(NSData * _Nullable _data, NSURLResponse * _Nullable _response, NSError * _Nullable _error)
-                                                         {
-                                                             resp = _response;
-                                                             err = _error;
-                                                             data = _data;
-                                                             reqProcessed = true;
-                                                         }
-                                                         ] resume];
-  
-    while ( !reqProcessed )
-    {
-        [NSThread sleepForTimeInterval : 0];
-    }
-  
-    *response = resp;
-    *error = err;
-  
-    return data;
-}
 
 - (void) setPlayerUIHidden : (BOOL) hidden
 {

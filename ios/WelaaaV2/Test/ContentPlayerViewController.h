@@ -7,6 +7,9 @@
 #import "UIImage+TintColor.h"
 #import "ContentPlayerButton.h"
 #import "IFSleepTimerManager.h"
+#import "ApiManager.h"
+#import "UIAlertController+Showable.h"
+#import "StarRatingView.h"
 
 @interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate, PallyConFPSDownloadDelegate>
 
