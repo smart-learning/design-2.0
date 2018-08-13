@@ -27,8 +27,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteException;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,7 +69,6 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.drm.KeysExpiredException;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.cast.CastDevice;
@@ -87,6 +94,8 @@ import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.download.DownloadService;
 import com.welaaav2.pallycon.PlayStatus;
+import com.welaaav2.player.service.MediaService;
+import com.welaaav2.player.utils.LogHelper;
 import com.welaaav2.util.CustomDialog;
 import com.welaaav2.util.HLVAdapter;
 import com.welaaav2.util.HttpCon;
@@ -376,7 +385,38 @@ public class PlayerActivity extends BasePlayerActivity {
   private ArrayList<JSONObject> suggestListArray1 = new ArrayList<JSONObject>();
   public Boolean isDonwloadBindState = false;
 
-  private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
+  private MediaBrowserCompat mediaBrowser;
+
+  private PlaybackStateCompat lastPlaybackState;
+
+  private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
+    @Override
+    public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
+      LogHelper.d(TAG, "onPlaybackstate changed", state);
+      updatePlaybackState(state);
+    }
+
+    @Override
+    public void onMetadataChanged(MediaMetadataCompat metadata) {
+      if (metadata != null) {
+        updateMediaDescription(metadata.getDescription());
+        updateDuration(metadata);
+      }
+    }
+  };
+
+  private final MediaBrowserCompat.ConnectionCallback connectionCallback =
+      new MediaBrowserCompat.ConnectionCallback() {
+        @Override
+        public void onConnected() {
+          LogHelper.d(TAG, "onConnected");
+          try {
+            connectToSession(mediaBrowser.getSessionToken());
+          } catch (RemoteException e) {
+            LogHelper.e(TAG, e, "could not connect media controller");
+          }
+        }
+      };
 
   private class PlayerEventListener extends Player.DefaultEventListener {
 
@@ -403,7 +443,6 @@ public class PlayerActivity extends BasePlayerActivity {
       builder.setMessage(errorString);
       builder.setPositiveButton("OK", null);
       Dialog dialog = builder.create();
-      dialog.show();
     }
 
     @Override
@@ -742,11 +781,18 @@ public class PlayerActivity extends BasePlayerActivity {
         return false;
       }
     });
+
+    // MediaBrowser
+    mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
+        connectionCallback, null);
   }
 
   @Override
   protected void onStart() {
     super.onStart();
+    if (mediaBrowser != null) {
+      mediaBrowser.connect();
+    }
   }
 
   @Override
@@ -806,8 +852,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
     Intent intent = getIntent();
 
-    mediaSessionConnection.getTransportControls()
-        .playFromUri(intent.getData(), intent.getExtras());
+//    mediaSessionConnection.getTransportControls().playFromUri(intent.getData(), intent.getExtras());
   }
 
   @Override
@@ -836,6 +881,14 @@ public class PlayerActivity extends BasePlayerActivity {
     }
 
     super.onStop();
+    if (mediaBrowser != null) {
+      mediaBrowser.disconnect();
+    }
+    MediaControllerCompat controllerCompat = MediaControllerCompat
+        .getMediaController(PlayerActivity.this);
+    if (controllerCompat != null) {
+      controllerCompat.unregisterCallback(callback);
+    }
   }
 
   @Override
@@ -5167,7 +5220,7 @@ public class PlayerActivity extends BasePlayerActivity {
     public void onServiceConnected(ComponentName className, IBinder service) {
       DownloadService.MainServiceBinder binder = (DownloadService.MainServiceBinder) service;
       mdownloadService = binder.getService();
-//			mdownloadService.registerCallback(mCallback);
+//			mdownloadService.registerCallback(callback);
     }
 
     public void onServiceDisconnected(ComponentName className) {
@@ -5181,4 +5234,90 @@ public class PlayerActivity extends BasePlayerActivity {
     }
   };
 
+
+  /**
+   * MediaBrowser
+   */
+  private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
+    MediaControllerCompat mediaController = MediaControllerCompat
+        .getMediaController(PlayerActivity.this);
+    if (mediaController == null) {
+      mediaController = new MediaControllerCompat(PlayerActivity.this, token);
+    }
+    if (mediaController.getMetadata() == null) {
+
+      finish();
+      return;
+    }
+    MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
+    mediaController.registerCallback(callback);
+    PlaybackStateCompat state = mediaController.getPlaybackState();
+    updatePlaybackState(state);
+    MediaMetadataCompat metadata = mediaController.getMetadata();
+    if (metadata != null) {
+      updateMediaDescription(metadata.getDescription());
+      updateDuration(metadata);
+    }
+    updateProgress();
+    if (state != null && (state.getState() == PlaybackStateCompat.STATE_PLAYING ||
+        state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
+    }
+  }
+
+  private void updatePlaybackState(PlaybackStateCompat state) {
+    if (state == null) {
+      return;
+    }
+    lastPlaybackState = state;
+    MediaControllerCompat controllerCompat = MediaControllerCompat
+        .getMediaController(PlayerActivity.this);
+    if (controllerCompat != null && controllerCompat.getExtras() != null) {
+      String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
+    }
+
+    switch (state.getState()) {
+      case PlaybackStateCompat.STATE_PLAYING:
+        break;
+      case PlaybackStateCompat.STATE_PAUSED:
+        break;
+      case PlaybackStateCompat.STATE_NONE:
+      case PlaybackStateCompat.STATE_STOPPED:
+        break;
+      case PlaybackStateCompat.STATE_BUFFERING:
+        break;
+      default:
+        LogHelper.d(TAG, "Unhandled state ", state.getState());
+    }
+  }
+
+  private void updateMediaDescription(MediaDescriptionCompat description) {
+    if (description == null) {
+      return;
+    }
+    LogHelper.d(TAG, "updateMediaDescription called ");
+  }
+
+  private void updateDuration(MediaMetadataCompat metadata) {
+    if (metadata == null) {
+      return;
+    }
+    LogHelper.d(TAG, "updateDuration called ");
+    int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+  }
+
+  private void updateProgress() {
+    if (lastPlaybackState == null) {
+      return;
+    }
+    long currentPosition = lastPlaybackState.getPosition();
+    if (lastPlaybackState.getState() == PlaybackStateCompat.STATE_PLAYING) {
+      // Calculate the elapsed time between the last position update and now and unless
+      // paused, we can assume (delta * speed) + current position is approximately the
+      // latest position. This ensure that we do not repeatedly call the getPlaybackState()
+      // on MediaControllerCompat.
+      long timeDelta = SystemClock.elapsedRealtime() -
+          lastPlaybackState.getLastPositionUpdateTime();
+      currentPosition += (int) timeDelta * lastPlaybackState.getPlaybackSpeed();
+    }
+  }
 }

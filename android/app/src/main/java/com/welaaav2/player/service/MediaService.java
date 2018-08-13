@@ -1,219 +1,393 @@
 package com.welaaav2.player.service;
 
-import static com.welaaav2.player.notification.NotificationBuilder.NOW_PLAYING_NOTIFICATION;
+import static com.welaaav2.player.utils.MediaIDHelper.MEDIA_ID_ROOT;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.media.AudioAttributesCompat;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.MediaBrowserServiceCompat;
-import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
+import android.support.v7.media.MediaRouter;
+import com.google.android.gms.cast.framework.CastContext;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.SessionManager;
+import com.google.android.gms.cast.framework.SessionManagerListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.welaaav2.R;
 import com.welaaav2.player.PlayerActivity;
-import com.welaaav2.player.core.PlayerHolder;
-import com.welaaav2.player.decorator.AudioFocusExoPlayerDecorator;
-import com.welaaav2.player.extension.WelaaaPlaybackPrepare;
-import com.welaaav2.player.notification.NotificationBuilder;
+import com.welaaav2.player.notification.MediaNotificationManager;
+import com.welaaav2.player.playback.CastPlayback;
+import com.welaaav2.player.playback.LocalPlayback;
+import com.welaaav2.player.playback.Playback;
+import com.welaaav2.player.playback.PlaybackManager;
+import com.welaaav2.player.playback.QueueManager;
+import com.welaaav2.player.utils.CarHelper;
+import com.welaaav2.player.utils.LogHelper;
+import com.welaaav2.player.utils.TvHelper;
+import com.welaaav2.player.utils.WearHelper;
+import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.List;
 
-public class MediaService extends MediaBrowserServiceCompat {
+public class MediaService extends MediaBrowserServiceCompat implements
+    PlaybackManager.PlaybackServiceCallback {
 
-  private MediaSessionCompat mediaSession;
-  private MediaControllerCompat mediaController;
-  private MediaSessionConnector mediaSessionConnector;
+  private static final String TAG = LogHelper.makeLogTag(MediaService.class);
 
-  private NotificationManagerCompat notificationManager;
-  private NotificationBuilder notificationBuilder;
+  // Extra on MediaSession that contains the Cast device name currently connected to
+  public static final String EXTRA_CONNECTED_CAST = "com.welaaav2.CAST_NAME";
+  // The action of the incoming Intent indicating that it contains a command
+  // to be executed (see {@link #onStartCommand})
+  public static final String ACTION_CMD = "com.welaaav2.ACTION_CMD";
+  // The key in the extras of the incoming Intent indicating the command that
+  // should be executed (see {@link #onStartCommand})
+  public static final String CMD_NAME = "CMD_NAME";
+  // A value of a CMD_NAME key in the extras of the incoming Intent that
+  // indicates that the music playback should be paused (see {@link #onStartCommand})
+  public static final String CMD_PAUSE = "CMD_PAUSE";
+  // A value of a CMD_NAME key that indicates that the music playback should switch
+  // to local playback from cast playback.
+  public static final String CMD_STOP_CASTING = "CMD_STOP_CASTING";
+  // Delay stopSelf by using a handler.
+  private static final int STOP_DELAY = 30000;
 
-  private BecomingNoisyReceiver becomingNoisyRecevier;
+  private PlaybackManager mPlaybackManager;
 
-  private boolean isForegroundService = false;
+  private MediaSessionCompat mSession;
+  private MediaNotificationManager mMediaNotificationManager;
+  private Bundle mSessionExtras;
+  private final DelayedStopHandler mDelayedStopHandler = new DelayedStopHandler(this);
+  private MediaRouter mMediaRouter;
+  private SessionManager mCastSessionManager;
+  private SessionManagerListener<CastSession> mCastSessionManagerListener;
 
-  private AudioAttributesCompat audioAttributes;
+  private boolean mIsConnectedToCar;
+  private BroadcastReceiver mCarConnectionReceiver;
 
-
+  /*
+   * (non-Javadoc)
+   * @see android.app.Service#onCreate()
+   */
   @Override
   public void onCreate() {
     super.onCreate();
+    LogHelper.d(TAG, "onCreate");
 
-    // Build a PendingIntent that can be used to launch the UI.
+    QueueManager queueManager = new QueueManager(getResources(),
+        new QueueManager.MetadataUpdateListener() {
+          @Override
+          public void onMetadataChanged(MediaMetadataCompat metadata) {
+            mSession.setMetadata(metadata);
+          }
+
+          @Override
+          public void onMetadataRetrieveError() {
+            mPlaybackManager.updatePlaybackState(
+                getString(R.string.error_no_metadata));
+          }
+
+          @Override
+          public void onCurrentQueueIndexUpdated(int queueIndex) {
+            mPlaybackManager.handlePlayRequest();
+          }
+
+          @Override
+          public void onQueueUpdated(String title,
+              List<MediaSessionCompat.QueueItem> newQueue) {
+            mSession.setQueue(newQueue);
+            mSession.setQueueTitle(title);
+          }
+        });
+
+    LocalPlayback playback = new LocalPlayback(this);
+    mPlaybackManager = new PlaybackManager(this, getResources(), queueManager,
+        playback);
+
+    // Start a new MediaSession
+    mSession = new MediaSessionCompat(this, "MusicService");
+    setSessionToken(mSession.getSessionToken());
+    mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
+    mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
     Context context = getApplicationContext();
     Intent intent = new Intent(context, PlayerActivity.class);
-    PendingIntent pi = PendingIntent
-        .getActivity(context, 99, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    PendingIntent pi = PendingIntent.getActivity(context, 99 /*request code*/,
+        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    mSession.setSessionActivity(pi);
 
-    // Create a new MediaSession.
-    mediaSession = new MediaSessionCompat(this, "MediaService");
-    mediaSession.setSessionActivity(pi);
-    mediaSession.setActive(true);
+    mSessionExtras = new Bundle();
+    CarHelper.setSlotReservationFlags(mSessionExtras, true, true, true);
+    WearHelper.setSlotReservationFlags(mSessionExtras, true, true);
+    WearHelper.setUseBackgroundFromTheme(mSessionExtras, true);
+    mSession.setExtras(mSessionExtras);
 
-    /**
-     * In order for [MediaBrowserCompat.ConnectionCallback.onConnected] to be called,
-     * a [MediaSessionCompat.Token] needs to be set on the [MediaBrowserServiceCompat].
-     *
-     * It is possible to wait to set the session token, if required for a specific use-case.
-     * However, the token *must* be set by the time [MediaBrowserServiceCompat.onGetRoot]
-     * returns, or the connection will fail silently. (The system will not even call
-     * [MediaBrowserCompat.ConnectionCallback.onConnectionFailed].)
-     */
-    setSessionToken(mediaSession.getSessionToken());
+    mPlaybackManager.updatePlaybackState(null);
 
-    // Because ExoPlayer will manage the MediaSession, add the service as a callback for
-    // state changes.
-    mediaController = new MediaControllerCompat(this, mediaSession);
-    mediaController.registerCallback(new MediaControllerCallback());
+    try {
+      mMediaNotificationManager = new MediaNotificationManager(this);
+    } catch (RemoteException e) {
+      throw new IllegalStateException("Could not create a MediaNotificationManager", e);
+    }
 
-    notificationBuilder = new NotificationBuilder(this);
-    notificationManager = NotificationManagerCompat.from(this);
+    int playServicesAvailable =
+        GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
 
-    becomingNoisyRecevier = new BecomingNoisyReceiver(this, mediaSession.getSessionToken());
+    if (!TvHelper.isTvUiMode(this) && playServicesAvailable == ConnectionResult.SUCCESS) {
+      mCastSessionManager = CastContext.getSharedInstance(this).getSessionManager();
+      mCastSessionManagerListener = new CastSessionManagerListener();
+      mCastSessionManager.addSessionManagerListener(mCastSessionManagerListener,
+          CastSession.class);
+    }
 
-    audioAttributes = new AudioAttributesCompat.Builder()
-        .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
-        .setUsage(AudioAttributesCompat.USAGE_MEDIA)
-        .build();
-    AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-    PlayerHolder playerHolder = PlayerHolder.getInstance(context);
-    AudioFocusExoPlayerDecorator player = new AudioFocusExoPlayerDecorator(
-        audioAttributes, audioManager, playerHolder);
-    WelaaaPlaybackPrepare playbackPrepare = new WelaaaPlaybackPrepare(player);
+    mMediaRouter = MediaRouter.getInstance(getApplicationContext());
 
-    // ExoPlayer will manage the MediaSession for us.
-    mediaSessionConnector = new MediaSessionConnector(mediaSession);
-    mediaSessionConnector.setPlayer(player, playbackPrepare);
+    registerCarConnectionReceiver();
   }
 
+  /**
+   * (non-Javadoc)
+   *
+   * @see android.app.Service#onStartCommand(android.content.Intent, int, int)
+   */
+  @Override
+  public int onStartCommand(Intent startIntent, int flags, int startId) {
+    if (startIntent != null) {
+      String action = startIntent.getAction();
+      String command = startIntent.getStringExtra(CMD_NAME);
+      if (ACTION_CMD.equals(action)) {
+        if (CMD_PAUSE.equals(command)) {
+          mPlaybackManager.handlePauseRequest();
+        } else if (CMD_STOP_CASTING.equals(command)) {
+          CastContext.getSharedInstance(this).getSessionManager().endCurrentSession(true);
+        }
+      } else {
+        // Try to handle the intent as a media button event wrapped by MediaButtonReceiver
+        MediaButtonReceiver.handleIntent(mSession, startIntent);
+      }
+    }
+    // Reset the delay handler to enqueue a message to stop the service if
+    // nothing is playing.
+    mDelayedStopHandler.removeCallbacksAndMessages(null);
+    mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
+    return START_STICKY;
+  }
+
+  /*
+   * Handle case when user swipes the app away from the recents apps list by
+   * stopping the service (and any ongoing playback).
+   */
   @Override
   public void onTaskRemoved(Intent rootIntent) {
     super.onTaskRemoved(rootIntent);
     stopSelf();
   }
 
+  /**
+   * (non-Javadoc)
+   *
+   * @see android.app.Service#onDestroy()
+   */
   @Override
   public void onDestroy() {
-    mediaSession.setActive(false);
-    mediaSession.release();
+    LogHelper.d(TAG, "onDestroy");
+    unregisterCarConnectionReceiver();
+    // Service is being killed, so make sure we release our resources
+    mPlaybackManager.handleStopRequest(null);
+    mMediaNotificationManager.stopNotification();
+
+    if (mCastSessionManager != null) {
+      mCastSessionManager.removeSessionManagerListener(mCastSessionManagerListener,
+          CastSession.class);
+    }
+
+    mDelayedStopHandler.removeCallbacksAndMessages(null);
+    mSession.release();
   }
 
-  @Nullable
   @Override
   public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid,
-      @Nullable Bundle rootHints) {
-    return new BrowserRoot(getString(R.string.app_name), null);
+      Bundle rootHints) {
+    LogHelper.d(TAG, "OnGetRoot: clientPackageName=" + clientPackageName,
+        "; clientUid=" + clientUid + " ; rootHints=", rootHints);
+    //noinspection StatementWithEmptyBody
+    if (CarHelper.isValidCarPackage(clientPackageName)) {
+      // Optional: if your app needs to adapt the music library to show a different subset
+      // when connected to the car, this is where you should handle it.
+      // If you want to adapt other runtime behaviors, like tweak ads or change some behavior
+      // that should be different on cars, you should instead use the boolean flag
+      // set by the BroadcastReceiver mCarConnectionReceiver (mIsConnectedToCar).
+    }
+    //noinspection StatementWithEmptyBody
+    if (WearHelper.isValidWearCompanionPackage(clientPackageName)) {
+      // Optional: if your app needs to adapt the music library for when browsing from a
+      // Wear device, you should return a different MEDIA ROOT here, and then,
+      // on onLoadChildren, handle it accordingly.
+    }
+
+    return new BrowserRoot(MEDIA_ID_ROOT, null);
   }
 
   @Override
-  public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
-    result.sendResult(null);
+  public void onLoadChildren(@NonNull final String parentMediaId,
+      @NonNull final Result<List<MediaItem>> result) {
+    LogHelper.d(TAG, "OnLoadChildren: parentMediaId=", parentMediaId);
+    result.sendResult(Collections.emptyList());
+  }
+
+  /**
+   * Callback method called from PlaybackManager whenever the music is about to play.
+   */
+  @Override
+  public void onPlaybackStart() {
+    mSession.setActive(true);
+
+    mDelayedStopHandler.removeCallbacksAndMessages(null);
+
+    // The service needs to continue running even after the bound client (usually a
+    // MediaController) disconnects, otherwise the music playback will stop.
+    // Calling startService(Intent) will keep the service running until it is explicitly killed.
+    startService(new Intent(getApplicationContext(), MediaService.class));
   }
 
 
   /**
-   * Class to receive callbacks about state changes to the [MediaSessionCompat]. In response to
-   * those callbacks, this class:
-   *
-   * - Build/update the service's notification. - Register/unregister a broadcast receiver for
-   * [AudioManager.ACTION_AUDIO_BECOMING_NOISY]. - Calls [Service.startForeground] and
-   * [Service.stopForeground].
+   * Callback method called from PlaybackManager whenever the music stops playing.
    */
-  private class MediaControllerCallback extends MediaControllerCompat.Callback {
+  @Override
+  public void onPlaybackStop() {
+    mSession.setActive(false);
+    // Reset the delayed stop handler, so after STOP_DELAY it will be executed again,
+    // potentially stopping the service.
+    mDelayedStopHandler.removeCallbacksAndMessages(null);
+    mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
+    stopForeground(true);
+  }
+
+  @Override
+  public void onNotificationRequired() {
+    mMediaNotificationManager.startNotification();
+  }
+
+  @Override
+  public void onPlaybackStateUpdated(PlaybackStateCompat newState) {
+    mSession.setPlaybackState(newState);
+  }
+
+  private void registerCarConnectionReceiver() {
+    IntentFilter filter = new IntentFilter(CarHelper.ACTION_MEDIA_STATUS);
+    mCarConnectionReceiver = new BroadcastReceiver() {
+      @Override
+      public void onReceive(Context context, Intent intent) {
+        String connectionEvent = intent.getStringExtra(CarHelper.MEDIA_CONNECTION_STATUS);
+        mIsConnectedToCar = CarHelper.MEDIA_CONNECTED.equals(connectionEvent);
+        LogHelper.i(TAG, "Connection event to Android Auto: ", connectionEvent,
+            " isConnectedToCar=", mIsConnectedToCar);
+      }
+    };
+    registerReceiver(mCarConnectionReceiver, filter);
+  }
+
+  private void unregisterCarConnectionReceiver() {
+    unregisterReceiver(mCarConnectionReceiver);
+  }
+
+  /**
+   * A simple handler that stops the service if playback is not active (playing)
+   */
+  private static class DelayedStopHandler extends Handler {
+
+    private final WeakReference<MediaService> mWeakReference;
+
+    private DelayedStopHandler(MediaService service) {
+      mWeakReference = new WeakReference<>(service);
+    }
 
     @Override
-    public void onPlaybackStateChanged(PlaybackStateCompat state) {
-      if (state == null) {
-        return;
-      }
-
-      int updateState = state.getState();
-
-      // Skip building a notification when state is "none".
-      Notification notification = null;
-      if (PlaybackStateCompat.STATE_NONE == updateState) {
-        notification = notificationBuilder.buildNotification(mediaSession.getSessionToken());
-      }
-
-      switch (updateState) {
-        case PlaybackStateCompat.STATE_BUFFERING:
-        case PlaybackStateCompat.STATE_PLAYING:
-          becomingNoisyRecevier.register();
-
-          startForeground(NOW_PLAYING_NOTIFICATION, notification);
-          isForegroundService = true;
-          break;
-
-        default:
-          becomingNoisyRecevier.unregister();
-
-          if (isForegroundService) {
-            stopForeground(false);
-
-            if (notification != null) {
-              notificationManager.notify(NOW_PLAYING_NOTIFICATION, notification);
-            } else {
-              stopForeground(true);
-            }
-            isForegroundService = false;
-          }
-          break;
+    public void handleMessage(Message msg) {
+      MediaService service = mWeakReference.get();
+      if (service != null && service.mPlaybackManager.getPlayback() != null) {
+        if (service.mPlaybackManager.getPlayback().isPlaying()) {
+          LogHelper.d(TAG, "Ignoring delayed stop since the media player is in use.");
+          return;
+        }
+        LogHelper.d(TAG, "Stopping service with delay handler.");
+        service.stopSelf();
       }
     }
   }
 
   /**
-   * Helper class for listening for when headphone are unplugged (or the audio will otherwise cause
-   * playback to becom "noisy".
+   * Session Manager Listener responsible for switching the Playback instances depending on whether
+   * it is connected to a remote player.
    */
-  private class BecomingNoisyReceiver extends BroadcastReceiver {
+  private class CastSessionManagerListener implements SessionManagerListener<CastSession> {
 
-    private Context context;
-
-    private IntentFilter noisyIntentFilter;
-    private MediaControllerCompat mediaController;
-
-    private boolean isRegistered = false;
-
-    public BecomingNoisyReceiver(Context context, MediaSessionCompat.Token sessionToken) {
-      this.context = context;
-      noisyIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-      try {
-        mediaController = new MediaControllerCompat(context, sessionToken);
-      } catch (RemoteException e) {
-        e.printStackTrace();
-      }
-    }
-
-    public void register() {
-      if (!isRegistered) {
-        context.registerReceiver(this, noisyIntentFilter);
-        isRegistered = true;
-      }
-    }
-
-    public void unregister() {
-      if (isRegistered) {
-        context.unregisterReceiver(this);
-        isRegistered = false;
-      }
+    @Override
+    public void onSessionEnded(CastSession session, int error) {
+      LogHelper.d(TAG, "onSessionEnded");
+      mSessionExtras.remove(EXTRA_CONNECTED_CAST);
+      mSession.setExtras(mSessionExtras);
+      Playback playback = new LocalPlayback(MediaService.this);
+      mMediaRouter.setMediaSessionCompat(null);
+      mPlaybackManager.switchToPlayback(playback, false);
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-      if (AudioManager.ACTION_AUDIO_BECOMING_NOISY == intent.getAction()) {
-        mediaController.getTransportControls().pause();
-      }
+    public void onSessionResumed(CastSession session, boolean wasSuspended) {
+    }
+
+    @Override
+    public void onSessionStarted(CastSession session, String sessionId) {
+      // In case we are casting, send the device name as an extra on MediaSession metadata.
+      mSessionExtras.putString(EXTRA_CONNECTED_CAST,
+          session.getCastDevice().getFriendlyName());
+      mSession.setExtras(mSessionExtras);
+      // Now we can switch to CastPlayback
+      Playback playback = new CastPlayback(MediaService.this);
+      mMediaRouter.setMediaSessionCompat(mSession);
+      mPlaybackManager.switchToPlayback(playback, true);
+    }
+
+    @Override
+    public void onSessionStarting(CastSession session) {
+    }
+
+    @Override
+    public void onSessionStartFailed(CastSession session, int error) {
+    }
+
+    @Override
+    public void onSessionEnding(CastSession session) {
+      // This is our final chance to update the underlying stream position
+      // In onSessionEnded(), the underlying CastPlayback#mRemoteMediaClient
+      // is disconnected and hence we update our local value of stream position
+      // to the latest position.
+      mPlaybackManager.getPlayback().updateLastKnownStreamPosition();
+    }
+
+    @Override
+    public void onSessionResuming(CastSession session, String sessionId) {
+    }
+
+    @Override
+    public void onSessionResumeFailed(CastSession session, int error) {
+    }
+
+    @Override
+    public void onSessionSuspended(CastSession session, int reason) {
     }
   }
 }
