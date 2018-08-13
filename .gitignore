@@ -10,8 +10,11 @@
 # dependencies
 /node_modules
 /android
-/ios/*
+/ios/*/*
 !/ios/WelaaaV2/AppDelegate.m
+!/ios/Podfile
+/ios/Podfile.lock
+!/ios/Localizable.strings
 
 # misc
 .env.local
