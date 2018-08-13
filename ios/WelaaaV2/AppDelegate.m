@@ -42,10 +42,10 @@
   [self.window makeKeyAndVisible];
 
 
-  [ Fabric with : @[[Crashlytics class]] ];
+//  [ Fabric with : @[[Crashlytics class]] ];
 
   // Use Firebase library to configure APIs
-  [FIRApp configure];
+//  [FIRApp configure];
 
   return YES;
 }

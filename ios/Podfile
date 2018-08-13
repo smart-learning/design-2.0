@@ -23,6 +23,7 @@ target 'WelaaaV2' do
     pod 'KakaoOpenSDK'
 
     # Video Player
-    pod 'PlayerKit'
+    # pod 'PlayerKit'
+
 
 end

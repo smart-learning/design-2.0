@@ -11,10 +11,13 @@
 /node_modules
 /android
 /ios/*/*
-!/ios/WelaaaV2/AppDelegate.m
 !/ios/Podfile
 /ios/Podfile.lock
 !/ios/Localizable.strings
+
+!/ios/WelaaaV2/AppDelegate.m
+!/ios/WelaaaV2/GoogleService-Info.plist
+
 
 # misc
 .env.local
