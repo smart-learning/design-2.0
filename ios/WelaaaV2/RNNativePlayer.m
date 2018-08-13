@@ -10,6 +10,7 @@
 
 #import "AppDelegate.h"
 #import "ContentPlayerViewController.h"
+#import "FPSDownloadManager.h"
 
 @implementation RNNativePlayer
 
@@ -31,12 +32,10 @@ RCT_EXPORT_MODULE();
 
 - (void) downloadSomething : (NSDictionary *) args
 {
-  // 다운로드 테스트
+    // 다운로드 테스트
+    FPSDownloadManager *fpsDownloadManager = [[FPSDownloadManager alloc] init];
   
-  ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
-  
-  [playerViewController downloadSomething:args];
-  
+    [fpsDownloadManager downloadSomething : args];
 }
 
 

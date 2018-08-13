@@ -11,14 +11,12 @@
 #import "UIAlertController+Showable.h"
 #import "StarRatingView.h"
 
-@interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate, PallyConFPSDownloadDelegate>
+@interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate>
 
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
 @property AVPlayerLayer *playerLayer;
 @property (nonatomic, assign) BOOL isDownloadFile;
 
 - (void) setContentData : (NSDictionary *) args;
-
-- (void) downloadSomething : (NSDictionary *) args;  // 테스트를 위해 추가 by Yohan
 
 @end
