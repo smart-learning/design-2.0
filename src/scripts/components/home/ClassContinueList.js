@@ -1,7 +1,6 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, } from "react-native";
 import CommonStyles from "../../../styles/common";
-import Device from "../../commons/device";
 import IcPlay from "../../../images/ic-play.png";
 
 const styles = StyleSheet.create( {

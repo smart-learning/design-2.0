@@ -1,5 +1,6 @@
 import React from 'react';
 import {createDrawerNavigator, DrawerActions} from "react-navigation";
+import SampleScreen from './src/scripts/pages/sample/SampleScreen';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
@@ -55,6 +56,10 @@ function getActiveRouteName(navigationState) {
 
 const AppDrawer = createDrawerNavigator(
 	{
+		SampleScreen: {
+			screen: SampleScreen,
+		},
+
 		HomeScreen: {
 			screen: HomeScreen,
 		},
