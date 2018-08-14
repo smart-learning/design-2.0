@@ -1,6 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-.idea/
+# IDE
+.idea
+
 # expo
 .expo/
 
@@ -85,7 +87,7 @@ google-services.json
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
 ## Build generated
-build/
+*/build
 DerivedData/
 
 ## Various settings
@@ -153,3 +155,6 @@ playground.xcworkspace
 
 PallyConFPSSDK.framework
 ios/WelaaaV2Tests
+.idea/workspace.xml
+ios/PallyConFPSSDK.framework/
+ios/WelaaaV2Tests/
