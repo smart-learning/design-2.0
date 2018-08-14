@@ -24,9 +24,6 @@ target 'WelaaaV2' do
   # KakaoOpenSDK
   pod 'KakaoOpenSDK'
 
-  # Video Player
-  pod 'PlayerKit'
-
   # Realm Swift
   #pod 'RealmSwift'
 
