@@ -152,8 +152,6 @@ playground.xcworkspace
 *.mobileprovision
 *.cer
 
-
-PallyConFPSSDK.framework
 ios/WelaaaV2Tests
 .idea/workspace.xml
 ios/PallyConFPSSDK.framework/
