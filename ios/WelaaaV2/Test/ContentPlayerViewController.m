@@ -129,6 +129,8 @@
   
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
+  
+    [self setPlayState : YES];
 }
 
 - (void) setContentData : (NSDictionary *) args
@@ -144,13 +146,13 @@
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
 {
-    NSLog(@"fpsLicenseDidSuccessAcquiringWithContentId (%@)", contentId);
+    NSLog(@"  [fpsLicenseDidSuccessAcquiringWithContentId] ContentID : %@", contentId);
 }
 
 - (void) fpsLicenseWithContentId : (NSString * _Nonnull) contentId
                 didFailWithError : (NSError * _Nonnull) error
 {
-    NSLog(@"fpsLicenseWithContentId. Error Message (%@)", error.localizedDescription);
+    NSLog(@"  [fpsLicenseWithContentId] Error Message : %@", error.localizedDescription);
 }
 
 - (void) videoPlayBackDidFinish : (NSNotification *) notification
@@ -283,9 +285,9 @@
     userStar = @""; // 1~5
     isUserLoggedIn = YES;
     cconClassStar = @"1";
-    NSLog(@"    [initSubviewsWithAudioMode] userStar = %@", userStar);
-    NSLog(@"    [initSubviewsWithAudioMode] isUserLoggedIn? %@", isUserLoggedIn ? @"TRUE" : @"FALSE");
-    NSLog(@"    [initSubviewsWithAudioMode] ccon_class = %@", cconClassStar);
+    NSLog(@"  [initSubviewsWithAudioMode] userStar = %@", userStar);
+    NSLog(@"  [initSubviewsWithAudioMode] isUserLoggedIn? %@", isUserLoggedIn ? @"TRUE" : @"FALSE");
+    NSLog(@"  [initSubviewsWithAudioMode] ccon_class = %@", cconClassStar);
     // 로그인된 상태이면서 동시에 강의 클립이라면 일단 별점주기 버튼을 그립니다.
     if ( isUserLoggedIn && [cconClassStar isEqualToString : @"1"] )
     {
@@ -321,7 +323,17 @@
 
 - (void) drawPlayerControlBottom
 {
-    _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-60.f, self.view.frame.size.width, 60.f)];
+    /*
+     * iPhone X 의 경우 슬라이더와 Anchor가 충돌하므로 기기에 따른 분기 처리가 필요합니다.
+     */
+    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    {
+      _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-80.f, self.view.frame.size.width, 60.f)];
+    }
+    else
+    {
+      _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-60.f, self.view.frame.size.width, 60.f)];
+    }
     _bottomView.backgroundColor = UIColorFromRGB(0x272230, 0.3f);
     [_contentView addSubview : _bottomView];
   
@@ -347,10 +359,6 @@
     [_bottomView addSubview : _totalTimeLabel];
   
     _slider = [[UISlider alloc] initWithFrame : CGRectMake(margin + labelWidth + padding, _bottomView.frame.size.height-44, barWidth, 30.f)];
-  
-    //    UIImage *sliderThumb = [UIImage imageNamed:@"uislider-thumb.png"];
-    //    [_slider setThumbImage:sliderThumb forState:UIControlStateNormal];
-    //    [_slider setThumbImage:sliderThumb forState:UIControlStateHighlighted];
   
     _isAudioMode = FALSE; // 테스트 목적으로 강제로 value를 지정했습니다. 오디오모드를 구분하는 기능이 구현되는 시점에 제거될 예정입니다.
     if ( _isAudioMode )
@@ -484,8 +492,8 @@
   
     {
         _lockButton = [[ContentPlayerButton alloc] initWithId : @"lock-mode"
-                                                  normalImage : @"icon_lock.png"
-                                             highlightedImage : @"icon_lock_active.png"
+                                                  normalImage : @"icon_lock"
+                                             highlightedImage : @"icon_lock_active"
                                                maxActiveCount : 2];
         _lockButton.frame = CGRectMake(buttonOffsetX, buttonOffsetY, buttonWidth, buttonWidth);
         _lockButton.delegate = self;
@@ -636,23 +644,105 @@
                   forState : UIControlStateHighlighted];
 }
 
+- (void) setPlayState : (BOOL) isPlaying
+{
+    _paueseButton.hidden = !isPlaying;
+    _playButton.hidden = !_paueseButton.hidden;
+}
+
 #pragma mark - selectors
 
 - (void) pressedCloseButton
 {
-    AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
-    [app showToast : @"미니플레이어로 변환합니다."];
-    NSLog(@"  [pressedCloseButton] 미니플레이어로 변환합니다.");
   //[self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-    [self toastTestAlert];
+    //[self toastTestAlert];
+  [self showToast : @"미니플레이어로 변환합니다."];
 }
 
 - (void) pressedRateStarButton
 {
-    NSLog(@"  별점주기 팝업 띄우기!!");
-    // 기존 방식대로 하면 아래와 같은 경고 발생됨.
-    //" Warning: Attempt to present <UIAlertController: 0x15a802000> on <UIViewController: 0x157f0a260> whose view is not in the window hierarchy! "
-    // 따라서 기존과는 다른 방식으로 뷰를 띄워야 할듯...
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"지식클립이 흥미로우셨나요?"
+                                                                   message : @"\n회원님의 의견이 더 좋은 강의를 만드는 원동력이 됩니다.\n\n\n"
+                                                            preferredStyle : UIAlertControllerStyleAlert];
+                                                          //preferredStyle : UIAlertControllerStyleActionSheet];
+  
+    [alert.view setBackgroundColor: [UIColor clearColor]]; // alertView 배경 색상
+  
+    StarRatingView *rateView = [[StarRatingView alloc] initWithFrame : CGRectMake(20, 95, alert.view.bounds.size.width, 60)
+                                                            fullStar : [UIImage imageNamed : @"icon_star_full_large"]
+                                                           emptyStar : [UIImage imageNamed : @"icon_star_empty_large"]];
+    rateView.padding = 20;
+    rateView.alignment = RateViewAlignmentLeft;
+    rateView.editable = YES;
+    rateView.delegate = self;
+  
+    [alert.view addSubview : rateView];
+  
+    UIAlertAction *okAction;
+    okAction = [UIAlertAction actionWithTitle : @"확인"
+                                        style : UIAlertActionStyleDefault
+                                      handler : ^(UIAlertAction *action)
+                                                {
+                                                    // 별점주기 팝업을 띄운 후 별점을 주지 않으면 별점만 초기화하고 그냥 닫습니다.
+                                                    if ( nil == _currentStar || [_currentStar isEqualToString : @"0"] || [_currentStar isEqualToString : @""] )
+                                                    {
+                                                        _currentStar = @"";
+                                                    }
+                                                    else
+                                                    {
+                                                        NSLog(@"  [pressedRateStarButton] 최종별점 : %@", _currentStar);
+                                                        NSLog(@"  [pressedRateStarButton] ckey : %@", @"582");
+                                                        // 지식영상이 끝나면 별점을 등록하기 위해 조회를 먼저합니다.
+                                                        NSString *starUpdateUrl;
+                                                      #if APPSTORE | ADHOC
+                                                        starUpdateUrl = [NSString stringWithFormat : @"http://%@/usingapp/update_star.php", BASE_DOMAIN];
+                                                      #else
+                                                        starUpdateUrl = [NSString stringWithFormat : @"http://%@/usingapp/update_star.php", TEST_DOMAIN];
+                                                      #endif
+                                                        NSString *post = [NSString stringWithFormat : @"star=%@&ckey=%@", _currentStar, @"582"];
+                                                        NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
+                                                      
+                                                        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+                                                        [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", starUpdateUrl]]];
+                                                        [request setHTTPBody : postData];
+                                                        [request setHTTPMethod : @"POST"];
+                                                        NSError *error;
+                                                        NSURLResponse *resp = nil;
+                                                        // 비동기방식이 아닌 동기방식으로 접속합니다.
+                                                        [ApiManager sendSynchronousRequest : request
+                                                                         returningResponse : &resp
+                                                                                     error : &error];
+                                                      
+                                                        NSString *myStarStr = [NSString stringWithFormat : @" %@%@", _currentStar, @".0"];
+                                                      
+                                                        _currentStar = @"";   // 다음 강의 평가를 위해 별점 초기화. 171207 김태현
+                                                        [_rateStarButton setTitle : myStarStr
+                                                                         forState : UIControlStateNormal];
+                                                        _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
+                                                        //_rateStarButton.userInteractionEnabled = NO; // 탑뷰 내 별점주기버튼 비활성화
+                                                    }
+                                                }];
+  
+    UIAlertAction *cancelAction;
+    cancelAction = [UIAlertAction actionWithTitle : @"취소"
+                                            style : UIAlertActionStyleDestructive
+                                          handler : ^(UIAlertAction *action)
+                                                    {
+                                                        NSLog(@"  Cancel action");
+                                                    }];
+  
+    [okAction setValue : UIColorFromRGB(0x32c183, 1.f)
+                forKey : @"titleTextColor"];
+  
+    [cancelAction setValue : UIColorFromRGB(0x4a494a, 1.f)
+                    forKey : @"titleTextColor"];
+  
+    [alert addAction : okAction];
+    [alert addAction : cancelAction];
+  
+    [self presentViewController : alert
+                       animated : YES
+                     completion : nil];
 }
 
 - (void) pressedHideAndShowButton
@@ -675,11 +765,17 @@
 - (void) pressedPlayButton
 {
     NSLog(@"  플레이어 재생 버튼!!");
+    [_player play];
+    // pauseButton으로 변경해주어야 합니다.
+    [self setPlayState : YES];
 }
 
 - (void) pressedPauseButton
 {
     NSLog(@"  플레이어 정지 버튼!!");
+    [_player pause];
+    // playButton으로 변경해주어야 합니다.
+    [self setPlayState : NO];
 }
 
 - (void) pressedRwButton
@@ -854,6 +950,13 @@
         }
     }
   */
+}
+
+#pragma mark - Notifications
+
+- (void) showToast : (NSString *) text
+{
+    [self.view makeToast : text];
 }
 
 # pragma mark - Labatory
