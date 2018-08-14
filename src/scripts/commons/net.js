@@ -32,7 +32,7 @@ export default {
 		return new Promise( ( resolve, reject ) => {
 			axios.get( API_PREFIX + 'contents/audiobooks/categories' )
 				.then( ( response ) => {
-					console.log( response.data );
+					// console.log( response.data );
 					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
@@ -65,7 +65,7 @@ export default {
 		return new Promise( ( resolve, reject ) => {
 			axios.get( API_PREFIX + 'contents/audiobooks' )
 				.then( ( response ) => {
-					console.log( response.data );
+					// console.log( response.data );
 					response.data.items.forEach( element => {
 						element.key = element.id.toString();
 					} );
@@ -127,11 +127,86 @@ export default {
 			} )
 
 				.then( response => {
-					console.log( response.data );
+					// console.log( response.data );
 					resolve( response.data );
 				} )
 				.catch( ( error ) => {
 					alert( '로그인 실패' );
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
+
+	getHomeClassHot() {
+		return new Promise( ( resolve, reject ) => {
+			axios.get( API_PREFIX + 'cms/main/video' )
+				.then( ( response ) => {
+					response.data.hot.forEach( element => {
+						element.key = element.id.toString();
+					} );
+					resolve( response.data.hot );
+				} )
+				.catch( ( error ) => {
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
+
+	getHomeClassNew() {
+		return new Promise( ( resolve, reject ) => {
+			axios.get( API_PREFIX + 'cms/main/video' )
+				.then( ( response ) => {
+					response.data.new.forEach( element => {
+						element.key = element.id.toString();
+					} );
+					resolve( response.data.new );
+				} )
+				.catch( ( error ) => {
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
+
+	getHomeClassRecommend() {
+		return new Promise( ( resolve, reject ) => {
+			axios.get( API_PREFIX + 'cms/main/video' )
+				.then( ( response ) => {
+					response.data.recommend.forEach( element => {
+						element.key = element.id.toString();
+					} );
+					resolve( response.data.recommend );
+				} )
+				.catch( ( error ) => {
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
+	getHomeClipRank() {
+		return new Promise( ( resolve, reject ) => {
+			axios.get( API_PREFIX + 'contents/video-clips/realtime-chart' )
+				.then( ( response ) => {
+					response.data.items.forEach( element => {
+						element.key = element.id.toString();
+					} );
+					resolve( response.data );
+				} )
+				.catch( ( error ) => {
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
+	getHomeSeries() {
+		return new Promise( ( resolve, reject ) => {
+			axios.get( API_PREFIX + 'cms/main/series' )
+				.then( ( response ) => {
+					resolve( response.data );
+				} )
+				.catch( ( error ) => {
 					console.error( error );
 					reject( error );
 				} );

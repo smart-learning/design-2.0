@@ -7,7 +7,7 @@ import HomeButton from "./HomeButton";
 
 class HeaderWithSearch extends Component {
     render() {
-        return <View style={ CommonStyles.alignJustify }>
+        return <View style={ CommonStyles.alignJustifyContentBetween }>
             <HomeButton/>
             <Image source={logo} style={ CommonStyles.headerLogo }/>
             <SearchButton/>

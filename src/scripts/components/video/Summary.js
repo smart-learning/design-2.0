@@ -27,6 +27,7 @@ const styles = StyleSheet.create( {
 		paddingBottom: '22%',
 		justifyContent: 'center',
 		alignItems: 'center',
+		backgroundColor: '#efefef',
 	},
 	thumbnailTitle: {
 		position: 'absolute',
@@ -117,7 +118,16 @@ export default class Summary extends React.Component {
 					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
-					<Image source={IcShare} style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={{ marginLeft: 'auto' }}
+						onPress={ ()=>{
+							Device.share( this.props.title, this.props.url );
+						}}
+					>
+						<Image source={IcShare}
+							   style={styles.btnSetLarge}/>
+
+					</TouchableOpacity>
 				</View>
 			</View>
 		</View>
