@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { Button, Modal, Text, TouchableHighlight, View, NativeModules } from "react-native";
 import CommonStyles from "../../styles/common";
 import { SafeAreaView } from "react-navigation";
-//mport { ImageView, RNAudioPlayer} from 'rnn-module-ui-sample';
 import { NAV_OPTS_DRAWER } from "../commons/nav";
-import VideoScreen from "./video/VideoScreen";
-
-import { NativeModules } from 'react-native';
 
 /*
 * Acount: test/test
@@ -70,9 +66,6 @@ class PlaygroundJune extends Component {
 	}
 
 	render() {
-
-
-
 
 		return <SafeAreaView style={[CommonStyles.container, { backgroundColor: '#cccccc' }]}>
 

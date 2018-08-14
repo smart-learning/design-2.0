@@ -25,6 +25,8 @@
 		7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		BD6870402122C4D300590FBF /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD6870182122C4D300590FBF /* PallyConFPSSDK.framework */; };
+		BD6870412122C4D300590FBF /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BD6870182122C4D300590FBF /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EF56275A2111681700A88CFB /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF5627592111681700A88CFB /* PallyConFPSSDK.framework */; };
 		EF56275B2111681700A88CFB /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EF5627592111681700A88CFB /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */; };
@@ -316,6 +318,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				EF56275B2111681700A88CFB /* PallyConFPSSDK.framework in Embed Frameworks */,
+				BD6870412122C4D300590FBF /* PallyConFPSSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,6 +353,7 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		AEEDDD9F7C5CBB53DA7FCD50 /* Pods-WelaaaV2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WelaaaV2.release.xcconfig"; path = "Pods/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2.release.xcconfig"; sourceTree = "<group>"; };
+		BD6870182122C4D300590FBF /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 		E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WelaaaV2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF5627592111681700A88CFB /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 		EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "WelaaaV2/GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -373,6 +377,7 @@
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
+				BD6870402122C4D300590FBF /* PallyConFPSSDK.framework in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
@@ -557,6 +562,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				BD6870182122C4D300590FBF /* PallyConFPSSDK.framework */,
 				13B07FAE1A68108700A75B9A /* WelaaaV2 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -646,7 +652,8 @@
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = FB8NKK8CCR;
+						DevelopmentTeam = 8JSG894VUK;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1127,9 +1134,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = FB8NKK8CCR;
+				DEVELOPMENT_TEAM = 8JSG894VUK;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1154,6 +1163,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.influential.smartlearning;
 				PRODUCT_NAME = WelaaaV2;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1164,8 +1174,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = FB8NKK8CCR;
+				DEVELOPMENT_TEAM = 8JSG894VUK;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1190,6 +1202,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.influential.smartlearning;
 				PRODUCT_NAME = WelaaaV2;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

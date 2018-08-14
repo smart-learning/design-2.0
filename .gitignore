@@ -1,5 +1,6 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+.idea/
 # expo
 .expo/
 
@@ -148,3 +149,7 @@ playground.xcworkspace
 
 *.mobileprovision
 *.cer
+
+
+PallyConFPSSDK.framework
+ios/WelaaaV2Tests
