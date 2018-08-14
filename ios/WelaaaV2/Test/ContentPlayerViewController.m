@@ -53,7 +53,7 @@
     StarRatingView *_rateView;
     NSString *_currentStar;
   
-  AVPlayer *_player;
+    AVPlayer *_player;
 }
 @end
 
@@ -106,6 +106,12 @@
   
     AVPlayerItem *playerItem = [ AVPlayerItem playerItemWithAsset : urlAsset ];
     playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
+    CMTime duration = playerItem.duration;       //total time, Apple API를 써도 못가져오는 듯...
+    CMTime currentTime = playerItem.currentTime; //playing time
+    NSUInteger dTotalSeconds = CMTimeGetSeconds(duration);
+    NSUInteger dcurrentSeconds = CMTimeGetSeconds(currentTime);
+    NSLog(@"  Duration : %lu", (unsigned long) dTotalSeconds);
+    NSLog(@"  Current Time : %lu", (unsigned long) dcurrentSeconds);
     _player = [ AVPlayer playerWithPlayerItem : playerItem ];
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
@@ -745,16 +751,20 @@
                      completion : nil];
 }
 
+//
+// 플레이어 컨트롤러UI를 감추거나 표시합니다.
+//
 - (void) pressedHideAndShowButton
 {
     NSLog(@"  플레이어 컨트롤러 감춤 & 표시 버튼!!");
   
-    // 현재 재생 컨트롤러 UI가 표시 상태라면 감추고 _is.. 를 YES로 업데이트 해야합니다.
+    // 현재 재생 컨트롤러 UI가 감춰진 상태라면 표시하고 _isPlaybackContollerHidden 를 NO로 업데이트 해야합니다.
     if ( _isPlaybackContollerHidden == YES )
     {
         [self setPlayerUIHidden : NO];
         _isPlaybackContollerHidden = NO;
     }
+    // 현재 재생 컨트롤러 UI가 표시 상태라면 감추고 _isPlaybackContollerHidden 를 YES로 업데이트 해야합니다.
     else if ( _isPlaybackContollerHidden == NO )
     {
         [self setPlayerUIHidden : YES];
@@ -768,6 +778,8 @@
     [_player play];
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
+  
+    [self playableDuration];  // test purpose
 }
 
 - (void) pressedPauseButton
@@ -776,6 +788,7 @@
     [_player pause];
     // playButton으로 변경해주어야 합니다.
     [self setPlayState : NO];
+    [self playableDuration];  // test purpose
 }
 
 - (void) pressedRwButton
@@ -990,6 +1003,35 @@
     [self presentViewController : alert
                        animated : YES
                      completion : nil];
+}
+
+
+- (NSTimeInterval) playableDuration
+{
+    //  use loadedTimeRanges to compute playableDuration.
+    AVPlayerItem *item = _player.currentItem;
+  
+    if ( item.status == AVPlayerItemStatusReadyToPlay )
+    {
+        NSArray *timeRangeArray = item.loadedTimeRanges;
+    
+        CMTimeRange aTimeRange = [[timeRangeArray objectAtIndex : 0] CMTimeRangeValue];
+    
+        double startTime = CMTimeGetSeconds(aTimeRange.start);
+        double loadedDuration = CMTimeGetSeconds(aTimeRange.duration);
+    
+    // FIXME: shoule we sum up all sections to have a total playable duration,
+    // or we just use first section as whole?
+    
+        NSLog(@"  get time range, its start is %f seconds, its duration is %f seconds.", startTime, loadedDuration);
+    
+        return (NSTimeInterval)(startTime + loadedDuration);
+    }
+    else
+    {
+        return(CMTimeGetSeconds(kCMTimeInvalid));
+    }
+  
 }
 
 @end
