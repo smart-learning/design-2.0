@@ -175,6 +175,13 @@ Build Options에서 "Always Embed Swift Standard Libraries"를 YES
 info.plist NSExceptionDomains에 추가합니다.
 ```
 
+### Error Case
+
+#### Development cannot be enabled while your device is locked.
+
+USB 연결을 해제한 후 다시 연결한다.  
+증상이 반복되면 아이폰 설정 > 일반 > 재설정 > 위치 및 개인정보 재설정 후 USB를 재연결한다.
+
 ## Native Environment Settings
 ### android
 - Gradle version >= **4.4**
