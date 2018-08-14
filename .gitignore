@@ -18,6 +18,7 @@
 # Lock Files
 package-lock.json
 yarn.lock
+ios/Podfile.lock 
 
 # Logs
 npm-debug.log*
