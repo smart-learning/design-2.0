@@ -21,8 +21,7 @@
   
     UIButton *_closeButton;
     UIButton *_rateStarButton;
-    UIButton *_touchButton01;
-    UIButton *_touchButton02;
+    UIButton *_hideAndShowButton;
     UIButton *_playButton;      // 재생 버튼.
     UIButton *_paueseButton;    // 일시 정지 버튼.
     UIButton *_rwButton;        // 뒤로 가기 버튼.
@@ -37,8 +36,10 @@
     UILabel *_networkStatusLabel;
 
     UISlider  *_slider;           // 재생 시간 탐색용 슬라이더.
-    BOOL      _touchDragging;     // 슬라이더 프로퍼티.
-    BOOL      _holdTouchDragging; // 슬라이더 프로퍼티.
+  
+    BOOL _touchDragging;            // 슬라이더 프로퍼티.
+    BOOL _holdTouchDragging;        // 슬라이더 프로퍼티.
+    BOOL _isPlaybackContollerHidden;// 재생 컨트롤 UI 모듈 감춤 or 표시.
   
     ContentPlayerButton *_autoPlayButton;
     ContentPlayerButton *_scriptButton;
@@ -60,7 +61,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self.view setBackgroundColor : [UIColor blackColor]]; // grayColor
+    [self.view setBackgroundColor : [UIColor clearColor]]; // grayColor
   
     // PallyConFPS SDK 객체를 생성합니다.
     _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
@@ -69,30 +70,26 @@
                                                 error : nil             ];
   
     _statusBarHidden = YES;  // Status Bar 표시
+  
+    //
+    // contentView 구성 시작.
+    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
+    [self.view addSubview : _contentView];
+  
+    _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
+    _hideAndShowButton.frame = _contentView.bounds;
+    [_hideAndShowButton addTarget : self
+                           action : @selector(pressedHideAndShowButton)
+                 forControlEvents : UIControlEventTouchUpInside];
+    _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
+    [_contentView addSubview : _hideAndShowButton];
+    // contentView 구성 끝.
+    //
 }
 
 - (void) viewDidAppear : (BOOL) animated
 {
-    //
-    // contentView 구성 시작.
-    _touchButton01 = [UIButton buttonWithType : UIButtonTypeCustom];
-    _touchButton01.frame = self.view.bounds;
-    [_touchButton01 addTarget : self
-                       action : @selector(pressedShowButton)
-             forControlEvents : UIControlEventTouchUpInside];
-    [self.view addSubview : _touchButton01];
   
-    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
-    [self.view addSubview : _contentView];
-
-    _touchButton02 = [UIButton buttonWithType : UIButtonTypeCustom];
-    _touchButton02.frame = _contentView.bounds;
-    [_touchButton02 addTarget : self
-                       action : @selector(pressedHideButton)
-             forControlEvents : UIControlEventTouchUpInside];
-    [_contentView addSubview : _touchButton02];
-    // contentView 구성 끝.
-    //
   
     NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ]; // CONTENT_PATH
     AVURLAsset *urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
@@ -654,15 +651,21 @@
     // 따라서 기존과는 다른 방식으로 뷰를 띄워야 할듯...
 }
 
-- (void) pressedShowButton
+- (void) pressedHideAndShowButton
 {
-    [self setPlayerUIHidden : NO];
-}
-
-- (void) pressedHideButton
-{
-    [self setPlayerUIHidden : YES];
-  // hide 방식을 "[self.view bringSubviewToFront: _statusView];" 처럼 하는 것은 어떨까?
+    NSLog(@"  플레이어 컨트롤러 감춤 & 표시 버튼!!");
+  
+    // 현재 재생 컨트롤러 UI가 표시 상태라면 감추고 _is.. 를 YES로 업데이트 해야합니다.
+    if ( _isPlaybackContollerHidden == YES )
+    {
+        [self setPlayerUIHidden : NO];
+        _isPlaybackContollerHidden = NO;
+    }
+    else if ( _isPlaybackContollerHidden == NO )
+    {
+        [self setPlayerUIHidden : YES];
+        _isPlaybackContollerHidden = YES;
+    }
 }
 
 - (void) pressedPlayButton
@@ -763,18 +766,42 @@
 
 - (void) setPlayerUIHidden : (BOOL) hidden
 {
-    NSLog(@"    [setPlayerUIHidden] 이벤트가 발생하여 플레이어 컨트롤러가 사라집니다.");
+    if ( hidden )
+    {
+        NSLog(@"  [setPlayerUIHidden] 이벤트가 발생하여 플레이어 컨트롤러가 사라집니다.");
+    }
+    else
+    {
+        NSLog(@"  [setPlayerUIHidden] 이벤트가 발생하여 플레이어 컨트롤러가 나타납니다.");
+    }
+  
     self.view.userInteractionEnabled = NO;
     self.view.backgroundColor = hidden ? [UIColor clearColor] : UIColorFromRGB(0x000000, 0.5f);
   
-    _contentView.hidden = NO;
-    _contentView.alpha = hidden ? 1.f : 0.f;
+    _topView.hidden = NO;
+    _topView.alpha = hidden ? 1.f : 0.f;
+    _bottomView.hidden = NO;
+    _bottomView.alpha = hidden ? 1.f : 0.f;
+    _menuItemView.hidden = NO;
+    _menuItemView.alpha = hidden ? 1.f : 0.f;
+    _menuItemTopLineView.hidden = NO;
+    _menuItemTopLineView.alpha = hidden ? 1.f : 0.f;
+    _menuItemBottomLineView.hidden = NO;
+    _menuItemBottomLineView.alpha = hidden ? 1.f : 0.f;
+    _controlBarView.hidden = NO;
+    _controlBarView.alpha = hidden ? 1.f : 0.f;
+
   
     [UIView animateWithDuration : 0.3f
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      _contentView.alpha = hidden ? 0.f : 1.f;
+                                      _topView.alpha = hidden ? 0.f : 1.f;
+                                      _bottomView.alpha = hidden ? 0.f : 1.f;
+                                      _menuItemView.alpha = hidden ? 0.f : 1.f;
+                                      _menuItemTopLineView.alpha = hidden ? 0.f : 1.f;
+                                      _menuItemBottomLineView.alpha = hidden ? 0.f : 1.f;
+                                      _controlBarView.alpha = hidden ? 0.f : 1.f;
                        
                                       if ( !hidden )
                                       {
@@ -783,7 +810,13 @@
                                   }
                      completion : ^(BOOL finished)
                                   {
-                                      _contentView.hidden = hidden;
+                                      _topView.hidden = hidden;
+                                      _bottomView.hidden = hidden;
+                                      _menuItemView.hidden = hidden;
+                                      _menuItemTopLineView.hidden = hidden;
+                                      _menuItemBottomLineView.hidden = hidden;
+                                      _controlBarView.hidden = hidden;
+                                    
                                       self.view.userInteractionEnabled = YES;
        
                                       if ( hidden )
