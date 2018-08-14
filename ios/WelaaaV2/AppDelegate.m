@@ -177,7 +177,8 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 
 - (void) showToast : (NSString *) text
 {
-    [self.navigationController.view makeToast : text];
+//  [self.navigationController.view makeToast : text];
+    [self.window.rootViewController.view makeToast : text];
 }
 
 @end

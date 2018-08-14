@@ -52,6 +52,8 @@
   
     StarRatingView *_rateView;
     NSString *_currentStar;
+  
+  AVPlayer *_player;
 }
 @end
 
@@ -104,10 +106,10 @@
   
     AVPlayerItem *playerItem = [ AVPlayerItem playerItemWithAsset : urlAsset ];
     playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
-    AVPlayer *player = [ AVPlayer playerWithPlayerItem : playerItem ];
+    _player = [ AVPlayer playerWithPlayerItem : playerItem ];
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
-    _playerLayer = [AVPlayerLayer playerLayerWithPlayer : player];
+    _playerLayer = [AVPlayerLayer playerLayerWithPlayer : _player];
     _playerLayer.frame = _contentView.bounds;
   //[_playerLayer setVideoGravity : AVLayerVideoGravityResize];           // 가로세로 비율을 무시하고 레이어의 경계를 채우기 위해 비디오를 늘리도록 지정합니다.
     [_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspect];     // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
@@ -115,7 +117,7 @@
   
     [_contentView.layer addSublayer : _playerLayer];
   
-    [player play];   // 플레이어 재생 실행
+    [_player play];   // 플레이어 재생 실행
   //[player setRate : 14.0]; // 시작 시간 위치
   //[player setMuted : true];
   //[player pause];  // 플레이어 재생 정지
@@ -123,7 +125,7 @@
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
                                                   name : AVPlayerItemDidPlayToEndTimeNotification
-                                                object : [player currentItem]  ];
+                                                object : [_player currentItem]  ];
   
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
@@ -641,6 +643,8 @@
     AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     [app showToast : @"미니플레이어로 변환합니다."];
     NSLog(@"  [pressedCloseButton] 미니플레이어로 변환합니다.");
+  //[self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+    [self toastTestAlert];
 }
 
 - (void) pressedRateStarButton
@@ -850,6 +854,39 @@
         }
     }
   */
+}
+
+# pragma mark - Labatory
+- (void) toastTestAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"Logout"
+                                                                   message : @"Are You Sure Want to Logout!"
+                                                            preferredStyle : UIAlertControllerStyleAlert];
+  
+    //Add Buttons
+    UIAlertAction *yesButton = [UIAlertAction actionWithTitle : @"Yes"
+                                                        style : UIAlertActionStyleDefault
+                                                      handler : ^(UIAlertAction *action)
+                                                                {
+                                                                    //Handle your yes please button action here
+                                                                    //[self clearAllData];
+                                                                }];
+  
+    UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
+                                                       style : UIAlertActionStyleDefault
+                                                     handler : ^(UIAlertAction *action)
+                                                               {
+                                                                    //Handle no, thanks button
+                                                               }];
+  
+    //Add your buttons to alert controller
+  
+    [alert addAction : yesButton];
+    [alert addAction : noButton];
+  
+    [self presentViewController : alert
+                       animated : YES
+                     completion : nil];
 }
 
 @end
