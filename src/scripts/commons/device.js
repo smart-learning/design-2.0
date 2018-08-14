@@ -25,17 +25,17 @@ export default {
 		return value;
 	},
 
-	share(title, message, url) {
+	share(title, url) {
 		Share.share(
 			{
 				...Platform.select({
 					ios: {
-						message: message,
+						message: title,
 						url: url,
 					},
 
 					android: {
-						message: message,
+						message: '',// message,
 					}
 				}),
 
@@ -45,7 +45,7 @@ export default {
 				...Platform.select({
 					ios: {},
 					android: {
-						dialogTitle: message + ' ' + url
+						dialogTitle: title + ' ' + url
 					}
 				})
 			})

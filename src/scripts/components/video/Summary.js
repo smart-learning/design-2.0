@@ -14,6 +14,7 @@ import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
+import Device from "../../commons/device";
 
 const styles = StyleSheet.create( {
 	itemContainer: {
@@ -91,6 +92,8 @@ const styles = StyleSheet.create( {
 } );
 
 export default class Summary extends React.Component {
+
+
 	render() {
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
@@ -117,7 +120,15 @@ export default class Summary extends React.Component {
 					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
-					<Image source={IcShare} style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
+					<TouchableOpacity activeOpacity={0.9}
+						onPress={ ()=>{
+							Device.share( this.props.title, this.props.url );
+						}}
+					>
+						<Image source={IcShare}
+							   style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
+
+					</TouchableOpacity>
 				</View>
 			</View>
 		</View>

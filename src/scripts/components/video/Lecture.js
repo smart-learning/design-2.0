@@ -64,6 +64,7 @@ export default class Lecture extends React.Component {
 					 clipCount={this.props.clipCount}
 					 hitCount={this.props.hitCount}
 					 starAvg={this.props.starAvg}
+					 url={this.props.url}
 					 reviewCount={this.props.reviewCount}
 					 onPress={this.changePage}
 			/>
