@@ -82,6 +82,12 @@ class PlaygroundJune extends Component {
 			<Button title="RN => Delete DownloadService Call"
 				onPress={this.onDownloadDelete}
 			/>
+
+			<Button title="BuildMode가 DEV인지 아닌지 확인"
+				onPress={()=>{ alert( __DEV__ ) }}
+			/>
+
+
 			{/* <ImageView
 				style={{ width:100, height:100 }}
 				src={[{ uri: "https://pbs.twimg.com/tweet_video_thumb/Dg3sOjuV4AEtzIR.jpg", width:100, height:100}]}
