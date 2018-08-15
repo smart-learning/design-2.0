@@ -1,0 +1,114 @@
+import React from "react";
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, ScrollView, } from "react-native";
+import CommonStyles from "../../../styles/common";
+import TabContentInfo from "./TabContentInfo";
+import TabContentList from "./TabContentList";
+import TabContentReview from "./TabContentReview";
+
+const styles = StyleSheet.create( {
+	tabContainer: {
+		width: '33.3%',
+	},
+	tabItem: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'relative',
+		height: 60,
+		backgroundColor: '#ffffff',
+	},
+	tabNormalText: {
+		fontSize: 15,
+		color: '#555555',
+	},
+	tabActiveText: {
+		fontSize: 15,
+		fontWeight: 'bold',
+		color: '#333333',
+	},
+	tabNormalHr: {
+		position: 'absolute',
+		left: 0,
+		bottom: 0,
+		height: 3,
+		backgroundColor: '#ffffff',
+	},
+	tabActiveHr: {
+		position: 'absolute',
+		left: 0,
+		bottom: 0,
+		width: '100%',
+		height: 3,
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
+	},
+} );
+
+@observer
+class DetailLayout extends React.Component {
+
+	@observable tabStatus = 'info';
+
+	constructor( props ) {
+		super( props );
+	}
+
+	render() {
+		return <View>
+			<ScrollView style={{ width: '100%' }}>
+				<View style={CommonStyles.alignJustifyContentBetween}>
+					<View style={styles.tabContainer}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => {
+											  this.tabStatus = 'info'
+										  }}>
+							<View style={styles.tabItem}>
+								<Text style={this.tabStatus === 'info' ? styles.tabActiveText : styles.tabNormalText}>
+									클래스정보
+								</Text>
+								<View style={ this.tabStatus === 'info' ? styles.tabActiveHr : styles.tabNormalHr }/>
+							</View>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.tabContainer}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => {
+											  this.tabStatus = 'list'
+										  }}>
+							<View style={styles.tabItem}>
+								<Text style={this.tabStatus === 'list' ? styles.tabActiveText : styles.tabNormalText}>
+									강의목차 (00)
+								</Text>
+								<View style={ this.tabStatus === 'list' ? styles.tabActiveHr : styles.tabNormalHr }/>
+							</View>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.tabContainer}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => {
+											  this.tabStatus = 'review'
+										  }}>
+							<View style={styles.tabItem}>
+								<Text style={ this.tabStatus === 'review' ? styles.tabActiveText : styles.tabNormalText }>
+									리뷰 (00)
+								</Text>
+								<View style={ this.tabStatus === 'review' ? styles.tabActiveHr : styles.tabNormalHr }/>
+							</View>
+						</TouchableOpacity>
+					</View>
+				</View>
+				{this.tabStatus === 'info' &&
+				<TabContentInfo/>
+				}
+				{this.tabStatus === 'list' &&
+				<TabContentList/>
+				}
+				{this.tabStatus === 'review' &&
+				<TabContentReview/>
+				}
+			</ScrollView>
+		</View>
+	}
+}
+
+export default DetailLayout
