@@ -10,13 +10,19 @@ import logo from "../../images/logo-white.png"
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
 		backgroundColor: '#00b870',
-		paddingLeft: 15,
-		paddingRight: 15,
 	},
 	headerTintColor: '#fff',
 	headerTitleStyle: {
 		fontWeight: 'bold',
 	},
+
+	headerLeftContainerStyle:{
+		paddingLeft: 15,
+	},
+
+	headerRightContainerStyle:{
+		paddingRight: 15,
+	}
 };
 
 export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({

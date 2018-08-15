@@ -53,7 +53,13 @@ class PlaygroundJune extends Component {
 			DOWNLOAD_SERVICE_TYPE: "false"
 
 		}
-		NativeModules.RNNativePlayer.download(args);
+
+		try {
+			NativeModules.RNNativePlayer.download(args);
+		}catch (e) {
+			alert('실패');
+		}
+
 	}
 	onDownloadDelete = () => {
 		// alert('play');
@@ -62,7 +68,14 @@ class PlaygroundJune extends Component {
 			uri: "uri",
 			DOWNLOAD_SERVICE_TYPE: "true"
 		}
-		NativeModules.RNNativePlayer.downloadDelete(args);
+
+		try {
+			NativeModules.RNNativePlayer.downloadDelete(args);
+		}catch (e) {
+			alert('실패');
+		}
+
+
 	}
 
 	render() {
@@ -85,6 +98,10 @@ class PlaygroundJune extends Component {
 
 			<Button title="BuildMode가 DEV인지 아닌지 확인"
 				onPress={()=>{ alert( __DEV__ ) }}
+			/>
+
+			<Button title="string.xml 변수 가져오기"
+				onPress={()=>{}}
 			/>
 
 

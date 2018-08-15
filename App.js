@@ -56,9 +56,9 @@ function getActiveRouteName(navigationState) {
 
 const AppDrawer = createDrawerNavigator(
 	{
-		SampleScreen: {
-			screen: SampleScreen,
-		},
+		// SampleScreen: {
+		// 	screen: SampleScreen,
+		// },
 
 		HomeScreen: {
 			screen: HomeScreen,
