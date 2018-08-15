@@ -7,7 +7,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from "react-native";
-import { COLOR_PRIMARY } from "../../../styles/common";
+import Style, { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
 import IcComment from "../../../images/icons/commenting.png"
 import IcShare from "../../../images/ic-share-light.png";
@@ -15,6 +15,7 @@ import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
 import Device from "../../commons/device";
+import Native from "../../commons/native";
 
 
 const styles = StyleSheet.create( {
@@ -65,6 +66,7 @@ const styles = StyleSheet.create( {
 		width: 42,
 		height: 42,
 	},
+
 	btnGroup: {
 		width: '100%',
 		height: 40,
@@ -109,7 +111,13 @@ export default class Summary extends React.Component {
 						{this.props.clipCount}
 						개 강의
 					</Text>
-					<Image source={IcPlay} style={styles.play}/>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.play}
+									  onPress={ ()=> Native.play( this.props.id ) }
+					>
+						<Image source={IcPlay} style={ Style.fullImg } />
+					</TouchableOpacity>
+
 				</ImageBackground>
 			</TouchableOpacity>
 			<View style={styles.btnGroup}>

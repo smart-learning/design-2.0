@@ -49,6 +49,12 @@ const commonStyle = StyleSheet.create( {
 	contentContainer: {
 		marginLeft: 13,
 		marginRight: 13,
+	},
+
+	// 가득찬 이미지용
+	fullImg:{
+		width:'100%',
+		height:'100%'
 	}
 } );
 
