@@ -13,7 +13,7 @@ const SampleScreen = createStackNavigator({
 			navigationOptions: NAV_OPTS_MAIN, // 로고를 포함한 메인헤더를 가질 페이지용 헤더 설정
 		},
 
-		SampleScreen1: {
+		SampleScreen2: {
 			screen: SampleSubScreen2,
 			navigationOptions: NAV_OPTS_MAIN, // 로고없이 서브타이틀과 검색버튼을 가질 페이지용 헤더 설정
 		}
