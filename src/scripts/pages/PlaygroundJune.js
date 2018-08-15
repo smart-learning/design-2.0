@@ -3,6 +3,8 @@ import { Button, Modal, Text, TouchableHighlight, View, NativeModules } from "re
 import CommonStyles from "../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import { NAV_OPTS_DRAWER } from "../commons/nav";
+import Localizable from 'react-native-localizable';
+import Device from "../commons/device";
 
 /*
 * Acount: test/test
@@ -42,8 +44,13 @@ class PlaygroundJune extends Component {
 			token: "", // pallyCon token 
 			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
 		}
-		NativeModules.RNNativePlayer.play(args);
-		//NativeModules.RNNativePlayer.download(args);
+
+		try {
+			NativeModules.RNNativePlayer.play(args);
+		}catch (e) {
+			alert( e );
+		}
+
 	}
 	onDownload = () => {
 		// alert('play');
@@ -61,6 +68,8 @@ class PlaygroundJune extends Component {
 		}
 
 	}
+
+
 	onDownloadDelete = () => {
 		// alert('play');
 		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
@@ -76,6 +85,10 @@ class PlaygroundJune extends Component {
 		}
 
 
+	}
+
+	getNativeVariable = () =>{
+		alert( `host_debug: ${Localizable.host_debug} \n\n host_release: ${Localizable.host_release}` );
 	}
 
 	render() {
@@ -96,12 +109,16 @@ class PlaygroundJune extends Component {
 				onPress={this.onDownloadDelete}
 			/>
 
-			<Button title="BuildMode가 DEV인지 아닌지 확인"
+			<Button title="디바이스 언어 가져오기"
+				onPress={ ()=>{ alert( Device.getLocale() ) } }
+			/>
+
+			<Button title="BuildMode가 DEBUG인지 아닌지 확인"
 				onPress={()=>{ alert( __DEV__ ) }}
 			/>
 
-			<Button title="string.xml 변수 가져오기"
-				onPress={()=>{}}
+			<Button title="저장된 host 변수 가져오기"
+				onPress={ this.getNativeVariable }
 			/>
 
 

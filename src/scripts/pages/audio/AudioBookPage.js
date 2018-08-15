@@ -132,6 +132,7 @@ export default class AudioBookPage extends React.Component {
 											  isFree={item.is_free}
 											  likeCount={item.like_count}
 											  hitCount={item.hit_count}
+											  url={item.url}
 											  reviewCount={item.review_count}/>
 					}
 				/>

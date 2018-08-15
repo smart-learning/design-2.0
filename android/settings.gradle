@@ -1,3 +1,15 @@
 rootProject.name = 'WelaaaV2'
+include ':rnn-module-ui-sample'
+project(':rnn-module-ui-sample').projectDir = new File(rootProject.projectDir, '../node_modules/rnn-module-ui-sample/android')
+include ':react-native-video'
+project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android')
+include ':react-native-kakao-signin'
+project(':react-native-kakao-signin').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-kakao-signin/android')
+include ':react-native-iap'
+project(':react-native-iap').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iap/android')
+include ':react-native-fbsdk'
+project(':react-native-fbsdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fbsdk/android')
+include ':react-native-localizable'
+project(':react-native-localizable').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-localizable/android')
 
 include ':app'

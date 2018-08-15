@@ -7,6 +7,12 @@ import android.support.multidex.MultiDex;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.react.ReactApplication;
+import test.welaaa.WelaaaPackageManager;
+import com.brentvatne.react.ReactVideoPackage;
+import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
+import com.dooboolab.RNIap.RNIapPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -36,6 +42,12 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new WelaaaPackageManager(),
+            new ReactVideoPackage(),
+            new RNKaKaoSigninPackage(),
+            new RNIapPackage(),
+            new FBSDKPackage(),
+            		new RNLocalizablePackage( R.string.class ),
                     new RNNativePlayerPackage()
             );
         }

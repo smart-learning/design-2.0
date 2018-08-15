@@ -107,7 +107,7 @@ android {
     defaultConfig {
         applicationId "com.welaaav2"
         minSdkVersion 19
-        targe   tSdkVersion 26
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         ndk {
@@ -162,6 +162,12 @@ buildscript {
 apply plugin: 'io.fabric'
 
 dependencies {
+    compile project(':rnn-module-ui-sample')
+    compile project(':react-native-video')
+    compile project(':react-native-kakao-signin')
+    compile project(':react-native-iap')
+    compile project(':react-native-fbsdk')
+    compile project(':react-native-localizable')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

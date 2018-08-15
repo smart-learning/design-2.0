@@ -14,6 +14,8 @@ import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
+import Device from "../../commons/device";
+
 
 const styles = StyleSheet.create( {
 	itemContainer: {
@@ -119,14 +121,12 @@ export default class Summary extends React.Component {
 					<Image source={IcComment} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
 					<TouchableOpacity activeOpacity={0.9}
-									  style={{ marginLeft: 'auto' }}
-						onPress={ ()=>{
-							Device.share( this.props.title, this.props.url );
-						}}
+									  onPress={ ()=>{
+										  Device.share( this.props.title, this.props.url );
+									  }}
 					>
 						<Image source={IcShare}
-							   style={styles.btnSetLarge}/>
-
+							   style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
 					</TouchableOpacity>
 				</View>
 			</View>

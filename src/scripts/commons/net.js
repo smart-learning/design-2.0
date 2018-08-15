@@ -1,8 +1,17 @@
 import axios from 'axios';
 import store from "./store";
 import Base64 from "Base64";
+import Localizable from 'react-native-localizable';
 
-const HOST = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
+
+// 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
+let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
+if( __DEV__ )
+	host = Localizable.host_debug || host;
+else
+	host = Localizable.host_release || host;
+
+const HOST = host;
 const TYPE = 'api';
 const VERSION = 'v1.0';
 const API_PREFIX = `${HOST}/${TYPE}/${VERSION}/`;
