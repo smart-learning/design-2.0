@@ -84,9 +84,8 @@ https://github.com/fabriciovergara/react-native-localizable
 ```
 프로젝트별 변수를 가져오기 위해서 설치합니다.
 설치는 공식 문서를 참고합니다만, 필요한 파일은 전부 올라가 있습니다.
-npm run link react-native-localizable 실행만 필요합니다만,
-
-: 참고로 공식 도큐먼트와 달리 iOS에 추가하는 파일명은 localizable.strings 가 아니라 Localizable.strings입니다.
+- npm run link react-native-localizable 실행 필요합니다.
+- ios/WelaaaV2/Localizable.strings 파일을 xcode 프로젝트 패널에 추가해주세요. 
 ```
 
 
