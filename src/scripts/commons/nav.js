@@ -16,13 +16,13 @@ export const NAV_OPTS_COMMON = {
 		fontWeight: 'bold',
 	},
 
-	headerLeftContainerStyle:{
-		paddingLeft: 15,
-	},
-
-	headerRightContainerStyle:{
-		paddingRight: 15,
-	}
+	// headerLeftContainerStyle:{
+	// 	// paddingLeft: 15,
+	// },
+    //
+	// headerRightContainerStyle:{
+	// 	// paddingRight: 15,
+	// }
 };
 
 export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({

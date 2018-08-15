@@ -25,7 +25,7 @@ class App extends React.Component {
 					const prevScreen = getActiveRouteName(prevState);
 
 					if (prevScreen !== currentScreen) {
-						if (currentScreen !== 'Auth') Store.lastLocation = currentScreen;
+						if (currentScreen !== 'AuthCheck') Store.lastLocation = currentScreen;
 					}
 				}}
 			/>

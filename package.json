@@ -50,7 +50,6 @@
 		"react-native-video": "2.2.0",
 		"react-navigation": "^2.3.1",
 		"react-test-renderer": "16.3.1",
-		"rnn-module-ui-sample": "https://github.com/kyejune/rnn-module-ui-sample.git",
 		"underscore": "^1.9.1",
 		"watchman": "^1.0.0"
 	}

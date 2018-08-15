@@ -13,6 +13,8 @@ class AuthLoadingScreen extends React.Component {
 
 		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'MyInfoHome');
 
+		// alert('store' + ( store.token||store.authToken ) );
+
 		if( store.token || store.authToken )
 			this.props.navigation.navigate(requestScreenName);
 		else

@@ -162,7 +162,6 @@ buildscript {
 apply plugin: 'io.fabric'
 
 dependencies {
-    compile project(':rnn-module-ui-sample')
     compile project(':react-native-video')
     compile project(':react-native-kakao-signin')
     compile project(':react-native-iap')

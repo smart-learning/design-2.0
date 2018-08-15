@@ -7,7 +7,7 @@ import android.support.multidex.MultiDex;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.react.ReactApplication;
-import test.welaaa.WelaaaPackageManager;
+//import test.welaaa.WelaaaPackageManager;
 import com.brentvatne.react.ReactVideoPackage;
 import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
 import com.dooboolab.RNIap.RNIapPackage;
@@ -25,12 +25,18 @@ import com.welaaav2.util.WeContentManager;
 import io.fabric.sdk.android.Fabric;
 import java.util.Arrays;
 import java.util.List;
+import com.facebook.CallbackManager;
 
 public class MainApplication extends Application implements ReactApplication {
 
     private WeContentManager content_manager=null;
 
     private PlayerServiceManager playerServiceManager;
+    private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
+    protected static CallbackManager getCallbackManager() {
+        return mCallbackManager;
+    }
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
@@ -42,11 +48,10 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
-            new WelaaaPackageManager(),
-            new ReactVideoPackage(),
-            new RNKaKaoSigninPackage(),
-            new RNIapPackage(),
-            new FBSDKPackage(),
+                    new ReactVideoPackage(),
+                    new RNKaKaoSigninPackage(),
+                    new RNIapPackage(),
+                    new FBSDKPackage(mCallbackManager),
             		new RNLocalizablePackage( R.string.class ),
                     new RNNativePlayerPackage()
             );

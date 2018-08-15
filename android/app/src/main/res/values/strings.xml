@@ -39,7 +39,7 @@
     <string name="signed_in_fmt">LoginTest</string>
     <string name="facebook_app_id">918233258310348</string>
     <string name="fb_login_protocol_scheme">fb918233258310348</string>
-    <!--<string name="kakao_app_key">d24dd5fa11ebda6fc4bd29414eefc5ee</string>-->
+    <string name="kakao_app_key">d24dd5fa11ebda6fc4bd29414eefc5ee</string>
 
     <!-- 동영상 controlbar에 들어가는 버튼 -->
     <string name="btn_txt_smartleaning">스마트러닝</string>

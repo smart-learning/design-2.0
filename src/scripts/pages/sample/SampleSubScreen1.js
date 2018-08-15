@@ -15,7 +15,7 @@ export default class SampleSubScreen1 extends React.Component {
             />
 
 			<Button title="외부 페이지 로그인 테스트" onPress={
-				()=> this.props.navigation.navigate('Auth', { requestScreenName:'AuthorizedMyScreen' } ) }
+				()=> this.props.navigation.navigate('AuthCheck', { requestScreenName:'AuthorizedMyScreen' } ) }
 
 			/>
 
