@@ -173,14 +173,6 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
   return self.persistentContainer.viewContext;
 }
 
-#pragma mark - Notifications
-
-- (void) showToast : (NSString *) text
-{
-//  [self.navigationController.view makeToast : text];
-    [self.window.rootViewController.view makeToast : text];
-}
-
 @end
 
 

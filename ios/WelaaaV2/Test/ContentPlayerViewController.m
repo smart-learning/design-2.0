@@ -106,12 +106,6 @@
   
     AVPlayerItem *playerItem = [ AVPlayerItem playerItemWithAsset : urlAsset ];
     playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
-    CMTime duration = playerItem.duration;       //total time, Apple API를 써도 못가져오는 듯...
-    CMTime currentTime = playerItem.currentTime; //playing time
-    NSUInteger dTotalSeconds = CMTimeGetSeconds(duration);
-    NSUInteger dcurrentSeconds = CMTimeGetSeconds(currentTime);
-    NSLog(@"  Duration : %lu", (unsigned long) dTotalSeconds);
-    NSLog(@"  Current Time : %lu", (unsigned long) dcurrentSeconds);
     _player = [ AVPlayer playerWithPlayerItem : playerItem ];
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
@@ -650,10 +644,27 @@
                   forState : UIControlStateHighlighted];
 }
 
+#pragma mark - Public Methods
+
 - (void) setPlayState : (BOOL) isPlaying
 {
     _paueseButton.hidden = !isPlaying;
     _playButton.hidden = !_paueseButton.hidden;
+}
+
+- (void) setCurrentTime : (CGFloat) time
+            forceChange : (BOOL) forceChange
+{
+    if ( _timeLabel && (!_touchDragging || forceChange) )
+    {
+        _timeLabel.text = [common convertTimeToString : time
+                                               Minute : YES];
+    }
+  
+    /*if ( _scriptView )
+    {
+        [_scriptView setCurrentTime: time];
+    }*/
 }
 
 #pragma mark - selectors
@@ -779,7 +790,7 @@
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
   
-    [self playableDuration];  // test purpose
+    [self getDuration];  // test purpose
 }
 
 - (void) pressedPauseButton
@@ -788,17 +799,51 @@
     [_player pause];
     // playButton으로 변경해주어야 합니다.
     [self setPlayState : NO];
-    [self playableDuration];  // test purpose
+    [self getDuration];  // test purpose
 }
 
 - (void) pressedRwButton
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
+    // 이용로그 전송 시작
+    //
+    // 이용로그 전송 종료
+  
+    NSTimeInterval cTime = [self getCurrentPlaybackTime];
+    NSTimeInterval tTime = [self getDuration];
+  
+    if ( cTime > 10.f )
+    {
+        CMTime newTime = CMTimeMakeWithSeconds(cTime - 10.f, tTime);
+        [_player seekToTime : newTime];
+    }
+    else
+    {
+        CMTime newTime = CMTimeMakeWithSeconds(0, tTime);
+        [_player seekToTime : newTime];//playImmediatelyAtRate
+    }
 }
 
 - (void) pressedFfButton
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
+    // 이용로그 전송 시작
+    //
+    // 이용로그 전송 종료
+  
+    NSTimeInterval cTime = [self getCurrentPlaybackTime];
+    NSTimeInterval tTime = [self getDuration];
+  
+    if ( cTime + 10.f < tTime )
+    {
+        CMTime newTime = CMTimeMakeWithSeconds(cTime + 10.f, tTime);
+        [_player seekToTime : newTime];
+    }
+    else
+    {
+        CMTime newTime = CMTimeMakeWithSeconds(tTime, tTime);
+        [_player seekToTime : newTime];
+    }
 }
 
 - (void) pressedSpeedButton
@@ -819,7 +864,6 @@
 
 - (void) seekbarDidChangeValue : (id) sender
 {
-  /*
     UISlider *bar = (UISlider *) sender;
   
     [self setCurrentTime : bar.value
@@ -829,7 +873,7 @@
     {
         return ;
     }
-  
+  /*
     if ( [self.delegate respondsToSelector : @selector(playerUiView:seekbarDragging:)] )
     {
         [self.delegate playerUiView : self
@@ -972,6 +1016,72 @@
     [self.view makeToast : text];
 }
 
+#pragma mark - Time Control
+/*
+- (NSTimeInterval) playableDuration
+{
+  //  use loadedTimeRanges to compute playableDuration.
+  AVPlayerItem *item = _player.currentItem;
+  
+  if ( item.status == AVPlayerItemStatusReadyToPlay )
+  {
+    NSArray *timeRangeArray = item.loadedTimeRanges;
+    
+    CMTimeRange aTimeRange = [[timeRangeArray objectAtIndex : 0] CMTimeRangeValue];
+    
+    double startTime = CMTimeGetSeconds(aTimeRange.start);
+    double loadedDuration = CMTimeGetSeconds(aTimeRange.duration);
+    
+    // FIXME: shoule we sum up all sections to have a total playable duration,
+    // or we just use first section as whole?
+    
+    NSLog(@"  get time range, its start is %f seconds, its duration is %f seconds.", startTime, loadedDuration);
+    
+    return (NSTimeInterval) (startTime + loadedDuration);
+  }
+  else
+  {
+    return (CMTimeGetSeconds(kCMTimeInvalid));
+  }
+}
+*/
+
+// 콘텐트의 전체 재생 시간을 구합니다.
+- (NSTimeInterval) getDuration
+{
+    AVPlayerItem *item = _player.currentItem;
+  
+    if ( item.status == AVPlayerItemStatusReadyToPlay )
+    {
+        double loadedDuration = CMTimeGetSeconds(item.duration);
+        NSLog(@"  Content duration : %f", loadedDuration);
+      
+        return (NSTimeInterval) loadedDuration;
+    }
+    else
+    {
+        return (CMTimeGetSeconds(kCMTimeInvalid));
+    }
+}
+
+// 콘텐트의 현재 재생 시간을 구합니다.
+- (NSTimeInterval) getCurrentPlaybackTime
+{
+    AVPlayerItem *item = _player.currentItem;
+  
+    if ( item.status == AVPlayerItemStatusReadyToPlay )
+    {
+        double currentTime = CMTimeGetSeconds(item.currentTime);
+        NSLog(@"  Current time : %f", currentTime);
+      
+        return (NSTimeInterval) currentTime;
+    }
+    else
+    {
+        return (CMTimeGetSeconds(kCMTimeInvalid));
+    }
+}
+
 # pragma mark - Labatory
 - (void) toastTestAlert
 {
@@ -1006,32 +1116,26 @@
 }
 
 
-- (NSTimeInterval) playableDuration
-{
-    //  use loadedTimeRanges to compute playableDuration.
-    AVPlayerItem *item = _player.currentItem;
-  
-    if ( item.status == AVPlayerItemStatusReadyToPlay )
-    {
-        NSArray *timeRangeArray = item.loadedTimeRanges;
-    
-        CMTimeRange aTimeRange = [[timeRangeArray objectAtIndex : 0] CMTimeRangeValue];
-    
-        double startTime = CMTimeGetSeconds(aTimeRange.start);
-        double loadedDuration = CMTimeGetSeconds(aTimeRange.duration);
-    
-    // FIXME: shoule we sum up all sections to have a total playable duration,
-    // or we just use first section as whole?
-    
-        NSLog(@"  get time range, its start is %f seconds, its duration is %f seconds.", startTime, loadedDuration);
-    
-        return (NSTimeInterval)(startTime + loadedDuration);
-    }
-    else
-    {
-        return(CMTimeGetSeconds(kCMTimeInvalid));
-    }
-  
-}
+
 
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

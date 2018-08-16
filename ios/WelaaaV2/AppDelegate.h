@@ -9,7 +9,6 @@
 #import <CoreData/CoreData.h>
 
 #import "common.h"
-#import <Toast/UIView+Toast.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -20,6 +19,5 @@
 
 - (void) saveContext;
 - (NSManagedObjectContext *) managedObjectContext;
-- (void) showToast : (NSString *) text;
 
 @end

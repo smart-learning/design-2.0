@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <AVKit/AVKit.h>
 #import <PallyConFPSSDK/PallyConFPSSDK-Swift.h>
+#import <Toast/UIView+Toast.h>
 
 #import "common.h"
 #import "UIImage+TintColor.h"
