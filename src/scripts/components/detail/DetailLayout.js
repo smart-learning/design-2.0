@@ -8,6 +8,7 @@ import TabContentList from "./TabContentList";
 import TabContentReview from "./TabContentReview";
 import PaymentStatus from "./PaymentStatus";
 import TopBanner from "./TopBanner";
+import CountView from "./CountView";
 
 const styles = StyleSheet.create( {
 	tabContainer: {
@@ -59,6 +60,9 @@ class DetailLayout extends React.Component {
 		return <View>
 			<ScrollView style={{ width: '100%' }}>
 				<TopBanner learnType={"class"}/>
+
+				<CountView/>
+
 				<Text>일반 회원 구매 전 - 오디오북</Text>
 				<PaymentStatus learnType={"audioBook"} paymentType={"normal"}/>
 
