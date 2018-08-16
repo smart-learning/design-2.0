@@ -12,6 +12,7 @@ import DummyTeacher from '../../../images/dummy-teacher.jpg';
 import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
 import Evaluation from "./Evaluation";
+import ReviewItem from "./ReviewItem";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -136,7 +137,6 @@ class TabContentInfo extends React.Component {
 
 	render() {
 		return <View>
-			<Text>Info Contents</Text>
 			{/* 이미지 스와이퍼 */}
 			<View style={{ height: this.slideHeight }}>
 				<Swiper style={styles.wrapper}
@@ -234,6 +234,13 @@ class TabContentInfo extends React.Component {
 				<Text style={styles.sectionTitle}>학습자 평가</Text>
 
 				<Evaluation/>
+
+			</View>
+
+			<View style={styles.contentHr}/>
+
+			<View style={styles.review}>
+				<ReviewItem/>
 			</View>
 
 		</View>

@@ -141,7 +141,6 @@ export default class Evaluation extends React.Component {
 					00 <Text style={styles.evaluationTextBullet}>%</Text>
 				</Text>
 			</View>
-			<Text>Evaluation Contents</Text>
 		</View>
 	}
 }
