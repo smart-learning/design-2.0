@@ -1,5 +1,4 @@
 import React from "react";
-import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, Dimensions, } from "react-native";
 import Swiper from 'react-native-swiper';
@@ -101,10 +100,6 @@ const styles = StyleSheet.create( {
 
 @observer
 class TabContentInfo extends React.Component {
-	@observable lectureView = false;
-	@observable teacherView = false;
-	@observable slideHeight = null;
-
 	constructor( props ) {
 		super( props );
 
@@ -116,29 +111,29 @@ class TabContentInfo extends React.Component {
 	componentDidMount() {
 		let windowWidth = Dimensions.get( 'window' ).width;
 
-		this.slideHeight = windowWidth * 0.833;
+		this.props.store.slideHeight = windowWidth * 0.833;
 	}
 
 	toggleLectureView() {
-		if ( this.lectureView === false ) {
-			this.lectureView = true;
+		if ( this.props.store.lectureView === false ) {
+			this.props.store.lectureView = true;
 		} else {
-			this.lectureView = false;
+			this.props.store.lectureView = false;
 		}
 	}
 
 	toggleTeacherView() {
-		if ( this.teacherView === false ) {
-			this.teacherView = true;
+		if ( this.props.store.teacherView === false ) {
+			this.props.store.teacherView = true;
 		} else {
-			this.teacherView = false;
+			this.props.store.teacherView = false;
 		}
 	}
 
 	render() {
 		return <View>
 			{/* 이미지 스와이퍼 */}
-			<View style={{ height: this.slideHeight }}>
+			<View style={{ height: this.props.store.slideHeight }}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
@@ -162,7 +157,7 @@ class TabContentInfo extends React.Component {
 					'평생 직장의 시대는 가고, 평생 이직의 시대가 왔다! 언젠가 한 번은 이직해야 한다면 경력 관리 및 이직 전략을 어떻게 세워야 할까? 모든 직장인에게 필요한 커리어 관리와
 					성공적인 이직 노하우 대공개!
 				</Text>
-				{this.lectureView === true &&
+				{this.props.store.lectureView === true &&
 				<Text style={styles.infoTextNormal}>
 					기업이 경력자를 평가하고 채용하는 관점은 신입과는 전혀 다릅니다. 자신의 가치를 스스로 알고, 이것을 명확하게 표현할 수 있을 때, 현재 속해 있는 회사에서 인정 받고,
 					성공적으로 이직할 수 있습니다. 경력직의 이력서, 자기소개서, 경력 기술서 및 면접 방법은 물론, 성장을 위한 진짜 커리어를 쌓는 지혜까지..!{"\n"}
@@ -209,7 +204,7 @@ class TabContentInfo extends React.Component {
 					<Text style={styles.sectionTitle}>강사</Text>
 					<Image source={DummyTeacher} borderRadius={44} style={styles.authorImage}/>
 					<Text style={styles.authorName}>동아시아문화도시조직위원회 이어령 교수</Text>
-					{this.teacherView === true &&
+					{this.props.store.teacherView === true &&
 					<Text style={styles.authorText}>
 						10년 이상 경력의 취업 전문 컨설턴트!{"\n"}
 						{"\n"}

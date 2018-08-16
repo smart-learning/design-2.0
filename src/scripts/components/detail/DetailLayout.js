@@ -4,11 +4,12 @@ import { observer } from 'mobx-react';
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, ScrollView, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import TabContentInfo from "./TabContentInfo";
-import TabContentList from "./TabContentList";
+// import TabContentList from "./TabContentList";
 import TabContentReview from "./TabContentReview";
 import PaymentStatus from "./PaymentStatus";
 import TopBanner from "./TopBanner";
 import CountView from "./CountView";
+import TabContentList from "./TabContentList";
 
 const styles = StyleSheet.create( {
 	tabContainer: {
@@ -47,10 +48,18 @@ const styles = StyleSheet.create( {
 	},
 } );
 
+class TabStore {
+	@observable lectureView = false;
+	@observable teacherView = false;
+	@observable slideHeight = null;
+}
+
+const tabStore = new TabStore();
+
 @observer
 class DetailLayout extends React.Component {
 
-	@observable tabStatus = 'info';
+	@observable tabStatus = 'review';
 
 	constructor( props ) {
 		super( props );
@@ -129,13 +138,13 @@ class DetailLayout extends React.Component {
 					</View>
 				</View>
 				{this.tabStatus === 'info' &&
-				<TabContentInfo/>
+				<TabContentInfo store={ tabStore }/>
 				}
 				{this.tabStatus === 'list' &&
 				<TabContentList/>
 				}
 				{this.tabStatus === 'review' &&
-				<TabContentReview/>
+				<TabContentReview store={ tabStore }/>
 				}
 			</ScrollView>
 		</View>
