@@ -54,11 +54,15 @@
     NSString *_currentStar;
   
     AVPlayer *_player;
+    AVPlayerItem *_playerItem;
+    AVURLAsset *_urlAsset;
 }
 @end
 
 @implementation ContentPlayerViewController
 
+// 해당 뷰컨트롤러 클래스가 생성될 때(ViewWillAppear전에 실행) 실행됩니다.
+// Low memory와같은 특별한 경우가 아니라면 딱 한번만 실행되기 때문에 초기화 할 때 사용 할 수 있습니다.
 - (void) viewDidLoad
 {
     [super viewDidLoad];
@@ -73,8 +77,7 @@
   
     _statusBarHidden = YES;  // Status Bar 표시
   
-    //
-    // contentView 구성 시작.
+    // contentView 구성.
     _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
     [self.view addSubview : _contentView];
   
@@ -85,43 +88,43 @@
                  forControlEvents : UIControlEventTouchUpInside];
     _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
     [_contentView addSubview : _hideAndShowButton];
-    // contentView 구성 끝.
-    //
 }
 
-- (void) viewDidAppear : (BOOL) animated
+// 뷰 컨트롤러가 화면에 나타나기 직전에 실행됩니다.
+// 뷰 컨트롤러가 나타나기 직전에 항상 실행되기 때문에 해당 뷰 컨트롤러가 나타나기 직전마다 일어나는 작업들을 여기에 배치 시킬 수 있습니다.
+- (void) viewWillAppear : (BOOL)animated
 {
-  
-  
     NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ]; // CONTENT_PATH
-    AVURLAsset *urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                                    options : nil       ];
+    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
+                                         options : nil       ];
   
     // 2. Set parameters required for FPS content playback. FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : urlAsset
+    [ _fpsSDK prepareWithUrlAsset : _urlAsset
                            userId : [_args objectForKey : @"userId"]
                         contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
                        optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
                   liveKeyRotation : NO              ];
   
-    AVPlayerItem *playerItem = [ AVPlayerItem playerItemWithAsset : urlAsset ];
-    playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
-    _player = [ AVPlayer playerWithPlayerItem : playerItem ];
+    _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
+    _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
+    _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer : _player];
     _playerLayer.frame = _contentView.bounds;
-  //[_playerLayer setVideoGravity : AVLayerVideoGravityResize];           // 가로세로 비율을 무시하고 레이어의 경계를 채우기 위해 비디오를 늘리도록 지정합니다.
+    //[_playerLayer setVideoGravity : AVLayerVideoGravityResize];           // 가로세로 비율을 무시하고 레이어의 경계를 채우기 위해 비디오를 늘리도록 지정합니다.
     [_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspect];     // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
-  //[_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspectFill]; // 가로세로 비율을 유지하고 레이어의 경계를 채우도록 지정합니다.
+    //[_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspectFill]; // 가로세로 비율을 유지하고 레이어의 경계를 채우도록 지정합니다.
   
     [_contentView.layer addSublayer : _playerLayer];
-  
+}
+
+// 뷰 컨트롤러가 화면에 나타난 직후에 실행됩니다.
+// 화면에 적용될 애니메이션을 그리거나 API로 부터 정보를 받아와 화면을 업데이트 할 때 이곳에 로직을 위치시키면 좋습니다.
+// 왜냐하면 지나치게 빨리 애니메이션을 그리거나 API에서 정보를 받아와 뷰 컨트롤러를 업데이트 할 경우 화면에 반영되지 않습니다.
+- (void) viewDidAppear : (BOOL) animated
+{
     [_player play];   // 플레이어 재생 실행
-  //[player setRate : 14.0]; // 시작 시간 위치
-  //[player setMuted : true];
-  //[player pause];  // 플레이어 재생 정지
-  
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
                                                   name : AVPlayerItemDidPlayToEndTimeNotification
@@ -129,6 +132,8 @@
   
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
+  
+    NSLog(@"  Duration : %f", [self getDuration]);
   
     [self setPlayState : YES];
 }
@@ -356,6 +361,8 @@
     _totalTimeLabel.textColor = [UIColor whiteColor];
     _totalTimeLabel.textAlignment = NSTextAlignmentCenter;
     _totalTimeLabel.text = @"00:00";
+    _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) + 1 // +1은 소수점 이하를 포함합니다.
+                                                Minute : YES];
     [_bottomView addSubview : _totalTimeLabel];
   
     _slider = [[UISlider alloc] initWithFrame : CGRectMake(margin + labelWidth + padding, _bottomView.frame.size.height-44, barWidth, 30.f)];
@@ -1115,6 +1122,8 @@
                      completion : nil];
 }
 
+
+// 슬라이더 이동시 썸네일 이미지를 보여주면 좋을듯.. ( http://devhkh.tistory.com/18 )
 
 
 
