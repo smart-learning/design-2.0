@@ -106,7 +106,8 @@
                   liveKeyRotation : NO              ];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
-    _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련.
+  //_playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련. 속도 변경을 하면 퀄리티가 떨어짐.
+    _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련. 속도 변경을 하면 퀄리티가 위 옵션보다는 좋음.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
@@ -856,6 +857,38 @@
 - (void) pressedSpeedButton
 {
     NSLog(@"  플레이어 재생속도 조절 버튼!!");
+    CGFloat speed = [[NSUserDefaults standardUserDefaults] floatForKey : @"playSpeed"];
+  
+    if ( speed == 0 )
+    {
+        speed = 1.f;
+    }
+  
+    if ( speed == 1.f )
+    {
+        speed = 1.2f;
+    }
+    else if ( speed == 1.2f )
+    {
+        speed = 1.5f;
+    }
+    else if ( speed == 1.5f )
+    {
+        speed = 0.8f;
+    }
+    else if ( speed == 0.8f )
+    {
+        speed = 1.0f;
+    }
+  
+    [[NSUserDefaults standardUserDefaults] setFloat : speed
+                                             forKey : @"playSpeed"];
+  
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  
+    [self setSpeedButtonImage];
+  
+    [self setSpeed : speed];
 }
 
 - (void) pressedListButton
@@ -1120,6 +1153,30 @@
     [self presentViewController : alert
                        animated : YES
                      completion : nil];
+}
+
+- (void) setSpeed : (CGFloat) speed
+{
+    [self showToast : [NSString stringWithFormat : @"%f 배속", speed]];
+  
+  float rate = speed;
+  [_player setRate : rate];
+  // 정상 동작하지만 플레이 / 정지 버튼 이벤트 시 원래 배속으로 돌아가므로 추후 수정이 필요합니다.
+  /*
+   https://stackoverflow.com/questions/30745780/how-to-achieve-a-playback-rate-of-4-0-with-avplayer-in-ios/30881237#30881237
+    float rate = speed;
+    AVMutableComposition *composition = [AVMutableComposition composition];
+    NSError *error = nil;
+    [composition insertTimeRange : CMTimeRangeMake(kCMTimeZero, _urlAsset.duration)
+                         ofAsset : _urlAsset
+                          atTime : kCMTimeZero
+                           error : &error];
+    [composition scaleTimeRange : CMTimeRangeMake(kCMTimeZero, _urlAsset.duration)
+                     toDuration : CMTimeMultiplyByFloat64(_urlAsset.duration, 1 / rate)];
+    _playerItem = [AVPlayerItem playerItemWithAsset : composition];
+    _player = [AVPlayer playerWithPlayerItem : _playerItem];
+   잘 안됨..ㅠ
+  */
 }
 
 
