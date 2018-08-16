@@ -11,6 +11,7 @@ import IcTime from "../../../images/ic-detail-label-time.png";
 import DummyTeacher from '../../../images/dummy-teacher.jpg';
 import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
+import Evaluation from "./Evaluation";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -51,7 +52,7 @@ const styles = StyleSheet.create( {
 	},
 	labelInfo: {
 		paddingTop: 30,
-		paddingBottom: 30,
+		paddingBottom: 20,
 		paddingLeft: 30,
 	},
 	labelInfoItem: {
@@ -89,6 +90,12 @@ const styles = StyleSheet.create( {
 		fontSize: 13,
 		color: '#555555',
 	},
+	review: {
+		paddingTop: 30,
+		paddingRight: 15,
+		paddingBottom: 30,
+		paddingLeft: 15,
+	}
 } );
 
 @observer
@@ -223,7 +230,11 @@ class TabContentInfo extends React.Component {
 				</View>
 			</View>
 
-			<Text>학습자평가</Text>
+			<View style={styles.review}>
+				<Text style={styles.sectionTitle}>학습자 평가</Text>
+
+				<Evaluation/>
+			</View>
 
 		</View>
 	}
