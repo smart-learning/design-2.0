@@ -1,5 +1,5 @@
 import Styles from "../../../styles/common";
-import {AsyncStorage, Button, Image, Text, View} from "react-native";
+import {AsyncStorage, Button, Image, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
 import store from '../../../scripts/commons/store';
 
@@ -14,6 +14,9 @@ export default class MyInfoHome extends React.Component {
 	}
 
 	render() {
+
+		const { navigation } = this.props;
+
 		return <View style={Styles.container}>
 
 			{/*<Image*/}
@@ -25,6 +28,14 @@ export default class MyInfoHome extends React.Component {
 			<Button title="Logout이 원래 이 위치는 아니지만 그냥 테스트로..." onPress={this.logout}/>
 
 			<Button title="서브페이지로..." onPress={ ()=> this.props.navigation.navigate('MyInfoSubExample')}/>
+
+
+			<TouchableOpacity activeOpacity={0.9}
+							  onPress={ ()=> navigation.navigate('DownloadContent') }
+			>
+				<Text>다운로드 콘텐츠</Text>
+			</TouchableOpacity>
+
 		</View>
 	}
 }

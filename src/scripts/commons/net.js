@@ -2,6 +2,7 @@ import axios from 'axios';
 import store from "./store";
 import Base64 from "Base64";
 import Localizable from 'react-native-localizable';
+import URLSearchParams from 'url-search-params';
 
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
