@@ -1,15 +1,29 @@
 import React from "react";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, Dimensions, } from "react-native";
+import Swiper from 'react-native-swiper';
 import CommonStyles, { TEXT_PRIMARY } from "../../../styles/common";
 import IcClip from "../../../images/ic-detail-label-clip.png";
 import IcFile from "../../../images/ic-detail-label-file.png";
 import IcPrize from "../../../images/ic-detail-label-prize.png";
 import IcTime from "../../../images/ic-detail-label-time.png";
 import DummyTeacher from '../../../images/dummy-teacher.jpg';
+import Dummy1 from '../../../images/dummy-swiper-1.png';
+import Dummy2 from '../../../images/dummy-swiper-2.png';
 
 const styles = StyleSheet.create( {
+	wrapper: {},
+	slide: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	thumbnail: {
+		width: '100%',
+		paddingTop: '42%',
+		paddingBottom: '42%',
+	},
 	info: {
 		paddingTop: 30,
 		paddingBottom: 30,
@@ -79,6 +93,10 @@ const styles = StyleSheet.create( {
 
 @observer
 class TabContentInfo extends React.Component {
+	@observable lectureView = false;
+	@observable teacherView = false;
+	@observable slideHeight = null;
+
 	constructor( props ) {
 		super( props );
 
@@ -86,8 +104,12 @@ class TabContentInfo extends React.Component {
 		this.toggleTeacherView = this.toggleTeacherView.bind( this );
 	}
 
-	@observable lectureView = false;
-	@observable teacherView = false;
+
+	componentDidMount() {
+		let windowWidth = Dimensions.get( 'window' ).width;
+
+		this.slideHeight = windowWidth * 0.833;
+	}
 
 	toggleLectureView() {
 		if ( this.lectureView === false ) {
@@ -108,7 +130,23 @@ class TabContentInfo extends React.Component {
 	render() {
 		return <View>
 			<Text>Info Contents</Text>
-			<Text>스와이퍼</Text>
+			{/* 이미지 스와이퍼 */}
+			<View style={{ height: this.slideHeight }}>
+				<Swiper style={styles.wrapper}
+						showsButtons={false}
+						height={window.width}
+						paginationStyle={{ bottom: -15 }}>
+					<View style={styles.slide}>
+						{/*<Text style={styles.text}>Swiper1</Text>*/}
+						<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
+					</View>
+					<View style={styles.slide}>
+						{/*<Text style={styles.text}>Swiper2</Text>*/}
+						<ImageBackground source={Dummy2} resizeMode="cover" style={styles.thumbnail}/>
+					</View>
+				</Swiper>
+			</View>
+			{/* /이미지 스와이퍼 */}
 
 			<View style={[ CommonStyles.contentContainer, styles.info ]}>
 				<Text style={styles.sectionTitle}>기본정보</Text>
