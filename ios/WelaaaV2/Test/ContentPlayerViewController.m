@@ -56,6 +56,8 @@
     AVPlayer *_player;
     AVPlayerItem *_playerItem;
     AVURLAsset *_urlAsset;
+  
+    CGFloat _playbackRate;
 }
 @end
 
@@ -125,6 +127,7 @@
 // 왜냐하면 지나치게 빨리 애니메이션을 그리거나 API에서 정보를 받아와 뷰 컨트롤러를 업데이트 할 경우 화면에 반영되지 않습니다.
 - (void) viewDidAppear : (BOOL) animated
 {
+    _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
     [_player play];   // 플레이어 재생 실행
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
@@ -623,24 +626,21 @@
 
 - (void) setSpeedButtonImage
 {
-    CGFloat speed = [[NSUserDefaults standardUserDefaults] floatForKey : @"playbackRate"];
-    speed = (speed == 0.f ? 1.f : speed);
-  
     UIImage *image = nil;
   
-    if ( speed == 0.8f )
+    if ( _playbackRate == 0.8f )
     {
         image = [UIImage imageNamed : @"icon_speed_08"];
     }
-    else if ( speed == 1.f )
+    else if ( _playbackRate == 1.f )
     {
         image = [UIImage imageNamed : @"icon_speed_10"];
     }
-    else if ( speed == 1.2f )
+    else if ( _playbackRate == 1.2f )
     {
         image = [UIImage imageNamed : @"icon_speed_12"];
     }
-    else if ( speed == 1.5f )
+    else if ( _playbackRate == 1.5f )
     {
         image = [UIImage imageNamed : @"icon_speed_15"];
     }
@@ -795,6 +795,7 @@
 {
     NSLog(@"  플레이어 재생 버튼!!");
     [_player play];
+    [_player setRate : _playbackRate];
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
   
@@ -857,38 +858,27 @@
 - (void) pressedSpeedButton
 {
     NSLog(@"  플레이어 재생속도 조절 버튼!!");
-    CGFloat playbackRate = [[NSUserDefaults standardUserDefaults] floatForKey : @"playbackRate"];
   
-    if ( playbackRate == 0 )
+    if ( _playbackRate == 1.f )
     {
-        playbackRate = 1.f;
+        _playbackRate = 1.2f;
     }
-  
-    if ( playbackRate == 1.f )
+    else if ( _playbackRate == 1.2f )
     {
-        playbackRate = 1.2f;
+        _playbackRate = 1.5f;
     }
-    else if ( playbackRate == 1.2f )
+    else if ( _playbackRate == 1.5f )
     {
-        playbackRate = 1.5f;
+        _playbackRate = 0.8f;
     }
-    else if ( playbackRate == 1.5f )
+    else if ( _playbackRate == 0.8f )
     {
-        playbackRate = 0.8f;
+        _playbackRate = 1.0f;
     }
-    else if ( playbackRate == 0.8f )
-    {
-        playbackRate = 1.0f;
-    }
-  
-    [[NSUserDefaults standardUserDefaults] setFloat : playbackRate
-                                             forKey : @"playbackRate"];
-  
-    [[NSUserDefaults standardUserDefaults] synchronize];
   
     [self setSpeedButtonImage];
   
-    [self setPlaybackRate : playbackRate];
+    [_player setRate : _playbackRate];
 }
 
 - (void) pressedListButton
@@ -1154,16 +1144,6 @@
                        animated : YES
                      completion : nil];
 }
-
-- (void) setPlaybackRate : (CGFloat) playbackRate
-{
-    [self showToast : [NSString stringWithFormat : @"%f 배속", playbackRate]];
-  
-    float rate = playbackRate;
-    [_player setRate : rate];
-  // 정상 동작하지만 플레이 / 정지 버튼 이벤트 시 원래 배속으로 돌아가므로 추후 수정이 필요합니다.
-}
-
 
 // 슬라이더 이동시 썸네일 이미지를 보여주면 좋을듯.. ( http://devhkh.tistory.com/18 )
 

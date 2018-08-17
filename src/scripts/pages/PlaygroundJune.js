@@ -85,8 +85,13 @@ class PlaygroundJune extends Component {
 
 	onPurchase = () =>{
 		// args는 appstoreconnect.apple.com에서 앱내구입 product_id를 참고바랍니다.
+		/*
+		 * audiobook_b300048 / 0~5세 말걸기 육아의 힘 / sandbox 테스트 잘 안됨..
+		 * audiobook_100 / 톰 소여의 모험 / 
+		 */
 		var args = {
-			product_id : "audiobook_b300048"
+			product_id : "audiobook_100",	//0~5세 말걸기 육아의 힘
+			webToken : "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
 		}
 		NativeModules.RNProductPayment.buy(args);
 	}
