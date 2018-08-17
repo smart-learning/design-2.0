@@ -1,10 +1,11 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, } from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image,} from "react-native";
 import CommonStyles from "../../../styles/common";
 import Dummy from "../../../images/dummy-detail-banner.png";
 import IcPlay from "../../../images/ic-play.png";
+import {observer} from "mobx-react";
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	banner: {
 		position: 'relative',
 		height: 410,
@@ -104,19 +105,20 @@ const styles = StyleSheet.create( {
 		fontSize: 15,
 		color: CommonStyles.COLOR_PRIMARY,
 	},
-} );
+});
 
+@observer
 export default class TopBanner extends React.Component {
-	constructor( props ) {
-		super( props );
+	constructor(props) {
+		super(props);
 
 		this.learnType = this.learnType.bind(this);
 	}
 
 	learnType() {
-		if( this.props.learnType === 'audioBook' ) {
+		if (this.props.learnType === 'audioBook') {
 			return '오디오북';
-		} else if( this.props.learnType === 'class' ) {
+		} else if (this.props.learnType === 'class') {
 			return '클래스';
 		} else {
 			return '';
@@ -125,34 +127,45 @@ export default class TopBanner extends React.Component {
 
 	render() {
 		return <ImageBackground style={styles.banner} resizeMode="cover" source={Dummy}>
-			{/*<Text style={{color: '#ffffff'}}>{this.learnType()}</Text>*/}
 			<TouchableOpacity>
 				<Image style={styles.playButton} source={IcPlay}/>
 			</TouchableOpacity>
 			<View style={styles.labelContainer}>
-				<View style={ this.props.learnType === 'audioBook' ? [styles.label, styles.labelAudioBook] : [styles.label, styles.labelClass] } borderRadius={10}>
+				<View
+					style={this.props.learnType === 'audioBook' ? [styles.label, styles.labelAudioBook] : [styles.label, styles.labelClass]}
+					borderRadius={10}>
 					<Text style={styles.labelText}>인기{this.learnType()}</Text>
 				</View>
 				<Text style={styles.labelTitle}>종합순위 30위! 비즈니스스킬 5위!</Text>
 			</View>
 			<Text style={styles.headline}>
-				headline
+				{this.props.store.itemData.headline}
 			</Text>
 			<Text style={styles.title}>
-				title
+				{this.props.store.itemData.title}
 			</Text>
 			<Text style={styles.author}>
-				author
+				{this.props.store.itemData.teacher.name}
 			</Text>
 			<View style={styles.tagContainer}>
+				{this.props.store.itemData.is_new === 'true' &&
 				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>NEW</Text></View>
+				}
+				{this.props.store.itemData.is_exculsive === 'true' &&
 				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>독점</Text></View>
+				}
+				{this.props.store.itemData.is_featured === 'true' &&
 				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>추천</Text></View>
+				}
 			</View>
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.itemDownload]}>
-				<Text style={styles.itemDownloadSize}>전체 다운로드 500mb</Text>
+				<Text style={styles.itemDownloadSize}>
+					전체 다운로드 500mb
+				</Text>
 				<View style={styles.itemDownloadCount} borderRadius={5}>
-					<Text style={styles.itemDownloadCountText}>3/6 다운로드 완료 </Text>
+					<Text style={styles.itemDownloadCountText}>
+						3/{this.props.store.itemData.clip_count} 다운로드 완료
+					</Text>
 				</View>
 			</View>
 		</ImageBackground>
