@@ -28,7 +28,7 @@ export default class TabContentReview extends React.Component {
 
 	render() {
 		return <View>
-			<ReviewForm/>
+			<ReviewForm store={ this.props.store }/>
 
 			<View style={CommonStyles.contentContainer}>
 				<Text style={styles.sectionTitle}>전체 댓글 <Text style={styles.sectionTitleBullet}>(00)</Text></Text>

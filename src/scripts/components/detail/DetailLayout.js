@@ -52,6 +52,8 @@ class TabStore {
 	@observable lectureView = false;
 	@observable teacherView = false;
 	@observable slideHeight = null;
+	@observable reviewText = '';
+	@observable reviewStar = 0;
 }
 
 const tabStore = new TabStore();
