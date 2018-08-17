@@ -623,7 +623,7 @@
 
 - (void) setSpeedButtonImage
 {
-    CGFloat speed = [[NSUserDefaults standardUserDefaults] floatForKey : @"playSpeed"];
+    CGFloat speed = [[NSUserDefaults standardUserDefaults] floatForKey : @"playbackRate"];
     speed = (speed == 0.f ? 1.f : speed);
   
     UIImage *image = nil;
@@ -857,38 +857,38 @@
 - (void) pressedSpeedButton
 {
     NSLog(@"  플레이어 재생속도 조절 버튼!!");
-    CGFloat speed = [[NSUserDefaults standardUserDefaults] floatForKey : @"playSpeed"];
+    CGFloat playbackRate = [[NSUserDefaults standardUserDefaults] floatForKey : @"playbackRate"];
   
-    if ( speed == 0 )
+    if ( playbackRate == 0 )
     {
-        speed = 1.f;
-    }
-  
-    if ( speed == 1.f )
-    {
-        speed = 1.2f;
-    }
-    else if ( speed == 1.2f )
-    {
-        speed = 1.5f;
-    }
-    else if ( speed == 1.5f )
-    {
-        speed = 0.8f;
-    }
-    else if ( speed == 0.8f )
-    {
-        speed = 1.0f;
+        playbackRate = 1.f;
     }
   
-    [[NSUserDefaults standardUserDefaults] setFloat : speed
-                                             forKey : @"playSpeed"];
+    if ( playbackRate == 1.f )
+    {
+        playbackRate = 1.2f;
+    }
+    else if ( playbackRate == 1.2f )
+    {
+        playbackRate = 1.5f;
+    }
+    else if ( playbackRate == 1.5f )
+    {
+        playbackRate = 0.8f;
+    }
+    else if ( playbackRate == 0.8f )
+    {
+        playbackRate = 1.0f;
+    }
+  
+    [[NSUserDefaults standardUserDefaults] setFloat : playbackRate
+                                             forKey : @"playbackRate"];
   
     [[NSUserDefaults standardUserDefaults] synchronize];
   
     [self setSpeedButtonImage];
   
-    [self setSpeed : speed];
+    [self setPlaybackRate : playbackRate];
 }
 
 - (void) pressedListButton
@@ -1155,28 +1155,13 @@
                      completion : nil];
 }
 
-- (void) setSpeed : (CGFloat) speed
+- (void) setPlaybackRate : (CGFloat) playbackRate
 {
-    [self showToast : [NSString stringWithFormat : @"%f 배속", speed]];
+    [self showToast : [NSString stringWithFormat : @"%f 배속", playbackRate]];
   
-  float rate = speed;
-  [_player setRate : rate];
+    float rate = playbackRate;
+    [_player setRate : rate];
   // 정상 동작하지만 플레이 / 정지 버튼 이벤트 시 원래 배속으로 돌아가므로 추후 수정이 필요합니다.
-  /*
-   https://stackoverflow.com/questions/30745780/how-to-achieve-a-playback-rate-of-4-0-with-avplayer-in-ios/30881237#30881237
-    float rate = speed;
-    AVMutableComposition *composition = [AVMutableComposition composition];
-    NSError *error = nil;
-    [composition insertTimeRange : CMTimeRangeMake(kCMTimeZero, _urlAsset.duration)
-                         ofAsset : _urlAsset
-                          atTime : kCMTimeZero
-                           error : &error];
-    [composition scaleTimeRange : CMTimeRangeMake(kCMTimeZero, _urlAsset.duration)
-                     toDuration : CMTimeMultiplyByFloat64(_urlAsset.duration, 1 / rate)];
-    _playerItem = [AVPlayerItem playerItemWithAsset : composition];
-    _player = [AVPlayer playerWithPlayerItem : _playerItem];
-   잘 안됨..ㅠ
-  */
 }
 
 

@@ -83,7 +83,13 @@ class PlaygroundJune extends Component {
 		NativeModules.RNNativePlayer.download(args);
 	}
 
-
+	onPurchase = () =>{
+		// args는 appstoreconnect.apple.com에서 앱내구입 product_id를 참고바랍니다.
+		var args = {
+			product_id : "audiobook_b300048"
+		}
+		NativeModules.RNProductPayment.buy(args);
+	}
 
 
 
@@ -103,6 +109,10 @@ class PlaygroundJune extends Component {
 
 			<Button title="다운로드"
 					onPress={ this.onDownload }
+			/>
+
+			<Button title="인앱결제"
+					onPress={ this.onPurchase }
 			/>
 {/*
 			<ImageView

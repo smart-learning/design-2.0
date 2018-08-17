@@ -24,6 +24,8 @@
 		7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		EF0946D7212652A200FD849B /* ContentMiniPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */; };
+		EF094701212662B200FD849B /* RNProductPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = EF094700212662B200FD849B /* RNProductPayment.m */; };
 		EF230BEF21224CC600F8E802 /* FPSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */; };
 		EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */; };
 		EF3C6E3721118DBD00EBC878 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */; };
@@ -408,6 +410,10 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		AEEDDD9F7C5CBB53DA7FCD50 /* Pods-WelaaaV2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WelaaaV2.release.xcconfig"; path = "Pods/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2.release.xcconfig"; sourceTree = "<group>"; };
 		E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WelaaaV2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF0946D5212652A200FD849B /* ContentMiniPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentMiniPlayerViewController.h; sourceTree = "<group>"; };
+		EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentMiniPlayerViewController.m; sourceTree = "<group>"; };
+		EF0946FF212662B200FD849B /* RNProductPayment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNProductPayment.h; sourceTree = "<group>"; };
+		EF094700212662B200FD849B /* RNProductPayment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNProductPayment.m; sourceTree = "<group>"; };
 		EF230BED21224CC600F8E802 /* FPSDownloadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FPSDownloadManager.h; sourceTree = "<group>"; };
 		EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FPSDownloadManager.m; sourceTree = "<group>"; };
 		EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
@@ -996,6 +1002,8 @@
 				EFE0832821144239006D3F6C /* NSString+Base64.m */,
 				EFE0832B21144239006D3F6C /* SFHFKeychainUtils.h */,
 				EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */,
+				EF0946FF212662B200FD849B /* RNProductPayment.h */,
+				EF094700212662B200FD849B /* RNProductPayment.m */,
 			);
 			name = Payments;
 			path = WelaaaV2/Payments;
@@ -1014,6 +1022,8 @@
 				EF4A906D21182A1A00228EB1 /* ContentPlayerViewController.m */,
 				EF230BED21224CC600F8E802 /* FPSDownloadManager.h */,
 				EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */,
+				EF0946D5212652A200FD849B /* ContentMiniPlayerViewController.h */,
+				EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */,
 			);
 			name = Test;
 			path = WelaaaV2/Test;
@@ -1569,6 +1579,8 @@
 				EF230BEF21224CC600F8E802 /* FPSDownloadManager.m in Sources */,
 				EFE082542114185D006D3F6C /* IFTouchView.m in Sources */,
 				EFE0825D2114185D006D3F6C /* IFCollectionView.m in Sources */,
+				EF094701212662B200FD849B /* RNProductPayment.m in Sources */,
+				EF0946D7212652A200FD849B /* ContentMiniPlayerViewController.m in Sources */,
 				EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */,
 				EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */,
 				EFE0825C2114185D006D3F6C /* InnerShadowView.m in Sources */,
