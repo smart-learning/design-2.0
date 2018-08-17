@@ -70,33 +70,33 @@ class DetailLayout extends React.Component {
 	render() {
 		return <View style={[ CommonStyles.container, { backgroundColor: '#ffffff' } ]}>
 			<ScrollView style={{ width: '100%' }}>
-				{/*<TopBanner learnType={"class"}/>*/}
+				<TopBanner learnType={"class"}/>
 
-				{/*<CountView/>*/}
+				<CountView/>
 
-				{/*<Text>일반 회원 구매 전 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"normal"}/>*/}
+				<Text>일반 회원 구매 전 - 오디오북</Text>
+				<PaymentStatus learnType={"audioBook"} paymentType={"normal"}/>
 
-				{/*<Text>일반 회원 구매 전 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"normal"}/>*/}
+				<Text>일반 회원 구매 전 - 클래스</Text>
+				<PaymentStatus learnType={"class"} paymentType={"normal"}/>
 
-				{/*<Text>일반 회원 구매 후 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"buy"}/>*/}
+				<Text>일반 회원 구매 후 - 오디오북</Text>
+				<PaymentStatus learnType={"audioBook"} paymentType={"buy"}/>
 
-				{/*<Text>일반 회원 구매 후 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"buy"}/>*/}
+				<Text>일반 회원 구매 후 - 클래스</Text>
+				<PaymentStatus learnType={"class"} paymentType={"buy"}/>
 
-				{/*<Text>멤버십 회원 수강 전 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"membershipBeforeLearn"}/>*/}
+				<Text>멤버십 회원 수강 전 - 오디오북</Text>
+				<PaymentStatus learnType={"audioBook"} paymentType={"membershipBeforeLearn"}/>
 
-				{/*<Text>멤버십 회원 수강 전 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"membershipBeforeLearn"}/>*/}
+				<Text>멤버십 회원 수강 전 - 클래스</Text>
+				<PaymentStatus learnType={"class"} paymentType={"membershipBeforeLearn"}/>
 
-				{/*<Text>멤버십 회원 수강 시작 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"membershipStartLearn"}/>*/}
+				<Text>멤버십 회원 수강 시작 - 오디오북</Text>
+				<PaymentStatus learnType={"audioBook"} paymentType={"membershipStartLearn"}/>
 
-				{/*<Text>멤버십 회원 수강 시작 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"membershipStartLearn"}/>*/}
+				<Text>멤버십 회원 수강 시작 - 클래스</Text>
+				<PaymentStatus learnType={"class"} paymentType={"membershipStartLearn"}/>
 
 				<View style={CommonStyles.alignJustifyContentBetween}>
 					<View style={styles.tabContainer}>
