@@ -6,7 +6,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from "react-native";
-import { DrawerActions } from "react-navigation";
+import {DrawerActions} from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import IcComment from "../../../images/ic-comment-dark.png"
 import IcShare from "../../../images/ic-share-grey.png";
@@ -16,8 +16,7 @@ import IcView from "../../../images/ic-view-dark.png";
 import Device from "../../commons/device";
 
 
-
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	itemContainer: {
 		position: 'relative',
 	},
@@ -162,35 +161,48 @@ const styles = StyleSheet.create( {
 	recommendPriceSale: {
 		color: '#ff4f72',
 	}
-} );
+});
 
 export default class Book extends React.Component {
-	constructor( props ) {
-		super( props );
+	constructor(props) {
+		super(props);
 
 		this.state = {
 			//
 		};
+
+		this.changePage = this.changePage.bind( this );
+	}
+
+	changePage() {
+		console.log( 'touch' );
+		console.log( this.props.id );
+		this.props.navigation.navigate( 'AudioBookDetailPage', { id: this.props.id } );
 	}
 
 	render() {
 		return <View style={styles.itemContainer}>
 			{this.props.type === 'best' &&
-			<View style={[ styles.alignJustify, styles.socialButtonWrap ]}>
-				<TouchableOpacity activeOpacity={0.9}
-								  onPress={ () =>{ Device.share( this.props.itemData.title, this.props.itemData.url ) }}
+			<View style={[styles.alignJustify, styles.socialButtonWrap]}>
+				<TouchableOpacity activeOpacity={0.5}
+								  onPress={() => {
+									  Device.share(this.props.itemData.title, this.props.itemData.url)
+								  }}
 				>
 					<Image source={IcShare} style={styles.socialButton}/>
 				</TouchableOpacity>
 			</View>
 			}
-			<View style={[ styles.alignJustify, styles.itemInfo ]}>
+			<View style={[styles.alignJustify, styles.itemInfo]}>
 				{this.props.type === 'best' &&
 				<Text style={styles.sequence}>00</Text>
 				}
 				{this.props.type === 'best' &&
+
 				<View style={styles.bookInfoWrap}>
-					<Text style={styles.bookTitleBest}>{this.props.itemData.title}</Text>
+					<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
+						<Text style={styles.bookTitleBest}>{this.props.itemData.title}</Text>
+					</TouchableOpacity>
 					<Text style={styles.bookAuthorBest}>{this.props.itemData.teacher.name}</Text>
 					<View style={styles.alignJustify}>
 						<Text style={styles.playTime}>06시간 23분</Text>
@@ -201,10 +213,12 @@ export default class Book extends React.Component {
 				}
 				{this.props.type === 'recommend' &&
 				<View style={styles.bookInfoWrap}>
-					<Text style={styles.bookTitleRecommend} numberOfLines={1}
-						  ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
+					<TouchableOpacity activeOpacity={0.5} onPress={this.changePage}>
+						<Text style={styles.bookTitleRecommend} numberOfLines={1}
+							  ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
+					</TouchableOpacity>
 					<Text style={styles.bookAuthorRecommend}>{this.props.itemData.teacherName.name}</Text>
-					<View style={[ styles.alignJustify, styles.recommendButtonWrap ]}>
+					<View style={[styles.alignJustify, styles.recommendButtonWrap]}>
 						<Image source={IcHeartLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
 						{this.props.itemData.is_free === 'true' &&
 						<View style={styles.recommendPriceWrap} borderRadius={2}>
@@ -224,14 +238,16 @@ export default class Book extends React.Component {
 				</View>
 				}
 			</View>
-			<View style={[ { backgroundColor: this.props.itemData.banner_color.trim() }, styles.itemContent ]}>
+			<View style={[{backgroundColor: this.props.itemData.banner_color.trim()}, styles.itemContent]}>
 				{this.props.type === 'best' &&
-				<Text style={styles.bookMemoBest} numberOfLines={3} ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
+				<Text style={styles.bookMemoBest} numberOfLines={3}
+					  ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
 				}
 				{this.props.type === 'recommend' &&
-				<Text style={styles.bookMemoRecommend} numberOfLines={3} ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
+				<Text style={styles.bookMemoRecommend} numberOfLines={3}
+					  ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
 				}
-				<View style={[ styles.alignJustify, styles.countWrap ]}>
+				<View style={[styles.alignJustify, styles.countWrap]}>
 					<Image source={IcView} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>{this.props.itemData.hit_count}</Text>
 					<Image source={IcHeart} style={styles.btnSetSmall}/>
@@ -240,9 +256,11 @@ export default class Book extends React.Component {
 					<Text style={styles.countText}>{this.props.itemData.review_count}</Text>
 				</View>
 			</View>
-			<View style={styles.bookThumbnail}>
-				<Image source={{ uri: this.props.itemData.images.book }} style={styles.bookThumbnailSize}/>
-			</View>
+			<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
+				<View style={styles.bookThumbnail}>
+					<Image source={{uri: this.props.itemData.images.book}} style={styles.bookThumbnailSize}/>
+				</View>
+			</TouchableOpacity>
 		</View>
 	}
 }

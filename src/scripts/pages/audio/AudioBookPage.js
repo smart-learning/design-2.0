@@ -70,6 +70,8 @@ export default class AudioBookPage extends React.Component {
 			audioCategoryData: {},
 			resultAudioBookData: null,
 		};
+
+
 	}
 
 	async componentDidMount() {
