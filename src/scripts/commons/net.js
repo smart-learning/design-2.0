@@ -88,9 +88,22 @@ export default {
 		} );
 	},
 
+	getLectureItem( id ) {
+		return new Promise( ( resolve, reject ) => {
+			axios.get( API_PREFIX + 'contents/video-courses/' + id )
+				.then( ( response ) => {
+					resolve( response.data );
+				} )
+				.catch( ( error ) => {
+					console.error( error );
+					reject( error );
+				} );
+		} );
+	},
+
 	getLectureClipList( id ) {
 		return new Promise( ( resolve, reject ) => {
-			axios.get( API_PREFIX + id + 'video-clips' )
+			axios.get( API_PREFIX + 'contents/video-courses/' + id + '/video-clips' )
 				.then( ( response ) => {
 					response.data.items.forEach( element => {
 						element.key = element.id.toString();
