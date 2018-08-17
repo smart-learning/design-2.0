@@ -8,12 +8,12 @@ import {
 	TouchableOpacity,
 	FlatList,
 } from "react-native";
-import { SafeAreaView } from "react-navigation";
+import {SafeAreaView} from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
 import Book from "../../components/audio/Book";
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	toggleGroup: {
 		width: '100%',
 		height: 50,
@@ -59,53 +59,53 @@ const styles = StyleSheet.create( {
 		fontSize: 12,
 		color: '#585858',
 	}
-} );
+});
 
 export default class AudioBookPage extends React.Component {
 
-	constructor( props ) {
-		super( props );
+	constructor(props) {
+		super(props);
 
 		this.state = {
 			audioCategoryData: {},
-			resultAudioBookData: {}
+			resultAudioBookData: null,
 		};
 	}
 
 	async componentDidMount() {
 		const resultAudioCategoryData = await net.getAudioBookCategory();
 		const resultAudioBookData = await net.getAudioBookList();
-		this.setState( {
+		this.setState({
 			audioCategoryData: resultAudioCategoryData,
 			resultAudioBookData: resultAudioBookData,
-		} );
+		});
 	}
 
 
 	render() {
-		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
-			<ScrollView style={{ width: '100%' }}>
+		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
+			<ScrollView style={{width: '100%'}}>
 				<View style={styles.toggleGroup}>
 					<View style={styles.alignJustify}>
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
-												  style={[ styles.alignJustify, styles.sortButton ]}>
+												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>인기</Text>
 								</TouchableOpacity>
 								<View style={styles.sortBar}/>
 								<TouchableOpacity activeOpacity={0.9}
-												  style={[ styles.alignJustify, styles.sortButton ]}>
+												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>신규</Text>
 								</TouchableOpacity>
 							</View>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  style={{ marginLeft: 'auto' }}
+										  style={{marginLeft: 'auto'}}
 										  onPress={() => {
-											  this.props.navigation.navigate( 'MyAudioBookPage' )
+											  this.props.navigation.navigate('MyAudioBookPage')
 										  }}
 						>
 							<View style={styles.myButton} borderRadius={3}>
@@ -117,25 +117,18 @@ export default class AudioBookPage extends React.Component {
 
 				<PageCategory data={this.state.audioCategoryData.items}/>
 
+				{this.state.resultAudioBookData !== null &&
 				<FlatList
-					style={{ width: '100%' }}
+					style={{width: '100%'}}
 					data={this.state.resultAudioBookData.items}
 					renderItem={
-						( { item } ) => <Book id={item.id}
-											  type="best"
-											  navigation={this.props.navigation}
-											  title={item.title}
-											  bannerColor={item.banner_color}
-											  bookThumbnail={item.images.book}
-											  teacherName={item.teacher.name}
-											  memo={item.memo_top}
-											  isFree={item.is_free}
-											  likeCount={item.like_count}
-											  hitCount={item.hit_count}
-											  url={item.url}
-											  reviewCount={item.review_count}/>
+						({item}) => <Book id={item.id}
+										  type="best"
+										  navigation={this.props.navigation}
+										  itemData={item}/>
 					}
 				/>
+				}
 			</ScrollView>
 		</SafeAreaView>
 	}

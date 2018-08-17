@@ -23,11 +23,11 @@ class LectureDetailPage extends React.Component {
 	});
 
 	getData = async () => {
-		const resultLectureData = await net.getLectureItem(this.props.navigation.state.params.id);
-		const resultLectureClipData = await net.getLectureClipList(this.props.navigation.state.params.id);
+		const resultBookData = await net.getBookItem(this.props.navigation.state.params.id);
+		const resultChapterData = await net.getBookChapterList(this.props.navigation.state.params.id);
 
-		this.store.itemData = resultLectureData.item;
-		this.store.itemClipData = resultLectureClipData;
+		this.store.itemData = resultBookData.item;
+		this.store.itemClipData = resultChapterData;
 	};
 
 	componentDidMount() {
