@@ -15,8 +15,6 @@
  */
 package com.welaaav2.player.playback;
 
-import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
-
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.media.MediaMetadataCompat;
@@ -29,6 +27,7 @@ import com.google.android.gms.cast.framework.CastContext;
 import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
+import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.welaaav2.player.utils.LogHelper;
 import com.welaaav2.player.utils.MediaIDHelper;
 import org.json.JSONException;
@@ -56,6 +55,7 @@ public class CastPlayback implements Playback {
   private Callback mCallback;
   private long mCurrentPosition;
   private String mCurrentMediaId;
+  private MediaMetadataCompat currentMedia;
 
   public CastPlayback(Context context) {
     mAppContext = context.getApplicationContext();
@@ -99,7 +99,7 @@ public class CastPlayback implements Playback {
   }
 
   @Override
-  public void play(QueueItem item) {
+  public void play(MediaMetadataCompat item) {
     try {
       loadMedia(item.getDescription().getMediaId(), true);
       mPlaybackState = PlaybackStateCompat.STATE_BUFFERING;
@@ -112,6 +112,16 @@ public class CastPlayback implements Playback {
         mCallback.onError(e.getMessage());
       }
     }
+  }
+
+  @Override
+  public void setCurrentMedia(MediaMetadataCompat item) {
+    currentMedia = item;
+  }
+
+  @Override
+  public MediaMetadataCompat getCurrentMedia() {
+    return currentMedia;
   }
 
   @Override
@@ -154,18 +164,13 @@ public class CastPlayback implements Playback {
   }
 
   @Override
-  public void setCurrentMediaId(String mediaId) {
-    this.mCurrentMediaId = mediaId;
-  }
-
-  @Override
-  public String getCurrentMediaId() {
-    return mCurrentMediaId;
-  }
-
-  @Override
   public void setCallback(Callback callback) {
     this.mCallback = callback;
+  }
+
+  @Override
+  public void setPallyconEventListener(PallyconEventListener listener) {
+
   }
 
   @Override
@@ -258,7 +263,6 @@ public class CastPlayback implements Playback {
         if (!TextUtils.equals(mCurrentMediaId, remoteMediaId)) {
           mCurrentMediaId = remoteMediaId;
           if (mCallback != null) {
-            mCallback.setCurrentMediaId(remoteMediaId);
           }
           updateLastKnownStreamPosition();
         }

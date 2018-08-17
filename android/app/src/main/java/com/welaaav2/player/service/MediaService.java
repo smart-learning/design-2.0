@@ -32,7 +32,6 @@ import com.welaaav2.player.playback.CastPlayback;
 import com.welaaav2.player.playback.LocalPlayback;
 import com.welaaav2.player.playback.Playback;
 import com.welaaav2.player.playback.PlaybackManager;
-import com.welaaav2.player.playback.QueueManager;
 import com.welaaav2.player.utils.CarHelper;
 import com.welaaav2.player.utils.LogHelper;
 import com.welaaav2.player.utils.TvHelper;
@@ -42,7 +41,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class MediaService extends MediaBrowserServiceCompat implements
-    PlaybackManager.PlaybackServiceCallback {
+    PlaybackManager.PlaybackServiceCallback,
+    PlaybackManager.MetadataUpdateListener {
 
   private static final String TAG = LogHelper.makeLogTag(MediaService.class);
 
@@ -55,9 +55,9 @@ public class MediaService extends MediaBrowserServiceCompat implements
   // should be executed (see {@link #onStartCommand})
   public static final String CMD_NAME = "CMD_NAME";
   // A value of a CMD_NAME key in the extras of the incoming Intent that
-  // indicates that the music playback should be paused (see {@link #onStartCommand})
+  // indicates that the media playback should be paused (see {@link #onStartCommand})
   public static final String CMD_PAUSE = "CMD_PAUSE";
-  // A value of a CMD_NAME key that indicates that the music playback should switch
+  // A value of a CMD_NAME key that indicates that the media playback should switch
   // to local playback from cast playback.
   public static final String CMD_STOP_CASTING = "CMD_STOP_CASTING";
   // Delay stopSelf by using a handler.
@@ -85,38 +85,11 @@ public class MediaService extends MediaBrowserServiceCompat implements
     super.onCreate();
     LogHelper.d(TAG, "onCreate");
 
-    QueueManager queueManager = new QueueManager(getResources(),
-        new QueueManager.MetadataUpdateListener() {
-          @Override
-          public void onMetadataChanged(MediaMetadataCompat metadata) {
-            mSession.setMetadata(metadata);
-          }
-
-          @Override
-          public void onMetadataRetrieveError() {
-            mPlaybackManager.updatePlaybackState(
-                getString(R.string.error_no_metadata));
-          }
-
-          @Override
-          public void onCurrentQueueIndexUpdated(int queueIndex) {
-            mPlaybackManager.handlePlayRequest();
-          }
-
-          @Override
-          public void onQueueUpdated(String title,
-              List<MediaSessionCompat.QueueItem> newQueue) {
-            mSession.setQueue(newQueue);
-            mSession.setQueueTitle(title);
-          }
-        });
-
-    LocalPlayback playback = new LocalPlayback(this);
-    mPlaybackManager = new PlaybackManager(this, getResources(), queueManager,
-        playback);
+    LocalPlayback playback = LocalPlayback.getInstance(this);
+    mPlaybackManager = new PlaybackManager(this, this, playback);
 
     // Start a new MediaSession
-    mSession = new MediaSessionCompat(this, "MusicService");
+    mSession = new MediaSessionCompat(this, "MediaService");
     setSessionToken(mSession.getSessionToken());
     mSession.setCallback(mPlaybackManager.getMediaSessionCallback());
     mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -224,7 +197,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
         "; clientUid=" + clientUid + " ; rootHints=", rootHints);
     //noinspection StatementWithEmptyBody
     if (CarHelper.isValidCarPackage(clientPackageName)) {
-      // Optional: if your app needs to adapt the music library to show a different subset
+      // Optional: if your app needs to adapt the media library to show a different subset
       // when connected to the car, this is where you should handle it.
       // If you want to adapt other runtime behaviors, like tweak ads or change some behavior
       // that should be different on cars, you should instead use the boolean flag
@@ -232,7 +205,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
     }
     //noinspection StatementWithEmptyBody
     if (WearHelper.isValidWearCompanionPackage(clientPackageName)) {
-      // Optional: if your app needs to adapt the music library for when browsing from a
+      // Optional: if your app needs to adapt the media library for when browsing from a
       // Wear device, you should return a different MEDIA ROOT here, and then,
       // on onLoadChildren, handle it accordingly.
     }
@@ -248,7 +221,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
   }
 
   /**
-   * Callback method called from PlaybackManager whenever the music is about to play.
+   * Callback method called from PlaybackManager whenever the media is about to play.
    */
   @Override
   public void onPlaybackStart() {
@@ -257,14 +230,14 @@ public class MediaService extends MediaBrowserServiceCompat implements
     mDelayedStopHandler.removeCallbacksAndMessages(null);
 
     // The service needs to continue running even after the bound client (usually a
-    // MediaController) disconnects, otherwise the music playback will stop.
+    // MediaController) disconnects, otherwise the media playback will stop.
     // Calling startService(Intent) will keep the service running until it is explicitly killed.
     startService(new Intent(getApplicationContext(), MediaService.class));
   }
 
 
   /**
-   * Callback method called from PlaybackManager whenever the music stops playing.
+   * Callback method called from PlaybackManager whenever the media stops playing.
    */
   @Override
   public void onPlaybackStop() {
@@ -284,6 +257,16 @@ public class MediaService extends MediaBrowserServiceCompat implements
   @Override
   public void onPlaybackStateUpdated(PlaybackStateCompat newState) {
     mSession.setPlaybackState(newState);
+  }
+
+  @Override
+  public void onMetadataChanged(MediaMetadataCompat metadata) {
+    mSession.setMetadata(metadata);
+  }
+
+  @Override
+  public void onMetadataRetrieveError() {
+    mPlaybackManager.updatePlaybackState(getString(R.string.error_no_metadata));
   }
 
   private void registerCarConnectionReceiver() {
@@ -340,7 +323,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
       LogHelper.d(TAG, "onSessionEnded");
       mSessionExtras.remove(EXTRA_CONNECTED_CAST);
       mSession.setExtras(mSessionExtras);
-      Playback playback = new LocalPlayback(MediaService.this);
+      Playback playback = LocalPlayback.getInstance(MediaService.this);
       mMediaRouter.setMediaSessionCompat(null);
       mPlaybackManager.switchToPlayback(playback, false);
     }

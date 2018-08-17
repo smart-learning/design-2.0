@@ -45,7 +45,6 @@ import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import com.welaaav2.R;
-import com.welaaav2.player.PlayerActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -498,16 +497,16 @@ public class PlayerHolder {
 
     public static Content fromData(Bundle data) {
       Content content = new Content();
-      content.name = data.getString(PlayerActivity.DRM_CONTENT_NAME_EXTRA);
-      content.drmSchemeUuid = UUID.fromString(data.getString(PlayerActivity.DRM_SCHEME_UUID_EXTRA));
-      content.drmLicenseUrl = data.getString(PlayerActivity.DRM_LICENSE_URL);
-      content.userId = data.getString(PlayerActivity.DRM_USERID);
-      content.cId = data.getString(PlayerActivity.DRM_CID);
-      content.oId = data.getString(PlayerActivity.DRM_OID);
-      content.token = data.getString(PlayerActivity.DRM_TOKEN);
-      content.thumbUrl = data.getString(PlayerActivity.THUMB_URL);
-      content.customData = data.getString(PlayerActivity.DRM_CUSTOME_DATA);
-      content.multiSession = data.getBoolean(PlayerActivity.DRM_MULTI_SESSION, false);
+//      content.name = data.getString(PlayerActivity.DRM_CONTENT_NAME_EXTRA);
+//      content.drmSchemeUuid = UUID.fromString(data.getString(PlayerActivity.DRM_SCHEME_UUID_EXTRA));
+//      content.drmLicenseUrl = data.getString(PlayerActivity.DRM_LICENSE_URL);
+//      content.userId = data.getString(PlayerActivity.DRM_USERID);
+//      content.cId = data.getString(PlayerActivity.DRM_CID);
+//      content.oId = data.getString(PlayerActivity.DRM_OID);
+//      content.token = data.getString(PlayerActivity.DRM_TOKEN);
+//      content.thumbUrl = data.getString(PlayerActivity.THUMB_URL);
+//      content.customData = data.getString(PlayerActivity.DRM_CUSTOME_DATA);
+//      content.multiSession = data.getBoolean(PlayerActivity.DRM_MULTI_SESSION, false);
       return content;
     }
   }

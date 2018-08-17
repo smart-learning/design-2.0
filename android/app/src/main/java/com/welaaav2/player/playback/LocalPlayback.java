@@ -10,10 +10,13 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.os.Handler;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
-import com.google.android.exoplayer2.DefaultLoadControl;
+import android.util.JsonReader;
+import android.util.Pair;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -22,18 +25,42 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.audio.AudioAttributes;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.drm.DrmSessionManager;
+import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
+import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
+import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
+import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.Util;
+import com.pallycon.widevinelibrary.PallyconDrmException;
+import com.pallycon.widevinelibrary.PallyconEventListener;
+import com.pallycon.widevinelibrary.PallyconWVMSDK;
+import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
+import com.welaaav2.R;
 import com.welaaav2.player.service.MediaService;
 import com.welaaav2.player.utils.LogHelper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.util.UUID;
 
 /**
  * A class that implements local media playback using {@link com.google.android.exoplayer2.ExoPlayer}
@@ -60,15 +87,42 @@ public final class LocalPlayback implements Playback {
   private boolean mPlayOnFocusGain;
   private Callback mCallback;
   private boolean mAudioNoisyReceiverRegistered;
-  private String mCurrentMediaId;
+  private MediaMetadataCompat currentMedia;
 
   private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
   private final AudioManager mAudioManager;
   private SimpleExoPlayer mExoPlayer;
+  private DataSource.Factory mediaDataSourceFactory;
+  private DefaultTrackSelector trackSelector;
+  private DefaultTrackSelector.Parameters trackSelectorParameters;
+  private MediaSource mediaSource;
+
   private final ExoPlayerEventListener mEventListener = new ExoPlayerEventListener();
 
   // Whether to return STATE_NONE or STATE_STOPPED when mExoPlayer is null;
   private boolean mExoPlayerNullIsStopped = false;
+
+  private boolean startAutoPlay;
+  private int startWindow;
+  private long startPosition;
+
+  private PallyconWVMSDK pallyconWVMSDK;
+
+  private PallyconEventListener pallyconEventListener;
+
+  private Handler eventHandler = new Handler();
+
+  private PlayerView playerView;
+
+  private static volatile LocalPlayback instance;
+
+  private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
+  private static final CookieManager DEFAULT_COOKIE_MANAGER;
+
+  static {
+    DEFAULT_COOKIE_MANAGER = new CookieManager();
+    DEFAULT_COOKIE_MANAGER.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+  }
 
   private final IntentFilter mAudioNoisyIntentFilter =
       new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
@@ -89,16 +143,54 @@ public final class LocalPlayback implements Playback {
         }
       };
 
-  public LocalPlayback(Context context) {
+  public static LocalPlayback getInstance(Context context) {
+    if (instance == null) {
+      synchronized (LocalPlayback.class) {
+        if (instance == null) {
+          instance = new LocalPlayback(context);
+        }
+      }
+    }
+    return instance;
+  }
+
+  // private constructor.
+  private LocalPlayback(Context context) {
+
+    // Prevent from the reflection api.
+    if (instance != null) {
+      throw new RuntimeException(
+          "Use getInstance method to get the single instance of this class.");
+    }
+
     Context applicationContext = context.getApplicationContext();
     this.mContext = applicationContext;
+
+    mediaDataSourceFactory = new DefaultHttpDataSourceFactory(
+        Util.getUserAgent(mContext, "influential"), BANDWIDTH_METER);
+    if (CookieHandler.getDefault() != DEFAULT_COOKIE_MANAGER) {
+      CookieHandler.setDefault(DEFAULT_COOKIE_MANAGER);
+    }
+    trackSelectorParameters = new DefaultTrackSelector.ParametersBuilder().build();
+    clearStartPosition();
+
+    // Acquire Pallycon Widevine module.
+    try {
+      Site site = createSite();
+      pallyconWVMSDK = PallyconWVMSDKFactory.getInstance(mContext);
+      pallyconWVMSDK.init(mContext, eventHandler, site.siteId, site.siteKey);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (PallyconDrmException e) {
+      e.printStackTrace();
+    }
 
     this.mAudioManager =
         (AudioManager) applicationContext.getSystemService(Context.AUDIO_SERVICE);
     // Create the Wifi lock (this does not acquire the lock, this just creates it)
     this.mWifiLock =
         ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
-            .createWifiLock(WifiManager.WIFI_MODE_FULL, "uAmp_lock");
+            .createWifiLock(WifiManager.WIFI_MODE_FULL, "welaaa_lock");
   }
 
   @Override
@@ -162,31 +254,64 @@ public final class LocalPlayback implements Playback {
   }
 
   @Override
-  public void play(QueueItem item) {
+  public void play(MediaMetadataCompat item) {
     mPlayOnFocusGain = true;
     tryToGetAudioFocus();
     registerAudioNoisyReceiver();
-    String mediaId = item.getDescription().getMediaId();
-    boolean mediaHasChanged = !TextUtils.equals(mediaId, mCurrentMediaId);
+    Uri uri = item.getDescription().getMediaUri();
+    boolean mediaHasChanged = currentMedia == null ||
+        !uri.equals(currentMedia.getDescription().getMediaUri());
     if (mediaHasChanged) {
-      mCurrentMediaId = mediaId;
+      currentMedia = item;
     }
 
     if (mediaHasChanged || mExoPlayer == null) {
-      releaseResources(false); // release everything except the player
+      releaseResources(true); // release everything except the player
 
-      String source = "";
+      String source = currentMedia.getDescription().getMediaUri().toString();
       if (source != null) {
         source = source.replaceAll(" ", "%20"); // Escape spaces for URLs
       }
 
-      if (mExoPlayer == null) {
-        mExoPlayer = ExoPlayerFactory.newSimpleInstance(
-            new DefaultRenderersFactory(mContext),
-            new DefaultTrackSelector(),
-            new DefaultLoadControl());
-        mExoPlayer.addListener(mEventListener);
+      @DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
+          DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
+      DefaultRenderersFactory renderersFactory =
+          new DefaultRenderersFactory(mContext, extensionRendererMode);
+
+      TrackSelection.Factory trackSelectionFactory =
+          new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+      trackSelector = new DefaultTrackSelector(trackSelectionFactory);
+      trackSelector.setParameters(trackSelectorParameters);
+
+      DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
+      try {
+        drmSessionManager = createDrmSessionManager();
+      } catch (PallyconDrmException e) {
+        e.printStackTrace();
       }
+
+      try {
+        mediaSource = buildMediaSource(Uri.parse(source));
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (IllegalStateException e) {
+        e.printStackTrace();
+      }
+
+      mExoPlayer = ExoPlayerFactory.newSimpleInstance(
+          renderersFactory, trackSelector, drmSessionManager);
+      mExoPlayer.addListener(mEventListener);
+      mExoPlayer.setPlayWhenReady(startAutoPlay);
+
+      // Prepares media to play (happens on background thread) and triggers
+      // {@code onPlayerStateChanged} callback when the stream is ready to play.
+      boolean haveStartPosition = startWindow != C.INDEX_UNSET;
+      if (haveStartPosition) {
+        mExoPlayer.seekTo(startWindow, startPosition);
+      }
+      mExoPlayer.prepare(mediaSource, !haveStartPosition, false);
+
+      attachPlayerView();
 
       // Android "O" makes much greater use of AudioAttributes, especially
       // with regards to AudioFocus. All of UAMP's tracks are music, but
@@ -198,23 +323,6 @@ public final class LocalPlayback implements Playback {
           .setUsage(USAGE_MEDIA)
           .build();
       mExoPlayer.setAudioAttributes(audioAttributes);
-
-      // Produces DataSource instances through which media data is loaded.
-      DataSource.Factory dataSourceFactory =
-          new DefaultDataSourceFactory(
-              mContext, Util.getUserAgent(mContext, "uamp"), null);
-      // Produces Extractor instances for parsing the media data.
-      ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-      // The MediaSource represents the media to be played.
-      ExtractorMediaSource.Factory extractorMediaFactory =
-          new ExtractorMediaSource.Factory(dataSourceFactory);
-      extractorMediaFactory.setExtractorsFactory(extractorsFactory);
-      MediaSource mediaSource =
-          extractorMediaFactory.createMediaSource(Uri.parse(source));
-
-      // Prepares media to play (happens on background thread) and triggers
-      // {@code onPlayerStateChanged} callback when the stream is ready to play.
-      mExoPlayer.prepare(mediaSource);
 
       // If we are streaming from the internet, we want to hold a
       // Wifi lock, which prevents the Wifi radio from going to
@@ -251,13 +359,18 @@ public final class LocalPlayback implements Playback {
   }
 
   @Override
-  public void setCurrentMediaId(String mediaId) {
-    this.mCurrentMediaId = mediaId;
+  public void setCurrentMedia(MediaMetadataCompat item) {
+    currentMedia = item;
   }
 
   @Override
-  public String getCurrentMediaId() {
-    return mCurrentMediaId;
+  public MediaMetadataCompat getCurrentMedia() {
+    return currentMedia;
+  }
+
+  @Override
+  public void setPallyconEventListener(PallyconEventListener listener) {
+    pallyconEventListener = listener;
   }
 
   private void tryToGetAudioFocus() {
@@ -354,6 +467,8 @@ public final class LocalPlayback implements Playback {
 
     // Stops and releases player (if requested and available).
     if (releasePlayer && mExoPlayer != null) {
+      updateTrackSelectorParameters();
+      updateStartPosition();
       mExoPlayer.release();
       mExoPlayer.removeListener(mEventListener);
       mExoPlayer = null;
@@ -464,5 +579,203 @@ public final class LocalPlayback implements Playback {
     public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
       // Nothing to do.
     }
+  }
+
+  private DrmSessionManager<FrameworkMediaCrypto> createDrmSessionManager()
+      throws PallyconDrmException {
+    pallyconWVMSDK.setPallyconEventListener(pallyconEventListener);
+
+    // Create Pallycon drmSessionManager to get into ExoPlayerFactory
+    Uri uri = currentMedia.getDescription().getMediaUri();
+    String name = currentMedia.getString(PlaybackManager.DRM_CONTENT_NAME_EXTRA);
+    UUID drmSchemeUuid = UUID
+        .fromString(currentMedia.getString(PlaybackManager.DRM_SCHEME_UUID_EXTRA));
+    String drmLicenseUrl = currentMedia.getString(PlaybackManager.DRM_LICENSE_URL);
+    String userId = currentMedia.getString(PlaybackManager.DRM_USERID);
+    String cId = currentMedia.getString(PlaybackManager.DRM_CID);
+    String oId = currentMedia.getString(PlaybackManager.DRM_OID);
+    String token = currentMedia.getString(PlaybackManager.DRM_TOKEN);
+    String thumbUrl = currentMedia.getString(PlaybackManager.THUMB_URL);
+    String customData = currentMedia.getString(PlaybackManager.DRM_CUSTOME_DATA);
+//    boolean multiSession = currentMedia.getBoolean(PlaybackManager.DRM_MULTI_SESSION, false);
+    boolean multiSession = false;
+
+    if (!TextUtils.isEmpty(token)) {
+      return pallyconWVMSDK.createDrmSessionManagerByToken(
+          drmSchemeUuid,
+          drmLicenseUrl,
+          uri,
+          userId,
+          cId,
+          token,
+          multiSession);
+    } else if (!TextUtils.isEmpty(customData)) {
+      return pallyconWVMSDK.createDrmSessionManagerByCustomData(
+          drmSchemeUuid,
+          drmLicenseUrl,
+          uri,
+          customData,
+          multiSession);
+    } else if (TextUtils.isEmpty(userId)) {
+      return pallyconWVMSDK.createDrmSessionManagerByProxy(
+          drmSchemeUuid,
+          drmLicenseUrl,
+          uri,
+          cId,
+          multiSession);
+    } else {
+      return pallyconWVMSDK.createDrmSessionManager(
+          drmSchemeUuid,
+          drmLicenseUrl,
+          uri,
+          userId,
+          cId,
+          oId,
+          multiSession);
+    }
+  }
+
+  private void updateTrackSelectorParameters() {
+    if (trackSelector != null) {
+      trackSelectorParameters = trackSelector.getParameters();
+    }
+  }
+
+  private void updateStartPosition() {
+    if (mExoPlayer != null) {
+      startAutoPlay = mExoPlayer.getPlayWhenReady();
+      startWindow = mExoPlayer.getCurrentWindowIndex();
+      startPosition = Math.max(0, mExoPlayer.getContentPosition());
+    }
+  }
+
+  private void clearStartPosition() {
+    startAutoPlay = true;
+    startWindow = C.INDEX_UNSET;
+    startPosition = C.TIME_UNSET;
+  }
+
+  private MediaSource buildMediaSource(Uri uri) {
+    if (uri == null || uri.getLastPathSegment() == null) {
+      throw new IllegalArgumentException("Argument is invalid");
+    }
+
+    @C.ContentType int type = Util.inferContentType(uri.getLastPathSegment());
+    switch (type) {
+      case C.TYPE_DASH:
+        return new DashMediaSource.Factory(
+            new DefaultDashChunkSource.Factory(mediaDataSourceFactory), mediaDataSourceFactory)
+            .createMediaSource(uri);
+      case C.TYPE_SS:
+        return new SsMediaSource.Factory(
+            new DefaultSsChunkSource.Factory(mediaDataSourceFactory), mediaDataSourceFactory)
+            .createMediaSource(uri);
+      case C.TYPE_HLS:
+        return new HlsMediaSource.Factory(mediaDataSourceFactory)
+            .createMediaSource(uri);
+      case C.TYPE_OTHER:
+        return new ExtractorMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
+      default: {
+        throw new IllegalStateException("Unsupported type: " + type);
+      }
+    }
+  }
+
+  public SimpleExoPlayer getPlayer() {
+    return mExoPlayer;
+  }
+
+  public void setPlayerView(PlayerView playerView) {
+    this.playerView = playerView;
+  }
+
+  private void attachPlayerView() {
+    if (playerView != null) {
+      playerView.setPlayer(mExoPlayer);
+      playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
+      playerView.requestFocus();
+    }
+  }
+
+  private class PlayerErrorMessageProvider implements ErrorMessageProvider<ExoPlaybackException> {
+
+    @Override
+    public Pair<Integer, String> getErrorMessage(ExoPlaybackException e) {
+      String errorString = mContext.getString(R.string.error_generic);
+      if (e.type == ExoPlaybackException.TYPE_RENDERER) {
+        Exception cause = e.getRendererException();
+        if (cause instanceof MediaCodecRenderer.DecoderInitializationException) {
+          // Special case for decoder initialization failures.
+          MediaCodecRenderer.DecoderInitializationException decoderInitializationException =
+              (MediaCodecRenderer.DecoderInitializationException) cause;
+          if (decoderInitializationException.decoderName == null) {
+            if (decoderInitializationException
+                .getCause() instanceof MediaCodecUtil.DecoderQueryException) {
+              errorString = mContext.getString(R.string.error_querying_decoders);
+            } else if (decoderInitializationException.secureDecoderRequired) {
+              errorString =
+                  mContext.getString(
+                      R.string.error_no_secure_decoder, decoderInitializationException.mimeType);
+            } else {
+              errorString =
+                  mContext.getString(R.string.error_no_decoder,
+                      decoderInitializationException.mimeType);
+            }
+          } else {
+            errorString =
+                mContext.getString(
+                    R.string.error_instantiating_decoder,
+                    decoderInitializationException.decoderName);
+          }
+        }
+      }
+      return Pair.create(0, errorString);
+    }
+  }
+
+  public void setRendererDisabled(boolean isDisabled) {
+    if (mExoPlayer == null || trackSelector == null) {
+      return;
+    }
+
+    int indexOfVideoRenderer = -1;
+    for (int i = 0; i < mExoPlayer.getRendererCount(); i++) {
+      if (mExoPlayer.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+        indexOfVideoRenderer = i;
+        break;
+      }
+    }
+
+    DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
+    parametersBuilder.setRendererDisabled(indexOfVideoRenderer, isDisabled);
+    trackSelector.setParameters(parametersBuilder);
+  }
+
+  private Site createSite() throws IOException {
+    InputStream is = mContext.getAssets().open("site.json");
+    InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+    JsonReader reader = new JsonReader(isr);
+
+    Site site = new Site();
+
+    reader.beginObject();
+    while (reader.hasNext()) {
+      String name = reader.nextName();
+      switch (name) {
+        case "siteId":
+          site.siteId = reader.nextString();
+          break;
+        case "siteKey":
+          site.siteKey = reader.nextString();
+          break;
+      }
+    }
+    return site;
+  }
+
+  private class Site {
+
+    public String siteId;
+    public String siteKey;
   }
 }

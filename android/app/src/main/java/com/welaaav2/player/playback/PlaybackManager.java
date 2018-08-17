@@ -1,40 +1,59 @@
 package com.welaaav2.player.playback;
 
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import com.google.android.exoplayer2.drm.KeysExpiredException;
+import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
+import com.pallycon.widevinelibrary.NetworkConnectedException;
+import com.pallycon.widevinelibrary.PallyconEventListener;
+import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.welaaav2.player.utils.LogHelper;
-import com.welaaav2.player.utils.MediaIDHelper;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Manage the interactions among the container service, the queue manager and the actual playback.
  */
-public class PlaybackManager implements Playback.Callback {
+public class PlaybackManager implements Playback.Callback, PallyconEventListener {
 
   private static final String TAG = LogHelper.makeLogTag(PlaybackManager.class);
   // Action to thumbs up a media item
   private static final String CUSTOM_ACTION_THUMBS_UP = "com.welaaav2.THUMBS_UP";
 
-  private QueueManager mQueueManager;
-  private Resources mResources;
-  private Playback mPlayback;
-  private PlaybackServiceCallback mServiceCallback;
-  private MediaSessionCallback mMediaSessionCallback;
+  // Pallycon Widevine data.
+  public static final String DRM_CONTENT_URI_EXTRA = "drm_content_uri_extra";
+  public static final String DRM_CONTENT_NAME_EXTRA = "drm_content_name_extra";
+  public static final String DRM_SCHEME_UUID_EXTRA = "drm_scheme_uuid";
+  public static final String DRM_LICENSE_URL = "drm_license_url";
+  public static final String DRM_USERID = "drm_userid";
+  public static final String DRM_OID = "drm_oid";
+  public static final String DRM_CID = "drm_cid";
+  public static final String DRM_TOKEN = "drm_token";
+  public static final String DRM_CUSTOME_DATA = "drm_custom_data";
+  public static final String DRM_MULTI_SESSION = "drm_multi_session";
+  public static final String THUMB_URL = "thumb_url";
 
-  public PlaybackManager(PlaybackServiceCallback serviceCallback, Resources resources,
-      QueueManager queueManager,
+  private Playback mPlayback;
+  private MediaSessionCallback mMediaSessionCallback;
+  private PlaybackServiceCallback mServiceCallback;
+  private MetadataUpdateListener mListener;
+  private MediaMetadataCompat currentMedia;
+
+  public PlaybackManager(PlaybackServiceCallback serviceCallback,
+      MetadataUpdateListener listener,
       Playback playback) {
     mServiceCallback = serviceCallback;
-    mResources = resources;
-    mQueueManager = queueManager;
+    mListener = listener;
     mMediaSessionCallback = new MediaSessionCallback();
     mPlayback = playback;
     mPlayback.setCallback(this);
+    mPlayback.setPallyconEventListener(this);
   }
 
   public Playback getPlayback() {
@@ -46,19 +65,18 @@ public class PlaybackManager implements Playback.Callback {
   }
 
   /**
-   * Handle a request to play music
+   * Handle a request to play media
    */
   public void handlePlayRequest() {
     LogHelper.d(TAG, "handlePlayRequest: mState=" + mPlayback.getState());
-    MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
-    if (currentMusic != null) {
+    if (currentMedia != null) {
       mServiceCallback.onPlaybackStart();
-      mPlayback.play(currentMusic);
+      mPlayback.play(currentMedia);
     }
   }
 
   /**
-   * Handle a request to pause music
+   * Handle a request to pause media
    */
   public void handlePauseRequest() {
     LogHelper.d(TAG, "handlePauseRequest: mState=" + mPlayback.getState());
@@ -69,7 +87,7 @@ public class PlaybackManager implements Playback.Callback {
   }
 
   /**
-   * Handle a request to stop music
+   * Handle a request to stop media
    *
    * @param withError Error message in case the stop has an unexpected cause. The error message will
    * be set in the PlaybackState and will be visible to MediaController clients.
@@ -105,17 +123,11 @@ public class PlaybackManager implements Playback.Callback {
     if (error != null) {
       // Error states are really only supposed to be used for errors that cause playback to
       // stop unexpectedly and persist until the user takes action to fix it.
-      stateBuilder.setErrorMessage(error);
+      stateBuilder.setErrorMessage(500, error);
       state = PlaybackStateCompat.STATE_ERROR;
     }
     //noinspection ResourceType
     stateBuilder.setState(state, position, 1.0f, SystemClock.elapsedRealtime());
-
-    // Set the activeQueueItemId if the current index is valid.
-    MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
-    if (currentMusic != null) {
-      stateBuilder.setActiveQueueItemId(currentMusic.getQueueId());
-    }
 
     mServiceCallback.onPlaybackStateUpdated(stateBuilder.build());
 
@@ -126,12 +138,11 @@ public class PlaybackManager implements Playback.Callback {
   }
 
   private void setCustomAction(PlaybackStateCompat.Builder stateBuilder) {
-    MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
-    if (currentMusic == null) {
+    if (currentMedia == null) {
       return;
     }
     // Set appropriate "Favorite" icon on Custom action:
-    String mediaId = currentMusic.getDescription().getMediaId();
+    String mediaId = currentMedia.getDescription().getMediaId();
     if (mediaId == null) {
       return;
     }
@@ -157,15 +168,8 @@ public class PlaybackManager implements Playback.Callback {
    */
   @Override
   public void onCompletion() {
-    // The media player finished playing the current song, so we go ahead
-    // and start the next.
-    if (mQueueManager.skipQueuePosition(1)) {
-      handlePlayRequest();
-      mQueueManager.updateMetadata();
-    } else {
-      // If skipping was not possible, we stop and release the resources:
-      handleStopRequest(null);
-    }
+    // Stop and release the resources.
+    handleStopRequest(null);
   }
 
   @Override
@@ -179,10 +183,66 @@ public class PlaybackManager implements Playback.Callback {
   }
 
   @Override
-  public void setCurrentMediaId(String mediaId) {
-    LogHelper.d(TAG, "setCurrentMediaId", mediaId);
+  public void setCurrentMedia(MediaMetadataCompat item) {
+    LogHelper.d(TAG, "setCurrentMedia", item);
   }
 
+  @Override
+  public void onDrmKeysLoaded(Map<String, String> licenseInfo) {
+    StringBuilder stringBuilder = new StringBuilder();
+
+    Iterator<String> keys = licenseInfo.keySet().iterator();
+    while (keys.hasNext()) {
+      String key = keys.next();
+      String value = licenseInfo.get(key);
+      try {
+        if (Long.parseLong(value) == 0x7fffffffffffffffL) {
+          value = "Unlimited";
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      stringBuilder.append(key).append(" : ").append(value);
+      if (keys.hasNext()) {
+        stringBuilder.append("\n");
+      }
+    }
+
+    LogHelper.d(TAG, "onDrmKeysLoaded", stringBuilder.toString());
+  }
+
+  @Override
+  public void onDrmSessionManagerError(Exception e) {
+    StringBuilder stringBuilder = new StringBuilder();
+    if (e instanceof NetworkConnectedException) {
+      stringBuilder.append(e.getMessage());
+    } else if (e instanceof PallyconServerResponseException) {
+      stringBuilder.append("errorCode");
+      stringBuilder.append(((PallyconServerResponseException) e).getErrorCode());
+      stringBuilder.append("message");
+      stringBuilder.append(e.getMessage());
+    } else if (e instanceof KeysExpiredException) {
+      stringBuilder
+          .append("license has been expired. please remove the license first and try again.");
+    } else if (e instanceof DetectedDeviceTimeModifiedException) {
+      stringBuilder.append(
+          "Device time has been changed. go to [Settings] > [Date & time] and use [Automatic date & time] and Connect Internet");
+    } else {
+      stringBuilder.append(e.getMessage());
+    }
+
+    LogHelper.d(TAG, "onDrmSessionManangerError", stringBuilder.toString());
+  }
+
+  @Override
+  public void onDrmKeysRestored() {
+    LogHelper.d("Drm key Restored");
+  }
+
+  @Override
+  public void onDrmKeysRemoved() {
+    LogHelper.d("Drm key Removed");
+  }
 
   /**
    * Switch to a different Playback instance, maintaining all playback state, if possible.
@@ -196,10 +256,10 @@ public class PlaybackManager implements Playback.Callback {
     // Suspends current state.
     int oldState = mPlayback.getState();
     long pos = mPlayback.getCurrentStreamPosition();
-    String currentMediaId = mPlayback.getCurrentMediaId();
+    MediaMetadataCompat currentMedia = mPlayback.getCurrentMedia();
     mPlayback.stop(false);
     playback.setCallback(this);
-    playback.setCurrentMediaId(currentMediaId);
+    playback.setCurrentMedia(currentMedia);
     playback.seekTo(pos < 0 ? 0 : pos);
     playback.start();
     // Swaps instance.
@@ -211,9 +271,8 @@ public class PlaybackManager implements Playback.Callback {
         mPlayback.pause();
         break;
       case PlaybackStateCompat.STATE_PLAYING:
-        MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
-        if (resumePlaying && currentMusic != null) {
-          mPlayback.play(currentMusic);
+        if (resumePlaying && currentMedia != null) {
+          mPlayback.play(currentMedia);
         } else if (!resumePlaying) {
           mPlayback.pause();
         } else {
@@ -233,17 +292,12 @@ public class PlaybackManager implements Playback.Callback {
     @Override
     public void onPlay() {
       LogHelper.d(TAG, "play");
-      if (mQueueManager.getCurrentMusic() == null) {
-        mQueueManager.setRandomQueue();
-      }
       handlePlayRequest();
     }
 
     @Override
     public void onSkipToQueueItem(long queueId) {
       LogHelper.d(TAG, "OnSkipToQueueItem:" + queueId);
-      mQueueManager.setCurrentQueueItem(queueId);
-      mQueueManager.updateMetadata();
     }
 
     @Override
@@ -260,6 +314,9 @@ public class PlaybackManager implements Playback.Callback {
 
     @Override
     public void onPlayFromUri(Uri uri, Bundle extras) {
+      LogHelper.d(TAG, "playFromUri: ", uri, " extras=" + extras);
+      setMediaFromUri(uri, extras);
+      handlePlayRequest();
     }
 
     @Override
@@ -277,35 +334,17 @@ public class PlaybackManager implements Playback.Callback {
     @Override
     public void onSkipToNext() {
       LogHelper.d(TAG, "skipToNext");
-      if (mQueueManager.skipQueuePosition(1)) {
-        handlePlayRequest();
-      } else {
-        handleStopRequest("Cannot skip");
-      }
-      mQueueManager.updateMetadata();
     }
 
     @Override
     public void onSkipToPrevious() {
-      if (mQueueManager.skipQueuePosition(-1)) {
-        handlePlayRequest();
-      } else {
-        handleStopRequest("Cannot skip");
-      }
-      mQueueManager.updateMetadata();
+      LogHelper.d(TAG, "skipToPrevious");
     }
 
     @Override
     public void onCustomAction(@NonNull String action, Bundle extras) {
       if (CUSTOM_ACTION_THUMBS_UP.equals(action)) {
         LogHelper.i(TAG, "onCustomAction: favorite for current track");
-        MediaSessionCompat.QueueItem currentMusic = mQueueManager.getCurrentMusic();
-        if (currentMusic != null) {
-          String mediaId = currentMusic.getDescription().getMediaId();
-          if (mediaId != null) {
-            String musicId = MediaIDHelper.extractMusicIDFromMediaID(mediaId);
-          }
-        }
         // playback state needs to be updated because the "Favorite" icon on the
         // custom action will change to reflect the new favorite state.
         updatePlaybackState(null);
@@ -330,11 +369,54 @@ public class PlaybackManager implements Playback.Callback {
     @Override
     public void onPlayFromSearch(final String query, final Bundle extras) {
       LogHelper.d(TAG, "playFromSearch  query=", query, " extras=", extras);
-
       mPlayback.setState(PlaybackStateCompat.STATE_CONNECTING);
     }
   }
 
+  private void setMediaFromUri(Uri uri, Bundle extras) {
+    LogHelper.d(TAG, "setMediaFromUri");
+    setCurrentMedia(uri, extras);
+    updateMetadata();
+  }
+
+  private void setCurrentMedia(Uri uri, Bundle extras) {
+    if (extras == null) {
+      currentMedia = null;
+    }
+
+    String name = extras.getString(PlaybackManager.DRM_CONTENT_NAME_EXTRA);
+    String drmSchemeUuid = extras.getString(PlaybackManager.DRM_SCHEME_UUID_EXTRA);
+    String drmLicenseUrl = extras.getString(PlaybackManager.DRM_LICENSE_URL);
+    String userId = extras.getString(PlaybackManager.DRM_USERID);
+    String cId = extras.getString(PlaybackManager.DRM_CID);
+    String oId = extras.getString(PlaybackManager.DRM_OID);
+    String token = extras.getString(PlaybackManager.DRM_TOKEN);
+    String thumbUrl = extras.getString(PlaybackManager.THUMB_URL);
+    String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
+
+    MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+    builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
+    builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
+    // drm information.
+    builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
+    builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA, drmSchemeUuid);
+    builder.putString(PlaybackManager.DRM_LICENSE_URL, drmLicenseUrl);
+    builder.putString(PlaybackManager.DRM_USERID, userId);
+    builder.putString(PlaybackManager.DRM_CID, cId);
+    builder.putString(PlaybackManager.DRM_OID, oId);
+    builder.putString(PlaybackManager.DRM_TOKEN, token);
+    builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
+    builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
+    currentMedia = builder.build();
+  }
+
+  private void updateMetadata() {
+    if (currentMedia != null) {
+      mListener.onMetadataChanged(currentMedia);
+    } else {
+      mListener.onMetadataRetrieveError();
+    }
+  }
 
   public interface PlaybackServiceCallback {
 
@@ -345,5 +427,12 @@ public class PlaybackManager implements Playback.Callback {
     void onPlaybackStop();
 
     void onPlaybackStateUpdated(PlaybackStateCompat newState);
+  }
+
+  public interface MetadataUpdateListener {
+
+    void onMetadataChanged(MediaMetadataCompat metadata);
+
+    void onMetadataRetrieveError();
   }
 }

@@ -77,7 +77,7 @@
             android:layout_width="21dp"
             android:layout_height="20dp"
             android:id="@+id/btn_remote_close"
-            android:background="@drawable/notifiy_ico_close"
+            android:background="@drawable/notify_ico_close"
             android:gravity="center|center_horizontal" />
 
     </RelativeLayout>

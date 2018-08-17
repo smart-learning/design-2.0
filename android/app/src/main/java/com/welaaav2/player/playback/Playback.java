@@ -1,6 +1,7 @@
 package com.welaaav2.player.playback;
 
-import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.support.v4.media.MediaMetadataCompat;
+import com.pallycon.widevinelibrary.PallyconEventListener;
 
 /**
  * Interface representing either Local or Remote Playback. The {@link MediaService} works directly
@@ -52,20 +53,20 @@ public interface Playback {
    */
   void updateLastKnownStreamPosition();
 
-  void play(QueueItem item);
+  void play(MediaMetadataCompat item);
 
   void pause();
 
   void seekTo(long position);
 
-  void setCurrentMediaId(String mediaId);
+  void setCurrentMedia(MediaMetadataCompat item);
 
-  String getCurrentMediaId();
+  MediaMetadataCompat getCurrentMedia();
 
   interface Callback {
 
     /**
-     * On current music completed.
+     * On current media completed.
      */
     void onCompletion();
 
@@ -81,10 +82,12 @@ public interface Playback {
     void onError(String error);
 
     /**
-     * @param mediaId being currently played
+     * @param item being currently played
      */
-    void setCurrentMediaId(String mediaId);
+    void setCurrentMedia(MediaMetadataCompat item);
   }
 
   void setCallback(Callback callback);
+
+  void setPallyconEventListener(PallyconEventListener listener);
 }

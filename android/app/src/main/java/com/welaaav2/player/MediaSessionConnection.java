@@ -93,7 +93,6 @@ public class MediaSessionConnection {
      */
     @Override
     public void onConnected() {
-      Log.d("jungon", "onConnected: ");
       // Get a MediaController for the MediaSession.
       try {
         mediaController = new MediaControllerCompat(context, mediaBrowser.getSessionToken());

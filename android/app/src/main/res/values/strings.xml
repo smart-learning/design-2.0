@@ -202,8 +202,8 @@
 
     <!-- MediaBrowserService -->
     <string name="error_no_metadata">Unable to retrieve metadata.</string>
-    <string name="notification_channel">welaaa_Channel_ID</string>
-    <string name="notification_channel_description">Channel ID for welaaa</string>
+    <string name="notification_channel">welaaa</string>
+    <string name="notification_channel_description">media notification for welaaa</string>
     <string name="casting_to_device">Casting to %1$s</string>
     <string name="stop_casting">Stop Casting</string>
 </resources>

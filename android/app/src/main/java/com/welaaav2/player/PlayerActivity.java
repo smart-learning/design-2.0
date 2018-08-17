@@ -10,10 +10,8 @@ package com.welaaav2.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -37,7 +35,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -63,10 +60,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.drm.KeysExpiredException;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.Util;
@@ -83,10 +78,6 @@ import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
-import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
-import com.pallycon.widevinelibrary.NetworkConnectedException;
-import com.pallycon.widevinelibrary.PallyconEventListener;
-import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import com.welaaav2.BasePlayerActivity;
 import com.welaaav2.MainApplication;
@@ -94,6 +85,8 @@ import com.welaaav2.R;
 import com.welaaav2.cast.CastControllerActivity;
 import com.welaaav2.download.DownloadService;
 import com.welaaav2.pallycon.PlayStatus;
+import com.welaaav2.player.playback.LocalPlayback;
+import com.welaaav2.player.playback.PlaybackManager;
 import com.welaaav2.player.service.MediaService;
 import com.welaaav2.player.utils.LogHelper;
 import com.welaaav2.util.CustomDialog;
@@ -111,9 +104,7 @@ import java.io.Reader;
 import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -130,17 +121,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public static final String TAG = "pallycon_sampleapp";
   public static final String CONTENTS_TITLE = "contents_title";
-  public static final String DRM_CONTENT_URI_EXTRA = "drm_content_uri_extra";
-  public static final String DRM_CONTENT_NAME_EXTRA = "drm_content_name_extra";
-  public static final String DRM_SCHEME_UUID_EXTRA = "drm_scheme_uuid";
-  public static final String DRM_LICENSE_URL = "drm_license_url";
-  public static final String DRM_USERID = "drm_userid";
-  public static final String DRM_OID = "drm_oid";
-  public static final String DRM_CID = "drm_cid";
-  public static final String DRM_TOKEN = "drm_token";
-  public static final String DRM_CUSTOME_DATA = "drm_custom_data";
-  public static final String DRM_MULTI_SESSION = "drm_multi_session";
-  public static final String THUMB_URL = "thumb_url";
   public static final String PREFER_EXTENSION_DECODERS = "prefer_extension_decoders";
   public static final String DOWNLOAD_SERVICE_TYPE = "drm_delete";
 
@@ -382,7 +362,7 @@ public class PlayerActivity extends BasePlayerActivity {
   ArrayList<String> alCkeyCnt2;
   ArrayList<String> alCkeyCnt3;
 
-  private ArrayList<JSONObject> suggestListArray1 = new ArrayList<JSONObject>();
+  private ArrayList<JSONObject> suggestListArray1 = new ArrayList<>();
   public Boolean isDonwloadBindState = false;
 
   private MediaBrowserCompat mediaBrowser;
@@ -418,204 +398,6 @@ public class PlayerActivity extends BasePlayerActivity {
         }
       };
 
-  private class PlayerEventListener extends Player.DefaultEventListener {
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-      String errorString;
-      if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-        Exception cause = error.getRendererException();
-        errorString = cause.toString();
-
-      } else if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-        Exception cause = error.getSourceException();
-        errorString = cause.toString();
-
-      } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
-        Exception cause = error.getUnexpectedException();
-        errorString = cause.toString();
-      } else {
-        errorString = error.toString();
-      }
-
-      AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
-      builder.setTitle("Play Error");
-      builder.setMessage(errorString);
-      builder.setPositiveButton("OK", null);
-      Dialog dialog = builder.create();
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-      switch (playbackState) {
-        case Player.STATE_IDLE:
-          Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_IDLE)");
-          mPlayStatus.mCurrentState = PlayStatus.STATE_IDLE;
-          break;
-        case Player.STATE_BUFFERING:
-          Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_BUFFERING)");
-          mPlayStatus.mCurrentState = PlayStatus.STATE_BUFFERING;
-          break;
-        case Player.STATE_READY:
-          Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_READY)");
-
-          if (playWhenReady) {
-            Log.d(TAG, "State: Ready and Playing");
-            mPlayStatus.mCurrentState = PlayStatus.STATE_PLAYING;
-
-            // startTimerSeekBar ! 타이머를 돌리고 . 자막 싱크를 맞춥니다.
-            mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
-          } else {
-            Log.d(TAG, "State: Ready and Pausing");
-            mPlayStatus.mCurrentState = PlayStatus.STATE_PAUSED;
-
-            // stopTimerSeekbar ! 타이머를 멈춥니다.
-          }
-
-          break;
-        case Player.STATE_ENDED:
-          Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", STATE_ENDED)");
-          mPlayStatus.mCurrentState = PlayStatus.STATE_IDLE;
-
-          playerHolder.releasePlayer();
-          try {
-            playerHolder.initializePlayer();
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-
-          break;
-        default:
-          Log.d(TAG, "onPlayerStateChanged(" + playWhenReady + ", UNKNOWN)");
-          mPlayStatus.mCurrentState = PlayStatus.STATE_IDLE;
-      }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      Log.d("jungon", "this: " + this.hashCode() + ", obj: " + obj.hashCode());
-      return this.hashCode() == obj.hashCode();
-    }
-
-    @Override
-    public int hashCode() {
-      return TAG.hashCode();
-    }
-  }
-
-  private Player.EventListener playerEventListener = new PlayerEventListener();
-
-  // TODO : must implement PallyconEventListener
-  private PallyconEventListener pallyconEventListener = new PallyconEventListener() {
-    @Override
-    public void onDrmKeysLoaded(Map<String, String> licenseInfo) {
-      // TODO: Use the loaded license information.
-      StringBuilder stringBuilder = new StringBuilder();
-
-      Iterator<String> keys = licenseInfo.keySet().iterator();
-      while (keys.hasNext()) {
-        String key = keys.next();
-        String value = licenseInfo.get(key);
-        try {
-          if (Long.parseLong(value) == 0x7fffffffffffffffL) {
-            value = "Unlimited";
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        stringBuilder.append(key).append(" : ").append(value);
-        if (keys.hasNext()) {
-          stringBuilder.append("\n");
-        }
-      }
-
-      AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-      alertBuilder.setTitle("License Info");
-      alertBuilder.setMessage(stringBuilder.toString());
-      alertBuilder.setPositiveButton("OK", null);
-      Dialog dialog = alertBuilder.create();
-      dialog.show();
-    }
-
-    @Override
-    public void onDrmSessionManagerError(Exception e) {
-      // TODO: Handle exceptions in error situations. Please refer to the API guide document for details of exception.
-      AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
-      builder.setTitle("DrmManager Error");
-
-      if (e instanceof NetworkConnectedException) {
-        builder.setMessage(e.getMessage());
-
-      } else if (e instanceof PallyconServerResponseException) {
-        PallyconServerResponseException e1 = (PallyconServerResponseException) e;
-        builder
-            .setMessage("errorCode : " + e1.getErrorCode() + "\n" + "message : " + e1.getMessage());
-
-      } else if (e instanceof KeysExpiredException) {
-        builder
-            .setMessage("license has been expired. please remove the license first and try again.");
-        builder.setPositiveButton("OK", null);
-        Dialog dialog = builder.create();
-        dialog.show();
-        return;
-
-      } else if (e instanceof DetectedDeviceTimeModifiedException) {
-        // TODO: content playback should be prohibited to prevent illegal use of content.
-        builder.setMessage(
-            "Device time has been changed. go to [Settings] > [Date & time] and use [Automatic date & time] and Connect Internet");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialogInterface, int i) {
-            finish();
-          }
-        });
-        Dialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-        return;
-
-      } else {
-        builder.setMessage(e.getMessage());
-      }
-
-      builder.setPositiveButton("OK", null);
-      Dialog dialog = builder.create();
-      dialog.show();
-    }
-
-    @Override
-    public void onDrmKeysRestored() {
-      AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PlayerActivity.this);
-      alertBuilder.setTitle("License Info");
-      alertBuilder.setMessage("Drm key Restored !!!!!");
-      alertBuilder.setPositiveButton("OK", null);
-      Dialog dialog = alertBuilder.create();
-      dialog.show();
-    }
-
-    @Override
-    public void onDrmKeysRemoved() {
-      AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PlayerActivity.this);
-      alertBuilder.setTitle("License Info");
-      alertBuilder.setMessage("Drm key Removed !!!!!");
-      alertBuilder.setPositiveButton("OK", null);
-      Dialog dialog = alertBuilder.create();
-      dialog.show();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      Log.d("jungon", "this: " + this.hashCode() + ", obj: " + obj.hashCode());
-      return this.hashCode() == obj.hashCode();
-    }
-
-    @Override
-    public int hashCode() {
-      return TAG.hashCode();
-    }
-  };
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -628,9 +410,7 @@ public class PlayerActivity extends BasePlayerActivity {
     simpleExoPlayerView = findViewById(R.id.player_view);
     simpleExoPlayerView.requestFocus();
 
-    playerHolder.setPlayerView(simpleExoPlayerView);
-    playerHolder.addPallyconEventListener(pallyconEventListener);
-    playerHolder.addPlayerEventListener(playerEventListener);
+    LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
 
     //// Chromecast
     mCastContext = CastContext.getSharedInstance(this);
@@ -849,10 +629,6 @@ public class PlayerActivity extends BasePlayerActivity {
     if (mPlayStatus.mCurrentState == PlayStatus.STATE_PLAYING) {
       shouldAutoPlay = true;
     }
-
-    Intent intent = getIntent();
-
-//    mediaSessionConnection.getTransportControls().playFromUri(intent.getData(), intent.getExtras());
   }
 
   @Override
@@ -862,16 +638,11 @@ public class PlayerActivity extends BasePlayerActivity {
       mSessionManager.removeSessionManagerListener(mSessionManagerListener, CastSession.class);
     }
     //// CC
-
-    playerHolder.onPause();
-
     super.onPause();
   }
 
   @Override
   protected void onStop() {
-    playerHolder.onStop();
-
     mPlayStatus.clear();
 
     // 다운로드 서비스 언바운딩
@@ -895,20 +666,13 @@ public class PlayerActivity extends BasePlayerActivity {
   protected void onDestroy() {
     super.onDestroy();
 
-    playerHolder.removePallyconEventListener(pallyconEventListener);
-    playerHolder.removePlayerEventListener(playerEventListener);
+    LocalPlayback.getInstance(this).setPlayerView(null);
   }
 
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
     if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      try {
-        playerHolder.initializePlayer();
-      } catch (Exception e) {
-        e.printStackTrace();
-        finish();
-      }
     } else {
       Toast.makeText(getApplicationContext(), R.string.storage_permission_denied, Toast.LENGTH_LONG)
           .show();
@@ -1043,7 +807,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
         mPlayStatus.mScreen = PlayStatus.SCREEN_CAST;
 
-        Player player = playerHolder.getPlayer();
+        Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
 
         if (player != null) {
           mPlayStatus.mPosition = player.getCurrentPosition();
@@ -1069,16 +833,10 @@ public class PlayerActivity extends BasePlayerActivity {
         // enable ui of local player
         simpleExoPlayerView.setUseController(true);
 
-        Player player = playerHolder.getPlayer();
+        Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
 
         if (player == null) {
           Log.d(TAG, "[CAST] no local player. initializing...");
-          try {
-            playerHolder.initializePlayer();
-          } catch (Exception e) {
-            e.printStackTrace();
-            finish();
-          }
         }
 
         // seek position of local player to position of remote player
@@ -1272,13 +1030,13 @@ public class PlayerActivity extends BasePlayerActivity {
     JSONObject castCustomData = new JSONObject();
     try {
       Intent intent = getIntent();
-      if (intent.hasExtra(DRM_LICENSE_URL)) {
+      if (intent.hasExtra(PlaybackManager.DRM_LICENSE_URL)) {
         // get license custom data
-        String userid = intent.getStringExtra(DRM_USERID);
-        String cid = intent.getStringExtra(DRM_CID);
-        String oid = intent.getStringExtra(DRM_OID);
+        String userid = intent.getStringExtra(PlaybackManager.DRM_USERID);
+        String cid = intent.getStringExtra(PlaybackManager.DRM_CID);
+        String oid = intent.getStringExtra(PlaybackManager.DRM_OID);
 
-        String licenseUrl = intent.getStringExtra(DRM_LICENSE_URL);
+        String licenseUrl = intent.getStringExtra(PlaybackManager.DRM_LICENSE_URL);
         String customData = PallyconWVMSDKFactory.getInstance(this).getCustomData(userid, cid, oid);
 
         // input license data for receiver
@@ -1337,7 +1095,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
       bNowOnChromecast = true;
       mRemoteClient.load(buildMediaInfo(uri.toString(), intent.getStringExtra(CONTENTS_TITLE), null,
-          intent.getStringExtra(THUMB_URL)), options);
+          intent.getStringExtra(PlaybackManager.THUMB_URL)), options);
       return true;
     } catch (Exception e) {
       e.printStackTrace();
@@ -1974,7 +1732,7 @@ public class PlayerActivity extends BasePlayerActivity {
     public void onClick(View v) {
 
       try {
-        Player player = playerHolder.getPlayer();
+        Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
 
         switch (v.getId()) {
           case R.id.BTN_AUTOPLAY: {
@@ -2187,7 +1945,7 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.BTN_AUDIO: {
-            playerHolder.setRendererDisabled(true);
+            LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
 
             audioModeBackgroundLayout.setVisibility(View.VISIBLE); //이미지보이고
             audioModeIconHeadset.setVisibility(View.VISIBLE); //아이콘보이고
@@ -2197,7 +1955,7 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.BTN_VIDEO: {
-            playerHolder.setRendererDisabled(false);
+            LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
 
             audioModeBackgroundLayout.setVisibility(View.GONE);
             audioModeIconHeadset.setVisibility(View.GONE);
@@ -2276,7 +2034,9 @@ public class PlayerActivity extends BasePlayerActivity {
               }
 
               // 일시정지
-              mediaSessionConnection.getTransportControls().pause();
+              if (getTransportControls() != null) {
+                getTransportControls().pause();
+              }
             }
           }
           break;
@@ -2546,7 +2306,9 @@ public class PlayerActivity extends BasePlayerActivity {
                     mRelatedListGroupLayout.setVisibility(VISIBLE);
 
 //										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
-                    mediaSessionConnection.getTransportControls().pause();
+                    if (getTransportControls() != null) {
+                      getTransportControls().pause();
+                    }
                   }
                 }
 
@@ -3319,7 +3081,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
             setBackGroungLayout(false);
 
-            mediaSessionConnection.getTransportControls().play();
+            if (getTransportControls() != null) {
+              getTransportControls().play();
+            }
 
             break;
         }
@@ -4848,7 +4612,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
   @Override
   public void onBackPressed() {
-    Player player = playerHolder.getPlayer();
+    Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
 
     // 최근 재생 리스트가 있는 경우
     if (mPlaylistGroupLayout.getVisibility() == VISIBLE) {
@@ -4923,7 +4687,7 @@ public class PlayerActivity extends BasePlayerActivity {
     @Override
     public void handleMessage(Message msg) {
       try {
-        Player player = playerHolder.getPlayer();
+        Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
         mCurrenttime = (int) player.getCurrentPosition();
 
         if (hasSubTitlsJesonUrl) {
@@ -5148,9 +4912,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
     Intent service = new Intent(PlayerActivity.this, DownloadService.class);
 
-    service.putExtra(PlayerActivity.DRM_CONTENT_URI_EXTRA,
+    service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA,
         "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
-    service.putExtra(PlayerActivity.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
+    service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
 
     startService(service);
     bindService(service, downloadConnection, getApplicationContext().BIND_AUTO_CREATE);
@@ -5244,23 +5008,17 @@ public class PlayerActivity extends BasePlayerActivity {
     if (mediaController == null) {
       mediaController = new MediaControllerCompat(PlayerActivity.this, token);
     }
-    if (mediaController.getMetadata() == null) {
-
-      finish();
-      return;
-    }
     MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
     mediaController.registerCallback(callback);
-    PlaybackStateCompat state = mediaController.getPlaybackState();
-    updatePlaybackState(state);
-    MediaMetadataCompat metadata = mediaController.getMetadata();
-    if (metadata != null) {
-      updateMediaDescription(metadata.getDescription());
-      updateDuration(metadata);
-    }
-    updateProgress();
-    if (state != null && (state.getState() == PlaybackStateCompat.STATE_PLAYING ||
-        state.getState() == PlaybackStateCompat.STATE_BUFFERING)) {
+
+    Intent intent = getIntent();
+    if (intent != null && intent.getData() != null && getTransportControls() != null) {
+      Uri uri = intent.getData();
+      Bundle extras = intent.getExtras();
+      getTransportControls().playFromUri(uri, extras);
+
+      // Set player to playerview.
+      LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
     }
   }
 
