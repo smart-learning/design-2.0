@@ -137,8 +137,6 @@
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
   
-    NSLog(@"  Duration : %f", [self getDuration]);
-  
     [self setPlayState : YES];
 }
 
@@ -798,8 +796,6 @@
     [_player setRate : _playbackRate];
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
-  
-    [self getDuration];  // test purpose
 }
 
 - (void) pressedPauseButton
@@ -808,7 +804,6 @@
     [_player pause];
     // playButton으로 변경해주어야 합니다.
     [self setPlayState : NO];
-    [self getDuration];  // test purpose
 }
 
 - (void) pressedRwButton
@@ -887,9 +882,11 @@
 }
 
 #pragma mark - Slider action
+
 - (void) seekbarDragBegin : (id) sender
 {
     _touchDragging = YES;
+    NSLog(@"  Dragging on the slider bar has begun!");
 }
 
 - (void) seekbarDidChangeValue : (id) sender
@@ -903,11 +900,9 @@
     {
         return ;
     }
-  /*
-    if ( [self.delegate respondsToSelector : @selector(playerUiView:seekbarDragging:)] )
+    if ( [self respondsToSelector : @selector(seekbarDragging:)] )
     {
-        [self.delegate playerUiView : self
-                    seekbarDragging : bar.value];
+        [self seekbarDragging : bar.value];
       
         _holdTouchDragging = YES;
       
@@ -915,20 +910,17 @@
                    withObject : nil
                    afterDelay : 0.5f];
     }
-  */
 }
 
 - (void) seekbarDragEnd : (id) sender
 {
-  /*
     _touchDragging = NO;
   
     UISlider *bar = (UISlider *) sender;
   
-    if ( [self.delegate respondsToSelector : @selector(playerUiView:seekbarDragEnd:)] )
+    if ( [self respondsToSelector : @selector(seekbarDragEndForTimeWarp:)] )
     {
-        [self.delegate playerUiView : self
-                     seekbarDragEnd : bar.value];
+        [self seekbarDragEndForTimeWarp : bar.value];
       
         _holdTouchDragging = NO;
         [NSObject cancelPreviousPerformRequestsWithTarget : self
@@ -936,21 +928,38 @@
                                                    object : nil];
         NSLog(@"  [SeekBar] Dragging ends. (%f)", bar.value);
         // 이용로그 전송 시작
-        //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
-        NSTimeInterval cTime = 0000;
-        [[LogManager sharedInstance] sendLogWithGroupKey : self.gkey
-                                              contentKey : self.ckey
-                                                  status : @"MOVE"
-                                              downloaded : self.isDownloadFile
-                                            startingTime : (int) (cTime * 1000)
-                                              endingTime : (int) (cTime * 1000 + 30000)];
+        //
         // 이용로그 전송 종료
     }
-  */
+}
+
+- (void) seekbarDragging : (NSTimeInterval) time
+{
+    [_player pause];
+    [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
+}
+
+- (void) unlockDragging
+{
+    _holdTouchDragging = NO;
+}
+
+- (void) seekbarDragEndForTimeWarp : (NSTimeInterval) time
+{
+    [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
+    [_player play];
+  
+    // 기존 타이머를 종료시키고 재시작
+    //[self stopLogTimer];
+    // NSTimer를 통해 30초마다 로그내역을 전송
+    //NSLog(@"  [__NSTimer__] 30초 뒤에 타이머가 가동됩니다.");
 }
 
 #pragma mark - Private Methods
 
+//
+// ContentView의 투명버튼을 통해 Playback Controller UI Components를 사라지게 하거나 나타나게 합니다.
+//
 - (void) setPlayerUIHidden : (BOOL) hidden
 {
     if ( hidden )
@@ -1013,32 +1022,6 @@
                                   }];
 }
 
-- (void) setPositionScriptToHideView : (BOOL) hidden
-{
-  /*
-    if ( _scriptView.status == IfMediaPlayerScriptViewModeText )
-    {
-        if ( hidden == YES )
-        {
-            CGRect frame = _scriptView.frame;
-            frame.origin.y = self.frame.size.height - frame.size.height;
-          
-            [UIView animateWithDuration: 0.3f
-                                  delay: 0
-                                options: UIViewAnimationOptionAllowUserInteraction
-                             animations: ^{
-                                              _scriptView.frame = frame;
-                                          }
-                             completion: ^(BOOL finished) {} ];
-        }
-        else
-        {
-            [self setScriptViewFrameWithStatus: _scriptView.status];
-        }
-    }
-  */
-}
-
 #pragma mark - Notifications
 
 - (void) showToast : (NSString *) text
@@ -1047,36 +1030,10 @@
 }
 
 #pragma mark - Time Control
-/*
-- (NSTimeInterval) playableDuration
-{
-  //  use loadedTimeRanges to compute playableDuration.
-  AVPlayerItem *item = _player.currentItem;
-  
-  if ( item.status == AVPlayerItemStatusReadyToPlay )
-  {
-    NSArray *timeRangeArray = item.loadedTimeRanges;
-    
-    CMTimeRange aTimeRange = [[timeRangeArray objectAtIndex : 0] CMTimeRangeValue];
-    
-    double startTime = CMTimeGetSeconds(aTimeRange.start);
-    double loadedDuration = CMTimeGetSeconds(aTimeRange.duration);
-    
-    // FIXME: shoule we sum up all sections to have a total playable duration,
-    // or we just use first section as whole?
-    
-    NSLog(@"  get time range, its start is %f seconds, its duration is %f seconds.", startTime, loadedDuration);
-    
-    return (NSTimeInterval) (startTime + loadedDuration);
-  }
-  else
-  {
-    return (CMTimeGetSeconds(kCMTimeInvalid));
-  }
-}
-*/
 
+//
 // 콘텐트의 전체 재생 시간을 구합니다.
+//
 - (NSTimeInterval) getDuration
 {
     AVPlayerItem *item = _player.currentItem;
@@ -1084,7 +1041,6 @@
     if ( item.status == AVPlayerItemStatusReadyToPlay )
     {
         double loadedDuration = CMTimeGetSeconds(item.duration);
-        NSLog(@"  Content duration : %f", loadedDuration);
       
         return (NSTimeInterval) loadedDuration;
     }
@@ -1094,7 +1050,9 @@
     }
 }
 
+//
 // 콘텐트의 현재 재생 시간을 구합니다.
+//
 - (NSTimeInterval) getCurrentPlaybackTime
 {
     AVPlayerItem *item = _player.currentItem;
