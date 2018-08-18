@@ -23,7 +23,7 @@ import AudioBookTicketPage from "./AudioBookTicketPage";
 import AudioBookUsePage from "./AudioBookUsePage";
 import AudioBookBuyPage from "./AudioBookBuyPage";
 import DownloadContentPage from "./DownloadContentPage";
-import SetTagContentPage from "./SetTagContentPage";
+import MyLogPage from "./MyLogPage";
 import SetTagPage from "./SetTagPage";
 import ClipPlayListPage from "./ClipPlayListPage";
 import FriendPage from "./FriendPage";
@@ -128,16 +128,16 @@ const MyScreens = createSwitchNavigator(
 			screen: DownloadContentPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
-		SetTagContentPage: {
-			screen: SetTagContentPage,
-			navigationOptions: NAV_OPTS_STACK,
-		},
 		SetTagPage: {
 			screen: SetTagPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
 		ClipPlayListPage: {
 			screen: ClipPlayListPage,
+			navigationOptions: NAV_OPTS_STACK,
+		},
+		MyLogPage: {
+			screen: MyLogPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
 		FriendPage: {

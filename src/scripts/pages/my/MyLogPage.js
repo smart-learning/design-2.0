@@ -6,7 +6,7 @@ import Store from '../../../scripts/commons/store';
 /*
 * 로그인 후 보여지는 화면
 * */
-export default class SetTagContentPage extends React.Component {
+export default class MyLogPage extends React.Component {
 
 
 	render() {
