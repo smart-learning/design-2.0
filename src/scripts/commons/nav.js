@@ -14,15 +14,7 @@ export const NAV_OPTS_COMMON = {
 	headerTintColor: '#fff',
 	headerTitleStyle: {
 		fontWeight: 'bold',
-	},
-
-	// headerLeftContainerStyle:{
-	// 	// paddingLeft: 15,
-	// },
-    //
-	// headerRightContainerStyle:{
-	// 	// paddingRight: 15,
-	// }
+	}
 };
 
 export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({
@@ -48,11 +40,10 @@ export const NAV_OPTS_MY_HOME = ({navigation, navigationOptions}) => {
 
 	return {
 		headerStyle: {
-			position: 'absolute',
 			top: 0,
 			left: 0,
 			right: 0,
-			backgroundColor: 'rgba(0,0,0,0)',
+			backgroundColor: 'transparent',
 			paddingLeft: 20,
 			paddingRight: 20,
 			borderBottomWidth:0,

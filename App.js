@@ -12,8 +12,7 @@ import PlaygroundJune from "./src/scripts/pages/PlaygroundJune";
 import BottomControllerPage from './src/scripts/pages/BottomControllerPage'
 
 class App extends React.Component {
-
-	render() {
+ 	render() {
 		return <View style={{flex: 1}}>
 			<AppDrawer
 				ref={navigatorRef => {

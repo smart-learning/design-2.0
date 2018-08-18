@@ -85,10 +85,10 @@ class LoginPage extends React.Component {
 		console.log( '키보드 들어감' );
 	}
 
-	setWelaaaAuthAndRedirect( auth ) {
+	setWelaaaAuthAndRedirect = ( auth ) => {
 		store.welaaaAuth = auth;
 
-		let requestScreenName = this.props.navigation.getParam( 'requestScreenName', 'HomeScreen' );
+		let requestScreenName = this.props.navigation.getParam( 'requestScreenName', 'MyInfoHome' );
 		this.props.navigation.navigate( requestScreenName );
 	}
 
@@ -98,6 +98,8 @@ class LoginPage extends React.Component {
 
 		// TODO: 소셜토큰 받아오기 성공 이후 소셜 토큰을 이용한 welaaa auth 처리 필요합니다
 		Alert.alert( '소셜토큰 받아오기 성공. 이후 소셜 토큰을 이용한 welaaa auth 처리 필요합니다' );
+		// README: 임시로 페이지 넘어가게 구현해둠
+		this.setWelaaaAuthAndRedirect( 'temp' );
 	}
 
 	render() {

@@ -15,6 +15,8 @@ class AuthLoadingScreen extends React.Component {
 
 		// alert('store' + ( store.token||store.authToken ) );
 
+		console.log( '페이지 이동:', requestScreenName );
+
 		if( store.token || store.authToken )
 			this.props.navigation.navigate(requestScreenName);
 		else

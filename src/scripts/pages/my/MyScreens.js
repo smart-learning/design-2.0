@@ -34,70 +34,49 @@ import GuideViewPage from "./GuideViewPage";
 import InquireFormPage from "./InquireFormPage";
 
 
-const MyScreens = createSwitchNavigator(
+const MyScreens = createStackNavigator(
 	{
-		AuthCheck: {
-			screen: AuthLoadingScreen
-		},
 
 		Login: {
 			screen: LoginPage,
+			navigationOptions:{ header: null }
 		},
 
 		FindPassword: {
 			screen: FindPasswordPage,
 		},
 
-		// SignUp: {
-		// 	screen: createStackNavigator({
-		// 			SignUpPage: {
-		// 				screen: SignUpLandingPage
-		// 			},
-        //
-		// 			PolicyPage: {
-		// 				screen: Policy,
-		// 				navigationOptions: NAV_OPTS_STACK,
-		// 			},
-        //
-		// 			PrivacyPage: {
-		// 				screen: Privacy,
-		// 				navigationOptions: NAV_OPTS_STACK,
-		// 			}
-		// 		},
-        //
-		// 		{
-		// 			navigationOptions: NAV_OPTS_COMMON,
-		// 		}
-		// 	),
-		// },
-
 		SignUpPage: {
 			screen: SignUpLandingPage,
 		},
 
-		PolicyPage: {
-			screen: Policy,
-			navigationOptions: NAV_OPTS_STACK,
-		},
-
 		PrivacyPage: {
 			screen: Privacy,
-			navigationOptions: NAV_OPTS_STACK,
+			// navigationOptions: NAV_OPTS_STACK,
+		},
+
+		PolicyPage: {
+			screen: Policy,
+			// navigationOptions: NAV_OPTS_STACK,
 		},
 
 		EmailSignUpForm: {
 			screen: EmailSignUpForm,
 		},
 
+
+		//------------------------ before Auth ----------------------------------
+		AuthCheck: {
+			screen: AuthLoadingScreen
+		},
+		//------------------------ after Auth -----------------------------------
+
+
 		MyInfoHome: {
-			screen: AudioBookTicketPage,
-			navigationOptions: NAV_OPTS_MY_HOME,
+			screen: MyInfoHome,
+			navigationOptions: { header: null },
 		},
 
-		MyInfoSubExample: {
-			screen: MyInfoSubPage,
-			navigationOptions: NAV_OPTS_STACK_WITH_SEARCH,
-		},
 
 		SetAppPage: {
 			screen: SetAppPage,
@@ -160,10 +139,6 @@ const MyScreens = createSwitchNavigator(
 			screen: InquireFormPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
-
-		// AuthorizedMyScreen: {
-		// 	screen: MyInfoScreens
-		// }
 	},
 
 	{
