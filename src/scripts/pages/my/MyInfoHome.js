@@ -169,7 +169,7 @@ export default class MyInfoHome extends React.Component {
 									  onPress={() => this.props.navigation.navigate('LectureUsePage')}>
 						<View style={styles.listItem}>
 							<Image source={IcPlay} style={styles.listItemIcon}/>
-							<Text style={styles.listItemTitle}>이용중 강좌</Text>
+							<Text style={styles.listItemTitle}>최근 재생중 강좌</Text>
 							<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 						</View>
 					</TouchableOpacity>

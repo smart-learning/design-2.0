@@ -90,7 +90,7 @@ const MyScreens = createSwitchNavigator(
 		},
 
 		MyInfoHome: {
-			screen: MyInfoHome,
+			screen: AudioBookTicketPage,
 			navigationOptions: NAV_OPTS_MY_HOME,
 		},
 
