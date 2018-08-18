@@ -6,12 +6,12 @@ import Store from '../../../scripts/commons/store';
 /*
 * 로그인 후 보여지는 화면
 * */
-export default class MyInfoSubPage extends React.Component {
+export default class LectureBuyPage extends React.Component {
 
 
 	render() {
 		return <View style={Styles.container}>
-			<Text>내정보 서브페이지</Text>
+			<Text>LectureBuyPage 서브페이지</Text>
 			<Button
 				onPress={()=>this.props.navigation.navigate('MyInfoHome')}
 				title="뒤로"
