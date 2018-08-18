@@ -1,10 +1,13 @@
 import React from "react";
-import {AsyncStorage, Button, ScrollView, Text, View} from "react-native";
+import {AsyncStorage, Button, ScrollView, StyleSheet, Text, View} from "react-native";
 import CommonStyles from "../../../styles/common";
 import Store from '../../../scripts/commons/store';
 
-export default class SetAppPage extends React.Component {
+const styles = StyleSheet.create({
+	//
+});
 
+export default class SetAppPage extends React.Component {
 
 	render() {
 		return <View style={CommonStyles.container}>
