@@ -19,11 +19,27 @@ import IcMusic from "../../../images/ic-my-music.png";
 import IcPlay from "../../../images/ic-my-play.png";
 import IcProfile from "../../../images/ic-my-profile.png";
 import IcTag from "../../../images/ic-my-tag.png";
+import IcCog from "../../../images/ic-my-cog.png";
 import DummyProfile from "../../../images/dummy-my-profile.png";
 import {SafeAreaView} from "react-navigation";
+import HomeButton from "../../components/header/HomeButton";
 
 
 const styles = StyleSheet.create({
+	myHeader: {
+		alignItems: 'center',
+		width: '100%',
+		height: 50,
+	},
+	myHeaderTitle: {
+		fontSize: 16,
+		color: '#ffffff',
+	},
+	myHeaderIcon: {
+		width: 18,
+		height: 18,
+		marginRight: 15,
+	},
 	sectionLayout: {
 		width: '100%',
 		backgroundColor: '#ffffff',
@@ -103,10 +119,15 @@ const styles = StyleSheet.create({
 	},
 	myInfo: {
 		// height: 165,
-		paddingLeft: 40,
-		paddingRight: 40,
+		position: 'relative',
 	},
 	myInfoContent: {
+		marginLeft: 40,
+		marginRight: 40,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	myInfoContentItem: {
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
@@ -156,27 +177,28 @@ export default class MyInfoHome extends React.Component {
 				<ScrollView style={ { flex:1 } }>
 					<ImageBackground source={BgMy} style={styles.myInfo}>
 
-						<View style={{height: 50, flexDirection: 'row'}}>
-							<Button title="홈으로.."
-									onPress={() => navigation.navigate('HomeScreen')}
-							/>
+						<View style={[CommonStyles.alignJustifyContentBetween, styles.myHeader]}>
+							{/*<Button title="홈으로.."*/}
+									{/*onPress={() => navigation.navigate('HomeScreen')}*/}
+							{/*/>*/}
+							<HomeButton/>
 
-							<Text>마이윌라</Text>
+							<Text style={styles.myHeaderTitle}>마이윌라</Text>
 
-							<Button title="설정"
-									onPress={() => navigation.navigate('SetAppPage')}
-							/>
+							<TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('SetAppPage')}>
+								<Image source={IcCog} style={styles.myHeaderIcon}/>
+							</TouchableOpacity>
 						</View>
 
 
-						<View style={[styles.myInfoContent, {height: 165}]}>
+						<View style={[styles.myInfoContent, {height: 105}]}>
 							<Image source={DummyProfile} style={styles.myInfoProfile} borderRadius={30}/>
 							<View>
-								<View style={styles.myInfoContent}>
+								<View style={styles.myInfoContentItem}>
 									<Text style={styles.myInfoName}>김딸기</Text>
 									<View>package</View>
 								</View>
-								<View style={[styles.myInfoContent, styles.myInfoParagraphContainer]}>
+								<View style={[styles.myInfoContentItem, styles.myInfoParagraphContainer]}>
 									<Text style={styles.myInfoParagraph}>한줄 메세지를 작성해주세요~</Text>
 									<TouchableOpacity activeOpacity={0.9}>
 										<Text style={styles.myInfoParagraphButton}>쓰기</Text>

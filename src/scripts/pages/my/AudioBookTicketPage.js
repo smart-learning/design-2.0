@@ -1,5 +1,6 @@
 import React from "react";
-import {AsyncStorage, Button, StyleSheet, Text, View, ScrollView} from "react-native";
+import { Button, StyleSheet, Text, View, ScrollView} from "react-native";
+import {SafeAreaView} from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import Store from '../../../scripts/commons/store';
 
@@ -28,26 +29,27 @@ export default class AudioBookTicketPage extends React.Component {
 
 	render() {
 		return <View style={CommonStyles.container}>
-			<ScrollView style={{width: '100%'}}>
-				<View style={{height: 50}}><Text>!!!header area!!!</Text></View>
-				<View style={CommonStyles.contentContainer}>
-					<Text style={styles.ticketText}>전체 이용권 0개</Text>
-					<Text style={styles.ticketText}>인기 오디오북 이용권 0개 보유중</Text>
+			<SafeAreaView style={{flex: 1, width: '100%'}}>
+				<ScrollView style={{flex: 1}}>
+					<View style={CommonStyles.contentContainer}>
+						<Text style={styles.ticketText}>전체 이용권 0개</Text>
+						<Text style={styles.ticketText}>인기 오디오북 이용권 0개 보유중</Text>
 
-					{/*이용권이 없을때*/}
-					<View style={styles.ticketBox} borderRadius={10}>
-						<Text style={styles.ticketBoxText}>보유하고 있는 오디오북 이용권이 없습니다.</Text>
+						{/*이용권이 없을때*/}
+						<View style={styles.ticketBox} borderRadius={10}>
+							<Text style={styles.ticketBoxText}>보유하고 있는 오디오북 이용권이 없습니다.</Text>
+						</View>
+
+						{/*이용권이 있을때*/}
+						<View><Text>이용권 목록</Text></View>
 					</View>
-
-					{/*이용권이 있을때*/}
-					<View><Text>이용권 목록</Text></View>
-				</View>
-				<Text>AudioBookTicketPage 서브페이지</Text>
-				<Button
-					onPress={() => this.props.navigation.navigate('MyInfoHome')}
-					title="뒤로"
-				/>
-			</ScrollView>
+					<Text>AudioBookTicketPage 서브페이지</Text>
+					<Button
+						onPress={() => this.props.navigation.navigate('MyInfoHome')}
+						title="뒤로"
+					/>
+				</ScrollView>
+			</SafeAreaView>
 		</View>
 	}
 }
