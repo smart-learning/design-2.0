@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
 	friendItem: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		marginBottom: 10,
 	},
 	friendThumbnail: {
 		width: 40,

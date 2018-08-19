@@ -3,6 +3,7 @@ import { Button, ScrollView, StyleSheet, Text, View} from "react-native";
 import CommonStyles from "../../../styles/common";
 import Store from '../../../scripts/commons/store';
 import {SafeAreaView} from "react-navigation";
+import SummaryListItem from "../../components/my/SummaryListItem";
 
 const styles = StyleSheet.create({
 	//
@@ -11,14 +12,20 @@ const styles = StyleSheet.create({
 export default class AudioBookBuyPage extends React.Component {
 
 	render() {
-		return <View style={CommonStyles.container}>
+		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
-					<Text>AudioBookBuyPage 서브페이지</Text>
-					<Button
-						onPress={() => this.props.navigation.navigate('MyInfoHome')}
-						title="뒤로"
-					/>
+					<SummaryListItem title={"TITLE"}
+									 author={"AUTHOR"}
+									 likeCount={"0"}
+									 reviewCount={"0"}
+									 isLike={true}/>
+
+					<SummaryListItem title={"TITLE"}
+									 author={"AUTHOR"}
+									 likeCount={"0"}
+									 reviewCount={"0"}
+									 isLike={false}/>
 				</ScrollView>
 			</SafeAreaView>
 		</View>
