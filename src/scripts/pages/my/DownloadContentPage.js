@@ -54,6 +54,12 @@ const styles = StyleSheet.create({
 	},
 	tabContentContainer: {
 		paddingTop: 40,
+	},
+	noContent: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingTop: 50,
+		paddingBottom: 50,
 	}
 });
 
@@ -63,19 +69,23 @@ export default class DownloadContentPage extends React.Component {
 	@observable tabStatus = 'video';
 
 	render() {
-		return <View style={CommonStyles.container}>
+		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
 					<View style={styles.tabContentContainer}>
 						{this.tabStatus === 'video' &&
 						<View style={styles.tabContent}>
-							<Text>비디오 컨텐츠</Text>
+							<View style={[CommonStyles.contentContainer], styles.noContent}>
+								<Text>다운받은 항목이 없습니다.</Text>
+							</View>
 						</View>
 						}
 
 						{this.tabStatus === 'audioBook' &&
 						<View style={styles.tabContent}>
-							<Text>오디오북 컨텐츠</Text>
+							<View style={[CommonStyles.contentContainer], styles.noContent}>
+								<Text>다운받은 항목이 없습니다.</Text>
+							</View>
 						</View>
 						}
 					</View>
