@@ -185,7 +185,9 @@ export default class MyInfoHome extends React.Component {
 
 							<Text style={styles.myHeaderTitle}>마이윌라</Text>
 
-							<TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('SetAppPage')}>
+							<TouchableOpacity activeOpacity={0.9}
+											  onPress={() => navigation.navigate('SetAppPage', { title:'설정' } )}
+							>
 								<Image source={IcCog} style={styles.myHeaderIcon}/>
 							</TouchableOpacity>
 						</View>
@@ -213,7 +215,7 @@ export default class MyInfoHome extends React.Component {
 						<Text style={styles.sectionTitle}>콘텐츠 이용 현황</Text>
 
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('LectureUsePage')}>
+										  onPress={() => navigation.navigate('LectureUsePage', { title:'최근 재생중 강좌'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcPlay} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>최근 재생중 강좌</Text>
@@ -225,7 +227,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('LectureBuyPage')}>
+										  onPress={() => navigation.navigate('LectureBuyPage', { title:'구매한 강좌'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcPlay} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>구매한 강좌</Text>
@@ -237,7 +239,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('AudioBookTicketPage')}>
+										  onPress={() => navigation.navigate('AudioBookTicketPage', { title:'나의 오디오북 이용권'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcMusic} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>나의 오디오북 이용권</Text>
@@ -249,7 +251,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('AudioBookUsePage')}>
+										  onPress={() => navigation.navigate('AudioBookUsePage', { title:'이용중 오디오북'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcMusic} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>이용중 오디오북</Text>
@@ -261,7 +263,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('AudioBookBuyPage')}>
+										  onPress={() => navigation.navigate('AudioBookBuyPage', { title:'구매한 오디오북'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcMusic} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>구매한 오디오북</Text>
@@ -273,7 +275,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('DownloadContentPage')}>
+										  onPress={() => navigation.navigate('DownloadContentPage', { title:'다운로드 컨텐츠'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcDownload} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>다운로드 컨텐츠</Text>
@@ -285,7 +287,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('SetTagPage')}>
+										  onPress={() => navigation.navigate('SetTagPage', { title:'관심태그 설정하기'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcTag} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>관심태그 설정하기</Text>
@@ -297,7 +299,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('ClipPlayListPage')}>
+										  onPress={() => navigation.navigate('ClipPlayListPage', { title:'최근 재생 강의클립 목록'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcPlay} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>최근 재생 강의클립 목록</Text>
@@ -309,7 +311,7 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('MyLogPage')}>
+										  onPress={() => navigation.navigate('MyLogPage', { title:'활동로그 보기'} )}>
 							<View style={styles.listItem}>
 								<Image source={IcProfile} style={styles.listItemIcon}/>
 								<Text style={styles.listItemTitle}>활동로그 보기</Text>
@@ -322,7 +324,7 @@ export default class MyInfoHome extends React.Component {
 						<Text style={styles.sectionTitle}>윌라친구</Text>
 						<Text style={styles.friendParagraph}>친구와 함께하면 스마트러닝이 더 즐겁습니다!</Text>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('FriendPage')}>
+										  onPress={() => navigation.navigate('FriendPage', { title:'친구보기'} )}>
 							<View style={styles.friendButton} borderRadius={5}>
 								<Text style={styles.friendButtonText}>친구보기</Text>
 							</View>
@@ -333,14 +335,14 @@ export default class MyInfoHome extends React.Component {
 						<Text style={styles.sectionTitle}>알림 문의</Text>
 
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('GuideListPage')}>
+										  onPress={() => navigation.navigate('GuideListPage', { title:'윌라소개 & 이용가이드'} )}>
 							<View style={styles.guideItem}>
 								<Text style={styles.guideTitle}>윌라소개 & 이용가이드</Text>
 							</View>
 						</TouchableOpacity>
 						<View style={styles.guideHr}/>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('InquireListPage')}>
+										  onPress={() => navigation.navigate('InquireListPage', { title:'1:1 문의'} )}>
 							<View style={styles.guideItem}>
 								<Text style={styles.guideTitle}>1:1 문의</Text>
 							</View>

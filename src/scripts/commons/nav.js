@@ -25,6 +25,7 @@ export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({
 
 export const NAV_OPTS_STACK = ({navigation, navigationOptions}) => {
 	return {
+		...NAV_OPTS_COMMON,
 		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
 	}
 };
