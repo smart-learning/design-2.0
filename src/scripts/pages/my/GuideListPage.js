@@ -76,7 +76,6 @@ export default class GuideListPage extends React.Component {
 							</View>
 						}
 					/>
-					{/*;*/}
 				</ScrollView>
 			</SafeAreaView>
 		</View>
