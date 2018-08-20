@@ -163,11 +163,6 @@ const styles = StyleSheet.create({
 * */
 export default class MyInfoHome extends React.Component {
 
-	logout = () => {
-		store.clearTokens();
-		navigation.navigate('Login');
-	}
-
 	render() {
 
 		const {navigation} = this.props;
@@ -198,7 +193,9 @@ export default class MyInfoHome extends React.Component {
 							<View>
 								<View style={styles.myInfoContentItem}>
 									<Text style={styles.myInfoName}>김딸기</Text>
-									<View>package</View>
+									<View>
+										<Text>package</Text>
+									</View>
 								</View>
 								<View style={[styles.myInfoContentItem, styles.myInfoParagraphContainer]}>
 									<Text style={styles.myInfoParagraph}>한줄 메세지를 작성해주세요~</Text>
@@ -352,23 +349,6 @@ export default class MyInfoHome extends React.Component {
 					</View>
 
 					<View style={{height: 8}}/>
-					<View style={styles.sectionLayout}>
-						{/*<Text style={styles.sectionTitle}>알림 문의</Text>*/}
-
-						{/*<Button title="Logout이 원래 이 위치는 아니지만 그냥 테스트로..." onPress={this.logout}/>*/}
-
-						{/*<Button title="서브페이지로..." onPress={ ()=> navigation.navigate('MyInfoSubExample')}/>*/}
-
-						{/*<TouchableOpacity activeOpacity={0.9}*/}
-						{/*onPress={ ()=> navigation.navigate('DownloadContent') }*/}
-						{/*>*/}
-						{/*<Text>다운로드 콘텐츠</Text>*/}
-						{/*</TouchableOpacity>*/}
-					</View>
-
-					{/*<Image*/}
-					{/*style={{ position:'absolute', top:0, width:'100%', height:'50%' }}*/}
-					{/*source={ { uri:"https://t1.daumcdn.net/cfile/tistory/99361E475B24737B2D"}}/>*/}
 
 				</ScrollView>
 			</SafeAreaView>

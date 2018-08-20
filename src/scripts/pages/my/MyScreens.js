@@ -1,22 +1,14 @@
 import React from "react";
-import {createStackNavigator, createSwitchNavigator} from "react-navigation";
+import {createStackNavigator} from "react-navigation";
 import AuthLoadingScreen from "../auth/AuthLoadingScreen";
-import {
-	NAV_OPTS_COMMON,
-	NAV_OPTS_DRAWER,
-	NAV_OPTS_STACK_WITH_SEARCH,
-	NAV_OPTS_MAIN,
-	NAV_OPTS_STACK, NAV_OPTS_MY_HOME
-} from "../../commons/nav";
+import {NAV_OPTS_DRAWER, NAV_OPTS_STACK} from "../../commons/nav";
 import MyInfoHome from "./MyInfoHome";
 import LoginPage from "../auth/LoginPage";
 import FindPasswordPage from "../auth/FindPasswordPage";
 import SignUpLandingPage from "../auth/SignUpLandingPage";
 import EmailSignUpForm from "../auth/EmailSignUpForm";
-import MyInfoScreens from "./MyInfoScreens";
 import Policy from "../auth/PolicyPage";
 import Privacy from "../auth/PrivacyPage";
-import MyInfoSubPage from "./MyInfoSubPage";
 import LectureUsePage from "./LectureUsePage";
 import LectureBuyPage from "./LectureBuyPage";
 import AudioBookTicketPage from "./AudioBookTicketPage";

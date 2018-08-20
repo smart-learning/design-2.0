@@ -148,13 +148,11 @@ export default {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			})
-
 				.then(response => {
-					// console.log( response.data );
 					resolve(response.data);
 				})
 				.catch((error) => {
-					alert('로그인 실패');
+					// alert('로그인 실패');
 					console.error(error);
 					reject(error);
 				});
