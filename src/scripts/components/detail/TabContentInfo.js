@@ -156,7 +156,7 @@ class TabContentInfo extends React.Component {
 				<Text style={styles.infoTextNormal}>
 					{this.props.store.itemData.title}
 				</Text>
-				{this.props.store.lectureView === true &&
+				{!!this.props.store.lectureView &&
 				<Text style={styles.infoTextNormal}>
 					{this.props.store.itemData.memo}
 				</Text>
@@ -194,7 +194,7 @@ class TabContentInfo extends React.Component {
 					<Text style={styles.authorName}>
 						{this.props.store.itemData.teacher.name}
 					</Text>
-					{this.props.store.teacherView === true &&
+					{!!this.props.store.teacherView &&
 					<Text style={styles.authorText}>
 						{this.props.itemData.teacher.memo}
 					</Text>

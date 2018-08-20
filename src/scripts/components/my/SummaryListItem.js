@@ -83,10 +83,10 @@ export default class SummaryListItem extends React.Component {
 				<View>
 					/* TODO: 터치시 상태변경 작업 필요 */
 					<TouchableOpacity activeOpacity={0.9}>
-						{this.props.isLike === true &&
+						{!!this.props.isLike &&
 						<Image source={IcHeartActive} style={styles.summaryLikeButtonActive}/>
 						}
-						{this.props.isLike === false &&
+						{!this.props.isLike &&
 						<Image source={IcHeart} style={styles.summaryLikeButton}/>
 						}
 					</TouchableOpacity>
