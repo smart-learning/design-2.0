@@ -40,6 +40,8 @@
     BOOL _touchDragging;            // 슬라이더 프로퍼티.
     BOOL _holdTouchDragging;        // 슬라이더 프로퍼티.
     BOOL _isPlaybackContollerHidden;// 재생 컨트롤 UI 모듈 감춤 or 표시.
+    BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한. (RN에서 넘겨받는 것이 제일 best입니다. 또는 API를 통해 가져오게 됩니다.)
+    bool _isAudioContent;           // 콘텐트 타입. (AVPlayer API를 사용할 수도 있습니다. 추후에 '매일 책 한권' 등의 콘텐트에 대한 분류도 고민해야 할 것입니다.
   
     ContentPlayerButton *_autoPlayButton;
     ContentPlayerButton *_scriptButton;
@@ -58,6 +60,8 @@
     AVURLAsset *_urlAsset;
   
     CGFloat _playbackRate;
+  
+    NSTimer *_seekTimer;
 }
 @end
 
@@ -128,6 +132,7 @@
 - (void) viewDidAppear : (BOOL) animated
 {
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
+    [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [_player play];   // 플레이어 재생 실행
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
@@ -677,9 +682,8 @@
 
 - (void) pressedCloseButton
 {
-  //[self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-    //[self toastTestAlert];
-  [self showToast : @"미니플레이어로 변환합니다."];
+    //[self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+    [self showToast : @"미니플레이어로 변환합니다."];
 }
 
 - (void) pressedRateStarButton
@@ -792,6 +796,7 @@
 - (void) pressedPlayButton
 {
     NSLog(@"  플레이어 재생 버튼!!");
+    [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [_player play];
     [_player setRate : _playbackRate];
     // pauseButton으로 변경해주어야 합니다.
@@ -801,6 +806,7 @@
 - (void) pressedPauseButton
 {
     NSLog(@"  플레이어 정지 버튼!!");
+    [self invalidateTimerOnSlider];  // 슬라이더 바의 타이머를 정지합니다.
     [_player pause];
     // playButton으로 변경해주어야 합니다.
     [self setPlayState : NO];
@@ -881,6 +887,7 @@
     NSLog(@"  플레이어 재생 리스트 버튼!!");
 }
 
+
 #pragma mark - Slider action
 
 - (void) seekbarDragBegin : (id) sender
@@ -944,6 +951,9 @@
     _holdTouchDragging = NO;
 }
 
+//
+// Slider에서 dragging이 끝나면 시간을 계산하여 해당 시간으로 이동하여 플레이합니다.
+//
 - (void) seekbarDragEndForTimeWarp : (NSTimeInterval) time
 {
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
@@ -953,6 +963,32 @@
     //[self stopLogTimer];
     // NSTimer를 통해 30초마다 로그내역을 전송
     //NSLog(@"  [__NSTimer__] 30초 뒤에 타이머가 가동됩니다.");
+}
+
+//
+// Slider의 값을 변경합니다.
+//
+- (void) setSeekbarCurrentValue : (CGFloat) value
+{
+    if ( _slider && !_touchDragging )
+    {
+        [_slider setValue : value];
+    }
+  
+    if ( [[IFSleepTimerManager sharedInstance] isStopEpisodeMode] )
+    {
+        // 에피소드 모드 시간 적용
+        NSInteger c = [common convertStringToTime : _timeLabel.text];
+        NSInteger t = [common convertStringToTime : _totalTimeLabel.text];
+      
+        NSString *timerStr = [common convertTimeToString : (t-c)
+                                                  Minute : YES];
+      
+        if ( _sleepButton )
+        {
+            [_sleepButton setText : timerStr];
+        }
+    }
 }
 
 #pragma mark - Private Methods
@@ -1022,8 +1058,76 @@
                                   }];
 }
 
-#pragma mark - Notifications
+//
+// TODO : setTimerOnSlider가 어디에 쓰이는지 기존 1.0소스에서 잘 참고하여 붙여야합니다.
+//
+- (void) setTimerOnSlider
+{
+    NSLog(@"  [setTimerOnSlider]");
+    [self invalidateTimerOnSlider]; // 일단 기존 타이머 중지.
+  
+    _seekTimer = [NSTimer scheduledTimerWithTimeInterval : 0.5f
+                                                 repeats : YES
+                                                   block : ^(NSTimer * _Nonnull timer)
+                                                           {
+                                                               NSTimeInterval playTime = [self getCurrentPlaybackTime];
+                                                               [self setSeekbarCurrentValue : playTime];
+                                                               [self setCurrentTime : playTime
+                                                                        forceChange : NO];
+                                                             //[_miniPlayerUiView setSeekbarCurrentValue: playTime];
+                                                            
+                                                              /*
+                                                               * 진도체크는 추후에 구현합니다.
+                                                               if ( [self.delegate respondsToSelector: @selector(player:didChangedPlayTime:)] )
+                                                               {
+                                                                  [self.delegate player : self
+                                                                     didChangedPlayTime : playTime];
+                                                               }
+                                                               */
+                                                            
+                                                                // 유저가 콘텐트에 대한 권한이 없으면서, 콘텐트가 영상이라면...
+                                                                _isAuthor = true;         // 테스트를 위해 일단 강제로 true로 세팅하였습니다.
+                                                                _isAudioContent = true;   // 테스트를 위해 일단 강제로 true로 세팅하였습니다.
+                                                                if ( !_isAuthor && !_isAudioContent )
+                                                                {
+                                                                    if ( playTime >= 90.f )
+                                                                    {
+                                                                        // playerController를 닫습니다.
+                                                                        [self dismissViewControllerAnimated:YES completion:nil];
+                                                                        [self showToast : @"90 초 프리뷰"];
+                                                                    }
+                                                                }
+                                                            }];
+  
+    if ( _seekTimer )
+    {
+        [[NSRunLoop currentRunLoop] addTimer : _seekTimer
+                                     forMode : NSRunLoopCommonModes];
+    }
+}
 
+//
+// 슬라이더 타이머를 중지합니다.
+//
+- (void) invalidateTimerOnSlider
+{
+    NSLog(@"  [invalidateTimerOnSlider]");
+  
+    if ( _seekTimer && _seekTimer.isValid )
+    {
+        [_seekTimer invalidate];
+    }
+  
+    _seekTimer = nil;
+}
+
+
+
+
+#pragma mark - Notifications
+//
+// 2~3초 정도의 토스트메시지를 보여줍니다.
+//
 - (void) showToast : (NSString *) text
 {
     [self.view makeToast : text];
@@ -1105,7 +1209,9 @@
 
 // 슬라이더 이동시 썸네일 이미지를 보여주면 좋을듯.. ( http://devhkh.tistory.com/18 )
 
+// 모든 기능 안정화 전까지 세로모드 만 적용합시다.
 
+// 오디오 콘텐트인지 확인하는 프로퍼티가 필요합니다.
 
 @end
 

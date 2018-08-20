@@ -8,6 +8,11 @@ RCT_EXPORT_MODULE();
 
 #pragma mark - Private Methods
 
+
+#pragma mark - todo : 싱글쓰레드로 처리하든 화면 액션을 차단해야합니다.
+
+
+
 - (void) buyProduct : (NSDictionary *) args
 {
     NSLog(@"  [IAP] Product Code : %@", [args objectForKey : @"product_id"]);
