@@ -143,10 +143,25 @@
     [self drawPlayerControlBottom];
   
     [self setPlayState : YES];
+  
+    // 영상시작후 3초간 입력이 없으면 컨트롤러를 자동으로 Hide.
+    [self performSelector : @selector(pressedHideAndShowButton)
+               withObject : nil
+               afterDelay : 3.0f];
+  
+    CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration) + 1;
+  
+    if ( _slider )
+    {
+        _slider.minimumValue = 0.f;
+        // 추후에 권한체크로 90초 미리이용하기를 구현해야 합니다.
+        _slider.maximumValue = totalTime;
+    }
 }
 
 - (void) setContentData : (NSDictionary *) args
 {
+    NSLog(@"  [setContentData] RN에서 받은 데이터를 set합니다.");
     _args = args;
 }
 
@@ -167,6 +182,9 @@
     NSLog(@"  [fpsLicenseWithContentId] Error Message : %@", error.localizedDescription);
 }
 
+//
+// 컨텐트의 재생이 모두 끝나면 호출됩니다.
+//
 - (void) videoPlayBackDidFinish : (NSNotification *) notification
 {
     NSLog(@"  [videoPlayBackDidFinish] FINITO !!");
@@ -179,6 +197,7 @@
     //[self.playerController.view removeFromSuperview];
     //self.avVideoController = nil;
   
+    [self invalidateTimerOnSlider];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
 }
 
@@ -678,6 +697,49 @@
     }*/
 }
 
+//
+// 플레이어 구동초기에 호출합니다. 권한체크는 플레이어가 안정화되면 구현할 예정입니다. 그때까지는 호출되지 않습니다.
+//
+- (void) setPreparedToPlay
+{
+    CGFloat currentTime = [self getCurrentPlaybackTime];
+    CGFloat totalTime = [self getDuration]; // nan이 나오면 에러...
+  
+    _isAudioMode = false; // 테스트를 목적으로 강제로 value를 set하였습니다. 모든 기능이 구현되면 삭제될 예정입니다.
+    _isAuthor = true;     // 테스트를 목적으로 강제로 value를 set하였습니다. 모든 기능이 구현되면 삭제될 예정입니다.
+  
+    if ( _slider )
+    {
+        _slider.minimumValue = 0.f;
+      
+        [self setCurrentTime: currentTime
+                 forceChange: YES];
+        _slider.maximumValue = totalTime;
+      
+      /*
+        if ( _isAudioMode && !_isAuthor )       // 오디오 모드 이면서 권한이 없으면 미리듣기이므로 미리보기의 90초가 아닌 원래 챕터시간으로 세팅해야함. 문제 생기면 롤백해야함!! 171102 김태현
+        {
+          _slider.maximumValue = totalTime;
+        //[self setTotalTime: totalTime];
+        }
+        else if ( !_isAudioMode && !_isAuthor ) // 영상 모드 이면서 권한이 없으면 미리보기이므로 미리보기의 90초로 세팅해야함. 문제 생기면 롤백해야함!! 171102 김태현
+        {
+          _slider.maximumValue = 90.f;
+        //[self setTotalTime: 90.f];
+        }
+        else
+        {
+          _slider.maximumValue = totalTime;  // 그 밖의 경우는 원래 시간으로 세팅함. 문제 생기면 롤백해야함!! 171102 김태현
+        //[self setTotalTime: totalTime];
+        }
+      */
+        //_slider.maximumValue = (self.isAuthor ? totalTime : 90.f);  // 60.f -> 90.f (60초에서 90초로 변경) 171101 김태현
+        //[self setTotalTime: (self.isAuthor ? totalTime : 90.f)];    // 60.f -> 90.f (60초에서 90초로 변경) 171101 김태현
+    }
+  
+  
+}
+
 #pragma mark - selectors
 
 - (void) pressedCloseButton
@@ -942,7 +1004,9 @@
 
 - (void) seekbarDragging : (NSTimeInterval) time
 {
+    NSLog(@"  [seekbarDragging]");
     [_player pause];
+    [self invalidateTimerOnSlider];
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
 }
 
@@ -957,6 +1021,7 @@
 - (void) seekbarDragEndForTimeWarp : (NSTimeInterval) time
 {
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
+    [self setTimerOnSlider];
     [_player play];
   
     // 기존 타이머를 종료시키고 재시작
@@ -970,11 +1035,16 @@
 //
 - (void) setSeekbarCurrentValue : (CGFloat) value
 {
+    NSLog(@"  [setSeekbarCurrentValue]");
+  
     if ( _slider && !_touchDragging )
     {
+        NSLog(@"  [setSeekbarCurrentValue] ");
         [_slider setValue : value];
     }
   
+    // IFSleepTimerManager ???
+  /*
     if ( [[IFSleepTimerManager sharedInstance] isStopEpisodeMode] )
     {
         // 에피소드 모드 시간 적용
@@ -989,6 +1059,7 @@
             [_sleepButton setText : timerStr];
         }
     }
+  */
 }
 
 #pragma mark - Private Methods
@@ -1059,7 +1130,7 @@
 }
 
 //
-// TODO : setTimerOnSlider가 어디에 쓰이는지 기존 1.0소스에서 잘 참고하여 붙여야합니다.
+// 타이머를 통해 슬라이더 왼쪽의 현재시간을 0.5초 주기로 업데이트합니다.
 //
 - (void) setTimerOnSlider
 {
@@ -1094,7 +1165,7 @@
                                                                     {
                                                                         // playerController를 닫습니다.
                                                                         [self dismissViewControllerAnimated:YES completion:nil];
-                                                                        [self showToast : @"90 초 프리뷰"];
+                                                                        [self showToast : @"90 초 프리뷰"]; // Root View에서도 보여야 합니다.
                                                                     }
                                                                 }
                                                             }];
