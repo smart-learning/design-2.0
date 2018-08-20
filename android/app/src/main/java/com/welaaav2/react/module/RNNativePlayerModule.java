@@ -13,6 +13,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.welaaav2.download.DownloadService;
 import com.welaaav2.pallycon.PallyConMainActivity;
 import com.welaaav2.player.PlayerActivity;
+import com.welaaav2.player.playback.PlaybackManager;
 import com.welaaav2.util.Logger;
 
 import javax.annotation.Nullable;
@@ -52,8 +53,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule {
 
         Intent service = new Intent(contextWrapper, DownloadService.class);
 
-        service.putExtra(PlayerActivity.DRM_CONTENT_URI_EXTRA, "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
-        service.putExtra(PlayerActivity.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
+        service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
+        service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
         service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE , false);
 
         contextWrapper.startService(service);
@@ -71,8 +72,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule {
 
         Intent service = new Intent(contextWrapper, DownloadService.class);
 
-        service.putExtra(PlayerActivity.DRM_CONTENT_URI_EXTRA, "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
-        service.putExtra(PlayerActivity.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
+        service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
+        service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
         service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE , true);
 
         contextWrapper.startService(service);
