@@ -82,6 +82,10 @@ export default class CourseList extends React.Component {
 	}
 
 	render() {
+
+		console.log( this.state.videoCourseData.items );
+
+
 		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
 			<ScrollView style={{ width: '100%' }}>
 				<View style={styles.toggleGroup}>
@@ -116,6 +120,7 @@ export default class CourseList extends React.Component {
 
 				<PageCategory data={this.state.videoCategoryData.items}/>
 
+
 				<FlatList
 					style={{ width: '100%' }}
 					data={this.state.videoCourseData.items}
@@ -130,6 +135,7 @@ export default class CourseList extends React.Component {
 												 clipCount={item.clip_count}
 												 hitCount={item.hit_count}
 												 starAvg={item.star_avg}
+												 url={item.url}
 												 reviewCount={item.review_count}/>
 					}
 				/>

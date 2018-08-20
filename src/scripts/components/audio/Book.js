@@ -13,6 +13,7 @@ import IcShare from "../../../images/ic-share-grey.png";
 import IcHeart from "../../../images/ic-heart-pink.png";
 import IcHeartLine from "../../../images/ic-heart-pink-line.png";
 import IcView from "../../../images/ic-view-dark.png";
+import Device from "../../commons/device";
 
 const styles = StyleSheet.create( {
 	itemContainer: {
@@ -174,7 +175,9 @@ export default class Book extends React.Component {
 		return <View style={styles.itemContainer}>
 			{this.props.type === 'best' &&
 			<View style={[ styles.alignJustify, styles.socialButtonWrap ]}>
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity activeOpacity={0.9}
+								  onPress={ () =>{ Device.share( this.props.title, this.props.url ) }}
+				>
 					<Image source={IcShare} style={styles.socialButton}/>
 				</TouchableOpacity>
 			</View>

@@ -175,6 +175,18 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 ```
 
 
+#### - react-native-localizable
+```
+ 프로젝트별 변수를 가져오기 위해서 설치합니다.
+ 설치는 공식 문서를 참고합니다만, 
+ https://github.com/fabriciovergara/react-native-localizable
+ 
+ iOS에 추가하는 파일명은 localizable.strings 가 아니라 Localizable.strings입니다.
+ 
+```
+
+
+
 
 ### iOS Http 허용
 ```
