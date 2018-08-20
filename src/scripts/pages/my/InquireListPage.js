@@ -96,7 +96,7 @@ export default class InquireListPage extends React.Component {
 										<Text style={styles.listItemTitle}>{item.title}</Text>
 										<View style={styles.listItemSub}>
 											<Text style={styles.listItemTime}>{item.createdAt}</Text>
-											{item.isAnswer === true &&
+											{!!item.isAnswer &&
 											<Text style={styles.AnswerText}>답변완료</Text>
 											}
 										</View>

@@ -99,12 +99,12 @@ export default class ClassListItem extends React.Component {
 				{this.props.itemData.teacher.name}
 			</Text>
 			<View style={[ styles.classLabels, CommonStyles.alignJustifyFlex ]}>
-				{this.props.itemData.is_exclusive === false &&
+				{!this.props.itemData.is_exclusive &&
 				<View style={[ styles.classLabel, styles.classLabelBlank ]} borderRadius={10}>
 					<Text>blank</Text>
 				</View>
 				}
-				{this.props.itemData.is_exclusive === true &&
+				{!!this.props.itemData.is_exclusive &&
 				<View style={[ styles.classLabel, styles.classLabelExclusive ]} borderRadius={10}>
 					<Text style={[ styles.classLabelText, styles.classLabelExclusiveText ]}>독점</Text>
 				</View>
