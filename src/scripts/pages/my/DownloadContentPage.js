@@ -75,7 +75,7 @@ export default class DownloadContentPage extends React.Component {
 					<View style={styles.tabContentContainer}>
 						{this.tabStatus === 'video' &&
 						<View style={styles.tabContent}>
-							<View style={CommonStyles.contentContainer], styles.noContent}>
+							<View style={[CommonStyles.contentContainer, styles.noContent]}>
 								<Text>다운받은 항목이 없습니다.</Text>
 							</View>
 						</View>
@@ -83,7 +83,7 @@ export default class DownloadContentPage extends React.Component {
 
 						{this.tabStatus === 'audioBook' &&
 						<View style={styles.tabContent}>
-							<View style={[CommonStyles.contentContainer], styles.noContent}>
+							<View style={[CommonStyles.contentContainer, styles.noContent]}>
 								<Text>다운받은 항목이 없습니다.</Text>
 							</View>
 						</View>

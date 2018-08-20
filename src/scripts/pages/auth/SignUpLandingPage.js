@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 		// justifyContent: 'center',
 		// alignItems: 'center',
 		position: 'absolute',
-		bottom: 40,
+		bottom: 60,
 		width: '80%',
 		marginLeft: '10%',
 	},
@@ -110,13 +110,16 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 		alignItems: 'center',
 	},
+	ruleTextContainer: {
+		flexDirection: 'row',
+	},
 	ruleText: {
 		fontSize: 12,
 		color: '#ffffff',
 	},
 	ruleButton: {
 		position: 'relative',
-		top: 2,
+		top: 1,
 		paddingLeft: 3,
 		paddingRight: 3,
 		fontSize: 12,
@@ -129,8 +132,8 @@ const styles = StyleSheet.create({
 
 class SignUpLandingPage extends React.Component {
 
-	constructor( props ) {
-		super( props );
+	constructor(props) {
+		super(props);
 
 		this.state = {
 			slideHeight: null,
@@ -138,11 +141,11 @@ class SignUpLandingPage extends React.Component {
 	}
 
 	componentDidMount() {
-		let windowHeight = Dimensions.get( 'window' ).height;
+		let windowHeight = Dimensions.get('window').height;
 
-		this.setState( {
+		this.setState({
 			slideHeight: windowHeight,
-		} );
+		});
 
 		// this.loadLectureClipData();
 	}
@@ -154,17 +157,17 @@ class SignUpLandingPage extends React.Component {
 	}
 
 	render() {
-		return <View style={[ CommonStyles.container, styles.landingContainer ]}>
+		return <View style={[CommonStyles.container, styles.landingContainer]}>
 			<View style={styles.logoWrap}>
 				<Image source={logo} style={styles.logo}/>
 			</View>
 
 			{/* 이미지 스와이퍼 */}
-			<View style={{ height: this.state.slideHeight }}>
+			<View style={{height: this.state.slideHeight}}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
-						paginationStyle={{ bottom: '50%' }}>
+						paginationStyle={{bottom: '50%'}}>
 					<View style={styles.slide}>
 						<ImageBackground source={Slide1} resizeMode="cover" style={styles.thumbnail}/>
 					</View>
@@ -181,10 +184,11 @@ class SignUpLandingPage extends React.Component {
 			</View>
 			{/* /이미지 스와이퍼 */}
 
-			<View style={ styles.contentWrap }>
+			<View style={styles.contentWrap}>
 				<View style={[styles.alignJustify, styles.loginWrap]}>
 					<Text style={styles.loginLabel}>이미 윌라 계정이 있으신가요?</Text>
-					<TouchableOpacity style={styles.loginButton} activeOpacity={0.9} onPress={()=> this.props.navigation.navigate('Login')}>
+					<TouchableOpacity style={styles.loginButton} activeOpacity={0.9}
+									  onPress={() => this.props.navigation.navigate('Login')}>
 						<Image source={icLogin} style={styles.loginImage}/>
 						<Text style={styles.loginText}>로그인</Text>
 					</TouchableOpacity>
@@ -192,59 +196,43 @@ class SignUpLandingPage extends React.Component {
 
 				<FBLoginButton
 					onAccess={token => this.onAccessToken('facebook', token)}
-					type={'landing'}
-				/>
+					type={'landing'}/>
 
 				<KakaoLoginButton
 					onAccess={token => this.onAccessToken('kakao', token)}
-					type={'landing'}
-				/>
+					type={'landing'}/>
 
-				<TouchableOpacity
-					activeOpacity={0.9}
-					onPress={() => this.props.navigation.navigate('EmailSignUpForm')}
-				>
-					<View style={ styles.emailButton }
+				<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('EmailSignUpForm')}>
+					<View style={styles.emailButton}
 						  borderWidth={1}
 						  borderStyle={'solid'}
 						  borderColor={'#ffffff'}
-						  borderRadius={4}
-					>
-						<Image source={ icEmail } style={ styles.emailImage }/>
-						<Text style={ styles.emailText }>이메일 간편 가입</Text>
+						  borderRadius={4}>
+						<Image source={icEmail} style={styles.emailImage}/>
+						<Text style={styles.emailText}>이메일 간편 가입</Text>
 					</View>
 				</TouchableOpacity>
 
 				<View style={styles.ruleWrap}>
-					<Text style={styles.ruleText}>
-						무료 계정을 생성하시면 월라
-						<TouchableOpacity
-							activeOpacity={0.9}
-							onPress={()=> this.props.navigation.navigate('PolicyPage')}
-						>
-							<Text
-								style={styles.ruleButton}
-								textDecorationLine={'underline'}
-							>
+					<View style={styles.ruleTextContainer}>
+						<Text style={styles.ruleText}>무료 계정을 생성하시면 월라</Text>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => this.props.navigation.navigate('PolicyPage')}>
+							<Text style={styles.ruleButton} textDecorationLine={'underline'}>
 								이용약관
 							</Text>
 						</TouchableOpacity>
-						및
-					</Text>
-					<Text style={styles.ruleText}>
-						<TouchableOpacity
-							activeOpacity={0.9}
-							onPress={()=> this.props.navigation.navigate('PrivacyPage')}
-						>
-							<Text
-								style={styles.ruleButton}
-								textDecorationLine={'underline'}
-							>
+						<Text style={styles.ruleText}>및</Text>
+					</View>
+					<View style={styles.ruleTextContainer}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => this.props.navigation.navigate('PrivacyPage')}>
+							<Text style={styles.ruleButton} textDecorationLine={'underline'}>
 								개인정보보호정책
 							</Text>
 						</TouchableOpacity>
-						에 동의하는 것으로 간주합니다.
-					</Text>
+						<Text style={styles.ruleText}>에 동의하는 것으로 간주합니다.</Text>
+					</View>
 				</View>
 			</View>
 
@@ -253,7 +241,7 @@ class SignUpLandingPage extends React.Component {
 }
 
 
-SignUpLandingPage.navigationOptions =()=>{
+SignUpLandingPage.navigationOptions = () => {
 	return {
 		header: null
 	}
