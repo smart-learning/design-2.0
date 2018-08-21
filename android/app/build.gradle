@@ -168,6 +168,7 @@ dependencies {
     compileOnly "com.google.android.wearable:wearable:$wearableVersion"
 
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:customtabs:$supportLibVersion"
     implementation "com.android.support:mediarouter-v7:$supportLibVersion"
     implementation "com.android.support:percent:$supportLibVersion"
     implementation "com.android.support:recyclerview-v7:$supportLibVersion"
@@ -181,10 +182,9 @@ dependencies {
 
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
-    implementation project(':react-native-video')
     implementation project(':react-native-kakao-signin')
     implementation project(':react-native-iap')
-    implementation project(':react-native-fbsdk')
+    api project(':react-native-fbsdk')
     implementation project(':react-native-localizable')
 
     // facebook

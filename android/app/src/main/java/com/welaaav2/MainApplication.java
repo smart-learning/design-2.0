@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.support.multidex.MultiDex;
-import com.brentvatne.react.ReactVideoPackage;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.dooboolab.RNIap.RNIapPackage;
@@ -46,7 +45,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new ReactVideoPackage(),
           new RNKaKaoSigninPackage(),
           new RNIapPackage(),
           new FBSDKPackage(mCallbackManager),

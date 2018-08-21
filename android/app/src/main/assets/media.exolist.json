@@ -1,12 +1,12 @@
 [
   {
     "type" : "streaming",
-    "uri": "https://yoophi.com/public/contents/DASH_0028_001_mp4/stream.mpd",
+    "uri": "https://contents.welaaa.com/media/v200001/DASH_v200001_001_mp4/stream.mpd",
     "name": "140년 지속 성장을 이끈 MLB 사무국의 전략",
     "drmSchemeUuid": "widevine",
     "drmLicenseUrl": "http://tokyo.pallycon.com/ri/licenseManager.do",
-    "userId": "valid-user",
-    "cid": "0028_001",
+    "userId": "825",
+    "cid": "v200001_001",
     "oid": "order id",
     "token": ""
   },
