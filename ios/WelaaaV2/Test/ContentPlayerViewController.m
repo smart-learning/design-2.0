@@ -94,6 +94,9 @@
                  forControlEvents : UIControlEventTouchUpInside];
     _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
     [_contentView addSubview : _hideAndShowButton];
+  
+    // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 // 뷰 컨트롤러가 화면에 나타나기 직전에 실행됩니다.
@@ -200,6 +203,13 @@
   
     [self invalidateTimerOnSlider];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+}
+
+// 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
+- (void)applicationDidEnterBackground:(NSNotification *)notification
+{
+  NSLog(@"applicationDidEnterBackground");
+  [_player performSelector:@selector(play) withObject:nil afterDelay:0.01];
 }
 
 #pragma mark - statusbar control methods..
