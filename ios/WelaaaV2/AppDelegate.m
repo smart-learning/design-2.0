@@ -16,6 +16,8 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
+#import <AVFoundation/AVFoundation.h>
+
 @import Firebase;
 
 @interface AppDelegate ()
@@ -27,6 +29,12 @@
 - (BOOL)          application : (UIApplication *) application
 didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 {
+    // Background Playback Enabled
+    // Allow the app sound to continue to play when the screen is locked.
+    //https://stackoverflow.com/questions/4771105/how-do-i-get-my-avplayer-to-play-while-app-is-in-background
+    [[AVAudioSession sharedInstance] setCategory : AVAudioSessionCategoryPlayback
+                                           error : nil];
+  
     NSURL *jsCodeLocation;
   
     jsCodeLocation = [ [RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot : @"index"
@@ -55,6 +63,8 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     
     // Use Firebase library to configure APIs
     [FIRApp configure];
+  
+  
   
     return YES;
 }
@@ -109,7 +119,6 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
   
     [KOSession handleDidBecomeActive];
 }
-
 
 #pragma mark - Core Data stack
 

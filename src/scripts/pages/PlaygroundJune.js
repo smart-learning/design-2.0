@@ -30,16 +30,18 @@ class PlaygroundJune extends Component {
 		'0028_005' / 'https://contents.welaaa.com/public/contents/HLS_0028_005_mp4/master.m3u8'
 		'0028_006' / 'https://contents.welaaa.com/public/contents/HLS_0028_006_mp4/master.m3u8'
 		'0028_007' / 'https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8'
+		'v200001_001' / 'https://contents.welaaa.com/media/v200001/HLS_v200001_001_mp4/master.m3u8'
 		'sintel-trailer-480p' / 'https://contents.welaaa.com/public/contents/HLS_sintel-trailer-480p_mp4/master.m3u8'
 		*/
 		var args = {
 			type : "streaming",
-			uri: "https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8",
+			uri: "https://contents.welaaa.com/media/v200001/HLS_v200001_001_mp4/master.m3u8",
 			name: "140년 지속 성장을 이끈 MLB 사무국의 전략",
 			drmSchemeUuid: "widevine",
 			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
-			userId: "valid-user",
-			cid: "0028_007",
+			//userId: "valid-user",
+			userId: "825",
+			cid: "v200001_001",
 			oid: "order id",
 			token: "", // pallyCon token 
 			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 

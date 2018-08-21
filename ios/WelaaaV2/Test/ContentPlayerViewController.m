@@ -180,6 +180,7 @@
                 didFailWithError : (NSError * _Nonnull) error
 {
     NSLog(@"  [fpsLicenseWithContentId] Error Message : %@", error.localizedDescription);
+    // 종료 메시지와 함께 뷰를 종료시킵니다.
 }
 
 //
@@ -1035,11 +1036,11 @@
 //
 - (void) setSeekbarCurrentValue : (CGFloat) value
 {
-    NSLog(@"  [setSeekbarCurrentValue]");
+  //NSLog(@"  [setSeekbarCurrentValue]");
   
     if ( _slider && !_touchDragging )
     {
-        NSLog(@"  [setSeekbarCurrentValue] ");
+      //NSLog(@"  [setSeekbarCurrentValue] ");
         [_slider setValue : value];
     }
   
@@ -1235,7 +1236,7 @@
     if ( item.status == AVPlayerItemStatusReadyToPlay )
     {
         double currentTime = CMTimeGetSeconds(item.currentTime);
-        NSLog(@"  Current time : %f", currentTime);
+      //NSLog(@"  Current time : %f", currentTime);
       
         return (NSTimeInterval) currentTime;
     }
@@ -1283,6 +1284,7 @@
 // 모든 기능 안정화 전까지 세로모드 만 적용합시다.
 
 // 오디오 콘텐트인지 확인하는 프로퍼티가 필요합니다.
+//- (bool)_isAudioOnlyContent;
 
 @end
 
