@@ -10,6 +10,7 @@ package com.welaaav2.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.PictureInPictureParams;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -28,6 +30,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -38,6 +41,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Rational;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -410,8 +414,6 @@ public class PlayerActivity extends BasePlayerActivity {
     simpleExoPlayerView = findViewById(R.id.player_view);
     simpleExoPlayerView.requestFocus();
 
-    LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
-
     //// Chromecast
     mCastContext = CastContext.getSharedInstance(this);
     // mCastContext is always not null. No need to check null
@@ -665,8 +667,6 @@ public class PlayerActivity extends BasePlayerActivity {
   @Override
   protected void onDestroy() {
     super.onDestroy();
-
-    LocalPlayback.getInstance(this).setPlayerView(null);
   }
 
   @Override
@@ -702,6 +702,19 @@ public class PlayerActivity extends BasePlayerActivity {
     CastButtonFactory
         .setUpMediaRouteButton(getApplicationContext(), menu, R.id.media_route_menu_item);
     return true;
+  }
+
+  @RequiresApi(VERSION_CODES.O)
+  @Override
+  protected void onUserLeaveHint() {
+    PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+    builder.setAspectRatio(new Rational(16, 9));
+    enterPictureInPictureMode(builder.build());
+  }
+
+  @Override
+  public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode);
   }
 
   private void releaseCast() {
@@ -5011,7 +5024,10 @@ public class PlayerActivity extends BasePlayerActivity {
     MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
     mediaController.registerCallback(callback);
 
-    Intent intent = getIntent();
+    playFromUri(getIntent());
+  }
+
+  private void playFromUri(Intent intent) {
     if (intent != null && intent.getData() != null && getTransportControls() != null) {
       Uri uri = intent.getData();
       Bundle extras = intent.getExtras();
