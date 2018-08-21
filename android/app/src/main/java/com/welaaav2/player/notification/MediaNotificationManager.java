@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -25,7 +24,6 @@ import com.welaaav2.R;
 import com.welaaav2.player.PlayerActivity;
 import com.welaaav2.player.service.MediaService;
 import com.welaaav2.player.utils.LogHelper;
-import com.welaaav2.player.utils.ResourceHelper;
 
 /**
  * Keeps track of a notification and updates it automatically for a given MediaSession. Maintaining
@@ -62,16 +60,11 @@ public class MediaNotificationManager extends BroadcastReceiver {
 
   private final PendingIntent mStopCastIntent;
 
-  private final int mNotificationColor;
-
   private boolean mStarted = false;
 
   public MediaNotificationManager(MediaService service) throws RemoteException {
     mService = service;
     updateSessionToken();
-
-    mNotificationColor = ResourceHelper.getThemeColor(mService, R.attr.colorPrimary,
-        Color.GREEN);
 
     mNotificationManager = (NotificationManager) mService
         .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -247,12 +240,11 @@ public class MediaNotificationManager extends BroadcastReceiver {
     final NotificationCompat.Builder notificationBuilder =
         new NotificationCompat.Builder(mService, CHANNEL_ID);
     notificationBuilder.setSmallIcon(R.drawable.notify_logo_player)
-        .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-        .setCustomContentView(notificationLayout)
-        .setDeleteIntent(mStopIntent)
+        .setContent(notificationLayout)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+        .setPriority(NotificationCompat.PRIORITY_MAX)
         .setOnlyAlertOnce(true)
-        .setColor(mNotificationColor)
+        .setDeleteIntent(mStopIntent)
         .setContentIntent(createContentIntent(mMetadata.getDescription()));
 
     if (mController != null && mController.getExtras() != null) {
