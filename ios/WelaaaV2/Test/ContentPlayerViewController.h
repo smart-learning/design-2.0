@@ -8,6 +8,7 @@
 #import "UIImage+TintColor.h"
 #import "ContentPlayerButton.h"
 #import "IFSleepTimerManager.h"
+#import "PlayerSleepTimerView.h"
 #import "ApiManager.h"
 #import "UIAlertController+Showable.h"
 #import "StarRatingView.h"

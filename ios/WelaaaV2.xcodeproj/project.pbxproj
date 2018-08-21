@@ -54,6 +54,8 @@
 		EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9A983A211144A800EA3A8E /* RNNativePlayer.m */; };
 		EF9BAE8C211D27F10063FE2C /* ContentPlayerTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */; };
 		EF9BAE8D211D27F40063FE2C /* ContentPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */; };
+		EFB3E657212BEF1A00C5DF5D /* PlayerSleepTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFB3E656212BED0200C5DF5D /* PlayerSleepTimerButton.m */; };
+		EFB3E658212BEF1D00C5DF5D /* PlayerSleepTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFB3E655212BED0200C5DF5D /* PlayerSleepTimerView.m */; };
 		EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */; };
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
 		EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081E22113ED84006D3F6C /* NSString+GC.m */; };
@@ -457,6 +459,10 @@
 		EF9BAE89211D1DED0063FE2C /* ContentPlayerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentPlayerButton.h; sourceTree = "<group>"; };
 		EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerTouchView.m; sourceTree = "<group>"; };
 		EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerButton.m; sourceTree = "<group>"; };
+		EFB3E653212BED0100C5DF5D /* PlayerSleepTimerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerView.h; sourceTree = "<group>"; };
+		EFB3E654212BED0100C5DF5D /* PlayerSleepTimerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerButton.h; sourceTree = "<group>"; };
+		EFB3E655212BED0200C5DF5D /* PlayerSleepTimerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerSleepTimerView.m; sourceTree = "<group>"; };
+		EFB3E656212BED0200C5DF5D /* PlayerSleepTimerButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerSleepTimerButton.m; sourceTree = "<group>"; };
 		EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+LocalizedError.m"; sourceTree = "<group>"; };
 		EFE081AA2113EB0C006D3F6C /* NSError+LocalizedError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+LocalizedError.h"; sourceTree = "<group>"; };
 		EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Blocks.m"; sourceTree = "<group>"; };
@@ -875,6 +881,17 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		EFB3E62B212BECF300C5DF5D /* SleepTimerView */ = {
+			isa = PBXGroup;
+			children = (
+				EFB3E653212BED0100C5DF5D /* PlayerSleepTimerView.h */,
+				EFB3E655212BED0200C5DF5D /* PlayerSleepTimerView.m */,
+				EFB3E654212BED0100C5DF5D /* PlayerSleepTimerButton.h */,
+				EFB3E656212BED0200C5DF5D /* PlayerSleepTimerButton.m */,
+			);
+			path = SleepTimerView;
+			sourceTree = "<group>";
+		};
 		EFE0821F2114185D006D3F6C /* ContentsPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1018,6 +1035,7 @@
 		EFE0F3872117E23500D4558B /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				EFB3E62B212BECF300C5DF5D /* SleepTimerView */,
 				EF9BAE60211D1D9C0063FE2C /* Components */,
 				EF90FB4921214F2A0036C2E0 /* RatingView */,
 				EFE0F3AF2117E25700D4558B /* CreateContact.h */,
@@ -1590,10 +1608,12 @@
 				EFE0825B2114185D006D3F6C /* CollectionViewCellBox.m in Sources */,
 				EFE08314211430E7006D3F6C /* DbContentVideoGroupItemModel.m in Sources */,
 				EFE082562114185D006D3F6C /* IFScriptControlView.m in Sources */,
+				EFB3E658212BEF1D00C5DF5D /* PlayerSleepTimerView.m in Sources */,
 				EF7D6F8D2113E6D600B71BEB /* common.m in Sources */,
 				EFE082602114185D006D3F6C /* IFContentsPlayerView.m in Sources */,
 				EFE082552114185D006D3F6C /* IFMediaPlayerScriptView.m in Sources */,
 				EF230BEF21224CC600F8E802 /* FPSDownloadManager.m in Sources */,
+				EFB3E657212BEF1A00C5DF5D /* PlayerSleepTimerButton.m in Sources */,
 				EFE082542114185D006D3F6C /* IFTouchView.m in Sources */,
 				EFE0825D2114185D006D3F6C /* IFCollectionView.m in Sources */,
 				EF094701212662B200FD849B /* RNProductPayment.m in Sources */,

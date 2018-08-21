@@ -6,7 +6,7 @@
 #define PALLYCON_SITE_ID    @"O8LD"
 #define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
 
-@interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate>
+@interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate>
 {
     BOOL _isAudioMode;
     BOOL _statusBarHidden;
@@ -53,6 +53,8 @@
     NSDictionary *_args;
   
     StarRatingView *_rateView;
+    PlayerSleepTimerView *_playerSleepTimerSelectView;
+  
     NSString *_currentStar;
   
     AVPlayer *_player;
@@ -1248,124 +1250,150 @@
     }
   */
   
-  /*
-  if ( [@"script-mode" isEqualToString: buttonId] )
-  {
-    [self setScriptViewFrameWithStatus: status];
-  }
-  else if ( [@"view-mode" isEqualToString: buttonId] )
-  {
-    [self changeViewMode: (status == 1)];
-  }
-  else if ( [@"autoplay-mode" isEqualToString: buttonId])
-  {
-    [common setUserSettingValueWithKey: @"autoplay_enable"
-                                 value: status == 0 ? @"N" : @"Y"];
-  }
-  else*/ if ( [@"lock-mode" isEqualToString : buttonId] )
-  {
-    BOOL isLock = (status == 1);
-    
-    [self setTouchEnable : _closeButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _rateStarButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _playButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _paueseButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _rwButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _ffButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _speedButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _listButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _autoPlayButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _scriptButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _modeChangeButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _sleepButton
-                  isLock : isLock];
-    
-    [self setTouchEnable : _slider
-                  isLock : isLock];
-    
-    /*
-    if ( self.isDownloadFile || self.isDownloading )
+    if ( [@"script-mode" isEqualToString: buttonId] )
     {
-      [self setTouchEnable: _downloadButton
-                    isLock: YES];
+      //[self setScriptViewFrameWithStatus: status];
     }
-    else
+    else if ( [@"view-mode" isEqualToString: buttonId] )
     {
-      [self setTouchEnable: _downloadButton
-                    isLock: isLock];
-    }*/
-  }
-  else if ( [@"timer-mode" isEqualToString: buttonId])
-  {
-    if ( status == 1 )
+      //[self changeViewMode: (status == 1)];
+    }
+    else if ( [@"autoplay-mode" isEqualToString: buttonId])
     {
-      if ( [IFSleepTimerManager sharedInstance].isAlive )
+        [common setUserSettingValueWithKey : @"autoplay_enable"
+                                     value : status == 0 ? @"N" : @"Y"];
+    }
+    else if ( [@"lock-mode" isEqualToString : buttonId] )
+    {
+        BOOL isLock = (status == 1);
+        NSLog(@"  lock-mode : %@", isLock? @"잠금완료" : @"잠금해제");
+        [self setTouchEnable : _closeButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _rateStarButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _playButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _paueseButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _rwButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _ffButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _speedButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _listButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _autoPlayButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _scriptButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _modeChangeButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _sleepButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _slider
+                      isLock : isLock];
+      
+        // 아직 다운로드 구현이 완료되지 않았으므로 일괄적으로 다운로드버튼도 잠금처리합니다.
+      //if ( self.isDownloadFile || self.isDownloading )
+      //{
+      //    [self setTouchEnable : _downloadButton
+      //                  isLock : YES];
+      //}
+      //else
+      //{
+            [self setTouchEnable : _downloadButton
+                          isLock : isLock];
+      //}
+    }
+    else if ( [@"timer-mode" isEqualToString : buttonId])
+    {
+        if ( status == 1 )
+        {
+            if ( [IFSleepTimerManager sharedInstance].isAlive )
+            {
+                [[IFSleepTimerManager sharedInstance] stopTimer];
+            }
+          
+            [_sleepButton setStatus : 0];
+            [_sleepButton setText : @""];
+          
+            [self openTimerSelectView];
+        }
+        else
+        {
+            [self setTimerMode : @"사용안함"];
+        }
+    }
+    else if ( [@"download-mode" isEqualToString: buttonId] )
+    {
+      
+      NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey: @"wifiDown"];
+      
+      if ( [@"on" isEqualToString:wifiDown] && ![[ApiManager sharedInstance] isConnectionWifi] )
       {
-        [[IFSleepTimerManager sharedInstance] stopTimer];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"확인"
+                                                                       message : @"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-fi에서만 다운로드가 가능합니다."
+                                                                preferredStyle : UIAlertControllerStyleAlert];
+        
+        UIAlertAction *ok = [UIAlertAction actionWithTitle : @"닫 기"
+                                                     style : UIAlertActionStyleDefault
+                                                   handler : ^(UIAlertAction * action)
+                             {
+                               [alert dismissViewControllerAnimated:YES completion:nil];
+                             }];
+        [alert addAction : ok];
+        
+        //[_contentView presentViewController:alert animated:YES completion:nil];
+        
+        return ;
       }
+      /*
+      [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
       
-      [_sleepButton setStatus: 0];
-      [_sleepButton setText: @""];
-      
-    //[self openTimerSelectView];
+      self.isDownloading = YES;
+      [self setTouchEnable: _downloadButton
+                    isLock: YES];*/
+    }
+}
+
+//
+// 슬립타이머버튼을 누르면 시간선택 팝업뷰가 뜹니다.
+//
+- (void) openTimerSelectView
+{
+    if ( _playerSleepTimerSelectView )
+    {
+        return ;
+    }
+  
+    CGFloat height = 0;
+  
+    if ( self.view.frame.size.width < self.view.frame.size.height )
+    {
+        height = 60 + (50 * 4);
     }
     else
     {
-    //[self setTimerMode: @"사용안함"];
+        height = 60 + (50 * 2);
     }
-  }
-  else if ( [@"download-mode" isEqualToString: buttonId] )
-  {
-    
-    NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey: @"wifiDown"];
-    
-    if ( [@"on" isEqualToString:wifiDown] && ![[ApiManager sharedInstance] isConnectionWifi] )
-    {
-      UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"확인"
-                                                                     message : @"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-fi에서만 다운로드가 가능합니다."
-                                                              preferredStyle : UIAlertControllerStyleAlert];
-      
-      UIAlertAction *ok = [UIAlertAction actionWithTitle : @"닫 기"
-                                                   style : UIAlertActionStyleDefault
-                                                 handler : ^(UIAlertAction * action)
-                           {
-                             [alert dismissViewControllerAnimated:YES completion:nil];
-                           }];
-      [alert addAction : ok];
-      
-      //[_contentView presentViewController:alert animated:YES completion:nil];
-      
-      return ;
-    }
-    /*
-    [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
-    
-    self.isDownloading = YES;
-    [self setTouchEnable: _downloadButton
-                  isLock: YES];*/
-  }
+  
+    CGRect frame = CGRectMake(0, CGRectGetMinY(_bottomView.frame) - height, self.view.frame.size.width, height);
+    _playerSleepTimerSelectView = [[PlayerSleepTimerView alloc] initWithFrame : frame];
+    _playerSleepTimerSelectView.delegate = self;
+    [self.view addSubview: _playerSleepTimerSelectView];
 }
 
 #pragma mark - Notifications
@@ -1417,6 +1445,93 @@
         return (CMTimeGetSeconds(kCMTimeInvalid));
     }
 }
+
+#pragma mark - SleepTimer
+- (void) setTimerMode : (NSString *) text
+{
+    if ( [@"사용안함" isEqualToString : text] )
+    {
+        if ( [IFSleepTimerManager sharedInstance].isAlive )
+        {
+            [[IFSleepTimerManager sharedInstance] stopTimer];
+        }
+      
+        [_sleepButton setText : @""];
+        [_sleepButton setStatus : 0];
+      
+        return ;
+    }
+  
+    BOOL isEpisodeStop = NO;
+  
+    if ( [@"현재 에피소드까지" isEqualToString : text] )
+    {
+        isEpisodeStop = YES;
+    }
+  
+    NSInteger timerMin = 0;
+  
+    if ( [@"5분" isEqualToString : text] )
+    {
+        timerMin = 5;
+    }
+    else if ( [@"10분" isEqualToString : text] )
+    {
+        timerMin = 10;
+    }
+    else if ( [@"15분" isEqualToString : text] )
+    {
+        timerMin = 15;
+    }
+    else if ( [@"30분" isEqualToString : text] )
+    {
+        timerMin = 30;
+    }
+    else if ( [@"45분" isEqualToString : text] )
+    {
+        timerMin = 45;
+    }
+    else if ( [@"1시간" isEqualToString : text] )
+    {
+        timerMin = 60;
+    }
+  
+    [_sleepButton setStatus : 1];
+  
+    NSDate *stopDate = nil;
+  
+    if ( !isEpisodeStop )
+    {
+        stopDate = [[NSDate date] dateByAddingTimeInterval : (timerMin * 60)];
+    }
+  
+    [IFSleepTimerManager sharedInstance].delegate = self;
+    [[IFSleepTimerManager sharedInstance] startTimer : stopDate
+                                     stopEpisodeMode : isEpisodeStop];
+}
+
+- (void) playerSleepTimerView: (PlayerSleepTimerView *) view
+                    closeView: (id)sender
+{
+    if ( _playerSleepTimerSelectView )
+    {
+        [_playerSleepTimerSelectView removeFromSuperview];
+        _playerSleepTimerSelectView = nil;
+    }
+}
+
+- (void) playerSleepTimerView : (PlayerSleepTimerView *) view
+              didSelectedTime : (NSString *) time
+{
+    [self setTimerMode : time];
+}
+
+/*
+ *
+ * 더 많은 PlayerSleepTimer method 들의 구현이 필요합니다.
+ *
+ */
+
 
 # pragma mark - Labatory
 - (void) toastTestAlert
