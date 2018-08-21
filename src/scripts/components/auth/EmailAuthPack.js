@@ -83,6 +83,7 @@ class EmailAuthPack extends Component {
 					style={styles.input}
 					value={this.state.email}
 					autoCapitalize={'none'}
+					underlineColorAndroid={'rgba(0,0,0,0)'}
 					onChangeText={text => {
 						this.setState( { email: text } );
 					}}/>
@@ -91,6 +92,7 @@ class EmailAuthPack extends Component {
 					style={styles.input}
 					secureTextEntry={true}
 					autoCapitalize={'none'}
+					underlineColorAndroid={'rgba(0,0,0,0)'}
 					value={this.state.password}
 					onChangeText={text => {
 						this.setState( { password: text } )
@@ -100,9 +102,11 @@ class EmailAuthPack extends Component {
 			<TouchableOpacity activeOpacity={0.9}
 							  onPress={this.handleLogin}
 			>
+							  onPress={this.handleLogin}>
 				<View borderRadius={4}
 					  style={styles.btnSubmit}
 				>
+					  style={styles.btnSubmit}>
 					<Text style={styles.textSubmit}>윌라 계정으로</Text>
 				</View>
 			</TouchableOpacity>
@@ -112,6 +116,7 @@ class EmailAuthPack extends Component {
 					activeOpacity={0.9}
 					onPress={() => this.props.onNavigate( 'FindPassword' )}
 				>
+					onPress={() => this.props.onNavigate( 'FindPassword' )}>
 					<Text style={styles.btnLinkText}>비밀번호 찾기</Text>
 				</TouchableOpacity>
 
@@ -119,6 +124,7 @@ class EmailAuthPack extends Component {
 					activeOpacity={0.9}
 					onPress={() => this.props.onNavigate( 'SignUpPage' )}
 				>
+					onPress={() => this.props.onNavigate( 'SignUpPage' )}>
 					<Text style={styles.btnLinkText}>무료 계정만들기</Text>
 				</TouchableOpacity>
 			</View>
