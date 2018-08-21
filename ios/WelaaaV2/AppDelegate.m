@@ -79,15 +79,17 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                                                 annotation : options[UIApplicationOpenURLOptionsAnnotationKey]      ];
   
     if ( [KOSession isKakaoAccountLoginCallback : url] )
-     {
-     return [KOSession handleOpenURL : url];
-     }
+    {
+        return [KOSession handleOpenURL : url];
+    }
   
     // Add any custom logic here.
     return handled;
 }
 
+//
 // 홈버튼 두번 눌렀을때, 인앱구매할때, 화면 쓸어내릴때, 화면 쓸어올릴때 등등.
+//
 - (void) applicationWillResignActive : (UIApplication *) application
 {
     // Load Multitask App Switcher Image.
@@ -126,38 +128,38 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 
 - (NSPersistentContainer *) persistentContainer
 {
-  // The persistent container for the application.
-  // This implementation creates and returns a container, having loaded the store for the application to it.
-  @synchronized (self)
-  {
-    if ( _persistentContainer == nil )
+    // The persistent container for the application.
+    // This implementation creates and returns a container, having loaded the store for the application to it.
+    @synchronized (self)
     {
-      _persistentContainer = [[NSPersistentContainer alloc] initWithName: @"influential_learning"];
-      
-      [_persistentContainer loadPersistentStoresWithCompletionHandler: ^(NSPersistentStoreDescription *storeDescription, NSError *error)
-       {
-         if ( error != nil )
-         {
-           // Replace this implementation with code to handle the error appropriately.
-           // abort() causes the application to generate a crash log and terminate.
-           // You should not use this function in a shipping application, although it may be useful during development.
-           
-           /*
-            Typical reasons for an error here include:
-            * The parent directory does not exist, cannot be created, or disallows writing.
-            * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-            * The device is out of space.
-            * The store could not be migrated to the current model version.
-            Check the error message to determine what the actual problem was.
-            */
-           NSLog(@"  Unresolved error : %@\ninfo : %@", error, error.userInfo);
-           abort();
-         }
-       }];
+        if ( _persistentContainer == nil )
+        {
+            _persistentContainer = [[NSPersistentContainer alloc] initWithName : @"influential_learning"];
+          
+            [_persistentContainer loadPersistentStoresWithCompletionHandler : ^(NSPersistentStoreDescription *storeDescription, NSError *error)
+             {
+               if ( error != nil )
+               {
+                   // Replace this implementation with code to handle the error appropriately.
+                   // abort() causes the application to generate a crash log and terminate.
+                   // You should not use this function in a shipping application, although it may be useful during development.
+                 
+                   /*
+                    Typical reasons for an error here include:
+                    * The parent directory does not exist, cannot be created, or disallows writing.
+                    * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+                    * The device is out of space.
+                    * The store could not be migrated to the current model version.
+                    Check the error message to determine what the actual problem was.
+                    */
+                   NSLog(@"  Unresolved error : %@\ninfo : %@", error, error.userInfo);
+                   abort();
+               }
+             }];
+        }
     }
-  }
   
-  return _persistentContainer;
+    return _persistentContainer;
 }
 
 #pragma mark - Core Data Saving support

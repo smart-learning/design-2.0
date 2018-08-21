@@ -1193,8 +1193,162 @@
     _seekTimer = nil;
 }
 
-
-
+//
+// UI 컴포넌트의 활성화 또는 비활성화 시킵니다.
+//
+- (void) setTouchEnable : (UIView *) view
+                 isLock : (BOOL) isLock
+{
+    view.userInteractionEnabled = !isLock;
+    view.alpha = isLock ? 0.7f : 1.f;
+}
+- (void) pressedPlayerButtonWithId : (NSString *) buttonId
+                            status : (NSInteger) status
+{
+  /*
+    _isAuthor = true;
+    // 권한이 없으면..
+    if ( !_isAuthor )
+    {
+        BOOL isToast = NO;
+      
+        if ( [@"script-mode" isEqualToString : buttonId] )
+        {
+            [_scriptView setStatus: IfMediaPlayerScriptViewModeNone];
+          isToast = YES;
+        }
+        else if ( [@"download-mode" isEqualToString : buttonId] )
+        {
+            [_downloadButton setStatus : 0];
+            isToast = YES;
+        }
+      
+        if ( isToast )
+        {
+            //AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+            [_contentView makeToast : @"미리보기에서는 이용 하실 수 없습니다."];
+          
+            return ;
+        }
+    }
+  */
+  
+  /*
+  if ( [@"script-mode" isEqualToString: buttonId] )
+  {
+    [self setScriptViewFrameWithStatus: status];
+  }
+  else if ( [@"view-mode" isEqualToString: buttonId] )
+  {
+    [self changeViewMode: (status == 1)];
+  }
+  else if ( [@"autoplay-mode" isEqualToString: buttonId])
+  {
+    [common setUserSettingValueWithKey: @"autoplay_enable"
+                                 value: status == 0 ? @"N" : @"Y"];
+  }
+  else*/ if ( [@"lock-mode" isEqualToString : buttonId] )
+  {
+    BOOL isLock = (status == 1);
+    
+    [self setTouchEnable : _closeButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _playButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _paueseButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _rwButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _ffButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _speedButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _listButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _autoPlayButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _scriptButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _modeChangeButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _sleepButton
+                  isLock : isLock];
+    
+    [self setTouchEnable : _slider
+                  isLock : isLock];
+    
+    /*
+    if ( self.isDownloadFile || self.isDownloading )
+    {
+      [self setTouchEnable: _downloadButton
+                    isLock: YES];
+    }
+    else
+    {
+      [self setTouchEnable: _downloadButton
+                    isLock: isLock];
+    }*/
+  }
+  else if ( [@"timer-mode" isEqualToString: buttonId])
+  {
+    if ( status == 1 )
+    {
+      if ( [IFSleepTimerManager sharedInstance].isAlive )
+      {
+        [[IFSleepTimerManager sharedInstance] stopTimer];
+      }
+      
+      [_sleepButton setStatus: 0];
+      [_sleepButton setText: @""];
+      
+    //[self openTimerSelectView];
+    }
+    else
+    {
+    //[self setTimerMode: @"사용안함"];
+    }
+  }
+  else if ( [@"download-mode" isEqualToString: buttonId] )
+  {
+    
+    NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey: @"wifiDown"];
+    
+    if ( [@"on" isEqualToString:wifiDown] && ![[ApiManager sharedInstance] isConnectionWifi] )
+    {
+      UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"확인"
+                                                                     message : @"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-fi에서만 다운로드가 가능합니다."
+                                                              preferredStyle : UIAlertControllerStyleAlert];
+      
+      UIAlertAction *ok = [UIAlertAction actionWithTitle : @"닫 기"
+                                                   style : UIAlertActionStyleDefault
+                                                 handler : ^(UIAlertAction * action)
+                           {
+                             [alert dismissViewControllerAnimated:YES completion:nil];
+                           }];
+      [alert addAction : ok];
+      
+      //[_contentView presentViewController:alert animated:YES completion:nil];
+      
+      return ;
+    }
+    /*
+    [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
+    
+    self.isDownloading = YES;
+    [self setTouchEnable: _downloadButton
+                  isLock: YES];*/
+  }
+}
 
 #pragma mark - Notifications
 //
