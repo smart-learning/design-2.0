@@ -68,7 +68,9 @@ class EmailAuthPack extends Component {
 		resultAuthToken
 			.then( data => {
 				let welaaaAuthData = JSON.stringify( data );
-				this.props.onAccess( welaaaAuthData );
+				if( this.props.onAccess ) {
+					this.props.onAccess( welaaaAuthData );
+				}
 			} )
 			.catch( error => {
 				Alert.alert( '아이디나 비밀번호를 확인하세요.' );
@@ -100,12 +102,8 @@ class EmailAuthPack extends Component {
 			</View>
 
 			<TouchableOpacity activeOpacity={0.9}
-							  onPress={this.handleLogin}
-			>
 							  onPress={this.handleLogin}>
 				<View borderRadius={4}
-					  style={styles.btnSubmit}
-				>
 					  style={styles.btnSubmit}>
 					<Text style={styles.textSubmit}>윌라 계정으로</Text>
 				</View>
@@ -114,16 +112,12 @@ class EmailAuthPack extends Component {
 			<View style={styles.linkWrap}>
 				<TouchableOpacity
 					activeOpacity={0.9}
-					onPress={() => this.props.onNavigate( 'FindPassword' )}
-				>
 					onPress={() => this.props.onNavigate( 'FindPassword' )}>
 					<Text style={styles.btnLinkText}>비밀번호 찾기</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity
 					activeOpacity={0.9}
-					onPress={() => this.props.onNavigate( 'SignUpPage' )}
-				>
 					onPress={() => this.props.onNavigate( 'SignUpPage' )}>
 					<Text style={styles.btnLinkText}>무료 계정만들기</Text>
 				</TouchableOpacity>
