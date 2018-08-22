@@ -3,12 +3,17 @@ import {NAV_OPTS_COMMON, NAV_OPTS_STACK, NAV_OPTS_DRAWER} from "../../commons/na
 import {createStackNavigator} from "react-navigation";
 import MembershipPage from "./MembershipPage";
 import MembershipDetailPage from "./MembershipDetailPage";
+import MembershipFormPage from "./MembershipFormPage";
 
 
 const MembershipScreen = createStackNavigator({
 
 		MembershipPage: {
 			screen: MembershipPage,
+			navigationOptions: NAV_OPTS_STACK,
+		},
+		MembershipFormPage: {
+			screen: MembershipFormPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
 		MembershipDetailPage: {
