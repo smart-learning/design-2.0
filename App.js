@@ -10,8 +10,20 @@ import {Button, Modal, Text, View} from "react-native";
 import Store from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune";
 import BottomControllerPage from './src/scripts/pages/BottomControllerPage';
+import { DeviceEventEmitter, NativeModules } from 'react-native'
 
 class App extends React.Component {
+
+	componentWillMount() {
+        DeviceEventEmitter.addListener('miniPlayer', (params) => {
+            subscription = NativeModules.RNNativePlayer.toast('playbackState: ' + params['playbackState']);
+        });
+    }
+
+	componentWillUnmount() {
+		subscription.remove();
+	}
+
  	render() {
 		return <View style={{flex: 1}}>
 			<AppDrawer

@@ -1,9 +1,17 @@
 package com.welaaav2;
 
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
+import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.dooboolab.RNIap.RNIapPackage;
@@ -12,10 +20,15 @@ import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.soloader.SoLoader;
 import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
+import com.welaaav2.player.service.MediaService;
+import com.welaaav2.player.utils.LogHelper;
+import com.welaaav2.react.RNEventEmitter;
 import com.welaaav2.react.pakcage.RNNativePlayerPackage;
 import com.welaaav2.util.ONotificationManager;
 import com.welaaav2.util.WeContentManager;
@@ -27,7 +40,44 @@ import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
+  public static final String TAG = LogHelper.makeLogTag(MainApplication.class);
+
   private WeContentManager content_manager = null;
+
+  private RNEventEmitter eventEmitter;
+
+  private MediaBrowserCompat mediaBrowser;
+
+  private final MediaBrowserCompat.ConnectionCallback connectionCallback =
+      new MediaBrowserCompat.ConnectionCallback() {
+        @Override
+        public void onConnected() {
+          LogHelper.d(TAG, "onConnected");
+          try {
+            connectToSession(mediaBrowser.getSessionToken());
+          } catch (RemoteException e) {
+            LogHelper.e(TAG, e, "could not connect media controller");
+          }
+        }
+      };
+
+  private final MediaControllerCompat.Callback mediaControllerCallback = new MediaControllerCompat.Callback() {
+    @Override
+    public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
+      LogHelper.d(TAG, "onPlaybackstate changed", state);
+      if (eventEmitter != null) {
+        WritableMap params = Arguments.createMap();
+        params.putInt("playbackState", state.getState());
+        eventEmitter.sendEvent("miniPlayer", params);
+      }
+    }
+
+    @Override
+    public void onMetadataChanged(MediaMetadataCompat metadata) {
+      if (metadata != null) {
+      }
+    }
+  };
 
   private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
@@ -49,7 +99,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNIapPackage(),
           new FBSDKPackage(mCallbackManager),
           new RNLocalizablePackage(R.string.class),
-          new RNNativePlayerPackage()
+          new RNNativePlayerPackage(MainApplication.this)
       );
     }
 
@@ -90,6 +140,13 @@ public class MainApplication extends Application implements ReactApplication {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       ONotificationManager.createChannel(this);
     }
+
+    eventEmitter = null;
+
+    // MediaBrowser.
+    mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
+        connectionCallback, null);
+    mediaBrowser.connect();
   }
 
   public WeContentManager initContentManager() {
@@ -103,5 +160,14 @@ public class MainApplication extends Application implements ReactApplication {
 
   public WeContentManager getContentMgr() {
     return content_manager;
+  }
+
+  private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
+    MediaControllerCompat mediaController = new MediaControllerCompat(this, token);
+    mediaController.registerCallback(mediaControllerCallback);
+  }
+
+  public void setEventEmitter(RNEventEmitter eventEmitter) {
+    this.eventEmitter = eventEmitter;
   }
 }
