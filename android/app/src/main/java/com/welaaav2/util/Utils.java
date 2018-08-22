@@ -1,8 +1,11 @@
 package com.welaaav2.util;
 
+import static android.R.style.Theme_Material_Light_Dialog_Alert;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -12,6 +15,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
@@ -19,7 +23,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,8 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import static android.R.style.Theme_Material_Light_Dialog_Alert;
 
 /**
  * Created by okitoki on 2016. 10. 6.
@@ -420,4 +421,14 @@ public class Utils {
 
         return isAirplaneMode;
     }
+
+  public static Activity getActivity(Context context) {
+    while (context instanceof ContextWrapper) {
+      if (context instanceof Activity) {
+        return (Activity) context;
+      }
+      context = ((ContextWrapper) context).getBaseContext();
+    }
+    return null;
+  }
 }

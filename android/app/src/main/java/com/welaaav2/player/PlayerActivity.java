@@ -564,7 +564,7 @@ public class PlayerActivity extends BasePlayerActivity {
       }
     });
 
-    // MediaBrowser
+    // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
         connectionCallback, null);
   }
