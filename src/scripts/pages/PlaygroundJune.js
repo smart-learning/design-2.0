@@ -23,14 +23,24 @@ class PlaygroundJune extends Component {
 		'https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8'
 		
 		DRM HLS
-		'0028_001' / 'https://contents.welaaa.com/public/contents/HLS_0028_001_mp4/master.m3u8'
-		'0028_002' / 'https://contents.welaaa.com/public/contents/HLS_0028_002_mp4/master.m3u8'
-		'0028_003' / 'https://contents.welaaa.com/public/contents/HLS_0028_003_mp4/master.m3u8'
-		'0028_004' / 'https://contents.welaaa.com/public/contents/HLS_0028_004_mp4/master.m3u8'
-		'0028_005' / 'https://contents.welaaa.com/public/contents/HLS_0028_005_mp4/master.m3u8'
-		'0028_006' / 'https://contents.welaaa.com/public/contents/HLS_0028_006_mp4/master.m3u8'
-		'0028_007' / 'https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8'
-		'v200001_001' / 'https://contents.welaaa.com/media/v200001/HLS_v200001_001_mp4/master.m3u8'
+		v200001_001 / https://contents.welaaa.com/media/v200001/HLS_v200001_001_mp4/master.m3u8
+
+		v200002_001 / https://contents.welaaa.com/media/v200002/HLS_v200002_001_mp4/master.m3u8
+		 ~
+		v200002_006 / https://contents.welaaa.com/media/v200002/HLS_v200002_006_mp4/master.m3u8
+		
+		v200003_001 / https://contents.welaaa.com/media/v200003/HLS_v200003_001_mp4/master.m3u8
+		 ~
+		v200003_006 / https://contents.welaaa.com/media/v200003/HLS_v200003_006_mp4/master.m3u8
+		
+		b300200_001 / https://contents.welaaa.com/media/b300200/HLS_b300200_001_mp4/master.m3u8
+		 ~
+		b300200_033 / https://contents.welaaa.com/media/b300200/HLS_b300200_033_mp4/master.m3u8
+		
+		b300201_001 / https://contents.welaaa.com/media/b300201/HLS_b300201_001_mp4/master.m3u8
+		 ~
+		b300201_009 / https://contents.welaaa.com/media/b300201/HLS_b300201_009_mp4/master.m3u8
+		
 		'sintel-trailer-480p' / 'https://contents.welaaa.com/public/contents/HLS_sintel-trailer-480p_mp4/master.m3u8'
 		*/
 		var args = {
@@ -61,13 +71,13 @@ class PlaygroundJune extends Component {
 		'https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8'
 		
 		DRM HLS
-		'0028_001' / 'https://contents.welaaa.com/public/contents/HLS_0028_001_mp4/master.m3u8'
-		'0028_002' / 'https://contents.welaaa.com/public/contents/HLS_0028_002_mp4/master.m3u8'
-		'0028_003' / 'https://contents.welaaa.com/public/contents/HLS_0028_003_mp4/master.m3u8'
-		'0028_004' / 'https://contents.welaaa.com/public/contents/HLS_0028_004_mp4/master.m3u8'
-		'0028_005' / 'https://contents.welaaa.com/public/contents/HLS_0028_005_mp4/master.m3u8'
-		'0028_006' / 'https://contents.welaaa.com/public/contents/HLS_0028_006_mp4/master.m3u8'
-		'0028_007' / 'https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8'
+		0028_001 / https://contents.welaaa.com/public/contents/HLS_0028_001_mp4/master.m3u8
+		0028_002 / https://contents.welaaa.com/public/contents/HLS_0028_002_mp4/master.m3u8
+		0028_003 / https://contents.welaaa.com/public/contents/HLS_0028_003_mp4/master.m3u8
+		0028_004 / https://contents.welaaa.com/public/contents/HLS_0028_004_mp4/master.m3u8
+		0028_005 / https://contents.welaaa.com/public/contents/HLS_0028_005_mp4/master.m3u8
+		0028_006 / https://contents.welaaa.com/public/contents/HLS_0028_006_mp4/master.m3u8
+		0028_007 / https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8
 		'sintel-trailer-480p' / 'https://contents.welaaa.com/public/contents/HLS_sintel-trailer-480p_mp4/master.m3u8'
 		*/
 		var args = {
@@ -102,9 +112,6 @@ class PlaygroundJune extends Component {
 
 
     render() {
-
-
-
 
         return <SafeAreaView style={[ CommonStyles.container, {backgroundColor: '#cccccc'}]}>
 

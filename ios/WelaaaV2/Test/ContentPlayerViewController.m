@@ -153,9 +153,11 @@
     [self setPlayState : YES];
   
     // 영상시작후 3초간 입력이 없으면 컨트롤러를 자동으로 Hide.
+  /*
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
+  */
   
     CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration) + 1;
   
@@ -694,6 +696,9 @@
 
 #pragma mark - Public Methods
 
+//
+// 재생 또는 일시정지 버튼의 표시를 번갈아가며 바꿉니다.
+//
 - (void) setPlayState : (BOOL) isPlaying
 {
     _paueseButton.hidden = !isPlaying;
@@ -762,8 +767,8 @@
 
 - (void) pressedCloseButton
 {
-    //[self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-    [self showToast : @"미니플레이어로 변환합니다."];
+    [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+    //[self showToast : @"미니플레이어로 변환합니다."];
 }
 
 - (void) pressedRateStarButton
@@ -906,11 +911,13 @@
     {
         CMTime newTime = CMTimeMakeWithSeconds(cTime - 10.f, tTime);
         [_player seekToTime : newTime];
+        [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     }
     else
     {
         CMTime newTime = CMTimeMakeWithSeconds(0, tTime);
         [_player seekToTime : newTime];//playImmediatelyAtRate
+        [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     }
 }
 
@@ -928,11 +935,13 @@
     {
         CMTime newTime = CMTimeMakeWithSeconds(cTime + 10.f, tTime);
         [_player seekToTime : newTime];
+        [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     }
     else
     {
         CMTime newTime = CMTimeMakeWithSeconds(tTime, tTime);
         [_player seekToTime : newTime];
+        [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     }
 }
 
@@ -965,6 +974,17 @@
 - (void) pressedListButton
 {
     NSLog(@"  플레이어 재생 리스트 버튼!!");
+    // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
+    NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"play_list"
+                                                         ofType : @"json"];
+    NSData *data = [NSData dataWithContentsOfFile : jsonPath];
+    NSError *error = nil;
+    id json = [NSJSONSerialization JSONObjectWithData : data
+                                              options : kNilOptions
+                                                error : &error];
+  
+    NSLog(@"  [pressedListButton] JSON output : %@", json);
+    // 잘 읽어옵니다.
 }
 
 
@@ -1041,6 +1061,8 @@
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
     [self setTimerOnSlider];
     [_player play];
+    // pauseButton으로 변경해주어야 합니다.
+    [self setPlayState : YES];
   
     // 기존 타이머를 종료시키고 재시작
     //[self stopLogTimer];
