@@ -16,6 +16,8 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
+#import <AVFoundation/AVFoundation.h>
+
 @import Firebase;
 
 @interface AppDelegate ()
@@ -27,6 +29,12 @@
 - (BOOL)          application : (UIApplication *) application
 didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 {
+    // Background Playback Enabled
+    // Allow the app sound to continue to play when the screen is locked.
+    //https://stackoverflow.com/questions/4771105/how-do-i-get-my-avplayer-to-play-while-app-is-in-background
+    [[AVAudioSession sharedInstance] setCategory : AVAudioSessionCategoryPlayback
+                                           error : nil];
+  
     NSURL *jsCodeLocation;
   
     jsCodeLocation = [ [RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot : @"index"
@@ -56,6 +64,8 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     // Use Firebase library to configure APIs
     [FIRApp configure];
   
+  
+  
     return YES;
 }
 
@@ -69,29 +79,33 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                                                 annotation : options[UIApplicationOpenURLOptionsAnnotationKey]      ];
   
     if ( [KOSession isKakaoAccountLoginCallback : url] )
-     {
-     return [KOSession handleOpenURL : url];
-     }
+    {
+        return [KOSession handleOpenURL : url];
+    }
   
     // Add any custom logic here.
     return handled;
 }
 
+//
 // 홈버튼 두번 눌렀을때, 인앱구매할때, 화면 쓸어내릴때, 화면 쓸어올릴때 등등.
+//
 - (void) applicationWillResignActive : (UIApplication *) application
 {
-    UIView *colorView = [ [UIView alloc] initWithFrame : [self.window frame] ];
-    colorView.tag = 9999;
-    CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
-    CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
-    CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
-    UIColor *color = [UIColor colorWithHue : hue
-                                saturation : saturation
-                                brightness : brightness
-                                     alpha : 1        ];
-    colorView.backgroundColor = color;
-    [self.window addSubview : colorView];
-    [self.window bringSubviewToFront : colorView];
+    // Load Multitask App Switcher Image.
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame : [self.window frame]];
+    imageView.tag = 9999;
+    // // iPhone X일 경우 다른 사이즈의 이미지파일로 교체하도록 분기처리 해야합니다.
+    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    {
+        [imageView setImage : [UIImage imageNamed : @"iPhoneXBackgroundImage"]];
+    }
+    else
+    {
+        [imageView setImage : [UIImage imageNamed : @"iPhoneBackgroundImage"]];
+    }
+  
+    [self.window addSubview : imageView];
 }
 
 //
@@ -108,4 +122,75 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     [KOSession handleDidBecomeActive];
 }
 
+#pragma mark - Core Data stack
+
+@synthesize persistentContainer = _persistentContainer;
+
+- (NSPersistentContainer *) persistentContainer
+{
+    // The persistent container for the application.
+    // This implementation creates and returns a container, having loaded the store for the application to it.
+    @synchronized (self)
+    {
+        if ( _persistentContainer == nil )
+        {
+            _persistentContainer = [[NSPersistentContainer alloc] initWithName : @"influential_learning"];
+          
+            [_persistentContainer loadPersistentStoresWithCompletionHandler : ^(NSPersistentStoreDescription *storeDescription, NSError *error)
+             {
+               if ( error != nil )
+               {
+                   // Replace this implementation with code to handle the error appropriately.
+                   // abort() causes the application to generate a crash log and terminate.
+                   // You should not use this function in a shipping application, although it may be useful during development.
+                 
+                   /*
+                    Typical reasons for an error here include:
+                    * The parent directory does not exist, cannot be created, or disallows writing.
+                    * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+                    * The device is out of space.
+                    * The store could not be migrated to the current model version.
+                    Check the error message to determine what the actual problem was.
+                    */
+                   NSLog(@"  Unresolved error : %@\ninfo : %@", error, error.userInfo);
+                   abort();
+               }
+             }];
+        }
+    }
+  
+    return _persistentContainer;
+}
+
+#pragma mark - Core Data Saving support
+
+- (void) saveContext
+{
+  NSManagedObjectContext *context = self.persistentContainer.viewContext;
+  NSError *error = nil;
+  
+  if ( [context hasChanges] && ![context save: &error] )
+  {
+    // Replace this implementation with code to handle the error appropriately.
+    // abort() causes the application to generate a crash log and terminate.
+    // You should not use this function in a shipping application, although it may be useful during development.
+    NSLog(@"  Unresolved error : %@\ninfo : %@", error, error.userInfo);
+    abort();
+  }
+}
+
+- (NSManagedObjectContext *) managedObjectContext
+{
+  return self.persistentContainer.viewContext;
+}
+
 @end
+
+
+
+
+
+
+
+
+
