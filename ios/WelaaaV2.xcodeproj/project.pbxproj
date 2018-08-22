@@ -28,6 +28,8 @@
 		EF0946D7212652A200FD849B /* ContentMiniPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */; };
 		EF094701212662B200FD849B /* RNProductPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = EF094700212662B200FD849B /* RNProductPayment.m */; };
 		EF230BEF21224CC600F8E802 /* FPSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */; };
+		EF28A90F212D308F006748C9 /* ContentsListPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF28A90C212D2E6F006748C9 /* ContentsListPopupView.m */; };
+		EF28A910212D3091006748C9 /* ContentsListPopupViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EF28A90E212D2E6F006748C9 /* ContentsListPopupViewCell.m */; };
 		EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */; };
 		EF3C6E3721118DBD00EBC878 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */; };
 		EF3C6E3821118DBD00EBC878 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -433,6 +435,10 @@
 		EF094700212662B200FD849B /* RNProductPayment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNProductPayment.m; sourceTree = "<group>"; };
 		EF230BED21224CC600F8E802 /* FPSDownloadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FPSDownloadManager.h; sourceTree = "<group>"; };
 		EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FPSDownloadManager.m; sourceTree = "<group>"; };
+		EF28A90B212D2E6F006748C9 /* ContentsListPopupViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentsListPopupViewCell.h; sourceTree = "<group>"; };
+		EF28A90C212D2E6F006748C9 /* ContentsListPopupView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupView.m; sourceTree = "<group>"; };
+		EF28A90D212D2E6F006748C9 /* ContentsListPopupView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentsListPopupView.h; sourceTree = "<group>"; };
+		EF28A90E212D2E6F006748C9 /* ContentsListPopupViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupViewCell.m; sourceTree = "<group>"; };
 		EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		EF2EB8D3211598ED00127D35 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		EF3C6E3621118DBD00EBC878 /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
@@ -804,6 +810,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		EF037104212D2DD80089405C /* ContentsListView */ = {
+			isa = PBXGroup;
+			children = (
+				EF28A90D212D2E6F006748C9 /* ContentsListPopupView.h */,
+				EF28A90C212D2E6F006748C9 /* ContentsListPopupView.m */,
+				EF28A90B212D2E6F006748C9 /* ContentsListPopupViewCell.h */,
+				EF28A90E212D2E6F006748C9 /* ContentsListPopupViewCell.m */,
+			);
+			path = ContentsListView;
+			sourceTree = "<group>";
+		};
 		EF13DA2A2113D95000CFED8A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -1082,6 +1099,7 @@
 		EFE0F3872117E23500D4558B /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				EF037104212D2DD80089405C /* ContentsListView */,
 				EFB3E62B212BECF300C5DF5D /* SleepTimerView */,
 				EF9BAE60211D1D9C0063FE2C /* Components */,
 				EF90FB4921214F2A0036C2E0 /* RatingView */,
@@ -1635,6 +1653,7 @@
 				EF90FB75212150260036C2E0 /* StarRatingView.m in Sources */,
 				EFE082512114185D006D3F6C /* IFTimerView.m in Sources */,
 				EFE0F3B62117E69C00D4558B /* MediaController.m in Sources */,
+				EF28A90F212D308F006748C9 /* ContentsListPopupView.m in Sources */,
 				EFE0835621144239006D3F6C /* IAPHelper.m in Sources */,
 				EFE082612114185D006D3F6C /* IFPlayListPopupViewCell.m in Sources */,
 				EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */,
@@ -1672,6 +1691,7 @@
 				EF7D6F8D2113E6D600B71BEB /* common.m in Sources */,
 				EFE082602114185D006D3F6C /* IFContentsPlayerView.m in Sources */,
 				EFE082552114185D006D3F6C /* IFMediaPlayerScriptView.m in Sources */,
+				EF28A910212D3091006748C9 /* ContentsListPopupViewCell.m in Sources */,
 				EF230BEF21224CC600F8E802 /* FPSDownloadManager.m in Sources */,
 				EFB3E657212BEF1A00C5DF5D /* PlayerSleepTimerButton.m in Sources */,
 				EFE082542114185D006D3F6C /* IFTouchView.m in Sources */,
