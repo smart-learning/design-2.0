@@ -32,7 +32,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -49,7 +49,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -65,7 +65,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -82,7 +82,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -95,7 +95,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -111,7 +111,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -128,7 +128,7 @@ export default {
 	// 				resolve( responseJson );
 	// 			} )
 	// 			.catch( ( error ) => {
-	// 				console.error( error );
+	// 				console.log( error );
 	// 				reject( error );
 	// 			} );
 	// 	} );
@@ -152,8 +152,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					// alert('로그인 실패');
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -169,7 +168,7 @@ export default {
 					resolve(response.data.hot);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -185,7 +184,7 @@ export default {
 					resolve(response.data.new);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -201,7 +200,7 @@ export default {
 					resolve(response.data.recommend);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -216,7 +215,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -228,7 +227,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
@@ -240,7 +239,7 @@ export default {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					console.error(error);
+					console.log(error);
 					reject(error);
 				});
 		});
