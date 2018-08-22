@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage, Alert } from "react-native";
-import { COLOR_PRIMARY } from "../../../styles/common";
-import { withNavigation } from "react-navigation";
+import React, {Component} from 'react';
+import {StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage, Alert} from "react-native";
+import {COLOR_PRIMARY} from "../../../styles/common";
+import {withNavigation} from "react-navigation";
 import net from "../../commons/net";
 import store from "../../commons/store";
 import axios from "axios";
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	contentContainer: {
 		width: '100%',
 	},
@@ -48,7 +48,7 @@ const styles = StyleSheet.create( {
 		fontSize: 12,
 		color: COLOR_PRIMARY,
 	}
-} );
+});
 
 class EmailAuthPack extends Component {
 
@@ -59,22 +59,41 @@ class EmailAuthPack extends Component {
 			email: null,
 			password: null,
 		};
-
-		this.handleLogin = this.handleLogin.bind( this );
 	}
 
-	handleLogin() {
-		const resultAuthToken = net.getAuthToken( this.state.email, this.state.password );
+
+	setLogin() {
+		const resultAuthToken = net.getAuthToken(this.state.email, this.state.password);
 		resultAuthToken
-			.then( data => {
-				let welaaaAuthData = JSON.stringify( data );
-				if( this.props.onAccess ) {
-					this.props.onAccess( welaaaAuthData );
+			.then(data => {
+				// console.log('resultAuthToken.then');
+				// console.log('data', data);
+				let welaaaAuthData = JSON.stringify(data);
+				if (this.props.onAccess) {
+					this.props.onAccess(welaaaAuthData);
 				}
-			} )
-			.catch( error => {
-				Alert.alert( '아이디나 비밀번호를 확인하세요.' );
-			} );
+			})
+			.catch(error => {
+				const code = error.response.code;
+				let message = '로그인 실패';
+				if( error.response.data && error.response.data.error ) {
+					message += ` (server message: ${error.response.data.error})`;
+				}
+				Alert.alert( message );
+				console.log( error );
+			});
+	}
+
+	handleLogin = () => {
+		if (this.state.email === null) {
+			Alert.alert('이메일은 필수 입력항목입니다.');
+			return false;
+		} else if (this.state.password === null) {
+			Alert.alert('비밀번호는 필수 입력항목입니다.');
+			return false;
+		}
+
+		this.setLogin();
 	};
 
 	render() {
@@ -83,21 +102,21 @@ class EmailAuthPack extends Component {
 			<View borderRadius={4} style={styles.inputWrap}>
 				<TextInput
 					style={styles.input}
+					underlineColorAndroid={'rgba(0,0,0,0)'}
 					value={this.state.email}
 					autoCapitalize={'none'}
-					underlineColorAndroid={'rgba(0,0,0,0)'}
 					onChangeText={text => {
-						this.setState( { email: text } );
+						this.setState({email: text});
 					}}/>
 				<View style={styles.inputBr}/>
 				<TextInput
 					style={styles.input}
+					underlineColorAndroid={'rgba(0,0,0,0)'}
 					secureTextEntry={true}
 					autoCapitalize={'none'}
-					underlineColorAndroid={'rgba(0,0,0,0)'}
 					value={this.state.password}
 					onChangeText={text => {
-						this.setState( { password: text } )
+						this.setState({password: text})
 					}}/>
 			</View>
 
@@ -112,13 +131,13 @@ class EmailAuthPack extends Component {
 			<View style={styles.linkWrap}>
 				<TouchableOpacity
 					activeOpacity={0.9}
-					onPress={() => this.props.onNavigate( 'FindPassword' )}>
+					onPress={() => this.props.onNavigate('FindPassword')}>
 					<Text style={styles.btnLinkText}>비밀번호 찾기</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity
 					activeOpacity={0.9}
-					onPress={() => this.props.onNavigate( 'SignUpPage' )}>
+					onPress={() => this.props.onNavigate('SignUpPage')}>
 					<Text style={styles.btnLinkText}>무료 계정만들기</Text>
 				</TouchableOpacity>
 			</View>
