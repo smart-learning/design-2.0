@@ -49,6 +49,7 @@ class UselessTextInput extends React.Component {
 			<TextInput
 				{...this.props} // Inherit any props passed to it; e.g., multiline, numberOfLines below
 				editable={true}
+				underlineColorAndroid={'rgba(0,0,0,0)'}
 			/>
 		);
 	}
@@ -79,6 +80,7 @@ export default class InquireFormPage extends React.Component {
 							<TextInput
 								style={styles.input}
 								value={this.title}
+								underlineColorAndroid={'rgba(0,0,0,0)'}
 								onChangeText={(text) => this.title = {text}}/>
 						</View>
 						<Text style={styles.label}>내용</Text>

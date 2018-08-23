@@ -77,6 +77,7 @@ class UselessTextInput extends React.Component {
 			<TextInput
 				{...this.props} // Inherit any props passed to it; e.g., multiline, numberOfLines below
 				editable={true}
+				underlineColorAndroid={'rgba(0,0,0,0)'}
 			/>
 		);
 	}

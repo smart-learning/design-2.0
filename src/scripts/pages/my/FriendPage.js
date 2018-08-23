@@ -145,6 +145,7 @@ export default class FriendPage extends React.Component {
 										style={styles.searchInput}
 										onChangeText={(text) => this.name = {text} }
 										value={this.name}
+										underlineColorAndroid={'rgba(0,0,0,0)'}
 									/>
 									<Image source={IcSearch} style={styles.IcSearch}/>
 								</View>
@@ -191,6 +192,7 @@ export default class FriendPage extends React.Component {
 										style={styles.searchInput}
 										onChangeText={(text) => this.name = {text} }
 										value={this.name}
+										underlineColorAndroid={'rgba(0,0,0,0)'}
 									/>
 									<Image source={IcSearch} style={styles.IcSearch}/>
 								</View>
