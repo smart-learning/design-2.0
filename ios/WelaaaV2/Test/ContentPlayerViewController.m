@@ -978,76 +978,53 @@
 {
     NSLog(@"  [pressedListButton] 최근 재생 리스트 - 미리보기에서는 비활성화 시켜야 함.");
     // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
-    NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"play_list"
+    NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"contentsinfo28"
                                                          ofType : @"json"];
     NSData *data = [NSData dataWithContentsOfFile : jsonPath];
     NSError *error = nil;
-    id json = [NSJSONSerialization JSONObjectWithData : data
-                                              options : kNilOptions
-                                                error : &error];
+    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : data
+                                                                 options : kNilOptions
+                                                                   error : &error];
   
-    NSLog(@"  [pressedListButton] JSON output : %@", json);
-    // 잘 읽어옵니다.
-  
-  //
-//if ( !self.isAuthor )
-  _isAuthor = true; // 테스트를 목적으로 권한을 강제로 set하였습니다.
-  if ( !_isAuthor )
-  {
-    [_contentView makeToast : @"프리뷰 이용중입니다."];
+    NSLog(@"  [pressedListButton] JSON output : %@", jsonResponse);
     
-    return ;
-  }
-  
-  if ( _listView )
-  {
-    return ;
-  }
-  
-  NSArray *list = nil;  // contentsinfo.infos
-  /*
-  if ( [self.delegate respondsToSelector: @selector(playerUiView:getContentList:)] )
-  {
-    list = [self.delegate playerUiView: self
-                        getContentList: nil];
-  }
-  */
-  
-  NSInteger currentIndex = -1;  // contentsInfo.count
-  /*
-  if ( [self.delegate respondsToSelector: @selector(playerUiView:getCurrentIndex:)] )
-  {
-    currentIndex = [self.delegate playerUiView: self
-                               getCurrentIndex: nil];
-  }
-  */
-  NSString *groupTitle = @""; // contentsinfo에서 "grouptitle"을 get합니다.
-  /*
-  if ( _isAudioMode )
-  {
-    if ( [self.delegate respondsToSelector: @selector(playerUiView:getGroupTitle:)] )
+  //if ( !self.isAuthor )
+    _isAuthor = true; // 테스트를 목적으로 권한을 강제로 set하였습니다.
+    if ( !_isAuthor )
     {
-      groupTitle = [self.delegate playerUiView: self
-                                 getGroupTitle: nil];
+        [_contentView makeToast : @"프리뷰 이용중입니다."];
+      
+        return ;
     }
-  }*/
   
-  CGRect frame = self.view.bounds;
-  frame.size.height = frame.size.height - _bottomView.frame.size.height;
-  _listView = [[ContentsListPopupView alloc] initWithFrame : frame];
-  _listView.delegate = self;
-  _listView.isAudioContentType = _isAudioMode;
-  _listView.playList = list;
-  _listView.currentPlayIndex = currentIndex;
-  _listView.isAuthor = _isAuthor;
-  [self.view addSubview : _listView];
-  [_listView start];
+    if ( _listView )
+    {
+        return ;
+    }
   
-  //오디오 콘텐츠 타이틀 삽입
-  if ( !nullStr(groupTitle) )
-  {
-    [_listView setTitle : groupTitle];
-  }
+    // /api/v1.0/play/contents-info/v100015_001
+    NSArray *list = jsonResponse[@"data"][@"clips"];
+  
+    NSInteger currentIndex = list.count;
+  
+    NSString *groupTitle = jsonResponse[@"data"][@"title"]; //group_title
+  
+    CGRect frame = self.view.bounds;
+    frame.size.height = frame.size.height - _bottomView.frame.size.height;
+    _listView = [[ContentsListPopupView alloc] initWithFrame : frame];
+    _listView.delegate = self;
+    _listView.isAudioContentType = _isAudioMode;
+    _listView.playList = list;
+    _listView.currentPlayIndex = currentIndex;
+    _listView.isAuthor = _isAuthor;
+    [self.view addSubview : _listView];
+    [_listView start];
+  
+    //오디오 콘텐츠 타이틀 삽입
+    if ( !nullStr(groupTitle) )
+    {
+        [_listView setTitle : groupTitle];
+    }
 }
 
 
