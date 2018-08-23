@@ -6,7 +6,8 @@
 #define PALLYCON_SITE_ID    @"O8LD"
 #define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
 
-@interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate>
+@interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate,
+                                          PlayerSleepTimerViewDelegate, ContentsListPopupViewDelegate>
 {
     BOOL _isAudioMode;
     BOOL _statusBarHidden;
@@ -49,6 +50,8 @@
     ContentPlayerButton *_downloadButton;
     ContentPlayerButton *_sleepButton;
     ContentPlayerButton *_lockButton;
+  
+  ContentsListPopupView *_listView;
   
     NSDictionary *_args;
   
@@ -973,7 +976,7 @@
 
 - (void) pressedListButton
 {
-    NSLog(@"  플레이어 재생 리스트 버튼!!");
+    NSLog(@"  [pressedListButton] 최근 재생 리스트 - 미리보기에서는 비활성화 시켜야 함.");
     // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
     NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"play_list"
                                                          ofType : @"json"];
@@ -985,6 +988,66 @@
   
     NSLog(@"  [pressedListButton] JSON output : %@", json);
     // 잘 읽어옵니다.
+  
+  //
+//if ( !self.isAuthor )
+  _isAuthor = true; // 테스트를 목적으로 권한을 강제로 set하였습니다.
+  if ( !_isAuthor )
+  {
+    [_contentView makeToast : @"프리뷰 이용중입니다."];
+    
+    return ;
+  }
+  
+  if ( _listView )
+  {
+    return ;
+  }
+  
+  NSArray *list = nil;  // contentsinfo.infos
+  /*
+  if ( [self.delegate respondsToSelector: @selector(playerUiView:getContentList:)] )
+  {
+    list = [self.delegate playerUiView: self
+                        getContentList: nil];
+  }
+  */
+  
+  NSInteger currentIndex = -1;  // contentsInfo.count
+  /*
+  if ( [self.delegate respondsToSelector: @selector(playerUiView:getCurrentIndex:)] )
+  {
+    currentIndex = [self.delegate playerUiView: self
+                               getCurrentIndex: nil];
+  }
+  */
+  NSString *groupTitle = @""; // contentsinfo에서 "grouptitle"을 get합니다.
+  /*
+  if ( _isAudioMode )
+  {
+    if ( [self.delegate respondsToSelector: @selector(playerUiView:getGroupTitle:)] )
+    {
+      groupTitle = [self.delegate playerUiView: self
+                                 getGroupTitle: nil];
+    }
+  }*/
+  
+  CGRect frame = self.view.bounds;
+  frame.size.height = frame.size.height - _bottomView.frame.size.height;
+  _listView = [[ContentsListPopupView alloc] initWithFrame : frame];
+  _listView.delegate = self;
+  _listView.isAudioContentType = _isAudioMode;
+  _listView.playList = list;
+  _listView.currentPlayIndex = currentIndex;
+  _listView.isAuthor = _isAuthor;
+  [self.view addSubview : _listView];
+  [_listView start];
+  
+  //오디오 콘텐츠 타이틀 삽입
+  if ( !nullStr(groupTitle) )
+  {
+    [_listView setTitle : groupTitle];
+  }
 }
 
 
@@ -1554,6 +1617,17 @@
  *
  */
 
+# pragma mark - Contents Pop-up List
+- (void) playListPopupView : (ContentsListPopupView *) view
+                 closeView : (id) sender
+{
+  ;
+}
+- (void) playListPopupView : (ContentsListPopupView *) view
+        selectedOtherIndex : (NSInteger) index
+{
+  ;
+}
 
 # pragma mark - Labatory
 - (void) toastTestAlert

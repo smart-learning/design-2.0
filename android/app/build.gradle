@@ -162,6 +162,7 @@ buildscript {
 apply plugin: 'io.fabric'
 
 dependencies {
+    compile project(':react-native-localizable')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation fileTree(dir: "libs", include: ["*.aar"])
 

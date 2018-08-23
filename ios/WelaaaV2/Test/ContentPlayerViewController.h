@@ -9,6 +9,7 @@
 #import "ContentPlayerButton.h"
 #import "IFSleepTimerManager.h"
 #import "PlayerSleepTimerView.h"
+#import "ContentsListPopupView.h"
 #import "ApiManager.h"
 #import "UIAlertController+Showable.h"
 #import "StarRatingView.h"
