@@ -24,6 +24,9 @@ target 'WelaaaV2' do
   # KakaoOpenSDK
   pod 'KakaoOpenSDK'
 
+  # Video Player
+  # pod 'PlayerKit'
+
   # Realm Swift
   #pod 'RealmSwift'
 
@@ -36,7 +39,13 @@ target 'WelaaaV2' do
   # Toast message
   pod 'Toast', '~> 4.0.0'
 
+
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
+
+  #pod 'RNIap', :path => '../node_modules/react-native-iap'
+
+#  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
 end
 use_frameworks!
