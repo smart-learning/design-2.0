@@ -202,7 +202,7 @@ public final class LocalPlayback implements Playback {
   public void stop(boolean notifyListeners) {
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
-    releaseResources(true);
+    releaseResources(false);
   }
 
   @Override
@@ -519,10 +519,11 @@ public final class LocalPlayback implements Playback {
           }
           break;
         case Player.STATE_ENDED:
-          // The media player finished playing the current song.
+          // The media player finished playing the current media.
           if (mCallback != null) {
             mCallback.onCompletion();
           }
+          clearStartPosition();
           break;
       }
     }

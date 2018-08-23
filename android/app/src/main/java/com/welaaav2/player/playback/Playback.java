@@ -2,6 +2,7 @@ package com.welaaav2.player.playback;
 
 import android.support.v4.media.MediaMetadataCompat;
 import com.pallycon.widevinelibrary.PallyconEventListener;
+import com.welaaav2.player.service.MediaService;
 
 /**
  * Interface representing either Local or Remote Playback. The {@link MediaService} works directly
