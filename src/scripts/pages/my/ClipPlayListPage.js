@@ -15,7 +15,7 @@ import Store from '../../../scripts/commons/store';
 import {SafeAreaView} from "react-navigation";
 import {observer} from "mobx-react";
 import {observable, computed} from "mobx";
-// import _ from "underscore";
+import _ from "underscore";
 import IcCheck from "../../../images/ic-my-check-all.png";
 import IcTrash from "../../../images/ic-my-trash-xs.png";
 import dummy from "../../../images/dummy-summary.jpg";
@@ -165,7 +165,7 @@ class ClipPlayListPage extends React.Component {
 			this.selected.length = 0;
 		}
 		else {
-			// this.selected = _.map(playList, element => element.key);
+			this.selected = _.map(playList, element => element.key);
 		}
 	};
 

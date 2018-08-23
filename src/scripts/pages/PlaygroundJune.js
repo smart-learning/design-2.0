@@ -3,7 +3,7 @@ import { Button, Modal, Text, TouchableHighlight, View, NativeModules } from "re
 import CommonStyles from "../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import { NAV_OPTS_DRAWER } from "../commons/nav";
-// import Localizable from 'react-native-localizable';
+import Localizable from 'react-native-localizable';
 import Device from "../commons/device";
 
 /*
@@ -88,7 +88,7 @@ class PlaygroundJune extends Component {
 	}
 
 	getNativeVariable = () =>{
-		// alert( `host_debug: ${Localizable.host_debug} \n\n host_release: ${Localizable.host_release}` );
+		alert( `host_debug: ${Localizable.host_debug} \n\n host_release: ${Localizable.host_release}` );
 	}
 
 	render() {

@@ -18,7 +18,7 @@
 # Lock Files
 package-lock.json
 yarn.lock
-#ios/Podfile.lock 
+ios/Podfile.lock
 
 # Logs
 npm-debug.log*
@@ -87,9 +87,6 @@ google-services.json
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 ios/WelaaaV2.xcodeproj/project.pbxproj
-
-
-
 
 ## Build generated
 */build

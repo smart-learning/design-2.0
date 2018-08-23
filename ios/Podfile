@@ -30,14 +30,9 @@ target 'WelaaaV2' do
   # Realm Swift
   #pod 'RealmSwift'
 
-  # AFNetworking
-  pod 'AFNetworking', '~> 3.0'
+  #pod 'RNIap', :path => '../node_modules/react-native-iap'
 
-  # KeyChain
-  pod 'SAMKeychain'
-
-  # Toast message
-  pod 'Toast', '~> 4.0.0'
+#  pod 'react-native-video', :path => '../node_modules/react-native-video'
 
 
   # Showing images from web
