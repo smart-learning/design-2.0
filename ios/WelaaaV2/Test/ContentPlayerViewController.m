@@ -976,7 +976,6 @@
 
 - (void) pressedListButton
 {
-  /*
     NSLog(@"  [pressedListButton] 최근 재생 리스트 - 미리보기에서는 비활성화 시켜야 함.");
     // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
     NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"play_list"
@@ -1005,24 +1004,25 @@
     return ;
   }
   
-  NSArray *list = nil;
-  
+  NSArray *list = nil;  // contentsinfo.infos
+  /*
   if ( [self.delegate respondsToSelector: @selector(playerUiView:getContentList:)] )
   {
     list = [self.delegate playerUiView: self
                         getContentList: nil];
   }
+  */
   
-  NSInteger currentIndex = -1;
-  
+  NSInteger currentIndex = -1;  // contentsInfo.count
+  /*
   if ( [self.delegate respondsToSelector: @selector(playerUiView:getCurrentIndex:)] )
   {
     currentIndex = [self.delegate playerUiView: self
                                getCurrentIndex: nil];
   }
-  
-  NSString *groupTitle = @"";
-  
+  */
+  NSString *groupTitle = @""; // contentsinfo에서 "grouptitle"을 get합니다.
+  /*
   if ( _isAudioMode )
   {
     if ( [self.delegate respondsToSelector: @selector(playerUiView:getGroupTitle:)] )
@@ -1030,25 +1030,24 @@
       groupTitle = [self.delegate playerUiView: self
                                  getGroupTitle: nil];
     }
-  }
+  }*/
   
-  CGRect frame = self.bounds;
+  CGRect frame = self.view.bounds;
   frame.size.height = frame.size.height - _bottomView.frame.size.height;
-  _listView = [[IFPlayListPopupView alloc] initWithFrame: frame];
+  _listView = [[ContentsListPopupView alloc] initWithFrame : frame];
   _listView.delegate = self;
   _listView.isAudioContentType = _isAudioMode;
   _listView.playList = list;
   _listView.currentPlayIndex = currentIndex;
-  _listView.isAuthor = self.isAuthor;
-  [self.view addSubview: _listView];
+  _listView.isAuthor = _isAuthor;
+  [self.view addSubview : _listView];
   [_listView start];
   
   //오디오 콘텐츠 타이틀 삽입
   if ( !nullStr(groupTitle) )
   {
-    [_listView setTitle: groupTitle];
+    [_listView setTitle : groupTitle];
   }
-  */
 }
 
 
