@@ -14,9 +14,14 @@ import { DeviceEventEmitter, NativeModules } from 'react-native'
 
 class App extends React.Component {
 
+	constructor(prop) {
+		super(prop);
+		this.subscription = null;
+	}
+
 	componentWillMount() {
-        DeviceEventEmitter.addListener('miniPlayer', (params) => {
-            subscription = NativeModules.RNNativePlayer.toast('playbackState: ' + params['playbackState']);
+        subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
+            NativeModules.RNNativePlayer.toast('playbackState: ' + params['visible']);
         });
     }
 

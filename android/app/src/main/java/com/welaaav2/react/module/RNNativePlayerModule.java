@@ -124,6 +124,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         .emit(eventName, params);
   }
 
+  @Deprecated
   @ReactMethod
   public void toast(String message) {
     Toast.makeText(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();

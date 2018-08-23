@@ -65,10 +65,27 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
       LogHelper.d(TAG, "onPlaybackstate changed", state);
-      if (eventEmitter != null) {
+      if (state != null && eventEmitter != null) {
         WritableMap params = Arguments.createMap();
-        params.putInt("playbackState", state.getState());
-        eventEmitter.sendEvent("miniPlayer", params);
+        switch (state.getState()) {
+          // Hide mini player.
+          case PlaybackStateCompat.STATE_NONE:      // 0
+          case PlaybackStateCompat.STATE_STOPPED:   // 1
+          case PlaybackStateCompat.STATE_ERROR:     // 7
+            params.putBoolean("visible", false);
+            eventEmitter.sendEvent("miniPlayer", params);
+            break;
+
+          // Show mini player.
+          case PlaybackStateCompat.STATE_PLAYING:   // 3
+          case PlaybackStateCompat.STATE_BUFFERING: // 6
+            params.putBoolean("visible", true);
+            eventEmitter.sendEvent("miniPlayer", params);
+            break;
+
+          default:
+            break;
+        }
       }
     }
 
