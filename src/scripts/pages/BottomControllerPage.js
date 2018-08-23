@@ -11,7 +11,7 @@ export default class BottomControllerPage extends React.Component {
                 <View style={ Styles.container }>
                     <Button title="TEST" />
                 </View>
-                <BottomController style={{ height: 45 }} />
+                <BottomController style={{ height: 50 }} />
             </View>
         )
 	}
