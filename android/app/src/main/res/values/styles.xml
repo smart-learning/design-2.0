@@ -5,4 +5,50 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!--Player Control Start-->
+    <!-- 배속 관련 UI 속성 -->
+
+    <style name="text_play_time_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">15dip</item>
+        <item name="android:layout_marginRight">15dip</item>
+        <item name="android:textColor">@color/cdn_video_time_color</item>
+        <item name="android:textSize">@dimen/welean_time_font_size</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="txt_time_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">15dip</item>
+        <item name="android:layout_marginRight">15dip</item>
+        <item name="android:textColor">@color/cdn_video_time_color</item>
+        <item name="android:textSize">@dimen/welean_time_font_size</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="playbackrate_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/mc_playbackrate_font_size</item>
+        <item name="android:textColor">@color/menu_text_color</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:shadowColor">#FF464646</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="myrepu_checkbox_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:scaleX">0.50</item>
+        <item name="android:scaleY">0.50</item>
+        <item name="android:clickable">true</item>
+        <item name="android:layout_marginTop">-10dp</item>
+        <item name="android:layout_marginBottom">-10dp</item>
+    </style>
+
 </resources>

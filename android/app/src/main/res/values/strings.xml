@@ -1,3 +1,214 @@
 <resources>
     <string name="app_name">Welaaa</string>
+
+	<!-- host_dev, host_release -->
+	<string name="host_debug">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
+	<string name="host_release">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
+	<!-- -->
+
+    <string name="retry">Retry</string>
+    <string name="storage_permission_denied">Permission to access storage was denied</string>
+
+    <string name="error_drm_not_supported">Protected content not supported on API levels below 18</string>
+
+    <string name="error_drm_unsupported_scheme">This device does not support the required DRM scheme</string>
+
+    <string name="error_drm_unknown">An unknown DRM error occurred</string>
+    <string name="error_no_decoder">This device does not provide a decoder for %1$s</string>
+
+    <string name="error_no_secure_decoder">This device does not provide a secure decoder for %1$s</string>
+
+    <string name="error_querying_decoders">Unable to query device decoders</string>
+
+    <string name="error_instantiating_decoder">Unable to instantiate decoder %1$s</string>
+
+    <string name="error_unsupported_video">Media includes video tracks, but none are playable by this device</string>
+
+    <string name="error_unsupported_audio">Media includes audio tracks, but none are playable by this device</string>
+
+    <string name="error_generic">Playback failed</string>
+
+    <string name="app_id">1CDBBCB6</string>
+    <string name="media_route_menu_title">Cast</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="loading">loading</string>
+    <string name="signed_out">signed_out</string>
+    <string name="signed_in_fmt">LoginTest</string>
+    <string name="facebook_app_id">918233258310348</string>
+    <string name="fb_login_protocol_scheme">fb918233258310348</string>
+    <string name="kakao_app_key">d24dd5fa11ebda6fc4bd29414eefc5ee</string>
+
+    <!-- 동영상 controlbar에 들어가는 버튼 -->
+    <string name="btn_txt_smartleaning">스마트러닝</string>
+    <string name="btn_txt_subtitle_on">자막</string>
+    <string name="btn_txt_subtitle_off">자막끄기</string>
+    <string name="btn_txt_subtitlefull">전체자막</string>
+    <string name="btn_txt_speedcontrol">배속조절</string>
+    <string name="btn_txt_autoplay">자동재생</string>
+    <string name="txt_backwardforward">10</string>
+    <string name="btn_txt_unRock">락off</string>
+
+    <!--facebookLogin-->
+    <string name="welcome">Welcome!</string>
+    <string name="log_in_with_facebook">Log in with Facebook</string>
+    <string name="permissions">Permissions</string>
+    <string name="label_facebook_login">Facebook Login</string>
+    <string name="label_account_kit_login">Account Kit Login</string>
+    <string name="de_authorize_app">De-authorize App</string>
+    <string name="failed_to_deauth">"failed to deauthorize app %1s"</string>
+    <string name="app_not_logged_in">App not logged in</string>
+    <string name="success">SUCCESS</string>
+    <string name="cancel">CANCEL</string>
+    <string name="error">ERROR</string>
+    <!--&lt;!&ndash; 카카오톡&ndash;&gt;-->
+    <!--<string name="text_for_login_kakao_account">Log in with Kakao</string>-->
+
+    <!-- CDN NetWors-->
+    <string name="alert_3g_title">3G 접속 알림</string>
+    <string name="alert_3g">3G로 접속하실 경우 이동통신사의\n 과도한 요금이 청구될 수 있습니다.</string>
+    <string name="alert_rooting_title">경고</string>
+    <string name="alert_rooting">루팅이 감지되었습니다. \n 보안정책에 따라 앱을 종료합니다.</string>
+    <string name="file_not_found_title">파일 찾기 실패</string>
+    <string name="file_not_found">지정된 파일을 찾을 수 없습니다.</string>
+    <string name="steaming_url_empty">미디어 경로 지정이 잘못 되었습니다.</string>
+    <string name="userid_empty">아이디 지정이 잘못 되었습니다.</string>
+    <string name="auth_fail_title">인증 실패</string>
+    <string name="auth_fail">미디어 인증에 실패하였습니다.\n 재시도 하세요.</string>
+    <string name="server_fail_title">서버연결실패</string>
+    <string name="server_fail">서버 연결에 실패하였습니다.\n 잠시 후 재시도 하세요.</string>
+    <string name="ui_repeat_title">구간반복</string>
+    <string name="ui_repeat_start">시작</string>
+    <string name="ui_repeat_end">끝</string>
+    <string name="ui_repeat_disable">구간반복을 해제합니다.</string>
+    <string name="ui_bookmark_save">북마크에 저장되었습니다.</string>
+    <string name="ui_bookmark_dup">북마크가 이미 존재합니다.</string>
+    <string name="ui_bookmark_delete">북마크가 삭제되었습니다.</string>
+    <string name="ui_bookmark_no_info">북마크 정보가 없습니다.</string>
+    <string name="ui_bookmark_max">북마크가 허용개수 초과 오류 입니다.</string>
+    <string name="ui_bookmark_fail">북마크 오류입니다.</string>
+    <string name="download_cancel">다운로드 취소중 입니다..잠시만 기다려 주세요..</string>
+    <string name="download_cancel2">의 다운로드 취소가 완료되었습니다.</string>
+
+    <string name="unknown">확인되지 않은 에러</string>
+    <string name="invalid_request">잘못된 요청 입니다.</string>
+    <string name="device_limit">장치 사용제한이 감지되었습니다. 정책에 따라 앱을 종료합니다.</string>
+    <string name="txt_auto_rate">배속 초기화 사용</string>
+    <string name="cdnplayer_rest_rate">안정적인 재생을 위해 배속이  초기화 되었습니다.</string>
+    <string name="bookmark">북마크</string>
+    <string name="txt_use_storage">저장소 선택</string>
+    <string name="txt_storage">사용가능 저장소</string>
+    <string name="txt_move_storage">컨텐츠 이동중</string>
+    <string name="path_not_found">경로가 존재하지 않습니다.</string>
+    <string name="txt_seek_adaptive">탐색 시간: %d 초</string>
+    <string name="txt_seekdlg_title">탐색 시간 설정</string>
+    <string name="txt_downloadNoti_ticker">컨텐츠 다운로드...</string>
+    <string name="txt_downloadNoti_title">컨텐츠 다운로드</string>
+    <string name="txt_downloadNoti_detail">컨텐츠 다운로드 중입니다.</string>
+    <string name="txt_deviceID_mismatched">장치 ID가 일치하지 않습니다. 장치 ID를 확인해 주시기 바랍니다.</string>
+    <string name="txt_restlecture_completed">기기 정보 삭제가 완료 되었습니다.</string>
+    <string name="txt_speed_Rest_pause">Player 배속이 원활하지 않습니다.\n1x배속으로 초기화 되었습니다.\n다른 배속을 이용해 주십시요.</string>
+    <string name="txt_err_lecture_block">유효한 정보가 아님으로 플레이어가 종료 됩니다.</string>
+    <string name="txt_err_downloadxml_parse">다운로드 정보에 오류가 발생하였습니다.</string>
+    <string name="txt_err_downloadxml_connext">다운로드 정보를 가져올 수 없습니다.</string>
+    <string name="txt_err_unknow_connext">오류가 발생하였습니다. 다시 시도 해주세요.</string>
+    <!--  <string name="txt_test1">테스트 기능</string>-->
+
+    <!-- nplayer 추가 -->
+    <string name="cdn_setting">설정</string>
+    <string name="cdn_decoder">디코더</string>
+    <string name="cdn_screen">화면</string>
+    <string name="cdn_complete">완료</string>
+    <string name="cdn_close">닫기</string>
+    <string name="cdn_repeat">구간반복</string>
+
+    <string name="title_section1">컨텐츠 정보보기</string>
+    <string name="title_section2">컨텐츠 재생</string>
+
+    <!--WelaaaPlayer playList Text -->
+    <string name="nosubTitledata">컨텐츠 제공되는 자막이 없습니다.</string>
+
+    <!--WelaaaPlayer-->
+    <string name="info_fristplay">처음 영상입니다.</string>
+    <string name="info_lastplay">마지막 영상입니다.</string>
+    <string name="info_lastplayAudio">마지막 클립입니다.</string>
+    <string name="info_autoplay">다음으로 자동재생</string>
+    <string name="info_nosession">미리듣기만 가능합니다. </string>
+    <string name="info_downloadplay">다운로드 재생</string>
+    <string name="info_streamplay">스트리밍 재생</string>
+    <string name="info_del_title">삭제하시겠습니까?</string>
+    <string name="info_dial_notice">알림</string>
+    <string name="info_dial_del">삭제</string>
+    <string name="info_dial_ok">확인</string>
+    <string name="info_dial_cancel">취소</string>
+
+    <string name="info_download_title">다운로드를 받으시겠습니까?</string>
+
+    <string name="info_dial_first">처음부터</string>
+
+    <string name="info_dial_submit_next">다음에 하기</string>
+    <string name="info_dial_submit_button">평가하기</string>
+
+    <string name="info_dial_submit_payment_button">결제하기</string>
+
+    <string name="info_dial_submit_back_title">강좌 재생을 종료 하시겠습니까?</string>
+    <string name="info_dial_submit_title">강좌 재생이 완료되었습니다.</string>
+    <string name="info_dial_submit_text">흥미로우셨나요?\n그렇다면 지금 별점을 남겨주세요!</string>
+
+    <string name="info_finish_resons_leepmode">수면모드로 플레이어가 정지됩니다.</string>
+    <string name="info_finish_resons_hdmi">HDMI 장치가 감지되어 자동종료합니다.</string>
+    <!--WelaaaMainActivity-->
+    <string name="info_pressbackbutton">뒤로버튼을 한번 더 누르시면 종료됩니다.</string>
+    <string name="info_networkfail">인터넷 연결을 확인해 주세요.</string>
+    <string name="info_sdcardstatecheck">SD카드 상태를 체크해 주세요.</string>
+    <string name="title_activity_adapter_spinner">AdapterSpinner</string>
+
+    <string name="subtitle_font">가</string>
+
+    <string name="isonlywifidownload">가</string>
+
+    <string name="info_perview_mode">미리보기에서는 이용 하실수 없습니다.</string>
+    <string name="info_perview_audio_mode">미리듣기에서는 이용 하실수 없습니다.</string>
+
+    <string name="open_drawer">Drawer Open</string>
+    <string name="close_drawer">Drawer Close</string>
+
+    <string name="label_stop">Stop</string>
+    <string name="label_pause">Pause</string>
+    <string name="label_play">Play</string>
+    <string name="label_play_pause">Play and pause toggle</string>
+    <string name="label_previous">Previous track</string>
+    <string name="label_next">Next track</string>
+
+    <string name="selection_disabled">Disabled</string>
+
+    <string name="selection_default">Default</string>
+
+    <string name="enable_random_adaptation">Enable random adaptation</string>
+
+    <string name="auto_play_option">연속재생이 해제 되었습니다.</string>
+    <string name="auto_play_option_on">연속재생이 설정 되었습니다.</string>
+
+    <string name="info_dial_title1">이어보시겠습니까</string>
+    <string name="info_dial_title2">이어듣겠습니까</string>
+
+    <string name="info_dial_continue1">이어보기</string>
+    <string name="info_dial_continue">이어듣기</string>
+
+    <string name="info_dial_finish_dialog_finish">홈화면</string>
+    <string name="info_dial_finish_dialog_finish_back">강좌 계속 보기</string>
+    <string name="info_dial_finish_dialog_doAutoPlay">다음 영상 재생</string>
+
+    <string name="info_dial_already_download">이미 다운로드하셨습니다.</string>
+    <string name="info_dial_complete_download">다운로드가 완료되었습니다.</string>
+    <string name="info_dial_delete_download">삭제 되었습니다.</string>
+
+    <!-- MediaBrowserService -->
+    <string name="error_no_metadata">Unable to retrieve metadata.</string>
+    <string name="notification_channel">welaaa</string>
+    <string name="notification_channel_description">media notification for welaaa</string>
+    <string name="casting_to_device">Casting to %1$s</string>
+    <string name="stop_casting">Stop Casting</string>
 </resources>

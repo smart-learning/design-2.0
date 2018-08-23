@@ -1,0 +1,10 @@
+/*
+  localizable.strings
+  WelaaaV2
+
+  Created by KyeJune Hong on 08/08/2018.
+  Copyright © 2018 Facebook. All rights reserved.
+*/
+
+"host_debug" = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev";
+"host_release" = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev";

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom">
+
+    <RelativeLayout
+        android:id="@+id/fullTxtWrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:background="@color/subtitle_long_back_ground_color"
+        android:padding="@dimen/subtitls_view_padding"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/longScroll_font"
+            android:orientation="horizontal"
+
+            android:gravity="right">
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/fontsize_small"
+                android:text="@string/subtitle_font"
+                android:textSize="13sp"
+                android:textColor="#706d76"
+                android:lineSpacingExtra="7sp"
+                android:layout_alignParentTop="true"
+
+                />
+
+            <!--android:background="@drawable/item_border_font_button"-->
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/fontsize_normal"
+                android:text="@string/subtitle_font"
+                android:textSize="15sp"
+                android:textColor="#706d76"
+                android:lineSpacingExtra="5sp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentTop="true"
+
+                />
+
+            <!--android:background="@drawable/item_border_font_button_press"-->
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/fontsize_big"
+                android:text="@string/subtitle_font"
+                android:textSize="17sp"
+                android:textColor="#706d76"
+                android:lineSpacingExtra="3sp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentTop="true"
+
+                />
+
+            <!--android:background="@drawable/item_border_font_button"-->
+
+        </LinearLayout>
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_below="@+id/longScroll_font"-->
+            <!--android:orientation="horizontal">-->
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:id="@+id/longScrollTime"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/longScroll_font"
+                android:layout_height="match_parent">
+
+                <!--subtitls_longview_height-->
+                <!--subtitls_longview_full_height-->
+
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:gravity="bottom"
+
+                android:orientation="vertical"
+                android:id="@+id/fullTextView"/>
+
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="70dp"-->
+                <!--android:orientation="horizontal">-->
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="0.8"-->
+                <!--android:visibility="visible"-->
+                <!--android:orientation="vertical"-->
+                <!--android:gravity="bottom"-->
+                <!--android:id="@+id/fullTimeTxtLinear">-->
+
+                <!--<TextView-->
+                <!--android:text="TextView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:lineSpacingExtra="7sp"-->
+                <!--android:id="@+id/fullTimeTxt" />-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:visibility="visible"-->
+                <!--android:gravity="bottom"-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_weight="0.2"-->
+                <!--android:id="@+id/fullTxtLinear">-->
+
+                <!--<TextView-->
+                <!--android:text="TextView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:lineSpacingExtra="7sp"-->
+                <!--android:id="@+id/fullTxt" />-->
+                <!--</LinearLayout>-->
+                <!--</LinearLayout>-->
+
+            </ScrollView>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:id="@+id/longScroll"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/longScroll_font"
+                android:paddingLeft="60dp"
+                android:layout_height="match_parent">
+
+                <!--subtitls_longview_height-->
+                <!--subtitls_longview_full_height-->
+
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:gravity="bottom"
+
+                android:orientation="vertical"
+                android:id="@+id/fullTextTimeView"/>
+
+                <!--<TextView-->
+                    <!--android:text="TextView"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:lineSpacingExtra="7sp"-->
+                    <!--android:id="@+id/fullTxt" />-->
+
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="70dp"-->
+                <!--android:orientation="horizontal">-->
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="0.8"-->
+                <!--android:visibility="visible"-->
+                <!--android:orientation="vertical"-->
+                <!--android:gravity="bottom"-->
+                <!--android:id="@+id/fullTimeTxtLinear">-->
+
+                <!--<TextView-->
+                <!--android:text="TextView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:lineSpacingExtra="7sp"-->
+                <!--android:id="@+id/fullTimeTxt" />-->
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:visibility="visible"-->
+                <!--android:gravity="bottom"-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_weight="0.2"-->
+                <!--android:id="@+id/fullTxtLinear">-->
+
+                <!--<TextView-->
+                <!--android:text="TextView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:lineSpacingExtra="7sp"-->
+                <!--android:id="@+id/fullTxt" />-->
+                <!--</LinearLayout>-->
+                <!--</LinearLayout>-->
+
+            </ScrollView>
+        <!--</LinearLayout>-->
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

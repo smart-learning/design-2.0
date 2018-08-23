@@ -1,5 +1,6 @@
 import React from 'react';
 import {createDrawerNavigator, DrawerActions} from "react-navigation";
+import SampleScreen from './src/scripts/pages/sample/SampleScreen';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
@@ -8,10 +9,10 @@ import Playground from "./src/scripts/pages/Playground";
 import {Button, Modal, Text, View} from "react-native";
 import Store from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune";
+import BottomControllerPage from './src/scripts/pages/BottomControllerPage';
 
 class App extends React.Component {
-
-	render() {
+ 	render() {
 		return <View style={{flex: 1}}>
 			<AppDrawer
 				ref={navigatorRef => {
@@ -23,7 +24,7 @@ class App extends React.Component {
 					const prevScreen = getActiveRouteName(prevState);
 
 					if (prevScreen !== currentScreen) {
-						if (currentScreen !== 'Auth') Store.lastLocation = currentScreen;
+						if (currentScreen !== 'AuthCheck') Store.lastLocation = currentScreen;
 					}
 				}}
 			/>
@@ -54,6 +55,10 @@ function getActiveRouteName(navigationState) {
 
 const AppDrawer = createDrawerNavigator(
 	{
+		// SampleScreen: {
+		// 	screen: SampleScreen,
+		// },
+
 		HomeScreen: {
 			screen: HomeScreen,
 		},
@@ -78,6 +83,13 @@ const AppDrawer = createDrawerNavigator(
 			screen: PlaygroundJune,
 		},
 
+		BottomControllerTEST: {
+			screen: BottomControllerPage,
+		},
+
+		AndroidNativeCall : {
+			screen: PlaygroundJune,
+		}
 	}
 );
 

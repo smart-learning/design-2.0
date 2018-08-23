@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import {Button, Modal, Text, TouchableHighlight, View, NativeModules} from "react-native";
+import { Button, Modal, Text, TouchableHighlight, View, NativeModules } from "react-native";
 import CommonStyles from "../../styles/common";
-import {SafeAreaView} from "react-navigation";
-//mport { ImageView, RNAudioPlayer} from 'rnn-module-ui-sample';
-import {NAV_OPTS_DRAWER} from "../commons/nav";
-import VideoScreen from "./video/VideoScreen";
+import { SafeAreaView } from "react-navigation";
+import { NAV_OPTS_DRAWER } from "../commons/nav";
+// import Localizable from 'react-native-localizable';
+import Device from "../commons/device";
 
 /*
 * Acount: test/test
@@ -12,7 +12,7 @@ import VideoScreen from "./video/VideoScreen";
 * */
 class PlaygroundJune extends Component {
 
-	onPlay = () =>{
+	onPlay = () => {
 		// alert('play');
 		//RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
 		/*
@@ -23,68 +23,20 @@ class PlaygroundJune extends Component {
 		'https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8'
 		
 		DRM HLS
-		v200001_001 / https://contents.welaaa.com/media/v200001/HLS_v200001_001_mp4/master.m3u8
-
-		v200002_001 / https://contents.welaaa.com/media/v200002/HLS_v200002_001_mp4/master.m3u8
-		 ~
-		v200002_006 / https://contents.welaaa.com/media/v200002/HLS_v200002_006_mp4/master.m3u8
-		
-		v200003_001 / https://contents.welaaa.com/media/v200003/HLS_v200003_001_mp4/master.m3u8
-		 ~
-		v200003_006 / https://contents.welaaa.com/media/v200003/HLS_v200003_006_mp4/master.m3u8
-		
-		b300200_001 / https://contents.welaaa.com/media/b300200/HLS_b300200_001_mp4/master.m3u8
-		 ~
-		b300200_033 / https://contents.welaaa.com/media/b300200/HLS_b300200_033_mp4/master.m3u8
-		
-		b300201_001 / https://contents.welaaa.com/media/b300201/HLS_b300201_001_mp4/master.m3u8
-		 ~
-		b300201_009 / https://contents.welaaa.com/media/b300201/HLS_b300201_009_mp4/master.m3u8
-		
+		'0028_001' / 'https://contents.welaaa.com/public/contents/HLS_0028_001_mp4/master.m3u8'
+		'0028_002' / 'https://contents.welaaa.com/public/contents/HLS_0028_002_mp4/master.m3u8'
+		'0028_003' / 'https://contents.welaaa.com/public/contents/HLS_0028_003_mp4/master.m3u8'
+		'0028_004' / 'https://contents.welaaa.com/public/contents/HLS_0028_004_mp4/master.m3u8'
+		'0028_005' / 'https://contents.welaaa.com/public/contents/HLS_0028_005_mp4/master.m3u8'
+		'0028_006' / 'https://contents.welaaa.com/public/contents/HLS_0028_006_mp4/master.m3u8'
+		'0028_007' / 'https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8'
 		'sintel-trailer-480p' / 'https://contents.welaaa.com/public/contents/HLS_sintel-trailer-480p_mp4/master.m3u8'
 		*/
 		var args = {
-			type : "streaming",
-			uri: "https://contents.welaaa.com/media/v200001/HLS_v200001_001_mp4/master.m3u8",
-			name: "140년 지속 성장을 이끈 MLB 사무국의 전략",
-			drmSchemeUuid: "widevine",
-			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
-			//userId: "valid-user",
-			userId: "825",
-			cid: "v200001_001",
-			oid: "order id",
-			token: "", // pallyCon token 
-			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
-		}
-		NativeModules.RNNativePlayer.play(args);
-		//NativeModules.CreateContact.presentContact;
-	}
-
-	onDownload = () =>{
-		// alert('play');
-		//RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
-		/*
-		DRM-free mp4
-		'http://welaaa.co.kr/splashmovie/welaaasplash_IOS.mp4'
-		
-		DRM-free HLS
-		'https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8'
-		
-		DRM HLS
-		0028_001 / https://contents.welaaa.com/public/contents/HLS_0028_001_mp4/master.m3u8
-		0028_002 / https://contents.welaaa.com/public/contents/HLS_0028_002_mp4/master.m3u8
-		0028_003 / https://contents.welaaa.com/public/contents/HLS_0028_003_mp4/master.m3u8
-		0028_004 / https://contents.welaaa.com/public/contents/HLS_0028_004_mp4/master.m3u8
-		0028_005 / https://contents.welaaa.com/public/contents/HLS_0028_005_mp4/master.m3u8
-		0028_006 / https://contents.welaaa.com/public/contents/HLS_0028_006_mp4/master.m3u8
-		0028_007 / https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8
-		'sintel-trailer-480p' / 'https://contents.welaaa.com/public/contents/HLS_sintel-trailer-480p_mp4/master.m3u8'
-		*/
-		var args = {
-			type : "streaming",
+			type: "streaming",
 			uri: "https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8",
 			name: "140년 지속 성장을 이끈 MLB 사무국의 전략",
-			drmSchemeUuid: "FairPlay",
+			drmSchemeUuid: "widevine",
 			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
 			userId: "valid-user",
 			cid: "0028_007",
@@ -92,50 +44,91 @@ class PlaygroundJune extends Component {
 			token: "", // pallyCon token 
 			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
 		}
-		NativeModules.RNNativePlayer.download(args);
-	}
 
-	onPurchase = () =>{
-		// args는 appstoreconnect.apple.com에서 앱내구입 product_id를 참고바랍니다.
-		/*
-		 * audiobook_b300048 / 0~5세 말걸기 육아의 힘 / sandbox 테스트 잘 안됨..
-		 * audiobook_100 / 톰 소여의 모험 / 
-		 */
-		var args = {
-			product_id : "audiobook_100",	//0~5세 말걸기 육아의 힘
-			webToken : "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
+		try {
+			NativeModules.RNNativePlayer.play(args);
+		}catch (e) {
+			alert( e );
 		}
-		NativeModules.RNProductPayment.buy(args);
+
+	}
+	onDownload = () => {
+		// alert('play');
+		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
+		var args = {
+			uri: "uri",
+			DOWNLOAD_SERVICE_TYPE: "false"
+
+		}
+
+		try {
+			NativeModules.RNNativePlayer.download(args);
+		}catch (e) {
+			alert('실패');
+		}
+
 	}
 
 
+	onDownloadDelete = () => {
+		// alert('play');
+		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
+		var args = {
+			uri: "uri",
+			DOWNLOAD_SERVICE_TYPE: "true"
+		}
+
+		try {
+			NativeModules.RNNativePlayer.downloadDelete(args);
+		}catch (e) {
+			alert('실패');
+		}
 
 
-    render() {
+	}
 
-        return <SafeAreaView style={[ CommonStyles.container, {backgroundColor: '#cccccc'}]}>
+	getNativeVariable = () =>{
+		// alert( `host_debug: ${Localizable.host_debug} \n\n host_release: ${Localizable.host_release}` );
+	}
 
-            <Text>VIDEO TEST</Text>
+	render() {
+
+		return <SafeAreaView style={[CommonStyles.container, { backgroundColor: '#cccccc' }]}>
+
+			<Text>VIDEO TEST</Text>
 
 			<Button title="재생"
-					onPress={ this.onPlay }
+				onPress={this.onPlay}
 			/>
 
-			<Button title="다운로드"
-					onPress={ this.onDownload }
+			<Button title="RN => DownloadService Call"
+				onPress={this.onDownload}
 			/>
 
-			<Button title="인앱결제"
-					onPress={ this.onPurchase }
+			<Button title="RN => Delete DownloadService Call"
+				onPress={this.onDownloadDelete}
 			/>
-{/*
-			<ImageView
+
+			<Button title="디바이스 언어 가져오기"
+				onPress={ ()=>{ alert( Device.getLocale() ) } }
+			/>
+
+			<Button title="BuildMode가 DEBUG인지 아닌지 확인"
+				onPress={()=>{ alert( __DEV__ ) }}
+			/>
+
+			<Button title="저장된 host 변수 가져오기"
+				onPress={ this.getNativeVariable }
+			/>
+
+
+			{/* <ImageView
 				style={{ width:100, height:100 }}
 				src={[{ uri: "https://pbs.twimg.com/tweet_video_thumb/Dg3sOjuV4AEtzIR.jpg", width:100, height:100}]}
-			/>
-*/}
-        </SafeAreaView>
-    }
+			/> */}
+
+		</SafeAreaView >
+	}
 }
 
 PlaygroundJune.navigationOptions = NAV_OPTS_DRAWER;

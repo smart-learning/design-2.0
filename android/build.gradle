@@ -17,16 +17,19 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' } //<--추가
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
         }
         google()
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
 ext {
-    compileSdkVersion = 27
-    buildToolsVersion = "27.0.3"
-    supportLibVersion = "27.1.1"
+    supportLibVersion = '27.1.1'
+    wearableVersion = '2.3.0'
 }

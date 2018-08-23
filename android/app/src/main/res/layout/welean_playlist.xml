@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/VIEW_PLAY_LIST"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentTop="true"
+    tools:context=".player.PlayerActivity"
+    >
+
+    <LinearLayout
+        android:id="@+id/wrap_list"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/wrap_list_linear"
+            android:gravity="center|center_horizontal"
+            android:background="@color/last_view_list_title_color"
+            >
+
+            <Button
+                android:id="@+id/BUTTON_PLAYLIST_LIST"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/icon_list"
+                android:gravity="center_horizontal|center"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/list_group_title"
+                android:textSize="13sp"
+                android:textColor="#efefef"
+                android:text="최근 재생 강의클립 리스트"
+                android:layout_weight="8"
+                android:paddingLeft="20dp"
+                />
+
+            <LinearLayout
+                android:id="@+id/BUTTON_PLAYLIST_CLOSE_LINEAR"
+                android:layout_width="37dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center"
+                >
+                <Button
+                    android:id="@+id/BUTTON_PLAYLIST_CLOSE"
+                    android:layout_width="17dp"
+                    android:layout_height="10dp"
+
+                    android:background="@drawable/item_down"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="33dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center"
+                >
+                <Button
+                    android:id="@+id/BUTTON_PLAYLIST_CLOSE_HIDDEN"
+                    android:layout_width="33dp"
+                    android:layout_height="10dp"
+                    android:visibility="invisible"
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/list_group_title"-->
+                <!--android:textSize="18sp"-->
+                <!--android:text="강의타이틀이 없습니다."-->
+                <!--android:paddingTop="20dp"-->
+                <!--android:paddingLeft="20dp" />-->
+
+        <!--</LinearLayout>-->
+        <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:weightSum="1"-->
+        <!--android:paddingLeft="20dp"-->
+            <!--android:paddingBottom="20dp">-->
+
+        <!--<TextView-->
+            <!--android:text="총시간 00:00:00"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/list_group_memo"/>-->
+
+    <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:weightSum="1"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingBottom="20dp">-->
+
+            <!--<TextView-->
+                <!--android:text="0.0"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/lecture_evaluation"-->
+                <!--android:drawableLeft="@drawable/item_star"-->
+                <!--android:paddingRight="10dp" />-->
+
+            <!--<TextView-->
+                <!--android:text="0.0"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/lecture_evaluation2"-->
+                <!--android:drawableLeft="@drawable/icon_add_small_white_active"-->
+                <!--android:paddingRight="10dp" />-->
+
+            <!--<TextView-->
+                <!--android:text="0.0"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/lecture_evaluation3"-->
+                <!--android:drawableLeft="@drawable/icon_view_eye_white"-->
+                <!--android:paddingRight="10dp" />-->
+
+        <!--</LinearLayout>-->
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="99dp">-->
+           <!--<LinearLayout-->
+               <!--android:layout_width="match_parent"-->
+               <!--android:layout_height="wrap_content">-->
+            <!--<TextView-->
+            <!--android:text="내용이 없습니다."-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/list_group_memo"-->
+            <!--android:paddingLeft="20dp"-->
+                <!--android:paddingBottom="20dp"-->
+                <!--android:paddingRight="20dp" />-->
+           <!--</LinearLayout>-->
+        <!--</ScrollView>-->
+        <!--<LinearLayout-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@color/weleanPlaylistTitleBg">-->
+
+            <!--<TextView-->
+                <!--android:text="강의리스트"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/BUTTON_LECTURE"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:padding="20dp"-->
+                <!--android:layout_marginRight="60dp"-->
+                <!--android:layout_marginLeft="40dp" />-->
+
+        <!--</LinearLayout>-->
+        <LinearLayout
+            android:id="@+id/wrap_list_below"
+            android:orientation="horizontal"
+            android:layout_below="@+id/wrap_list"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            >
+
+            <ProgressBar
+                android:id="@+id/audioItemProgressBar"
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/progress_horizontal_custom_audio_bar"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/playlistparent"
+            android:background="@color/last_view_list_background_color"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:orientation="vertical"/>
+
+        <!--android:background="@color/last_view_list_background_color"-->
+            <!--android:paddingBottom="20dp"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingRight="20dp" />-->
+
+           </LinearLayout>
+
+
+
+
+    <!--</LinearLayout>-->
+</RelativeLayout>

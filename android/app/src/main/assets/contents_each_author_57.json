@@ -1,0 +1,31 @@
+{
+  "info": {
+    "groupkey": "28",
+    "ckey": "57",
+    "cname": "충성팬을 만드는 MLB의 마케팅 비법",
+    "grouptitle": "매출 10조 메이저리그에서 배우는 성공 전략",
+    "teachername": "송재우 위원",
+    "pbackimg": "http://welaaa.co.kr/contentsUpImage/20170729144455.png",
+    "cmemo": "뿌린만큼 거두리라! 관중들이 끊이지 않는 구장, 지갑을 여는 팬심을 만드는 MLB의 마케팅 전략",
+    "curl": "https://contents.welaaa.com/public/contents/DASH_0028_002_mp4/stream.mpd",
+//    "curl": "http://mst.aquan.welearn.co.kr/velocita/video/0028/0028_02.mp4",
+    "caurl": "http://mst.aquan.welearn.co.kr/velocita/video/0028/0028_02_a.mp4",
+    "cplay_time": "00:14:37",
+    "cpay": "유료",
+    "cpay_money": "2000",
+    "chitcnt": "1017",
+    "ccon_class": "1",
+    "csmi": "http://welaaa.co.kr/common/smi_json.php?eachkey=57"
+  },
+  "data": {
+    "view_author": "true",
+    "view_limitdate": "2018-07-26 05:42:22",
+    "view_time": "0",
+    "user_star": "",
+    "user_logged_in": false
+  },
+  "status": {
+    "code": "200",
+    "msg": "성공"
+  }
+}

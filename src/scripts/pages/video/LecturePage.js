@@ -130,6 +130,7 @@ export default class CourseList extends React.Component {
 												 clipCount={item.clip_count}
 												 hitCount={item.hit_count}
 												 starAvg={item.star_avg}
+												 url={item.url}
 												 reviewCount={item.review_count}/>
 					}
 				/>

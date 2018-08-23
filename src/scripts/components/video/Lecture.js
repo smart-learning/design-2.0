@@ -44,7 +44,6 @@ export default class Lecture extends React.Component {
 	}
 
 	render() {
-		console.log( 'this.changePage', this.changePage );
 		return <View style={styles.itemContainer}>
 			{/*타이틀*/}
 			<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
@@ -59,12 +58,14 @@ export default class Lecture extends React.Component {
 			</TouchableOpacity>
 			{/*썸네일*/}
 			<Summary type="lecture"
-					 title={this.props.title}
-					 thumbnail={this.props.thumbnail}
-					 clipCount={this.props.clipCount}
-					 hitCount={this.props.hitCount}
-					 starAvg={this.props.starAvg}
-					 reviewCount={this.props.reviewCount}
+					 { ...this.props }
+					 // title={this.props.title}
+					 // thumbnail={this.props.thumbnail}
+					 // clipCount={this.props.clipCount}
+					 // hitCount={this.props.hitCount}
+					 // starAvg={this.props.starAvg}
+					 // url={this.props.url}
+					 // reviewCount={this.props.reviewCount}
 					 onPress={this.changePage}
 			/>
 		</View>

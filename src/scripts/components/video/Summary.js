@@ -7,13 +7,16 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from "react-native";
-import { COLOR_PRIMARY } from "../../../styles/common";
+import Style, { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
 import IcComment from "../../../images/icons/commenting.png"
 import IcShare from "../../../images/ic-share-light.png";
 import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
+import Device from "../../commons/device";
+import Native from "../../commons/native";
+
 
 const styles = StyleSheet.create( {
 	itemContainer: {
@@ -27,6 +30,7 @@ const styles = StyleSheet.create( {
 		paddingBottom: '22%',
 		justifyContent: 'center',
 		alignItems: 'center',
+		backgroundColor: '#efefef',
 	},
 	thumbnailTitle: {
 		position: 'absolute',
@@ -62,6 +66,7 @@ const styles = StyleSheet.create( {
 		width: 42,
 		height: 42,
 	},
+
 	btnGroup: {
 		width: '100%',
 		height: 40,
@@ -106,7 +111,13 @@ export default class Summary extends React.Component {
 						{this.props.clipCount}
 						개 강의
 					</Text>
-					<Image source={IcPlay} style={styles.play}/>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.play}
+									  onPress={ ()=> Native.play( this.props.id ) }
+					>
+						<Image source={IcPlay} style={ Style.fullImg } />
+					</TouchableOpacity>
+
 				</ImageBackground>
 			</TouchableOpacity>
 			<View style={styles.btnGroup}>
@@ -117,7 +128,14 @@ export default class Summary extends React.Component {
 					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
-					<Image source={IcShare} style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
+					<TouchableOpacity activeOpacity={0.9}
+									  onPress={ ()=>{
+										  Device.share( this.props.title, this.props.url );
+									  }}
+					>
+						<Image source={IcShare}
+							   style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
+					</TouchableOpacity>
 				</View>
 			</View>
 		</View>

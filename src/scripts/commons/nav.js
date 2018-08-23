@@ -10,13 +10,11 @@ import logo from "../../images/logo-white.png"
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
 		backgroundColor: '#00b870',
-		paddingLeft: 15,
-		paddingRight: 15,
 	},
 	headerTintColor: '#fff',
 	headerTitleStyle: {
 		fontWeight: 'bold',
-	},
+	}
 };
 
 export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({
@@ -27,6 +25,7 @@ export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({
 
 export const NAV_OPTS_STACK = ({navigation, navigationOptions}) => {
 	return {
+		...NAV_OPTS_COMMON,
 		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
 	}
 };
@@ -42,11 +41,10 @@ export const NAV_OPTS_MY_HOME = ({navigation, navigationOptions}) => {
 
 	return {
 		headerStyle: {
-			position: 'absolute',
 			top: 0,
 			left: 0,
 			right: 0,
-			backgroundColor: 'rgba(0,0,0,0)',
+			backgroundColor: 'transparent',
 			paddingLeft: 20,
 			paddingRight: 20,
 			borderBottomWidth:0,

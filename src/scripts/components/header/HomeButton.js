@@ -12,7 +12,7 @@ class HomeButton extends Component {
 				Store.drawer.dispatch(DrawerActions.toggleDrawer())
 			}}
 		>
-			<Image source={IcBars} style={ CommonStyles.size24 }/>
+			<Image source={IcBars} style={[CommonStyles.size24, {marginLeft: 15}]} />
 		</TouchableOpacity>
     }
 }
