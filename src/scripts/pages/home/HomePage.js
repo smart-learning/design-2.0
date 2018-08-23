@@ -105,6 +105,9 @@ const styles = StyleSheet.create( {
 		height: 1,
 		backgroundColor: '#cecece',
 	},
+	seriesComponent: {
+		paddingTop: 30,
+	}
 } );
 
 @observer
@@ -169,7 +172,9 @@ class HomePage extends React.Component {
 						</Text>
 					</View>
 
-					<Series itemData={this.homeSeriesData}/>
+					<View style={styles.seriesComponent}>
+						<Series itemData={this.homeSeriesData}/>
+					</View>
 
 					<TouchableOpacity activeOpacity={0.9}>
 						<View style={styles.linkViewAll} borderRadius={5}>
