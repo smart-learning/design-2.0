@@ -99,7 +99,7 @@
     {
         _titleIconView = [[UIImageView alloc] initWithFrame : CGRectMake(5, 5, 50, 50)];
     }
-    _titleIconView.image = [UIImage imageNamed : @"icon_list.png"];
+    _titleIconView.image = [UIImage imageNamed : @"icon_list"];
     [itemView addSubview : _titleIconView];
     
     _titleButton = [UIButton buttonWithType : UIButtonTypeCustom];
@@ -111,9 +111,9 @@
     {
         _titleButton.frame = CGRectMake(itemView.frame.size.width-10-50, 5, 50, 50);
     }
-    [_titleButton setImage : [UIImage imageNamed : @"icon_player_close_2.png"]
+    [_titleButton setImage : [UIImage imageNamed : @"icon_player_close_2"]
                   forState : UIControlStateNormal];
-    [_titleButton setImage : [[UIImage imageNamed : @"icon_player_close_2.png"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+    [_titleButton setImage : [[UIImage imageNamed : @"icon_player_close_2"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                   forState : UIControlStateHighlighted];
     [_titleButton addTarget : self
                      action : @selector(pressedCloseButton:)
