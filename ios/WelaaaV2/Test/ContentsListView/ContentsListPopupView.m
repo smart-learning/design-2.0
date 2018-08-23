@@ -191,33 +191,37 @@
 
 - (void) requestHistory
 {
-    NSMutableArray *ckeys = [NSMutableArray array];
+  /*
+    NSMutableArray *cids = [NSMutableArray array];
     
-    for ( NSDictionary *item in self.playList )
+  //for ( NSDictionary *item in self.playList )
+    for ( NSDictionary *item in self.contentsInfoDictionary[@"data"][@"clips"] )
     {
-        NSString *ckey = item[@"ckey"];
-        NSLog(@"  [requestHistory] ckey : %@", ckey);
+        NSString *cid = item[@"cid"];
+        NSLog(@"  [requestHistory] cid : %@", cid);
         
-        if ( !nullStr(ckey) )
+        if ( !nullStr(cid) )
         {
-            [ckeys addObject : ckey];
+            [cids addObject : cid];
         }
     }
     
-    if ( ckeys.count == 0 )
+    if ( cids.count == 0 )
     {
         _tableView.hidden = NO;
         
         return ;
     }
     
-    NSOrderedSet *orderSet = [NSOrderedSet orderedSetWithArray : ckeys];
+    NSOrderedSet *orderSet = [NSOrderedSet orderedSetWithArray : cids];
     NSArray *uArray = [orderSet array];
     
     
     NSMutableDictionary *param = [NSMutableDictionary dictionary];
     param[@"ckeys"] = [uArray componentsJoinedByString : @","];
-    
+  
+    NSArray *playList = _contentsInfoDictionary[@"data"][@"clips"];
+  
     [[ApiManager sharedInstance] requestWithUrl : @"/usingapp/history_check.php"
                                          method : @"GET"
                                           param : param
@@ -250,9 +254,9 @@
                                                     
                                                       NSMutableArray *newPlayItems = [NSMutableArray array];
                                                     
-                                                      for ( NSInteger i=0; i<self.playList.count; i++ )
+                                                      for ( NSInteger i=0; i<playList.count; i++ )
                                                       {
-                                                          NSMutableDictionary *tempDict = [self.playList[i] mutableCopy];
+                                                          NSMutableDictionary *tempDict = [playList[i] mutableCopy];
                                                         
                                                           NSString *tKey = [common forceStringValue : tempDict[@"ckey"]];
                                                         
@@ -264,7 +268,7 @@
                                                           [newPlayItems addObject : tempDict];
                                                       }
                                                     
-                                                      self.playList = newPlayItems;
+                                                      playList = newPlayItems;
                                                       [_tableView reloadData];
                                                       [_tableView setHidden:NO];
                                                   }
@@ -272,6 +276,8 @@
                                                   {
                                                       _tableView.hidden = NO;
                                                   }];
+  */
+  _tableView.hidden = NO;
 }
 
 #pragma mark - selector
@@ -296,7 +302,9 @@
 - (NSInteger) tableView : (UITableView *) tableView
   numberOfRowsInSection : (NSInteger) section
 {
-    return self.playList.count;
+    NSArray *playList = _contentsInfoDictionary[@"data"][@"clips"];
+  
+    return playList.count;
 }
 
 - (CGFloat)   tableView : (UITableView *) tableView
@@ -306,9 +314,11 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     
     if ( self.isAudioContentType )
     {
-        if ( self.playList.count > indexPath.row )
+        NSArray *playList = _contentsInfoDictionary[@"data"][@"clips"];
+      
+        if ( playList.count > indexPath.row )
         {
-            NSDictionary *item = self.playList[indexPath.row];
+            NSDictionary *item = playList[indexPath.row];
      
             NSString *depth = [common forceStringValue : item[@"a_depth"]];
             
@@ -338,10 +348,13 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     
     cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    if ( self.playList.count > indexPath.row )
+  
+    NSArray *playList = _contentsInfoDictionary[@"data"][@"clips"];
+    if ( playList.count > indexPath.row )
     {
-        cell.itemDict = self.playList[indexPath.row];
+        cell.itemDict = playList[indexPath.row];
+        cell.teacherName = _contentsInfoDictionary[@"data"][@"teacher"][@"name"];
+        cell.groupTitle = _contentsInfoDictionary[@"data"][@"title"];
     }
     else
     {

@@ -71,6 +71,7 @@
 		EFCF4125212CEAC300ED03F8 /* play_list.json in Resources */ = {isa = PBXBuildFile; fileRef = EFCF4118212CEAC300ED03F8 /* play_list.json */; };
 		EFCF4126212CEAC300ED03F8 /* media.exolist.json in Resources */ = {isa = PBXBuildFile; fileRef = EFCF4119212CEAC300ED03F8 /* media.exolist.json */; };
 		EFCF4127212CEAC300ED03F8 /* contents_each_author_57.json in Resources */ = {isa = PBXBuildFile; fileRef = EFCF411A212CEAC300ED03F8 /* contents_each_author_57.json */; };
+		EFDC2E8E212EA6F600F3F684 /* play_data.json in Resources */ = {isa = PBXBuildFile; fileRef = EFDC2E8D212EA6F600F3F684 /* play_data.json */; };
 		EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */; };
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
 		EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081E22113ED84006D3F6C /* NSString+GC.m */; };
@@ -506,6 +507,7 @@
 		EFCF4118212CEAC300ED03F8 /* play_list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = play_list.json; sourceTree = "<group>"; };
 		EFCF4119212CEAC300ED03F8 /* media.exolist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = media.exolist.json; sourceTree = "<group>"; };
 		EFCF411A212CEAC300ED03F8 /* contents_each_author_57.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = contents_each_author_57.json; sourceTree = "<group>"; };
+		EFDC2E8D212EA6F600F3F684 /* play_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = play_data.json; sourceTree = "<group>"; };
 		EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+LocalizedError.m"; sourceTree = "<group>"; };
 		EFE081AA2113EB0C006D3F6C /* NSError+LocalizedError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+LocalizedError.h"; sourceTree = "<group>"; };
 		EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Blocks.m"; sourceTree = "<group>"; };
@@ -976,6 +978,7 @@
 				EFCF4118212CEAC300ED03F8 /* play_list.json */,
 				EFCF410F212CEAC200ED03F8 /* playlist_suggest56.json */,
 				EFCF4117212CEAC300ED03F8 /* site.json */,
+				EFDC2E8D212EA6F600F3F684 /* play_data.json */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -1578,6 +1581,7 @@
 				EFCF411B212CEAC300ED03F8 /* contents_each_author_60.json in Resources */,
 				EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */,
 				EF4F413B211ABE5C005E1CBD /* outlined-iconset.ttf in Resources */,
+				EFDC2E8E212EA6F600F3F684 /* play_data.json in Resources */,
 				EFCF4122212CEAC300ED03F8 /* contents_each_author_61.json in Resources */,
 				EFCF4124212CEAC300ED03F8 /* site.json in Resources */,
 				EFCF411C212CEAC300ED03F8 /* playlist_suggest56.json in Resources */,

@@ -176,6 +176,8 @@
 {
     NSLog(@"  [setContentData] RN에서 받은 데이터를 set합니다.");
     _args = args;
+  
+  //NSLog(@"  arguments : %@", [_args description]);
 }
 
 - (void) didReceiveMemoryWarning
@@ -974,6 +976,9 @@
     [_player setRate : _playbackRate];
 }
 
+//
+// 재생 리스트뷰를 띄웁니다.
+//
 - (void) pressedListButton
 {
     NSLog(@"  [pressedListButton] 최근 재생 리스트 - 미리보기에서는 비활성화 시켜야 함.");
@@ -982,11 +987,11 @@
                                                          ofType : @"json"];
     NSData *data = [NSData dataWithContentsOfFile : jsonPath];
     NSError *error = nil;
-    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : data
-                                                                 options : kNilOptions
-                                                                   error : &error];
+    NSDictionary *contentsInfoDics = [NSJSONSerialization JSONObjectWithData : data
+                                                                     options : kNilOptions
+                                                                       error : &error];
   
-    NSLog(@"  [pressedListButton] JSON output : %@", jsonResponse);
+  //NSLog(@"  [pressedListButton] JSON output : %@", contentsInfoDics);
     
   //if ( !self.isAuthor )
     _isAuthor = true; // 테스트를 목적으로 권한을 강제로 set하였습니다.
@@ -1003,18 +1008,24 @@
     }
   
     // /api/v1.0/play/contents-info/v100015_001
-    NSArray *list = jsonResponse[@"data"][@"clips"];
+  //NSArray *list = [contentsInfoDics mutableCopy];
   
-    NSInteger currentIndex = list.count;
-  
-    NSString *groupTitle = jsonResponse[@"data"][@"title"]; //group_title
+    NSArray *playListArray = contentsInfoDics[@"data"][@"clips"];
+    NSInteger currentIndex = playListArray.count;
+  //NSLog(@"  current index : %ld", (long)currentIndex);
+    NSString *groupTitle = contentsInfoDics[@"data"][@"title"]; //group_title
   
     CGRect frame = self.view.bounds;
     frame.size.height = frame.size.height - _bottomView.frame.size.height;
     _listView = [[ContentsListPopupView alloc] initWithFrame : frame];
     _listView.delegate = self;
-    _listView.isAudioContentType = _isAudioMode;
-    _listView.playList = list;
+  //_listView.isAudioContentType = _isAudioMode;
+    if ( [contentsInfoDics[@"type"] hasPrefix:@"video"] )
+    {
+        _listView.isAudioContentType = false;
+    }
+  //_listView.playList = list;
+    _listView.contentsInfoDictionary = [contentsInfoDics mutableCopy];
     _listView.currentPlayIndex = currentIndex;
     _listView.isAuthor = _isAuthor;
     [self.view addSubview : _listView];

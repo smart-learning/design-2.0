@@ -126,7 +126,7 @@
     }
     
     CGFloat textOffsetY = 20.f;
-    NSString *text = self.itemDict[@"cname"];
+    NSString *text = self.itemDict[@"title"];
     
     if ( depth == 1 )
     {
@@ -153,11 +153,13 @@
 
     if ( !self.isAudioContentType )
     {
-        NSString *title = self.itemDict[@"grouptitle"];
+      //NSString *title = self.itemDict[@"grouptitle"];
+        NSString *title = self.groupTitle;
         _titleLabel.text = title;
         _titleLabel.frame = CGRectMake(30, 75, clientRect.size.width - 142, 20);
         
-        NSString *name = self.itemDict[@"teachername"];
+      //NSString *name = self.itemDict[@"teachername"];
+        NSString *name = self.teacherName;
         _nameLabel.text = name;
         _nameLabel.frame = CGRectMake(30, CGRectGetMaxY(_titleLabel.frame), clientRect.size.width - 142, 20);
         
@@ -213,11 +215,11 @@
     {
         _iconView.frame = CGRectMake(clientRect.size.width-90, iconOffsetY, 20, 20);
         
-        NSString *time = self.itemDict[@"cplay_time"];
+        NSString *time = self.itemDict[@"play_time"];
         NSInteger timeNum = [common convertStringToTime : time];
         time = [common convertTimeToString : (float) timeNum
                                     Minute : YES];
-      //NSLog(@"  [PlayListPopupViewCell] time? %@", time);
+        NSLog(@"  [PlayListPopupViewCell] time? %@", time);
         if ( [time isEqualToString : @"00:00"] )
         {
             time = @"";
@@ -228,15 +230,15 @@
         
         if ( history_endTime == 0 )
         {
-            playImageName = !self.isAudioContentType ? @"icon_play_green.png" : @"icon_play_pink.png";
+            playImageName = !self.isAudioContentType ? @"icon_play_green" : @"icon_play_pink";
         }
         else if ( history_endTime < timeNum )
         {
-            playImageName = !self.isAudioContentType ? @"icon_video_list_play_half_filled.png" : @"icon_audiobook_play_half_filled.png";
+            playImageName = !self.isAudioContentType ? @"icon_video_list_play_half_filled" : @"icon_audiobook_play_half_filled";
         }
         else
         {
-            playImageName = !self.isAudioContentType ? @"icon_video_list_play_filled.png" : @"icon_audiobook_play_filled.png";
+            playImageName = !self.isAudioContentType ? @"icon_video_list_play_filled" : @"icon_audiobook_play_filled";
         }
 
         if ( !nullStr(playImageName) )
@@ -248,7 +250,7 @@
             _iconView.image = nil;
         }
         
-        if ( [time isEqualToString: @""] )
+        if ( [time isEqualToString : @""] )
         {
             _iconView.image = nil;
         }
@@ -278,14 +280,18 @@
 
 - (BOOL) hasContent
 {
+  /*
     NSString *curl = self.itemDict[@"curl"];
     
-    if ( !nullStr(curl) && [[curl lowercaseString] hasSuffix : @".mp4"] )
+    if ( !nullStr(curl) && [[curl lowercaseString] hasSuffix : @".m3u8"] )
     {
         return YES;
     }
     
     return NO;
+  */
+    // 일단 YES 로 세팅하였습니다.
+    return YES;
 }
 
 #pragma mark - touch Methods..
