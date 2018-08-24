@@ -6,6 +6,7 @@ import SearchButton from "../components/header/SearchButton";
 import {Image, View} from "react-native";
 import HomeButton from "../components/header/HomeButton";
 import logo from "../../images/logo-white.png"
+import IcAngleRight from "../../images/ic-angle-right-primary.png";
 
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
@@ -47,7 +48,7 @@ export const NAV_OPTS_MY_HOME = ({navigation, navigationOptions}) => {
 			backgroundColor: 'transparent',
 			paddingLeft: 20,
 			paddingRight: 20,
-			borderBottomWidth:0,
+			borderBottomWidth: 0,
 		},
 		headerLeft: <HomeButton/>,
 		headerTitle: <Image source={logo} style={CommonStyle.headerLogo}/>,
@@ -89,20 +90,94 @@ export const NAV_OPTS_DRAWER = ({navigation, navigationOptions}) => {
 
 	let option = {
 		drawerLabel: label,
-		drawerIcon: ({tintColor, focused}) => ( <Image
-			source={icon}
-			style={[CommonStyle.size24, {tintColor: tintColor}]}/>
-	)};
+		drawerIcon: ({tintColor, focused}) => (<Image
+				source={icon}
+				style={[CommonStyle.size24, {tintColor: tintColor}]}/>
+		)
+	};
 
 
 	// TODO: Custom Drawer 메뉴 구현( June으로 샘플구현해둠 ) drawLabel 에 react element 를 반환하는함수를 재정의
 	// README: https://reactnavigation.org/docs/en/drawer-navigator.html
-	if( label === "June" ){
+	if (label === "June") {
 		console.log('커스텀 메뉴 생성');
 		option = {
-			drawerLabel: ()=> (<View style={{ flex:1, backgroundColor:'#FF0000' }}>
-				<Text>커스텀 드로어 메뉴 ~~~~ </Text>
-			</View>
+			drawerLabel: () => (<View style={{flex: 1, backgroundColor: '#FF0000'}}>
+					<Text>커스텀 드로어 메뉴 ~~~~ </Text>
+				</View>
+			)
+		}
+	}
+
+	if (label === '홈') {
+		option = {
+			drawerLabel: () => (<View style={{
+					flex: 1,
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					position: 'relative',
+					height: 65,
+					backgroundColor: '#ffffff',
+				}}>
+					<Text style={{paddingLeft: 15, fontSize: 15, color: '#333333'}}>홈</Text>
+					<Image source={IcAngleRight} style={{width: 9, height: 14, marginRight: 15,}}/>
+					<View style={{position: 'absolute', left: 0, bottom: 0, width: '100%', height: 1, backgroundColor: '#dddddd' }}/>
+				</View>
+			)
+		}
+	}
+	if (label === '동영상 강의') {
+		option = {
+			drawerLabel: () => (<View style={{
+					flex: 1,
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					position: 'relative',
+					height: 65,
+					backgroundColor: '#ffffff',
+				}}>
+					<Text style={{paddingLeft: 15, fontSize: 15, color: '#333333'}}>클래스</Text>
+					<Image source={IcAngleRight} style={{width: 9, height: 14, marginRight: 15,}}/>
+					<View style={{position: 'absolute', left: 0, bottom: 0, width: '100%', height: 1, backgroundColor: '#dddddd' }}/>
+				</View>
+			)
+		}
+	}
+	if (label === '오디오북') {
+		option = {
+			drawerLabel: () => (<View style={{
+					flex: 1,
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					position: 'relative',
+					height: 65,
+					backgroundColor: '#ffffff',
+				}}>
+					<Text style={{paddingLeft: 15, fontSize: 15, color: '#333333'}}>오디오북</Text>
+					<Image source={IcAngleRight} style={{width: 9, height: 14, marginRight: 15,}}/>
+					<View style={{position: 'absolute', left: 0, bottom: 0, width: '100%', height: 1, backgroundColor: '#dddddd' }}/>
+				</View>
+			)
+		}
+	}
+	if (label === '마이윌라') {
+		option = {
+			drawerLabel: () => (<View style={{
+					flex: 1,
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					position: 'relative',
+					height: 65,
+					backgroundColor: '#ffffff',
+				}}>
+					<Text style={{paddingLeft: 15, fontSize: 15, color: '#333333'}}>마이윌라</Text>
+					<Image source={IcAngleRight} style={{width: 9, height: 14, marginRight: 15,}}/>
+					<View style={{position: 'absolute', left: 0, bottom: 0, width: '100%', height: 1, backgroundColor: '#dddddd' }}/>
+				</View>
 			)
 		}
 	}
