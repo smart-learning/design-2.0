@@ -210,7 +210,7 @@ export default {
 				data.hot.forEach(element => {
 					element.key = element.id.toString();
 				});
-				return data;
+				return data.hot;
 			} )
 			.catch( error => {
 				console.log( error );
@@ -223,7 +223,7 @@ export default {
 				data.new.forEach(element => {
 					element.key = element.id.toString();
 				});
-				return data;
+				return data.new;
 			} )
 			.catch( error => {
 				console.log( error );
@@ -236,7 +236,7 @@ export default {
 				data.recommend.forEach(element => {
 					element.key = element.id.toString();
 				});
-				return data;
+				return data.recommend;
 			} )
 			.catch( error => {
 				console.log( error );
