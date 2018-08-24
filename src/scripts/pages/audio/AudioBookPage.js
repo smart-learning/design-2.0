@@ -88,7 +88,7 @@ export default class AudioBookPage extends React.Component {
 		super(props);
 
 		this.state = {
-			audioCategoryData: {},
+			audioCategoryData: [],
 			resultAudioBookData: null,
 		};
 
@@ -138,7 +138,7 @@ export default class AudioBookPage extends React.Component {
 					</View>
 				</View>
 
-				<PageCategory data={this.state.audioCategoryData.items}/>
+				<PageCategory data={this.state.audioCategoryData}/>
 
 				{this.state.resultAudioBookData !== null &&
 				<FlatList

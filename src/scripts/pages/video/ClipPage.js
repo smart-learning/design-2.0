@@ -88,7 +88,7 @@ export default class ClipPage extends React.Component {
 		super( props );
 
 		this.state = {
-			videoClipData: {},
+			videoClipData: [],
 			videoCategoryData: {}
 		};
 	}
