@@ -6,7 +6,7 @@ import {
 	View,
 	ScrollView,
 	TouchableOpacity,
-	FlatList,
+	FlatList, Image,
 } from "react-native";
 import {SafeAreaView} from "react-navigation";
 import PageCategory from "../../components/PageCategory";
@@ -58,7 +58,28 @@ const styles = StyleSheet.create({
 	myButtonText: {
 		fontSize: 12,
 		color: '#585858',
-	}
+	},
+	linkViewAll: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
+		height: 36,
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
+	},
+	classLinkViewAll: {
+		marginTop: 15,
+		marginBottom: 30,
+	},
+	linkViewAllText: {
+		fontSize: 14,
+		color: '#ffffff',
+	},
+	linkViewAllIcon: {
+		paddingLeft: 7,
+		height: 13,
+	},
 });
 
 export default class AudioBookPage extends React.Component {
@@ -131,6 +152,14 @@ export default class AudioBookPage extends React.Component {
 					}
 				/>
 				}
+
+				<View style={CommonStyles.contentContainer}>
+					<TouchableOpacity activeOpacity={0.9}>
+						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
+							<Text style={styles.linkViewAllText}>더보기</Text>
+						</View>
+					</TouchableOpacity>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {createDrawerNavigator, DrawerActions} from "react-navigation";
+import {createDrawerNavigator, DrawerActions, DrawerItems, SafeAreaView} from "react-navigation";
 import SampleScreen from './src/scripts/pages/sample/SampleScreen';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
@@ -107,6 +107,18 @@ const AppDrawer = createDrawerNavigator(
 		AndroidNativeCall : {
 			screen: PlaygroundJune,
 		}
+	},
+
+	{
+		contentComponent:(props)=>(
+			<SafeAreaView style={{ flex:1 }} forceInset={{ top:'always', horizontal:'never' }}>
+				<View>
+					<Text>사용자 정보 출력해라 이거야</Text>
+				</View>
+				<DrawerItems {...props}/>
+			</SafeAreaView>
+		)
+
 	}
 );
 
