@@ -88,7 +88,7 @@ export default class CourseList extends React.Component {
 		super( props );
 
 		this.state = {
-			videoCourseData: {},
+			videoCourseData: [],
 			videoCategoryData: {}
 		};
 	}
@@ -135,7 +135,7 @@ export default class CourseList extends React.Component {
 					</View>
 				</View>
 
-				<PageCategory data={this.state.videoCategoryData.items}/>
+				<PageCategory data={this.state.videoCategoryData}/>
 
 				<FlatList
 					style={{ width: '100%' }}

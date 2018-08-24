@@ -96,7 +96,7 @@ class HomePage extends React.Component {
 		classHotData: {},
 		classNewData: {},
 		classRecommendData: {},
-		clipRankData: {},
+		clipRankData: [],
 	});
 
 	getData = async () => {

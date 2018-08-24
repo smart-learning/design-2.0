@@ -26,7 +26,7 @@ export default {
 		return new Promise((resolve, reject) => {
 			axios.get(API_PREFIX + 'contents/video-courses/categories')
 				.then((response) => {
-					response.data.items.forEach(element => {
+					response.data.forEach(element => {
 						element.key = element.id.toString();
 					});
 					resolve(response.data);
@@ -42,8 +42,7 @@ export default {
 		return new Promise((resolve, reject) => {
 			axios.get(API_PREFIX + 'contents/audiobooks/categories')
 				.then((response) => {
-					// console.log( response.data );
-					response.data.items.forEach(element => {
+					response.data.forEach(element => {
 						element.key = element.id.toString();
 					});
 					resolve(response.data);
@@ -105,7 +104,7 @@ export default {
 		return new Promise((resolve, reject) => {
 			axios.get(API_PREFIX + 'contents/video-courses/' + id + '/video-clips')
 				.then((response) => {
-					response.data.items.forEach(element => {
+					response.data.forEach(element => {
 						element.key = element.id.toString();
 					});
 					resolve(response.data);
@@ -211,7 +210,7 @@ export default {
 		return new Promise((resolve, reject) => {
 			axios.get(API_PREFIX + 'contents/video-clips/realtime-chart')
 				.then((response) => {
-					response.data.items.forEach(element => {
+					response.data.forEach(element => {
 						element.key = element.id.toString();
 					});
 					resolve(response.data);

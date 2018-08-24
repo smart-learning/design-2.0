@@ -48,8 +48,7 @@ export default class PageCategory extends React.Component {
 			renderItem={
 				( { item } ) => <View style={styles.categoryItem}>
 					<TouchableOpacity activeOpacity={0.9}
-									  onPress={this.test}
-					>
+									  onPress={this.test}>
 						<Text style={styles.categoryText}>{item.title}</Text>
 					</TouchableOpacity>
 				</View>
