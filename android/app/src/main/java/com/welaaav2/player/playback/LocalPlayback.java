@@ -1,8 +1,5 @@
 package com.welaaav2.player.playback;
 
-import static com.google.android.exoplayer2.C.CONTENT_TYPE_SPEECH;
-import static com.google.android.exoplayer2.C.USAGE_MEDIA;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +13,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.Pair;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -54,6 +52,7 @@ import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import com.welaaav2.R;
 import com.welaaav2.player.service.MediaService;
 import com.welaaav2.player.utils.LogHelper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,6 +60,9 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.UUID;
+
+import static com.google.android.exoplayer2.C.CONTENT_TYPE_SPEECH;
+import static com.google.android.exoplayer2.C.USAGE_MEDIA;
 
 /**
  * A class that implements local media playback using {@link com.google.android.exoplayer2.ExoPlayer}
@@ -118,6 +120,8 @@ public final class LocalPlayback implements Playback {
 
   private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
   private static final CookieManager DEFAULT_COOKIE_MANAGER;
+
+  private boolean mDoAutoPlay;
 
   static {
     DEFAULT_COOKIE_MANAGER = new CookieManager();
@@ -306,9 +310,13 @@ public final class LocalPlayback implements Playback {
       // Prepares media to play (happens on background thread) and triggers
       // {@code onPlayerStateChanged} callback when the stream is ready to play.
       boolean haveStartPosition = startWindow != C.INDEX_UNSET;
-      if (haveStartPosition) {
-        mExoPlayer.seekTo(startWindow, startPosition);
+
+      if(!mDoAutoPlay){
+        if (haveStartPosition) {
+          mExoPlayer.seekTo(startWindow, startPosition);
+        }
       }
+
       mExoPlayer.prepare(mediaSource, !haveStartPosition, false);
 
       final AudioAttributes audioAttributes = new AudioAttributes.Builder()
@@ -521,7 +529,11 @@ public final class LocalPlayback implements Playback {
         case Player.STATE_ENDED:
           // The media player finished playing the current song.
           if (mCallback != null) {
+
+            mDoAutoPlay = true;
+
             mCallback.onCompletion();
+
           }
           break;
       }

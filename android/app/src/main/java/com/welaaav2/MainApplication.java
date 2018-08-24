@@ -12,6 +12,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.dooboolab.RNIap.RNIapPackage;
@@ -32,9 +33,11 @@ import com.welaaav2.react.RNEventEmitter;
 import com.welaaav2.react.pakcage.RNNativePlayerPackage;
 import com.welaaav2.util.ONotificationManager;
 import com.welaaav2.util.WeContentManager;
-import io.fabric.sdk.android.Fabric;
+
 import java.util.Arrays;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 //import test.welaaa.WelaaaPackageManager;
 
@@ -169,7 +172,7 @@ public class MainApplication extends Application implements ReactApplication {
   public WeContentManager initContentManager() {
     if (content_manager == null) {
       // String dbname = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).toString()+"/CDN.db";
-      String dbname = "CDN.db";
+      String dbname = "welaaa.db";
       content_manager = new WeContentManager(this, dbname);
     }
     return content_manager;

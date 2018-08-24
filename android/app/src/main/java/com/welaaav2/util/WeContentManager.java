@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 public class WeContentManager extends SQLiteOpenHelper {
 
-    private static final String DATABASE = "CDN.db";
+    private static final String DATABASE = "welaaa.db";
     private static final int VERSION = 1;
     public final String SYTAX = "<so>";
 
@@ -46,7 +46,7 @@ public class WeContentManager extends SQLiteOpenHelper {
     public WeContentManager(Context context, String database) {
 
         super(context, database, null, VERSION);
-        String dbPath = context.getApplicationContext().getDatabasePath("CDN.db").getPath();
+        String dbPath = context.getApplicationContext().getDatabasePath("welaaa.db").getPath();
 
         Log.e("WeContentManager " , " WeContentManager dbPath is " + dbPath);
         //  super(context, database, null, VERSION);
