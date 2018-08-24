@@ -47,9 +47,9 @@ class Store{
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
 
-	@observable auth = undefined;
-
-	@observable authToken = undefined;
+	// @observable auth = undefined;
+    //
+	// @observable authToken = undefined;
 }
 
 console.log( '<<<<<< new Store >>>>');
