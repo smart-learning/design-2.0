@@ -141,6 +141,8 @@ export default {
 		params.set('scope', 'profile');
 		params.set('grant_type', 'password');
 
+		console.log('getAuthToken:', HOST + '/oauth/token', email, password );
+
 		return new Promise((resolve, reject) => {
 			axios.post(HOST + '/oauth/token', params, {
 				headers: {

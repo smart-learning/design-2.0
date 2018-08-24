@@ -31,7 +31,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakaod24dd5fa11ebda6fc4bd29414eefc5ee</string>
+				<string>kakao7251f13df2e5e2f20ca83b76b64607ac</string>
 			</array>
 		</dict>
 	</array>
@@ -56,7 +56,7 @@
 	<key>FacebookDisplayName</key>
 	<string>smartLearning</string>
 	<key>KAKAO_APP_KEY</key>
-	<string>d24dd5fa11ebda6fc4bd29414eefc5ee</string>
+	<string>7251f13df2e5e2f20ca83b76b64607ac</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
