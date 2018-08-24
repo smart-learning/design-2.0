@@ -115,7 +115,12 @@ class HomePage extends React.Component {
 		this.store.slideHeight = windowWidth * 0.42;
 		this.store.clipRankContentSize = windowWidth - 85;
 
-		this.getData();
+		try {
+			this.getData();
+		}
+		catch( e ) {
+			console.log( e );
+		}
 	}
 
 	render() {
