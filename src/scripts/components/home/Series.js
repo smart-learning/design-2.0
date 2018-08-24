@@ -36,7 +36,6 @@ export default class Series extends React.Component {
 	}
 
 	render() {
-		console.log( 'props data',this.props.itemData );
 		return <View>
 			<View style={styles.seriesItemLg}>
 				<TouchableOpacity activeOpacity={0.9}>
