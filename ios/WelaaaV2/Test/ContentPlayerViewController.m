@@ -1683,6 +1683,67 @@
   _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
   [_player replaceCurrentItemWithPlayerItem : _playerItem];
   [_player play];
+  
+  [self getContentsInfo];
+  [self getPlayData];
+}
+
+- (void) getContentsInfo
+{
+  NSString *apiContentsInfo = @"/dev/api/v1.0/play/contents-info/";
+//NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
+  NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, @"b300200"];//b300200 와 같은 group_ID
+  NSURL *url = [NSURL URLWithString : urlWithParams];
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+  
+  [request setHTTPMethod : @"GET"];
+  [request setValue:@"Bearer tnaQprXdmWVCQDrd8DSD6eNizEpet4yKFeOzdt0fzf" forHTTPHeaderField:@"authorization"];
+  [request setTimeoutInterval : 30]; // 초단위 지정
+  
+  NSError *error;
+  NSURLResponse *resp = nil;
+  // 비동기방식이 아닌 동기방식으로 접속합니다.
+  NSData *data = [ApiManager sendSynchronousRequest : request
+                                  returningResponse : &resp
+                                              error : &error];
+  
+  NSString *jsonData = [[NSString alloc] initWithData : data
+                                             encoding : NSUTF8StringEncoding];
+  
+  NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                               options : NSJSONReadingAllowFragments
+                                                                 error : &error];
+  
+  NSLog(@"  JSON from server : %@", jsonResponse);
+}
+
+- (void) getPlayData
+{
+  NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/";
+  //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
+  NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, @"b300200_001"];//b300200_001 와 같은 content_ID
+  NSURL *url = [NSURL URLWithString : urlWithParams];
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+  
+  [request setHTTPMethod : @"GET"];
+  [request setValue:@"Bearer tnaQprXdmWVCQDrd8DSD6eNizEpet4yKFeOzdt0fzf" forHTTPHeaderField:@"authorization"];
+  [request setTimeoutInterval : 30]; // 초단위 지정
+  
+  NSError *error;
+  NSURLResponse *resp = nil;
+  // 비동기방식이 아닌 동기방식으로 접속합니다.
+  NSData *data = [ApiManager sendSynchronousRequest : request
+                                  returningResponse : &resp
+                                              error : &error];
+  
+  NSString *jsonData = [[NSString alloc] initWithData : data
+                                             encoding : NSUTF8StringEncoding];
+  
+  NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                               options : NSJSONReadingAllowFragments
+                                                                 error : &error];
+  
+  NSLog(@"  JSON from server : %@", jsonResponse);
 }
 
 @end
