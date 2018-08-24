@@ -92,7 +92,7 @@ class HomePage extends React.Component {
 		windowWidth: null,
 		clipRankContentSize: null,
 		homeSeriesData: {},
-		videoCategoryData: {},
+		videoCategoryData: [],
 		classHotData: {},
 		classNewData: {},
 		classRecommendData: {},
