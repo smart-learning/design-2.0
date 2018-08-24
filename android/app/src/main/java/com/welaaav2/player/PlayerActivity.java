@@ -116,6 +116,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -4660,7 +4661,10 @@ public class PlayerActivity extends BasePlayerActivity {
 
       setBackGroungLayout(false);
 
-      player.setPlayWhenReady(true);
+      if(player!=null){
+        player.setPlayWhenReady(true);
+      }
+
     } else {
       // 종료 시나리오 생각 하기 ..
       if (CON_CLASS != null) {
@@ -5108,15 +5112,75 @@ public class PlayerActivity extends BasePlayerActivity {
 //    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_004/stream.mpd",
 //    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_005/stream.mpd",
 //    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_006/stream.mpd",
-//    mWebPlayerInfo
+
+      Intent intent = getIntent();
+      String currentCid = intent.getStringExtra("drm_cid");
+
+      int currentPosition = 0;
+      for(int i=0; i<getwebPlayerInfo().getCkey().length; i++){
+        if(getwebPlayerInfo().getCkey()[i].equals( currentCid )){
+          currentPosition = i;
+        }
+      }
+
+      if(getwebPlayerInfo().getCkey().length == currentPosition+1){
+        // last suggest list show !
+        //
+
+        setBackGroungLayout(true);
+        Animation fadeout = null;
+        fadeout = null;
+        fadeout = AnimationUtils
+                .loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+
+        mRelatedListGroupLayout.startAnimation(fadeout);
+
+        Animation textBlink = null;
+        textBlink = AnimationUtils
+                .loadAnimation(getApplicationContext(), R.anim.blink_animation);
+
+        mRelatedListBlinkText.startAnimation(textBlink);
+        mRelatedListGroupLayout.setVisibility(VISIBLE);
+
+//										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
+        if (getTransportControls() != null) {
+          getTransportControls().pause();
+        }
+
+        return ;
+      }
+
+      int nextPosition = 0;
+
+      nextPosition = currentPosition +1;
+
+      String loadFile = "play-data-" + getwebPlayerInfo().getCkey()[nextPosition] + ".json";
+      String dashUrl = "";
+
+      try{
+        InputStream is = getAssets().open(loadFile);
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+        String jsonText = readAll(rd);
+        JSONObject json = new JSONObject(jsonText);
+
+//        String group_title = json.getString("group_title");
+
+        JSONObject dataObject = json.getJSONObject("media_urls");
+
+        dashUrl = dataObject.getString("DASH");
+
+      }catch (Exception e){
+        e.printStackTrace();
+      }
+
+      setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),getwebPlayerInfo().getCname()[nextPosition]);
 
       if(Preferences.getWelaaaPlayAutoPlay(getApplicationContext())){
         if (getTransportControls() != null) {
-          Uri uri = Uri.parse("https://contents.welaaa.com/media/v100015/DASH_v100015_002/stream.mpd");
-          Intent intent = getIntent();
+          Uri uri = Uri.parse(dashUrl);
 
           intent.setData(uri);
-          intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, "청중의 질문을 줄이고 싶다면, Answer First! 결론부터 말하라");
+          intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, getwebPlayerInfo().getCname()[nextPosition]);
           intent.putExtra(PlaybackManager.THUMB_URL, "");
           try {
 
@@ -5126,7 +5190,7 @@ public class PlayerActivity extends BasePlayerActivity {
               intent.putExtra(PlaybackManager.DRM_LICENSE_URL, "http://tokyo.pallycon.com/ri/licenseManager.do");
               intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
               intent.putExtra(PlaybackManager.DRM_USERID, "93");
-              intent.putExtra(PlaybackManager.DRM_CID, "v100015_002");
+              intent.putExtra(PlaybackManager.DRM_CID, getwebPlayerInfo().getCkey()[nextPosition]);
               intent.putExtra(PlaybackManager.DRM_OID, "");
               intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
               intent.putExtra(PlaybackManager.DRM_TOKEN, "");
@@ -5143,23 +5207,23 @@ public class PlayerActivity extends BasePlayerActivity {
 
           // Set player to playerview.
           LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
+
         }
       }
   }
 
-  private UUID getDrmUuid(String typeString) throws ParserException {
-    switch (typeString.toLowerCase()) {
-      case "widevine":
-        return C.WIDEVINE_UUID;
-      case "playready":
-        return C.PLAYREADY_UUID;
-      default:
-        try {
-          return UUID.fromString(typeString);
-        } catch (RuntimeException e) {
-          throw new ParserException("Unsupported drm type: " + typeString);
+    private UUID getDrmUuid(String typeString) throws ParserException {
+        switch (typeString.toLowerCase()) {
+          case "widevine":
+            return C.WIDEVINE_UUID;
+          case "playready":
+            return C.PLAYREADY_UUID;
+          default:
+            try {
+              return UUID.fromString(typeString);
+            } catch (RuntimeException e) {
+              throw new ParserException("Unsupported drm type: " + typeString);
+            }
         }
     }
-  }
-
 }
