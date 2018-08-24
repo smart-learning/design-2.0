@@ -695,6 +695,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				EF8C2D20212B8EAD00140F8F /* WelaaaV2.entitlements */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
+				63053DE1212E8479007958D8 /* Localizable.strings */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				EF5D544A211936F8008F60B4 /* Images.xcassets */,
 			);
@@ -805,7 +806,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				63053DE1212E8479007958D8 /* Localizable.strings */,
 				13B07FAE1A68108700A75B9A /* WelaaaV2 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,

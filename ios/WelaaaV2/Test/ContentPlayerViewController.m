@@ -51,7 +51,7 @@
     ContentPlayerButton *_sleepButton;
     ContentPlayerButton *_lockButton;
   
-  ContentsListPopupView *_listView;
+    ContentsListPopupView *_listView;
   
     NSDictionary *_args;
   
@@ -772,8 +772,9 @@
 
 - (void) pressedCloseButton
 {
-    [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+  //[self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     //[self showToast : @"미니플레이어로 변환합니다."];
+  [self nextPlay];
 }
 
 - (void) pressedRateStarButton
@@ -1656,6 +1657,33 @@
 
 // 오디오 콘텐트인지 확인하는 프로퍼티가 필요합니다.
 //- (bool)_isAudioOnlyContent;
+
+// nextPlay 구현..
+- (void) nextPlay
+{
+  NSLog(@"  nextPlay tapped!");
+  // _args를 초기화 또는 uri, cid, name 정도만 재설정합니다.
+  // player를 nil처리하고 viewcontroller를 재실행보다는 refresh 처리합니다.
+  
+  [_player pause];
+  
+  //뷰를 파괴하기보다는 playItem을 수정하는 방향으로....
+  // playItem을 array화하기보다는 API에서 다음 콘텐트를 읽어와서 직접 플레이하기로?
+  NSURL *contentUrl = [ NSURL URLWithString : @"https://contents.welaaa.com/media/v100015/HLS_v100015_002/master.m3u8" ];
+  _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
+                                       options : nil       ];
+  
+  // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+  [ _fpsSDK prepareWithUrlAsset : _urlAsset
+                         userId : [_args objectForKey : @"userId"]
+                      contentId : @"v100015_002"                // PALLYCON_CONTENT_ID
+                     optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                liveKeyRotation : NO              ];
+  
+  _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
+  [_player replaceCurrentItemWithPlayerItem : _playerItem];
+  [_player play];
+}
 
 @end
 
