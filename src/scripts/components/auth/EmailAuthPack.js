@@ -61,29 +61,6 @@ class EmailAuthPack extends Component {
 		};
 	}
 
-
-	setLogin() {
-		const resultAuthToken = net.getAuthToken(this.state.email, this.state.password);
-		resultAuthToken
-			.then(data => {
-				// console.log('resultAuthToken.then');
-				// console.log('data', data);
-				let welaaaAuthData = JSON.stringify(data);
-				if (this.props.onAccess) {
-					this.props.onAccess(welaaaAuthData);
-				}
-			})
-			.catch(error => {
-				const code = error.response.code;
-				let message = '로그인 실패';
-				if( error.response.data && error.response.data.error ) {
-					message += ` (server message: ${error.response.data.error})`;
-				}
-				Alert.alert( message );
-				console.log( error );
-			});
-	}
-
 	handleLogin = () => {
 		if (this.state.email === null) {
 			Alert.alert('이메일은 필수 입력항목입니다.');
@@ -93,7 +70,7 @@ class EmailAuthPack extends Component {
 			return false;
 		}
 
-		this.setLogin();
+		this.props.onAccess( this.state.email, this.state.password );
 	};
 
 	render() {
