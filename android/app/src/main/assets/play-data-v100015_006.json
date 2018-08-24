@@ -1,0 +1,22 @@
+{
+  "custom_data_v2": {
+    "FairPlay": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiRmFpclBsYXkiLCAiZGF0YSI6ICJ1azZhaEVDdmxoQzIzVUpiNkNnOXVsZDhVK05zakxkZ21tSDQxbUtEREltcjNqNllNeWFoK0tUcnZ4dFM1KzllenJVWXFLUitFNUJ2UlpRQUpZT1V0UT09In0=",
+    "PlayReady": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiUGxheVJlYWR5IiwgImRhdGEiOiAidWs2YWhFQ3ZsaEMyM1VKYjZDZzl1bGQ4VStOc2pMZGdtbUg0MW1LRERJbXIzajZZTXlhaCtLVHJ2eHRTNSs5ZXpyVVlxS1IrRTVCdlJaUUFKWU9VdFE9PSJ9",
+    "WideVine": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiV2lkZVZpbmUiLCAiZGF0YSI6ICJ1azZhaEVDdmxoQzIzVUpiNkNnOXVsZDhVK05zakxkZ21tSDQxbUtEREltcjNqNllNeWFoK0tUcnZ4dFM1KzllenJVWXFLUitFNUJ2UlpRQUpZT1V0UT09In0="
+  },
+  "media_urls": {
+    "DASH": "https://contents.welaaa.com/media/v100015/DASH_v100015_006/stream.mpd",
+    "HLS": "https://contents.welaaa.com/media/v100015/HLS_v100015_006/master.m3u8"
+  },
+  "permission": {
+    "can_play": true,
+    "expire_at": "Tue, 27 Jul 2117 00:00:00 GMT",
+    "is_free": false
+  },
+  "progress": {
+    "id": 2412,
+    "played_at": "Thu, 10 May 2018 13:00:38 GMT",
+    "start_seconds": 711
+  },
+  "type": 10
+}

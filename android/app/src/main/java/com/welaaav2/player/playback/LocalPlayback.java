@@ -693,6 +693,13 @@ public final class LocalPlayback implements Playback {
     return mExoPlayer;
   }
 
+  public boolean isCompleted() {
+    if (mExoPlayer != null) {
+      return Player.STATE_ENDED == mExoPlayer.getPlaybackState();
+    }
+    return false;
+  }
+
   public void setPlayerView(PlayerView playerView) {
     this.playerView = playerView;
   }

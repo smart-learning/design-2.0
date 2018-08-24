@@ -34,15 +34,15 @@ class PlaygroundJune extends Component {
 		*/
 		var args = {
 			type: "streaming",
-			uri: "https://contents.welaaa.com/public/contents/HLS_0028_007_mp4/master.m3u8",
-			name: "140년 지속 성장을 이끈 MLB 사무국의 전략",
+			uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd",
+			name: "지기지피 백전백승! 나의 발표 목적을 제일 먼저 고려하라",
 			drmSchemeUuid: "widevine",
 			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
-			userId: "valid-user",
-			cid: "0028_007",
-			oid: "order id",
-			token: "", // pallyCon token 
-			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
+			userId: "93", // 825  , 
+			cid: "v100015_001",
+			oid: "",
+			token: "", 
+			webToken: "" 
 		}
 
 		try {
