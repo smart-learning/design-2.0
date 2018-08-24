@@ -156,7 +156,7 @@ export default class HomeVideoPage extends React.Component {
 
 				<View style={styles.classCategory}>
 					<View style={styles.classCategoryHr}/>
-					<PageCategory data={this.props.store.videoCategoryData.items}/>
+					<PageCategory data={this.props.store.videoCategoryData}/>
 					<View style={styles.classCategoryHr}/>
 				</View>
 
