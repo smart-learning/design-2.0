@@ -202,7 +202,7 @@ public final class LocalPlayback implements Playback {
   public void stop(boolean notifyListeners) {
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
-    releaseResources(false);
+    releaseResources(true);
   }
 
   @Override
@@ -266,7 +266,7 @@ public final class LocalPlayback implements Playback {
     }
 
     if (mediaHasChanged || mExoPlayer == null) {
-      releaseResources(true); // release everything except the player
+      releaseResources(true);
 
       String source = currentMedia.getDescription().getMediaUri().toString();
       if (source != null) {
@@ -305,7 +305,7 @@ public final class LocalPlayback implements Playback {
 
       // Prepares media to play (happens on background thread) and triggers
       // {@code onPlayerStateChanged} callback when the stream is ready to play.
-      boolean haveStartPosition = startWindow != C.INDEX_UNSET;
+      boolean haveStartPosition = !mediaHasChanged && startWindow != C.INDEX_UNSET;
       if (haveStartPosition) {
         mExoPlayer.seekTo(startWindow, startPosition);
       }
@@ -321,6 +321,11 @@ public final class LocalPlayback implements Playback {
       // Wifi lock, which prevents the Wifi radio from going to
       // sleep while the song is playing.
       mWifiLock.acquire();
+    } else {
+      int state = mExoPlayer.getPlaybackState();
+      if (Player.STATE_ENDED == state) {
+        mExoPlayer.seekTo(startPosition);
+      }
     }
 
     attachPlayerView();
@@ -337,6 +342,14 @@ public final class LocalPlayback implements Playback {
     // While paused, retain the player instance, but give up audio focus.
     releaseResources(false);
     unregisterAudioNoisyReceiver();
+  }
+
+  @Override
+  public void completion() {
+    giveUpAudioFocus();
+    unregisterAudioNoisyReceiver();
+    releaseResources(false);
+    clearStartPosition();
   }
 
   @Override
@@ -523,7 +536,6 @@ public final class LocalPlayback implements Playback {
           if (mCallback != null) {
             mCallback.onCompletion();
           }
-          clearStartPosition();
           break;
       }
     }

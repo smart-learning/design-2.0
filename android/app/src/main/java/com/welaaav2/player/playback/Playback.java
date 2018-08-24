@@ -58,6 +58,8 @@ public interface Playback {
 
   void pause();
 
+  void completion();
+
   void seekTo(long position);
 
   void setCurrentMedia(MediaMetadataCompat item);

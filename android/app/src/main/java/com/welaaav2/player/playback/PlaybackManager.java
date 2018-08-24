@@ -87,6 +87,16 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
   }
 
   /**
+   * Handle a request to completion media
+   */
+  public void handleCompletionRequest() {
+    LogHelper.d(TAG, "handleCompletionRequest: mState=" + mPlayback.getState());
+    mPlayback.completion();
+    mServiceCallback.onPlaybackStop();
+    updatePlaybackState(null);
+  }
+
+  /**
    * Handle a request to stop media
    *
    * @param withError Error message in case the stop has an unexpected cause. The error message will
@@ -168,8 +178,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
    */
   @Override
   public void onCompletion() {
-    // Stop and release the resources.
-    handleStopRequest(null);
+    handleCompletionRequest();
   }
 
   @Override
@@ -328,6 +337,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     @Override
     public void onStop() {
       LogHelper.d(TAG, "stop. current state=" + mPlayback.getState());
+      // Stop and release the resources.
       handleStopRequest(null);
     }
 

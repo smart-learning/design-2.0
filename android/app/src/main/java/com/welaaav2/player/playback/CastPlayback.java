@@ -142,6 +142,11 @@ public class CastPlayback implements Playback {
   }
 
   @Override
+  public void completion() {
+
+  }
+
+  @Override
   public void seekTo(long position) {
     if (mCurrentMediaId == null) {
       mCurrentPosition = position;
