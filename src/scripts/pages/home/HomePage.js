@@ -100,12 +100,21 @@ class HomePage extends React.Component {
 	});
 
 	getData = async () => {
-		this.store.homeSeriesData = await net.getHomeSeries();
-		this.store.videoCategoryData = await net.getLectureCategory();
-		this.store.classHotData = await net.getHomeClassHot();
-		this.store.classNewData = await net.getHomeClassNew();
-		this.store.classRecommendData = await net.getHomeClassRecommend();
-		this.store.clipRankData = await net.getHomeClipRank();
+		if( this.tabStatus === 'video' ) {
+			this.store.homeSeriesData = await net.getHomeSeries();
+			this.store.videoCategoryData = await net.getLectureCategory();
+			this.store.classHotData = await net.getHomeClassHot();
+			this.store.classNewData = await net.getHomeClassNew();
+			this.store.classRecommendData = await net.getHomeClassRecommend();
+			this.store.clipRankData = await net.getHomeClipRank();
+		}else{
+			this.store.homeSeriesData = {};
+			this.store.videoCategoryData = {};
+			this.store.classHotData = {};
+			this.store.classNewData = {};
+			this.store.classRecommendData = {};
+			this.store.clipRankData = {};
+		}
 	};
 
 	componentDidMount() {
@@ -121,6 +130,11 @@ class HomePage extends React.Component {
 		catch( e ) {
 			console.log( e );
 		}
+	}
+
+	changeTab( tabName ){
+		this.tabStatus = tabName;
+		this.getData();
 	}
 
 	render() {
@@ -142,7 +156,7 @@ class HomePage extends React.Component {
 				<View style={styles.tabContainer}>
 					<View style={styles.tabFlex}>
 						<View style={styles.tabItemContainer}>
-							<TouchableOpacity activeOpacity={0.9} onPress={() => this.tabStatus = 'video'}>
+							<TouchableOpacity activeOpacity={0.9} onPress={ ()=>this.changeTab('video') }>
 								<View style={styles.tabItem}>
 									<Text style={this.tabStatus === 'video' ? styles.tabTextActive : styles.tabText}>
 										비디오
@@ -152,7 +166,7 @@ class HomePage extends React.Component {
 							</TouchableOpacity>
 						</View>
 						<View style={styles.tabItemContainer}>
-							<TouchableOpacity activeOpacity={0.9} onPress={() => this.tabStatus = 'audioBook'}>
+							<TouchableOpacity activeOpacity={0.9} onPress={() => this.changeTab('audioBook')}>
 								<View style={styles.tabItem}>
 									<Text
 										style={this.tabStatus === 'audioBook' ? styles.tabTextActive : styles.tabText}>
