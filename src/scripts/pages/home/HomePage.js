@@ -109,11 +109,11 @@ class HomePage extends React.Component {
 			this.store.clipRankData = await net.getHomeClipRank();
 		}else{
 			this.store.homeSeriesData = {};
-			this.store.videoCategoryData = {};
+			this.store.videoCategoryData = [];
 			this.store.classHotData = {};
 			this.store.classNewData = {};
 			this.store.classRecommendData = {};
-			this.store.clipRankData = {};
+			this.store.clipRankData = [];
 		}
 	};
 
