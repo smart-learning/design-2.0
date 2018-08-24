@@ -6,18 +6,20 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import Playground from "./src/scripts/pages/Playground";
-import {Button, Modal, Text, View} from "react-native";
+import {Button, Modal, Text, View, Image, ImageBackground, TouchableOpacity} from "react-native";
 import Store from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune";
 import BottomControllerPage from './src/scripts/pages/BottomControllerPage';
+import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 
 class App extends React.Component {
- 	render() {
+	render() {
 		return <View style={{flex: 1}}>
 			<AppDrawer
 				ref={navigatorRef => {
 					Store.drawer = navigatorRef
 				}}
+				style={{width: '80%'}}
 
 				onNavigationStateChange={(prevState, currentState) => {
 					const currentScreen = getActiveRouteName(currentState);
@@ -87,17 +89,15 @@ const AppDrawer = createDrawerNavigator(
 			screen: BottomControllerPage,
 		},
 
-		AndroidNativeCall : {
+		AndroidNativeCall: {
 			screen: PlaygroundJune,
 		}
 	},
 
 	{
-		contentComponent:(props)=>(
-			<SafeAreaView style={{ flex:1 }} forceInset={{ top:'always', horizontal:'never' }}>
-				<View>
-					<Text>사용자 정보 출력해라 이거야</Text>
-				</View>
+		contentComponent: (props) => (
+			<SafeAreaView style={{flex: 1}} forceInset={{top: 'always', horizontal: 'never'}}>
+				<SidebarUserInfo/>
 				<DrawerItems {...props}/>
 			</SafeAreaView>
 		)
