@@ -8,10 +8,13 @@ import moment from 'moment';
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
 let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
-if (__DEV__)
-	host = Localizable.host_debug || host;
-else
-	host = Localizable.host_release || host;
+// TODO: iOS에서 Localizable 이 undefined인 상황이 발견되었음. 원인 미상. 확인 필요.
+if( Localizable ) {
+	if (__DEV__)
+		host = Localizable.host_debug || host;
+	else
+		host = Localizable.host_release || host;
+}
 
 const HOST = host;
 const TYPE = 'api';
