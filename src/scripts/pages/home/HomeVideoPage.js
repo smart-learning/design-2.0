@@ -102,7 +102,7 @@ const styles = StyleSheet.create( {
 export default class HomeVideoPage extends React.Component {
 
 	render() {
-		return <View>
+		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
 			<View style={{ height: this.props.store.slideHeight }}>
 				<Swiper style={styles.wrapper}
@@ -228,6 +228,6 @@ export default class HomeVideoPage extends React.Component {
 
 				<ClassContinueList/>
 			</View>
-		</View>
+		</ScrollView>
 	}
 }
