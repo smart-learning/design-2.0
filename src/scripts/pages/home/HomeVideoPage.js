@@ -19,7 +19,7 @@ import ClipRank from "../../components/home/ClipRank";
 import ClassContinueList from "../../components/home/ClassContinueList";
 import Swiper from "react-native-swiper";
 import { withNavigation } from "react-navigation";
-import PRTView from 'react-native-pull-to-refresh';
+import PTRView from 'react-native-pull-to-refresh';
 
 const styles = StyleSheet.create( {
 	slide: {
