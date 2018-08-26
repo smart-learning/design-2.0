@@ -52,7 +52,8 @@ export const NAV_OPTS_MY_HOME = ({navigation, navigationOptions}) => {
 		},
 		headerLeft: <HomeButton/>,
 		headerTitle: <Image source={logo} style={CommonStyle.headerLogo}/>,
-		headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')}/>
+		headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')}/>,
+		gesturesEnabled: false,
 	}
 
 };

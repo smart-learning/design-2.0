@@ -8,6 +8,7 @@ import {
 	StyleSheet,
 	View, KeyboardAvoidingView,
 	AsyncStorage,
+	BackHandler,
 	Alert
 } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
@@ -70,12 +71,21 @@ class LoginPage extends React.Component {
 		this.keyboardWillShowSub = Keyboard.addListener( 'keyboardWillShow', this.keyboardWillShow );
 		this.keyboardWillHideSub = Keyboard.addListener( 'keyboardWillHide', this.keyboardWillHide );
 
+		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
 		console.log( this.props.navigation );
 	}
 
 	componentWillUnmount() {
 		this.keyboardWillShowSub.remove();
 		this.keyboardWillHideSub.remove();
+
+		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+	}
+
+	handleBackPress = () => {
+		this.props.navigation.navigate('HomeScreen');
+		return true;
 	}
 
 	keyboardWillShow = ( event ) => {
@@ -93,8 +103,14 @@ class LoginPage extends React.Component {
 	login = ( email, password ) => {
 		let { navigation } = this.props;
 		const resultAuthToken = net.getAuthToken( email, password);
+
+		console.log( 'authToken요청:', email, password );
+
 		resultAuthToken
 			.then(data => {
+
+				// Alert.alert( 'authToken결과:', JSON.stringify(data) );
+
 				store.socialType = email;
 				store.welaaaAuth = JSON.stringify(data);
 				navigation.navigate( navigation.getParam( 'requestScreenName', 'MyInfoHome' ) );
