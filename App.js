@@ -98,21 +98,18 @@ const AppDrawer = createDrawerNavigator(
 			screen: MyScreens,
 		},
 
-		Playground: {
-			screen: Playground,
-		},
-
-		June: {
-			screen: PlaygroundJune,
-		},
-
-		BottomControllerTEST: {
-			screen: BottomControllerPage,
-		},
-
-		AndroidNativeCall: {
-			screen: PlaygroundJune,
-		}
+		// Playground: {
+		// 	screen: Playground,
+		// },
+		// June: {
+		// 	screen: PlaygroundJune,
+		// },
+		// BottomControllerTEST: {
+		// 	screen: BottomControllerPage,
+		// },
+		// AndroidNativeCall: {
+		// 	screen: PlaygroundJune,
+		// }
 	},
 
 	{
