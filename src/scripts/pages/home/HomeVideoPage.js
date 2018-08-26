@@ -1,6 +1,6 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {Button, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View, ScrollView} from "react-native";
 import {observer} from "mobx-react";
 import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
@@ -102,12 +102,14 @@ const styles = StyleSheet.create( {
 export default class HomeVideoPage extends React.Component {
 
 	render() {
-		return <View>
+		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
 			<View style={{ height: this.props.store.slideHeight }}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
+						dotColor={"#888888"}
+						activeDotColor={"#ffffff"}
 						paginationStyle={{ bottom: 10 }}>
 					<View style={styles.slide}>
 						<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
@@ -220,14 +222,11 @@ export default class HomeVideoPage extends React.Component {
 					<Text style={styles.titleParagraph}>
 						2018. 07.09 업데이트
 					</Text>
-					<TouchableOpacity activeOpacity={0.9} style={{ marginLeft: 'auto' }}>
-						<Text style={styles.titleLink}>마이윌라</Text>
-					</TouchableOpacity>
 				</View>
 				<View style={styles.titleHr}/>
 
 				<ClassContinueList/>
 			</View>
-		</View>
+		</ScrollView>
 	}
 }

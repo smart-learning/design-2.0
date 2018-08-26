@@ -12,6 +12,9 @@ import CommonStyles from "../../../styles/common";
 import Lecture from "../../components/video/Lecture";
 import net from "../../commons/net";
 import PageCategory from "../../components/PageCategory";
+import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import SummaryVO from "../../vo/SummaryVO";
+import _ from "underscore";
 
 const styles = StyleSheet.create( {
 	toggleGroup: {
@@ -88,19 +91,68 @@ export default class CourseList extends React.Component {
 		super( props );
 
 		this.state = {
-			videoCourseData: [],
-			videoCategoryData: {}
+			displayData: [],
+			videoCategoryData: [],
+			selectedCategory: null,
 		};
 	}
 
 	async componentDidMount() {
-		const resultVideoCourseData = await net.getLectureList();
-		const resultVideoCategoryData = await net.getLectureCategory();
+		const initialData = await net.getLectureList();
+		const allData = await net.getLectureListByCategories();
+		const categories = await net.getLectureCategory();
+		const categoryVOs = categories.map( element => {
+			const vo = new PageCategoryItemVO();
+			vo.id = element.id;
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
+		} );
+		const initialVOs = initialData.items.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+		const allVOs = [];
+		allData.forEach( element => {
+			if( element.type === 'contents' ) {
+				allVOs[ element.category.id ] = element.items.map( ( item, n ) => {
+					const vo = new SummaryVO();
+					_.each( item, ( value, key ) => vo[ key ] = value );
+					vo.key = item.id.toString() + n + Math.random();
+					if( !vo.thumbnail ) {
+						vo.thumbnail = vo.images.wide;
+					}
+					return vo;
+				} );
+			}
+		} );
+		console.log( 'initialVOs', initialVOs );
+		console.log( 'allVOs', allVOs );
+
 		this.setState( {
-			videoCourseData: resultVideoCourseData,
-			videoCategoryData: resultVideoCategoryData,
+			displayData: initialVOs,
+			initialVOs,
+			allVOs,
+			categoryVOs,
 		} );
 	}
+
+	onCategorySelect = item => {
+		let selectedList = this.state.allVOs[ item.id ];
+		if( !selectedList ) {
+			selectedList = [];
+		}
+		console.log( 'selectedList', selectedList );
+		this.setState({
+			displayData: selectedList,
+			selectedCategory: item.id,
+		});
+	};
 
 	render() {
 		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
@@ -135,24 +187,18 @@ export default class CourseList extends React.Component {
 					</View>
 				</View>
 
-				<PageCategory data={this.state.videoCategoryData}/>
+				<PageCategory data={ this.state.categoryVOs }
+							  selectedCategory={ this.state.selectedCategory }
+							  onCategorySelect={ this.onCategorySelect }
+				/>
 
 				<FlatList
 					style={{ width: '100%' }}
-					data={this.state.videoCourseData.items}
+					data={this.state.displayData}
 					renderItem={
 						( { item } ) => <Lecture id={item.id}
 												 navigation={this.props.navigation}
-												 headline={item.headline}
-												 teacherHeadline={item.teacher.headline}
-												 teacherName={item.teacher.name}
-												 title={item.title}
-												 thumbnail={item.images.wide}
-												 clipCount={item.clip_count}
-												 hitCount={item.hit_count}
-												 starAvg={item.star_avg}
-												 url={item.url}
-												 reviewCount={item.review_count}/>
+												 item={ item }/>
 					}
 				/>
 

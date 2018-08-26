@@ -108,7 +108,7 @@ export default class Summary extends React.Component {
 					</Text>
 					<Image source={IcFilm} style={[styles.btnSetSmall, styles.clipIcon]}/>
 					<Text style={styles.clipCount}>
-						{this.props.clipCount}
+						{this.props.clip_count}
 						개 강의
 					</Text>
 					<TouchableOpacity activeOpacity={0.9}
@@ -123,19 +123,20 @@ export default class Summary extends React.Component {
 			<View style={styles.btnGroup}>
 				<View style={styles.alignJustify}>
 					<Image source={IcView} style={styles.btnSetSmall}/>
-					<Text style={styles.countText}>조회수 {this.props.hitCount}</Text>
+					<Text style={styles.countText}>조회수 {this.props.hit_count}</Text>
 					<Image source={IcStar} style={styles.btnSetSmall}/>
-					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
+					<Text style={styles.countText}>별점 {this.props.star_avg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
-					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
+					<Text style={styles.countText}>리뷰 {this.props.review_count}</Text>
+					<View style={{ marginLeft: 'auto' }}>
 					<TouchableOpacity activeOpacity={0.9}
 									  onPress={ ()=>{
 										  Device.share( this.props.title, this.props.url );
-									  }}
-					>
+									  }}>
 						<Image source={IcShare}
-							   style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
+							   style={styles.btnSetLarge}/>
 					</TouchableOpacity>
+					</View>
 				</View>
 			</View>
 		</View>

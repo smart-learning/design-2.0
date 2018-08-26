@@ -47,6 +47,8 @@
 		"react-native-kakao-signin": "git+https://github.com/kyejune/react-native-kakao-signin.git",
 		"react-native-localizable": "^1.0.1",
 		"react-native-swiper": "^1.5.13",
+		"react-native-video": "2.2.0",
+		"react-native-view-pager": "^0.2.3",
 		"react-navigation": "^2.3.1",
 		"react-test-renderer": "16.3.1",
 		"underscore": "^1.9.1",

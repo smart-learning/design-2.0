@@ -8,10 +8,13 @@ import moment from 'moment';
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
 let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
-if (__DEV__)
-	host = Localizable.host_debug || host;
-else
-	host = Localizable.host_release || host;
+// TODO: iOS에서 Localizable 이 undefined인 상황이 발견되었음. 원인 미상. 확인 필요.
+if( Localizable ) {
+	if (__DEV__)
+		host = Localizable.host_debug || host;
+	else
+		host = Localizable.host_release || host;
+}
 
 const HOST = host;
 const TYPE = 'api';
@@ -100,36 +103,49 @@ export default {
 	},
 
 	getLectureList() {
-		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/video-courses')
-				.then((response) => {
-					response.data.items.forEach(element => {
-						element.key = element.id.toString();
-					});
-					resolve(response.data);
-				})
-				.catch((error) => {
-					console.log(error);
-					reject(error);
+		return cacheOrLoad( API_PREFIX + 'contents/video-courses', DEFAULT_EXPIRED )
+			.then( data => {
+				data.items.forEach(element => {
+					element.key = element.id.toString();
 				});
-		});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
+	getLectureListByCategories() {
+		return cacheOrLoad( API_PREFIX + 'contents/video-courses/promotion-with-categories', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
 	},
 
 	getAudioBookList() {
-		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/audiobooks')
-				.then((response) => {
-					// console.log( response.data );
-					response.data.items.forEach(element => {
-						element.key = element.id.toString();
-					});
-					resolve(response.data);
-				})
-				.catch((error) => {
-					console.log(error);
-					reject(error);
+		return cacheOrLoad( API_PREFIX + 'contents/audiobooks', DEFAULT_EXPIRED )
+			.then( data => {
+				data.items.forEach(element => {
+					element.key = element.id.toString();
 				});
-		});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
+	getAudioBookByCategories() {
+		return cacheOrLoad( API_PREFIX + 'contents/audiobooks/group-by/categories', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
 	},
 
 	getLectureItem(id) {
@@ -204,13 +220,23 @@ export default {
 		});
 	},
 
+	getHomeContents() {
+		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
 	getHomeClassHot() {
 		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
 			.then( data => {
 				data.hot.forEach(element => {
 					element.key = element.id.toString();
 				});
-				return data;
+				return data.hot;
 			} )
 			.catch( error => {
 				console.log( error );
@@ -223,7 +249,7 @@ export default {
 				data.new.forEach(element => {
 					element.key = element.id.toString();
 				});
-				return data;
+				return data.new;
 			} )
 			.catch( error => {
 				console.log( error );
@@ -236,7 +262,7 @@ export default {
 				data.recommend.forEach(element => {
 					element.key = element.id.toString();
 				});
-				return data;
+				return data.recommend;
 			} )
 			.catch( error => {
 				console.log( error );

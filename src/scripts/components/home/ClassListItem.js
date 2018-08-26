@@ -114,13 +114,8 @@ export default class ClassListItem extends React.Component {
 				{/*</View>*/}
 			</View>
 			<Summary type="course"
-					 title={this.props.itemData.title}
-					 course={this.props.itemData.id}
-					 thumbnail={this.props.itemData.images.wide}
-					 clipCount={this.props.itemData.clip_count}
-					 hitCount={this.props.itemData.hit_count}
-					 starAvg={this.props.itemData.star_avg}
-					 reviewCount={this.props.itemData.review_count}/>
+					 { ...this.props.itemData }
+			/>
 		</View>
 	}
 }

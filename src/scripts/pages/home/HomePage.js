@@ -1,35 +1,17 @@
 import React from "react";
-import {observable} from 'mobx';
-import {observer} from 'mobx-react';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import CommonStyles from "../../../styles/common";
-import Swiper from 'react-native-swiper';
-import {
-	Button,
-	Dimensions,
-	Image,
-	ImageBackground,
-	ScrollView,
-	StyleSheet,
-	Text, TextInput,
-	TouchableOpacity,
-	View
-} from "react-native";
-import Dummy1 from '../../../images/dummy-swiper-1.png';
-import Dummy2 from '../../../images/dummy-swiper-2.png';
-import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
-import Series from "../../components/home/Series";
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import net from "../../commons/net";
-import PageCategory from "../../components/PageCategory";
-import ClassList from "../../components/home/ClassList";
-import ClipRank from "../../components/home/ClipRank";
-import ClassContinueList from "../../components/home/ClassContinueList";
-import IcSearch from "../../../images/ic-my-friend-search.png";
-import IcFb from "../../../images/ic-my-friend-fb.png";
-import IcBook from "../../../images/ic-my-friend-book.png";
-import DummyProfile from "../../../images/dummy-my-profile.png";
-import {SafeAreaView} from "react-navigation";
+import { SafeAreaView } from "react-navigation";
 import createStore from "../../commons/createStore";
 import HomeVideoPage from "./HomeVideoPage";
+import ViewPager from 'react-native-view-pager';
+import HomeAudioPage from "./HomeAudioPage";
+import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import SummaryVO from "../../vo/SummaryVO";
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -100,18 +82,60 @@ class HomePage extends React.Component {
 	});
 
 	getData = async () => {
+		// 데이터 가져와서
+		const videoCategoryData = await net.getLectureCategory();
+		const homeContents = await net.getHomeContents();
+		// VO로 정리해서 사용
+		const categoryVOs = videoCategoryData.map( element => {
+			const vo = new PageCategoryItemVO();
+			vo.id = element.id;
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
+		} );
+		const hotVOs = homeContents.hot.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+		const newVOs = homeContents.new.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+		const recommendVOs = homeContents.recommend.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+
+		// mobx 바인딩
 		this.store.homeSeriesData = await net.getHomeSeries();
-		this.store.videoCategoryData = await net.getLectureCategory();
-		this.store.classHotData = await net.getHomeClassHot();
-		this.store.classNewData = await net.getHomeClassNew();
-		this.store.classRecommendData = await net.getHomeClassRecommend();
+		this.store.videoCategoryData = categoryVOs;
+		this.store.classHotData = hotVOs;
+		this.store.classNewData = newVOs;
+		this.store.classRecommendData = recommendVOs;
 		this.store.clipRankData = await net.getHomeClipRank();
 	};
 
 	componentDidMount() {
 		let windowWidth = Dimensions.get('window').width;
+		let windowHeight = Dimensions.get('window').height;
 
 		this.store.windowWidth = windowWidth;
+		this.store.windowHeight = windowHeight;
 		this.store.slideHeight = windowWidth * 0.42;
 		this.store.clipRankContentSize = windowWidth - 85;
 
@@ -123,26 +147,47 @@ class HomePage extends React.Component {
 		}
 	}
 
+	goPage = pageName => {
+		if( pageName === 'video' ) {
+			this.tabStatus = 'video';
+			this.refs.pager.setPage( 0 );
+		}
+		else if( pageName === 'audioBook' ) {
+			this.tabStatus = 'audioBook';
+			this.refs.pager.setPage( 1 );
+		}
+	};
+
+	onPageSelected = (event) => {
+		if( event.nativeEvent.position === 0 ) {
+			this.tabStatus = 'video';
+		}
+		else if( event.nativeEvent.position === 1 ) {
+			this.tabStatus = 'audioBook';
+		}
+	};
+
 	render() {
+		// TODO: ViewPager 크기 및 위치 조정 필요
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
-				<ScrollView style={{flex: 1}}>
-					{this.tabStatus === 'video' &&
+				<ViewPager
+					ref={ 'pager' }
+					initialPage={0}
+					style={{ flex:1, height: this.store.windowHeight - 40 }}
+					onPageSelected={ this.onPageSelected }
+					>
 					<View style={styles.tabContentContainer}>
 						<HomeVideoPage store={this.store}/>
 					</View>
-					}
-
-					{this.tabStatus === 'audioBook' &&
 					<View style={styles.tabContentContainer}>
-						<Text>audio</Text>
+						<HomeAudioPage store={this.store}/>
 					</View>
-					}
-				</ScrollView>
+				</ViewPager>
 				<View style={styles.tabContainer}>
 					<View style={styles.tabFlex}>
 						<View style={styles.tabItemContainer}>
-							<TouchableOpacity activeOpacity={0.9} onPress={() => this.tabStatus = 'video'}>
+							<TouchableOpacity activeOpacity={0.9} onPress={ ()=>this.goPage( 'video' ) }>
 								<View style={styles.tabItem}>
 									<Text style={this.tabStatus === 'video' ? styles.tabTextActive : styles.tabText}>
 										비디오
@@ -152,7 +197,7 @@ class HomePage extends React.Component {
 							</TouchableOpacity>
 						</View>
 						<View style={styles.tabItemContainer}>
-							<TouchableOpacity activeOpacity={0.9} onPress={() => this.tabStatus = 'audioBook'}>
+							<TouchableOpacity activeOpacity={0.9} onPress={() => this.goPage( 'audioBook' )}>
 								<View style={styles.tabItem}>
 									<Text
 										style={this.tabStatus === 'audioBook' ? styles.tabTextActive : styles.tabText}>
