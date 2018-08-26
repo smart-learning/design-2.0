@@ -12,6 +12,7 @@ import HomeAudioPage from "./HomeAudioPage";
 import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
 import SummaryVO from "../../vo/SummaryVO";
 import _ from 'underscore';
+import AdvertisingSection from "../../components/AdvertisingSection";
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -214,6 +215,10 @@ class HomePage extends React.Component {
 						</View>
 					</View>
 				</View>
+
+				{/* 팝업 */}
+				<AdvertisingSection/>
+
 			</SafeAreaView>
 		</View>
 	}

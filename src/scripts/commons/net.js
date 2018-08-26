@@ -211,6 +211,16 @@ export default {
 		});
 	},
 
+	getMainPopup(){
+		return cacheOrLoad( API_PREFIX + 'cms/main/popup', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
 	getHomeContents() {
 		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
 			.then( data => {
