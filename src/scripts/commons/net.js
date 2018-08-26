@@ -87,27 +87,22 @@ export default {
 	},
 
 	getAudioBookCategory() {
-		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/audiobooks/categories')
-				.then((response) => {
-					response.data.forEach(element => {
-						element.key = element.id.toString();
-					});
-					resolve(response.data);
-				})
-				.catch((error) => {
-					console.log(error);
-					reject(error);
-				});
-		});
+		return cacheOrLoad( API_PREFIX + 'contents/audiobooks/categories', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
 	},
 
-	getLectureList() {
-		return cacheOrLoad( API_PREFIX + 'contents/video-courses', DEFAULT_EXPIRED )
+	getClassList( ccode = null ) {
+		let url = API_PREFIX + 'contents/video-courses';
+		if( ccode ) {
+			url += '?ccode=' + ccode;
+		}
+		return cacheOrLoad( url, DEFAULT_EXPIRED )
 			.then( data => {
-				data.items.forEach(element => {
-					element.key = element.id.toString();
-				});
 				return data;
 			} )
 			.catch( error => {
@@ -177,23 +172,6 @@ export default {
 		});
 	},
 
-	// getVideoList( id ) {
-	// 	return new Promise( ( resolve, reject ) => {
-	// 		fetch( API_PREFIX + 'video-list?id=' + id )
-	// 			.then( ( response ) => response.json() )
-	// 			.then( ( responseJson ) => {
-	// 				responseJson.items.forEach( element => {
-	// 					element.key = element.id.toString();
-	// 				} );
-	// 				resolve( responseJson );
-	// 			} )
-	// 			.catch( ( error ) => {
-	// 				console.log( error );
-	// 				reject( error );
-	// 			} );
-	// 	} );
-	// },
-
 	getAuthToken(email, password) {
 		const params = new URLSearchParams();
 		params.set('username', email);
@@ -230,44 +208,6 @@ export default {
 			} );
 	},
 
-	getHomeClassHot() {
-		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
-			.then( data => {
-				data.hot.forEach(element => {
-					element.key = element.id.toString();
-				});
-				return data.hot;
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
-	},
-
-	getHomeClassNew() {
-		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
-			.then( data => {
-				data.new.forEach(element => {
-					element.key = element.id.toString();
-				});
-				return data.new;
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
-	},
-
-	getHomeClassRecommend() {
-		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
-			.then( data => {
-				data.recommend.forEach(element => {
-					element.key = element.id.toString();
-				});
-				return data.recommend;
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
-	},
 	getHomeClipRank() {
 		return cacheOrLoad( API_PREFIX + 'contents/video-clips/realtime-chart', DEFAULT_EXPIRED )
 			.then( data => {
