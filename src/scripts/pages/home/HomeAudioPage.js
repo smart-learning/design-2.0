@@ -17,6 +17,7 @@ import BookMonthly from "../../components/home/BookMonthly";
 import PageCategory from "../../components/PageCategory";
 import BookList from "../../components/home/BookList";
 import BookFreeList from "../../components/home/BookFreeList";
+import BookContinueList from "../../components/home/BookCoutinueList";
 
 const styles = StyleSheet.create({
 	wrapper: {},
@@ -112,7 +113,6 @@ class HomeAudioPage extends React.Component {
 	render() {
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
-
 			<View style={{ height: this.props.store.slideHeight }}>
 				{(this.props.store.homeBannerData && this.props.store.homeBannerData.length > 0 ) &&
 				<Swiper style={styles.wrapper}
@@ -219,12 +219,16 @@ class HomeAudioPage extends React.Component {
 				</View>
 				<View style={styles.titleHr}/>
 
+				<BookContinueList/>
+
 				<View style={CommonStyles.alignJustifyItemCenter}>
 					<Text style={styles.titleH3}>
 						최근재생 오디오북
 					</Text>
 				</View>
 				<View style={styles.titleHr}/>
+
+				<BookContinueList/>
 			</View>
 		</ScrollView>
 
