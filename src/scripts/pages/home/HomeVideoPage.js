@@ -20,6 +20,7 @@ import ClassContinueList from "../../components/home/ClassContinueList";
 import Swiper from "react-native-swiper";
 import { withNavigation } from "react-navigation";
 import PTRView from 'react-native-pull-to-refresh';
+import moment from "moment";
 
 const styles = StyleSheet.create( {
 	slide: {
@@ -245,7 +246,7 @@ export default withNavigation( class HomeVideoPage extends React.Component {
 								지금 많이 듣고 있는 강의클립
 							</Text>
 							<Text style={[ styles.titleParagraph, { marginLeft: 'auto' } ]}>
-								2018. 07.09 업데이트
+								{ moment().format( 'YYYY. MM. DD' ) } 업데이트
 							</Text>
 						</View>
 						<View style={styles.titleHr}/>
@@ -253,6 +254,7 @@ export default withNavigation( class HomeVideoPage extends React.Component {
 						<ClipRank itemData={this.props.store.clipRankData}
 								  clipRankContentSize={this.props.store.clipRankContentSize}/>
 
+						{ 1 === 2 && <View>
 						<View style={CommonStyles.alignJustifyItemCenter}>
 							<Text style={styles.titleH3}>
 								이어보기
@@ -264,6 +266,7 @@ export default withNavigation( class HomeVideoPage extends React.Component {
 						<View style={styles.titleHr}/>
 
 						<ClassContinueList/>
+						</View> }
 					</View>
 					}
 				</ScrollView>
