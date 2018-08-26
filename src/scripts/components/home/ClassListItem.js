@@ -75,17 +75,12 @@ const styles = StyleSheet.create( {
 } );
 
 export default class ClassListItem extends React.Component {
-	constructor( props ) {
-		super( props );
-	}
-
 	render() {
-
 		return <View style={styles.classItem}>
 			{this.props.classType === 'hot' &&
 			<View style={styles.classRank}>
 				<Text style={styles.classRankText}>
-					{this.props.rankNumber}
+					{this.props.itemData.rankNumber}
 				</Text>
 				<View style={styles.classRankHr}/>
 			</View>
