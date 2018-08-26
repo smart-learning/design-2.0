@@ -31,7 +31,10 @@ const MyScreens = createStackNavigator(
 
 		Login: {
 			screen: LoginPage,
-			navigationOptions:{ header: null }
+			navigationOptions:{
+				header: null,
+				gesturesEnabled: false,
+			}
 		},
 
 		FindPassword: {
@@ -134,7 +137,8 @@ const MyScreens = createStackNavigator(
 	},
 
 	{
-		initialRouteName: 'AuthCheck'
+		initialRouteName: 'AuthCheck',
+		gesturesEnabled: false
 	}
 );
 

@@ -21,4 +21,3 @@ public class MainActivity extends ReactActivity {
 		MainApplication.getCallbackManager().onActivityResult(requestCode, resultCode, data);
 	}
 }
-    
