@@ -75,12 +75,8 @@ export default class Lecture extends React.Component {
 			</TouchableOpacity>
 			{/*썸네일*/}
 			<Summary type="clip"
-					 title={this.props.title}
-					 thumbnail={this.props.thumbnail}
-					 clipCount={this.props.clipCount}
-					 hitCount={this.props.hitCount}
-					 starAvg={this.props.starAvg}
-					 reviewCount={this.props.reviewCount}
+					 { ...this.props.item }
+					 navigate={ this.props.navigate }
 					 onPress={this.changePage}
 			/>
 		</View>
