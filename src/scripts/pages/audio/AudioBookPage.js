@@ -1,15 +1,15 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
-import {SafeAreaView} from "react-navigation";
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { SafeAreaView } from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
 import Book from "../../components/audio/Book";
 import _ from 'underscore';
-import {observer} from "mobx-react";
+import { observer } from "mobx-react";
 import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
 import BookVO from "../../vo/BookVO";
-import SummaryVO from "../../vo/SummaryVO";
+import createStore from "../../commons/createStore";
 
 
 const styles = StyleSheet.create({
@@ -82,23 +82,16 @@ const styles = StyleSheet.create({
 });
 
 @observer class AudioBookPage extends React.Component {
-
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			categories: [],
-			displayList: [],
-			initialList: null,
-			allList: null,
-			selectedCategory: null,
-		};
-	}
+	store = createStore({
+		categories: [],
+		displayList: [],
+		selectedCategory: null,
+	});
 
 	loadAudioList = async ( ccode = null ) => {
 		const data = await net.getAudioBookList( ccode );
-		const voList = data.items.map( element => {
-			const vo = new SummaryVO();
+		this.store.displayList = data.items.map( element => {
+			const vo = new BookVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
 			if( !vo.thumbnail ) {
@@ -109,33 +102,23 @@ const styles = StyleSheet.create({
 			}
 			return vo;
 		} );
-		this.setState( {
-			displayList: voList,
-		} );
 	};
 
 	async componentDidMount() {
-		await this.loadAudioList();
-
 		const loadedCategories = await net.getAudioBookCategory();
-		const categories = loadedCategories.map( element => {
+		this.store.categories = loadedCategories.map( element => {
 			const vo = new PageCategoryItemVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
 			vo.label = element.title;
 			return vo;
 		} );
-		this.setState({
-			categories,
-		});
+		this.loadAudioList();
 	}
 
 	onCategorySelect = item => {
-		this.setState({
-			selectedCategory: item.id,
-		}, () => {
-			this.loadAudioList( item.ccode );
-		} );
+		this.selectedCategory = item.id;
+		this.loadAudioList( item.ccode );
 	};
 
 	render() {
@@ -171,13 +154,13 @@ const styles = StyleSheet.create({
 					</View>
 				</View>
 
-				<PageCategory selectedCategory={ this.state.selectedCategory }
-							  data={this.state.categories} onCategorySelect={ this.onCategorySelect }/>
+				<PageCategory selectedCategory={ this.store.selectedCategory }
+							  data={this.store.categories} onCategorySelect={ this.onCategorySelect }/>
 
-				{this.state.displayList !== null &&
+				{this.store.displayList !== null &&
 				<FlatList
 					style={{width: '100%'}}
-					data={this.state.displayList}
+					data={this.store.displayList}
 					renderItem={
 						({item}) => <Book id={item.id}
 										  type="best"
