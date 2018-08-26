@@ -108,6 +108,8 @@ export default class HomeVideoPage extends React.Component {
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
+						dotColor={"#888888"}
+						activeDotColor={"#ffffff"}
 						paginationStyle={{ bottom: 10 }}>
 					<View style={styles.slide}>
 						<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
@@ -220,9 +222,6 @@ export default class HomeVideoPage extends React.Component {
 					<Text style={styles.titleParagraph}>
 						2018. 07.09 업데이트
 					</Text>
-					<TouchableOpacity activeOpacity={0.9} style={{ marginLeft: 'auto' }}>
-						<Text style={styles.titleLink}>마이윌라</Text>
-					</TouchableOpacity>
 				</View>
 				<View style={styles.titleHr}/>
 
