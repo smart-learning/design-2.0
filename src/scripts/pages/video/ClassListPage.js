@@ -1,12 +1,5 @@
 import React from "react";
-import {
-	Text,
-	View,
-	Button,
-	FlatList,
-	ScrollView,
-	TouchableOpacity, StyleSheet,
-} from "react-native";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import Lecture from "../../components/video/Lecture";
@@ -15,6 +8,8 @@ import PageCategory from "../../components/PageCategory";
 import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
 import SummaryVO from "../../vo/SummaryVO";
 import _ from "underscore";
+import createStore from "../../commons/createStore";
+import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create( {
 	toggleGroup: {
@@ -85,57 +80,43 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-export default class CourseList extends React.Component {
+@observer class ClassListPage extends React.Component {
 
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			displayData: [],
-			videoCategoryData: [],
-			selectedCategory: null,
-		};
-	}
+	store = createStore( {
+		displayData: null,
+		categories: [],
+		selectedCategory: null,
+	} );
 
 	loadClassList = async ( ccode = null ) => {
+		this.store.displayData = null;
 		const data = await net.getClassList( ccode );
-		const voList = data.items.map( element => {
+		this.store.displayData = data.items.map( element => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
-			if( !vo.thumbnail ) {
+			if ( !vo.thumbnail ) {
 				vo.thumbnail = vo.images.wide;
 			}
 			return vo;
-		} );
-		this.setState( {
-			displayData: voList,
 		} );
 	};
 
 	async componentDidMount() {
 		await this.loadClassList();
 		const categories = await net.getLectureCategory();
-		const categoryVOs = categories.map( element => {
+		this.store.categories = categories.map( element => {
 			const vo = new PageCategoryItemVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
 			vo.label = element.title;
 			return vo;
 		} );
-
-		this.setState( {
-			categoryVOs,
-		} );
 	}
 
 	onCategorySelect = item => {
-		console.log( 'item', item );
-		this.setState({
-			selectedCategory: item.id,
-		}, () => {
-			this.loadClassList( item.ccode );
-		} );
+		this.store.selectedCategory = item.id;
+		this.loadClassList( item.ccode );
 	};
 
 	render() {
@@ -171,20 +152,28 @@ export default class CourseList extends React.Component {
 					</View>
 				</View>
 
-				<PageCategory data={ this.state.categoryVOs }
-							  selectedCategory={ this.state.selectedCategory }
-							  onCategorySelect={ this.onCategorySelect }
+				<PageCategory data={this.store.categories}
+							  selectedCategory={this.store.selectedCategory}
+							  onCategorySelect={this.onCategorySelect}
 				/>
 
+				{this.store.displayData === null &&
+				<View style={{ marginTop: 12 }}>
+					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+				</View>
+				}
+
+				{this.store.displayData !== null &&
 				<FlatList
 					style={{ width: '100%' }}
-					data={this.state.displayData}
+					data={this.store.displayData}
 					renderItem={
 						( { item } ) => <Lecture id={item.id}
 												 navigation={this.props.navigation}
-												 item={ item }/>
+												 item={item}/>
 					}
 				/>
+				}
 
 				<View style={CommonStyles.contentContainer}>
 					<TouchableOpacity activeOpacity={0.9}>
@@ -198,3 +187,4 @@ export default class CourseList extends React.Component {
 	}
 }
 
+export default ClassListPage;
