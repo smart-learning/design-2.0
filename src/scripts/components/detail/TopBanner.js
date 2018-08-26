@@ -2,8 +2,10 @@ import React from "react";
 import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image,} from "react-native";
 import CommonStyles from "../../../styles/common";
 import Dummy from "../../../images/dummy-detail-banner.png";
-import IcPlay from "../../../images/ic-play.png";
+import IcPlay from "../../../images/ic-play-detail.png";
+import AuthorDummy from "../../../images/dummy-audiobook-author.png";
 import {observer} from "mobx-react";
+import Native from "../../commons/native";
 
 const styles = StyleSheet.create({
 	banner: {
@@ -55,10 +57,29 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		color: '#ffffff',
 	},
-	playButton: {
+	audioBookPlayButtonContainer: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		top: '30%',
+		right: 15,
+		width: 140,
+		height: 140,
+	},
+	audioBookAuthorThumbnail: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '100%',
+		height: '100%',
+	},
+	classPlayButtonContainer: {
 		position: 'absolute',
 		top: '50%',
 		right: 15,
+		width: 50,
+		height: 50,
+	},
+	playButton: {
 		width: 50,
 		height: 50,
 	},
@@ -127,9 +148,6 @@ export default class TopBanner extends React.Component {
 
 	render() {
 		return <ImageBackground style={styles.banner} resizeMode="cover" source={Dummy}>
-			<TouchableOpacity>
-				<Image style={styles.playButton} source={IcPlay}/>
-			</TouchableOpacity>
 			<View style={styles.labelContainer}>
 				<View
 					style={this.props.learnType === 'audioBook' ? [styles.label, styles.labelAudioBook] : [styles.label, styles.labelClass]}
@@ -168,6 +186,22 @@ export default class TopBanner extends React.Component {
 					</Text>
 				</View>
 			</View>
+			{this.props.learnType === 'audioBook' &&
+			<View style={styles.audioBookPlayButtonContainer}>
+				<ImageBackground source={AuthorDummy} resizeMode={"cover"} borderRadius={70} style={styles.audioBookAuthorThumbnail}>
+					<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.store.itemData.id)}>
+						<Image source={IcPlay} style={styles.playButton}/>
+					</TouchableOpacity>
+				</ImageBackground>
+			</View>
+			}
+			{this.props.learnType === 'class' &&
+			<View style={styles.classPlayButtonContainer}>
+				<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.store.itemData.id)}>
+					<Image source={IcPlay} style={styles.playButton}/>
+				</TouchableOpacity>
+			</View>
+			}
 		</ImageBackground>
 	}
 }
