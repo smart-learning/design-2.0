@@ -98,8 +98,8 @@ export default class CourseList extends React.Component {
 	}
 
 	loadClassList = async ( ccode = null ) => {
-		const initialData = await net.getClassList( ccode );
-		const initialVOs = initialData.items.map( element => {
+		const data = await net.getClassList( ccode );
+		const voList = data.items.map( element => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
@@ -109,7 +109,7 @@ export default class CourseList extends React.Component {
 			return vo;
 		} );
 		this.setState( {
-			displayData: initialVOs,
+			displayData: voList,
 		} );
 	};
 

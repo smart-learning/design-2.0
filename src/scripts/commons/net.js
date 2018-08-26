@@ -120,8 +120,12 @@ export default {
 			} );
 	},
 
-	getAudioBookList() {
-		return cacheOrLoad( API_PREFIX + 'contents/audiobooks', DEFAULT_EXPIRED )
+	getAudioBookList( ccode = null ) {
+		let url = API_PREFIX + 'contents/audiobooks';
+		if( ccode ) {
+			url += '?ccode=' + ccode;
+		}
+		return cacheOrLoad( url, DEFAULT_EXPIRED )
 			.then( data => {
 				data.items.forEach(element => {
 					element.key = element.id.toString();

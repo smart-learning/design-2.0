@@ -8,6 +8,8 @@ import Book from "../../components/audio/Book";
 import _ from 'underscore';
 import {observer} from "mobx-react";
 import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import BookVO from "../../vo/BookVO";
+import SummaryVO from "../../vo/SummaryVO";
 
 
 const styles = StyleSheet.create({
@@ -86,38 +88,54 @@ const styles = StyleSheet.create({
 
 		this.state = {
 			categories: [],
-			displayList: null,
-			defaultList: null,
+			displayList: [],
+			initialList: null,
 			allList: null,
 			selectedCategory: null,
 		};
 	}
 
+	loadAudioList = async ( ccode = null ) => {
+		const data = await net.getAudioBookList( ccode );
+		const voList = data.items.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.book;
+			}
+			if( !vo.banner_color ) {
+				vo.banner_color = 'transparent';
+			}
+			return vo;
+		} );
+		this.setState( {
+			displayList: voList,
+		} );
+	};
+
 	async componentDidMount() {
+		await this.loadAudioList();
+
 		const loadedCategories = await net.getAudioBookCategory();
 		const categories = loadedCategories.map( element => {
 			const vo = new PageCategoryItemVO();
-			vo.id = element.id;
+			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
 			vo.label = element.title;
 			return vo;
 		} );
-		const defaultList = await net.getAudioBookList();
-		const allList = await net.getAudioBookByCategories();
 		this.setState({
 			categories,
-			defaultList,
-			allList,
-			displayList: defaultList,
 		});
 	}
 
 	onCategorySelect = item => {
-		const selectedList = _.find( this.state.allList, group => group.category.id === item.id );
 		this.setState({
-			displayList: selectedList,
-			selectedCategory: selectedList.category.id,
-		});
+			selectedCategory: item.id,
+		}, () => {
+			this.loadAudioList( item.ccode );
+		} );
 	};
 
 	render() {
@@ -159,7 +177,7 @@ const styles = StyleSheet.create({
 				{this.state.displayList !== null &&
 				<FlatList
 					style={{width: '100%'}}
-					data={this.state.displayList.items}
+					data={this.state.displayList}
 					renderItem={
 						({item}) => <Book id={item.id}
 										  type="best"
