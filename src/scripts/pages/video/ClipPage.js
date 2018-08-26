@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import Clip from "../../components/video/Clip";
@@ -82,12 +82,13 @@ const styles = StyleSheet.create( {
 
 @observer class ClipPage extends React.Component {
 	store = createStore( {
-		displayData: [],
+		displayData: null,
 		categories: [],
 		selectedCategory: null,
 	} );
 
 	loadClassList = async ( ccode = null ) => {
+		this.store.displayData = null;
 		const data = await net.getClassList( ccode );
 		this.store.displayData = data.items.map( element => {
 			const vo = new SummaryVO();
@@ -155,13 +156,20 @@ const styles = StyleSheet.create( {
 							  onCategorySelect={ this.onCategorySelect }
 				/>
 
+				{this.store.displayData === null &&
+				<View style={{ marginTop: 12 }}>
+					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+				</View>
+				}
+				{this.store.displayData !== null &&
 				<FlatList
 					style={{ width: '100%' }}
 					data={this.store.displayData}
 					renderItem={
-						( { item } ) => <Clip item={ item } navigation={ this.props.navigation }/>
+						( { item } ) => <Clip item={item} navigation={this.props.navigation}/>
 					}
 				/>
+				}
 
 				<View style={CommonStyles.contentContainer}>
 					<TouchableOpacity activeOpacity={0.9}>

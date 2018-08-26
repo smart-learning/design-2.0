@@ -1,10 +1,6 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage, Alert} from "react-native";
-import {COLOR_PRIMARY} from "../../../styles/common";
-import {withNavigation} from "react-navigation";
-import net from "../../commons/net";
-import store from "../../commons/store";
-import axios from "axios";
+import React, { Component } from 'react';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { COLOR_PRIMARY } from "../../../styles/common";
 
 const styles = StyleSheet.create({
 	contentContainer: {

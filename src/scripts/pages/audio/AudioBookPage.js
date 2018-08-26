@@ -1,6 +1,6 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
@@ -84,13 +84,14 @@ const styles = StyleSheet.create({
 @observer class AudioBookPage extends React.Component {
 	store = createStore({
 		categories: [],
-		displayList: [],
+		displayData: null,
 		selectedCategory: null,
 	});
 
 	loadAudioList = async ( ccode = null ) => {
+		this.store.displayData = null;
 		const data = await net.getAudioBookList( ccode );
-		this.store.displayList = data.items.map( element => {
+		this.store.displayData = data.items.map( element => {
 			const vo = new BookVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
 	}
 
 	onCategorySelect = item => {
-		this.selectedCategory = item.id;
+		this.store.selectedCategory = item.id;
 		this.loadAudioList( item.ccode );
 	};
 
@@ -157,10 +158,15 @@ const styles = StyleSheet.create({
 				<PageCategory selectedCategory={ this.store.selectedCategory }
 							  data={this.store.categories} onCategorySelect={ this.onCategorySelect }/>
 
-				{this.store.displayList !== null &&
+				{this.store.displayData === null &&
+				<View style={{ marginTop: 12 }}>
+					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+				</View>
+				}
+				{this.store.displayData !== null &&
 				<FlatList
 					style={{width: '100%'}}
-					data={this.store.displayList}
+					data={this.store.displayData}
 					renderItem={
 						({item}) => <Book id={item.id}
 										  type="best"

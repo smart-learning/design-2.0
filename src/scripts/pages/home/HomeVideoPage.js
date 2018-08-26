@@ -111,12 +111,16 @@ export default class HomeVideoPage extends React.Component {
 						dotColor={"#888888"}
 						activeDotColor={"#ffffff"}
 						paginationStyle={{ bottom: 10 }}>
-					<View style={styles.slide}>
-						<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
-					</View>
-					<View style={styles.slide}>
-						<ImageBackground source={Dummy2} resizeMode="cover" style={styles.thumbnail}/>
-					</View>
+
+					{this.props.store.homeBannerData.map( ( item, key )=> {
+						return (
+							<TouchableOpacity activeOpacity={0.9}>
+								<View key={key} style={styles.slide}>
+									<ImageBackground source={{url: item.images.default}} resizeMode="cover" style={styles.thumbnail}/>
+								</View>
+							</TouchableOpacity>
+						);
+					} )}
 				</Swiper>
 			</View>
 			{/* /이미지 스와이퍼 */}
