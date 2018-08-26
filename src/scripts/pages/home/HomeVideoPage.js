@@ -1,18 +1,16 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
 import {
+	ActivityIndicator,
 	Image,
 	ImageBackground,
+	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	View,
-	ScrollView,
-	ActivityIndicator
+	View
 } from "react-native";
-import {observer} from "mobx-react";
-import Dummy1 from '../../../images/dummy-swiper-1.png';
-import Dummy2 from '../../../images/dummy-swiper-2.png';
+import { observer } from "mobx-react";
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
 import Series from "../../components/home/Series";
 import PageCategory from "../../components/PageCategory";
@@ -111,8 +109,10 @@ const styles = StyleSheet.create( {
 export default class HomeVideoPage extends React.Component {
 
 	render() {
+		console.log( 'this.props.store.homeBannerData', this.props.store.homeBannerData );
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
+			{this.props.store.homeBannerData &&
 			<View style={{ height: this.props.store.slideHeight }}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
@@ -121,17 +121,19 @@ export default class HomeVideoPage extends React.Component {
 						activeDotColor={"#ffffff"}
 						paginationStyle={{ bottom: 10 }}>
 
-					{this.props.store.homeBannerData.map( ( item, key )=> {
+					{this.props.store.homeBannerData.map( ( item, key ) => {
 						return (
-							<TouchableOpacity activeOpacity={0.9}>
-								<View key={key} style={styles.slide}>
-									<ImageBackground source={{url: item.images.default}} resizeMode="cover" style={styles.thumbnail}/>
+							<TouchableOpacity activeOpacity={0.9} key={ key }>
+								<View style={styles.slide}>
+									<ImageBackground source={{ url: item.images.default }} resizeMode="cover"
+													 style={styles.thumbnail}/>
 								</View>
 							</TouchableOpacity>
 						);
 					} )}
 				</Swiper>
 			</View>
+			}
 			{/* /이미지 스와이퍼 */}
 
 			{this.props.store.homeSeriesData.length <= 6 &&
