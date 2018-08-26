@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import Summary from "../video/Summary";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	classList: {
@@ -74,7 +75,15 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-export default class ClassListItem extends React.Component {
+export default withNavigation(class ClassListItem extends React.Component {
+
+	gotoClassPage=()=>{
+		this.props.navigation.navigate('ClassListPage',
+			{ action:'item', data: this.props.itemData } // 전달할 데이터
+		);
+	}
+
+
 	render() {
 		return <View style={styles.classItem}>
 			{this.props.classType === 'hot' &&
@@ -85,7 +94,9 @@ export default class ClassListItem extends React.Component {
 				<View style={styles.classRankHr}/>
 			</View>
 			}
-			<TouchableOpacity activeOpacity={0.9}>
+			<TouchableOpacity activeOpacity={0.9}
+							  onPress={ this.gotoClassPage }
+			>
 				<Text style={styles.classTitle}>
 					{this.props.itemData.headline}
 				</Text>
@@ -113,4 +124,4 @@ export default class ClassListItem extends React.Component {
 			/>
 		</View>
 	}
-}
+});

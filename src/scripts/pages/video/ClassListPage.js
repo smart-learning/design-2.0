@@ -112,6 +112,22 @@ const styles = StyleSheet.create( {
 			vo.label = element.title;
 			return vo;
 		} );
+
+		// action으로 정해둔 네임에 따라 초기 행동을 결정
+		const action = this.props.navigation.getParam('action');
+		const actionData = this.props.navigation.getParam('data');
+
+		console.log( 'navigate params:', action, actionData );
+
+		switch( action ){
+			case 'category': // from HomeVideoPage
+				this.onCategorySelect( actionData );
+				break;
+
+			case 'item': // from ClassListPage
+				// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
+				break;
+		}
 	}
 
 	onCategorySelect = item => {

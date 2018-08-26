@@ -18,6 +18,7 @@ import ClassList from "../../components/home/ClassList";
 import ClipRank from "../../components/home/ClipRank";
 import ClassContinueList from "../../components/home/ClassContinueList";
 import Swiper from "react-native-swiper";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create({
 	slide: {
@@ -105,7 +106,15 @@ const styles = StyleSheet.create({
 });
 
 @observer
-export default class HomeVideoPage extends React.Component {
+export default withNavigation( class HomeVideoPage extends React.Component {
+
+
+	/* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
+	premiumCategorySelect=(data)=>{
+		this.props.navigation.navigate('ClassListPage',
+			{ action:'category', data: data } // 전달할 데이터
+		);
+	}
 
 	render() {
 		return <ScrollView style={{flex: 1}}>
@@ -181,7 +190,9 @@ export default class HomeVideoPage extends React.Component {
 
 				<View style={styles.classCategory}>
 					<View style={styles.classCategoryHr}/>
-					<PageCategory data={this.props.store.videoCategoryData}/>
+					<PageCategory data={this.props.store.videoCategoryData}
+								  onCategorySelect={ this.premiumCategorySelect }
+					/>
 					<View style={styles.classCategoryHr}/>
 				</View>
 
@@ -254,4 +265,4 @@ export default class HomeVideoPage extends React.Component {
 			}
 		</ScrollView>
 	}
-}
+});
