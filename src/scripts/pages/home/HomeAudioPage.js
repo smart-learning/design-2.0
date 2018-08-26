@@ -9,6 +9,7 @@ import IcAngleRightGrey from "../../../images/ic-angle-right-grey.png";
 import BookMonthly from "../../components/home/BookMonthly";
 import PageCategory from "../../components/PageCategory";
 import BookList from "../../components/home/BookList";
+import BookFreeList from "../../components/home/BookFreeList";
 
 const styles = StyleSheet.create({
 	wrapper: {},
@@ -186,6 +187,8 @@ class HomeAudioPage extends React.Component {
 						매일 책 한권 - 무료 북 리뷰
 					</Text>
 				</View>
+
+				<BookFreeList/>
 
 				<TouchableOpacity activeOpacity={0.9}>
 					<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>

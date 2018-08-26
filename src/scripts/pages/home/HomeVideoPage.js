@@ -1,6 +1,15 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View, ScrollView} from "react-native";
+import {
+	Image,
+	ImageBackground,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+	ScrollView,
+	ActivityIndicator
+} from "react-native";
 import {observer} from "mobx-react";
 import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
@@ -125,6 +134,11 @@ export default class HomeVideoPage extends React.Component {
 			</View>
 			{/* /이미지 스와이퍼 */}
 
+			{this.props.store.homeSeriesData.length <= 6 &&
+			<View style={{ marginTop: 12 }}>
+				<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+			</View>
+			}
 			{this.props.store.homeSeriesData.length > 6 &&
 			<View style={[ CommonStyles.contentContainer, styles.seriesContainer ]}>
 				<View>
@@ -150,6 +164,7 @@ export default class HomeVideoPage extends React.Component {
 			</View>
 			}
 
+			{this.props.store.classHotData.length > 0 &&
 			<View style={[ CommonStyles.contentContainer, styles.classContainer ]}>
 				<View>
 					<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
@@ -217,7 +232,8 @@ export default class HomeVideoPage extends React.Component {
 				</View>
 				<View style={styles.titleHr}/>
 
-				<ClipRank itemData={this.props.store.clipRankData} clipRankContentSize={this.props.store.clipRankContentSize}/>
+				<ClipRank itemData={this.props.store.clipRankData}
+						  clipRankContentSize={this.props.store.clipRankContentSize}/>
 
 				<View style={CommonStyles.alignJustifyItemCenter}>
 					<Text style={styles.titleH3}>
@@ -231,6 +247,7 @@ export default class HomeVideoPage extends React.Component {
 
 				<ClassContinueList/>
 			</View>
+			}
 		</ScrollView>
 	}
 }
