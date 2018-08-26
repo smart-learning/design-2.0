@@ -1,6 +1,15 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	ActivityIndicator,
+	Image,
+	ImageBackground,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from "react-native";
 import { observer } from "mobx-react";
 import Swiper from "react-native-swiper";
 import IcAngleRightGrey from "../../../images/ic-angle-right-grey.png";
@@ -122,6 +131,11 @@ class HomeAudioPage extends React.Component {
 						);
 					} )}
 				</Swiper>
+				}
+				{this.props.store.homeBannerData.length === 0 &&
+				<View style={{ marginTop: '20%' }}>
+					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+				</View>
 				}
 			</View>
 			{/* /이미지 스와이퍼 */}

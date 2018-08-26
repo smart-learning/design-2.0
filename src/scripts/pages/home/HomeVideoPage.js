@@ -113,7 +113,7 @@ export default class HomeVideoPage extends React.Component {
 			{/* 이미지 스와이퍼 */}
 
 			<View style={{height: this.props.store.slideHeight}}>
-				{(this.props.store.homeBannerData && this.props.store.homeBannerData.length > 0 ) &&
+				{this.props.store.homeBannerData.length > 0 &&
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
@@ -130,6 +130,11 @@ export default class HomeVideoPage extends React.Component {
 						);
 					})}
 				</Swiper>
+				}
+				{this.props.store.homeBannerData.length === 0 &&
+				<View style={{ marginTop: '20%' }}>
+					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+				</View>
 				}
 			</View>
 			{/* /이미지 스와이퍼 */}
