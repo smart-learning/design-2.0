@@ -1,5 +1,7 @@
 package kr.co.influential.youngkangapp;
 
+import android.content.Intent;
+
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
@@ -19,3 +21,4 @@ public class MainActivity extends ReactActivity {
 		MainApplication.getCallbackManager().onActivityResult(requestCode, resultCode, data);
 	}
 }
+    
