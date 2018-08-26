@@ -1,7 +1,6 @@
 import React from 'react';
-import { observable } from 'mobx';
-import {AsyncStorage} from "react-native";
-import axios from 'axios';
+import { AsyncStorage } from "react-native";
+import axios from './wAxios';
 
 let socialType;
 let socialToken;
