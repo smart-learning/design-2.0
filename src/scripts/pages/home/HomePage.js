@@ -2,7 +2,7 @@ import React from "react";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import CommonStyles from "../../../styles/common";
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import net from "../../commons/net";
 import { SafeAreaView } from "react-navigation";
 import createStore from "../../commons/createStore";
@@ -79,9 +79,13 @@ class HomePage extends React.Component {
 		classNewData: {},
 		classRecommendData: {},
 		clipRankData: [],
+		homeBannerData: [],
 	});
 
 	getData = async () => {
+		// 시리즈는 제일 먼저 읽어온다
+		this.store.homeSeriesData = await net.getHomeSeries();
+
 		// 데이터 가져와서
 		const videoCategoryData = await net.getLectureCategory();
 		const homeContents = await net.getHomeContents();
@@ -93,10 +97,11 @@ class HomePage extends React.Component {
 			vo.label = element.title;
 			return vo;
 		} );
-		const hotVOs = homeContents.hot.map( element => {
+		const hotVOs = homeContents.hot.map( ( element, n ) => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
+			vo.rankNumber = n + 1;
 			if( !vo.thumbnail ) {
 				vo.thumbnail = vo.images.wide;
 			}
@@ -122,12 +127,12 @@ class HomePage extends React.Component {
 		} );
 
 		// mobx 바인딩
-		this.store.homeSeriesData = await net.getHomeSeries();
 		this.store.videoCategoryData = categoryVOs;
 		this.store.classHotData = hotVOs;
 		this.store.classNewData = newVOs;
 		this.store.classRecommendData = recommendVOs;
 		this.store.clipRankData = await net.getHomeClipRank();
+		this.store.homeBannerData = await net.getMainBanner();
 	};
 
 	componentDidMount() {

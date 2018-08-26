@@ -17,9 +17,6 @@
 		"start": "react-native start",
 		"android": "react-native run-android",
 		"ios": "react-native run-ios",
-		"react-native-cli": "^2.0.1",
-		"react-test-renderer": "16.3.1",
-		"watchman": "^1.0.0",
 		"test": "jest"
 	},
 	"main": "node_modules/expo/AppEntry.js",

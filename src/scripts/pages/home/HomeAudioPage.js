@@ -7,6 +7,9 @@ import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
 import IcAngleRightGrey from "../../../images/ic-angle-right-grey.png";
 import BookMonthly from "../../components/home/BookMonthly";
+import PageCategory from "../../components/PageCategory";
+import BookList from "../../components/home/BookList";
+import BookFreeList from "../../components/home/BookFreeList";
 
 const styles = StyleSheet.create({
 	wrapper: {},
@@ -65,6 +68,35 @@ const styles = StyleSheet.create({
 		paddingTop: 50,
 		paddingBottom: 50,
 	},
+	audioCategory: {
+		marginTop: 20,
+		marginBottom: 20,
+	},
+	audioCategoryHr: {
+		height: 1,
+		backgroundColor: '#cecece',
+	},
+	linkViewAll: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
+		height: 36,
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		backgroundColor: '#dddddd',
+	},
+	classLinkViewAll: {
+		marginTop: 15,
+		marginBottom: 30,
+	},
+	linkViewAllText: {
+		fontSize: 14,
+		color: '#888888',
+	},
+	linkViewAllIcon: {
+		paddingLeft: 7,
+		height: 13,
+	},
 });
 
 @observer
@@ -73,19 +105,23 @@ class HomeAudioPage extends React.Component {
 	render() {
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
-			<View style={{height: this.props.store.slideHeight}}>
+			<View style={{ height: this.props.store.slideHeight }}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
 						dotColor={"#888888"}
 						activeDotColor={"#ffffff"}
-						paginationStyle={{bottom: 10}}>
-					<View style={styles.slide}>
-						<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
-					</View>
-					<View style={styles.slide}>
-						<ImageBackground source={Dummy2} resizeMode="cover" style={styles.thumbnail}/>
-					</View>
+						paginationStyle={{ bottom: 10 }}>
+
+					{this.props.store.homeBannerData.map( ( item, key )=> {
+						return (
+							<TouchableOpacity activeOpacity={0.9}>
+								<View key={key} style={styles.slide}>
+									<ImageBackground source={{url: item.images.default}} resizeMode="cover" style={styles.thumbnail}/>
+								</View>
+							</TouchableOpacity>
+						);
+					} )}
 				</Swiper>
 			</View>
 			{/* /이미지 스와이퍼 */}
@@ -103,17 +139,6 @@ class HomeAudioPage extends React.Component {
 				<BookMonthly/>
 			</View>
 
-			<View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
-				<View>
-					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
-						매일 책 한 권
-					</Text>
-					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
-						책 좀 아는 사람들이 요약해 주는 읽은 척 매뉴얼
-					</Text>
-				</View>
-			</View>
-
 			<View style={[CommonStyles.contentContainer, styles.audioBookContainer]}>
 				<View>
 					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
@@ -122,6 +147,12 @@ class HomeAudioPage extends React.Component {
 					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
 						4차 산업혁명 시대의 새로운 책 읽기
 					</Text>
+				</View>
+
+				<View style={styles.audioCategory}>
+					<View style={styles.audioCategoryHr}/>
+					<PageCategory data={this.props.store.audioBookCategoryData}/>
+					<View style={styles.audioCategoryHr}/>
 				</View>
 
 				<View style={CommonStyles.alignJustifyContentBetween}>
@@ -133,11 +164,15 @@ class HomeAudioPage extends React.Component {
 					</Text>
 				</View>
 
+				<BookList itemType="hot"/>
+
 				<View style={CommonStyles.alignJustifyContentBetween}>
 					<Text style={styles.titleH3}>
 						새로 나온 오디오북
 					</Text>
 				</View>
+
+				<BookList/>
 
 				<View style={CommonStyles.alignJustifyContentBetween}>
 					<Text style={styles.titleH3}>
@@ -145,11 +180,15 @@ class HomeAudioPage extends React.Component {
 					</Text>
 				</View>
 
+				<BookList/>
+
 				<View style={CommonStyles.alignJustifyContentBetween}>
 					<Text style={styles.titleH3}>
 						매일 책 한권 - 무료 북 리뷰
 					</Text>
 				</View>
+
+				<BookFreeList/>
 
 				<TouchableOpacity activeOpacity={0.9}>
 					<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>

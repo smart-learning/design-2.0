@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axios from './wAxios';
 import Base64 from "Base64";
 import Localizable from 'react-native-localizable';
 import { AsyncStorage } from 'react-native';
 import moment from 'moment';
-
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
 let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
@@ -255,4 +254,16 @@ export default {
 				});
 		});
 	},
+	getMainBanner() {
+		return cacheOrLoad( API_PREFIX + 'cms/main/banner', DEFAULT_EXPIRED )
+			.then( data => {
+				data.forEach(element => {
+					element.key = element.id.toString();
+				});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	}
 }
