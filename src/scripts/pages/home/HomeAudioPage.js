@@ -1,10 +1,17 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {observer} from "mobx-react";
+import {
+	ActivityIndicator,
+	Image,
+	ImageBackground,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from "react-native";
+import { observer } from "mobx-react";
 import Swiper from "react-native-swiper";
-import Dummy1 from '../../../images/dummy-swiper-1.png';
-import Dummy2 from '../../../images/dummy-swiper-2.png';
 import IcAngleRightGrey from "../../../images/ic-angle-right-grey.png";
 import BookMonthly from "../../components/home/BookMonthly";
 import PageCategory from "../../components/PageCategory";
@@ -105,7 +112,9 @@ class HomeAudioPage extends React.Component {
 	render() {
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
+
 			<View style={{ height: this.props.store.slideHeight }}>
+				{(this.props.store.homeBannerData && this.props.store.homeBannerData.length > 0 ) &&
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
@@ -113,16 +122,21 @@ class HomeAudioPage extends React.Component {
 						activeDotColor={"#ffffff"}
 						paginationStyle={{ bottom: 10 }}>
 
-					{this.props.store.homeBannerData.map( ( item, key )=> {
+					{this.props.store.homeBannerData.map( ( item, key ) => {
 						return (
-							<TouchableOpacity activeOpacity={0.9}>
-								<View key={key} style={styles.slide}>
-									<ImageBackground source={{url: item.images.default}} resizeMode="cover" style={styles.thumbnail}/>
-								</View>
+							<TouchableOpacity activeOpacity={0.9} key={ key }>
+								<ImageBackground source={{ uri: item.images.default }} resizeMode="cover"
+												 style={styles.thumbnail}/>
 							</TouchableOpacity>
 						);
 					} )}
 				</Swiper>
+				}
+				{this.props.store.homeBannerData.length === 0 &&
+				<View style={{ marginTop: '20%' }}>
+					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+				</View>
+				}
 			</View>
 			{/* /이미지 스와이퍼 */}
 

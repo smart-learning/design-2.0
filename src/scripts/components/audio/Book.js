@@ -171,16 +171,17 @@ export default class Book extends React.Component {
 			//
 		};
 
-		this.changePage = this.changePage.bind( this );
+		this.changePage = this.changePage.bind(this);
 	}
 
 	changePage() {
-		console.log( 'touch' );
-		console.log( this.props.id );
-		this.props.navigation.navigate( 'AudioBookDetailPage', { id: this.props.id } );
+		console.log('touch');
+		console.log(this.props.id);
+		this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.id});
 	}
 
 	render() {
+		console.log( 'this.props.itemData.images.book', this.props.itemData.images.book );
 		return <View style={styles.itemContainer}>
 			{this.props.type === 'best' &&
 			<View style={[styles.alignJustify, styles.socialButtonWrap]}>
@@ -195,7 +196,12 @@ export default class Book extends React.Component {
 			}
 			<View style={[styles.alignJustify, styles.itemInfo]}>
 				{this.props.type === 'best' &&
-				<Text style={styles.sequence}>00</Text>
+				<Text style={styles.sequence}>
+					{this.props.rankNumber < 10 &&
+					<Text>0</Text>
+					}
+					{this.props.rankNumber}
+				</Text>
 				}
 				{this.props.type === 'best' &&
 
@@ -256,11 +262,11 @@ export default class Book extends React.Component {
 					<Text style={styles.countText}>{this.props.itemData.review_count}</Text>
 				</View>
 			</View>
-			<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
-				<View style={styles.bookThumbnail}>
+			<View style={styles.bookThumbnail}>
+				<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
 					<Image source={{uri: this.props.itemData.images.book}} style={styles.bookThumbnailSize}/>
-				</View>
-			</TouchableOpacity>
+				</TouchableOpacity>
+			</View>
 		</View>
 	}
 }
