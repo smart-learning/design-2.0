@@ -45,6 +45,7 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.CookieManager;
@@ -116,7 +117,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -475,6 +475,10 @@ public class PlayerActivity extends BasePlayerActivity {
     // 초기 과정 데이터 값 셋팅 동영상 강의 /강좌 베이스 getAssets contentsinfo28.json
     // 추천 뷰 출력
     // 초기 과정 데이터 값 셋팅 오디오북 베이스 getAssets contentsinfo62.json
+
+    Intent intent = getIntent();
+    String type = intent.getStringExtra("type");
+
     initContentList("movie");
     // 베이스 레이아웃
     setBaseUI();
@@ -2214,6 +2218,7 @@ public class PlayerActivity extends BasePlayerActivity {
             if (lectureListItemdapter != null) {
               lectureListItemdapter = null;
             }
+
             if (lectureAudioBookListItemdapter != null) {
               lectureAudioBookListItemdapter = null;
             }
@@ -4133,27 +4138,38 @@ public class PlayerActivity extends BasePlayerActivity {
 
       } else if (type.equals("audio")) {
 
-        InputStream is = getAssets().open("contentsinfo28.json");
+        InputStream is = getAssets().open("contents_info_b300200.json");
         BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
         String jsonText = readAll(rd);
         JSONObject json = new JSONObject(jsonText);
+        JSONObject dataObject = json.getJSONObject("data");
 
-        String group_title = json.getString("group_title");
-        String group_memo = json.getString("group_memo");
-        String group_teachername = json.getString("group_teachername");
-        String group_teachermemo = json.getString("group_teachermemo");
-        String group_img = json.getString("group_img");
-        String group_previewcontent = json.getString("group_previewcontent");
+        // data : chapters {} , cid , id , teacher {} , title
+        // history : cid , position 정보 ..
+        // permission { can_play , expire_at , is_free }
+        // type : audiobook
+
+        // 추가로 받아야 할것 , backGround 이미지 경로 , 전체 재생 시간 , 다운로드 콘텐츠 카운트 값
+        // 권한이 없는 경우 미리듣기 콘텐츠가 history 로 들어 오는 건가요 ?
+
+        String group_title = dataObject.getString("title");
+        String group_memo = "";
+
+        String group_teachername = dataObject.getJSONObject("teacher").getString("name");
+        String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
+
+        String group_img = "";
+        String group_previewcontent = "";
         String allplay_time = json.getString("allplay_time");
         String contentscnt = json.getString("contentscnt");
-        String hitcnt = json.getString("hitcnt");
-        String likecnt = json.getString("likecnt");
-        String zzimcnt = json.getString("zzimcnt");
-        String staravg = json.getString("staravg");
-        String con_class = json.getString("con_class");
-        String downloadcnt = json.getString("downloadcnt");
-        String audiobookbuy = json.getString("audiobookbuy");
-        String audiobookbuy_limitdate = json.getString("audiobookbuy_limitdate");
+        String hitcnt = "";
+        String likecnt = "";
+        String zzimcnt = "";
+        String staravg = "";
+        String con_class = json.getString("type");
+        String downloadcnt = "";
+        String audiobookbuy = "";
+        String audiobookbuy_limitdate = "";
 
         sb.append("group_title=" + group_title);
         sb.append("&group_memo=" + group_memo);
@@ -4173,30 +4189,30 @@ public class PlayerActivity extends BasePlayerActivity {
         sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
 
         //contentsinfo의 값은 배열로 구성 되어있으므로 JSON 배열생성
-        JSONArray jArr = json.getJSONArray("contentsinfo");
+        JSONArray jArr = dataObject.getJSONArray("chapters");
 
         //배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
         for (int i = 0; i < jArr.length(); i++) {
 
           json = jArr.getJSONObject(i);
           //값을 추출함
-          String ckey = json.getString("ckey");
-          String cname = json.getString("cname");
-          String cmemo = json.getString("cmemo");
-          String curl = json.getString("curl");
-          String cplay_time = json.getString("cplay_time");
-          String cpay = json.getString("cpay");
-          String cpay_money = json.getString("cpay_money");
-          String clist_img = json.getString("clist_img");
-          String chitcnt = json.getString("chitcnt");
-          String csmi = json.getString("csmi");
+          String ckey = json.getString("cid");
+          String cname = json.getString("title");
+          String cmemo = json.getString("memo");
+          String curl = "";
+          String cplay_time = json.getString("play_time");
+          String cpay = "";
+          String cpay_money = "";
+          String clist_img = "";
+          String chitcnt = "";
+          String csmi = "";
 
-          String a_depth = json.getString("a_depth");
+          String a_depth = json.getString("depth");
           String history_endtime = json.getString("history_endtime");
 
-          String first_play = json.getString("first_play");
-          String calign = json.getString("calign");
-          String audio_preview = json.getString("audio_preview");
+          String first_play = json.getString("is_first_play");
+          String calign = json.getString("align");
+          String audio_preview = json.getString("is_preview");
 
           sb.append("&ckey=" + ckey);
           sb.append("&cname=" + cname);
@@ -4494,6 +4510,12 @@ public class PlayerActivity extends BasePlayerActivity {
 
         currentPosition = String.valueOf(itemArray.length() - currentListKey);
 
+        if (lectureListItemdapter != null) {
+          lectureListItemdapter = null;
+        }
+
+        lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
+
         for (int i = 0; i < itemArray.length(); i++) {
           JSONObject objItem = itemArray.getJSONObject(i);
 
@@ -4527,7 +4549,7 @@ public class PlayerActivity extends BasePlayerActivity {
             }
 //          }
 
-          lectureListItemdapter.add(objItem.getString("play_time"), "",
+            lectureListItemdapter.add(objItem.getString("play_time"), "",
               objItem.getString("title"), group_title,
               group_teachername, objItem.getString("end_seconds"), playListType);
           lecturListView.setAdapter(lectureListItemdapter);
@@ -4537,6 +4559,15 @@ public class PlayerActivity extends BasePlayerActivity {
         Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
 
       } else if (methodName.equals("audio")) {
+        // 없네 ㅋㅋ
+        /****************************************************
+         * 오디오모드나 오디오북에서는 keep screen on을 clear 한다.
+         ****************************************************/
+
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        audioModeBackgroundLayout.setVisibility(VISIBLE);
+        audioModeIconHeadset.setVisibility(VISIBLE);
 
       }
 
@@ -4641,7 +4672,9 @@ public class PlayerActivity extends BasePlayerActivity {
         mButtonGroupLayout.setVisibility(VISIBLE);
       }
 
-      player.setPlayWhenReady(true);
+      if(player!=null){
+        player.setPlayWhenReady(true);
+      }
 
       // 추천 뷰 콘텐츠 뷰가 활성화 인 경우
     } else if (mRelatedListGroupLayout.getVisibility() == VISIBLE) {
@@ -5173,6 +5206,7 @@ public class PlayerActivity extends BasePlayerActivity {
         e.printStackTrace();
       }
 
+      // 타이틀 동기화는 meta 데이터를 활용할 것
       setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),getwebPlayerInfo().getCname()[nextPosition]);
 
       if(Preferences.getWelaaaPlayAutoPlay(getApplicationContext())){
