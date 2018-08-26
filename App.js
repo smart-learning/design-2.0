@@ -115,7 +115,7 @@ const AppDrawer = createDrawerNavigator(
 	{
 		contentComponent: (props) => (
 			<SafeAreaView style={{flex: 1}} forceInset={{top: 'always', horizontal: 'never'}}>
-				<SidebarUserInfo/>
+				<SidebarUserInfo {...props}/>
 				<DrawerItems {...props}/>
 			</SafeAreaView>
 		)
