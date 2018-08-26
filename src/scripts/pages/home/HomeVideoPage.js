@@ -1,6 +1,6 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {Button, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View, ScrollView} from "react-native";
 import {observer} from "mobx-react";
 import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';

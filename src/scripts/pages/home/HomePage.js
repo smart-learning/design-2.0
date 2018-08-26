@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-navigation";
 import createStore from "../../commons/createStore";
 import HomeVideoPage from "./HomeVideoPage";
 import ViewPager from 'react-native-view-pager';
+import HomeAudioPage from "./HomeAudioPage";
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -137,7 +138,7 @@ class HomePage extends React.Component {
 						<HomeVideoPage store={this.store}/>
 					</View>
 					<View style={styles.tabContentContainer}>
-						<Text>audio</Text>
+						<HomeAudioPage store={this.store}/>
 					</View>
 				</ViewPager>
 				<View style={styles.tabContainer}>
