@@ -78,7 +78,7 @@ const styles = StyleSheet.create( {
 export default withNavigation(class ClassListItem extends React.Component {
 
 	gotoClassPage=()=>{
-		this.props.navigation.navigate('ClassDetailPage',{ id: this.props.itemData.id, title:'' });
+		this.props.navigation.navigate('ClassDetailPage',{ id: this.props.itemData.id, title:' ' });
 	}
 
 
