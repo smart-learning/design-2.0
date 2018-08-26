@@ -54,6 +54,8 @@ function getActiveRouteName(navigationState) {
 	return route.routeName;
 }
 
+const HOME_SCREEN = HomeScreen;
+const DEFAULT_SCREEN = VideoScreen;
 
 const AppDrawer = createDrawerNavigator(
 	{
@@ -62,7 +64,7 @@ const AppDrawer = createDrawerNavigator(
 		// },
 
 		HomeScreen: {
-			screen: HomeScreen,
+			screen: HOME_SCREEN,
 		},
 
 		VideoScreen: {
