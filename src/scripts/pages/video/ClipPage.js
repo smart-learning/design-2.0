@@ -94,7 +94,7 @@ export default class ClipPage extends React.Component {
 	}
 
 	async componentDidMount() {
-		const resultvideoClipData = await net.getLectureList();
+		const resultvideoClipData = await net.getClassList();
 		const resultVideoCategoryData = await net.getLectureCategory();
 		this.setState( {
 			videoClipData: resultvideoClipData,
@@ -125,7 +125,7 @@ export default class ClipPage extends React.Component {
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{ marginLeft: 'auto' }}
 										  onPress={() => {
-											  this.props.navigation.navigate( 'LecturePage' )
+											  this.props.navigation.navigate( 'ClassListPage' )
 										  }}
 						>
 							<View style={styles.clipButton} borderRadius={3}>

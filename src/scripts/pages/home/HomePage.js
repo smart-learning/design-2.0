@@ -88,7 +88,7 @@ class HomePage extends React.Component {
 		// VO로 정리해서 사용
 		const categoryVOs = videoCategoryData.map( element => {
 			const vo = new PageCategoryItemVO();
-			vo.id = element.id;
+			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
 			vo.label = element.title;
 			return vo;

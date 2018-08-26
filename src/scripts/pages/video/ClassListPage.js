@@ -97,17 +97,8 @@ export default class CourseList extends React.Component {
 		};
 	}
 
-	async componentDidMount() {
-		const initialData = await net.getLectureList();
-		const allData = await net.getLectureListByCategories();
-		const categories = await net.getLectureCategory();
-		const categoryVOs = categories.map( element => {
-			const vo = new PageCategoryItemVO();
-			vo.id = element.id;
-			vo.key = element.id.toString();
-			vo.label = element.title;
-			return vo;
-		} );
+	loadClassList = async ( ccode = null ) => {
+		const initialData = await net.getClassList( ccode );
 		const initialVOs = initialData.items.map( element => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
@@ -117,41 +108,34 @@ export default class CourseList extends React.Component {
 			}
 			return vo;
 		} );
-		const allVOs = [];
-		allData.forEach( element => {
-			if( element.type === 'contents' ) {
-				allVOs[ element.category.id ] = element.items.map( ( item, n ) => {
-					const vo = new SummaryVO();
-					_.each( item, ( value, key ) => vo[ key ] = value );
-					vo.key = item.id.toString() + n + Math.random();
-					if( !vo.thumbnail ) {
-						vo.thumbnail = vo.images.wide;
-					}
-					return vo;
-				} );
-			}
-		} );
-		console.log( 'initialVOs', initialVOs );
-		console.log( 'allVOs', allVOs );
-
 		this.setState( {
 			displayData: initialVOs,
-			initialVOs,
-			allVOs,
+		} );
+	};
+
+	async componentDidMount() {
+		await this.loadClassList();
+		const categories = await net.getLectureCategory();
+		const categoryVOs = categories.map( element => {
+			const vo = new PageCategoryItemVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
+		} );
+
+		this.setState( {
 			categoryVOs,
 		} );
 	}
 
 	onCategorySelect = item => {
-		let selectedList = this.state.allVOs[ item.id ];
-		if( !selectedList ) {
-			selectedList = [];
-		}
-		console.log( 'selectedList', selectedList );
+		console.log( 'item', item );
 		this.setState({
-			displayData: selectedList,
 			selectedCategory: item.id,
-		});
+		}, () => {
+			this.loadClassList( item.ccode );
+		} );
 	};
 
 	render() {
