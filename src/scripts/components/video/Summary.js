@@ -128,14 +128,15 @@ export default class Summary extends React.Component {
 					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
+					<View style={{ marginLeft: 'auto' }}>
 					<TouchableOpacity activeOpacity={0.9}
 									  onPress={ ()=>{
 										  Device.share( this.props.title, this.props.url );
-									  }}
-					>
+									  }}>
 						<Image source={IcShare}
-							   style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
+							   style={styles.btnSetLarge}/>
 					</TouchableOpacity>
+					</View>
 				</View>
 			</View>
 		</View>
