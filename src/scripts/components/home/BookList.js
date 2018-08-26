@@ -116,7 +116,6 @@ export default class BookList extends React.Component {
 						<View key={key} style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1,}}>
 							{
 								items.map((item, innerKey) => {
-									console.log( 'item', item );
 									return <View style={{width: '50%'}} key={innerKey}>
 										{item !== undefined &&
 										<BookListItem itemType={this.props.itemType} rankNumber={rankNumber++} key={innerKey} itemData={item}/>
