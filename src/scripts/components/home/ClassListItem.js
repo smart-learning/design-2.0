@@ -78,9 +78,7 @@ const styles = StyleSheet.create( {
 export default withNavigation(class ClassListItem extends React.Component {
 
 	gotoClassPage=()=>{
-		this.props.navigation.navigate('ClassListPage',
-			{ action:'item', data: this.props.itemData } // 전달할 데이터
-		);
+		this.props.navigation.navigate('ClassDetailPage',{ id: this.props.itemData.id, title:'' });
 	}
 
 
