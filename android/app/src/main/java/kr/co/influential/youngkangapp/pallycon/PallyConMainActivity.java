@@ -32,7 +32,6 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import com.google.android.gms.cast.framework.CastButtonFactory;
@@ -45,8 +44,8 @@ import com.pallycon.widevinelibrary.PallyconServerResponseException;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
+import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
 import kr.co.influential.youngkangapp.util.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -345,17 +344,17 @@ public class PallyConMainActivity extends AppCompatActivity implements PallyconD
                     String title = arrContentGroup.get(groupPosition).title;
                     if (title.equals("Streaming") == true) {
                         intent.setData(content.uri);
-                        intent.putExtra(PlayerActivity.CONTENTS_TITLE, content.name);
-                        intent.putExtra(PlayerActivity.THUMB_URL, content.thumbUrl);
+                        intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, content.name);
+                        intent.putExtra(PlaybackManager.THUMB_URL, content.thumbUrl);
                         if (content.drmSchemeUuid != null) {
-                            intent.putExtra(PlayerActivity.DRM_SCHEME_UUID_EXTRA, content.drmSchemeUuid.toString());
-                            intent.putExtra(PlayerActivity.DRM_LICENSE_URL, content.drmLicenseUrl);
-                            intent.putExtra(PlayerActivity.DRM_MULTI_SESSION, content.multiSession);
-                            intent.putExtra(PlayerActivity.DRM_USERID, content.userId);
-                            intent.putExtra(PlayerActivity.DRM_CID, content.cid);
-                            intent.putExtra(PlayerActivity.DRM_OID, content.oid);
-                            intent.putExtra(PlayerActivity.DRM_CUSTOME_DATA, content.customData);
-                            intent.putExtra(PlayerActivity.DRM_TOKEN, content.token);
+                            intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA, content.drmSchemeUuid.toString());
+                            intent.putExtra(PlaybackManager.DRM_LICENSE_URL, content.drmLicenseUrl);
+                            intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, content.multiSession);
+                            intent.putExtra(PlaybackManager.DRM_USERID, content.userId);
+                            intent.putExtra(PlaybackManager.DRM_CID, content.cid);
+                            intent.putExtra(PlaybackManager.DRM_OID, content.oid);
+                            intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, content.customData);
+                            intent.putExtra(PlaybackManager.DRM_TOKEN, content.token);
                         }
 
                         startActivity(intent);
@@ -383,14 +382,14 @@ public class PallyConMainActivity extends AppCompatActivity implements PallyconD
                                 //intent.putExtra(PlayerActivity.THUMB_URL, content.thumbUrl);
                                 if (content.drmSchemeUuid != null) {
                                     // TODO: Gets the local content path for local playback.
-                                    intent.putExtra(PlayerActivity.DRM_SCHEME_UUID_EXTRA, content.drmSchemeUuid.toString());
-                                    intent.putExtra(PlayerActivity.DRM_LICENSE_URL, content.drmLicenseUrl);
-                                    intent.putExtra(PlayerActivity.DRM_MULTI_SESSION, content.multiSession);
-                                    intent.putExtra(PlayerActivity.DRM_USERID, content.userId);
-                                    intent.putExtra(PlayerActivity.DRM_CID, content.cid);
-                                    intent.putExtra(PlayerActivity.DRM_OID, content.oid);
-                                    intent.putExtra(PlayerActivity.DRM_CUSTOME_DATA, content.customData);
-                                    intent.putExtra(PlayerActivity.DRM_TOKEN, content.token);
+                                    intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA, content.drmSchemeUuid.toString());
+                                    intent.putExtra(PlaybackManager.DRM_LICENSE_URL, content.drmLicenseUrl);
+                                    intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, content.multiSession);
+                                    intent.putExtra(PlaybackManager.DRM_USERID, content.userId);
+                                    intent.putExtra(PlaybackManager.DRM_CID, content.cid);
+                                    intent.putExtra(PlaybackManager.DRM_OID, content.oid);
+                                    intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, content.customData);
+                                    intent.putExtra(PlaybackManager.DRM_TOKEN, content.token);
                                 }
                                 startActivity(intent);
                             } else {

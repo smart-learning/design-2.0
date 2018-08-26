@@ -3,14 +3,98 @@
 
   <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="50dp"
     android:background="@color/bottomControlBg">
 
-    <ImageView
-      android:id="@+id/iv_icon"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:src="@drawable/icon_play_green"/>
+    <ProgressBar
+      android:id="@+id/mini_time_bar"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="5dp"
+      android:max="100"
+      android:progress="20"/>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
+      android:layout_below="@id/mini_time_bar"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+      <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_marginStart="9dp"
+          android:gravity="center">
+
+          <ProgressBar
+            android:id="@+id/mini_loading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:gravity="center">
+
+          <ImageButton
+            android:id="@+id/mini_btn_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/icon_mini_pause"/>
+
+          <ImageButton
+            android:id="@+id/mini_btn_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/icon_mini_play"/>
+        </RelativeLayout>
+      </RelativeLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+          android:id="@+id/mini_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_gravity="center_vertical"
+          android:ellipsize="end"
+          android:marqueeRepeatLimit="marquee_forever"
+          android:maxLines="2"/>
+
+        <TextView
+          android:id="@+id/mini_current_time"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:paddingStart="5dp"
+          android:textColor="@color/colorControlTextEnable"/>
+
+        <TextView
+          android:id="@+id/mini_duration_time"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:paddingEnd="10dp"/>
+      </LinearLayout>
+    </LinearLayout>
   </RelativeLayout>
 </merge>

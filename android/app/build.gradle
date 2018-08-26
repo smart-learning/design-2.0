@@ -95,15 +95,27 @@ def enableProguardInReleaseBuilds = false
 
 android {
     signingConfigs {
+        Properties props = new Properties()
+        def propFile = new File('gradle.properties')
+        if (propFile.canRead()) {
+            props.load(new FileInputStream(propFile))
+        }
+
         release {
-            keyAlias 'key0'
-            keyPassword '0000000000'
-            storeFile file('/Users/june/Dropbox/dev/key/welaaa/welaaav2')
-            storePassword '0000000000'
+            keyAlias props['release_keyAlias']
+            keyPassword props['release_keyPassword']
+            storeFile file(props['release_storeFile'])
+            storePassword props['release_storePassword']
+        }
+        debug {
+            keyAlias props['debug_keyAlias']
+            keyPassword props['debug_keyPassword']
+            storeFile file(props['debug_storeFile'])
+            storePassword props['debug_storePassword']
         }
     }
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
@@ -132,6 +144,9 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
     // applicationVariants are e.g. debug, release
@@ -162,21 +177,28 @@ buildscript {
 apply plugin: 'io.fabric'
 
 dependencies {
-    compile project(':react-native-video')
-    compile project(':react-native-kakao-signin')
-    compile project(':react-native-iap')
-    compile project(':react-native-fbsdk')
-    compile project(':react-native-localizable')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:cardview-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:support-compat:${rootProject.ext.supportLibVersion}"
-    implementation 'com.facebook.react:react-native:+'
-    // From node_modules
+    compileOnly "com.google.android.wearable:wearable:$wearableVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:customtabs:$supportLibVersion"
+    implementation "com.android.support:mediarouter-v7:$supportLibVersion"
+    implementation "com.android.support:percent:$supportLibVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
+    implementation "com.android.support:cardview-v7:$supportLibVersion"
+    implementation "com.android.support:animated-vector-drawable:$supportLibVersion"
+    implementation "com.android.support:support-v4:$supportLibVersion"
+    implementation "com.android.support:support-compat:$supportLibVersion"
+    implementation "com.google.android.support:wearable:$wearableVersion"
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.google.android.gms:play-services-cast-framework:15.0.0'
+    implementation 'com.facebook.react:react-native:+'
+    implementation project(':react-native-kakao-signin')
+    implementation project(':react-native-iap')
+    implementation project(':react-native-fbsdk')
+    implementation project(':react-native-localizable')
+    // facebook
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     // exoplayer2
     implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
     // PallyCon SDK
@@ -186,7 +208,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     // fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
-        transitive = true;
+        transitive = true
     }
 }
 

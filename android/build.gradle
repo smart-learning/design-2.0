@@ -30,7 +30,6 @@ allprojects {
 }
 
 ext {
-    compileSdkVersion = 27
-    buildToolsVersion = "27.0.3"
-    supportLibVersion = "27.1.1"
+    supportLibVersion = '27.1.1'
+    wearableVersion = '2.3.0'
 }

@@ -67,11 +67,11 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 			remoteViews = new RemoteViews(context.getPackageName(), R.layout.welean_download_notify);
 			remoteViews.setTextViewText(R.id.Downloadservice_title , "Welaaa Download ");
 			remoteViews.setProgressBar(R.id.DownloadServiceProgressBar , 100 , 0 , false);
-			remoteViews.setImageViewResource(R.id.imageView_icon,R.drawable.notifiy_logo_download);
+			remoteViews.setImageViewResource(R.id.imageView_icon,R.drawable.notify_logo_download);
 			remoteViews.setOnClickPendingIntent(R.id.btn_remote_close,pendingIntent(ACTION_CLOSE));
 
 			mbuilder.setCustomContentView(remoteViews);
-			mbuilder.setSmallIcon(R.drawable.notifiy_logo_download);
+			mbuilder.setSmallIcon(R.drawable.notify_logo_download);
 
 			notificationManager.notify(notifId , mbuilder.build());
 

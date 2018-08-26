@@ -10,10 +10,29 @@ import {Button, Modal, Text, View, Image, ImageBackground, TouchableOpacity} fro
 import Store from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune";
 import BottomControllerPage from './src/scripts/pages/BottomControllerPage';
+
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
+import { DeviceEventEmitter, NativeModules } from 'react-native'
 
 class App extends React.Component {
-	render() {
+
+	constructor(prop) {
+		super(prop);
+		this.subscription = null;
+	}
+
+	componentWillMount() {
+        subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
+            NativeModules.RNNativePlayer.toast('playbackState: ' + params['visible']);
+        });
+    }
+
+	componentWillUnmount() {
+		subscription.remove();
+	}
+
+ 	render() {
+
 		return <View style={{flex: 1}}>
 			<AppDrawer
 				ref={navigatorRef => {
