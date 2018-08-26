@@ -52,7 +52,8 @@ export const NAV_OPTS_MY_HOME = ({navigation, navigationOptions}) => {
 		},
 		headerLeft: <HomeButton/>,
 		headerTitle: <Image source={logo} style={CommonStyle.headerLogo}/>,
-		headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')}/>
+		headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')}/>,
+		gesturesEnabled: false,
 	}
 
 };
@@ -99,15 +100,15 @@ export const NAV_OPTS_DRAWER = ({navigation, navigationOptions}) => {
 
 	// TODO: Custom Drawer 메뉴 구현( June으로 샘플구현해둠 ) drawLabel 에 react element 를 반환하는함수를 재정의
 	// README: https://reactnavigation.org/docs/en/drawer-navigator.html
-	if (label === "June") {
-		console.log('커스텀 메뉴 생성');
-		option = {
-			drawerLabel: () => (<View style={{flex: 1, backgroundColor: '#FF0000'}}>
-					<Text>커스텀 드로어 메뉴 ~~~~ </Text>
-				</View>
-			)
-		}
-	}
+	// if (label === "June") {
+	// 	console.log('커스텀 메뉴 생성');
+	// 	option = {
+	// 		drawerLabel: () => (<View style={{flex: 1, backgroundColor: '#FF0000'}}>
+	// 				<Text>커스텀 드로어 메뉴 ~~~~ </Text>
+	// 			</View>
+	// 		)
+	// 	}
+	// }
 
 	if (label === '홈') {
 		option = {

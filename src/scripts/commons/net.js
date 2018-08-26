@@ -24,9 +24,7 @@ const clientSecret = 'IcQUptRiZBe3mqLbx8BIB7dqfySP52J4He6TmMXnnzupUNIj';
 const authBasicCode = Base64.btoa(`${clientId}:${clientSecret}`);
 
 // 데이터 캐시 기본 유효시간 (초)
-const DEFAULT_EXPIRED = 3600;
-
-
+const DEFAULT_EXPIRED = 300;
 
 function encodeParams( obj ){
 	let params = [];
@@ -83,8 +81,12 @@ function cacheOrLoad( uri, expired = 0 ) {
 }
 
 export default {
-	getLectureCategory() {
-		return cacheOrLoad( API_PREFIX + 'contents/video-courses/categories', DEFAULT_EXPIRED )
+	getLectureCategory( isRefresh = false ) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad( API_PREFIX + 'contents/video-courses/categories', expired )
 			.then( data => {
 				data.forEach(element => {
 					element.key = element.id.toString();
@@ -221,8 +223,12 @@ export default {
 			} );
 	},
 
-	getHomeContents() {
-		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
+	getHomeContents( isRefresh = false ) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad( API_PREFIX + 'cms/main/video', expired )
 			.then( data => {
 				return data;
 			} )
@@ -231,8 +237,12 @@ export default {
 			} );
 	},
 
-	getHomeClipRank() {
-		return cacheOrLoad( API_PREFIX + 'contents/video-clips/realtime-chart', DEFAULT_EXPIRED )
+	getHomeClipRank( isRefresh = false ) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad( API_PREFIX + 'contents/video-clips/realtime-chart', expired )
 			.then( data => {
 				data.forEach(element => {
 					element.key = element.id.toString();
@@ -264,8 +274,12 @@ export default {
 				});
 		});
 	},
-	getMainBanner() {
-		return cacheOrLoad( API_PREFIX + 'cms/main/banner', DEFAULT_EXPIRED )
+	getMainBanner( isRefresh = false ) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad( API_PREFIX + 'cms/main/banner', expired )
 			.then( data => {
 				data.forEach(element => {
 					element.key = element.id.toString();

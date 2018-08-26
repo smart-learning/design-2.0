@@ -1,12 +1,11 @@
 import React from "react";
-import {Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground,} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import IcAngleDownGrey from "../../../images/ic-angle-down-grey.png";
 import BookListItem from "./BookListItem";
-import Dummy from "../../../images/dummy-audioBookSimple.png";
-import IcView from "../../../images/ic-detail-view.png";
-import IcStar from "../../../images/ic-detail-star.png";
-import IcComment from "../../../images/ic-detail-message.png";
+import { observer } from 'mobx-react';
+import createStore from "../../commons/createStore";
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
 	bookContainer: {
@@ -35,67 +34,35 @@ const styles = StyleSheet.create({
 	},
 });
 
-const dummy = [
-	{
-		key: 0,
-		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
-		title: 'titleText',
-		is_exclusive: true,
-		hit_count: 0,
-		star_avg: 0,
-		review_count: 0,
-		thumbnail: '',
-	},
-	{
-		key: 1,
-		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
-		title: 'titleText',
-		is_exclusive: true,
-		hit_count: 0,
-		star_avg: 0,
-		review_count: 0,
-		thumbnail: '',
-	},
-	{
-		key: 2,
-		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
-		title: 'titleText',
-		is_exclusive: true,
-		hit_count: 0,
-		star_avg: 0,
-		review_count: 0,
-		thumbnail: '',
-	},
-	{
-		key: 3,
-		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
-		title: 'titleText',
-		is_exclusive: true,
-		hit_count: 0,
-		star_avg: 0,
-		review_count: 0,
-		thumbnail: '',
-	},
-	{
-		key: 4,
-		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
-		title: 'titleText',
-		is_exclusive: true,
-		hit_count: 0,
-		star_avg: 0,
-		review_count: 0,
-		thumbnail: '',
-	},
-];
+const dummy = [];
 
-export default class BookList extends React.Component {
-	constructor(props) {
-		super(props);
-	}
+_.times( 9, n => {
+	dummy.push( {
+		key: n,
+		rankNumber: ( n + 1 ),
+		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
+		title: 'titleText',
+		is_exclusive: true,
+		hit_count: 0,
+		star_avg: 0,
+		review_count: 0,
+		thumbnail: '',
+	} );
+} );
+
+@observer class BookList extends React.Component {
+
+	store = createStore( {
+		isOpen: false,
+	} );
 
 	render() {
 		let list = dummy;
 		let BookList = [];
+
+		if( !this.store.isOpen ) {
+			list = dummy.slice( 0, 4 );
+		}
 
 		for (let i = 0; i < Math.ceil(list.length / 2); i++) {
 			let listObject = [];
@@ -106,9 +73,6 @@ export default class BookList extends React.Component {
 			BookList.push(listObject);
 		}
 
-
-		let rankNumber = 1;
-
 		return <View style={styles.bookContainer}>
 			<View style={styles.bookList}>
 				{BookList.map((items, key) => {
@@ -118,7 +82,7 @@ export default class BookList extends React.Component {
 								items.map((item, innerKey) => {
 									return <View style={{width: '50%'}} key={innerKey}>
 										{item !== undefined &&
-										<BookListItem itemType={this.props.itemType} rankNumber={rankNumber++} key={innerKey} itemData={item}/>
+										<BookListItem itemType={this.props.itemType} key={innerKey} itemData={item}/>
 										}
 									</View>
 								})
@@ -128,14 +92,18 @@ export default class BookList extends React.Component {
 				})}
 			</View>
 
-			<TouchableOpacity activeOpacity={0.9} style={styles.viewMoreContainer}>
-				<View style={[styles.viewMore, CommonStyles.alignJustifyContentBetween]}>
+			{!this.store.isOpen &&
+			<TouchableOpacity activeOpacity={0.9} style={styles.viewMoreContainer} onPress={ () => this.store.isOpen = true }>
+				<View style={[ styles.viewMore, CommonStyles.alignJustifyContentBetween ]}>
 					<Text style={styles.viewMoreText}>
 						더보기
 					</Text>
 					<Image source={IcAngleDownGrey} style={styles.viewMoreIcon}/>
 				</View>
 			</TouchableOpacity>
+			}
 		</View>
 	}
 }
+
+export default BookList;
