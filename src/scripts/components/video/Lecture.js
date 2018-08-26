@@ -33,39 +33,26 @@ const styles = StyleSheet.create( {
 } );
 
 export default class Lecture extends React.Component {
-	constructor( props ) {
-		super( props );
-
-		this.changePage = this.changePage.bind( this );
-	}
-
-	changePage() {
+	changePage = () => {
 		this.props.navigation.navigate( 'LectureDetailPage', { id: this.props.id } );
-	}
+	};
 
 	render() {
 		return <View style={styles.itemContainer}>
 			{/*타이틀*/}
 			<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
 				<Text style={styles.headline}>
-					{this.props.headline}
+					{this.props.item.headline}
 				</Text>
 				{/*서브타이틀*/}
 				<Text style={styles.subTitle}>
-					{this.props.teacherHeadline}
-					{this.props.teacherName}
+					{this.props.item.teacher.headline}
+					{this.props.item.teacher.name}
 				</Text>
 			</TouchableOpacity>
 			{/*썸네일*/}
 			<Summary type="lecture"
-					 { ...this.props }
-					 // title={this.props.title}
-					 // thumbnail={this.props.thumbnail}
-					 // clipCount={this.props.clipCount}
-					 // hitCount={this.props.hitCount}
-					 // starAvg={this.props.starAvg}
-					 // url={this.props.url}
-					 // reviewCount={this.props.reviewCount}
+					 { ...this.props.item }
 					 onPress={this.changePage}
 			/>
 		</View>

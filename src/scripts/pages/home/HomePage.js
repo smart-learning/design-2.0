@@ -9,6 +9,9 @@ import createStore from "../../commons/createStore";
 import HomeVideoPage from "./HomeVideoPage";
 import ViewPager from 'react-native-view-pager';
 import HomeAudioPage from "./HomeAudioPage";
+import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import SummaryVO from "../../vo/SummaryVO";
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -79,11 +82,51 @@ class HomePage extends React.Component {
 	});
 
 	getData = async () => {
+		// 데이터 가져와서
+		const videoCategoryData = await net.getLectureCategory();
+		const homeContents = await net.getHomeContents();
+		// VO로 정리해서 사용
+		const categoryVOs = videoCategoryData.map( element => {
+			const vo = new PageCategoryItemVO();
+			vo.id = element.id;
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
+		} );
+		const hotVOs = homeContents.hot.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+		const newVOs = homeContents.new.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+		const recommendVOs = homeContents.recommend.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+
+		// mobx 바인딩
 		this.store.homeSeriesData = await net.getHomeSeries();
-		this.store.videoCategoryData = await net.getLectureCategory();
-		this.store.classHotData = await net.getHomeClassHot();
-		this.store.classNewData = await net.getHomeClassNew();
-		this.store.classRecommendData = await net.getHomeClassRecommend();
+		this.store.videoCategoryData = categoryVOs;
+		this.store.classHotData = hotVOs;
+		this.store.classNewData = newVOs;
+		this.store.classRecommendData = recommendVOs;
 		this.store.clipRankData = await net.getHomeClipRank();
 	};
 

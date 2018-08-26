@@ -103,36 +103,49 @@ export default {
 	},
 
 	getLectureList() {
-		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/video-courses')
-				.then((response) => {
-					response.data.items.forEach(element => {
-						element.key = element.id.toString();
-					});
-					resolve(response.data);
-				})
-				.catch((error) => {
-					console.log(error);
-					reject(error);
+		return cacheOrLoad( API_PREFIX + 'contents/video-courses', DEFAULT_EXPIRED )
+			.then( data => {
+				data.items.forEach(element => {
+					element.key = element.id.toString();
 				});
-		});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
+	getLectureListByCategories() {
+		return cacheOrLoad( API_PREFIX + 'contents/video-courses/promotion-with-categories', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
 	},
 
 	getAudioBookList() {
-		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/audiobooks')
-				.then((response) => {
-					// console.log( response.data );
-					response.data.items.forEach(element => {
-						element.key = element.id.toString();
-					});
-					resolve(response.data);
-				})
-				.catch((error) => {
-					console.log(error);
-					reject(error);
+		return cacheOrLoad( API_PREFIX + 'contents/audiobooks', DEFAULT_EXPIRED )
+			.then( data => {
+				data.items.forEach(element => {
+					element.key = element.id.toString();
 				});
-		});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
+	getAudioBookByCategories() {
+		return cacheOrLoad( API_PREFIX + 'contents/audiobooks/group-by/categories', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
 	},
 
 	getLectureItem(id) {
@@ -205,6 +218,16 @@ export default {
 					reject(error);
 				});
 		});
+	},
+
+	getHomeContents() {
+		return cacheOrLoad( API_PREFIX + 'cms/main/video', DEFAULT_EXPIRED )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
 	},
 
 	getHomeClassHot() {
