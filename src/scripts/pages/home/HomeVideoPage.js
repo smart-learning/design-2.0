@@ -10,7 +10,7 @@ import {
 	TouchableOpacity,
 	View
 } from "react-native";
-import { observer } from "mobx-react";
+import {observer} from "mobx-react";
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
 import Series from "../../components/home/Series";
 import PageCategory from "../../components/PageCategory";
@@ -19,8 +19,7 @@ import ClipRank from "../../components/home/ClipRank";
 import ClassContinueList from "../../components/home/ClassContinueList";
 import Swiper from "react-native-swiper";
 
-const styles = StyleSheet.create( {
-	wrapper: {},
+const styles = StyleSheet.create({
 	slide: {
 		flex: 1,
 		justifyContent: 'center',
@@ -103,51 +102,49 @@ const styles = StyleSheet.create( {
 	seriesComponent: {
 		paddingTop: 30,
 	}
-} );
+});
 
 @observer
 export default class HomeVideoPage extends React.Component {
 
 	render() {
-		console.log( 'this.props.store.homeBannerData', this.props.store.homeBannerData );
+		console.log('this.props.store.homeBannerData', this.props.store.homeBannerData);
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
 			{this.props.store.homeBannerData &&
-			<View style={{ height: this.props.store.slideHeight }}>
+			<View style={{height: this.props.store.slideHeight}}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
 						dotColor={"#888888"}
 						activeDotColor={"#ffffff"}
-						paginationStyle={{ bottom: 10 }}>
+						paginationStyle={{bottom: 10}}>
 
-					{this.props.store.homeBannerData.map( ( item, key ) => {
+					{this.props.store.homeBannerData.map((item, key) => {
 						return (
-							<TouchableOpacity activeOpacity={0.9} key={ key }>
-								<View style={styles.slide}>
-									<ImageBackground source={{ url: item.images.default }} resizeMode="cover"
-													 style={styles.thumbnail}/>
-								</View>
+							<TouchableOpacity activeOpacity={0.9} key={key}>
+								<ImageBackground source={{uri: item.images.default}} resizeMode="cover"
+												 style={styles.thumbnail}/>
 							</TouchableOpacity>
 						);
-					} )}
+					})}
 				</Swiper>
 			</View>
 			}
 			{/* /이미지 스와이퍼 */}
 
 			{this.props.store.homeSeriesData.length <= 6 &&
-			<View style={{ marginTop: 12 }}>
+			<View style={{marginTop: 12}}>
 				<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 			</View>
 			}
 			{this.props.store.homeSeriesData.length > 6 &&
-			<View style={[ CommonStyles.contentContainer, styles.seriesContainer ]}>
+			<View style={[CommonStyles.contentContainer, styles.seriesContainer]}>
 				<View>
-					<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
 						윌라 추천 시리즈
 					</Text>
-					<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
 						당신이 배우고 싶은 모든 것
 					</Text>
 				</View>
@@ -167,12 +164,12 @@ export default class HomeVideoPage extends React.Component {
 			}
 
 			{this.props.store.classHotData.length > 0 &&
-			<View style={[ CommonStyles.contentContainer, styles.classContainer ]}>
+			<View style={[CommonStyles.contentContainer, styles.classContainer]}>
 				<View>
-					<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
 						윌라 프리미엄 클래스
 					</Text>
-					<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
 						당신의 커리어 성공과 행복한 일상을 위한 교육
 					</Text>
 				</View>
@@ -187,7 +184,7 @@ export default class HomeVideoPage extends React.Component {
 					<Text style={styles.titleH3}>
 						회원들이 듣고 있는 클래스
 					</Text>
-					<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
+					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
 						2018. 07.09 업데이트
 					</Text>
 				</View>
@@ -198,7 +195,7 @@ export default class HomeVideoPage extends React.Component {
 					<Text style={styles.titleH3}>
 						새로 나온 클래스
 					</Text>
-					<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
+					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
 						2018. 07.09 업데이트
 					</Text>
 				</View>
@@ -209,7 +206,7 @@ export default class HomeVideoPage extends React.Component {
 					<Text style={styles.titleH3}>
 						윌라 추천 클래스
 					</Text>
-					<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
+					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
 						2018. 07.09 업데이트
 					</Text>
 				</View>
@@ -217,7 +214,7 @@ export default class HomeVideoPage extends React.Component {
 				<ClassList itemData={this.props.store.classRecommendData}/>
 
 				<TouchableOpacity activeOpacity={0.9}>
-					<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
+					<View style={[styles.linkViewAll, styles.classLinkViewAll]} borderRadius={5}>
 						<Text style={styles.linkViewAllText}>
 							클래스 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
 						</Text>
@@ -228,7 +225,7 @@ export default class HomeVideoPage extends React.Component {
 					<Text style={styles.titleH3}>
 						지금 많이 듣고 있는 강의클립
 					</Text>
-					<Text style={[ styles.titleParagraph, { marginLeft: 'auto' } ]}>
+					<Text style={[styles.titleParagraph, {marginLeft: 'auto'}]}>
 						2018. 07.09 업데이트
 					</Text>
 				</View>

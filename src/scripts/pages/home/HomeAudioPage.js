@@ -115,10 +115,8 @@ class HomeAudioPage extends React.Component {
 					{this.props.store.homeBannerData.map( ( item, key ) => {
 						return (
 							<TouchableOpacity activeOpacity={0.9} key={ key }>
-								<View style={styles.slide}>
-									<ImageBackground source={{ url: item.images.default }} resizeMode="cover"
-													 style={styles.thumbnail}/>
-								</View>
+								<ImageBackground source={{ uri: item.images.default }} resizeMode="cover"
+												 style={styles.thumbnail}/>
 							</TouchableOpacity>
 						);
 					} )}
