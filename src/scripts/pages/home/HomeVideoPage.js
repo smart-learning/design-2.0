@@ -111,8 +111,9 @@ export default class HomeVideoPage extends React.Component {
 		console.log('this.props.store.homeBannerData', this.props.store.homeBannerData);
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
-			{this.props.store.homeBannerData &&
+
 			<View style={{height: this.props.store.slideHeight}}>
+				{(this.props.store.homeBannerData && this.props.store.homeBannerData.length > 0 ) &&
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
@@ -129,8 +130,8 @@ export default class HomeVideoPage extends React.Component {
 						);
 					})}
 				</Swiper>
+				}
 			</View>
-			}
 			{/* /이미지 스와이퍼 */}
 
 			{this.props.store.homeSeriesData.length <= 6 &&
