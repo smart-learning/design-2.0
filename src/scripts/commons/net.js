@@ -1,7 +1,6 @@
 import axios from 'axios';
 import Base64 from "Base64";
 import Localizable from 'react-native-localizable';
-import URLSearchParams from 'url-search-params';
 import { AsyncStorage } from 'react-native';
 import moment from 'moment';
 
@@ -27,6 +26,18 @@ const authBasicCode = Base64.btoa(`${clientId}:${clientSecret}`);
 
 // 데이터 캐시 기본 유효시간 (초)
 const DEFAULT_EXPIRED = 3600;
+
+
+
+function encodeParams( obj ){
+	let params = [];
+	for( let p in obj ){
+		params.push( p + '=' + encodeURIComponent(obj[p]));
+	}
+
+	return params.join('&');
+}
+
 
 /**
  * `axios`의 `get`요청으로 받은 `json`데이터를 캐싱한다. 다른 형태의 데이터는 아직 지원하지 않는다.
@@ -177,19 +188,18 @@ export default {
 	},
 
 	getAuthToken(email, password) {
-		const params = new URLSearchParams();
-		params.set('username', email);
-		params.set('password', password);
-		params.set('scope', 'profile');
-		params.set('grant_type', 'password');
 
+		let params = encodeParams({ username:email, password:password, scope:'profile', 'grant_type':'password' });
 		console.log('getAuthToken:', HOST + '/oauth/token', email, password );
+		console.log('encodedParams:', params );
 
 		return new Promise((resolve, reject) => {
-			axios.post(HOST + '/oauth/token', params, {
-				headers: {
-					'Authorization': 'Basic ' + authBasicCode,
-					'Content-Type': 'application/x-www-form-urlencoded'
+			axios.post(HOST + '/oauth/token',
+				params,
+				{
+					headers: {
+						'Authorization': 'Basic ' + authBasicCode,
+						'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			})
 				.then(response => {
