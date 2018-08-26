@@ -83,7 +83,7 @@ const AppDrawer = createDrawerNavigator(
 		// },
 
 		HomeScreen: {
-			screen: DEFAULT_SCREEN,
+			screen: HOME_SCREEN,
 		},
 
 		VideoScreen: {
