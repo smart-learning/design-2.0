@@ -1,17 +1,15 @@
 import React from "react";
-import {
-	Text,
-	View,
-	Button,
-	FlatList,
-	ScrollView,
-	TouchableOpacity, StyleSheet,
-} from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
-import VideoCategory from "../../components/video/VideoCategory";
 import Clip from "../../components/video/Clip";
 import net from "../../commons/net";
+import createStore from "../../commons/createStore";
+import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import _ from "underscore";
+import PageCategory from "../../components/PageCategory";
+import SummaryVO from "../../vo/SummaryVO";
+import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create( {
 	toggleGroup: {
@@ -82,25 +80,42 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-export default class ClipPage extends React.Component {
+@observer class ClipPage extends React.Component {
+	store = createStore( {
+		displayData: [],
+		categories: [],
+		selectedCategory: null,
+	} );
 
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			videoClipData: [],
-			videoCategoryData: {}
-		};
-	}
+	loadClassList = async ( ccode = null ) => {
+		const data = await net.getClassList( ccode );
+		this.store.displayData = data.items.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+	};
 
 	async componentDidMount() {
-		const resultvideoClipData = await net.getLectureList();
-		const resultVideoCategoryData = await net.getLectureCategory();
-		this.setState( {
-			videoClipData: resultvideoClipData,
-			videoCategoryData: resultVideoCategoryData,
+		const categories = await net.getLectureCategory();
+		this.store.categories = categories.map( element => {
+			const vo = new PageCategoryItemVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
 		} );
+		this.loadClassList();
 	}
+
+	onCategorySelect = item => {
+		this.store.selectedCategory = item.id;
+		this.loadClassList( item.ccode );
+	};
 
 	render() {
 		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
@@ -125,7 +140,7 @@ export default class ClipPage extends React.Component {
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{ marginLeft: 'auto' }}
 										  onPress={() => {
-											  this.props.navigation.navigate( 'LecturePage' )
+											  this.props.navigation.navigate( 'ClassListPage' )
 										  }}
 						>
 							<View style={styles.clipButton} borderRadius={3}>
@@ -135,23 +150,16 @@ export default class ClipPage extends React.Component {
 					</View>
 				</View>
 
-				<VideoCategory data={this.state.videoCategoryData.items}/>
+				<PageCategory data={ this.store.categories }
+							  selectedCategory={ this.store.selectedCategory }
+							  onCategorySelect={ this.onCategorySelect }
+				/>
 
 				<FlatList
 					style={{ width: '100%' }}
-					data={this.state.videoClipData.items}
+					data={this.store.displayData}
 					renderItem={
-						( { item } ) => <Clip id={item.id}
-												 navigation={this.props.navigation}
-												 headline={item.headline}
-												 teacherHeadline={item.teacher.headline}
-												 teacherName={item.teacher.name}
-												 title={item.title}
-												 thumbnail={item.images.wide}
-												 clipCount={item.clip_count}
-												 hitCount={item.hit_count}
-												 starAvg={item.star_avg}
-												 reviewCount={item.review_count}/>
+						( { item } ) => <Clip item={ item } navigation={ this.props.navigation }/>
 					}
 				/>
 
@@ -167,3 +175,4 @@ export default class ClipPage extends React.Component {
 	}
 }
 
+export default ClipPage;

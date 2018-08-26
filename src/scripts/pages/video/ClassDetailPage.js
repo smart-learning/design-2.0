@@ -8,7 +8,7 @@ import createStore from "../../commons/createStore";
 import DetailLayout from "../../components/detail/DetailLayout";
 
 @observer
-class LectureDetailPage extends React.Component {
+class ClassDetailPage extends React.Component {
 	store = createStore({
 		itemData: null,
 		itemClipData: {
@@ -43,4 +43,4 @@ class LectureDetailPage extends React.Component {
 	}
 }
 
-export default LectureDetailPage;
+export default ClassDetailPage;

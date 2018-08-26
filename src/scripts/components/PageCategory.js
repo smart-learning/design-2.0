@@ -36,7 +36,7 @@ const styles = StyleSheet.create( {
 			renderItem={
 				( { item } ) => {
 					const localStyle = {
-						color: this.props.selectedCategory === item.id ? '#ff0000' : '#444444'
+						color: this.props.selectedCategory === item.id ? '#444444' : '#A1A1A1'
 					};
 					return <View style={styles.categoryItem}>
 						<TouchableOpacity activeOpacity={0.9}

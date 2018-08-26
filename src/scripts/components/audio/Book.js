@@ -217,7 +217,7 @@ export default class Book extends React.Component {
 						<Text style={styles.bookTitleRecommend} numberOfLines={1}
 							  ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
-					<Text style={styles.bookAuthorRecommend}>{this.props.itemData.teacherName.name}</Text>
+					<Text style={styles.bookAuthorRecommend}>{this.props.itemData.teacher.name}</Text>
 					<View style={[styles.alignJustify, styles.recommendButtonWrap]}>
 						<Image source={IcHeartLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
 						{this.props.itemData.is_free === 'true' &&
