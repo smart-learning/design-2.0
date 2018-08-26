@@ -157,7 +157,7 @@ export default class BookListItem extends React.Component {
 			<View>
 				<ImageBackground source={Dummy} resizeMode={"cover"} style={styles.thumbnail}>
 					<View style={styles.thumbnailDim}>
-						<Text style={styles.thumbnailTitle}>{this.props.itemData.title}</Text>
+						<Text style={styles.thumbnailTitle}>title</Text>
 					</View>
 				</ImageBackground>
 			</View>
