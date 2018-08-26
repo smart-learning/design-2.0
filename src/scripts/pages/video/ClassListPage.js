@@ -117,16 +117,16 @@ const styles = StyleSheet.create( {
 		const action = this.props.navigation.getParam('action');
 		const actionData = this.props.navigation.getParam('data');
 
-		console.log( 'navigate params:', action, actionData );
+		// console.log( 'navigate params:', action, actionData );
 
 		switch( action ){
 			case 'category': // from HomeVideoPage
 				this.onCategorySelect( actionData );
 				break;
 
-			case 'item': // from ClassListPage
-				// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
-				break;
+			// case 'item': // from ClassListPage
+			// 	// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
+			// 	break;
 		}
 	}
 
