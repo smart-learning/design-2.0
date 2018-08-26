@@ -123,6 +123,8 @@ const styles = StyleSheet.create({
 	};
 
 	render() {
+		let rankNumber = 1;
+
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
 			<ScrollView style={{width: '100%'}}>
 				<View style={styles.toggleGroup}>
@@ -171,6 +173,7 @@ const styles = StyleSheet.create({
 						({item}) => <Book id={item.id}
 										  type="best"
 										  navigation={this.props.navigation}
+										  rankNumber={rankNumber++}
 										  itemData={item}/>
 					}
 				/>
