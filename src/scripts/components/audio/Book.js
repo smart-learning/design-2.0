@@ -177,7 +177,7 @@ export default class Book extends React.Component {
 	changePage() {
 		console.log('touch');
 		console.log(this.props.id);
-		this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.id});
+		this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.id, title:' '});
 	}
 
 	render() {

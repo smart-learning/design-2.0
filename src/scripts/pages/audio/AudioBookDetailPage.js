@@ -11,9 +11,7 @@ import DetailLayout from "../../components/detail/DetailLayout";
 class ClassDetailPage extends React.Component {
 	store = createStore({
 		itemData: null,
-		itemClipData: {
-			items: [],
-		},
+		itemClipData: [],
 		tabStatus: 'info',
 		lectureView: false,
 		teacherView: false,
@@ -26,7 +24,7 @@ class ClassDetailPage extends React.Component {
 		const resultBookData = await net.getBookItem(this.props.navigation.state.params.id);
 		// const resultChapterData = await net.getBookChapterList(this.props.navigation.state.params.id);
 
-		this.store.itemData = resultBookData.item;
+		this.store.itemData = resultBookData;
 		// this.store.itemClipData = resultChapterData;
 	};
 
