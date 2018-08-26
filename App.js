@@ -49,13 +49,13 @@ class App extends React.Component {
 					}
 				}}
 			/>
-			<View style={{position: 'absolute', bottom: 20, right: 100}}>
-				<Button title="Open Side"
-						onPress={() => {
-							Store.drawer.dispatch(DrawerActions.toggleDrawer())
-						}}
-				/>
-			</View>
+			{/*<View style={{position: 'absolute', bottom: 20, right: 100}}>*/}
+				{/*<Button title="Open Side"*/}
+						{/*onPress={() => {*/}
+							{/*Store.drawer.dispatch(DrawerActions.toggleDrawer())*/}
+						{/*}}*/}
+				{/*/>*/}
+			{/*</View>*/}
 		</View>
 	}
 }

@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Button, Modal, StyleSheet, Text, View} from "react-native";
+import {AsyncStorage, Button, Modal, StyleSheet, Dimensions, View} from "react-native";
+import Image from 'react-native-scalable-image';
 import {COLOR_PRIMARY} from "../../styles/common";
 import moment from 'moment';
+import net from "../commons/net";
 
 class AdvertisingSection extends Component {
 
@@ -10,45 +12,76 @@ class AdvertisingSection extends Component {
 
 		this.style = StyleSheet.create({
 
-			frame: {
+			container: {
 				flex: 1,
 				alignItems: 'center',
 				justifyContent: 'center',
 				backgroundColor: '#00000099',
 			},
 
+			frame:{
+				width: Dimensions.get('window').width - 30,
+				borderRadius: 20,
+				overflow: 'hidden',
+				backgroundColor: '#FFFFFF',
+			},
+
+			img: {
+				// borderTopRightRadius: 20,
+				// borderTopLeftRadius: 20,
+				// overflow: 'hidden',
+			},
+
 			footer: {
 				flexDirection: 'row',
+				width: '100%',
+				// borderBottomLeftRadius: 20,
+				// borderBottomRightRadius: 20,
+				// overflow: 'hidden',
+				alignItems:'center'
+			},
+
+			hideOption:{
+				alignItems: 'flex-start',
+			},
+
+			footerBg:{
+				width: '100%',
+				height: 50,
 				backgroundColor: COLOR_PRIMARY,
 			},
 
-			button: {
-				backgroundColor: COLOR_PRIMARY,
+			footerBtn:{
+
 			}
 		});
 
 
 		this.state = {
-			// modalId: 'b'
+			visible: false,
+			img: null,
 		}
 	}
 
-	componentDidMount() {
-
-		// alert( new Date() );
-		// AsyncStorage.setItem('sample', JSON.stringify({ expiryDate: new Date(), data: 'sample data'}));
-
-		// AsyncStorage.getItem( 'sample' ).then( res=>{
-		// 	let data = JSON.parse( res );
-		// 	alert( moment( new Date() ).diff( data.expiryDate, 'days' ));
+	componentDidMount = async () => {
+		// console.log('load popup');
+		// let data = await net.getMainPopup();
+		// console.log('loaded popup:', data[0] );
+        //
+		// if( data.length === 0 ) return;
+        //
+		// this.setState({
+		// 	visible: true,
+		// 	img: data[0].img_url,
 		// });
-
+        //
+		// console.log( data[0].img_url );
 	}
 
 
 
 	onConfirm = () => {
-		this.setState({ modalId:null });
+		this.setState({ visible: false });
 	}
 
 	onCancel = () => {
@@ -94,58 +127,42 @@ class AdvertisingSection extends Component {
 		// alert( modalId );
 
 
-		return <View>
-
-			<Modal
+		return <Modal
 				animationType="slide"
 				transparent={true}
-				visible={ modalId === 'a' }
-				style={this.style.container}
+				visible={ this.state.visible }
 				onRequestClose={()=>{}}
 			>
 
-				<View style={this.style.frame}>
+			<View style={this.style.container}>
 
-					<View>
-						<Text>It's a Modal A</Text>
+
+				<View style={this.style.frame}>
+					<Image source={ {uri:this.state.img} }
+						   width={ Dimensions.get('window').width - 30 }
+						   style={ this.style.img }
+						   resizeMode={'cover'}
+					/>
+
+					<View style={ this.style.hideOption }>
+						<Button title="3일동안 보지 않기"
+								color="#000000"
+								onPress={this.hide3Days}/>
 					</View>
 
 					<View style={this.style.footer}>
-						<Button title="확인" onPress={()=>this.onConfirm()}/>
-						<Button title="취소" onPress={()=>this.onCancel()}/>
+						<View style={this.style.footerBg}>
+							<Button title="확인"
+									color="#FFFFFF"
+									style={ this.style.footerBtn }
+									onPress={() => this.onConfirm()}/>
+						</View>
 					</View>
-
 				</View>
 
-			</Modal>
-
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={ modalId === 'b' }
-				style={this.style.container}
-				onRequestClose={()=>{}}
-			>
-
-				<View style={this.style.frame}>
-
-					<View>
-						<Text>It's a Modal B</Text>
-					</View>
-
-					<View>
-						<Button title="3일동안 보지 않기" onPress={this.hide3Days}/>
-					</View>
-
-					<View style={this.style.footer}>
-						<Button title="확인" onPress={()=>this.onConfirm()}/>
-						<Button title="취소" onPress={()=>this.onCancel()}/>
-					</View>
-
-				</View>
+			</View>
 
 			</Modal>
-		</View>
 	}
 
 }
