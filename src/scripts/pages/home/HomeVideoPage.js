@@ -10,7 +10,7 @@ import {
 	TouchableOpacity,
 	View
 } from "react-native";
-import {observer} from "mobx-react";
+import { observer } from "mobx-react";
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
 import Series from "../../components/home/Series";
 import PageCategory from "../../components/PageCategory";
@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
 export default class HomeVideoPage extends React.Component {
 
 	render() {
-		console.log('this.props.store.homeBannerData', this.props.store.homeBannerData);
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
 
