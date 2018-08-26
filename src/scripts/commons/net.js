@@ -1,4 +1,4 @@
-import axios from './wAxios';
+import axios from 'axios';
 import Base64 from "Base64";
 import Localizable from 'react-native-localizable';
 import { AsyncStorage } from 'react-native';

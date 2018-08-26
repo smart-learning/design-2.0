@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage } from "react-native";
-import axios from './wAxios';
+import axios from 'axios';
 
 let socialType;
 let socialToken;
