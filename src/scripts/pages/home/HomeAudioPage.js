@@ -18,8 +18,9 @@ import PageCategory from "../../components/PageCategory";
 import BookList from "../../components/home/BookList";
 import BookFreeList from "../../components/home/BookFreeList";
 import BookContinueList from "../../components/home/BookCoutinueList";
+import PTRView from 'react-native-pull-to-refresh';
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
 	wrapper: {},
 	slide: {
 		flex: 1,
@@ -105,132 +106,136 @@ const styles = StyleSheet.create({
 		paddingLeft: 7,
 		height: 13,
 	},
-});
+} );
 
 @observer
 class HomeAudioPage extends React.Component {
 
 	render() {
-		return <ScrollView style={{flex: 1}}>
-			{/* 이미지 스와이퍼 */}
-			<View style={{ height: this.props.store.slideHeight }}>
-				{(this.props.store.homeBannerData && this.props.store.homeBannerData.length > 0 ) &&
-				<Swiper style={styles.wrapper}
-						showsButtons={false}
-						height={window.width}
-						dotColor={"#888888"}
-						activeDotColor={"#ffffff"}
-						paginationStyle={{ bottom: 10 }}>
+		return (
+			<PTRView onRefresh={() => this.props.onRefresh()}>
+				<ScrollView style={{ flex: 1 }}>
+					{/* 이미지 스와이퍼 */}
+					<View style={{ height: this.props.store.slideHeight }}>
+						{( this.props.store.homeBannerData && this.props.store.homeBannerData.length > 0 ) &&
+						<Swiper style={styles.wrapper}
+								showsButtons={false}
+								height={window.width}
+								dotColor={"#888888"}
+								activeDotColor={"#ffffff"}
+								paginationStyle={{ bottom: 10 }}>
 
-					{this.props.store.homeBannerData.map( ( item, key ) => {
-						return (
-							<TouchableOpacity activeOpacity={0.9} key={ key }>
-								<ImageBackground source={{ uri: item.images.default }} resizeMode="cover"
-												 style={styles.thumbnail}/>
-							</TouchableOpacity>
-						);
-					} )}
-				</Swiper>
-				}
-				{this.props.store.homeBannerData.length === 0 &&
-				<View style={{ marginTop: '20%' }}>
-					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
-				</View>
-				}
-			</View>
-			{/* /이미지 스와이퍼 */}
-
-			<View style={styles.monthContainer}>
-				<View>
-					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
-						8월 이달의 책
-					</Text>
-					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
-						이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
-					</Text>
-				</View>
-
-				<BookMonthly/>
-			</View>
-
-			<View style={[CommonStyles.contentContainer, styles.audioBookContainer]}>
-				<View>
-					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
-						윌라 오디오북
-					</Text>
-					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
-						4차 산업혁명 시대의 새로운 책 읽기
-					</Text>
-				</View>
-
-				<View style={styles.audioCategory}>
-					<View style={styles.audioCategoryHr}/>
-					<PageCategory data={this.props.store.audioBookCategoryData}/>
-					<View style={styles.audioCategoryHr}/>
-				</View>
-
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						많이 듣고있는 오디오북
-					</Text>
-					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
-						2018. 07.09 업데이트
-					</Text>
-				</View>
-
-				<BookList itemType="hot"/>
-
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						새로 나온 오디오북
-					</Text>
-				</View>
-
-				<BookList/>
-
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						윌라 추천 오디오북
-					</Text>
-				</View>
-
-				<BookList/>
-
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						매일 책 한권 - 무료 북 리뷰
-					</Text>
-				</View>
-
-				<BookFreeList/>
-
-				<TouchableOpacity activeOpacity={0.9}>
-					<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
-						<Text style={styles.linkViewAllText}>
-							오디오북 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
-						</Text>
+							{this.props.store.homeBannerData.map( ( item, key ) => {
+								return (
+									<TouchableOpacity activeOpacity={0.9} key={key}>
+										<ImageBackground source={{ uri: item.images.default }} resizeMode="cover"
+														 style={styles.thumbnail}/>
+									</TouchableOpacity>
+								);
+							} )}
+						</Swiper>
+						}
+						{this.props.store.homeBannerData.length === 0 &&
+						<View style={{ marginTop: '20%' }}>
+							<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+						</View>
+						}
 					</View>
-				</TouchableOpacity>
+					{/* /이미지 스와이퍼 */}
 
-				<View style={CommonStyles.alignJustifyItemCenter}>
-					<Text style={styles.titleH3}>
-						구매한 오디오북
-					</Text>
-				</View>
-				<View style={styles.titleHr}/>
+					<View style={styles.monthContainer}>
+						<View>
+							<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+								8월 이달의 책
+							</Text>
+							<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+								이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
+							</Text>
+						</View>
 
-				<BookContinueList/>
+						<BookMonthly/>
+					</View>
 
-				<View style={CommonStyles.alignJustifyItemCenter}>
-					<Text style={styles.titleH3}>
-						최근재생 오디오북
-					</Text>
-				</View>
-				<View style={styles.titleHr}/>
+					<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>
+						<View>
+							<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+								윌라 오디오북
+							</Text>
+							<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+								4차 산업혁명 시대의 새로운 책 읽기
+							</Text>
+						</View>
 
-				<BookContinueList/>
-			</View>
-		</ScrollView>
+						<View style={styles.audioCategory}>
+							<View style={styles.audioCategoryHr}/>
+							<PageCategory data={this.props.store.audioBookCategoryData}/>
+							<View style={styles.audioCategoryHr}/>
+						</View>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								많이 듣고있는 오디오북
+							</Text>
+							<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
+								2018. 07.09 업데이트
+							</Text>
+						</View>
+
+						<BookList itemType="hot"/>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								새로 나온 오디오북
+							</Text>
+						</View>
+
+						<BookList/>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								윌라 추천 오디오북
+							</Text>
+						</View>
+
+						<BookList/>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								매일 책 한권 - 무료 북 리뷰
+							</Text>
+						</View>
+
+						<BookFreeList/>
+
+						<TouchableOpacity activeOpacity={0.9}>
+							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
+								<Text style={styles.linkViewAllText}>
+									오디오북 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
+								</Text>
+							</View>
+						</TouchableOpacity>
+
+						<View style={CommonStyles.alignJustifyItemCenter}>
+							<Text style={styles.titleH3}>
+								구매한 오디오북
+							</Text>
+						</View>
+						<View style={styles.titleHr}/>
+
+						<BookContinueList/>
+
+						<View style={CommonStyles.alignJustifyItemCenter}>
+							<Text style={styles.titleH3}>
+								최근재생 오디오북
+							</Text>
+						</View>
+						<View style={styles.titleHr}/>
+
+						<BookContinueList/>
+					</View>
+				</ScrollView>
+			</PTRView>
+		)
 
 	}
 }

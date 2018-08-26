@@ -18,9 +18,10 @@ import ClassList from "../../components/home/ClassList";
 import ClipRank from "../../components/home/ClipRank";
 import ClassContinueList from "../../components/home/ClassContinueList";
 import Swiper from "react-native-swiper";
-import {withNavigation} from "react-navigation";
+import { withNavigation } from "react-navigation";
+import PRTView from 'react-native-pull-to-refresh';
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
 	slide: {
 		flex: 1,
 		justifyContent: 'center',
@@ -103,166 +104,170 @@ const styles = StyleSheet.create({
 	seriesComponent: {
 		paddingTop: 30,
 	}
-});
+} );
 
 @observer
 export default withNavigation( class HomeVideoPage extends React.Component {
 
 
 	/* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
-	premiumCategorySelect=(data)=>{
-		this.props.navigation.navigate('ClassListPage',
-			{ action:'category', data: data } // 전달할 데이터
+	premiumCategorySelect = ( data ) => {
+		this.props.navigation.navigate( 'ClassListPage',
+			{ action: 'category', data: data } // 전달할 데이터
 		);
 	}
 
 	render() {
-		return <ScrollView style={{flex: 1}}>
-			{/* 이미지 스와이퍼 */}
+		return (
+			<PTRView onRefresh={() => this.props.onRefresh()}>
+				<ScrollView style={{ flex: 1 }}>
+					{/* 이미지 스와이퍼 */}
 
-			<View style={{height: this.props.store.slideHeight}}>
-				{this.props.store.homeBannerData.length > 0 &&
-				<Swiper style={styles.wrapper}
-						showsButtons={false}
-						height={window.width}
-						dotColor={"#888888"}
-						activeDotColor={"#ffffff"}
-						paginationStyle={{bottom: 10}}>
+					<View style={{ height: this.props.store.slideHeight }}>
+						{this.props.store.homeBannerData.length > 0 &&
+						<Swiper style={styles.wrapper}
+								showsButtons={false}
+								height={window.width}
+								dotColor={"#888888"}
+								activeDotColor={"#ffffff"}
+								paginationStyle={{ bottom: 10 }}>
 
-					{this.props.store.homeBannerData.map((item, key) => {
-						return (
-							<TouchableOpacity activeOpacity={0.9} key={key}>
-								<ImageBackground source={{uri: item.images.default}} resizeMode="cover"
-												 style={styles.thumbnail}/>
-							</TouchableOpacity>
-						);
-					})}
-				</Swiper>
-				}
-				{this.props.store.homeBannerData.length === 0 &&
-				<View style={{ marginTop: '20%' }}>
-					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
-				</View>
-				}
-			</View>
-			{/* /이미지 스와이퍼 */}
-
-			{this.props.store.homeSeriesData.length <= 6 &&
-			<View style={{marginTop: 12}}>
-				<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
-			</View>
-			}
-			{this.props.store.homeSeriesData.length > 6 &&
-			<View style={[CommonStyles.contentContainer, styles.seriesContainer]}>
-				<View>
-					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
-						윌라 추천 시리즈
-					</Text>
-					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
-						당신이 배우고 싶은 모든 것
-					</Text>
-				</View>
-
-				<View style={styles.seriesComponent}>
-					<Series itemData={this.props.store.homeSeriesData}/>
-				</View>
-
-				<TouchableOpacity activeOpacity={0.9}>
-					<View style={styles.linkViewAll} borderRadius={5}>
-						<Text style={styles.linkViewAllText}>
-							추천 시리즈 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
-						</Text>
+							{this.props.store.homeBannerData.map( ( item, key ) => {
+								return (
+									<TouchableOpacity activeOpacity={0.9} key={key}>
+										<ImageBackground source={{ uri: item.images.default }} resizeMode="cover"
+														 style={styles.thumbnail}/>
+									</TouchableOpacity>
+								);
+							} )}
+						</Swiper>
+						}
+						{this.props.store.homeBannerData.length === 0 &&
+						<View style={{ marginTop: '20%' }}>
+							<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+						</View>
+						}
 					</View>
-				</TouchableOpacity>
-			</View>
-			}
+					{/* /이미지 스와이퍼 */}
 
-			{this.props.store.classHotData.length > 0 &&
-			<View style={[CommonStyles.contentContainer, styles.classContainer]}>
-				<View>
-					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
-						윌라 프리미엄 클래스
-					</Text>
-					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
-						당신의 커리어 성공과 행복한 일상을 위한 교육
-					</Text>
-				</View>
-
-				<View style={styles.classCategory}>
-					<View style={styles.classCategoryHr}/>
-					<PageCategory data={this.props.store.videoCategoryData}
-								  onCategorySelect={ this.premiumCategorySelect }
-					/>
-					<View style={styles.classCategoryHr}/>
-				</View>
-
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						회원들이 듣고 있는 클래스
-					</Text>
-					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
-						2018. 07.09 업데이트
-					</Text>
-				</View>
-
-				<ClassList classType="hot" itemData={this.props.store.classHotData}/>
-
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						새로 나온 클래스
-					</Text>
-					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
-						2018. 07.09 업데이트
-					</Text>
-				</View>
-
-				<ClassList itemData={this.props.store.classNewData}/>
-
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						윌라 추천 클래스
-					</Text>
-					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
-						2018. 07.09 업데이트
-					</Text>
-				</View>
-
-				<ClassList itemData={this.props.store.classRecommendData}/>
-
-				<TouchableOpacity activeOpacity={0.9}>
-					<View style={[styles.linkViewAll, styles.classLinkViewAll]} borderRadius={5}>
-						<Text style={styles.linkViewAllText}>
-							클래스 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
-						</Text>
+					{this.props.store.homeSeriesData.length <= 6 &&
+					<View style={{ marginTop: 12 }}>
+						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 					</View>
-				</TouchableOpacity>
+					}
+					{this.props.store.homeSeriesData.length > 6 &&
+					<View style={[ CommonStyles.contentContainer, styles.seriesContainer ]}>
+						<View>
+							<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+								윌라 추천 시리즈
+							</Text>
+							<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+								당신이 배우고 싶은 모든 것
+							</Text>
+						</View>
 
-				<View style={CommonStyles.alignJustifyContentBetween}>
-					<Text style={styles.titleH3}>
-						지금 많이 듣고 있는 강의클립
-					</Text>
-					<Text style={[styles.titleParagraph, {marginLeft: 'auto'}]}>
-						2018. 07.09 업데이트
-					</Text>
-				</View>
-				<View style={styles.titleHr}/>
+						<View style={styles.seriesComponent}>
+							<Series itemData={this.props.store.homeSeriesData}/>
+						</View>
 
-				<ClipRank itemData={this.props.store.clipRankData}
-						  clipRankContentSize={this.props.store.clipRankContentSize}/>
+						<TouchableOpacity activeOpacity={0.9}>
+							<View style={styles.linkViewAll} borderRadius={5}>
+								<Text style={styles.linkViewAllText}>
+									추천 시리즈 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
+								</Text>
+							</View>
+						</TouchableOpacity>
+					</View>
+					}
 
-				<View style={CommonStyles.alignJustifyItemCenter}>
-					<Text style={styles.titleH3}>
-						이어보기
-					</Text>
-					<Text style={styles.titleParagraph}>
-						2018. 07.09 업데이트
-					</Text>
-				</View>
-				<View style={styles.titleHr}/>
+					{this.props.store.classHotData.length > 0 &&
+					<View style={[ CommonStyles.contentContainer, styles.classContainer ]}>
+						<View>
+							<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+								윌라 프리미엄 클래스
+							</Text>
+							<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+								당신의 커리어 성공과 행복한 일상을 위한 교육
+							</Text>
+						</View>
 
-				<ClassContinueList/>
-			</View>
-			}
-		</ScrollView>
+						<View style={styles.classCategory}>
+							<View style={styles.classCategoryHr}/>
+							<PageCategory data={this.props.store.videoCategoryData}
+										  onCategorySelect={this.premiumCategorySelect}
+							/>
+							<View style={styles.classCategoryHr}/>
+						</View>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								회원들이 듣고 있는 클래스
+							</Text>
+							<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
+								2018. 07.09 업데이트
+							</Text>
+						</View>
+
+						<ClassList classType="hot" itemData={this.props.store.classHotData}/>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								새로 나온 클래스
+							</Text>
+							<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
+								2018. 07.09 업데이트
+							</Text>
+						</View>
+
+						<ClassList itemData={this.props.store.classNewData}/>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								윌라 추천 클래스
+							</Text>
+							<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
+								2018. 07.09 업데이트
+							</Text>
+						</View>
+
+						<ClassList itemData={this.props.store.classRecommendData}/>
+
+						<TouchableOpacity activeOpacity={0.9}>
+							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
+								<Text style={styles.linkViewAllText}>
+									클래스 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
+								</Text>
+							</View>
+						</TouchableOpacity>
+
+						<View style={CommonStyles.alignJustifyContentBetween}>
+							<Text style={styles.titleH3}>
+								지금 많이 듣고 있는 강의클립
+							</Text>
+							<Text style={[ styles.titleParagraph, { marginLeft: 'auto' } ]}>
+								2018. 07.09 업데이트
+							</Text>
+						</View>
+						<View style={styles.titleHr}/>
+
+						<ClipRank itemData={this.props.store.clipRankData}
+								  clipRankContentSize={this.props.store.clipRankContentSize}/>
+
+						<View style={CommonStyles.alignJustifyItemCenter}>
+							<Text style={styles.titleH3}>
+								이어보기
+							</Text>
+							<Text style={styles.titleParagraph}>
+								2018. 07.09 업데이트
+							</Text>
+						</View>
+						<View style={styles.titleHr}/>
+
+						<ClassContinueList/>
+					</View>
+					}
+				</ScrollView>
+			</PTRView>
+		);
 	}
-});
+} );

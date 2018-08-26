@@ -83,13 +83,13 @@ class HomePage extends React.Component {
 		homeBannerData: [],
 	});
 
-	getData = async () => {
+	getData = async ( isRefresh = false ) => {
 		// 시리즈는 제일 먼저 읽어온다
 		this.store.homeSeriesData = await net.getHomeSeries();
 
 		// 데이터 가져와서
-		const videoCategoryData = await net.getLectureCategory();
-		const homeContents = await net.getHomeContents();
+		const videoCategoryData = await net.getLectureCategory( isRefresh );
+		const homeContents = await net.getHomeContents( isRefresh );
 		// VO로 정리해서 사용
 		const categoryVOs = videoCategoryData.map( element => {
 			const vo = new PageCategoryItemVO();
@@ -132,8 +132,8 @@ class HomePage extends React.Component {
 		this.store.classHotData = hotVOs;
 		this.store.classNewData = newVOs;
 		this.store.classRecommendData = recommendVOs;
-		this.store.clipRankData = await net.getHomeClipRank();
-		this.store.homeBannerData = await net.getMainBanner();
+		this.store.clipRankData = await net.getHomeClipRank( isRefresh );
+		this.store.homeBannerData = await net.getMainBanner( isRefresh );
 	};
 
 	componentDidMount() {
@@ -184,10 +184,10 @@ class HomePage extends React.Component {
 					onPageSelected={ this.onPageSelected }
 					>
 					<View style={styles.tabContentContainer}>
-						<HomeVideoPage store={this.store}/>
+						<HomeVideoPage store={this.store} onRefresh={ () => this.getData( true ) }/>
 					</View>
 					<View style={styles.tabContentContainer}>
-						<HomeAudioPage store={this.store}/>
+						<HomeAudioPage store={this.store} onRefresh={ () => this.getData( true ) }/>
 					</View>
 				</ViewPager>
 				<View style={styles.tabContainer}>
