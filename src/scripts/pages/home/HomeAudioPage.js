@@ -5,8 +5,10 @@ import {observer} from "mobx-react";
 import Swiper from "react-native-swiper";
 import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
+import IcAngleRightGrey from "../../../images/ic-angle-right-grey.png";
+import BookMonthly from "../../components/home/BookMonthly";
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	wrapper: {},
 	slide: {
 		flex: 1,
@@ -50,7 +52,20 @@ const styles = StyleSheet.create( {
 		marginTop: 7,
 		backgroundColor: '#cecece',
 	},
-} );
+	monthContainer: {
+		paddingTop: 50,
+		paddingBottom: 50,
+		backgroundColor: '#8cd8b1',
+	},
+	dailyContainer: {
+		paddingTop: 50,
+		paddingBottom: 50,
+	},
+	audioBookContainer: {
+		paddingTop: 50,
+		paddingBottom: 50,
+	},
+});
 
 @observer
 class HomeAudioPage extends React.Component {
@@ -58,11 +73,13 @@ class HomeAudioPage extends React.Component {
 	render() {
 		return <ScrollView style={{flex: 1}}>
 			{/* 이미지 스와이퍼 */}
-			<View style={{ height: this.props.store.slideHeight }}>
+			<View style={{height: this.props.store.slideHeight}}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
-						paginationStyle={{ bottom: 10 }}>
+						dotColor={"#888888"}
+						activeDotColor={"#ffffff"}
+						paginationStyle={{bottom: 10}}>
 					<View style={styles.slide}>
 						<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
 					</View>
@@ -73,37 +90,88 @@ class HomeAudioPage extends React.Component {
 			</View>
 			{/* /이미지 스와이퍼 */}
 
-			<View style={[ CommonStyles.contentContainer, styles.monthContainer ]}>
+			<View style={styles.monthContainer}>
 				<View>
-					<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
 						8월 이달의 책
 					</Text>
-					<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
 						이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
 					</Text>
 				</View>
+
+				<BookMonthly/>
 			</View>
 
-			<View style={[ CommonStyles.contentContainer, styles.dailyContainer ]}>
+			<View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
 				<View>
-					<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
 						매일 책 한 권
 					</Text>
-					<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
 						책 좀 아는 사람들이 요약해 주는 읽은 척 매뉴얼
 					</Text>
 				</View>
 			</View>
 
-			<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>
+			<View style={[CommonStyles.contentContainer, styles.audioBookContainer]}>
 				<View>
-					<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
-						매일 책 한 권
+					<Text style={[styles.mainTitleCenter, styles.titleH2]}>
+						윌라 오디오북
 					</Text>
-					<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
-						책 좀 아는 사람들이 요약해 주는 읽은 척 매뉴얼
+					<Text style={[styles.mainTitleCenter, styles.titleH4]}>
+						4차 산업혁명 시대의 새로운 책 읽기
 					</Text>
 				</View>
+
+				<View style={CommonStyles.alignJustifyContentBetween}>
+					<Text style={styles.titleH3}>
+						많이 듣고있는 오디오북
+					</Text>
+					<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
+						2018. 07.09 업데이트
+					</Text>
+				</View>
+
+				<View style={CommonStyles.alignJustifyContentBetween}>
+					<Text style={styles.titleH3}>
+						새로 나온 오디오북
+					</Text>
+				</View>
+
+				<View style={CommonStyles.alignJustifyContentBetween}>
+					<Text style={styles.titleH3}>
+						윌라 추천 오디오북
+					</Text>
+				</View>
+
+				<View style={CommonStyles.alignJustifyContentBetween}>
+					<Text style={styles.titleH3}>
+						매일 책 한권 - 무료 북 리뷰
+					</Text>
+				</View>
+
+				<TouchableOpacity activeOpacity={0.9}>
+					<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
+						<Text style={styles.linkViewAllText}>
+							오디오북 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
+						</Text>
+					</View>
+				</TouchableOpacity>
+
+				<View style={CommonStyles.alignJustifyItemCenter}>
+					<Text style={styles.titleH3}>
+						구매한 오디오북
+					</Text>
+				</View>
+				<View style={styles.titleHr}/>
+
+				<View style={CommonStyles.alignJustifyItemCenter}>
+					<Text style={styles.titleH3}>
+						최근재생 오디오북
+					</Text>
+				</View>
+				<View style={styles.titleHr}/>
 			</View>
 		</ScrollView>
 
