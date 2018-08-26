@@ -95,7 +95,13 @@ class DetailLayout extends React.Component {
 										  }}>
 							<View style={styles.tabItem}>
 								<Text style={this.props.store.tabStatus === 'info' ? styles.tabActiveText : styles.tabNormalText}>
-									클래스정보
+									{this.props.learnType === 'audioBook' &&
+									<Text>도서정보</Text>
+									}
+									{this.props.learnType === 'class' &&
+									<Text>클래스정보</Text>
+									}
+
 								</Text>
 								<View style={ this.props.store.tabStatus === 'info' ? styles.tabActiveHr : styles.tabNormalHr }/>
 							</View>

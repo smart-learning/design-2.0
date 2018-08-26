@@ -9,6 +9,8 @@ import MembershipCampus from '../../images/bullet-membership-campus.png';
 import MembershipNormal from '../../images/bullet-membership-normal.png';
 import CommonStyles from "../../styles/common";
 import store from "../commons/store";
+import NavigationActions from "react-navigation/src/NavigationActions";
+import MyScreens from "../pages/my/MyScreens";
 
 const styles = StyleSheet.create({
 	userInfoContainer: {
@@ -114,16 +116,20 @@ export default class SidebarUserInfo extends React.Component {
 					<View>
 						{/*beforeLogin*/}
 						{store.welaaaAuth === undefined &&
-						<TouchableOpacity activeOpacity={0.9}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => this.props.navigation.navigate('Login')}>
 							<Text style={styles.loginText}>로그인</Text>
 						</TouchableOpacity>
 						}
 						{/*isLogin*/}
 						{store.welaaaAuth &&
-						<View>
-							<Text style={styles.userName}><Text style={styles.userNameImportant}>유저이름</Text>님</Text>
-							<Text style={styles.userEmail}>mail@mail.com</Text>
-						</View>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => this.props.navigation.navigate('MyScreen')}>
+							<View>
+								<Text style={styles.userName}><Text style={styles.userNameImportant}>유저이름</Text>님</Text>
+								<Text style={styles.userEmail}>mail@mail.com</Text>
+							</View>
+						</TouchableOpacity>
 						}
 					</View>
 				</View>
