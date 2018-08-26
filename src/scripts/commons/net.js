@@ -244,4 +244,16 @@ export default {
 				});
 		});
 	},
+	getMainBanner() {
+		return cacheOrLoad( API_PREFIX + 'cms/main/banner', DEFAULT_EXPIRED )
+			.then( data => {
+				data.forEach(element => {
+					element.key = element.id.toString();
+				});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	}
 }

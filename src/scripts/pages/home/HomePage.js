@@ -79,6 +79,7 @@ class HomePage extends React.Component {
 		classNewData: {},
 		classRecommendData: {},
 		clipRankData: [],
+		homeBannerData: [],
 	});
 
 	getData = async () => {
@@ -128,6 +129,7 @@ class HomePage extends React.Component {
 		this.store.classNewData = newVOs;
 		this.store.classRecommendData = recommendVOs;
 		this.store.clipRankData = await net.getHomeClipRank();
+		this.store.homeBannerData = await net.getMainBanner();
 	};
 
 	componentDidMount() {
