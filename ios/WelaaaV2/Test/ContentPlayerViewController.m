@@ -101,10 +101,13 @@
     [_contentView addSubview : _hideAndShowButton];
   
     // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
+  /* 일단 주석 처리
+   *
     [[NSNotificationCenter defaultCenter] addObserver : self
                                              selector : @selector(applicationDidEnterBackground:)
                                                  name : UIApplicationDidEnterBackgroundNotification
                                                object : nil];
+  */
 }
 
 // 뷰 컨트롤러가 화면에 나타나기 직전에 실행됩니다.
@@ -172,6 +175,9 @@
     }
 }
 
+//
+// RN에서 넘겨받은 arguments를 세팅합니다.
+//
 - (void) setContentData : (NSDictionary *) args
 {
     NSLog(@"  [setContentData] RN에서 받은 데이터를 set합니다.");
@@ -215,6 +221,8 @@
   
     [self invalidateTimerOnSlider];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+  
+    // 다음 재생할 item이 있는지 검색하여 플레이할 것인지 추천영상뷰를 띄울것인지 결정해야합니다.
 }
 
 // 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
@@ -1618,6 +1626,228 @@
   ;
 }
 
+# pragma mark - Transmitting with the API server.
+//
+// group_ID로 콘텐츠 정보를 가져옵니다.
+//
+- (void) getContentsInfoWithCgid : (NSString *) contentGroupID
+                   andHeaderInfo : (NSString *) authValue
+{
+    NSString *apiContentsInfo = @"/dev/api/v1.0/play/contents-info/"; // dev -> ?
+    //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
+    NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, contentGroupID];//b300200 와 같은 group_ID
+    NSURL *url = [NSURL URLWithString : urlWithParams];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+  
+    [request setHTTPMethod : @"GET"];
+    // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
+    [request            setValue : authValue
+              forHTTPHeaderField : @"authorization"];
+  
+    NSError *error;
+    NSURLResponse *resp = nil;
+    // 비동기방식이 아닌 동기방식으로 접속합니다.
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
+  
+    NSString *jsonData = [[NSString alloc] initWithData : data
+                                               encoding : NSUTF8StringEncoding];
+  
+    NSDictionary *contentsInfoDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                                     options : NSJSONReadingAllowFragments
+                                                                       error : &error];
+    // 오디오북
+    if ( [contentGroupID hasPrefix : @"b"] )
+    {
+      NSLog(@"  Content [type] : %@", contentsInfoDics[@"type"]);
+      NSLog(@"  ");
+      NSLog(@"  Content [permission][can_play] : %@",   contentsInfoDics[@"permission"][@"can_play"]);
+      NSLog(@"  Content [permission][expire_at] : %@",  contentsInfoDics[@"permission"][@"expire_at"]);
+      NSLog(@"  Content [permission][is_free] : %@",    contentsInfoDics[@"permission"][@"is_free"]);
+      NSLog(@"  ");
+      NSLog(@"  Content [history][id] : %@",            contentsInfoDics[@"history"][@"id"]);
+      NSLog(@"  Content [history][played_at] : %@",     contentsInfoDics[@"history"][@"played_at"]);
+      NSLog(@"  Content [history][start_seconds] : %@", contentsInfoDics[@"history"][@"start_seconds"]);
+      NSLog(@"  ");
+      NSLog(@"  Content [data][cid] : %@",           contentsInfoDics[@"data"][@"cid"]);
+      NSLog(@"  Content [data][title] : %@",        contentsInfoDics[@"data"][@"title"]);
+      NSLog(@"  Content [data][id] : %@",           contentsInfoDics[@"data"][@"id"]);
+      NSLog(@"  Content [data][teacher][headline] : %@",        contentsInfoDics[@"data"][@"teacher"][@"headline"]);
+      NSLog(@"  Content [data][teacher][id] : %@",              contentsInfoDics[@"data"][@"teacher"][@"id"]);
+      NSLog(@"  Content [data][teacher][memo] : %@",            contentsInfoDics[@"data"][@"teacher"][@"memo"]);
+      NSLog(@"  Content [data][teacher][name] : %@",            contentsInfoDics[@"data"][@"teacher"][@"name"]);
+      NSLog(@"  Content [data][teacher][images][default] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"default"]);
+      NSLog(@"  Content [data][teacher][images][profile] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"profile"]);
+      NSLog(@"  ");
+      /* chapters는 array로 처리해야 합니다.
+      NSLog(@"  Content [data][chapters][0][align] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"align"]);
+      NSLog(@"  Content [data][chapters][0][cid] : %@",           contentsInfoDics[@"data"][@"chapters"][@"0"][@"cid"]);
+      NSLog(@"  Content [data][chapters][0][depth] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"depth"]);
+      NSLog(@"  Content [data][chapters][0][id] : %@",            contentsInfoDics[@"data"][@"chapters"][@"0"][@"id"]);
+      NSLog(@"  Content [data][chapters][0][is_first_play] : %@", contentsInfoDics[@"data"][@"chapters"][@"0"][@"is_first_play"]);
+      NSLog(@"  Content [data][chapters][0][is_free] : %@",       contentsInfoDics[@"data"][@"chapters"][@"0"][@"is_free"]);
+      NSLog(@"  Content [data][chapters][0][is_preview] : %@",    contentsInfoDics[@"data"][@"chapters"][@"0"][@"is_preview"]);
+      NSLog(@"  Content [data][chapters][0][memo] : %@",          contentsInfoDics[@"data"][@"chapters"][@"0"][@"memo"]);
+      NSLog(@"  Content [data][chapters][0][play_seconds] : %@",  contentsInfoDics[@"data"][@"chapters"][@"0"][@"play_seconds"]);  // 0 = 플레이 불가한 '챕터 타이틀'.
+      NSLog(@"  Content [data][chapters][0][play_time] : %@",     contentsInfoDics[@"data"][@"chapters"][@"0"][@"play_time"]);
+      NSLog(@"  Content [data][chapters][0][price] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"price"]);
+      // '챕터 타이틀'은 progress가 'null'입니다.
+      //NSLog(@"  Content [data][chapters][0][progress] : %@",      contentsInfoDics[@"data"][@"chapters"][@"0"][@"progress"][@"percent"]);
+      //NSLog(@"  Content [data][chapters][0][progress] : %@",      contentsInfoDics[@"data"][@"chapters"][@"0"][@"progress"][@"start_second"]);
+      
+      NSLog(@"  Content [data][chapters][0][title] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"title"]);
+      NSLog(@"  Content [data][chapters][0][type] : %@",          contentsInfoDics[@"data"][@"chapters"][@"0"][@"type"]);
+      */
+    }
+  
+    // 영상
+    if ( [contentGroupID hasPrefix : @"v"] )
+    {
+        NSLog(@"  Content [type] : %@", contentsInfoDics[@"type"]);
+        NSLog(@"  ");
+        NSLog(@"  Content [permission][id] : %@",         contentsInfoDics[@"permission"][@"id"]);
+        NSLog(@"  Content [permission][expire_at] : %@",  contentsInfoDics[@"permission"][@"expire_at"]);
+        NSLog(@"  Content [permission][is_free] : %@",    contentsInfoDics[@"permission"][@"is_free"]);
+        NSLog(@"  ");
+        NSLog(@"  Content [history][id] : %@",            contentsInfoDics[@"history"][@"id"]);
+        NSLog(@"  Content [history][played_at] : %@",     contentsInfoDics[@"history"][@"played_at"]);
+        NSLog(@"  Content [history][start_seconds] : %@", contentsInfoDics[@"history"][@"start_seconds"]);
+        NSLog(@"  ");
+        NSLog(@"  Content [data][ccode] : %@",        contentsInfoDics[@"data"][@"ccode"]);
+        NSLog(@"  Content [data][clip_count] : %@",   contentsInfoDics[@"data"][@"clip_count"]);
+        NSLog(@"  Content [data][headline] : %@",     contentsInfoDics[@"data"][@"headline"]);
+        NSLog(@"  Content [data][hit_count] : %@",    contentsInfoDics[@"data"][@"hit_count"]);
+        NSLog(@"  Content [data][id] : %@",           contentsInfoDics[@"data"][@"id"]);
+        NSLog(@"  Content [data][image_url] : %@",    contentsInfoDics[@"data"][@"image_url"]);
+        NSLog(@"  Content [data][is_exculsive] : %@", contentsInfoDics[@"data"][@"is_exculsive"]);  // exculsive -> exclusive
+        NSLog(@"  Content [data][is_featured] : %@",  contentsInfoDics[@"data"][@"is_featured"]);
+        NSLog(@"  Content [data][is_new] : %@",       contentsInfoDics[@"data"][@"is_new"]);
+        NSLog(@"  Content [data][like_count] : %@",   contentsInfoDics[@"data"][@"like_count"]);
+        NSLog(@"  Content [data][play_time] : %@",    contentsInfoDics[@"data"][@"play_time"]);
+        NSLog(@"  Content [data][review_count] : %@", contentsInfoDics[@"data"][@"review_count"]);
+        NSLog(@"  Content [data][star_avg] : %@",     contentsInfoDics[@"data"][@"star_avg"]);
+        NSLog(@"  Content [data][title] : %@",        contentsInfoDics[@"data"][@"title"]);
+        NSLog(@"  Content [data][type] : %@",         contentsInfoDics[@"data"][@"type"]);
+        NSLog(@"  Content [data][url] : %@",          contentsInfoDics[@"data"][@"url"]);
+        NSLog(@"  ");
+        NSLog(@"  Content [data][images][big] : %@",  contentsInfoDics[@"data"][@"images"][@"big"]);
+        NSLog(@"  Content [data][images][list] : %@", contentsInfoDics[@"data"][@"images"][@"list"]);
+        NSLog(@"  Content [data][images][wide] : %@", contentsInfoDics[@"data"][@"images"][@"wide"]);
+        NSLog(@"  ");
+        NSLog(@"  Content [data][progress] : %@",     contentsInfoDics[@"data"][@"progress"]);
+        NSLog(@"  Content [data][teacher][headline] : %@",        contentsInfoDics[@"data"][@"teacher"][@"headline"]);
+        NSLog(@"  Content [data][teacher][id] : %@",              contentsInfoDics[@"data"][@"teacher"][@"id"]);
+        NSLog(@"  Content [data][teacher][memo] : %@",            contentsInfoDics[@"data"][@"teacher"][@"memo"]);
+        NSLog(@"  Content [data][teacher][name] : %@",            contentsInfoDics[@"data"][@"teacher"][@"name"]);
+        NSLog(@"  Content [data][teacher][images][default] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"default"]);
+        NSLog(@"  Content [data][teacher][images][profile] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"profile"]);
+        NSLog(@"  ");
+      /* clips는 array로 처리해야 합니다.
+        NSLog(@"  Content [data][clips][0][cid] : %@",          contentsInfoDics[@"data"][@"clips"][@"0"][@"cid"]);
+        NSLog(@"  Content [data][clips][0][end_seconds] : %@",  contentsInfoDics[@"data"][@"clips"][@"0"][@"end_seconds"]);
+        NSLog(@"  Content [data][clips][0][id] : %@",           contentsInfoDics[@"data"][@"clips"][@"0"][@"id"]);
+        NSLog(@"  Content [data][clips][0][is_active] : %@",    contentsInfoDics[@"data"][@"clips"][@"0"][@"is_active"]);
+        NSLog(@"  Content [data][clips][0][memo] : %@",         contentsInfoDics[@"data"][@"clips"][@"0"][@"memo"]);
+        NSLog(@"  Content [data][clips][0][open_date] : %@",    contentsInfoDics[@"data"][@"clips"][@"0"][@"open_date"]);
+        NSLog(@"  Content [data][clips][0][pay_type] : %@",     contentsInfoDics[@"data"][@"clips"][@"0"][@"pay_type"]);
+        NSLog(@"  Content [data][clips][0][play_time] : %@",    contentsInfoDics[@"data"][@"clips"][@"0"][@"play_time"]);
+        NSLog(@"  Content [data][clips][0][price] : %@",        contentsInfoDics[@"data"][@"clips"][@"0"][@"price"]);
+        NSLog(@"  Content [data][clips][0][review_count] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"review_count"]);
+        NSLog(@"  Content [data][clips][0][star_avg] : %@",     contentsInfoDics[@"data"][@"clips"][@"0"][@"star_avg"]);
+        NSLog(@"  Content [data][clips][0][star_count] : %@",   contentsInfoDics[@"data"][@"clips"][@"0"][@"star_count"]);
+        NSLog(@"  Content [data][clips][0][title] : %@",        contentsInfoDics[@"data"][@"clips"][@"0"][@"title"]);
+        NSLog(@"  Content [data][clips][0][type] : %@",         contentsInfoDics[@"data"][@"clips"][@"0"][@"type"]);
+        NSLog(@"  Content [data][clips][0][images][big] : %@",  contentsInfoDics[@"data"][@"clips"][@"0"][@"images"][@"big"]);
+        NSLog(@"  Content [data][clips][0][images][list] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"images"][@"list"]);
+        NSLog(@"  Content [data][clips][0][images][wide] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"images"][@"wide"]);
+       */
+        /* progress는 'null'일 수 있습니다.
+        NSLog(@"  Content [data][clips][0][progress][percent] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"progress"][@"percent"]);
+        NSLog(@"  Content [data][clips][0][progress][start_seconds] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"progress"][@"start_seconds"]);
+        */
+    }
+}
+
+//
+// Content_ID로 콘텐츠 재생에 필요한 데이터를 가져옵니다.
+//
+- (void) getPlayDataWithCid : (NSString *) contentID
+              andHeaderInfo : (NSString *) authValue
+{
+    NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/"; // dev -> ?
+    //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
+    NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, contentID];//b300200_001 와 같은 content_ID
+    NSURL *url = [NSURL URLWithString : urlWithParams];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+  
+    [request setHTTPMethod : @"GET"];
+    // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
+    [request            setValue : authValue
+              forHTTPHeaderField : @"authorization"];
+  
+    NSError *error;
+    NSURLResponse *resp = nil;
+    // 비동기방식이 아닌 동기방식으로 접속합니다.
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
+  
+    NSString *jsonData = [[NSString alloc] initWithData : data
+                                               encoding : NSUTF8StringEncoding];
+  
+    NSDictionary *playDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                                 options : NSJSONReadingAllowFragments
+                                                                   error : &error];
+  
+    // 오디오북
+    if ( [contentID hasPrefix : @"b"] )
+    {
+      //NSLog(@"  Play Data [custom_data_v2][FairPlay]: %@",  playDataDics[@"custom_data_v2"][@"FairPlay"]);  // PallyCon Key
+      //NSLog(@"  Play Data [custom_data_v2][PlayReady]: %@", playDataDics[@"custom_data_v2"][@"PlayReady"]); // PallyCon Key
+      //NSLog(@"  Play Data [custom_data_v2][WideVine]: %@",  playDataDics[@"custom_data_v2"][@"WideVine"]);  // PallyCon Key
+      //NSLog(@"  ");
+      //NSLog(@"  Play Data [media_urls][DASH] : %@", playDataDics[@"media_urls"][@"DASH"]);  // DASH protocol. not for iOS
+        NSLog(@"  Play Data [media_urls][HLS] : %@",  playDataDics[@"media_urls"][@"HLS"]);   // non-playable한 챕터라도 m3u8 uri를 가지고 있습니다.
+        NSLog(@"  ");
+        NSLog(@"  Play Data [permission][can_play] : %@",   playDataDics[@"permission"][@"can_play"]);  // 0 & 1
+        NSLog(@"  Play Data [permission][expire_at] : %@",  playDataDics[@"permission"][@"expire_at"]);
+        NSLog(@"  Play Data [permission][is_free] : %@",    playDataDics[@"permission"][@"is_free"]);   // 0 & 1
+        /* pregress는 'null'일 수 있습니다.
+        NSLog(@"  ");
+        NSLog(@"  Play Data [progress][id] : %@",             playDataDics[@"progress"][@"id"]);            // 내부에서 관리되는 contents id (앱 단에서 현재사용x)
+        NSLog(@"  Play Data [progress][played_at] : %@",      playDataDics[@"progress"][@"played_at"]);
+        NSLog(@"  Play Data [progress][start_seconds] : %@",  playDataDics[@"progress"][@"start_seconds"]);
+        */
+      //NSLog(@"  ");
+      //NSLog(@"  Play Data [type] : %@", playDataDics[@"type"]); // type : 20 => audiobook chapter?
+    }
+  
+    // 영상
+    if ( [contentID hasPrefix : @"v"] )
+    {
+      //NSLog(@"  Play Data [custom_data_v2][FairPlay]: %@",  playDataDics[@"custom_data_v2"][@"FairPlay"]);  // PallyCon Key
+      //NSLog(@"  Play Data [custom_data_v2][PlayReady]: %@", playDataDics[@"custom_data_v2"][@"PlayReady"]); // PallyCon Key
+      //NSLog(@"  Play Data [custom_data_v2][WideVine]: %@",  playDataDics[@"custom_data_v2"][@"WideVine"]);  // PallyCon Key
+      //NSLog(@"  ");
+      //NSLog(@"  Play Data [media_urls][DASH] : %@", playDataDics[@"media_urls"][@"DASH"]);  // DASH protocol. not for iOS
+        NSLog(@"  Play Data [media_urls][HLS] : %@",  playDataDics[@"media_urls"][@"HLS"]);
+        NSLog(@"  ");
+        NSLog(@"  Play Data [permission][can_play] : %@",   playDataDics[@"permission"][@"can_play"]);  // 0 & 1
+        NSLog(@"  Play Data [permission][expire_at] : %@",  playDataDics[@"permission"][@"expire_at"]);
+        NSLog(@"  Play Data [permission][is_free] : %@",    playDataDics[@"permission"][@"is_free"]);   // 0 & 1
+        /* pregress는 'null'일 수 있습니다.
+        NSLog(@"  ");
+        NSLog(@"  Play Data [progress][id] : %@",             playDataDics[@"progress"][@"id"]);            // 내부에서 관리되는 contents id (앱 단에서 현재사용x)
+        NSLog(@"  Play Data [progress][played_at] : %@",      playDataDics[@"progress"][@"played_at"]);
+        NSLog(@"  Play Data [progress][start_seconds] : %@",  playDataDics[@"progress"][@"start_seconds"]);
+        */
+      //NSLog(@"  ");
+      //NSLog(@"  Play Data [type] : %@", playDataDics[@"type"]); // type : 10 => video course?
+    }
+}
+
+
 # pragma mark - Labatory
 - (void) toastTestAlert
 {
@@ -1663,8 +1893,9 @@
 {
   NSLog(@"  nextPlay tapped!");
   // _args를 초기화 또는 uri, cid, name 정도만 재설정합니다.
+  //[self setArgs : argsDictionary];
   // player를 nil처리하고 viewcontroller를 재실행보다는 refresh 처리합니다.
-  
+  /*
   [_player pause];
   
   //뷰를 파괴하기보다는 playItem을 수정하는 방향으로....
@@ -1683,67 +1914,18 @@
   _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
   [_player replaceCurrentItemWithPlayerItem : _playerItem];
   [_player play];
+  */
   
-  [self getContentsInfo];
-  [self getPlayData];
-}
-
-- (void) getContentsInfo
-{
-  NSString *apiContentsInfo = @"/dev/api/v1.0/play/contents-info/";
-//NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
-  NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, @"b300200"];//b300200 와 같은 group_ID
-  NSURL *url = [NSURL URLWithString : urlWithParams];
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+  NSLog(@"  Transmitting with the API server to get Contents Info");
+  [self getContentsInfoWithCgid : @"v100015"
+                  andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
   
-  [request setHTTPMethod : @"GET"];
-  [request setValue:@"Bearer tnaQprXdmWVCQDrd8DSD6eNizEpet4yKFeOzdt0fzf" forHTTPHeaderField:@"authorization"];
-  [request setTimeoutInterval : 30]; // 초단위 지정
+  [NSThread sleepForTimeInterval : 2.0]; // 2초 지연.
   
-  NSError *error;
-  NSURLResponse *resp = nil;
-  // 비동기방식이 아닌 동기방식으로 접속합니다.
-  NSData *data = [ApiManager sendSynchronousRequest : request
-                                  returningResponse : &resp
-                                              error : &error];
+  NSLog(@"  Transmitting with the API server to get play data before play next items");
+  [self getPlayDataWithCid : @"v100015_001"
+             andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
   
-  NSString *jsonData = [[NSString alloc] initWithData : data
-                                             encoding : NSUTF8StringEncoding];
-  
-  NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                               options : NSJSONReadingAllowFragments
-                                                                 error : &error];
-  
-  NSLog(@"  JSON from server : %@", jsonResponse);
-}
-
-- (void) getPlayData
-{
-  NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/";
-  //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
-  NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, @"b300200_001"];//b300200_001 와 같은 content_ID
-  NSURL *url = [NSURL URLWithString : urlWithParams];
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
-  
-  [request setHTTPMethod : @"GET"];
-  [request setValue:@"Bearer tnaQprXdmWVCQDrd8DSD6eNizEpet4yKFeOzdt0fzf" forHTTPHeaderField:@"authorization"];
-  [request setTimeoutInterval : 30]; // 초단위 지정
-  
-  NSError *error;
-  NSURLResponse *resp = nil;
-  // 비동기방식이 아닌 동기방식으로 접속합니다.
-  NSData *data = [ApiManager sendSynchronousRequest : request
-                                  returningResponse : &resp
-                                              error : &error];
-  
-  NSString *jsonData = [[NSString alloc] initWithData : data
-                                             encoding : NSUTF8StringEncoding];
-  
-  NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                               options : NSJSONReadingAllowFragments
-                                                                 error : &error];
-  
-  NSLog(@"  JSON from server : %@", jsonResponse);
 }
 
 @end
