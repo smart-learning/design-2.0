@@ -21,7 +21,7 @@ export const NAV_OPTS_COMMON = {
 export const NAV_OPTS_MAIN = ({navigation, navigationOptions}) => ({
 	headerLeft: <HomeButton/>,
 	headerTitle: <Image source={logo} style={CommonStyle.headerLogo}/>,
-	headerRight: <SearchButton/>
+	// headerRight: <SearchButton/>
 });
 
 export const NAV_OPTS_STACK = ({navigation, navigationOptions}) => {
@@ -34,7 +34,7 @@ export const NAV_OPTS_STACK = ({navigation, navigationOptions}) => {
 export const NAV_OPTS_STACK_WITH_SEARCH = ({navigation, navigationOptions}) => {
 	return {
 		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
-		headerRight: <SearchButton/>
+		// headerRight: <SearchButton/>
 	}
 };
 
@@ -52,7 +52,7 @@ export const NAV_OPTS_MY_HOME = ({navigation, navigationOptions}) => {
 		},
 		headerLeft: <HomeButton/>,
 		headerTitle: <Image source={logo} style={CommonStyle.headerLogo}/>,
-		headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')}/>
+		// headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')}/>
 	}
 
 };
