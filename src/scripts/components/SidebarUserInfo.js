@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Text, View, Image, ImageBackground, TouchableOpacity, StyleSheet, AsyncStorage} from "react-native";
+import {Button, Alert, Text, View, Image, ImageBackground, TouchableOpacity, StyleSheet, AsyncStorage} from "react-native";
 import IcFree from '../../images/ic-stamp-free.png';
 import DummyUser from '../../images/dummy-my-profile-2.png';
 import IcAngleRight from '../../images/ic-my-angle-right.png';
@@ -117,7 +117,9 @@ export default class SidebarUserInfo extends React.Component {
 						{/*beforeLogin*/}
 						{store.welaaaAuth === undefined &&
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => this.props.navigation.navigate('Login')}>
+										  onPress={ ()=> this.props.navigation.navigate('Login') }
+						>
+
 							<Text style={styles.loginText}>로그인</Text>
 						</TouchableOpacity>
 						}
