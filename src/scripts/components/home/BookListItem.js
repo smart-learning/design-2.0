@@ -1,7 +1,6 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Image, ImageBackground } from "react-native";
+import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CommonStyles from "../../../styles/common";
-import Summary from "../video/Summary";
 import Dummy from "../../../images/dummy-audioBookSimple.png";
 import IcView from "../../../images/ic-detail-view.png";
 import IcStar from "../../../images/ic-detail-star.png";
@@ -129,7 +128,7 @@ export default class BookListItem extends React.Component {
 			{this.props.itemType === 'hot' &&
 			<View style={styles.bookRank}>
 				<Text style={styles.bookRankText}>
-					{this.props.rankNumber}
+					{this.props.itemData.rankNumber}
 				</Text>
 				<View style={styles.bookRankHr}/>
 			</View>

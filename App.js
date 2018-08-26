@@ -98,27 +98,24 @@ const AppDrawer = createDrawerNavigator(
 			screen: MyScreens,
 		},
 
-		Playground: {
-			screen: Playground,
-		},
-
-		June: {
-			screen: PlaygroundJune,
-		},
-
-		BottomControllerTEST: {
-			screen: BottomControllerPage,
-		},
-
-		AndroidNativeCall: {
-			screen: PlaygroundJune,
-		}
+		// Playground: {
+		// 	screen: Playground,
+		// },
+		// June: {
+		// 	screen: PlaygroundJune,
+		// },
+		// BottomControllerTEST: {
+		// 	screen: BottomControllerPage,
+		// },
+		// AndroidNativeCall: {
+		// 	screen: PlaygroundJune,
+		// }
 	},
 
 	{
 		contentComponent: (props) => (
 			<SafeAreaView style={{flex: 1}} forceInset={{top: 'always', horizontal: 'never'}}>
-				<SidebarUserInfo/>
+				<SidebarUserInfo {...props} />
 				<DrawerItems {...props}/>
 			</SafeAreaView>
 		)

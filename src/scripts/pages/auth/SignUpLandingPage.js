@@ -9,7 +9,7 @@ import {
 	Dimensions,
 	ImageBackground,
 	TouchableOpacity,
-	Image, Alert
+	Image, Alert, BackHandler, Keyboard
 } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
 import FBLoginButton from "../../components/auth/FBLoginButton";
@@ -148,9 +148,9 @@ class SignUpLandingPage extends React.Component {
 		this.setState({
 			slideHeight: windowHeight,
 		});
-
-		// this.loadLectureClipData();
 	}
+
+
 
 	onAccessToken(type, token) {
 
