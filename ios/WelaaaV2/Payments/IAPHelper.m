@@ -299,7 +299,7 @@
                 
             default:
                 // For debugging
-                NSLog(@"  [paymentQueue] Unexpected transaction state : %@", transaction.transactionState);
+                NSLog(@"  [paymentQueue] Unexpected transaction state : %ld", (long)transaction.transactionState);
                 break;
         }
     }

@@ -107,7 +107,7 @@ class PlaygroundJune extends Component {
 		 * audiobook_100 / 톰 소여의 모험 / 
 		 */
 		var args = {
-			product_id : "audiobook_100",	//0~5세 말걸기 육아의 힘
+			product_id : "audiobook_101",	//0~5세 말걸기 육아의 힘
 			webToken : "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
 		}
 		NativeModules.RNProductPayment.buy(args);

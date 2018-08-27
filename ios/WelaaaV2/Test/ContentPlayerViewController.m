@@ -78,15 +78,13 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self.view setBackgroundColor : [UIColor clearColor]]; // grayColor
+    [self.view setBackgroundColor : [UIColor clearColor]];
   
     // PallyConFPS SDK 객체를 생성합니다.
     _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
                                               siteKey : PALLYCON_SITE_KEY
                                    fpsLicenseDelegate : self
                                                 error : nil             ];
-  
-    _statusBarHidden = YES;  // Status Bar 표시
   
     // contentView 구성.
     _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
@@ -165,13 +163,21 @@
                afterDelay : 3.0f];
   */
   
+    // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
     CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration) + 1;
   
     if ( _slider )
     {
         _slider.minimumValue = 0.f;
-        // 추후에 권한체크로 90초 미리이용하기를 구현해야 합니다.
-        _slider.maximumValue = totalTime;
+        // 권한이 없는 상태(비 멤버십 유저)라면 90초 미리이용하기로 세팅해야 합니다.
+        if ( _isAuthor )
+        {
+          _slider.maximumValue = totalTime;
+        }
+        else
+        {
+          _slider.maximumValue = 90.f;  // 90초에 다다르면 슬라이더 메서드에서 적절한 메시지와 함께 콘텐트 재생을 종료시켜야 합니다.
+        }
     }
 }
 
@@ -184,6 +190,23 @@
     _args = args;
   
   //NSLog(@"  arguments : %@", [_args description]);
+    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+  
+    // 현재 콘텐트의 재생권한.
+    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
+    NSLog(@"  [setContentData] isAuthor? : %@", _isAuthor? @"TRUE" : @"FALSE");
+  
+    // 오디오 콘텐츠인지 구분.
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
+    {
+        _isAudioContent = YES;
+    }
+    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"v"] )
+    {
+        _isAudioContent = NO;
+    }
+    NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
 }
 
 - (void) didReceiveMemoryWarning
@@ -1630,8 +1653,8 @@
 //
 // group_ID로 콘텐츠 정보를 가져옵니다.
 //
-- (void) getContentsInfoWithCgid : (NSString *) contentGroupID
-                   andHeaderInfo : (NSString *) authValue
+- (NSDictionary *) getContentsInfoWithCgid : (NSString *) contentGroupID
+                             andHeaderInfo : (NSString *) authValue
 {
     NSString *apiContentsInfo = @"/dev/api/v1.0/play/contents-info/"; // dev -> ?
     //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
@@ -1772,15 +1795,16 @@
              NSLog(@"  Content [data][clips][%i][progress][start_seconds] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"progress"][@"start_seconds"]);
              */
         }
-      
     }
+  
+    return contentsInfoDics;
 }
 
 //
 // Content_ID로 콘텐츠 재생에 필요한 데이터를 가져옵니다.
 //
-- (void) getPlayDataWithCid : (NSString *) contentID
-              andHeaderInfo : (NSString *) authValue
+- (NSDictionary *) getPlayDataWithCid : (NSString *) contentID
+                        andHeaderInfo : (NSString *) authValue
 {
     NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/"; // dev -> ?
     //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
@@ -1852,6 +1876,8 @@
       //NSLog(@"  ");
       //NSLog(@"  Play Data [type] : %@", playDataDics[@"type"]); // type : 10 => video course?
     }
+  
+    return playDataDics;
 }
 
 
