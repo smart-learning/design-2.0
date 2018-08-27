@@ -12,6 +12,9 @@
     BOOL _isAudioMode;
     BOOL _statusBarHidden;
   
+    UIView *_audioUiView;
+    UIImageView *_backgroundImageView;
+    UIImageView *_headphoneImageView;
     UIView *_contentView;            // PlayerLayer, TopBar, BottomBar 등을 표시하는 최상단 Layer, PlayerLayer에 여러 view를 add하면 사라지기 때문.
     UIView *_topView;                // 상단 메뉴 바.
     UIView *_bottomView;             // 최하단 메뉴 바. 콘텐트 현재 재생 시간, 시간 탐색용 슬라이더, 전체 재생 시간 표시.
@@ -79,7 +82,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self.view setBackgroundColor : [UIColor clearColor]];
+    [self.view setBackgroundColor : UIColorFromRGB(0x000000, 0.5f)];
   
     // PallyConFPS SDK 객체를 생성합니다.
     _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
@@ -87,6 +90,25 @@
                                    fpsLicenseDelegate : self
                                                 error : nil             ];
   
+    _isAudioMode = false; // 기본적으로 오디오모드 off인 상태에서 콘텐츠 재생을 시작합니다.
+    // 오디오 UI
+    {
+        _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
+        _audioUiView.backgroundColor = [UIColor blackColor];
+        [self.view addSubview : _audioUiView];
+      
+        _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
+        [_audioUiView addSubview : _backgroundImageView];
+      
+        UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
+        _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
+                                                                              ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
+                                                                              headphoneImage.size.width, headphoneImage.size.height)];
+        _headphoneImageView.image = headphoneImage;
+        [_audioUiView addSubview : _headphoneImageView];
+      
+        _audioUiView.hidden = !_isAudioMode;
+    }
     // contentView 구성.
     _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
     [self.view addSubview : _contentView];
@@ -1249,6 +1271,29 @@
                                   }];
 }
 
+- (void) changeViewMode : (BOOL) isAudioMode
+{
+  /*
+  // 오디오모드가 가능한 상태가 아니면서 다운로드받은 파일이 아니라면..
+  //
+  if ( !self.isPossibleAudioMode && !self.isDownloadFile )
+  {
+    [_modeChangeButton setStatus: 0];
+    NSLog(@"    [changeViewMode]: %@", isAudioMode ? @"YES" : @"NO");
+    NSLog(@"    [changeViewMode] 미리보기 상태에서도 오디오모드는 허용되야 합니다!");
+    
+    return DEFAULT_ALERT(@"", @"본 동영상은 오디오모드를 제공하지 않습니다.");
+  }*/
+  
+  _audioUiView.hidden = !isAudioMode;
+  /*
+  if ( [self.delegate respondsToSelector: @selector(playerUiView:changeToMode:)] )
+  {
+    [self.delegate playerUiView: self
+                   changeToMode: isAudioMode];
+  }*/
+}
+
 //
 // 타이머를 통해 슬라이더 왼쪽의 현재시간을 0.5초 주기로 업데이트합니다.
 //
@@ -1356,9 +1401,9 @@
     {
       //[self setScriptViewFrameWithStatus: status];
     }
-    else if ( [@"view-mode" isEqualToString: buttonId] )
+    else if ( [@"view-mode" isEqualToString : buttonId] )
     {
-      //[self changeViewMode: (status == 1)];
+        [self changeViewMode: (status == 1)];
     }
     else if ( [@"autoplay-mode" isEqualToString: buttonId])
     {
