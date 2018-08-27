@@ -233,7 +233,7 @@ export default withNavigation( class HomeVideoPage extends React.Component {
 
 						<ClassList itemData={this.props.store.classRecommendData}/>
 
-						<TouchableOpacity activeOpacity={0.9}>
+						<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('ClassListPage')}>
 							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 								<Text style={styles.linkViewAllText}>
 									클래스 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
