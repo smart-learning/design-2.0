@@ -14,15 +14,16 @@ const styles = StyleSheet.create( {
 		backgroundColor: '#dddddd',
 	},
 	thumbnail: {
+		justifyContent: 'center',
+		alignItems: 'center',
 		position: 'relative',
 		width: '100%',
 		paddingTop: '29.41176471%',
 		paddingBottom: '29.41176471%',
-		justifyContent: 'center',
-		alignItems: 'center',
 		backgroundColor: '#efefef',
 	},
 	title: {
+		position: 'absolute',
 		justifyContent: 'center',
 		alignItems: 'center',
 		fontSize: 12,
