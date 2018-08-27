@@ -1680,25 +1680,28 @@
       NSLog(@"  Content [data][teacher][images][default] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"default"]);
       NSLog(@"  Content [data][teacher][images][profile] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"profile"]);
       NSLog(@"  ");
-      /* chapters는 array로 처리해야 합니다.
-      NSLog(@"  Content [data][chapters][0][align] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"align"]);
-      NSLog(@"  Content [data][chapters][0][cid] : %@",           contentsInfoDics[@"data"][@"chapters"][@"0"][@"cid"]);
-      NSLog(@"  Content [data][chapters][0][depth] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"depth"]);
-      NSLog(@"  Content [data][chapters][0][id] : %@",            contentsInfoDics[@"data"][@"chapters"][@"0"][@"id"]);
-      NSLog(@"  Content [data][chapters][0][is_first_play] : %@", contentsInfoDics[@"data"][@"chapters"][@"0"][@"is_first_play"]);
-      NSLog(@"  Content [data][chapters][0][is_free] : %@",       contentsInfoDics[@"data"][@"chapters"][@"0"][@"is_free"]);
-      NSLog(@"  Content [data][chapters][0][is_preview] : %@",    contentsInfoDics[@"data"][@"chapters"][@"0"][@"is_preview"]);
-      NSLog(@"  Content [data][chapters][0][memo] : %@",          contentsInfoDics[@"data"][@"chapters"][@"0"][@"memo"]);
-      NSLog(@"  Content [data][chapters][0][play_seconds] : %@",  contentsInfoDics[@"data"][@"chapters"][@"0"][@"play_seconds"]);  // 0 = 플레이 불가한 '챕터 타이틀'.
-      NSLog(@"  Content [data][chapters][0][play_time] : %@",     contentsInfoDics[@"data"][@"chapters"][@"0"][@"play_time"]);
-      NSLog(@"  Content [data][chapters][0][price] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"price"]);
-      // '챕터 타이틀'은 progress가 'null'입니다.
-      //NSLog(@"  Content [data][chapters][0][progress] : %@",      contentsInfoDics[@"data"][@"chapters"][@"0"][@"progress"][@"percent"]);
-      //NSLog(@"  Content [data][chapters][0][progress] : %@",      contentsInfoDics[@"data"][@"chapters"][@"0"][@"progress"][@"start_second"]);
-      
-      NSLog(@"  Content [data][chapters][0][title] : %@",         contentsInfoDics[@"data"][@"chapters"][@"0"][@"title"]);
-      NSLog(@"  Content [data][chapters][0][type] : %@",          contentsInfoDics[@"data"][@"chapters"][@"0"][@"type"]);
-      */
+      // chapters는 array로 처리해야 합니다.
+      NSArray *chapterArray = [contentsInfoDics[@"data"][@"chapters"] mutableCopy];
+      for (int i = 0; i<chapterArray.count; i++)
+      {
+        NSLog(@"  Content [data][chapters][%i][align] : %@",         i, contentsInfoDics[@"data"][@"chapters"][i][@"align"]);
+        NSLog(@"  Content [data][chapters][%i][cid] : %@",           i, contentsInfoDics[@"data"][@"chapters"][i][@"cid"]);
+        NSLog(@"  Content [data][chapters][%i][depth] : %@",         i, contentsInfoDics[@"data"][@"chapters"][i][@"depth"]);
+        NSLog(@"  Content [data][chapters][%i][id] : %@",            i, contentsInfoDics[@"data"][@"chapters"][i][@"id"]);
+        NSLog(@"  Content [data][chapters][%i][is_first_play] : %@", i, contentsInfoDics[@"data"][@"chapters"][i][@"is_first_play"]);
+        NSLog(@"  Content [data][chapters][%i][is_free] : %@",       i, contentsInfoDics[@"data"][@"chapters"][i][@"is_free"]);
+        NSLog(@"  Content [data][chapters][%i][is_preview] : %@",    i, contentsInfoDics[@"data"][@"chapters"][i][@"is_preview"]);
+        NSLog(@"  Content [data][chapters][%i][memo] : %@",          i, contentsInfoDics[@"data"][@"chapters"][i][@"memo"]);
+        NSLog(@"  Content [data][chapters][%i][play_seconds] : %@",  i, contentsInfoDics[@"data"][@"chapters"][i][@"play_seconds"]); // 0 = 플레이 불가한 '챕터 타이틀'
+        NSLog(@"  Content [data][chapters][%i][play_time] : %@",     i, contentsInfoDics[@"data"][@"chapters"][i][@"play_time"]);
+        NSLog(@"  Content [data][chapters][%i][price] : %@",         i, contentsInfoDics[@"data"][@"chapters"][i][@"price"]);
+        // '챕터 타이틀'은 progress가 'null'입니다.
+        //NSLog(@"  Content [data][chapters][%i][progress] : %@",      i, contentsInfoDics[@"data"][@"chapters"][i][@"progress"][@"percent"]);
+        //NSLog(@"  Content [data][chapters][%i][progress] : %@",      i, contentsInfoDics[@"data"][@"chapters"][i][@"progress"][@"start_second"]);
+        
+        NSLog(@"  Content [data][chapters][%i][title] : %@",         i, contentsInfoDics[@"data"][@"chapters"][i][@"title"]);
+        NSLog(@"  Content [data][chapters][%i][type] : %@",          i, contentsInfoDics[@"data"][@"chapters"][i][@"type"]);
+      }
     }
   
     // 영상
@@ -1743,29 +1746,33 @@
         NSLog(@"  Content [data][teacher][images][default] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"default"]);
         NSLog(@"  Content [data][teacher][images][profile] : %@", contentsInfoDics[@"data"][@"teacher"][@"images"][@"profile"]);
         NSLog(@"  ");
-      /* clips는 array로 처리해야 합니다.
-        NSLog(@"  Content [data][clips][0][cid] : %@",          contentsInfoDics[@"data"][@"clips"][@"0"][@"cid"]);
-        NSLog(@"  Content [data][clips][0][end_seconds] : %@",  contentsInfoDics[@"data"][@"clips"][@"0"][@"end_seconds"]);
-        NSLog(@"  Content [data][clips][0][id] : %@",           contentsInfoDics[@"data"][@"clips"][@"0"][@"id"]);
-        NSLog(@"  Content [data][clips][0][is_active] : %@",    contentsInfoDics[@"data"][@"clips"][@"0"][@"is_active"]);
-        NSLog(@"  Content [data][clips][0][memo] : %@",         contentsInfoDics[@"data"][@"clips"][@"0"][@"memo"]);
-        NSLog(@"  Content [data][clips][0][open_date] : %@",    contentsInfoDics[@"data"][@"clips"][@"0"][@"open_date"]);
-        NSLog(@"  Content [data][clips][0][pay_type] : %@",     contentsInfoDics[@"data"][@"clips"][@"0"][@"pay_type"]);
-        NSLog(@"  Content [data][clips][0][play_time] : %@",    contentsInfoDics[@"data"][@"clips"][@"0"][@"play_time"]);
-        NSLog(@"  Content [data][clips][0][price] : %@",        contentsInfoDics[@"data"][@"clips"][@"0"][@"price"]);
-        NSLog(@"  Content [data][clips][0][review_count] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"review_count"]);
-        NSLog(@"  Content [data][clips][0][star_avg] : %@",     contentsInfoDics[@"data"][@"clips"][@"0"][@"star_avg"]);
-        NSLog(@"  Content [data][clips][0][star_count] : %@",   contentsInfoDics[@"data"][@"clips"][@"0"][@"star_count"]);
-        NSLog(@"  Content [data][clips][0][title] : %@",        contentsInfoDics[@"data"][@"clips"][@"0"][@"title"]);
-        NSLog(@"  Content [data][clips][0][type] : %@",         contentsInfoDics[@"data"][@"clips"][@"0"][@"type"]);
-        NSLog(@"  Content [data][clips][0][images][big] : %@",  contentsInfoDics[@"data"][@"clips"][@"0"][@"images"][@"big"]);
-        NSLog(@"  Content [data][clips][0][images][list] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"images"][@"list"]);
-        NSLog(@"  Content [data][clips][0][images][wide] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"images"][@"wide"]);
-       */
-        /* progress는 'null'일 수 있습니다.
-        NSLog(@"  Content [data][clips][0][progress][percent] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"progress"][@"percent"]);
-        NSLog(@"  Content [data][clips][0][progress][start_seconds] : %@", contentsInfoDics[@"data"][@"clips"][@"0"][@"progress"][@"start_seconds"]);
-        */
+        // clips는 array로 처리해야 합니다.
+        NSArray *chapterArray = [contentsInfoDics[@"data"][@"clips"] mutableCopy];
+        for (int i = 0; i<chapterArray.count; i++)
+        {
+            NSLog(@"  Content [data][clips][%i][cid] : %@",          i, contentsInfoDics[@"data"][@"clips"][i][@"cid"]);
+            NSLog(@"  Content [data][clips][%i][end_seconds] : %@",  i, contentsInfoDics[@"data"][@"clips"][i][@"end_seconds"]);
+            NSLog(@"  Content [data][clips][%i][id] : %@",           i, contentsInfoDics[@"data"][@"clips"][i][@"id"]);
+            NSLog(@"  Content [data][clips][%i][is_active] : %@",    i, contentsInfoDics[@"data"][@"clips"][i][@"is_active"]);
+            NSLog(@"  Content [data][clips][%i][memo] : %@",         i, contentsInfoDics[@"data"][@"clips"][i][@"memo"]);
+            NSLog(@"  Content [data][clips][%i][open_date] : %@",    i, contentsInfoDics[@"data"][@"clips"][i][@"open_date"]);
+            NSLog(@"  Content [data][clips][%i][pay_type] : %@",     i, contentsInfoDics[@"data"][@"clips"][i][@"pay_type"]);
+            NSLog(@"  Content [data][clips][%i][play_time] : %@",    i, contentsInfoDics[@"data"][@"clips"][i][@"play_time"]);
+            NSLog(@"  Content [data][clips][%i][price] : %@",        i, contentsInfoDics[@"data"][@"clips"][i][@"price"]);
+            NSLog(@"  Content [data][clips][%i][review_count] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"review_count"]);
+            NSLog(@"  Content [data][clips][%i][star_avg] : %@",     i, contentsInfoDics[@"data"][@"clips"][i][@"star_avg"]);
+            NSLog(@"  Content [data][clips][%i][star_count] : %@",   i, contentsInfoDics[@"data"][@"clips"][i][@"star_count"]);
+            NSLog(@"  Content [data][clips][%i][title] : %@",        i, contentsInfoDics[@"data"][@"clips"][i][@"title"]);
+            NSLog(@"  Content [data][clips][%i][type] : %@",         i, contentsInfoDics[@"data"][@"clips"][i][@"type"]);
+            NSLog(@"  Content [data][clips][%i][images][big] : %@",  i, contentsInfoDics[@"data"][@"clips"][i][@"images"][@"big"]);
+            NSLog(@"  Content [data][clips][%i][images][list] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"images"][@"list"]);
+            NSLog(@"  Content [data][clips][%i][images][wide] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"images"][@"wide"]);
+            /* progress는 'null'일 수 있습니다.
+             NSLog(@"  Content [data][clips][%i][progress][percent] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"progress"][@"percent"]);
+             NSLog(@"  Content [data][clips][%i][progress][start_seconds] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"progress"][@"start_seconds"]);
+             */
+        }
+      
     }
 }
 
