@@ -1,10 +1,6 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, View, AsyncStorage, Alert} from "react-native";
-import {COLOR_PRIMARY} from "../../../styles/common";
-import {withNavigation} from "react-navigation";
-import net from "../../commons/net";
-import store from "../../commons/store";
-import axios from "axios";
+import React, { Component } from 'react';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { COLOR_PRIMARY } from "../../../styles/common";
 
 const styles = StyleSheet.create({
 	contentContainer: {
@@ -61,29 +57,6 @@ class EmailAuthPack extends Component {
 		};
 	}
 
-
-	setLogin() {
-		const resultAuthToken = net.getAuthToken(this.state.email, this.state.password);
-		resultAuthToken
-			.then(data => {
-				// console.log('resultAuthToken.then');
-				// console.log('data', data);
-				let welaaaAuthData = JSON.stringify(data);
-				if (this.props.onAccess) {
-					this.props.onAccess(welaaaAuthData);
-				}
-			})
-			.catch(error => {
-				const code = error.response.code;
-				let message = '로그인 실패';
-				if( error.response.data && error.response.data.error ) {
-					message += ` (server message: ${error.response.data.error})`;
-				}
-				Alert.alert( message );
-				console.log( error );
-			});
-	}
-
 	handleLogin = () => {
 		if (this.state.email === null) {
 			Alert.alert('이메일은 필수 입력항목입니다.');
@@ -93,7 +66,7 @@ class EmailAuthPack extends Component {
 			return false;
 		}
 
-		this.setLogin();
+		this.props.onAccess( this.state.email, this.state.password );
 	};
 
 	render() {

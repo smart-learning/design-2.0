@@ -3,7 +3,9 @@ import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList, } from "reac
 import CommonStyles from "../../../styles/common";
 import IcAngleDownGrey from "../../../images/ic-angle-down-grey.png";
 import ClassListItem from "./ClassListItem";
-import Summary from "../video/Summary";
+import { observer } from 'mobx-react';
+import createStore from "../../commons/createStore";
+import _ from 'underscore';
 
 const styles = StyleSheet.create( {
 	classContainer: {
@@ -31,25 +33,28 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-export default class ClassList extends React.Component {
-	constructor( props ) {
-		super( props );
-	}
-
+@observer class ClassList extends React.Component {
+	store = createStore( {
+		isOpen: false,
+	} );
 	render() {
-		let rankNumber = 1;
-
+		let list = _.toArray( this.props.itemData );
+		if( !this.store.isOpen ) {
+			list = list.slice( 0, 3 );
+		}
 		return <View style={styles.classContainer}>
 			<View style={styles.classList}>
 				<FlatList
 					style={{ width: '100%' }}
-					data={this.props.itemData}
+					data={ list }
 					renderItem={
-						( { item } ) => <ClassListItem id={item.id} itemData={item} rankNumber={rankNumber++} classType={this.props.classType}/>
+						( { item } ) => <ClassListItem id={item.id} itemData={item} classType={this.props.classType}/>
 					}/>
 			</View>
 
-			<TouchableOpacity activeOpacity={0.9} style={styles.viewMoreContainer}>
+			{!this.store.isOpen &&
+			<TouchableOpacity activeOpacity={0.9} style={styles.viewMoreContainer}
+							  onPress={() => this.store.isOpen = true}>
 				<View style={[ styles.viewMore, CommonStyles.alignJustifyContentBetween ]}>
 					<Text style={styles.viewMoreText}>
 						더보기
@@ -57,6 +62,9 @@ export default class ClassList extends React.Component {
 					<Image source={IcAngleDownGrey} style={styles.viewMoreIcon}/>
 				</View>
 			</TouchableOpacity>
+			}
 		</View>
 	}
 }
+
+export default ClassList;

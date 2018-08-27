@@ -137,6 +137,8 @@ class TabContentInfo extends React.Component {
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
+						dotColor={"#888888"}
+						activeDotColor={"#ffffff"}
 						paginationStyle={{ bottom: -15 }}>
 					<View style={styles.slide}>
 						{/*<Text style={styles.text}>Swiper1</Text>*/}

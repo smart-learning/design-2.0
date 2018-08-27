@@ -1,19 +1,19 @@
 import React from "react";
 import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_STACK_WITH_SEARCH, NAV_OPTS_DRAWER} from "../../commons/nav";
 import {createStackNavigator} from "react-navigation";
-import LecturePage from "./LecturePage";
-import LectureDetailPage from "./LectureDetailPage";
+import ClassListPage from "./ClassListPage";
+import ClassDetailPage from "./ClassDetailPage";
 import ClipPage from "./ClipPage";
 
 
 const VideoScreen = createStackNavigator({
 
-		LecturePage: {
-			screen: LecturePage,
+		ClassListPage: {
+			screen: ClassListPage,
 			navigationOptions: NAV_OPTS_MAIN,
 		},
-		LectureDetailPage: {
-			screen: LectureDetailPage,
+		ClassDetailPage: {
+			screen: ClassDetailPage,
 			navigationOptions: NAV_OPTS_STACK_WITH_SEARCH,
 		},
 		ClipPage: {
