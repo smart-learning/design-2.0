@@ -1,17 +1,16 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {
-	StyleSheet,
-	Text,
-	View,
-	ScrollView,
-	TouchableOpacity,
-	FlatList,
-} from "react-native";
-import {SafeAreaView} from "react-navigation";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { SafeAreaView } from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
 import Book from "../../components/audio/Book";
+import _ from 'underscore';
+import { observer } from "mobx-react";
+import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import BookVO from "../../vo/BookVO";
+import createStore from "../../commons/createStore";
+
 
 const styles = StyleSheet.create({
 	toggleGroup: {
@@ -58,33 +57,74 @@ const styles = StyleSheet.create({
 	myButtonText: {
 		fontSize: 12,
 		color: '#585858',
-	}
+	},
+	linkViewAll: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
+		height: 36,
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
+	},
+	classLinkViewAll: {
+		marginTop: 15,
+		marginBottom: 30,
+	},
+	linkViewAllText: {
+		fontSize: 14,
+		color: '#ffffff',
+	},
+	linkViewAllIcon: {
+		paddingLeft: 7,
+		height: 13,
+	},
 });
 
-export default class AudioBookPage extends React.Component {
+@observer class AudioBookPage extends React.Component {
+	store = createStore({
+		categories: [],
+		displayData: null,
+		selectedCategory: null,
+	});
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			audioCategoryData: {},
-			resultAudioBookData: null,
-		};
-
-
-	}
+	loadAudioList = async ( ccode = null ) => {
+		this.store.displayData = null;
+		const data = await net.getAudioBookList( ccode );
+		this.store.displayData = data.items.map( element => {
+			const vo = new BookVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.book;
+			}
+			if( !vo.banner_color ) {
+				vo.banner_color = 'transparent';
+			}
+			return vo;
+		} );
+	};
 
 	async componentDidMount() {
-		const resultAudioCategoryData = await net.getAudioBookCategory();
-		const resultAudioBookData = await net.getAudioBookList();
-		this.setState({
-			audioCategoryData: resultAudioCategoryData,
-			resultAudioBookData: resultAudioBookData,
-		});
+		const loadedCategories = await net.getAudioBookCategory();
+		this.store.categories = loadedCategories.map( element => {
+			const vo = new PageCategoryItemVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
+		} );
+		this.loadAudioList();
 	}
 
+	onCategorySelect = item => {
+		this.store.selectedCategory = item.id;
+		this.loadAudioList( item.ccode );
+	};
 
 	render() {
+		let rankNumber = 1;
+
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
 			<ScrollView style={{width: '100%'}}>
 				<View style={styles.toggleGroup}>
@@ -117,21 +157,38 @@ export default class AudioBookPage extends React.Component {
 					</View>
 				</View>
 
-				<PageCategory data={this.state.audioCategoryData.items}/>
+				<PageCategory selectedCategory={ this.store.selectedCategory }
+							  data={this.store.categories} onCategorySelect={ this.onCategorySelect }/>
 
-				{this.state.resultAudioBookData !== null &&
+				{this.store.displayData === null &&
+				<View style={{ marginTop: 12 }}>
+					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+				</View>
+				}
+				{this.store.displayData !== null &&
 				<FlatList
 					style={{width: '100%'}}
-					data={this.state.resultAudioBookData.items}
+					data={this.store.displayData}
 					renderItem={
 						({item}) => <Book id={item.id}
 										  type="best"
 										  navigation={this.props.navigation}
+										  rankNumber={rankNumber++}
 										  itemData={item}/>
 					}
 				/>
 				}
+
+				<View style={CommonStyles.contentContainer}>
+					<TouchableOpacity activeOpacity={0.9}>
+						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
+							<Text style={styles.linkViewAllText}>더보기</Text>
+						</View>
+					</TouchableOpacity>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	}
 }
+
+export default AudioBookPage;

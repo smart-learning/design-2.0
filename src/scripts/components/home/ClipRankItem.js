@@ -41,20 +41,12 @@ const styles = StyleSheet.create( {
 } );
 
 export default class ClipRankItem extends React.Component {
-
-	constructor( props ) {
-		super( props );
-		// console.log( 'ClipRankItem.constructor' );
-		// console.log( 'props', props );
-	}
-
 	render() {
 		return <View style={styles.rankGridItem}>
 			<View style={CommonStyles.alignJustifyItemCenter}>
 				<View style={styles.rankNumber}>
 					<Text style={styles.rankNumberText}>
-						{/*{this.props.rankNumber}*/}
-						00
+						{this.props.itemData.rankNumber}
 					</Text>
 				</View>
 				<ImageBackground

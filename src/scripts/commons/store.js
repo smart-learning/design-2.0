@@ -1,6 +1,5 @@
 import React from 'react';
-import { observable } from 'mobx';
-import {AsyncStorage} from "react-native";
+import { AsyncStorage } from "react-native";
 import axios from 'axios';
 
 let socialType;
@@ -47,9 +46,9 @@ class Store{
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
 
-	@observable auth = undefined;
-
-	@observable authToken = undefined;
+	// @observable auth = undefined;
+    //
+	// @observable authToken = undefined;
 }
 
 console.log( '<<<<<< new Store >>>>');

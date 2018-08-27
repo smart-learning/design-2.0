@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import Summary from "../video/Summary";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	classList: {
@@ -74,23 +75,26 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-export default class ClassListItem extends React.Component {
-	constructor( props ) {
-		super( props );
+export default withNavigation(class ClassListItem extends React.Component {
+
+	gotoClassPage=()=>{
+		this.props.navigation.navigate('ClassDetailPage',{ id: this.props.itemData.id, title:' ' });
 	}
 
-	render() {
 
+	render() {
 		return <View style={styles.classItem}>
 			{this.props.classType === 'hot' &&
 			<View style={styles.classRank}>
 				<Text style={styles.classRankText}>
-					{this.props.rankNumber}
+					{this.props.itemData.rankNumber}
 				</Text>
 				<View style={styles.classRankHr}/>
 			</View>
 			}
-			<TouchableOpacity activeOpacity={0.9}>
+			<TouchableOpacity activeOpacity={0.9}
+							  onPress={ this.gotoClassPage }
+			>
 				<Text style={styles.classTitle}>
 					{this.props.itemData.headline}
 				</Text>
@@ -114,13 +118,8 @@ export default class ClassListItem extends React.Component {
 				{/*</View>*/}
 			</View>
 			<Summary type="course"
-					 title={this.props.itemData.title}
-					 course={this.props.itemData.id}
-					 thumbnail={this.props.itemData.images.wide}
-					 clipCount={this.props.itemData.clip_count}
-					 hitCount={this.props.itemData.hit_count}
-					 starAvg={this.props.itemData.star_avg}
-					 reviewCount={this.props.itemData.review_count}/>
+					 { ...this.props.itemData }
+			/>
 		</View>
 	}
-}
+});

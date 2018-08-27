@@ -9,7 +9,7 @@ import {
 	Dimensions,
 	ImageBackground,
 	TouchableOpacity,
-	Image
+	Image, Alert, BackHandler, Keyboard
 } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
 import FBLoginButton from "../../components/auth/FBLoginButton";
@@ -23,6 +23,8 @@ import icEmail from '../../../images/ic-email.png';
 import icLogin from '../../../images/ic-login.png';
 import logo from '../../../images/logo-en-primary.png';
 import CommonStyles from "../../../styles/common";
+import net from "../../commons/net";
+import store from "../../commons/store";
 
 
 const styles = StyleSheet.create({
@@ -146,14 +148,29 @@ class SignUpLandingPage extends React.Component {
 		this.setState({
 			slideHeight: windowHeight,
 		});
-
-		// this.loadLectureClipData();
 	}
+
+
 
 	onAccessToken(type, token) {
 
-		Store.setToken(type, token);
-		this.props.navigator.navigate('HomeScreen');
+		let { navigation } = this.props;
+		const resultAuthToken = net.getAuthToken( type, token );
+		resultAuthToken
+			.then(data => {
+				store.socialType = type;
+				store.welaaaAuth = JSON.stringify(data);
+				navigation.navigate( 'HomeScreen' );
+			})
+			.catch(error => {
+				const code = error.response.code;
+				let message = '회원가입 실패';
+				if( error.response.data && error.response.data.error ) {
+					message += ` (server message: ${error.response.data.error})`;
+				}
+				Alert.alert( message );
+				console.log( error );
+			});
 	}
 
 	render() {
@@ -199,7 +216,7 @@ class SignUpLandingPage extends React.Component {
 					type={'landing'}/>
 
 				<KakaoLoginButton
-					onAccess={token => this.onAccessToken('kakao', token)}
+					onAccess={token => this.onAccessToken('kakaotalk', token)}
 					type={'landing'}/>
 
 				<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('EmailSignUpForm')}>

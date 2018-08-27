@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import IcPlay from "../../../images/ic-play.png";
+import Native from "../../commons/native";
 
 const styles = StyleSheet.create( {
 	continueGrid: {
@@ -88,7 +89,11 @@ export default class ClassContinueList extends React.Component {
 								{/*{this.props.title}*/}
 								titleasdfasdfasfasdfas
 							</Text>
-							<Image source={IcPlay} style={styles.play}/>
+							<TouchableOpacity activeOpacity={0.9}
+											  style={styles.play}
+											  onPress={ ()=> Native.play( this.props.id ) }>
+								<Image source={IcPlay} style={ CommonStyles.fullImg } />
+							</TouchableOpacity>
 						</ImageBackground>
 					</TouchableOpacity>
 				</View>
@@ -111,7 +116,11 @@ export default class ClassContinueList extends React.Component {
 							<Text style={styles.thumbnailTitle}>
 								{this.props.title}
 							</Text>
-							<Image source={IcPlay} style={styles.play}/>
+							<TouchableOpacity activeOpacity={0.9}
+											  style={styles.play}
+											  onPress={ ()=> Native.play( this.props.id ) }>
+								<Image source={IcPlay} style={ CommonStyles.fullImg } />
+							</TouchableOpacity>
 						</ImageBackground>
 					</TouchableOpacity>
 				</View>

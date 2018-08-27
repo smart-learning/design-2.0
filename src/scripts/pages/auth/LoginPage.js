@@ -8,6 +8,7 @@ import {
 	StyleSheet,
 	View, KeyboardAvoidingView,
 	AsyncStorage,
+	BackHandler,
 	Alert
 } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
@@ -16,6 +17,7 @@ import logo from '../../../images/logo-en-primary.png';
 import bgLogin from '../../../images/bg-signup.jpg';
 import FBLoginButton from "../../components/auth/FBLoginButton";
 import store from '../../../scripts/commons/store';
+import net from "../../commons/net";
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -69,12 +71,21 @@ class LoginPage extends React.Component {
 		this.keyboardWillShowSub = Keyboard.addListener( 'keyboardWillShow', this.keyboardWillShow );
 		this.keyboardWillHideSub = Keyboard.addListener( 'keyboardWillHide', this.keyboardWillHide );
 
+		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
 		console.log( this.props.navigation );
 	}
 
 	componentWillUnmount() {
 		this.keyboardWillShowSub.remove();
 		this.keyboardWillHideSub.remove();
+
+		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+	}
+
+	handleBackPress = () => {
+		this.props.navigation.navigate('HomeScreen');
+		return true;
 	}
 
 	keyboardWillShow = ( event ) => {
@@ -85,21 +96,34 @@ class LoginPage extends React.Component {
 		console.log( '키보드 들어감' );
 	}
 
-	setWelaaaAuthAndRedirect = ( auth ) => {
-		store.welaaaAuth = auth;
+	/*
+	* @params email: 이메일이나 소셜 타입
+	* @params password: 이메일비번이나 소셜 토큰
+	* */
+	login = ( email, password ) => {
+		let { navigation } = this.props;
+		const resultAuthToken = net.getAuthToken( email, password);
 
-		let requestScreenName = this.props.navigation.getParam( 'requestScreenName', 'MyInfoHome' );
-		this.props.navigation.navigate( requestScreenName );
-	}
+		console.log( 'authToken요청:', email, password );
 
-	onSocialToken( type, token ) {
-		store.socialType = type;
-		store.socialToken = token;
+		resultAuthToken
+			.then(data => {
 
-		// TODO: 소셜토큰 받아오기 성공 이후 소셜 토큰을 이용한 welaaa auth 처리 필요합니다
-		Alert.alert( '소셜토큰 받아오기 성공. 이후 소셜 토큰을 이용한 welaaa auth 처리 필요합니다' );
-		// README: 임시로 페이지 넘어가게 구현해둠
-		this.setWelaaaAuthAndRedirect( 'temp' );
+				// Alert.alert( 'authToken결과:', JSON.stringify(data) );
+
+				store.socialType = email;
+				store.welaaaAuth = JSON.stringify(data);
+				navigation.navigate( navigation.getParam( 'requestScreenName', 'MyInfoHome' ) );
+			})
+			.catch(error => {
+				const code = error.response.code;
+				let message = '로그인 실패';
+				if( error.response.data && error.response.data.error ) {
+					message += ` (server message: ${error.response.data.error})`;
+				}
+				Alert.alert( message );
+				console.log( error );
+			});
 	}
 
 	render() {
@@ -115,19 +139,19 @@ class LoginPage extends React.Component {
 					<Text style={styles.headline}>LOGIN</Text>
 
 					<FBLoginButton
-						onAccess={token => this.onSocialToken( 'facebook', token )}
+						onAccess={token => this.login( 'facebook', token )}
 						type={'login'}
 					/>
 
 					<KakaoLoginButton
-						onAccess={token => this.onSocialToken( 'kakao', token )}
+						onAccess={token => this.login( 'kakaotalk', token )}
 						type={'login'}
 					/>
 
 					<Text style={styles.bulletText}>OR</Text>
 
 					<EmailAuthPack
-						onAccess={auth => this.setWelaaaAuthAndRedirect( auth )}
+						onAccess={ this.login }
 						onNavigate={routerName => this.props.navigation.navigate( routerName )}
 					/>
 

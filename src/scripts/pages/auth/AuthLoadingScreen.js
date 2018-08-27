@@ -13,11 +13,7 @@ class AuthLoadingScreen extends React.Component {
 
 		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'MyInfoHome');
 
-		// alert('store' + ( store.token||store.authToken ) );
-
-		console.log( '페이지 이동:', requestScreenName );
-
-		if( store.token || store.authToken )
+		if( store.welaaaAuth )
 			this.props.navigation.navigate(requestScreenName);
 		else
 			this.props.navigation.navigate('Login', { requestScreenName: requestScreenName });
