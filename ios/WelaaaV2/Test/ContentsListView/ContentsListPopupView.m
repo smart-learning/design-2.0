@@ -302,7 +302,16 @@
 - (NSInteger) tableView : (UITableView *) tableView
   numberOfRowsInSection : (NSInteger) section
 {
-    NSArray *playList = _contentsInfoDictionary[@"data"][@"clips"];
+    NSArray *playList;
+  
+    if ( [_contentsInfoDictionary[@"type"] hasPrefix : @"video"] )
+    {
+        playList = _contentsInfoDictionary[@"data"][@"clips"];
+    }
+    else if ( [_contentsInfoDictionary[@"type"] hasPrefix : @"audio"] )
+    {
+        playList = _contentsInfoDictionary[@"data"][@"chapters"];
+    }
   
     return playList.count;
 }
@@ -314,13 +323,13 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     
     if ( self.isAudioContentType )
     {
-        NSArray *playList = _contentsInfoDictionary[@"data"][@"clips"];
+        NSArray *playList = _contentsInfoDictionary[@"data"][@"chapters"];
       
         if ( playList.count > indexPath.row )
         {
             NSDictionary *item = playList[indexPath.row];
      
-            NSString *depth = [common forceStringValue : item[@"a_depth"]];
+            NSString *depth = [common forceStringValue : item[@"depth"]];
             
             if ( [@"1" isEqualToString : depth] )
                 height = 66.f;
@@ -349,7 +358,17 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
   
-    NSArray *playList = _contentsInfoDictionary[@"data"][@"clips"];
+    NSArray *playList;
+  
+    if ( [_contentsInfoDictionary[@"type"] hasPrefix : @"video"] )
+    {
+        playList = _contentsInfoDictionary[@"data"][@"clips"];
+    }
+    else if ( [_contentsInfoDictionary[@"type"] hasPrefix : @"audio"] )
+    {
+        playList = _contentsInfoDictionary[@"data"][@"chapters"];
+    }
+  
     if ( playList.count > indexPath.row )
     {
         cell.itemDict = playList[indexPath.row];

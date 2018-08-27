@@ -122,7 +122,7 @@
     
     if ( self.isAudioContentType )
     {
-        depth = [[common forceStringValue : self.itemDict[@"a_depth"]] integerValue];
+        depth = [[common forceStringValue : self.itemDict[@"depth"]] integerValue];
     }
     
     CGFloat textOffsetY = 20.f;
@@ -280,6 +280,9 @@
 
 - (BOOL) hasContent
 {
+  // 오디오북의 경우 'contentsInfoDics[@"data"][@"chapters"][i][@"play_seconds"]'의 값이 '0'이면 재생불가한 챕터 타이틀입니다.
+  // 영상강의는 일단 YES를 리턴하거나 .m3u8 유무를 체크합니다.
+  
   /*
     NSString *curl = self.itemDict[@"curl"];
     
