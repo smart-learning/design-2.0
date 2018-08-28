@@ -254,7 +254,6 @@ export default withNavigation( class HomeVideoPage extends React.Component {
 						<ClipRank itemData={this.props.store.clipRankData}
 								  clipRankContentSize={this.props.store.clipRankContentSize}/>
 
-						{ 1 === 2 && <View>
 						<View style={CommonStyles.alignJustifyItemCenter}>
 							<Text style={styles.titleH3}>
 								이어보기
@@ -266,7 +265,6 @@ export default withNavigation( class HomeVideoPage extends React.Component {
 						<View style={styles.titleHr}/>
 
 						<ClassContinueList/>
-						</View> }
 					</View>
 					}
 				</ScrollView>

@@ -10,7 +10,7 @@ import Native from "../../commons/native";
 const styles = StyleSheet.create({
 	banner: {
 		position: 'relative',
-		height: 410,
+		height: 350,
 		paddingTop: 15,
 		paddingLeft: 15,
 		paddingRight: 15,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		width: '65%',
-		fontSize: 24,
+		fontSize: 22,
 		fontWeight: 'bold',
 		color: '#ffffff',
 	},
@@ -116,14 +116,14 @@ const styles = StyleSheet.create({
 	itemDownloadCount: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		height: 40,
+		height: 22,
 		paddingRight: 15,
 		paddingLeft: 15,
 		borderWidth: 1,
 		borderColor: CommonStyles.COLOR_PRIMARY,
 	},
 	itemDownloadCountText: {
-		fontSize: 15,
+		fontSize: 12,
 		color: CommonStyles.COLOR_PRIMARY,
 	},
 });
