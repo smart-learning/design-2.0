@@ -7,6 +7,9 @@
 
 package kr.co.influential.youngkangapp.player;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
 import android.content.Context;
@@ -60,7 +63,6 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
@@ -83,6 +85,18 @@ import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.ref.WeakReference;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 import kr.co.influential.youngkangapp.BasePlayerActivity;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
@@ -100,25 +114,8 @@ import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.ref.WeakReference;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
 /**
  * Created by PallyconTeam
@@ -126,9 +123,10 @@ import static android.view.View.VISIBLE;
 
 public class PlayerActivity extends BasePlayerActivity {
 
+  public static final String TAG = LogHelper.makeLogTag(PlayerActivity.class);
+
   private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
 
-  public static final String TAG = "pallycon_sampleapp";
   public static final String CONTENTS_TITLE = "contents_title";
   public static final String PREFER_EXTENSION_DECODERS = "prefer_extension_decoders";
   public static final String DOWNLOAD_SERVICE_TYPE = "drm_delete";
@@ -407,6 +405,9 @@ public class PlayerActivity extends BasePlayerActivity {
         }
       };
 
+  private int numerator;
+  private final int denominator = 100;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -418,6 +419,12 @@ public class PlayerActivity extends BasePlayerActivity {
 //		com.google.android.exoplayer2.ui.SimpleExoPlayerView
     simpleExoPlayerView = findViewById(R.id.player_view);
     simpleExoPlayerView.requestFocus();
+    simpleExoPlayerView.setAspectRatioListener(
+        (targetAspectRatio, naturalAspectRatio, aspectRatioMismatch) ->
+            numerator = (int) (targetAspectRatio * denominator));
+
+    // Set player to playerview.
+    LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
 
     //// Chromecast
     mCastContext = CastContext.getSharedInstance(this);
@@ -713,7 +720,7 @@ public class PlayerActivity extends BasePlayerActivity {
   @Override
   protected void onUserLeaveHint() {
     PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-    builder.setAspectRatio(new Rational(16, 9));
+    builder.setAspectRatio(new Rational(numerator, denominator));
     enterPictureInPictureMode(builder.build());
   }
 
@@ -5036,9 +5043,6 @@ public class PlayerActivity extends BasePlayerActivity {
       Uri uri = intent.getData();
       Bundle extras = intent.getExtras();
       getTransportControls().playFromUri(uri, extras);
-
-      // Set player to playerview.
-      LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
     }
   }
 
@@ -5206,10 +5210,6 @@ public class PlayerActivity extends BasePlayerActivity {
           Bundle extras = intent.getExtras();
 
           getTransportControls().playFromUri(uri, extras);
-
-          // Set player to playerview.
-          LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
-
         }
       }
   }
