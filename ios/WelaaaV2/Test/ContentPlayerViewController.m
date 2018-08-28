@@ -133,7 +133,7 @@
 
 // 뷰 컨트롤러가 화면에 나타나기 직전에 실행됩니다.
 // 뷰 컨트롤러가 나타나기 직전에 항상 실행되기 때문에 해당 뷰 컨트롤러가 나타나기 직전마다 일어나는 작업들을 여기에 배치 시킬 수 있습니다.
-- (void) viewWillAppear : (BOOL)animated
+- (void) viewWillAppear : (BOOL) animated
 {
     NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ]; // CONTENT_PATH
     _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
@@ -166,13 +166,6 @@
 // 왜냐하면 지나치게 빨리 애니메이션을 그리거나 API에서 정보를 받아와 뷰 컨트롤러를 업데이트 할 경우 화면에 반영되지 않습니다.
 - (void) viewDidAppear : (BOOL) animated
 {
-    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
-  
-    // 현재 콘텐트의 재생권한.
-    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
-    NSLog(@"  [setContentData] isAuthor? : %@", _isAuthor? @"TRUE" : @"FALSE");
-  
     // 오디오 콘텐츠인지 구분.
     if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
     {
@@ -184,18 +177,6 @@
     }
     NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
   
-    // 강좌 전체 클립 또는 오디오북 전체 챕터를 가져옵니다.
-    // cid를 '_'로 잘라서 각각 array chunk처리합니다.
-    NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"];
-    // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
-    _currentContentsInfo = [self getContentsInfoWithCgid : chunks[0]
-                                           andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
-  
-    // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
-    [_args setObject : _currentContentsInfo[@"data"][@"title"]
-              forKey : @"name"];
-  
-  
     // 재생 시작.
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
@@ -205,20 +186,35 @@
                                                   name : AVPlayerItemDidPlayToEndTimeNotification
                                                 object : [_player currentItem]  ];
   
+    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+  
+    // 현재 콘텐트의 재생권한.
+    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
+    NSLog(@"  [setContentData] isAuthor? : %@", _isAuthor? @"TRUE" : @"FALSE");
+  
+    // 강좌 전체 클립 또는 오디오북 전체 챕터를 가져옵니다.
+    NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
+    // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
+    _currentContentsInfo = [self getContentsInfoWithCgid : chunks[0]
+                                           andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+  
+    // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
+    [_args setObject : _currentContentsInfo[@"data"][@"title"]
+              forKey : @"name"];
+  
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
   
     [self setPlayState : YES];
   
     // 영상시작후 3초간 입력이 없으면 컨트롤러를 자동으로 Hide.
-  /*
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
-  */
   
     // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
-    CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration) + 1;
+    CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
   
     if ( _slider )
     {
@@ -226,11 +222,11 @@
         // 권한이 없는 상태(비 멤버십 유저)라면 90초 미리이용하기로 세팅해야 합니다.
         if ( _isAuthor )
         {
-          _slider.maximumValue = totalTime;
+            _slider.maximumValue = totalTime;
         }
         else
         {
-          _slider.maximumValue = 90.f;  // 90초에 다다르면 슬라이더 메서드에서 적절한 메시지와 함께 콘텐트 재생을 종료시켜야 합니다.
+            _slider.maximumValue = 90.f;  // 90초에 다다르면 슬라이더 메서드에서 적절한 메시지와 함께 콘텐트 재생을 종료시켜야 합니다.
         }
     }
 }
@@ -240,9 +236,7 @@
 //
 - (void) setContentData : (NSMutableDictionary *) args
 {
-    NSLog(@"  [setContentData] RN에서 받은 데이터를 set합니다.");
     _args = args;
-  
   //NSLog(@"  arguments : %@", [_args description]);
 }
 
@@ -794,7 +788,7 @@
 }
 
 //
-// 플레이어 구동초기에 호출합니다. 권한체크는 플레이어가 안정화되면 구현할 예정입니다. 그때까지는 호출되지 않습니다.
+// 플레이어 구동초기에 호출합니다.
 //
 - (void) setPreparedToPlay
 {
@@ -807,38 +801,28 @@
     {
         _slider.minimumValue = 0.f;
       
-        [self setCurrentTime: currentTime
-                 forceChange: YES];
-        _slider.maximumValue = totalTime;
+        [self setCurrentTime : currentTime
+                 forceChange : YES];
       
-      /*
-        if ( _isAudioMode && !_isAuthor )       // 오디오 모드 이면서 권한이 없으면 미리듣기이므로 미리보기의 90초가 아닌 원래 챕터시간으로 세팅해야함. 문제 생기면 롤백해야함!! 171102 김태현
+        if ( _isAuthor )
         {
-          _slider.maximumValue = totalTime;
-        //[self setTotalTime: totalTime];
+            _slider.maximumValue = totalTime;
         }
-        else if ( !_isAudioMode && !_isAuthor ) // 영상 모드 이면서 권한이 없으면 미리보기이므로 미리보기의 90초로 세팅해야함. 문제 생기면 롤백해야함!! 171102 김태현
+        else if ( !_isAuthor )
         {
-          _slider.maximumValue = 90.f;
-        //[self setTotalTime: 90.f];
+            _slider.maximumValue = 90.f;
         }
-        else
-        {
-          _slider.maximumValue = totalTime;  // 그 밖의 경우는 원래 시간으로 세팅함. 문제 생기면 롤백해야함!! 171102 김태현
-        //[self setTotalTime: totalTime];
-        }
-      */
-        //_slider.maximumValue = (self.isAuthor ? totalTime : 90.f);  // 60.f -> 90.f (60초에서 90초로 변경) 171101 김태현
-        //[self setTotalTime: (self.isAuthor ? totalTime : 90.f)];    // 60.f -> 90.f (60초에서 90초로 변경) 171101 김태현
     }
-  
-  
 }
 
-#pragma mark - selectors
+#pragma mark - Selectors
 
 - (void) pressedCloseButton
 {
+    [_player pause];
+    [_playerLayer removeFromSuperlayer];
+    _playerLayer.player = nil;
+    [self invalidateTimerOnSlider];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     //[self showToast : @"미니플레이어로 변환합니다."];
 }
@@ -1328,14 +1312,15 @@
                                                                */
                                                             
                                                                 // 유저가 콘텐트에 대한 권한이 없으면서, 콘텐트가 영상이라면...
-                                                                _isAuthor = true;         // 테스트를 위해 일단 강제로 true로 세팅하였습니다.
-                                                                _isAudioContent = true;   // 테스트를 위해 일단 강제로 true로 세팅하였습니다.
                                                                 if ( !_isAuthor && !_isAudioContent )
                                                                 {
                                                                     if ( playTime >= 90.f )
                                                                     {
-                                                                        // playerController를 닫습니다.
-                                                                        [self dismissViewControllerAnimated:YES completion:nil];
+                                                                        [_player pause];
+                                                                        [_playerLayer removeFromSuperlayer];
+                                                                        _playerLayer.player = nil;
+                                                                        [self invalidateTimerOnSlider];
+                                                                        [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
                                                                         [self showToast : @"90 초 프리뷰"]; // Root View에서도 보여야 합니다.
                                                                     }
                                                                 }
@@ -1376,7 +1361,6 @@
                             status : (NSInteger) status
 {
   /*
-    _isAuthor = true;
     // 권한이 없으면..
     if ( !_isAuthor )
     {
@@ -1733,6 +1717,7 @@
     NSDictionary *contentsInfoDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
                                                                      options : NSJSONReadingAllowFragments
                                                                        error : &error];
+  /*
     // 오디오북
     if ( [contentGroupID hasPrefix : @"b"] )
     {
@@ -1843,13 +1828,12 @@
             NSLog(@"  Content [data][clips][%i][images][big] : %@",  i, contentsInfoDics[@"data"][@"clips"][i][@"images"][@"big"]);
             NSLog(@"  Content [data][clips][%i][images][list] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"images"][@"list"]);
             NSLog(@"  Content [data][clips][%i][images][wide] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"images"][@"wide"]);
-            /* progress는 'null'일 수 있습니다.
-             NSLog(@"  Content [data][clips][%i][progress][percent] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"progress"][@"percent"]);
-             NSLog(@"  Content [data][clips][%i][progress][start_seconds] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"progress"][@"start_seconds"]);
-             */
+          //progress는 'null'일 수 있습니다.
+          //NSLog(@"  Content [data][clips][%i][progress][percent] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"progress"][@"percent"]);
+          //NSLog(@"  Content [data][clips][%i][progress][start_seconds] : %@", i, contentsInfoDics[@"data"][@"clips"][i][@"progress"][@"start_seconds"]);
         }
     }
-  
+  */
     return contentsInfoDics;
 }
 
@@ -1883,7 +1867,7 @@
     NSDictionary *playDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
                                                                  options : NSJSONReadingAllowFragments
                                                                    error : &error];
-  
+  /*
     // 오디오북
     if ( [contentID hasPrefix : @"b"] )
     {
@@ -1897,12 +1881,11 @@
         NSLog(@"  Play Data [permission][can_play] : %@",   playDataDics[@"permission"][@"can_play"]);  // 0 & 1
         NSLog(@"  Play Data [permission][expire_at] : %@",  playDataDics[@"permission"][@"expire_at"]);
         NSLog(@"  Play Data [permission][is_free] : %@",    playDataDics[@"permission"][@"is_free"]);   // 0 & 1
-        /* pregress는 'null'일 수 있습니다.
-        NSLog(@"  ");
-        NSLog(@"  Play Data [progress][id] : %@",             playDataDics[@"progress"][@"id"]);            // 내부에서 관리되는 contents id (앱 단에서 현재사용x)
-        NSLog(@"  Play Data [progress][played_at] : %@",      playDataDics[@"progress"][@"played_at"]);
-        NSLog(@"  Play Data [progress][start_seconds] : %@",  playDataDics[@"progress"][@"start_seconds"]);
-        */
+      //pregress는 'null'일 수 있습니다.
+      //NSLog(@"  ");
+      //NSLog(@"  Play Data [progress][id] : %@",             playDataDics[@"progress"][@"id"]);            // 내부에서 관리되는 contents id (앱 단에서 현재사용x)
+      //NSLog(@"  Play Data [progress][played_at] : %@",      playDataDics[@"progress"][@"played_at"]);
+      //NSLog(@"  Play Data [progress][start_seconds] : %@",  playDataDics[@"progress"][@"start_seconds"]);
       //NSLog(@"  ");
       //NSLog(@"  Play Data [type] : %@", playDataDics[@"type"]); // type : 20 => audiobook chapter?
     }
@@ -1920,16 +1903,15 @@
         NSLog(@"  Play Data [permission][can_play] : %@",   playDataDics[@"permission"][@"can_play"]);  // 0 & 1
         NSLog(@"  Play Data [permission][expire_at] : %@",  playDataDics[@"permission"][@"expire_at"]);
         NSLog(@"  Play Data [permission][is_free] : %@",    playDataDics[@"permission"][@"is_free"]);   // 0 & 1
-        /* pregress는 'null'일 수 있습니다.
-        NSLog(@"  ");
-        NSLog(@"  Play Data [progress][id] : %@",             playDataDics[@"progress"][@"id"]);            // 내부에서 관리되는 contents id (앱 단에서 현재사용x)
-        NSLog(@"  Play Data [progress][played_at] : %@",      playDataDics[@"progress"][@"played_at"]);
-        NSLog(@"  Play Data [progress][start_seconds] : %@",  playDataDics[@"progress"][@"start_seconds"]);
-        */
+      //pregress는 'null'일 수 있습니다.
+      //NSLog(@"  ");
+      //NSLog(@"  Play Data [progress][id] : %@",             playDataDics[@"progress"][@"id"]);            // 내부에서 관리되는 contents id (앱 단에서 현재사용x)
+      //NSLog(@"  Play Data [progress][played_at] : %@",      playDataDics[@"progress"][@"played_at"]);
+      //NSLog(@"  Play Data [progress][start_seconds] : %@",  playDataDics[@"progress"][@"start_seconds"]);
       //NSLog(@"  ");
       //NSLog(@"  Play Data [type] : %@", playDataDics[@"type"]); // type : 10 => video course?
     }
-  
+  */
     return playDataDics;
 }
 
