@@ -171,10 +171,13 @@ class TabContentInfo extends React.Component {
 			<View style={styles.contentHr}/>
 
 			<View style={styles.labelInfo}>
-				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
+
+				{this.props.learnType === 'class' &&
+				<View style={[CommonStyles.alignJustifyFlex, styles.labelInfoItem]}>
 					<Image style={styles.labelInfoImage} source={IcClip}/>
 					<Text style={styles.labelInfoText}>{this.props.store.itemData.clip_count}개 강의 클립</Text>
 				</View>
+				}
 				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
 					<Image style={styles.labelInfoImage} source={IcTime}/>
 					<Text style={styles.labelInfoText}>총 러닝타임 1시간 45분</Text>
