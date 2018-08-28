@@ -1683,7 +1683,33 @@
         selectedOtherIndex : (NSInteger) index
 {
     NSLog(@"  [playListPopupView:selectedOtherIndex:] index : %li", (long)index);
-  // 선택된 index에서 uri와 cid를 읽어와서 재생하는 것을 구현해야 합니다.
+    // 선택된 index에서 uri와 cid를 읽어와서 재생하는 것을 구현해야 합니다.
+    if ( _isAudioContent )
+    {
+        [_args setObject : _currentContentsInfo[@"data"][@"chapters"][index][@"cid"]
+                  forKey : @"cid"];
+    }
+    else if ( !_isAudioContent )
+    {
+        [_args setObject : _currentContentsInfo[@"data"][@"clips"][index][@"cid"]
+                  forKey : @"cid"];
+    }
+  
+    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+  
+    // 플레이할 콘텐트의 재생권한.
+    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
+    [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+              forKey : @"uri"];
+  
+    if ( _listView )
+    {
+        [_listView removeFromSuperview];
+        _listView = nil;
+    }
+  
+    [self playNext];
 }
 
 # pragma mark - Transmitting with the API server.
@@ -1953,36 +1979,33 @@
 
 // 모든 기능 안정화 전까지 세로모드 만 적용합시다.
 
-// 오디오 콘텐트인지 확인하는 프로퍼티가 필요합니다.
-//- (bool)_isAudioOnlyContent;
-
 // nextPlay 구현..
 - (void) playNext
 {
-  // _args를 초기화 또는 uri, cid, name 정도만 재설정합니다.
-  //[self setArgs : argsDictionary];
-  // player를 nil처리하고 viewcontroller를 재실행보다는 refresh 처리합니다.
+    // _args를 초기화 또는 uri, cid, name 정도만 재설정합니다.
+    //[self setArgs : argsDictionary];
+    // player를 nil처리하고 viewcontroller를 재실행보다는 refresh 처리합니다.
 
-  [_player pause];
-  [self invalidateTimerOnSlider];
+    [_player pause];
+    [self invalidateTimerOnSlider];
   
-  //뷰를 파괴하기보다는 playItem을 수정하는 방향으로....
-  // playItem을 array화하기보다는 API에서 다음 콘텐트를 읽어와서 직접 플레이하기로?
-  NSURL *contentUrl = [ NSURL URLWithString : @"https://contents.welaaa.com/media/v100015/HLS_v100015_002/master.m3u8" ];
-  _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                       options : nil       ];
+    //뷰를 파괴하기보다는 playItem을 수정하는 방향으로....
+    // playItem을 array화하기보다는 API에서 다음 콘텐트를 읽어와서 직접 플레이하기로?
+    NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
+    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
+                                         options : nil       ];
   
-  // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-  [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                         userId : [_args objectForKey : @"userId"]
-                      contentId : @"v100015_002"                // PALLYCON_CONTENT_ID
-                     optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                liveKeyRotation : NO              ];
+    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+    [ _fpsSDK prepareWithUrlAsset : _urlAsset
+                           userId : [_args objectForKey : @"userId"]
+                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                  liveKeyRotation : NO              ];
   
-  _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
-  [_player replaceCurrentItemWithPlayerItem : _playerItem];
-  [_player play];
-  // slider 세팅을 전부 다시 해야합니다.
+    _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
+    [_player replaceCurrentItemWithPlayerItem : _playerItem];
+    [_player play];
+    // slider 세팅을 전부 다시 해야합니다.
 }
 
 @end
