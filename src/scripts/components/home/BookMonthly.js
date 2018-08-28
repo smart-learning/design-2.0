@@ -4,6 +4,7 @@ import IcHeadphone from "../../../images/ic-headphones.png";
 import Bg from "../../../images/bg-audiobook-month.png";
 import Swiper from "react-native-swiper";
 import _ from "underscore";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	bookMonthly: {
@@ -97,7 +98,7 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default class BookMonthly extends React.Component {
+export default withNavigation(class BookMonthly extends React.Component {
 	constructor(props) {
 		super(props);
 	}
@@ -156,4 +157,4 @@ export default class BookMonthly extends React.Component {
 			<Image source={Bg} style={styles.bullet}/>
 		</View>
 	}
-}
+} )

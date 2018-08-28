@@ -5,6 +5,7 @@ import Dummy from "../../../images/dummy-audioBookSimple.png";
 import IcView from "../../../images/ic-detail-view.png";
 import IcStar from "../../../images/ic-detail-star.png";
 import IcComment from "../../../images/ic-detail-message.png";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	alignJustify: {
@@ -118,7 +119,7 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default class BookListItem extends React.Component {
+export default withNavigation(class BookListItem extends React.Component {
 	constructor( props ) {
 		super( props );
 	}
@@ -136,7 +137,7 @@ export default class BookListItem extends React.Component {
 				<View style={styles.bookRankHr}/>
 			</View>
 			}
-			<TouchableOpacity activeOpacity={0.9}>
+			<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.itemData.id, title: ' '})}>
 				<Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={1}>
 					{this.props.itemData.title}
 				</Text>
@@ -170,4 +171,4 @@ export default class BookListItem extends React.Component {
 			</View>
 		</View>
 	}
-}
+} )
