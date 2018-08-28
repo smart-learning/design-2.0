@@ -388,6 +388,17 @@ export default {
 				console.log(error);
 			});
 	},
+	
+	getMembershipVouchers() {
+		const expired = 1;
+		return cacheOrLoad( API_PREFIX + 'membership/vouchers', expired )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
 
 	getVoucherStatus(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;

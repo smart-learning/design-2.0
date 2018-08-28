@@ -1,8 +1,10 @@
 import React from "react";
-import { Button, StyleSheet, Text, View, ScrollView} from "react-native";
-import {SafeAreaView} from "react-navigation";
+import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
-import Store from '../../../scripts/commons/store';
+import { observer } from "mobx-react";
+import createStore from "../../commons/createStore";
+import net from "../../commons/net";
 
 const styles = StyleSheet.create({
 	ticketText: {
@@ -24,24 +26,46 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default class AudioBookTicketPage extends React.Component {
+@observer class AudioBookTicketPage extends React.Component {
+	store = createStore( {
+		isLoading: true,
+		list: null,
+	} );
 
+	load = async () => {
+		this.store.isLoading = true;
+		this.store.list = await net.getMembershipVouchers();
+		this.store.isLoading = false;
+	};
+
+	componentDidMount() {
+		this.load();
+	}
 
 	render() {
 		return <View style={CommonStyles.container}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
 					<View style={CommonStyles.contentContainer}>
-						<Text style={styles.ticketText}>전체 이용권 0개</Text>
-						<Text style={styles.ticketText}>인기 오디오북 이용권 0개 보유중</Text>
+						{this.store.isLoading &&
+						<View style={{ marginTop: 12 }}>
+							<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+						</View>
+						}
 
-						{/*이용권이 없을때*/}
+
+						{ ( !this.store.isLoading && ( !this.store.list || this.store.list.length === 0 ) ) &&
 						<View style={styles.ticketBox} borderRadius={10}>
 							<Text style={styles.ticketBoxText}>보유하고 있는 오디오북 이용권이 없습니다.</Text>
 						</View>
-
-						{/*이용권이 있을때*/}
-						<View><Text>이용권 목록</Text></View>
+						}
+						{ ( !this.store.isLoading && ( this.store.list && this.store.list.length > 0 ) ) &&
+							<View>
+								<Text style={styles.ticketText}>전체 이용권 0개</Text>
+								<Text style={styles.ticketText}>인기 오디오북 이용권 0개 보유중</Text>
+								<Text>이용권 목록</Text>
+							</View>
+						}
 					</View>
 					<Text>AudioBookTicketPage 서브페이지</Text>
 					<Button
@@ -53,3 +77,5 @@ export default class AudioBookTicketPage extends React.Component {
 		</View>
 	}
 }
+
+export default AudioBookTicketPage;
