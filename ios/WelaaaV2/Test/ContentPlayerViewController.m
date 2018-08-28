@@ -69,6 +69,7 @@
     AVURLAsset *_urlAsset;
   
     CGFloat _playbackRate;
+    CGFloat _currentPlaybackDuration;
   
     NSTimer *_seekTimer;
 }
@@ -474,8 +475,15 @@
     _totalTimeLabel.textColor = [UIColor whiteColor];
     _totalTimeLabel.textAlignment = NSTextAlignmentCenter;
     _totalTimeLabel.text = @"00:00";
-    _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) + 1 // +1은 소수점 이하를 포함합니다.
-                                                Minute : YES];
+    if ( _isAuthor )
+    {
+        _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
+                                                    Minute : YES];
+    }
+    else if ( !_isAuthor )  // 오디오북의 프리뷰 챕터에 대한 조건문도 추가해야 합니다!
+    {
+        _totalTimeLabel.text = @"01:30";
+    }
     [_bottomView addSubview : _totalTimeLabel];
   
     _slider = [[UISlider alloc] initWithFrame : CGRectMake(margin + labelWidth + padding, _bottomView.frame.size.height-44, barWidth, 30.f)];
@@ -792,8 +800,10 @@
 //
 - (void) setPreparedToPlay
 {
-    CGFloat currentTime = [self getCurrentPlaybackTime];
-    CGFloat totalTime = [self getDuration]; // nan이 나오면 에러...
+  //CGFloat currentTime = [self getCurrentPlaybackTime];
+    CGFloat currentTime = 0.f;
+  //CGFloat totalTime = [self getDuration]; // nan이 나오면 에러...
+    CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);
   
     _isAudioMode = false; // 테스트를 목적으로 강제로 value를 set하였습니다. 모든 기능이 구현되면 삭제될 예정입니다.
   
@@ -2006,6 +2016,17 @@
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
     [_player play];
     // slider 세팅을 전부 다시 해야합니다.
+  
+    [ [NSNotificationCenter defaultCenter] addObserver : self
+                                              selector : @selector(videoPlayBackDidFinish:)
+                                                  name : AVPlayerItemDidPlayToEndTimeNotification
+                                                object : [_player currentItem]  ];
+  
+    _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
+                                                Minute : YES];
+    [self setPreparedToPlay];
+    [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+    [self setPlayState : YES];
 }
 
 @end
