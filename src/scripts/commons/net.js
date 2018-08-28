@@ -402,4 +402,20 @@ export default {
 				console.log( error );
 			} );
 	},
+
+	getBookReviewList(cid) {
+		return new Promise((resolve, reject) => {
+			axios.get(API_PREFIX + 'action/comments/' + cid )
+				.then((response) => {
+					response.data.forEach(element => {
+						element.key = element.id.toString();
+					});
+					resolve(response.data);
+				})
+				.catch((error) => {
+					console.log(error);
+					reject(error);
+				});
+		});
+	},
 }
