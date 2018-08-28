@@ -727,6 +727,7 @@ public class PlayerActivity extends BasePlayerActivity {
   @Override
   public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
     super.onPictureInPictureModeChanged(isInPictureInPictureMode);
+    simpleExoPlayerView.setUseController(!isInPictureInPictureMode);
   }
 
   private void releaseCast() {
