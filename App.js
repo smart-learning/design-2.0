@@ -15,7 +15,6 @@ class App extends React.Component {
 		let token = await AsyncStorage.getItem( 'welaaaAuth' );
 		if( token ) {
 			token = JSON.parse( token );
-			console.log( 'parsed token: ', token );
 			globalStore.welaaaAuth = token;
 		}
 	};
