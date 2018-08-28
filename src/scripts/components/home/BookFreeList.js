@@ -67,21 +67,6 @@ const styles = StyleSheet.create({
 	}
 });
 
-const dummy = [];
-
-_.times( 11, n => {
-	dummy.push( {
-		key: n,
-		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
-		title: 'titleText',
-		is_exclusive: true,
-		hit_count: 0,
-		star_avg: 0,
-		review_count: 0,
-		thumbnail: '',
-	} );
-} );
-
 @observer class BookFreeList extends React.Component {
 
 	store = createStore( {
@@ -89,11 +74,19 @@ _.times( 11, n => {
 	} );
 
 	render() {
-		let list = dummy;
+		let list;
 		let BookList = [];
 
 		if( !this.store.isOpen ) {
-			list = dummy.slice( 0, 3 );
+			list = this.props.itemData.slice( 0, 3 );
+		} else {
+			list = this.props.itemData;
+		}
+
+		if( this.props.itemType === 'review' ) {
+			list = _.filter(list, (element) => {
+				return element.is_bookreview == true;
+			} );
 		}
 
 		for (let i = 0; i < Math.ceil(list.length / 3); i++) {
@@ -116,9 +109,9 @@ _.times( 11, n => {
 								items.map((item, innerKey) => {
 									return <View style={styles.listItem} key={innerKey}>
 										{item !== undefined &&
-										<ImageBackground source={DummyBg} resizeMode={"cover"} style={styles.thumbnail}>
+										<ImageBackground source={{uri: item.images.list}} resizeMode={"cover"} style={styles.thumbnail}>
 											<View style={styles.thumbnailDim}>
-												<Text style={styles.thumbnailTitle}>title</Text>
+												<Text style={styles.thumbnailTitle}>{item.title}</Text>
 											</View>
 											<Image source={DummyIcon} style={styles.bullet}/>
 										</ImageBackground>

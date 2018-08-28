@@ -112,6 +112,7 @@ const styles = StyleSheet.create( {
 class HomeAudioPage extends React.Component {
 
 	render() {
+		console.log( 'this.props.store.audioNewData.items', this.props.store.audioNewData.items );
 		return (
 			<PTRView onRefresh={() => this.props.onRefresh()}>
 				<ScrollView style={{ flex: 1 }}>
@@ -181,7 +182,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList itemType="hot"/>
+						<BookList itemType="hot" itemData={this.props.store.audioRealTimeChartData}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -189,7 +190,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList/>
+						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -197,7 +198,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList/>
+						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -205,9 +206,9 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookFreeList/>
+						<BookFreeList itemType={"review"} itemData={this.props.store.audioNewData.items}/>
 
-						<TouchableOpacity activeOpacity={0.9}>
+						<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('AudioBookPage')}>
 							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 								<Text style={styles.linkViewAllText}>
 									오디오북 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>

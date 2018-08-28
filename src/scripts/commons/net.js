@@ -309,5 +309,38 @@ export default {
 			.catch( error => {
 				console.log( error );
 			} );
-	}
+	},
+	getHomeAudioRealTimeChartContents( isRefresh = false ) {
+		let expired = DEFAULT_EXPIRED;
+		let itemNumber = 1;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad( API_PREFIX + 'contents/audiobooks/realtime-chart', expired )
+			.then( data => {
+				data.forEach(element => {
+					element.itemNumber = itemNumber++;
+				});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+	getPlayRecentAudioBook(isRefresh = false) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad( API_PREFIX + 'contents/audiobooks/realtime-chart', expired )
+			.then( data => {
+				data.forEach(element => {
+					element.key = element.id.toString();
+				});
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
 }

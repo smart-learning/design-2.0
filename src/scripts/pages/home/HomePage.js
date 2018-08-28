@@ -81,6 +81,11 @@ class HomePage extends React.Component {
 		classRecommendData: {},
 		clipRankData: [],
 		homeBannerData: [],
+		audioRealTimeChartData: [],
+		audioNewData: {
+			items: [],
+		},
+		// audioPlayRecentData: [],
 	});
 
 	getData = async ( isRefresh = false ) => {
@@ -134,6 +139,9 @@ class HomePage extends React.Component {
 		this.store.classRecommendData = recommendVOs;
 		this.store.clipRankData = await net.getHomeClipRank( isRefresh );
 		this.store.homeBannerData = await net.getMainBanner( isRefresh );
+		this.store.audioRealTimeChartData = await net.getHomeAudioRealTimeChartContents( isRefresh );
+		this.store.audioNewData = await net.getAudioBookList( isRefresh );
+		// this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
 	};
 
 	componentDidMount() {
