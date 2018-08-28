@@ -228,11 +228,11 @@ export default class Book extends React.Component {
 			<View style={[{backgroundColor: this.props.itemData.banner_color.trim()}, styles.itemContent]}>
 				{this.props.type === 'best' &&
 				<Text style={styles.bookMemoBest} numberOfLines={3}
-					  ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
+					  ellipsizeMode={'tail'}>{this.props.itemData.memo.split( '<br>' ).join( '' )}</Text>
 				}
 				{this.props.type === 'recommend' &&
 				<Text style={styles.bookMemoRecommend} numberOfLines={3}
-					  ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
+					  ellipsizeMode={'tail'}>{this.props.itemData.memo.split( '<br>' ).join( '' )}</Text>
 				}
 				<View style={[styles.alignJustify, styles.countWrap]}>
 					<Image source={IcView} style={styles.btnSetSmall}/>

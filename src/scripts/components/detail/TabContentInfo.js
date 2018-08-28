@@ -160,7 +160,7 @@ class TabContentInfo extends React.Component {
 				</Text>
 				{!!this.props.store.lectureView &&
 				<Text style={styles.infoTextNormal}>
-					{this.props.store.itemData.memo}
+					{`${ this.props.store.itemData.memo.split( '<br>' ).join( '\n' ) }`}
 				</Text>
 				}
 				<TouchableOpacity onPress={this.toggleLectureView}>
@@ -201,7 +201,7 @@ class TabContentInfo extends React.Component {
 					</Text>
 					{!!this.props.store.teacherView &&
 					<Text style={styles.authorText}>
-						{this.props.itemData.teacher.memo}
+						{`${ this.props.itemData.teacher.memo.split( '<br>' ).join( '\n' ) }`}
 					</Text>
 					}
 					<TouchableOpacity onPress={this.toggleTeacherView}>
