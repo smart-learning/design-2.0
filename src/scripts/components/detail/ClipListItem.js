@@ -1,6 +1,5 @@
 import React from "react";
-import {Text, View, StyleSheet, TouchableOpacity, ImageBackground,} from "react-native";
-import CommonStyles from "../../../styles/common";
+import {Text, View, StyleSheet,} from "react-native";
 import Summary from "../video/Summary";
 
 const styles = StyleSheet.create({
