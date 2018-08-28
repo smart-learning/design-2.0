@@ -85,6 +85,7 @@ class HomePage extends React.Component {
 		audioNewData: {
 			items: [],
 		},
+		audioMonth: [],
 		// audioPlayRecentData: [],
 	});
 
@@ -141,6 +142,7 @@ class HomePage extends React.Component {
 		this.store.homeBannerData = await net.getMainBanner( isRefresh );
 		this.store.audioRealTimeChartData = await net.getHomeAudioRealTimeChartContents( isRefresh );
 		this.store.audioNewData = await net.getAudioBookList( isRefresh );
+		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
 		// this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
 	};
 

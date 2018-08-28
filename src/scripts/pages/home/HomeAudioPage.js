@@ -112,7 +112,6 @@ const styles = StyleSheet.create( {
 class HomeAudioPage extends React.Component {
 
 	render() {
-		console.log( 'this.props.store.audioNewData.items', this.props.store.audioNewData.items );
 		return (
 			<PTRView onRefresh={() => this.props.onRefresh()}>
 				<ScrollView style={{ flex: 1 }}>
@@ -154,7 +153,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookMonthly/>
+						<BookMonthly itemData={this.props.store.audioMonth}/>
 					</View>
 
 					<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>

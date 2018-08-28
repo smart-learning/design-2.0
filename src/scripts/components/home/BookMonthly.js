@@ -1,9 +1,9 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image } from "react-native";
 import IcHeadphone from "../../../images/ic-headphones.png";
-import Dummy from "../../../images/dummy-audioBookSimple.png";
 import Bg from "../../../images/bg-audiobook-month.png";
 import Swiper from "react-native-swiper";
+import _ from "underscore";
 
 const styles = StyleSheet.create( {
 	bookMonthly: {
@@ -13,7 +13,6 @@ const styles = StyleSheet.create( {
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginTop: 10,
-		marginBottom: 30,
 	},
 	coupon: {
 		flexDirection: 'row',
@@ -42,6 +41,7 @@ const styles = StyleSheet.create( {
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: 180,
+		marginTop: 30,
 	},
 	wrapper: {
 		width: 250,
@@ -103,13 +103,26 @@ export default class BookMonthly extends React.Component {
 	}
 
 	render() {
+		let list = this.props.itemData;
+		let bookList = [];
+
+		_.each( list, element => {
+			bookList.push( element.book_a );
+			bookList.push( element.book_b );
+		} );
+
 		return <View style={styles.bookMonthly}>
+			{this.props.voucher !== undefined &&
 			<View style={styles.couponContainer}>
 				<View style={styles.coupon} borderRadius={20}>
 					<Image source={IcHeadphone} style={styles.couponIcon}/>
-					<Text style={styles.couponText}>보유한 오디오북 이용권 <Text style={styles.couponCountText}> 100개</Text></Text>
+					<Text style={styles.couponText}>
+						보유한 오디오북 이용권
+						{/*<Text style={styles.couponCountText}> {this.props.voucher.total}개</Text>*/}
+					</Text>
 				</View>
 			</View>
+			}
 			<View style={styles.swiper}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
@@ -117,38 +130,27 @@ export default class BookMonthly extends React.Component {
 						dotColor={"#9bcdba"}
 						activeDotColor={"#379b75"}
 						paginationStyle={{bottom: 0}}>
-					<View style={styles.slide}>
-						<View style={styles.bookItem}>
-							<View style={styles.bookThumbnailContainer}>
-								<ImageBackground source={Dummy} resizeMode={"cover"} style={styles.thumbnail}/>
-							</View>
-							<View>
-								<Text style={styles.title}>Title</Text>
-								<Text style={styles.author}>Author</Text>
-								<TouchableOpacity activeOpacity={0.9}>
-									<View style={styles.detailButton} borderRadius={13}>
-										<Text style={styles.detailButtonText}>자세히보기</Text>
+
+					{bookList.map( ( item, key ) => {
+						return (
+							<View style={styles.slide} key={key}>
+								<View style={styles.bookItem}>
+									<View style={styles.bookThumbnailContainer}>
+										<ImageBackground source={{uri:item.audiobook.images.list}} resizeMode={"cover"} style={styles.thumbnail}/>
 									</View>
-								</TouchableOpacity>
-							</View>
-						</View>
-					</View>
-					<View style={styles.slide}>
-						<View style={styles.bookItem}>
-							<View style={styles.bookThumbnailContainer}>
-								<ImageBackground source={Dummy} resizeMode={"cover"} style={styles.thumbnail}/>
-							</View>
-							<View>
-								<Text style={styles.title}>Title</Text>
-								<Text style={styles.author}>Author</Text>
-								<TouchableOpacity activeOpacity={0.9}>
-									<View style={styles.detailButton} borderRadius={13}>
-										<Text style={styles.detailButtonText}>자세히보기</Text>
+									<View style={{width: '48%'}}>
+										<Text style={styles.title}>{item.audiobook.title}</Text>
+										<Text style={styles.author}>{item.audiobook.teacher.name}</Text>
+										<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: item.audiobook.id, title: ' '})}>
+											<View style={styles.detailButton} borderRadius={13}>
+												<Text style={styles.detailButtonText}>자세히보기</Text>
+											</View>
+										</TouchableOpacity>
 									</View>
-								</TouchableOpacity>
+								</View>
 							</View>
-						</View>
-					</View>
+						);
+					} )}
 				</Swiper>
 			</View>
 			<Image source={Bg} style={styles.bullet}/>
