@@ -81,6 +81,17 @@ function cacheOrLoad(uri, expired = 0) {
 }
 
 export default {
+	getProfile() {
+		const expired = 1;
+		return cacheOrLoad(API_PREFIX + 'users/profile', expired)
+			.then(data => {
+				return data;
+			})
+			.catch(error => {
+				console.log(error);
+				return null;
+			});
+	},
 	getLectureCategory(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
 		if (isRefresh) {

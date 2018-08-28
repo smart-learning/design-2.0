@@ -1,12 +1,13 @@
 import React from 'react';
 import { AsyncStorage } from "react-native";
 import axios from 'axios';
+import { observable } from "mobx";
 
 let socialType;
 let socialToken;
 let welaaaAuth;
 
-class Store{
+class Store {
     drawer = null;
     lastLocation = 'HomeScreen';
 
@@ -46,12 +47,8 @@ class Store{
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
 
-	// @observable auth = undefined;
-    //
-	// @observable authToken = undefined;
+	@observable profile = {};
 }
-
-console.log( '<<<<<< new Store >>>>');
 
 const store = new Store();
 export default store;

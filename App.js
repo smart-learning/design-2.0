@@ -8,6 +8,7 @@ import { AsyncStorage, DeviceEventEmitter, NativeModules, View } from "react-nat
 import globalStore from "./src/scripts/commons/store";
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
+import net from "./src/scripts/commons/net";
 
 class App extends React.Component {
 
@@ -16,6 +17,8 @@ class App extends React.Component {
 		if( token ) {
 			token = JSON.parse( token );
 			globalStore.welaaaAuth = token;
+
+			globalStore.profile = await net.getProfile();
 		}
 	};
 
