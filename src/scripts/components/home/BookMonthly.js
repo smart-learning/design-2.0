@@ -112,13 +112,13 @@ export default class BookMonthly extends React.Component {
 		} );
 
 		return <View style={styles.bookMonthly}>
-			{this.props.voucher !== undefined &&
+			{this.props.voucherStatus !== null &&
 			<View style={styles.couponContainer}>
 				<View style={styles.coupon} borderRadius={20}>
 					<Image source={IcHeadphone} style={styles.couponIcon}/>
 					<Text style={styles.couponText}>
 						보유한 오디오북 이용권
-						{/*<Text style={styles.couponCountText}> {this.props.voucher.total}개</Text>*/}
+						<Text style={styles.couponCountText}> {this.props.voucherStatus.total}개</Text>
 					</Text>
 				</View>
 			</View>

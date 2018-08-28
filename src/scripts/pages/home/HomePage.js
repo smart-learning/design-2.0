@@ -86,6 +86,7 @@ class HomePage extends React.Component {
 			items: [],
 		},
 		audioMonth: [],
+		voucherStatus: null,
 		// audioPlayRecentData: [],
 	});
 
@@ -144,6 +145,13 @@ class HomePage extends React.Component {
 		this.store.audioNewData = await net.getAudioBookList( isRefresh );
 		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
 		// this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
+
+		try {
+			this.store.voucherStatus = await net.getVoucherStatus( isRefresh );
+		}
+		catch( e ) {
+			console.log( e );
+		}
 	};
 
 	componentDidMount() {

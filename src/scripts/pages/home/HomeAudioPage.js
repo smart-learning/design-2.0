@@ -153,7 +153,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookMonthly itemData={this.props.store.audioMonth}/>
+						<BookMonthly itemData={this.props.store.audioMonth} voucherStatus={ this.props.store.voucherStatus }/>
 					</View>
 
 					<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>
