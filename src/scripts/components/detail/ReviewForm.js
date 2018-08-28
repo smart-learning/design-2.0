@@ -87,7 +87,6 @@ class UselessTextInput extends React.Component {
 class ReviewForm extends React.Component {
 
 	render() {
-		console.log('this.props.store.reviewStar', this.props.store.reviewStar);
 		return <View style={styles.reviewForm}>
 			<Text style={styles.reviewFormParagraph}>여러분의 평가를 바탕으로</Text>
 			<Text style={styles.reviewFormParagraph}>더 좋은 강의를 만들겠습니다^^</Text>
