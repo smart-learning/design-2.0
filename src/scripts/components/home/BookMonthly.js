@@ -111,8 +111,6 @@ export default class BookMonthly extends React.Component {
 			bookList.push( element.book_b );
 		} );
 
-		console.log( 'this.props.voucherStatus', this.props.voucherStatus );
-
 		return <View style={styles.bookMonthly}>
 			{this.props.voucherStatus &&
 			<View style={styles.couponContainer}>
