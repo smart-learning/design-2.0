@@ -56,7 +56,7 @@
   
     ContentsListPopupView *_listView;
   
-    NSDictionary *_args;
+    NSMutableDictionary *_args;
     NSDictionary *_currentContentsInfo;
   
     StarRatingView *_rateView;
@@ -82,7 +82,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self.view setBackgroundColor : UIColorFromRGB(0x000000, 0.5f)];
+    [self.view setBackgroundColor : [UIColor blackColor]];
   
     // PallyConFPS SDK 객체를 생성합니다.
     _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
@@ -166,6 +166,37 @@
 // 왜냐하면 지나치게 빨리 애니메이션을 그리거나 API에서 정보를 받아와 뷰 컨트롤러를 업데이트 할 경우 화면에 반영되지 않습니다.
 - (void) viewDidAppear : (BOOL) animated
 {
+    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+  
+    // 현재 콘텐트의 재생권한.
+    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
+    NSLog(@"  [setContentData] isAuthor? : %@", _isAuthor? @"TRUE" : @"FALSE");
+  
+    // 오디오 콘텐츠인지 구분.
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
+    {
+      _isAudioContent = YES;
+    }
+    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"v"] )
+    {
+      _isAudioContent = NO;
+    }
+    NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
+  
+    // 강좌 전체 클립 또는 오디오북 전체 챕터를 가져옵니다.
+    // cid를 '_'로 잘라서 각각 array chunk처리합니다.
+    NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"];
+    // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
+    _currentContentsInfo = [self getContentsInfoWithCgid : chunks[0]
+                                           andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+  
+    // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
+    [_args setObject : _currentContentsInfo[@"data"][@"title"]
+              forKey : @"name"];
+  
+  
+    // 재생 시작.
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [_player play];   // 플레이어 재생 실행
@@ -207,36 +238,12 @@
 //
 // RN에서 넘겨받은 arguments를 세팅합니다.
 //
-- (void) setContentData : (NSDictionary *) args
+- (void) setContentData : (NSMutableDictionary *) args
 {
     NSLog(@"  [setContentData] RN에서 받은 데이터를 set합니다.");
     _args = args;
   
   //NSLog(@"  arguments : %@", [_args description]);
-    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
-  
-    // 현재 콘텐트의 재생권한.
-    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
-    NSLog(@"  [setContentData] isAuthor? : %@", _isAuthor? @"TRUE" : @"FALSE");
-  
-    // 오디오 콘텐츠인지 구분.
-    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
-    {
-        _isAudioContent = YES;
-    }
-    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"v"] )
-    {
-        _isAudioContent = NO;
-    }
-    NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
-  
-    // 강좌 전체 클립 또는 오디오북 전체 챕터를 가져옵니다.
-    // cid를 '_'로 잘라서 각각 array chunk처리합니다.
-    NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"];
-    // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
-    _currentContentsInfo = [self getContentsInfoWithCgid : chunks[0]
-                                           andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
 }
 
 - (void) didReceiveMemoryWarning
@@ -832,9 +839,8 @@
 
 - (void) pressedCloseButton
 {
-  //[self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+    [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     //[self showToast : @"미니플레이어로 변환합니다."];
-  [self nextPlay];
 }
 
 - (void) pressedRateStarButton
@@ -1693,6 +1699,7 @@
         selectedOtherIndex : (NSInteger) index
 {
     NSLog(@"  [playListPopupView:selectedOtherIndex:] index : %li", (long)index);
+  // 선택된 index에서 uri와 cid를 읽어와서 재생하는 것을 구현해야 합니다.
 }
 
 # pragma mark - Transmitting with the API server.
@@ -1968,14 +1975,14 @@
 //- (bool)_isAudioOnlyContent;
 
 // nextPlay 구현..
-- (void) nextPlay
+- (void) playNext
 {
-  NSLog(@"  nextPlay tapped!");
   // _args를 초기화 또는 uri, cid, name 정도만 재설정합니다.
   //[self setArgs : argsDictionary];
   // player를 nil처리하고 viewcontroller를 재실행보다는 refresh 처리합니다.
-  /*
+
   [_player pause];
+  [self invalidateTimerOnSlider];
   
   //뷰를 파괴하기보다는 playItem을 수정하는 방향으로....
   // playItem을 array화하기보다는 API에서 다음 콘텐트를 읽어와서 직접 플레이하기로?
@@ -1993,18 +2000,7 @@
   _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
   [_player replaceCurrentItemWithPlayerItem : _playerItem];
   [_player play];
-  */
-  
-  NSLog(@"  Transmitting with the API server to get Contents Info");
-  [self getContentsInfoWithCgid : @"v100015"
-                  andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
-  
-  [NSThread sleepForTimeInterval : 2.0]; // 2초 지연.
-  
-  NSLog(@"  Transmitting with the API server to get play data before play next items");
-  [self getPlayDataWithCid : @"v100015_001"
-             andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
-  
+  // slider 세팅을 전부 다시 해야합니다.
 }
 
 @end

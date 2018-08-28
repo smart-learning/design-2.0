@@ -19,9 +19,10 @@ RCT_EXPORT_MODULE();
 
 #pragma mark - Private Methods
 
-- (void) showMediaPlayer : (NSDictionary *) args
+- (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
     ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
+    NSMutableDictionary *args = [argsFromReactNative mutableCopy];
     [playerViewController setContentData : args];
   
     AppDelegate *delegate = (AppDelegate *) [ [UIApplication sharedApplication] delegate ];
@@ -42,14 +43,14 @@ RCT_EXPORT_MODULE();
 
 #pragma mark - RCT_EXPORT
 
-RCT_EXPORT_METHOD( play : (NSDictionary *) args )
+RCT_EXPORT_METHOD( play : (NSDictionary *) argsFromReactNative )
 {
-    [self showMediaPlayer : args];
+    [self showMediaPlayer : argsFromReactNative];
 }
 
-RCT_EXPORT_METHOD( download : (NSDictionary *) args )
+RCT_EXPORT_METHOD( download : (NSDictionary *) argsFromReactNative )
 {
-    [self downloadSomething : args];
+    [self downloadSomething : argsFromReactNative];
 }
 
 @end
