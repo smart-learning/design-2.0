@@ -405,8 +405,10 @@ public class PlayerActivity extends BasePlayerActivity {
         }
       };
 
-  private int numerator;
+  private final float ASPECT_RATIO_MIN = 0.418410f;
+  private final float ASPECT_RATIO_MAX = 2.390000f;
   private final int denominator = 100;
+  private float aspectRatio;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -421,7 +423,7 @@ public class PlayerActivity extends BasePlayerActivity {
     simpleExoPlayerView.requestFocus();
     simpleExoPlayerView.setAspectRatioListener(
         (targetAspectRatio, naturalAspectRatio, aspectRatioMismatch) ->
-            numerator = (int) (targetAspectRatio * denominator));
+            aspectRatio = targetAspectRatio);
 
     // Set player to playerview.
     LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
@@ -719,9 +721,12 @@ public class PlayerActivity extends BasePlayerActivity {
   @RequiresApi(VERSION_CODES.O)
   @Override
   protected void onUserLeaveHint() {
-    PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-    builder.setAspectRatio(new Rational(numerator, denominator));
-    enterPictureInPictureMode(builder.build());
+    if (aspectRatio > ASPECT_RATIO_MIN && aspectRatio < ASPECT_RATIO_MAX) {
+      int numerator = (int) (aspectRatio * denominator);
+      PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+      builder.setAspectRatio(new Rational(numerator, denominator));
+      enterPictureInPictureMode(builder.build());
+    }
   }
 
   @Override
