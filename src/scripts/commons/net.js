@@ -132,11 +132,16 @@ export default {
 			} );
 	},
 
-	getAudioBookList( ccode = null ) {
+	getAudioBookList( ccode = null, page = 1 ) {
 		let url = API_PREFIX + 'contents/audiobooks';
+		const params = {};
 		if( ccode ) {
-			url += '?ccode=' + ccode;
+			params.ccode = ccode;
 		}
+		if( page ) {
+			params.page = page;
+		}
+		url += '?' + encodeParams( params );
 		return cacheOrLoad( url, DEFAULT_EXPIRED )
 			.then( data => {
 				data.items.forEach(element => {
