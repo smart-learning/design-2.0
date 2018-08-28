@@ -378,6 +378,17 @@ export default {
 			});
 	},
 
+	getPurchasedVideoCourses() {
+		const expired = 1;
+		return cacheOrLoad(API_PREFIX + 'play/purchased/video-courses', expired)
+			.then(data => {
+				return data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	},
+
 	getVoucherStatus(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
 		if( isRefresh ) {

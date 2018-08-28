@@ -17,6 +17,9 @@ import net from "../../commons/net";
 	load = async () => {
 		this.store.isLoading = true;
 		this.store.list = await net.getPlayRecentVideoCourses();
+		if( !this.store.list ) {
+			this.store.list = [];
+		}
 		this.store.isLoading = false;
 	};
 
@@ -38,7 +41,7 @@ import net from "../../commons/net";
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 					</View>
 					}
-					{ this.store.list.map( ( item, key ) => {
+					{ this.store.list && this.store.list.map( ( item, key ) => {
 						return (
 							<SummaryListItem key={ key }
 											 thumbnail={ item.data.images ? item.data.images.list : null }

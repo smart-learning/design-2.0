@@ -1,33 +1,59 @@
 import React from "react";
-import {AsyncStorage, Button, ScrollView, StyleSheet, Text, View} from "react-native";
-import Store from '../../../scripts/commons/store';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 import CommonStyles from "../../../styles/common";
-import {SafeAreaView} from "react-navigation";
+import { SafeAreaView } from "react-navigation";
 import SummaryListItem from "../../components/my/SummaryListItem";
+import { observer } from "mobx-react";
+import createStore from "../../commons/createStore";
+import net from "../../commons/net";
 
-const styles = StyleSheet.create({
-	//
-});
+@observer class LectureBuyPage extends React.Component {
 
-export default class LectureBuyPage extends React.Component {
+	store = createStore( {
+		isLoading: true,
+		list: [],
+	} );
+
+	load = async () => {
+		this.store.isLoading = true;
+		this.store.list = await net.getPurchasedVideoCourses();
+		this.store.isLoading = false;
+	};
+
+	componentDidMount() {
+		this.load();
+	}
+
+	goLecture = ( item ) => {
+		this.props.navigation.navigate( 'ClassDetailPage', { id: item.data.id } );
+	};
 
 	render() {
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
-					<SummaryListItem title={"TITLE"}
-									 author={"AUTHOR"}
-									 likeCount={"0"}
-									 reviewCount={"0"}
-									 isLike={true}/>
-
-					<SummaryListItem title={"TITLE"}
-									 author={"AUTHOR"}
-									 likeCount={"0"}
-									 reviewCount={"0"}
-									 isLike={false}/>
+					{this.store.isLoading &&
+					<View style={{ marginTop: 12 }}>
+						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+					</View>
+					}
+					{ this.store.list && this.store.list.map( ( item, key ) => {
+						return (
+							<SummaryListItem key={ key }
+											 thumbnail={ item.data.images ? item.data.images.list : null }
+											 title={ item.data.headline }
+											 author={ item.data.teacher ? item.data.teacher.name : '' }
+											 likeCount={ item.data.like_count }
+											 reviewCount={ item.data.review_count }
+											 isLike={ false }
+											 navigation={ this.props.navigation }
+											 onPress={ () => this.goLecture( item ) }
+							/>
+					) } ) }
 				</ScrollView>
 			</SafeAreaView>
 		</View>
 	}
 }
+
+export default LectureBuyPage;

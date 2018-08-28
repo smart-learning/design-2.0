@@ -76,6 +76,9 @@ export default class SummaryListItem extends React.Component {
 				{this.props.thumbnail &&
 				<ImageBackground source={{ uri: this.props.thumbnail }} resizeMode="cover" style={styles.summaryThumbnail}/>
 				}
+				{!this.props.thumbnail &&
+				<ImageBackground source={dummy} resizeMode="cover" style={styles.summaryThumbnail}/>
+				}
 				<View style={styles.summaryContent}>
 					<TouchableOpacity activeOpacity={0.9} onPress={ this.onPress }>
 						<Text style={styles.summaryTitle}>{this.props.title}</Text>

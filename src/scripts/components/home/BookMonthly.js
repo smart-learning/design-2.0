@@ -111,8 +111,10 @@ export default class BookMonthly extends React.Component {
 			bookList.push( element.book_b );
 		} );
 
+		console.log( 'this.props.voucherStatus', this.props.voucherStatus );
+
 		return <View style={styles.bookMonthly}>
-			{this.props.voucherStatus !== null &&
+			{this.props.voucherStatus &&
 			<View style={styles.couponContainer}>
 				<View style={styles.coupon} borderRadius={20}>
 					<Image source={IcHeadphone} style={styles.couponIcon}/>
