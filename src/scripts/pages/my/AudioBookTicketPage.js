@@ -67,11 +67,6 @@ const styles = StyleSheet.create({
 							</View>
 						}
 					</View>
-					<Text>AudioBookTicketPage 서브페이지</Text>
-					<Button
-						onPress={() => this.props.navigation.navigate('MyInfoHome')}
-						title="뒤로"
-					/>
 				</ScrollView>
 			</SafeAreaView>
 		</View>
