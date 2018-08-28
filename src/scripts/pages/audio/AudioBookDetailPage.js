@@ -22,10 +22,10 @@ class ClassDetailPage extends React.Component {
 
 	getData = async () => {
 		const resultBookData = await net.getBookItem(this.props.navigation.state.params.id);
-		// const resultChapterData = await net.getBookChapterList(this.props.navigation.state.params.id);
+		const resultChapterData = await net.getBookChapterList(this.props.navigation.state.params.id);
 
 		this.store.itemData = resultBookData;
-		// this.store.itemClipData = resultChapterData;
+		this.store.itemClipData = resultChapterData;
 	};
 
 	componentDidMount() {

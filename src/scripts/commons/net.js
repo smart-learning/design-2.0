@@ -176,8 +176,28 @@ export default {
 		return new Promise((resolve, reject) => {
 			axios.get(API_PREFIX + 'contents/video-courses/' + id + '/video-clips')
 				.then((response) => {
+					let itemNumber = 1;
 					response.data.forEach(element => {
 						element.key = element.id.toString();
+						element.itemNumber = itemNumber++;
+					});
+					resolve(response.data);
+				})
+				.catch((error) => {
+					console.log(error);
+					reject(error);
+				});
+		});
+	},
+
+	getBookChapterList(id) {
+		return new Promise((resolve, reject) => {
+			axios.get(API_PREFIX + 'contents/audiobooks/' + id + '/chapters')
+				.then((response) => {
+					let itemNumber = 1;
+					response.data.forEach(element => {
+						element.key = element.id.toString();
+						element.itemNumber = itemNumber++;
 					});
 					resolve(response.data);
 				})
