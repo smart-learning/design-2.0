@@ -353,4 +353,18 @@ export default {
 				console.log( error );
 			} );
 	},
+
+	getVoucherStatus(isRefresh = false) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad( API_PREFIX + 'membership/vouchers/status', expired )
+			.then( data => {
+				return data;
+			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
 }
