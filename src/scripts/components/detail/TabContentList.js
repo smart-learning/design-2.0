@@ -4,6 +4,7 @@ import CommonStyles from "../../../styles/common";
 import Summary from "../video/Summary";
 import ClipListItem from "./ClipListItem";
 import ChapterListItem from "./ChapterListItem";
+import moment from "moment";
 
 const styles = StyleSheet.create({
 	clipListContainer: {
@@ -41,15 +42,16 @@ export default class TabContentList extends React.Component {
 	}
 
 	render() {
+		const playTime = moment.duration( this.props.store.itemData.play_time );
 		return <View>
 			<ScrollView style={{flex: 1}}>
 				{this.props.learnType === 'class' &&
 				<View style={styles.clipListContainer}>
 					<View style={CommonStyles.contentContainer}>
 						<Text style={styles.clipInfoText}>
-							<Text style={styles.clipInfoTextImportant}>7개</Text>
+							<Text style={styles.clipInfoTextImportant}>{this.props.store.itemClipData.length}개</Text>
 							강의클립, 전체 재생시간
-							<Text style={styles.clipInfoTextImportant}>6시간 20분</Text>
+							<Text style={styles.clipInfoTextImportant}>{`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
 						</Text>
 
 						<FlatList

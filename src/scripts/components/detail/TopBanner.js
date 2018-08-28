@@ -43,17 +43,20 @@ const styles = StyleSheet.create({
 	},
 	headline: {
 		width: '65%',
+		marginBottom: 7,
 		fontSize: 15,
 		color: CommonStyles.COLOR_PRIMARY,
 	},
 	title: {
 		width: '65%',
+		marginBottom: 7,
 		fontSize: 22,
 		fontWeight: 'bold',
 		color: '#ffffff',
 	},
 	author: {
 		width: '65%',
+		marginBottom: 15,
 		fontSize: 13,
 		color: '#ffffff',
 	},
@@ -166,19 +169,19 @@ export default class TopBanner extends React.Component {
 				{this.props.store.itemData.teacher.name}
 			</Text>
 			<View style={styles.tagContainer}>
-				{this.props.store.itemData.is_new === 'true' &&
+				{!!this.props.store.itemData.is_new &&
 				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>NEW</Text></View>
 				}
-				{this.props.store.itemData.is_exculsive === 'true' &&
+				{!!this.props.store.itemData.is_exculsive &&
 				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>독점</Text></View>
 				}
-				{this.props.store.itemData.is_featured === 'true' &&
+				{!!this.props.store.itemData.is_featured &&
 				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>추천</Text></View>
 				}
 			</View>
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.itemDownload]}>
 				<Text style={styles.itemDownloadSize}>
-					전체 다운로드 500mb
+					전체 다운로드 {this.props.store.itemData.file_size}
 				</Text>
 				<View style={styles.itemDownloadCount} borderRadius={5}>
 					<Text style={styles.itemDownloadCountText}>

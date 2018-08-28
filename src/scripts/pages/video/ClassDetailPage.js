@@ -10,6 +10,7 @@ import DetailLayout from "../../components/detail/DetailLayout";
 @observer
 class ClassDetailPage extends React.Component {
 	store = createStore({
+		isLoading: true,
 		itemData: null,
 		itemClipData: [],
 		tabStatus: 'info',
@@ -26,6 +27,8 @@ class ClassDetailPage extends React.Component {
 
 		this.store.itemData = resultLectureData;
 		this.store.itemClipData = resultLectureClipData;
+
+		this.store.isLoading = false;
 	};
 
 	componentDidMount() {

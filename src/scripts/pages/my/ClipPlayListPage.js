@@ -170,12 +170,9 @@ class ClipPlayListPage extends React.Component {
 	};
 
 	render() {
-		console.log('this.selected', this.selected);
-		console.log('this.selected.length', this.selected.length);
-
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
-				<ScrollView style={{flex: 1}, styles.playListScrollView}>
+				<ScrollView style={[{flex: 1}, styles.playListScrollView]}>
 					<View style={[CommonStyles.alignJustifyContentBetween, styles.buttonContainer]}>
 						<View>
 							<TouchableOpacity onPress={this.toggleSelectAll} activeOpacity={0.9}>
