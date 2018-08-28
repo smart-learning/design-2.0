@@ -25,13 +25,17 @@ class ClassDetailPage extends React.Component {
 		this.store.isLoading = true;
 		const resultBookData = await net.getBookItem(this.props.navigation.state.params.id);
 		const resultChapterData = await net.getBookChapterList(this.props.navigation.state.params.id);
-		// const resultReviewData = await net.getBookReviewList(resultBookData.cid);
 
 		this.store.itemData = resultBookData;
 		this.store.itemClipData = resultChapterData;
-		// this.store.itemReviewData = resultReviewData;
+		if( resultBookData && resultBookData.cid ) {
+			try {
+				const comments = await net.getBookReviewList( resultBookData.cid );
+				this.store.itemReviewData = comments;
+			}
+			catch( error ) { console.log( error ) }
+		}
 
-		// console.log( 'this.store.itemReviewData', this.store.itemReviewData );
 		this.store.isLoading = false;
 	};
 
