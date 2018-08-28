@@ -355,11 +355,8 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/realtime-chart', expired)
+		return cacheOrLoad(API_PREFIX + 'play/recent/audiobooks', expired)
 			.then(data => {
-				data.forEach(element => {
-					element.key = element.id.toString();
-				});
 				return data;
 			})
 			.catch(error => {
