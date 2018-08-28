@@ -217,12 +217,6 @@ class TabContentInfo extends React.Component {
 
 			</View>
 
-			<View style={styles.contentHr}/>
-
-			<View style={styles.review}>
-				<ReviewItem/>
-			</View>
-
 		</View>
 	}
 }
