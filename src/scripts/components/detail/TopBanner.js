@@ -191,7 +191,7 @@ export default class TopBanner extends React.Component {
 			</View>
 			{this.props.learnType === 'audioBook' &&
 			<View style={styles.audioBookPlayButtonContainer}>
-				<ImageBackground source={AuthorDummy} resizeMode={"cover"} borderRadius={70} style={styles.audioBookAuthorThumbnail}>
+				<ImageBackground source={{uri:this.props.store.itemData.images.cd}} resizeMode={"cover"} borderRadius={70} style={styles.audioBookAuthorThumbnail}>
 					<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.store.itemData.id)}>
 						<Image source={IcPlay} style={styles.playButton}/>
 					</TouchableOpacity>
