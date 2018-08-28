@@ -108,11 +108,16 @@ export default {
 			} );
 	},
 
-	getClassList( ccode = null ) {
+	getClassList( ccode = null, page = 1 ) {
 		let url = API_PREFIX + 'contents/video-courses';
+		const params = {};
 		if( ccode ) {
-			url += '?ccode=' + ccode;
+			params.ccode = ccode;
 		}
+		if( page ) {
+			params.page = page;
+		}
+		url += '?' + encodeParams( params );
 		return cacheOrLoad( url, DEFAULT_EXPIRED )
 			.then( data => {
 				return data;

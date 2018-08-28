@@ -123,10 +123,7 @@ const styles = StyleSheet.create({
 
 	loadMore = () => {
 		if( this.store.pagination.has_next ) {
-			this.loadAudioList( this.store.ccode, this.store.pagination.next_page )
-				.catch( e => {
-					console.log( e );
-				} );
+			this.loadAudioList( this.store.ccode, this.store.pagination.next_page );
 		}
 	};
 
