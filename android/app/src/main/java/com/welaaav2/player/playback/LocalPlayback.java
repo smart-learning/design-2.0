@@ -1,6 +1,6 @@
 package com.welaaav2.player.playback;
 
-import static com.google.android.exoplayer2.C.CONTENT_TYPE_MUSIC;
+import static com.google.android.exoplayer2.C.CONTENT_TYPE_SPEECH;
 import static com.google.android.exoplayer2.C.USAGE_MEDIA;
 
 import android.content.BroadcastReceiver;
@@ -311,15 +311,8 @@ public final class LocalPlayback implements Playback {
       }
       mExoPlayer.prepare(mediaSource, !haveStartPosition, false);
 
-      attachPlayerView();
-
-      // Android "O" makes much greater use of AudioAttributes, especially
-      // with regards to AudioFocus. All of UAMP's tracks are music, but
-      // if your content includes spoken word such as audiobooks or podcasts
-      // then the content type should be set to CONTENT_TYPE_SPEECH for those
-      // tracks.
       final AudioAttributes audioAttributes = new AudioAttributes.Builder()
-          .setContentType(CONTENT_TYPE_MUSIC)
+          .setContentType(CONTENT_TYPE_SPEECH)
           .setUsage(USAGE_MEDIA)
           .build();
       mExoPlayer.setAudioAttributes(audioAttributes);
@@ -329,6 +322,8 @@ public final class LocalPlayback implements Playback {
       // sleep while the song is playing.
       mWifiLock.acquire();
     }
+
+    attachPlayerView();
 
     configurePlayerState();
   }
