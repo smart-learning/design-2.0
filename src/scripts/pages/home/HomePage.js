@@ -234,9 +234,6 @@ class HomePage extends React.Component {
 					</View>
 				</View>
 
-				{/* 팝업 */}
-				<AdvertisingSection/>
-
 			</SafeAreaView>
 		</View>
 	}

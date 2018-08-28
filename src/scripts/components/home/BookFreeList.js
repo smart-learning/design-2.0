@@ -1,12 +1,11 @@
 import React from "react";
-import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import IcAngleDownGrey from "../../../images/ic-angle-down-grey.png";
-import DummyBg from "../../../images/dummy-audioBookSimple.png";
-import DummyIcon from "../../../images/dummy-review.png";
 import _ from 'underscore';
 import { observer } from 'mobx-react';
 import createStore from "../../commons/createStore";
+import BookFreeListItem from "./BookFreeListItem";
 
 const styles = StyleSheet.create({
 	bookContainer: {
@@ -107,16 +106,7 @@ const styles = StyleSheet.create({
 						<View key={key} style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1,}}>
 							{
 								items.map((item, innerKey) => {
-									return <View style={styles.listItem} key={innerKey}>
-										{item !== undefined &&
-										<ImageBackground source={{uri: item.images.list}} resizeMode={"cover"} style={styles.thumbnail}>
-											<View style={styles.thumbnailDim}>
-												<Text style={styles.thumbnailTitle}>{item.title}</Text>
-											</View>
-											<Image source={DummyIcon} style={styles.bullet}/>
-										</ImageBackground>
-										}
-									</View>
+									return <BookFreeListItem key={innerKey} itemData={item}/>
 								})
 							}
 						</View>
