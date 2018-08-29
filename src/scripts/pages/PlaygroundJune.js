@@ -47,13 +47,13 @@ class PlaygroundJune extends Component {
 		*/
 		var args = {
 			type : "streaming",
-			uri: "https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8",
+			uri: "https://contents.welaaa.com/media/b300200/HLS_b300200_001/master.m3u8",
 			name: "140년 지속 성장을 이끈 MLB 사무국의 전략",
 			drmSchemeUuid: "widevine",
 			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
 			//userId: "valid-user",
 			userId: "825",
-			cid: "v100015_001",
+			cid: "b300200_001",
 			oid: "order id",
 			token: "", // pallyCon token 
 			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 

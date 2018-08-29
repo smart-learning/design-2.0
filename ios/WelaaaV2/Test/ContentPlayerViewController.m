@@ -444,73 +444,76 @@
   
     // 탑뷰내의 별점주기 버튼
     // 플레이어 시작과 동시에 별점과 콘텐츠 타입 등을 조회합니다.
-    NSString *starQueryUrl;
-  #if APPSTORE | ADHOC
-    starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", BASE_DOMAIN];
-  #else
-    starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", TEST_DOMAIN];
-  #endif
-    NSString *post = [NSString stringWithFormat : @"ckey=582"];
-    NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
-  
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", starQueryUrl]]];
-    [request setHTTPBody : postData];
-    [request setHTTPMethod : @"POST"];
-    NSError *error;
-    NSURLResponse *resp = nil;
-    // 비동기방식이 아닌 동기방식으로 접속합니다.
-    NSData *data = [ApiManager sendSynchronousRequest : request
-                                    returningResponse : &resp
-                                                error : &error];
-  
-    NSString *jsonData = [[NSString alloc] initWithData : data
-                                               encoding : NSUTF8StringEncoding];
-  
-    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                                 options : NSJSONReadingAllowFragments
-                                                                   error : &error];
-  
-    NSDictionary *dataDictionary = jsonResponse[@"data"];
-    NSDictionary *infoDictionary = jsonResponse[@"info"];
-    NSString *userStar = [dataDictionary objectForKey : @"user_star"];
-    BOOL isUserLoggedIn = [dataDictionary objectForKey : @"user_logged_in"];
-    NSString *cconClassStar = [infoDictionary objectForKey : @"ccon_class"]; // 1 = video clip, 2 = audiobook
-  
-    userStar = @""; // 1~5
-    isUserLoggedIn = YES;
-    cconClassStar = @"1";
-    NSLog(@"  [initSubviewsWithAudioMode] userStar = %@", userStar);
-    NSLog(@"  [initSubviewsWithAudioMode] isUserLoggedIn? %@", isUserLoggedIn ? @"TRUE" : @"FALSE");
-    NSLog(@"  [initSubviewsWithAudioMode] ccon_class = %@", cconClassStar);
-    // 로그인된 상태이면서 동시에 강의 클립이라면 일단 별점주기 버튼을 그립니다.
-    if ( isUserLoggedIn && [cconClassStar isEqualToString : @"1"] )
+    if ( !_isAudioContent )
     {
-        _rateStarButton = [UIButton buttonWithType : UIButtonTypeCustom];
-        _rateStarButton.frame = CGRectMake(CGRectGetMaxX(_topView.frame)-80, 10, 60, 40);
-        [_rateStarButton setImage : [UIImage imageNamed: @"icon_star_green_small"]
-                         forState : UIControlStateNormal];
-        _rateStarButton.titleLabel.font = [UIFont fontWithName : @"SpoqaHanSans" size : 11];
-        _rateStarButton.layer.borderWidth = 1.0f;
-        _rateStarButton.layer.cornerRadius = 6.0f;
+        NSString *starQueryUrl;
+  #if APPSTORE | ADHOC
+        starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", BASE_DOMAIN];
+  #else
+        starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", TEST_DOMAIN];
+  #endif
+        NSString *post = [NSString stringWithFormat : @"ckey=582"];
+        NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
       
-        // 로그인한 계정으로 해당 강의클립에 대한 등록된 별점이 없다면 '별점 주기'버튼을 그려줍니다.
-        if ( [userStar isEqualToString : @""] )
-        {
-            [_rateStarButton setTitle : @"별점 주기" forState : UIControlStateNormal];
-            _rateStarButton.layer.borderColor = [UIColor grayColor].CGColor;
-        }
-        else
-        {
-            NSString *myStarStr = [NSString stringWithFormat : @" %@%@", userStar, @".0"];
-            [_rateStarButton setTitle : myStarStr forState : UIControlStateNormal];
-            _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
-        }
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", starQueryUrl]]];
+        [request setHTTPBody : postData];
+        [request setHTTPMethod : @"POST"];
+        NSError *error;
+        NSURLResponse *resp = nil;
+        // 비동기방식이 아닌 동기방식으로 접속합니다.
+        NSData *data = [ApiManager sendSynchronousRequest : request
+                                        returningResponse : &resp
+                                                    error : &error];
       
-        [_rateStarButton addTarget : self
-                            action : @selector(pressedRateStarButton)
-                  forControlEvents : UIControlEventTouchUpInside];
-        [_topView addSubview : _rateStarButton];
+        NSString *jsonData = [[NSString alloc] initWithData : data
+                                                   encoding : NSUTF8StringEncoding];
+      
+        NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                                     options : NSJSONReadingAllowFragments
+                                                                       error : &error];
+      
+        NSDictionary *dataDictionary = jsonResponse[@"data"];
+        NSDictionary *infoDictionary = jsonResponse[@"info"];
+        NSString *userStar = [dataDictionary objectForKey : @"user_star"];
+        BOOL isUserLoggedIn = [dataDictionary objectForKey : @"user_logged_in"];
+        NSString *cconClassStar = [infoDictionary objectForKey : @"ccon_class"]; // 1 = video clip, 2 = audiobook
+      
+        userStar = @""; // 1~5
+        isUserLoggedIn = YES;
+        cconClassStar = @"1";
+        NSLog(@"  [initSubviewsWithAudioMode] userStar = %@", userStar);
+        NSLog(@"  [initSubviewsWithAudioMode] isUserLoggedIn? %@", isUserLoggedIn ? @"TRUE" : @"FALSE");
+        NSLog(@"  [initSubviewsWithAudioMode] ccon_class = %@", cconClassStar);
+        // 로그인된 상태이면서 동시에 강의 클립이라면 일단 별점주기 버튼을 그립니다.
+        if ( isUserLoggedIn && [cconClassStar isEqualToString : @"1"] )
+        {
+            _rateStarButton = [UIButton buttonWithType : UIButtonTypeCustom];
+            _rateStarButton.frame = CGRectMake(CGRectGetMaxX(_topView.frame)-80, 10, 60, 40);
+            [_rateStarButton setImage : [UIImage imageNamed: @"icon_star_green_small"]
+                             forState : UIControlStateNormal];
+            _rateStarButton.titleLabel.font = [UIFont fontWithName : @"SpoqaHanSans" size : 11];
+            _rateStarButton.layer.borderWidth = 1.0f;
+            _rateStarButton.layer.cornerRadius = 6.0f;
+          
+            // 로그인한 계정으로 해당 강의클립에 대한 등록된 별점이 없다면 '별점 주기'버튼을 그려줍니다.
+            if ( [userStar isEqualToString : @""] )
+            {
+              [_rateStarButton setTitle : @"별점 주기" forState : UIControlStateNormal];
+              _rateStarButton.layer.borderColor = [UIColor grayColor].CGColor;
+            }
+            else
+            {
+              NSString *myStarStr = [NSString stringWithFormat : @" %@%@", userStar, @".0"];
+              [_rateStarButton setTitle : myStarStr forState : UIControlStateNormal];
+              _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
+            }
+          
+            [_rateStarButton addTarget : self
+                                action : @selector(pressedRateStarButton)
+                      forControlEvents : UIControlEventTouchUpInside];
+            [_topView addSubview : _rateStarButton];
+        }
     }
   
     [_contentView addSubview : _topView];
@@ -1756,6 +1759,9 @@
  */
 
 # pragma mark - Contents Pop-up List
+//
+// 재생 리스트뷰를 닫습니다.
+//
 - (void) playListPopupView : (ContentsListPopupView *) view
                  closeView : (id) sender
 {
@@ -1765,6 +1771,10 @@
         _listView = nil;
     }
 }
+
+//
+// 재생 리스트뷰의 선택된 셀의 콘텐트를 읽어와서 재생합니다.
+//
 - (void) playListPopupView : (ContentsListPopupView *) view
         selectedOtherIndex : (NSInteger) index
 {
@@ -1806,7 +1816,6 @@
                              andHeaderInfo : (NSString *) authValue
 {
     NSString *apiContentsInfo = @"/dev/api/v1.0/play/contents-info/"; // dev -> ?
-    //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, contentGroupID];//b300200 와 같은 group_ID
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
@@ -1840,7 +1849,6 @@
                         andHeaderInfo : (NSString *) authValue
 {
     NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/"; // dev -> ?
-    //NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, [_args objectForKey : @"cid"]];
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, contentID];//b300200_001 와 같은 content_ID
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
