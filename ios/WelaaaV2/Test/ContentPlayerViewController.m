@@ -1889,6 +1889,37 @@
     return playDataDics;
 }
 
+//
+// 진도 데이터를 전송합니다.
+//
+- (void) sendPlaybackProgress : (NSString *) authValue
+{
+  NSString *apiPlayData = @"/dev/api/v1.0/play/progress/"; // dev -> ?
+  NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, @"parameters_not_set"];//b300200_001 와 같은 content_ID
+  NSURL *url = [NSURL URLWithString : urlWithParams];
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+  
+  [request setHTTPMethod : @"POST"];
+  // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
+  [request            setValue : authValue
+            forHTTPHeaderField : @"authorization"];
+  
+  NSError *error;
+  NSURLResponse *resp = nil;
+  // 비동기방식이 아닌 동기방식으로 접속합니다.
+  NSData *data = [ApiManager sendSynchronousRequest : request
+                                  returningResponse : &resp
+                                              error : &error];
+  
+  NSString *jsonData = [[NSString alloc] initWithData : data
+                                             encoding : NSUTF8StringEncoding];
+  
+  NSDictionary *playDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                               options : NSJSONReadingAllowFragments
+                                                                 error : &error];
+  
+  return ;
+}
 
 # pragma mark - Labatory
 - (void) toastTestAlert
