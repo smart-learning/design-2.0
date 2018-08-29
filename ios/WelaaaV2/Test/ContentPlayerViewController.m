@@ -269,6 +269,19 @@
                                                      name : AVPlayerItemDidPlayToEndTimeNotification
                                                    object : nil                                     ];
   
+    // 콘텐츠에 대한 권한이 있어도 사용자가 자동재생을 disable시켰다면 종료시켜야합니다.
+    NSString *autoPlaySetup = [common getUserSettingValueWithKey : @"autoplay_enable"];
+  
+    if ( [autoPlaySetup isEqualToString : @"N"] )
+    {
+        _playerLayer.player = nil;
+        [_playerLayer removeFromSuperlayer];
+        [self invalidateTimerOnSlider];
+        [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+      
+        return ;
+    }
+    
     // 다음 재생할 item이 있는지 검색하여 플레이할 것인지 추천영상뷰를 띄울것인지 결정해야합니다.
     NSArray *contentsListArray;
     if ( _isAudioContent )
@@ -632,8 +645,8 @@
       }
       
       BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
-      BOOL isAuthor = YES;  // 테스트를 목적으로 강제로 value를 지정하였습니다. 로그인된 유저의 재생권한을 확인할 수 있는 기능이 구현되면 제거될 예정입니다.
-      if ( !isAuthor )
+
+      if ( !_isAuthor )
           isAutoPlay = NO;
       
       [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
@@ -1639,6 +1652,7 @@
 - (NSTimeInterval) getDuration
 {
     AVPlayerItem *item = _player.currentItem;
+    // 권한 체크에 따라 01:30 로 리턴할 필요가 있습니다.
   
     if ( item.status == AVPlayerItemStatusReadyToPlay )
     {
