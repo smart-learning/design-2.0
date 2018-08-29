@@ -1,7 +1,5 @@
 package kr.co.influential.youngkangapp.util;
 
-import static android.R.style.Theme_Material_Light_Dialog_Alert;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,6 +20,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +28,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import kr.co.influential.youngkangapp.BuildConfig;
+
+import static android.R.style.Theme_Material_Light_Dialog_Alert;
 
 /**
  * Created by okitoki on 2016. 10. 6.
@@ -41,15 +44,14 @@ public class Utils {
      ************************************************************/
     public static String welaaaWebUrl() {
 
-        String welaaaDomain= "http://welaaa.co.kr";
+        String welaaaDomain= "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/";
 
-//        if(BuildConfig.FLAVOR.equals("dev")){
-//            welaaaDomain= "http://welearn.co.kr";
-//        }else if(BuildConfig.FLAVOR.equals("ec2")){
-//            welaaaDomain= "http://ec2-52-78-197-242.ap-northeast-2.compute.amazonaws.com";
-//        }
+        String TYPE = "api";
+        String VERSION = "v1.0";
 
-        return welaaaDomain;   // facebook login :
+        welaaaDomain = welaaaDomain + BuildConfig.FLAVOR + "/" + TYPE + "/"+VERSION +"/";
+
+        return welaaaDomain;
 
     }
 

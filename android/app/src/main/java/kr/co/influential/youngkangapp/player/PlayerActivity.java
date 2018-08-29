@@ -84,25 +84,9 @@ import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
-import kr.co.influential.youngkangapp.BasePlayerActivity;
-import kr.co.influential.youngkangapp.MainApplication;
-import kr.co.influential.youngkangapp.R;
-import kr.co.influential.youngkangapp.cast.CastControllerActivity;
-import kr.co.influential.youngkangapp.download.DownloadService;
-import kr.co.influential.youngkangapp.pallycon.PlayStatus;
-import kr.co.influential.youngkangapp.player.playback.LocalPlayback;
-import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
-import kr.co.influential.youngkangapp.player.service.MediaService;
-import kr.co.influential.youngkangapp.player.utils.LogHelper;
-import kr.co.influential.youngkangapp.util.CustomDialog;
-import kr.co.influential.youngkangapp.util.HLVAdapter;
-import kr.co.influential.youngkangapp.util.HttpCon;
-import kr.co.influential.youngkangapp.util.Logger;
-import kr.co.influential.youngkangapp.util.Preferences;
-import kr.co.influential.youngkangapp.util.Utils;
-import kr.co.influential.youngkangapp.util.WeContentManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -117,6 +101,31 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+
+import kr.co.influential.youngkangapp.BasePlayerActivity;
+import kr.co.influential.youngkangapp.MainApplication;
+import kr.co.influential.youngkangapp.R;
+import kr.co.influential.youngkangapp.cast.CastControllerActivity;
+import kr.co.influential.youngkangapp.download.DownloadService;
+import kr.co.influential.youngkangapp.pallycon.PlayStatus;
+import kr.co.influential.youngkangapp.player.playback.LocalPlayback;
+import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
+import kr.co.influential.youngkangapp.player.service.MediaService;
+import kr.co.influential.youngkangapp.player.utils.LogHelper;
+import kr.co.influential.youngkangapp.util.CustomDialog;
+import kr.co.influential.youngkangapp.util.HLVAdapter;
+import kr.co.influential.youngkangapp.util.HttpCon;
+import kr.co.influential.youngkangapp.util.HttpConnection;
+import kr.co.influential.youngkangapp.util.Logger;
+import kr.co.influential.youngkangapp.util.Preferences;
+import kr.co.influential.youngkangapp.util.Utils;
+import kr.co.influential.youngkangapp.util.WeContentManager;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -378,6 +387,7 @@ public class PlayerActivity extends BasePlayerActivity {
   private MediaBrowserCompat mediaBrowser;
 
   private PlaybackStateCompat lastPlaybackState;
+  private HttpConnection httpConn = HttpConnection.getInstance();
 
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
@@ -577,6 +587,10 @@ public class PlayerActivity extends BasePlayerActivity {
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
         connectionCallback, null);
+
+    mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
+
+    sendData();
   }
 
   @Override
@@ -676,7 +690,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
   @Override
   protected void onDestroy() {
+
     super.onDestroy();
+
   }
 
   @Override
@@ -2998,13 +3014,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void creatDialog(final int windowId) {
 
-    Logger.e(TAG + " 3452 , windowId is " + windowId);
-
     View.OnClickListener leftListner = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-
-        Logger.e(TAG + " leftListner  windowId is " + windowId);
 
         mCustomDialog.dismiss();
         switch (windowId) {
@@ -3015,6 +3027,11 @@ public class PlayerActivity extends BasePlayerActivity {
           case FLAG_DIALOG_ONCOMPLETION:
             break;
           case WELAAAPLAYER_SUGGEST_CODE:
+
+            if (getTransportControls() != null) {
+              getTransportControls().stop();
+            }
+
             finish();
             break;
           case WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER:
@@ -5263,4 +5280,121 @@ public class PlayerActivity extends BasePlayerActivity {
             }
         }
     }
+
+
+  Handler mPlayTimeHandler = new Handler() {
+    @SuppressWarnings("unchecked")
+    @Override
+    public void handleMessage(Message msg) {
+      try {
+
+        if(getTransportControls()!=null){
+          String ckey;
+          String gkey;
+          String status;
+          long currentposition = 0;
+          String nTitle = "";
+
+          TextView play_network_type_text = findViewById(R.id.wrap_welean_play_network_type_text);
+
+          Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
+
+          if (start_current_time == 0) {
+            status = "START";
+          } else {
+            status = "ING";
+          }
+
+          if(player!=null){
+            currentposition = player.getContentPosition();
+          }
+//                    getCid
+
+          long duration_time = currentposition - start_current_time;
+
+          String weburl = WELEARN_WEB_URL + "play/progress";
+
+          final MediaType JSON
+                  = MediaType.parse("application/json; charset=utf-8");
+
+          JSONObject postdata = new JSONObject();
+          try {
+            postdata.put("action", "ING");
+            postdata.put("cid", "v100001_001");
+            postdata.put("duration", currentposition);
+            postdata.put("end", currentposition);
+            postdata.put("error", "NONE");
+            postdata.put("net_status", "WIFI");
+            postdata.put("platform", "android");
+            postdata.put("start", start_current_time);
+          } catch(JSONException e){
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+
+          RequestBody body = RequestBody.create(JSON, postdata.toString());
+
+
+          new Thread() {
+            public void run() {
+              httpConn.requestWebServer(weburl,"CLIENT_ID","CLIENT_SECRET",
+                      "" , body , callbackRequest);
+            }
+          }.start();
+
+          start_current_time = (int)currentposition;
+
+          if (mPlayTimeHandler != null) {
+            // 한개만 호출될 수 있도록 확인 해봅시다
+            mPlayTimeHandler.removeCallbacksAndMessages(null);
+
+            mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
+          }
+
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  };
+
+
+    /** 웹 서버로 데이터 전송 */
+    private void sendData() {
+
+        String LoginOkUrl = WELEARN_WEB_URL+"play/play-data/v100015_001";
+
+        new Thread() {
+            public void run() {
+                httpConn.requestWebServer(LoginOkUrl,"CLIENT_ID","CLIENT_SECRET","" , callbackRequest);
+            }
+        }.start();
+    }
+
+    private final Callback callbackRequest = new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.e(TAG, "mPlayTimeHandler 중지 콜백오류: "+e.getMessage());
+
+            if(mPlayTimeHandler!=null){
+              mPlayTimeHandler.removeCallbacksAndMessages(null);
+            }
+        }
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+            String body = response.body().string();
+
+            if(response.code() == 200){
+                Log.e(TAG, "서버에서 응답한 Body:"+body);
+            }else{
+                Log.e(TAG, "서버에서 응답한 Body: "+body + " response code " + response.code());
+
+                if(mPlayTimeHandler!=null){
+                    mPlayTimeHandler.removeCallbacksAndMessages(null);
+                }
+
+            }
+
+        }
+    };
 }
