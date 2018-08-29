@@ -136,7 +136,14 @@
 // 뷰 컨트롤러가 나타나기 직전에 항상 실행되기 때문에 해당 뷰 컨트롤러가 나타나기 직전마다 일어나는 작업들을 여기에 배치 시킬 수 있습니다.
 - (void) viewWillAppear : (BOOL) animated
 {
-    NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ]; // CONTENT_PATH
+    // _args가 잘못 전달받아도 HLS 경로로 수정합니다.
+    NSString *uriString = [_args objectForKey : @"uri"];
+    uriString = [uriString stringByReplacingOccurrencesOfString : @"/DASH_"
+                                                     withString : @"/HLS_"];
+    uriString = [uriString stringByReplacingOccurrencesOfString : @"/stream.mpd"
+                                                     withString : @"/master.m3u8"];
+  
+    NSURL *contentUrl = [ NSURL URLWithString : uriString ]; // CONTENT_PATH
     _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
                                          options : nil       ];
   
