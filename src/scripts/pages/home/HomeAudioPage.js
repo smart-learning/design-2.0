@@ -19,6 +19,8 @@ import BookList from "../../components/home/BookList";
 import BookFreeList from "../../components/home/BookFreeList";
 import BookContinueList from "../../components/home/BookCoutinueList";
 import PTRView from 'react-native-pull-to-refresh';
+import moment from "moment";
+import ClassContinueList from "../../components/home/ClassContinueList";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -112,6 +114,7 @@ const styles = StyleSheet.create( {
 class HomeAudioPage extends React.Component {
 
 	render() {
+		let updatedAt = moment().format('YYYY. MM. DD');
 		return (
 			<PTRView onRefresh={() => this.props.onRefresh()}>
 				<ScrollView style={{ flex: 1 }}>
@@ -153,7 +156,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookMonthly/>
+						<BookMonthly itemData={this.props.store.audioMonth} voucherStatus={ this.props.store.voucherStatus }/>
 					</View>
 
 					<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>
@@ -177,11 +180,11 @@ class HomeAudioPage extends React.Component {
 								많이 듣고있는 오디오북
 							</Text>
 							<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
-								2018. 07.09 업데이트
+								{updatedAt} 업데이트
 							</Text>
 						</View>
 
-						<BookList itemType="hot"/>
+						<BookList itemType="hot" itemData={this.props.store.audioRealTimeChartData}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -189,7 +192,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList/>
+						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -197,7 +200,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList/>
+						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -205,9 +208,9 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookFreeList/>
+						<BookFreeList itemType={"review"} itemData={this.props.store.audioNewData.items}/>
 
-						<TouchableOpacity activeOpacity={0.9}>
+						<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('AudioBookPage')}>
 							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 								<Text style={styles.linkViewAllText}>
 									오디오북 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
@@ -222,7 +225,13 @@ class HomeAudioPage extends React.Component {
 						</View>
 						<View style={styles.titleHr}/>
 
-						<BookContinueList/>
+						{(this.props.store.audioBuyData && this.props.store.audioBuyData.length === 0) &&
+						<Text style={{paddingTop: 20, paddingBottom: 20, textAlign: 'center'}}>구매한 내역이 없습니다</Text>
+						}
+
+						{(this.props.store.audioBuyData && this.props.store.audioBuyData.length > 0) &&
+						<BookContinueList itemData={this.props.store.audioBuyData}/>
+						}
 
 						<View style={CommonStyles.alignJustifyItemCenter}>
 							<Text style={styles.titleH3}>
@@ -231,7 +240,13 @@ class HomeAudioPage extends React.Component {
 						</View>
 						<View style={styles.titleHr}/>
 
-						<BookContinueList/>
+						{(this.props.store.audioUseData && this.props.store.audioUseData.length === 0) &&
+						<Text style={{paddingTop: 20, paddingBottom: 20, textAlign: 'center'}}>재생 내역이 없습니다</Text>
+						}
+
+						{(this.props.store.audioUseData && this.props.store.audioUseData.length > 0) &&
+						<BookContinueList itemData={this.props.store.audioUseData}/>
+						}
 					</View>
 				</ScrollView>
 			</PTRView>

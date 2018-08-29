@@ -64,12 +64,23 @@ const styles = StyleSheet.create({
 
 export default class SummaryListItem extends React.Component {
 
+	onPress = () => {
+		if( this.props.onPress ) {
+			this.props.onPress();
+		}
+	};
+
 	render() {
 		return <View>
 			<View style={styles.summary}>
+				{this.props.thumbnail &&
+				<ImageBackground source={{ uri: this.props.thumbnail }} resizeMode="cover" style={styles.summaryThumbnail}/>
+				}
+				{!this.props.thumbnail &&
 				<ImageBackground source={dummy} resizeMode="cover" style={styles.summaryThumbnail}/>
+				}
 				<View style={styles.summaryContent}>
-					<TouchableOpacity activeOpacity={0.9}>
+					<TouchableOpacity activeOpacity={0.9} onPress={ this.onPress }>
 						<Text style={styles.summaryTitle}>{this.props.title}</Text>
 					</TouchableOpacity>
 					<Text style={styles.summaryAuthor}>{this.props.author}</Text>
@@ -81,7 +92,7 @@ export default class SummaryListItem extends React.Component {
 					</View>
 				</View>
 				<View>
-					/* TODO: 터치시 상태변경 작업 필요 */
+					{/* TODO: 터치시 상태변경 작업 필요 */}
 					<TouchableOpacity activeOpacity={0.9}>
 						{!!this.props.isLike &&
 						<Image source={IcHeartActive} style={styles.summaryLikeButtonActive}/>

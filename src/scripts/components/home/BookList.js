@@ -34,22 +34,6 @@ const styles = StyleSheet.create({
 	},
 });
 
-const dummy = [];
-
-_.times( 9, n => {
-	dummy.push( {
-		key: n,
-		rankNumber: ( n + 1 ),
-		headline: '인간관계에 흔들리지 않고 나의 삶을 살아가는 법',
-		title: 'titleText',
-		is_exclusive: true,
-		hit_count: 0,
-		star_avg: 0,
-		review_count: 0,
-		thumbnail: '',
-	} );
-} );
-
 @observer class BookList extends React.Component {
 
 	store = createStore( {
@@ -57,11 +41,19 @@ _.times( 9, n => {
 	} );
 
 	render() {
-		let list = dummy;
+		let list;
 		let BookList = [];
 
 		if( !this.store.isOpen ) {
-			list = dummy.slice( 0, 4 );
+			list = this.props.itemData.slice( 0, 4 );
+		} else {
+			list = this.props.itemData;
+		}
+
+		if( this.props.itemType === 'new' ) {
+			list = _.filter(list, (element) => {
+				return element.is_new == true;
+			} );
 		}
 
 		for (let i = 0; i < Math.ceil(list.length / 2); i++) {

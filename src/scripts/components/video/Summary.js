@@ -92,15 +92,41 @@ const styles = StyleSheet.create( {
 		paddingRight: 7,
 		fontSize: 12,
 		color: '#ffffff',
-	}
+	},
+	playTimeText: {
+		position: 'absolute',
+		top: 25,
+		right: 25,
+		fontWeight: 'bold',
+		fontSize: 25,
+		color: '#ffffff'
+	},
+	playTimeTextInfo: {
+		fontWeight: 'normal',
+		fontSize: 13,
+	},
+	detailClipView: {
+		position: 'absolute',
+		left: 15,
+		bottom: 20,
+		opacity: 0.8,
+	},
+	detailClipPlay: {
+		position: 'absolute',
+		right: 15,
+		bottom: 25,
+		width: 50,
+		height: 50,
+	},
 } );
 
 export default class Summary extends React.Component {
 	render() {
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
+				{this.props.type !== 'detailClip' &&
 				<ImageBackground
-					source={{ uri: this.props.thumbnail }}
+					source={{uri: this.props.thumbnail}}
 					resizeMode="cover"
 					style={styles.thumbnail}>
 					<Text style={styles.thumbnailTitle}>
@@ -113,13 +139,35 @@ export default class Summary extends React.Component {
 					</Text>
 					<TouchableOpacity activeOpacity={0.9}
 									  style={styles.play}
-									  onPress={ ()=> Native.play( this.props.id ) }
+									  onPress={() => Native.play(this.props.id)}
 					>
-						<Image source={IcPlay} style={ Style.fullImg } />
+						<Image source={IcPlay} style={Style.fullImg}/>
 					</TouchableOpacity>
-
 				</ImageBackground>
+				}
+				{this.props.type === 'detailClip' &&
+				<ImageBackground
+					source={{uri: this.props.itemData.images.wide}}
+					resizeMode="cover"
+					style={styles.thumbnail}>
+					<Text style={styles.playTimeText}>
+						{/*00<Text style={styles.playTimeTextInfo}>분</Text> 00<Text style={styles.playTimeTextInfo}>초</Text>*/}
+						{this.props.itemData.play_time}
+					</Text>
+					<View style={[styles.alignJustify, styles.detailClipView]}>
+						<Image source={IcView} style={styles.btnSetSmall}/>
+						<Text style={styles.countText}>조회수 {this.props.itemData.hit_count}</Text>
+					</View>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.detailClipPlay}
+									  onPress={() => Native.play(this.props.itemData.id)}
+					>
+						<Image source={IcPlay} style={Style.fullImg}/>
+					</TouchableOpacity>
+				</ImageBackground>
+				}
 			</TouchableOpacity>
+			{this.props.type !== 'detailClip' &&
 			<View style={styles.btnGroup}>
 				<View style={styles.alignJustify}>
 					<Image source={IcView} style={styles.btnSetSmall}/>
@@ -128,17 +176,18 @@ export default class Summary extends React.Component {
 					<Text style={styles.countText}>별점 {this.props.star_avg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
 					<Text style={styles.countText}>리뷰 {this.props.review_count}</Text>
-					<View style={{ marginLeft: 'auto' }}>
-					<TouchableOpacity activeOpacity={0.9}
-									  onPress={ ()=>{
-										  Device.share( this.props.title, this.props.url );
-									  }}>
-						<Image source={IcShare}
-							   style={styles.btnSetLarge}/>
-					</TouchableOpacity>
+					<View style={{marginLeft: 'auto'}}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => {
+											  Device.share(this.props.title, this.props.url);
+										  }}>
+							<Image source={IcShare}
+								   style={styles.btnSetLarge}/>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</View>
+			}
 		</View>
 	}
 }
