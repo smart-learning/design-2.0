@@ -180,7 +180,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
 
   private PendingIntent createContentIntent(MediaDescriptionCompat description) {
     Intent openUI = new Intent(mService, PlayerActivity.class);
-    openUI.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//    openUI.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
     if (description != null) {
 //      openUI.putExtra(PlayerActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION, description);
     }
@@ -245,11 +245,10 @@ public class MediaNotificationManager extends BroadcastReceiver {
         new NotificationCompat.Builder(mService, CHANNEL_ID);
     notificationBuilder.setSmallIcon(R.drawable.notify_logo_player)
         .setContent(notificationLayout)
-        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        .setPriority(NotificationCompat.PRIORITY_MAX)
-        .setOnlyAlertOnce(true)
+        .setContentIntent(createContentIntent(mMetadata.getDescription()))
         .setDeleteIntent(mStopIntent)
-        .setContentIntent(createContentIntent(mMetadata.getDescription()));
+        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+        .setOnlyAlertOnce(true);
 
     if (mController != null && mController.getExtras() != null) {
       String castName = mController.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
@@ -271,7 +270,6 @@ public class MediaNotificationManager extends BroadcastReceiver {
     MediaDescriptionCompat description = mMetadata.getDescription();
 
     remoteViews.setTextViewText(R.id.text_title, description.getTitle());
-    remoteViews.setOnClickPendingIntent(R.id.text_title, createContentIntent(description));
     remoteViews.setOnClickPendingIntent(R.id.btn_remote_play, mPlayIntent);
     remoteViews.setOnClickPendingIntent(R.id.btn_remote_pause, mPauseIntent);
     remoteViews.setOnClickPendingIntent(R.id.btn_remote_close, mStopIntent);
