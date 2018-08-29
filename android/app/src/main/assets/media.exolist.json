@@ -12,13 +12,13 @@
   },
   {
     "type" : "streaming",
-    "uri": "https://yoophi.com/public/contents/DASH_0028_002_mp4/stream.mpd",
-    "name": "충성팬을 만드는 MLB의 마케팅 비법",
+    "uri": "https://contents.welaaa.com/media/v100015/DASH_v100015_002/stream.mpd",
+    "name": "v100015_002",
     "drmSchemeUuid": "widevine",
     "drmLicenseUrl": "http://tokyo.pallycon.com/ri/licenseManager.do",
-    "userId": "valid-user",
-    "cid": "0028_002",
-    "oid": "order id",
+    "userId": "93",
+    "cid": "v100015_002",
+    "oid": "",
     "token": ""
   },
   {

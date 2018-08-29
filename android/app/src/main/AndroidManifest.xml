@@ -1,18 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.welaaav2">
+    package="kr.co.influential.youngkangapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".MainApplication"
+        android:name="kr.co.influential.youngkangapp.MainApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="kr.co.influential.youngkangapp.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize">
@@ -24,14 +24,14 @@
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
         <!-- sample test -->
-        <activity android:name=".pallycon.PallyConMainActivity"
+        <activity android:name="kr.co.influential.youngkangapp.pallycon.PallyConMainActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
         </activity>
 
-        <activity android:name=".player.PlayerActivity"
+        <activity android:name="kr.co.influential.youngkangapp.player.PlayerActivity"
             android:supportsPictureInPicture="true"
             android:resizeableActivity="true"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.View"/>
@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".cast.CastControllerActivity"
+        <activity android:name="kr.co.influential.youngkangapp.cast.CastControllerActivity"
             android:label="@string/app_name"
             android:launchMode="singleInstance">
             <intent-filter>
@@ -47,10 +47,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".download.DownloadService" />
+        <service android:name="kr.co.influential.youngkangapp.download.DownloadService" />
 
         <receiver
-            android:name=".util.WelaaaBroadcastReceiver"
+            android:name="kr.co.influential.youngkangapp.util.WelaaaBroadcastReceiver"
             android:enabled="true" >
         </receiver>
 
@@ -69,11 +69,11 @@
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="com.welaaav2.cast.CastOptionsProvider" />
+            android:value="kr.co.influential.youngkangapp.cast.CastOptionsProvider" />
 
         <!-- service -->
         <service
-          android:name=".player.service.MediaService"
+          android:name="kr.co.influential.youngkangapp.player.service.MediaService"
           android:exported="true"
           android:enabled="true">
             <intent-filter>

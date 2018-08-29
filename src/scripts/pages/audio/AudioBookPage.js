@@ -1,17 +1,16 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {
-	StyleSheet,
-	Text,
-	View,
-	ScrollView,
-	TouchableOpacity,
-	FlatList,
-} from "react-native";
-import {SafeAreaView} from "react-navigation";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { SafeAreaView } from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
 import Book from "../../components/audio/Book";
+import _ from 'underscore';
+import { observer } from "mobx-react";
+import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import BookVO from "../../vo/BookVO";
+import createStore from "../../commons/createStore";
+
 
 const styles = StyleSheet.create({
 	toggleGroup: {
@@ -58,31 +57,95 @@ const styles = StyleSheet.create({
 	myButtonText: {
 		fontSize: 12,
 		color: '#585858',
-	}
+	},
+	linkViewAll: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
+		height: 36,
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
+	},
+	classLinkViewAll: {
+		marginTop: 15,
+		marginBottom: 30,
+	},
+	linkViewAllText: {
+		fontSize: 14,
+		color: '#ffffff',
+	},
+	linkViewAllIcon: {
+		paddingLeft: 7,
+		height: 13,
+	},
 });
 
-export default class AudioBookPage extends React.Component {
+@observer class AudioBookPage extends React.Component {
+	store = createStore({
+		isLoading: true,
+		categories: [],
+		displayData: null,
+		selectedCategory: null,
+		ccode: null,
+		pagination: {},
+	});
 
-	constructor(props) {
-		super(props);
+	loadAudioList = async ( ccode = null, page = 1 ) => {
+		this.store.isLoading = true;
+		if( page === 1 ) {
+			this.store.displayData = null;
+		}
+		const data = await net.getAudioBookList( ccode, page );
+		const VOs = data.items.map( ( element, n ) => {
+			const vo = new BookVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.book;
+			}
+			if( !vo.banner_color ) {
+				vo.banner_color = 'transparent';
+			}
+			vo.rankNumber = ( page - 1 ) * 10 + ( n + 1 );
+			return vo;
+		} );
+		if( page === 1 ) {
+			this.store.displayData = VOs;
+		}
+		else {
+			_.each( VOs, e => this.store.displayData.push( e ) );
+		}
+		this.store.ccode = ccode;
+		this.store.pagination = data.pagination;
+		this.store.isLoading = false;
+	};
 
-		this.state = {
-			audioCategoryData: {},
-			resultAudioBookData: null,
-		};
-
-
-	}
+	loadMore = () => {
+		if( this.store.pagination.has_next ) {
+			this.loadAudioList( this.store.ccode, this.store.pagination.next_page );
+		}
+	};
 
 	async componentDidMount() {
-		const resultAudioCategoryData = await net.getAudioBookCategory();
-		const resultAudioBookData = await net.getAudioBookList();
-		this.setState({
-			audioCategoryData: resultAudioCategoryData,
-			resultAudioBookData: resultAudioBookData,
-		});
+		const loadedCategories = await net.getAudioBookCategory();
+		this.store.categories = loadedCategories.map( element => {
+			const vo = new PageCategoryItemVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
+		} );
+		this.loadAudioList();
 	}
 
+	onCategorySelect = item => {
+		this.store.selectedCategory = item.id;
+		this.loadAudioList( item.ccode )
+			.catch( e => {
+				console.log( e );
+			} );
+	};
 
 	render() {
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
@@ -117,12 +180,13 @@ export default class AudioBookPage extends React.Component {
 					</View>
 				</View>
 
-				<PageCategory data={this.state.audioCategoryData.items}/>
+				<PageCategory selectedCategory={ this.store.selectedCategory }
+							  data={this.store.categories} onCategorySelect={ this.onCategorySelect }/>
 
-				{this.state.resultAudioBookData !== null &&
+				{this.store.displayData !== null &&
 				<FlatList
 					style={{width: '100%'}}
-					data={this.state.resultAudioBookData.items}
+					data={this.store.displayData}
 					renderItem={
 						({item}) => <Book id={item.id}
 										  type="best"
@@ -131,7 +195,24 @@ export default class AudioBookPage extends React.Component {
 					}
 				/>
 				}
+
+				<View style={CommonStyles.contentContainer}>
+					{this.store.isLoading &&
+					<View style={{ marginTop: 12 }}>
+						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+					</View>
+					}
+					{ ( !this.store.isLoading && this.store.pagination.has_next ) &&
+					<TouchableOpacity activeOpacity={0.9} onPress={this.loadMore}>
+						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
+							<Text style={styles.linkViewAllText}>더보기</Text>
+						</View>
+					</TouchableOpacity>
+					}
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	}
 }
+
+export default AudioBookPage;

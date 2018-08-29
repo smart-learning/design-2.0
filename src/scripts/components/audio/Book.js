@@ -1,13 +1,5 @@
 import React from "react";
-import {
-	Image,
-	Text,
-	View,
-	StyleSheet,
-	TouchableOpacity,
-} from "react-native";
-import {DrawerActions} from "react-navigation";
-import CommonStyles from "../../../styles/common";
+import { Image, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import IcComment from "../../../images/ic-comment-dark.png"
 import IcShare from "../../../images/ic-share-grey.png";
 import IcHeart from "../../../images/ic-heart-pink.png";
@@ -164,23 +156,15 @@ const styles = StyleSheet.create({
 });
 
 export default class Book extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			//
-		};
-
-		this.changePage = this.changePage.bind( this );
-	}
-
-	changePage() {
-		console.log( 'touch' );
-		console.log( this.props.id );
-		this.props.navigation.navigate( 'AudioBookDetailPage', { id: this.props.id } );
-	}
+	changePage = () => {
+		this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.id, title:' '});
+	};
 
 	render() {
+		// TODO: VO를 만들어놓고 데이터를 넣는데 왜 .teacher 가 null 인 상황이 있는지 체크 필요
+		if( this.props.itemData.teacher === null ) {
+			this.props.itemData.teacher = {};
+		}
 		return <View style={styles.itemContainer}>
 			{this.props.type === 'best' &&
 			<View style={[styles.alignJustify, styles.socialButtonWrap]}>
@@ -195,7 +179,12 @@ export default class Book extends React.Component {
 			}
 			<View style={[styles.alignJustify, styles.itemInfo]}>
 				{this.props.type === 'best' &&
-				<Text style={styles.sequence}>00</Text>
+				<Text style={styles.sequence}>
+					{this.props.itemData.rankNumber < 10 &&
+					<Text>0</Text>
+					}
+					{this.props.itemData.rankNumber}
+				</Text>
 				}
 				{this.props.type === 'best' &&
 
@@ -203,7 +192,6 @@ export default class Book extends React.Component {
 					<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
 						<Text style={styles.bookTitleBest}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
-					<Text style={styles.bookAuthorBest}>{this.props.itemData.teacher.name}</Text>
 					<View style={styles.alignJustify}>
 						<Text style={styles.playTime}>06시간 23분</Text>
 						<View style={styles.bar}/>
@@ -217,7 +205,6 @@ export default class Book extends React.Component {
 						<Text style={styles.bookTitleRecommend} numberOfLines={1}
 							  ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
-					<Text style={styles.bookAuthorRecommend}>{this.props.itemData.teacherName.name}</Text>
 					<View style={[styles.alignJustify, styles.recommendButtonWrap]}>
 						<Image source={IcHeartLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
 						{this.props.itemData.is_free === 'true' &&
@@ -241,11 +228,11 @@ export default class Book extends React.Component {
 			<View style={[{backgroundColor: this.props.itemData.banner_color.trim()}, styles.itemContent]}>
 				{this.props.type === 'best' &&
 				<Text style={styles.bookMemoBest} numberOfLines={3}
-					  ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
+					  ellipsizeMode={'tail'}>{this.props.itemData.memo.split( '<br>' ).join( '' )}</Text>
 				}
 				{this.props.type === 'recommend' &&
 				<Text style={styles.bookMemoRecommend} numberOfLines={3}
-					  ellipsizeMode={'tail'}>{this.props.itemData.memo}</Text>
+					  ellipsizeMode={'tail'}>{this.props.itemData.memo.split( '<br>' ).join( '' )}</Text>
 				}
 				<View style={[styles.alignJustify, styles.countWrap]}>
 					<Image source={IcView} style={styles.btnSetSmall}/>
@@ -256,11 +243,11 @@ export default class Book extends React.Component {
 					<Text style={styles.countText}>{this.props.itemData.review_count}</Text>
 				</View>
 			</View>
-			<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
-				<View style={styles.bookThumbnail}>
+			<View style={styles.bookThumbnail}>
+				<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
 					<Image source={{uri: this.props.itemData.images.book}} style={styles.bookThumbnailSize}/>
-				</View>
-			</TouchableOpacity>
+				</TouchableOpacity>
+			</View>
 		</View>
 	}
 }
