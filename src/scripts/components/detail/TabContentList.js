@@ -30,6 +30,15 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		color: '#333333'
 	},
+	notReadyText: {
+		marginTop: 30,
+		marginBottom: 15,
+		fontSize: 13,
+		color: '#333333',
+		borderWidth: 1,
+		borderColor: '#bbbbbe',
+		padding: 15
+	},
 	chapterInfoTextImportant: {
 		fontWeight: 'bold',
 		color: CommonStyles.COLOR_PRIMARY,
@@ -74,7 +83,9 @@ export default class TabContentList extends React.Component {
 							<Text style={styles.clipInfoTextImportant}>6시간 20분</Text>
 						</Text>
 
-						<ChapterListItem/>
+						<Text style={styles.notReadyText}>데이터 준비중입니다.</Text>
+
+						{/*<ChapterListItem/>*/}
 						{/*<FlatList*/}
 						{/*style={{width: '100%'}}*/}
 						{/*data={this.props.store.itemClipData}*/}
