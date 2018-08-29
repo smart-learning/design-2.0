@@ -155,16 +155,13 @@
                   liveKeyRotation : NO              ];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
-  //_playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;  // 재생속도 관련. 속도 변경을 하면 퀄리티가 떨어짐.
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련. 속도 변경을 하면 퀄리티가 위 옵션보다는 좋음.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer : _player];
     _playerLayer.frame = _contentView.bounds;
-    //[_playerLayer setVideoGravity : AVLayerVideoGravityResize];           // 가로세로 비율을 무시하고 레이어의 경계를 채우기 위해 비디오를 늘리도록 지정합니다.
-    [_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspect];     // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
-    //[_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspectFill]; // 가로세로 비율을 유지하고 레이어의 경계를 채우도록 지정합니다.
+    [_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspect]; // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
   
     [_contentView.layer addSublayer : _playerLayer];
 }
@@ -922,6 +919,10 @@
             _slider.maximumValue = 90.f;
         }
     }
+  
+    _playbackRate = 1.f;
+    [_speedButton setImage : [UIImage imageNamed : @"icon_speed_10"]
+                  forState : UIControlStateNormal];
 }
 
 #pragma mark - Selectors
@@ -1134,6 +1135,7 @@
     [self setSpeedButtonImage];
   
     [_player setRate : _playbackRate];
+    [self setPlayState : true]; // setRate: 을 실행하면 _player가 자동으로 재생을 재개합니다.
 }
 
 //
@@ -1264,7 +1266,7 @@
     [_player play];
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
-  
+    [_player setRate : _playbackRate];
     // 기존 타이머를 종료시키고 재시작
     //[self stopLogTimer];
     // NSTimer를 통해 30초마다 로그내역을 전송
