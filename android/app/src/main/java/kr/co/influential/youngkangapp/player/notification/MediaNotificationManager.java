@@ -102,6 +102,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_PAUSE);
         filter.addAction(ACTION_PLAY);
+        filter.addAction(ACTION_STOP);
         filter.addAction(ACTION_STOP_CASTING);
         mService.registerReceiver(this, filter);
 
@@ -139,6 +140,9 @@ public class MediaNotificationManager extends BroadcastReceiver {
         break;
       case ACTION_PLAY:
         mTransportControls.play();
+        break;
+      case ACTION_STOP:
+        mTransportControls.stop();
         break;
       case ACTION_STOP_CASTING:
         Intent i = new Intent(context, MediaService.class);
