@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, } from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Alert,} from "react-native";
 import CommonStyles from "../../../styles/common";
 
 const styles = StyleSheet.create( {
@@ -26,7 +26,7 @@ const styles = StyleSheet.create( {
 		position: 'absolute',
 		justifyContent: 'center',
 		alignItems: 'center',
-		fontSize: 12,
+		fontSize: 24,
 		color: '#ffffff',
 	},
 } );
@@ -39,7 +39,7 @@ export default class Series extends React.Component {
 	render() {
 		return <View>
 			<View style={styles.seriesItemLg}>
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity activeOpacity={0.9} onPress={() => {Alert.alert('준비중입니다.')}}>
 					<ImageBackground
 						source={{ uri: this.props.itemData[ 0 ].image }}
 						resizeMode="cover"
@@ -52,7 +52,7 @@ export default class Series extends React.Component {
 				</TouchableOpacity>
 			</View>
 			<View style={styles.seriesItemLg}>
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity activeOpacity={0.9} onPress={() => {Alert.alert('준비중입니다.')}}>
 					<ImageBackground
 						source={{ uri: this.props.itemData[ 1 ].image }}
 						resizeMode="cover"
@@ -65,7 +65,7 @@ export default class Series extends React.Component {
 				</TouchableOpacity>
 			</View>
 			<View style={styles.seriesItemLg}>
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity activeOpacity={0.9} onPress={() => {Alert.alert('준비중입니다.')}}>
 					<ImageBackground
 						source={{ uri: this.props.itemData[ 2 ].image }}
 						resizeMode="cover"
@@ -78,7 +78,7 @@ export default class Series extends React.Component {
 				</TouchableOpacity>
 			</View>
 			<View style={styles.seriesItemLg}>
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity activeOpacity={0.9} onPress={() => {Alert.alert('준비중입니다.')}}>
 					<ImageBackground
 						source={{ uri: this.props.itemData[ 3 ].image }}
 						resizeMode="cover"
@@ -91,7 +91,7 @@ export default class Series extends React.Component {
 				</TouchableOpacity>
 			</View>
 			<View style={styles.seriesItemLg}>
-				<TouchableOpacity activeOpacity={0.9}>
+				<TouchableOpacity activeOpacity={0.9} onPress={() => {Alert.alert('준비중입니다.')}}>
 					<ImageBackground
 						source={{ uri: this.props.itemData[ 4 ].image }}
 						resizeMode="cover"
@@ -103,7 +103,7 @@ export default class Series extends React.Component {
 					</ImageBackground>
 				</TouchableOpacity>
 			</View>
-			<View style={styles.seriesItemLg}>
+			<View style={styles.seriesItemLg} onPress={() => {Alert.alert('준비중입니다.')}}>
 				<TouchableOpacity activeOpacity={0.9}>
 					<ImageBackground
 						source={{ uri: this.props.itemData[ 5 ].image }}
@@ -116,7 +116,7 @@ export default class Series extends React.Component {
 					</ImageBackground>
 				</TouchableOpacity>
 			</View>
-			<View style={styles.seriesItemLg}>
+			<View style={styles.seriesItemLg} onPress={() => {Alert.alert('준비중입니다.')}}>
 				<TouchableOpacity activeOpacity={0.9}>
 					<ImageBackground
 						source={{ uri: this.props.itemData[ 6 ].image }}
