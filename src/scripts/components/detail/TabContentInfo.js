@@ -12,6 +12,7 @@ import Dummy1 from '../../../images/dummy-swiper-1.png';
 import Dummy2 from '../../../images/dummy-swiper-2.png';
 import Evaluation from "./Evaluation";
 import ReviewItem from "./ReviewItem";
+import moment from "moment";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -131,24 +132,27 @@ class TabContentInfo extends React.Component {
 	}
 
 	render() {
+		const playTime = moment.duration( this.props.store.itemData.play_time );
 		return <View>
 			{/* 이미지 스와이퍼 */}
 			<View style={{ height: this.props.store.slideHeight }}>
+				{this.props.store.itemData.info_img_set.length > 0 &&
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
 						dotColor={"#888888"}
 						activeDotColor={"#ffffff"}
-						paginationStyle={{ bottom: -15 }}>
-					<View style={styles.slide}>
-						{/*<Text style={styles.text}>Swiper1</Text>*/}
-						<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
-					</View>
-					<View style={styles.slide}>
-						{/*<Text style={styles.text}>Swiper2</Text>*/}
-						<ImageBackground source={Dummy2} resizeMode="cover" style={styles.thumbnail}/>
-					</View>
+						paginationStyle={{bottom: 10}}>
+					{this.props.store.itemData.info_img_set.map((item, key) => {
+						return (
+							<TouchableOpacity activeOpacity={0.9} key={key}>
+								<ImageBackground source={{uri: item}} resizeMode="cover"
+												 style={styles.thumbnail}/>
+							</TouchableOpacity>
+						);
+					})}
 				</Swiper>
+				}
 			</View>
 			{/* /이미지 스와이퍼 */}
 
@@ -160,7 +164,7 @@ class TabContentInfo extends React.Component {
 				</Text>
 				{!!this.props.store.lectureView &&
 				<Text style={styles.infoTextNormal}>
-					{this.props.store.itemData.memo}
+					{`${ this.props.store.itemData.memo.split( '<br>' ).join( '\n' ) }`}
 				</Text>
 				}
 				<TouchableOpacity onPress={this.toggleLectureView}>
@@ -180,11 +184,11 @@ class TabContentInfo extends React.Component {
 				}
 				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
 					<Image style={styles.labelInfoImage} source={IcTime}/>
-					<Text style={styles.labelInfoText}>총 러닝타임 1시간 45분</Text>
+					<Text style={styles.labelInfoText}>총 러닝타임 {`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
 				</View>
 				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
 					<Image style={styles.labelInfoImage} source={IcFile}/>
-					<Text style={styles.labelInfoText}>콘텐츠 용량 340 MB</Text>
+					<Text style={styles.labelInfoText}>콘텐츠 용량 {this.props.store.itemData.file_size} MB</Text>
 				</View>
 				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
 					<Image style={styles.labelInfoImage} source={IcPrize}/>
@@ -201,7 +205,7 @@ class TabContentInfo extends React.Component {
 					</Text>
 					{!!this.props.store.teacherView &&
 					<Text style={styles.authorText}>
-						{this.props.itemData.teacher.memo}
+						{`${ this.props.itemData.teacher.memo.split( '<br>' ).join( '\n' ) }`}
 					</Text>
 					}
 					<TouchableOpacity onPress={this.toggleTeacherView}>
@@ -213,7 +217,7 @@ class TabContentInfo extends React.Component {
 			<View style={styles.review}>
 				<Text style={styles.sectionTitle}>학습자 평가</Text>
 
-				<Evaluation/>
+				<Evaluation itemData={this.props.store.itemData}/>
 
 			</View>
 

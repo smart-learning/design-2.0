@@ -1,10 +1,10 @@
 import React from "react";
-import {AsyncStorage, Button, ScrollView, StyleSheet, Text, View, TouchableOpacity} from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CommonStyles from "../../../styles/common";
-import Store from '../../../scripts/commons/store';
-import {SafeAreaView} from "react-navigation";
-import {observable} from 'mobx';
-import {observer} from "mobx-react";
+import globalStore from '../../../scripts/commons/store';
+import { SafeAreaView } from "react-navigation";
+import { observable } from 'mobx';
+import { observer } from "mobx-react";
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -127,7 +127,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -143,7 +143,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -159,7 +159,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -175,7 +175,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -191,7 +191,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -207,7 +207,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이 태그이름(을)를</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -223,7 +223,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이 멤버십 회원이 되셨습니다!</Text>
 										</View>
@@ -235,7 +235,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이 윌라의 회원이 되셨습니다!</Text>
 										</View>
@@ -261,7 +261,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -277,7 +277,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -293,7 +293,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -309,7 +309,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -325,7 +325,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -341,7 +341,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이 태그이름(을)를</Text>
 											<TouchableOpacity activeOpacity={0.9}>
@@ -357,7 +357,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이 멤버십 회원이 되셨습니다!</Text>
 										</View>
@@ -369,7 +369,7 @@ export default class MyLogPage extends React.Component {
 									<View>
 										<View style={styles.logTextContainer}>
 											<TouchableOpacity activeOpacity={0.9}>
-												<Text style={styles.logTextPoint}>김딸기</Text>
+												<Text style={styles.logTextPoint}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 											</TouchableOpacity>
 											<Text style={styles.logText}>님이 윌라의 회원이 되셨습니다!</Text>
 										</View>

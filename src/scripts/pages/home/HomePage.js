@@ -81,6 +81,16 @@ class HomePage extends React.Component {
 		classRecommendData: {},
 		clipRankData: [],
 		homeBannerData: [],
+		audioRealTimeChartData: [],
+		audioNewData: {
+			items: [],
+		},
+		audioMonth: [],
+		voucherStatus: null,
+		classUseData: [],
+		audioBuyData: [],
+		audioUseData: [],
+		// audioPlayRecentData: [],
 	});
 
 	getData = async ( isRefresh = false ) => {
@@ -134,6 +144,20 @@ class HomePage extends React.Component {
 		this.store.classRecommendData = recommendVOs;
 		this.store.clipRankData = await net.getHomeClipRank( isRefresh );
 		this.store.homeBannerData = await net.getMainBanner( isRefresh );
+		this.store.audioRealTimeChartData = await net.getHomeAudioRealTimeChartContents( isRefresh );
+		this.store.audioNewData = await net.getAudioBookList( isRefresh );
+		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
+		// this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
+
+		try {
+			this.store.voucherStatus = await net.getVoucherStatus( isRefresh );
+			this.store.classUseData = await net.getPlayRecentVideoCourses( isRefresh );
+			this.store.audioBuyData = await net.getPurchasedAudioBooks( isRefresh );
+			this.store.audioUseData = await net.getPlayRecentAudioBook( isRefresh );
+		}
+		catch( e ) {
+			console.log( e );
+		}
 	};
 
 	componentDidMount() {
@@ -215,9 +239,6 @@ class HomePage extends React.Component {
 						</View>
 					</View>
 				</View>
-
-				{/* 팝업 */}
-				<AdvertisingSection/>
 
 			</SafeAreaView>
 		</View>

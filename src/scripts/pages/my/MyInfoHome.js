@@ -1,17 +1,7 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import {
-	AsyncStorage,
-	Button,
-	Image,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
-	ImageBackground
-} from "react-native";
-import store from '../../../scripts/commons/store';
+import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import globalStore from '../../../scripts/commons/store';
 import BgMy from "../../../images/bg-my.png";
 import IcAngleRight from "../../../images/ic-my-angle-right.png";
 import IcDownload from "../../../images/ic-my-download.png";
@@ -21,7 +11,7 @@ import IcProfile from "../../../images/ic-my-profile.png";
 import IcTag from "../../../images/ic-my-tag.png";
 import IcCog from "../../../images/ic-my-cog.png";
 import DummyProfile from "../../../images/dummy-my-profile.png";
-import {SafeAreaView} from "react-navigation";
+import { SafeAreaView } from "react-navigation";
 import HomeButton from "../../components/header/HomeButton";
 
 
@@ -189,9 +179,9 @@ export default class MyInfoHome extends React.Component {
 							<Image source={DummyProfile} style={styles.myInfoProfile} borderRadius={30}/>
 							<View>
 								<View style={styles.myInfoContentItem}>
-									<Text style={styles.myInfoName}>김딸기</Text>
+									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 									<View>
-										<Text>package</Text>
+										<Text>{/*package*/}</Text>
 									</View>
 								</View>
 								{/*고객사 요청으로 화면에서 감춤 처리*/}
@@ -203,7 +193,7 @@ export default class MyInfoHome extends React.Component {
 									</TouchableOpacity>
 								</View>
 								}
-								<Text style={styles.myInfoEmail}>mail@mail.com</Text>
+								<Text style={styles.myInfoEmail}>{ globalStore.profile ? globalStore.profile.email : '' }</Text>
 							</View>
 						</View>
 					</ImageBackground>

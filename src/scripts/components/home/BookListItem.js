@@ -5,6 +5,7 @@ import Dummy from "../../../images/dummy-audioBookSimple.png";
 import IcView from "../../../images/ic-detail-view.png";
 import IcStar from "../../../images/ic-detail-star.png";
 import IcComment from "../../../images/ic-detail-message.png";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	alignJustify: {
@@ -118,7 +119,7 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default class BookListItem extends React.Component {
+export default withNavigation(class BookListItem extends React.Component {
 	constructor( props ) {
 		super( props );
 	}
@@ -128,35 +129,35 @@ export default class BookListItem extends React.Component {
 			{this.props.itemType === 'hot' &&
 			<View style={styles.bookRank}>
 				<Text style={styles.bookRankText}>
-					{this.props.itemData.rankNumber}
+					{this.props.itemData.itemNumber < 10 &&
+						<Text>0</Text>
+					}
+					{this.props.itemData.itemNumber}
 				</Text>
 				<View style={styles.bookRankHr}/>
 			</View>
 			}
-			<TouchableOpacity activeOpacity={0.9}>
-				<Text style={styles.bookTitle}>
-					{this.props.itemData.headline}
+			<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.itemData.id, title: ' '})}>
+				<Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={1}>
+					{this.props.itemData.title}
 				</Text>
 			</TouchableOpacity>
 			<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
-				{!this.props.itemData.is_exclusive &&
-				<View style={[ styles.bookLabel, styles.bookLabelBlank ]} borderRadius={10}>
-					<Text>blank</Text>
-				</View>
-				}
 				{!!this.props.itemData.is_exclusive &&
 				<View style={[ styles.bookLabel, styles.bookLabelExclusive ]} borderRadius={10}>
 					<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}>독점</Text>
 				</View>
 				}
-				{/*<View style={[ styles.bookLabel, styles.bookLabelFree ]} borderRadius={10}>*/}
-					{/*<Text style={[ styles.bookLabelText, styles.bookLabelFreeText ]}>무료</Text>*/}
-				{/*</View>*/}
+				{!!this.props.itemData.is_free &&
+				<View style={[styles.bookLabel, styles.bookLabelFree]} borderRadius={10}>
+					<Text style={[styles.bookLabelText, styles.bookLabelFreeText]}>무료</Text>
+				</View>
+				}
 			</View>
 			<View>
-				<ImageBackground source={Dummy} resizeMode={"cover"} style={styles.thumbnail}>
+				<ImageBackground source={{uri: this.props.itemData.images.list}} resizeMode={"cover"} style={styles.thumbnail}>
 					<View style={styles.thumbnailDim}>
-						<Text style={styles.thumbnailTitle}>title</Text>
+						<Text style={styles.thumbnailTitle}>{this.props.itemData.subtitle}</Text>
 					</View>
 				</ImageBackground>
 			</View>
@@ -170,4 +171,4 @@ export default class BookListItem extends React.Component {
 			</View>
 		</View>
 	}
-}
+} )
