@@ -7,6 +7,9 @@
 
 package kr.co.influential.youngkangapp.player;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
 import android.content.Context;
@@ -61,7 +64,6 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
@@ -127,18 +129,16 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 /**
  * Created by PallyconTeam
  */
 
 public class PlayerActivity extends BasePlayerActivity {
 
+  public static final String TAG = LogHelper.makeLogTag(PlayerActivity.class);
+
   private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
 
-  public static final String TAG = "pallycon_sampleapp";
   public static final String CONTENTS_TITLE = "contents_title";
   public static final String PREFER_EXTENSION_DECODERS = "prefer_extension_decoders";
   public static final String DOWNLOAD_SERVICE_TYPE = "drm_delete";
@@ -418,6 +418,11 @@ public class PlayerActivity extends BasePlayerActivity {
         }
       };
 
+  private final float ASPECT_RATIO_MIN = 0.418410f;
+  private final float ASPECT_RATIO_MAX = 2.390000f;
+  private final int denominator = 100;
+  private float aspectRatio;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -429,6 +434,12 @@ public class PlayerActivity extends BasePlayerActivity {
 //		com.google.android.exoplayer2.ui.SimpleExoPlayerView
     simpleExoPlayerView = findViewById(R.id.player_view);
     simpleExoPlayerView.requestFocus();
+    simpleExoPlayerView.setAspectRatioListener(
+        (targetAspectRatio, naturalAspectRatio, aspectRatioMismatch) ->
+            aspectRatio = targetAspectRatio);
+
+    // Set player to playerview.
+    LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
 
     //// Chromecast
     mCastContext = CastContext.getSharedInstance(this);
@@ -686,6 +697,9 @@ public class PlayerActivity extends BasePlayerActivity {
     if (controllerCompat != null) {
       controllerCompat.unregisterCallback(callback);
     }
+
+    // TODO: 2018. 8. 29. temporary demo.
+    getTransportControls().stop();
   }
 
   @Override
@@ -733,14 +747,18 @@ public class PlayerActivity extends BasePlayerActivity {
   @RequiresApi(VERSION_CODES.O)
   @Override
   protected void onUserLeaveHint() {
-    PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-    builder.setAspectRatio(new Rational(16, 9));
-    enterPictureInPictureMode(builder.build());
+    if (aspectRatio > ASPECT_RATIO_MIN && aspectRatio < ASPECT_RATIO_MAX) {
+      int numerator = (int) (aspectRatio * denominator);
+      PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+      builder.setAspectRatio(new Rational(numerator, denominator));
+      enterPictureInPictureMode(builder.build());
+    }
   }
 
   @Override
   public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
     super.onPictureInPictureModeChanged(isInPictureInPictureMode);
+    simpleExoPlayerView.setUseController(!isInPictureInPictureMode);
   }
 
   private void releaseCast() {
@@ -2005,8 +2023,8 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.BTN_DOWNLOAD: {
-              alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
-            }
+            alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
+          }
           break;
 
           case R.id.WELAAA_ICON_LIST: {
@@ -4281,14 +4299,13 @@ public class PlayerActivity extends BasePlayerActivity {
 
         JSONObject dataObject = json.getJSONObject("data");
 
-
-          String group_title = dataObject.getString("title");
+        String group_title = dataObject.getString("title");
 
 //        String group_memo = json.getString("group_memo");
-          String group_memo = "";
+        String group_memo = "";
 
-          String group_teachername = dataObject.getJSONObject("teacher").getString("name");
-          String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
+        String group_teachername = dataObject.getJSONObject("teacher").getString("name");
+        String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
 
         JSONArray jArr = dataObject.getJSONArray("clips");
 
@@ -4307,17 +4324,17 @@ public class PlayerActivity extends BasePlayerActivity {
           String group_likecnt = "";
           String group_zzimcnt = "";
 
-            String ckey = json.getString("cid");
-            String cname = json.getString("title");
-            String cmemo = json.getString("memo");
+          String ckey = json.getString("cid");
+          String cname = json.getString("title");
+          String cmemo = json.getString("memo");
 
-            String curl = ""; // play_data 에서
+          String curl = ""; // play_data 에서
 
-            String cplay_time = json.getString("play_time");
-            String cpay = json.getString("pay_type");
-            String cpay_money = json.getString("price");
+          String cplay_time = json.getString("play_time");
+          String cpay = json.getString("pay_type");
+          String cpay_money = json.getString("price");
 
-            String clist_img = json.getJSONObject("images").getString("list");
+          String clist_img = json.getJSONObject("images").getString("list");
 
           String ccon_class = json.getString("type");
           String csmi = "";
@@ -4556,17 +4573,17 @@ public class PlayerActivity extends BasePlayerActivity {
 //
 //          } else {
 
-            if (objItem.getString("end_seconds").equals("0") || objItem.getString("end_seconds")
-                .equals("")) {
-              playListType = "1";
-            } else if (objItem.getString("end_seconds").equals("9999999")) {
-              playListType = "3";
-            } else {
-              playListType = "2";
-            }
+          if (objItem.getString("end_seconds").equals("0") || objItem.getString("end_seconds")
+              .equals("")) {
+            playListType = "1";
+          } else if (objItem.getString("end_seconds").equals("9999999")) {
+            playListType = "3";
+          } else {
+            playListType = "2";
+          }
 //          }
 
-            lectureListItemdapter.add(objItem.getString("play_time"), "",
+          lectureListItemdapter.add(objItem.getString("play_time"), "",
               objItem.getString("title"), group_title,
               group_teachername, objItem.getString("end_seconds"), playListType);
           lecturListView.setAdapter(lectureListItemdapter);
@@ -4689,7 +4706,7 @@ public class PlayerActivity extends BasePlayerActivity {
         mButtonGroupLayout.setVisibility(VISIBLE);
       }
 
-      if(player!=null){
+      if (player != null) {
         player.setPlayWhenReady(true);
       }
 
@@ -4711,7 +4728,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
       setBackGroungLayout(false);
 
-      if(player!=null){
+      if (player != null) {
         player.setPlayWhenReady(true);
       }
 
@@ -5087,9 +5104,6 @@ public class PlayerActivity extends BasePlayerActivity {
       Uri uri = intent.getData();
       Bundle extras = intent.getExtras();
       getTransportControls().playFromUri(uri, extras);
-
-      // Set player to playerview.
-      LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
     }
   }
 
@@ -5157,7 +5171,7 @@ public class PlayerActivity extends BasePlayerActivity {
   /********************************************************
    * autoplay mode
    ********************************************************/
-  public void doAutoPlay(){
+  public void doAutoPlay() {
 
 //    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd",
 //    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_002/stream.mpd",
@@ -5166,120 +5180,120 @@ public class PlayerActivity extends BasePlayerActivity {
 //    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_005/stream.mpd",
 //    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_006/stream.mpd",
 
-      Intent intent = getIntent();
-      String currentCid = intent.getStringExtra("drm_cid");
+    Intent intent = getIntent();
+    String currentCid = intent.getStringExtra("drm_cid");
 
-      int currentPosition = 0;
-      for(int i=0; i<getwebPlayerInfo().getCkey().length; i++){
-        if(getwebPlayerInfo().getCkey()[i].equals( currentCid )){
-          currentPosition = i;
-        }
+    int currentPosition = 0;
+    for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
+      if (getwebPlayerInfo().getCkey()[i].equals(currentCid)) {
+        currentPosition = i;
       }
+    }
 
-      if(getwebPlayerInfo().getCkey().length == currentPosition+1){
-        // last suggest list show !
-        //
+    if (getwebPlayerInfo().getCkey().length == currentPosition + 1) {
+      // last suggest list show !
+      //
 
-        setBackGroungLayout(true);
-        Animation fadeout = null;
-        fadeout = null;
-        fadeout = AnimationUtils
-                .loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+      setBackGroungLayout(true);
+      Animation fadeout = null;
+      fadeout = null;
+      fadeout = AnimationUtils
+          .loadAnimation(getApplicationContext(), R.anim.slide_in_right);
 
-        mRelatedListGroupLayout.startAnimation(fadeout);
+      mRelatedListGroupLayout.startAnimation(fadeout);
 
-        Animation textBlink = null;
-        textBlink = AnimationUtils
-                .loadAnimation(getApplicationContext(), R.anim.blink_animation);
+      Animation textBlink = null;
+      textBlink = AnimationUtils
+          .loadAnimation(getApplicationContext(), R.anim.blink_animation);
 
-        mRelatedListBlinkText.startAnimation(textBlink);
-        mRelatedListGroupLayout.setVisibility(VISIBLE);
+      mRelatedListBlinkText.startAnimation(textBlink);
+      mRelatedListGroupLayout.setVisibility(VISIBLE);
 
 //										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
-        if (getTransportControls() != null) {
-          getTransportControls().pause();
-        }
-
-        return ;
+      if (getTransportControls() != null) {
+        getTransportControls().pause();
       }
 
-      int nextPosition = 0;
+      return;
+    }
 
-      nextPosition = currentPosition +1;
+    int nextPosition = 0;
 
-      String loadFile = "play-data-" + getwebPlayerInfo().getCkey()[nextPosition] + ".json";
-      String dashUrl = "";
+    nextPosition = currentPosition + 1;
 
-      try{
-        InputStream is = getAssets().open(loadFile);
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        String jsonText = readAll(rd);
-        JSONObject json = new JSONObject(jsonText);
+    String loadFile = "play-data-" + getwebPlayerInfo().getCkey()[nextPosition] + ".json";
+    String dashUrl = "";
+
+    try {
+      InputStream is = getAssets().open(loadFile);
+      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+      String jsonText = readAll(rd);
+      JSONObject json = new JSONObject(jsonText);
 
 //        String group_title = json.getString("group_title");
 
-        JSONObject dataObject = json.getJSONObject("media_urls");
+      JSONObject dataObject = json.getJSONObject("media_urls");
 
-        dashUrl = dataObject.getString("DASH");
+      dashUrl = dataObject.getString("DASH");
 
-      }catch (Exception e){
-        e.printStackTrace();
-      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-      // 타이틀 동기화는 meta 데이터를 활용할 것
-      setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),getwebPlayerInfo().getCname()[nextPosition]);
+    // 타이틀 동기화는 meta 데이터를 활용할 것
+    setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+        getwebPlayerInfo().getCname()[nextPosition]);
 
-      if(Preferences.getWelaaaPlayAutoPlay(getApplicationContext())){
-        if (getTransportControls() != null) {
-          Uri uri = Uri.parse(dashUrl);
+    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+      if (getTransportControls() != null) {
+        Uri uri = Uri.parse(dashUrl);
 
-          intent.setData(uri);
-          intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, getwebPlayerInfo().getCname()[nextPosition]);
-          intent.putExtra(PlaybackManager.THUMB_URL, "");
-          try {
+        intent.setData(uri);
+        intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+            getwebPlayerInfo().getCname()[nextPosition]);
+        intent.putExtra(PlaybackManager.THUMB_URL, "");
+        try {
 
-            if ((getDrmUuid("widevine").toString() ) != null) {
+          if ((getDrmUuid("widevine").toString()) != null) {
 
-              intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA, getDrmUuid("widevine").toString() );
-              intent.putExtra(PlaybackManager.DRM_LICENSE_URL, "http://tokyo.pallycon.com/ri/licenseManager.do");
-              intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-              intent.putExtra(PlaybackManager.DRM_USERID, "93");
-              intent.putExtra(PlaybackManager.DRM_CID, getwebPlayerInfo().getCkey()[nextPosition]);
-              intent.putExtra(PlaybackManager.DRM_OID, "");
-              intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-              intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+            intent
+                .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA, getDrmUuid("widevine").toString());
+            intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                "http://tokyo.pallycon.com/ri/licenseManager.do");
+            intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+            intent.putExtra(PlaybackManager.DRM_USERID, "93");
+            intent.putExtra(PlaybackManager.DRM_CID, getwebPlayerInfo().getCkey()[nextPosition]);
+            intent.putExtra(PlaybackManager.DRM_OID, "");
+            intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+            intent.putExtra(PlaybackManager.DRM_TOKEN, "");
 
-            }
-
-          } catch (ParserException e) {
-            e.printStackTrace();
           }
 
-          Bundle extras = intent.getExtras();
-
-          getTransportControls().playFromUri(uri, extras);
-
-          // Set player to playerview.
-          LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
-
+        } catch (ParserException e) {
+          e.printStackTrace();
         }
+
+        Bundle extras = intent.getExtras();
+
+        getTransportControls().playFromUri(uri, extras);
       }
+    }
   }
 
-    private UUID getDrmUuid(String typeString) throws ParserException {
-        switch (typeString.toLowerCase()) {
-          case "widevine":
-            return C.WIDEVINE_UUID;
-          case "playready":
-            return C.PLAYREADY_UUID;
-          default:
-            try {
-              return UUID.fromString(typeString);
-            } catch (RuntimeException e) {
-              throw new ParserException("Unsupported drm type: " + typeString);
-            }
+  private UUID getDrmUuid(String typeString) throws ParserException {
+    switch (typeString.toLowerCase()) {
+      case "widevine":
+        return C.WIDEVINE_UUID;
+      case "playready":
+        return C.PLAYREADY_UUID;
+      default:
+        try {
+          return UUID.fromString(typeString);
+        } catch (RuntimeException e) {
+          throw new ParserException("Unsupported drm type: " + typeString);
         }
     }
+  }
 
 
   Handler mPlayTimeHandler = new Handler() {
@@ -5288,7 +5302,7 @@ public class PlayerActivity extends BasePlayerActivity {
     public void handleMessage(Message msg) {
       try {
 
-        if(getTransportControls()!=null){
+        if (getTransportControls() != null) {
           String ckey;
           String gkey;
           String status;
@@ -5305,7 +5319,7 @@ public class PlayerActivity extends BasePlayerActivity {
             status = "ING";
           }
 
-          if(player!=null){
+          if (player != null) {
             currentposition = player.getContentPosition();
           }
 //                    getCid
@@ -5315,7 +5329,7 @@ public class PlayerActivity extends BasePlayerActivity {
           String weburl = WELEARN_WEB_URL + "play/progress";
 
           final MediaType JSON
-                  = MediaType.parse("application/json; charset=utf-8");
+              = MediaType.parse("application/json; charset=utf-8");
 
           JSONObject postdata = new JSONObject();
           try {
@@ -5327,22 +5341,21 @@ public class PlayerActivity extends BasePlayerActivity {
             postdata.put("net_status", "WIFI");
             postdata.put("platform", "android");
             postdata.put("start", start_current_time);
-          } catch(JSONException e){
+          } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
           }
 
           RequestBody body = RequestBody.create(JSON, postdata.toString());
 
-
           new Thread() {
             public void run() {
-              httpConn.requestWebServer(weburl,"CLIENT_ID","CLIENT_SECRET",
-                      "" , body , callbackRequest);
+              httpConn.requestWebServer(weburl, "CLIENT_ID", "CLIENT_SECRET",
+                  "", body, callbackRequest);
             }
           }.start();
 
-          start_current_time = (int)currentposition;
+          start_current_time = (int) currentposition;
 
           if (mPlayTimeHandler != null) {
             // 한개만 호출될 수 있도록 확인 해봅시다
@@ -5359,42 +5372,45 @@ public class PlayerActivity extends BasePlayerActivity {
   };
 
 
-    /** 웹 서버로 데이터 전송 */
-    private void sendData() {
+  /**
+   * 웹 서버로 데이터 전송
+   */
+  private void sendData() {
 
-        String LoginOkUrl = WELEARN_WEB_URL+"play/play-data/v100015_001";
+    String LoginOkUrl = WELEARN_WEB_URL + "play/play-data/v100015_001";
 
-        new Thread() {
-            public void run() {
-                httpConn.requestWebServer(LoginOkUrl,"CLIENT_ID","CLIENT_SECRET","" , callbackRequest);
-            }
-        }.start();
+    new Thread() {
+      public void run() {
+        httpConn.requestWebServer(LoginOkUrl, "CLIENT_ID", "CLIENT_SECRET", "", callbackRequest);
+      }
+    }.start();
+  }
+
+  private final Callback callbackRequest = new Callback() {
+    @Override
+    public void onFailure(Call call, IOException e) {
+      Log.e(TAG, "mPlayTimeHandler 중지 콜백오류: " + e.getMessage());
+
+      if (mPlayTimeHandler != null) {
+        mPlayTimeHandler.removeCallbacksAndMessages(null);
+      }
     }
 
-    private final Callback callbackRequest = new Callback() {
-        @Override
-        public void onFailure(Call call, IOException e) {
-            Log.e(TAG, "mPlayTimeHandler 중지 콜백오류: "+e.getMessage());
+    @Override
+    public void onResponse(Call call, Response response) throws IOException {
+      String body = response.body().string();
 
-            if(mPlayTimeHandler!=null){
-              mPlayTimeHandler.removeCallbacksAndMessages(null);
-            }
+      if (response.code() == 200) {
+        Log.e(TAG, "서버에서 응답한 Body:" + body);
+      } else {
+        Log.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
+
+        if (mPlayTimeHandler != null) {
+          mPlayTimeHandler.removeCallbacksAndMessages(null);
         }
-        @Override
-        public void onResponse(Call call, Response response) throws IOException {
-            String body = response.body().string();
 
-            if(response.code() == 200){
-                Log.e(TAG, "서버에서 응답한 Body:"+body);
-            }else{
-                Log.e(TAG, "서버에서 응답한 Body: "+body + " response code " + response.code());
+      }
 
-                if(mPlayTimeHandler!=null){
-                    mPlayTimeHandler.removeCallbacksAndMessages(null);
-                }
-
-            }
-
-        }
-    };
+    }
+  };
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from 'mobx-react';
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, Dimensions, } from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, Dimensions, Alert,} from "react-native";
 import Swiper from 'react-native-swiper';
 import CommonStyles, { TEXT_PRIMARY } from "../../../styles/common";
 import IcClip from "../../../images/ic-detail-label-clip.png";
@@ -208,7 +208,8 @@ class TabContentInfo extends React.Component {
 						{`${ this.props.itemData.teacher.memo.split( '<br>' ).join( '\n' ) }`}
 					</Text>
 					}
-					<TouchableOpacity onPress={this.toggleTeacherView}>
+					<TouchableOpacity onPress={() => {Alert.alert('준비중입니다.')}}>
+                    {/*<TouchableOpacity onPress={this.toggleTeacherView}>*/}
 						<Text style={styles.lectureMoreButton}>더보기</Text>
 					</TouchableOpacity>
 				</View>
