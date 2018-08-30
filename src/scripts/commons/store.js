@@ -1,12 +1,13 @@
 import React from 'react';
 import { AsyncStorage } from "react-native";
 import axios from 'axios';
+import { observable } from "mobx";
 
 let socialType;
 let socialToken;
 let welaaaAuth;
 
-class Store{
+class Store {
     drawer = null;
     lastLocation = 'HomeScreen';
 
@@ -35,7 +36,7 @@ class Store{
 	set welaaaAuth( auth ) {
 		welaaaAuth = auth;
 		AsyncStorage.setItem('welaaaAuth', auth );
-		axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + auth.access_token;
+		axios.defaults.headers.common[ 'authorization' ] = 'Bearer ' + auth.access_token;
 	}
 
 	clearTokens=()=>{
@@ -46,12 +47,8 @@ class Store{
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
 
-	// @observable auth = undefined;
-    //
-	// @observable authToken = undefined;
+	@observable profile = {};
 }
-
-console.log( '<<<<<< new Store >>>>');
 
 const store = new Store();
 export default store;

@@ -83,15 +83,21 @@ const styles = StyleSheet.create( {
 @observer class ClassListPage extends React.Component {
 
 	store = createStore( {
+		isLoading: true,
 		displayData: null,
 		categories: [],
 		selectedCategory: null,
+		ccode: null,
+		pagination: {},
 	} );
 
-	loadClassList = async ( ccode = null ) => {
-		this.store.displayData = null;
-		const data = await net.getClassList( ccode );
-		this.store.displayData = data.items.map( element => {
+	loadClassList = async ( ccode = null, page = 1 ) => {
+		this.store.isLoading = true;
+		if( page === 1 ) {
+			this.store.displayData = null;
+		}
+		const data = await net.getClassList( ccode, page );
+		const VOs = data.items.map( element => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
@@ -100,6 +106,23 @@ const styles = StyleSheet.create( {
 			}
 			return vo;
 		} );
+
+		if( page === 1 ) {
+			this.store.displayData = VOs;
+		}
+		else {
+			_.each( VOs, e => this.store.displayData.push( e ) );
+		}
+		this.store.ccode = ccode;
+		this.store.pagination = data.pagination;
+		this.store.isLoading = false;
+	};
+
+	loadMore = () => {
+		if( this.store.pagination.has_next ) {
+			console.log( 'this.store.pagination.next_page', this.store.pagination.next_page );
+			this.loadClassList( this.store.ccode, this.store.pagination.next_page );
+		}
 	};
 
 	async componentDidMount() {
@@ -173,12 +196,6 @@ const styles = StyleSheet.create( {
 							  onCategorySelect={this.onCategorySelect}
 				/>
 
-				{this.store.displayData === null &&
-				<View style={{ marginTop: 12 }}>
-					<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
-				</View>
-				}
-
 				{this.store.displayData !== null &&
 				<FlatList
 					style={{ width: '100%' }}
@@ -192,11 +209,18 @@ const styles = StyleSheet.create( {
 				}
 
 				<View style={CommonStyles.contentContainer}>
-					<TouchableOpacity activeOpacity={0.9}>
+					{this.store.isLoading &&
+					<View style={{ marginTop: 12 }}>
+						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+					</View>
+					}
+					{( !this.store.isLoading && this.store.pagination.has_next ) &&
+					<TouchableOpacity activeOpacity={0.9} onPress={ this.loadMore }>
 						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 							<Text style={styles.linkViewAllText}>더보기</Text>
 						</View>
 					</TouchableOpacity>
+					}
 				</View>
 			</ScrollView>
 		</SafeAreaView>

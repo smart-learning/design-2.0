@@ -1,6 +1,6 @@
 import React from "react";
 import {observer} from 'mobx-react';
-import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, TextInput, AppRegistry,} from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity, Image, TextInput,} from "react-native";
 import CommonStyles from "../../../styles/common";
 import IcStarOrange from "../../../images/ic-star-orange-lg.png";
 import IcStarGrey from "../../../images/ic-star-grey-lg.png";
@@ -86,57 +86,52 @@ class UselessTextInput extends React.Component {
 @observer
 class ReviewForm extends React.Component {
 
-	constructor(props) {
-		super(props);
-	}
-
-
 	render() {
 		return <View style={styles.reviewForm}>
 			<Text style={styles.reviewFormParagraph}>여러분의 평가를 바탕으로</Text>
 			<Text style={styles.reviewFormParagraph}>더 좋은 강의를 만들겠습니다^^</Text>
 
 			<View style={styles.starIcons}>
-				<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 1}>
-					<View style={[styles.starIconContainer, styles.starIconContainer1]}>
+				<View style={[styles.starIconContainer, styles.starIconContainer1]}>
+					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 1}>
 						<Image source={IcStarGrey}
-							   style={(this.props.store.reviewStar === 0) ? styles.starIcon : {opacity: 0}}/>
+							   style={this.props.store.reviewStar === 0 ? styles.starIcon : {opacity: 0}}/>
 						<Image source={IcStarOrange}
 							   style={(this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 2}>
-					<View style={[styles.starIconContainer, styles.starIconContainer2]}>
+					</TouchableOpacity>
+				</View>
+				<View style={[styles.starIconContainer, styles.starIconContainer2]}>
+					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 2}>
 						<Image source={IcStarGrey}
 							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1) ? styles.starIcon : {opacity: 0}}/>
 						<Image source={IcStarOrange}
 							   style={(this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 3}>
-					<View style={[styles.starIconContainer, styles.starIconContainer3]}>
+					</TouchableOpacity>
+				</View>
+				<View style={[styles.starIconContainer, styles.starIconContainer3]}>
+					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 3}>
 						<Image source={IcStarGrey}
 							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2) ? styles.starIcon : {opacity: 0}}/>
 						<Image source={IcStarOrange}
 							   style={(this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 4}>
-					<View style={[styles.starIconContainer, styles.starIconContainer4]}>
+					</TouchableOpacity>
+				</View>
+				<View style={[styles.starIconContainer, styles.starIconContainer4]}>
+					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 4}>
 						<Image source={IcStarGrey}
 							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3) ? styles.starIcon : {opacity: 0}}/>
 						<Image source={IcStarOrange}
 							   style={(this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 5}>
-					<View style={[styles.starIconContainer, styles.starIconContainer5]}>
+					</TouchableOpacity>
+				</View>
+				<View style={[styles.starIconContainer, styles.starIconContainer5]}>
+					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 5}>
 						<Image source={IcStarGrey}
 							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4) ? styles.starIcon : {opacity: 0}}/>
 						<Image source={IcStarOrange}
 							   style={(this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</View>
-				</TouchableOpacity>
+					</TouchableOpacity>
+				</View>
 			</View>
 
 			<View style={styles.reviewInput} borderRadius={5}>

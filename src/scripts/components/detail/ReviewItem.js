@@ -1,7 +1,8 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, } from "react-native";
+import { Image, StyleSheet, Text, View, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import IcStarOrange from "../../../images/ic-star-orange.png";
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create( {
 	reviewItem: {
@@ -43,9 +44,10 @@ export default class ReviewItem extends React.Component {
 	}
 
 	render() {
+
 		return <View style={styles.reviewItem}>
 			<View style={CommonStyles.alignJustifyFlex}>
-				<Text style={styles.reviewName}>김딸기</Text>
+				<Text style={styles.reviewName}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
 				<View>
 					<View style={CommonStyles.alignJustifyFlex}>
 						<Image source={IcStarOrange} style={styles.reviewIcon}/>

@@ -1,16 +1,11 @@
 import React from 'react';
-import {Button, Text, View, Image, ImageBackground, TouchableOpacity, StyleSheet, AsyncStorage} from "react-native";
+import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import IcFree from '../../images/ic-stamp-free.png';
 import DummyUser from '../../images/dummy-my-profile-2.png';
 import IcAngleRight from '../../images/ic-my-angle-right.png';
-import MembershipPremium from '../../images/bullet-membership-premium.png';
-import MembershipBookClub from '../../images/bullet-membership-book-club.png';
-import MembershipCampus from '../../images/bullet-membership-campus.png';
-import MembershipNormal from '../../images/bullet-membership-normal.png';
 import CommonStyles from "../../styles/common";
 import store from "../commons/store";
-import NavigationActions from "react-navigation/src/NavigationActions";
-import MyScreens from "../pages/my/MyScreens";
+import globalStore from "../commons/store";
 
 const styles = StyleSheet.create({
 	userInfoContainer: {
@@ -117,7 +112,9 @@ export default class SidebarUserInfo extends React.Component {
 						{/*beforeLogin*/}
 						{store.welaaaAuth === undefined &&
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => this.props.navigation.navigate('Login')}>
+										  onPress={ ()=> this.props.navigation.navigate('Login') }
+						>
+
 							<Text style={styles.loginText}>로그인</Text>
 						</TouchableOpacity>
 						}
@@ -126,8 +123,8 @@ export default class SidebarUserInfo extends React.Component {
 						<TouchableOpacity activeOpacity={0.9}
 										  onPress={() => this.props.navigation.navigate('MyScreen')}>
 							<View>
-								<Text style={styles.userName}><Text style={styles.userNameImportant}>유저이름</Text>님</Text>
-								<Text style={styles.userEmail}>mail@mail.com</Text>
+								<Text style={styles.userName}><Text style={styles.userNameImportant}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '사용자' }</Text>님</Text>
+								<Text style={styles.userEmail}>{ globalStore.profile ? globalStore.profile.email : '' }</Text>
 							</View>
 						</TouchableOpacity>
 						}

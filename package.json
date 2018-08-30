@@ -32,7 +32,8 @@
 		"mobx": "^4",
 		"mobx-react": "^5.2.0",
 		"moment": "^2.22.2",
-		"npm": "^6.1.0",
+		"npm": "^6.4.0",
+		"numeral": "^2.0.6",
 		"react": "16.3.1",
 		"react-devtools": "^3.2.3",
 		"react-dom": "^16.4.2",
@@ -47,7 +48,7 @@
 		"react-native-swiper": "^1.5.13",
 		"react-native-video": "2.2.0",
 		"react-native-view-pager": "^0.2.3",
-		"react-navigation": "^2.3.1",
+		"react-navigation": "^2.12.1",
 		"react-test-renderer": "16.3.1",
 		"underscore": "^1.9.1",
 		"watchman": "^1.0.0"
