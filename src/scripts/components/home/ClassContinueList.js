@@ -1,9 +1,12 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, } from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image,} from "react-native";
 import CommonStyles from "../../../styles/common";
 import IcPlay from "../../../images/ic-play.png";
+import Native from "../../commons/native";
+import moment from "moment";
+import _ from 'underscore';
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	continueGrid: {
 		marginTop: 20,
 
@@ -63,67 +66,60 @@ const styles = StyleSheet.create( {
 		paddingLeft: 10,
 	},
 	infoText: {
-		fontSize:12,
+		fontSize: 12,
 		color: '#555555',
 	},
-} );
+});
 
 
 export default class ClassContinueList extends React.Component {
 
-	constructor( props ) {
-		super( props );
+	constructor(props) {
+		super(props);
+
+		if( this.props.itemData && this.props.itemData.length > 2 ) {
+			this.props.itemData.length = 2;
+		}
 	}
 
 	render() {
+		let items = this.props.itemData;
+
 		return <View style={[CommonStyles.alignJustifyContentBetween, styles.continueGrid]}>
-			<View style={styles.continueItem}>
-				<View style={styles.itemContainer}>
-					<TouchableOpacity activeOpacity={0.9}>
-						<ImageBackground
-							source={{ uri: this.props.thumbnail }}
-							resizeMode="cover"
-							style={styles.thumbnail}>
-							<Text style={styles.thumbnailTitle}>
-								{/*{this.props.title}*/}
-								titleasdfasdfasfasdfas
+			{ items.map( ( item, key ) => {
+				const playTime = moment.duration(item.data.play_time);
+				let progress = parseFloat( item.data.progress );
+				if( _.isNaN( progress ) ) {
+					progress = 0;
+				}
+				return (
+					<View style={styles.continueItem} key={ key }>
+						<View style={styles.itemContainer}>
+							<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(item.data.id)}>
+								<ImageBackground
+									source={{uri: item.data.images ? item.data.images.list : null}}
+									resizeMode="cover"
+									style={styles.thumbnail}>
+									<Text style={styles.thumbnailTitle} ellipsizeMode={'tail'} numberOfLines={3}>
+										{item.data.headline}
+									</Text>
+									<View style={styles.play}>
+										<Image source={IcPlay} style={CommonStyles.fullImg}/>
+									</View>
+								</ImageBackground>
+							</TouchableOpacity>
+						</View>
+						<View style={styles.progress}>
+							<View style={[styles.progressBar, {width: progress + '%'}]}/>
+						</View>
+						<View style={styles.info}>
+							<Text style={styles.infoText}>
+								{item.data.clip_count}개 클립, {`${playTime.hours()}시간 ${playTime.minutes()}분`}
 							</Text>
-							<Image source={IcPlay} style={styles.play}/>
-						</ImageBackground>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.progress}>
-					<View style={[styles.progressBar, {width: '10%'}]}/>
-				</View>
-				<View style={styles.info}>
-					<Text style={styles.infoText}>
-						00개 클립, 00시간 00분
-					</Text>
-				</View>
-			</View>
-			<View style={styles.continueItem}>
-				<View style={styles.itemContainer}>
-					<TouchableOpacity activeOpacity={0.9}>
-						<ImageBackground
-							source={{ uri: this.props.thumbnail }}
-							resizeMode="cover"
-							style={styles.thumbnail}>
-							<Text style={styles.thumbnailTitle}>
-								{this.props.title}
-							</Text>
-							<Image source={IcPlay} style={styles.play}/>
-						</ImageBackground>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.progress}>
-					<View style={[styles.progressBar, {width: '10%'}]}/>
-				</View>
-				<View style={styles.info}>
-					<Text style={styles.infoText}>
-						00개 클립, 00시간 00분
-					</Text>
-				</View>
-			</View>
+						</View>
+					</View>
+				)
+			} ) }
 		</View>
 	}
 }

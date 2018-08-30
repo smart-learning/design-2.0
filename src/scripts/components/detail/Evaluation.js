@@ -1,8 +1,10 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, } from "react-native";
+import { Text, View, StyleSheet, Image, } from "react-native";
 import CommonStyles from "../../../styles/common";
 import IcStarGrey from "../../../images/ic-star-grey.png";
 import IcStarOrange from "../../../images/ic-star-orange.png";
+import numeral from 'numeral';
+import _ from "underscore";
 
 const styles = StyleSheet.create( {
 	evaluation: {},
@@ -44,17 +46,21 @@ const styles = StyleSheet.create( {
 } );
 
 export default class Evaluation extends React.Component {
-	constructor( props ) {
-		super( props );
-	}
-
 	render() {
+		let starData = [];
+		let starAvg = this.props.itemData.star_avg;
+		let starSetAll = this.props.itemData.star_set.all;
+
+		_.each( this.props.itemData.star_set, element => {
+			starData.push( element / starSetAll * 100 );
+		} );
+
 		return <View style={styles.evaluation}>
-			<Text style={styles.starCount}>0.0</Text>
+			<Text style={styles.starCount}>{numeral( starAvg ).format( '0.00' )}</Text>
 
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.evaluationItem]}>
 				<View style={styles.evaluationBar}>
-					<View style={[styles.evaluationProgress, {width: '10%'}]}/>
+					<View style={[styles.evaluationProgress, {width: starData[4]+'%'}]}/>
 				</View>
 				<View>
 					<View style={CommonStyles.alignJustifyFlex}>
@@ -66,13 +72,13 @@ export default class Evaluation extends React.Component {
 					</View>
 				</View>
 				<Text style={styles.evaluationText}>
-					00 <Text style={styles.evaluationTextBullet}>%</Text>
+					{numeral( starData[4] ).format( '0.0' )} <Text style={styles.evaluationTextBullet}>%</Text>
 				</Text>
 			</View>
 
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.evaluationItem]}>
 				<View style={styles.evaluationBar}>
-					<View style={[styles.evaluationProgress, {width: '10%'}]}/>
+					<View style={[styles.evaluationProgress, {width: starData[3]+'%'}]}/>
 				</View>
 				<View>
 					<View style={CommonStyles.alignJustifyFlex}>
@@ -84,13 +90,13 @@ export default class Evaluation extends React.Component {
 					</View>
 				</View>
 				<Text style={styles.evaluationText}>
-					00 <Text style={styles.evaluationTextBullet}>%</Text>
+					{numeral( starData[3] ).format( '0.0' )} <Text style={styles.evaluationTextBullet}>%</Text>
 				</Text>
 			</View>
 
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.evaluationItem]}>
 				<View style={styles.evaluationBar}>
-					<View style={[styles.evaluationProgress, {width: '10%'}]}/>
+					<View style={[styles.evaluationProgress, {width: starData[2]+'%'}]}/>
 				</View>
 				<View>
 					<View style={CommonStyles.alignJustifyFlex}>
@@ -102,13 +108,13 @@ export default class Evaluation extends React.Component {
 					</View>
 				</View>
 				<Text style={styles.evaluationText}>
-					00 <Text style={styles.evaluationTextBullet}>%</Text>
+					{numeral( starData[2] ).format( '0.0' )} <Text style={styles.evaluationTextBullet}>%</Text>
 				</Text>
 			</View>
 
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.evaluationItem]}>
 				<View style={styles.evaluationBar}>
-					<View style={[styles.evaluationProgress, {width: '10%'}]}/>
+					<View style={[styles.evaluationProgress, {width: starData[1]+'%'}]}/>
 				</View>
 				<View>
 					<View style={CommonStyles.alignJustifyFlex}>
@@ -120,13 +126,13 @@ export default class Evaluation extends React.Component {
 					</View>
 				</View>
 				<Text style={styles.evaluationText}>
-					00 <Text style={styles.evaluationTextBullet}>%</Text>
+					{numeral( starData[1] ).format( '0.0' )} <Text style={styles.evaluationTextBullet}>%</Text>
 				</Text>
 			</View>
 
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.evaluationItem]}>
 				<View style={styles.evaluationBar}>
-					<View style={[styles.evaluationProgress, {width: '10%'}]}/>
+					<View style={[styles.evaluationProgress, {width: starData[0]+'%'}]}/>
 				</View>
 				<View>
 					<View style={CommonStyles.alignJustifyFlex}>
@@ -138,7 +144,7 @@ export default class Evaluation extends React.Component {
 					</View>
 				</View>
 				<Text style={styles.evaluationText}>
-					00 <Text style={styles.evaluationTextBullet}>%</Text>
+					{numeral( starData[0] ).format( '0.0' )} <Text style={styles.evaluationTextBullet}>%</Text>
 				</Text>
 			</View>
 		</View>

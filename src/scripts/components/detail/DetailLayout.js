@@ -95,7 +95,13 @@ class DetailLayout extends React.Component {
 										  }}>
 							<View style={styles.tabItem}>
 								<Text style={this.props.store.tabStatus === 'info' ? styles.tabActiveText : styles.tabNormalText}>
-									클래스정보
+									{this.props.learnType === 'audioBook' &&
+									<Text>도서정보</Text>
+									}
+									{this.props.learnType === 'class' &&
+									<Text>클래스정보</Text>
+									}
+
 								</Text>
 								<View style={ this.props.store.tabStatus === 'info' ? styles.tabActiveHr : styles.tabNormalHr }/>
 							</View>
@@ -108,7 +114,12 @@ class DetailLayout extends React.Component {
 										  }}>
 							<View style={styles.tabItem}>
 								<Text style={this.props.store.tabStatus === 'list' ? styles.tabActiveText : styles.tabNormalText}>
-									강의목차 ({this.props.store.itemClipData.items.length})
+									{this.props.learnType === 'audioBook' &&
+										<Text>목차({this.props.store.itemClipData.length})</Text>
+									}
+									{this.props.learnType === 'class' &&
+									<Text>강의목차({this.props.store.itemClipData.length})</Text>
+									}
 								</Text>
 								<View style={ this.props.store.tabStatus === 'list' ? styles.tabActiveHr : styles.tabNormalHr }/>
 							</View>
@@ -129,10 +140,10 @@ class DetailLayout extends React.Component {
 					</View>
 				</View>
 				{this.props.store.tabStatus === 'info' &&
-				<TabContentInfo store={ this.props.store }/>
+				<TabContentInfo store={ this.props.store } learnType={this.props.learnType}/>
 				}
 				{this.props.store.tabStatus === 'list' &&
-				<TabContentList/>
+				<TabContentList store={ this.props.store } learnType={this.props.learnType}/>
 				}
 				{this.props.store.tabStatus === 'review' &&
 				<TabContentReview store={ this.props.store }/>

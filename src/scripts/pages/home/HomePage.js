@@ -2,270 +2,245 @@ import React from "react";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import CommonStyles from "../../../styles/common";
-import Swiper from 'react-native-swiper';
-import {
-	Button,
-	Dimensions,
-	Image,
-	ImageBackground,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View
-} from "react-native";
-import Dummy1 from '../../../images/dummy-swiper-1.png';
-import Dummy2 from '../../../images/dummy-swiper-2.png';
-import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
-import Series from "../../components/home/Series";
+import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import net from "../../commons/net";
-import PageCategory from "../../components/PageCategory";
-import ClassList from "../../components/home/ClassList";
-import ClipRank from "../../components/home/ClipRank";
-import ClassContinueList from "../../components/home/ClassContinueList";
+import { SafeAreaView } from "react-navigation";
+import createStore from "../../commons/createStore";
+import HomeVideoPage from "./HomeVideoPage";
+import ViewPager from 'react-native-view-pager';
+import HomeAudioPage from "./HomeAudioPage";
+import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
+import SummaryVO from "../../vo/SummaryVO";
+import _ from 'underscore';
+import AdvertisingSection from "../../components/AdvertisingSection";
 
-const styles = StyleSheet.create( {
-	wrapper: {},
-	slide: {
-		flex: 1,
+const styles = StyleSheet.create({
+	tabContainer: {
+		position: 'absolute',
+		alignSelf: 'flex-start',
+		top: 0,
+		left: 0,
+		width: '100%',
+		height: 40,
+		backgroundColor: '#ffffff'
+	},
+	tabFlex: {
+		flexDirection: 'row',
+	},
+	tabItemContainer: {
+		width: '50%',
+	},
+	tabItem: {
 		justifyContent: 'center',
 		alignItems: 'center',
+		position: 'relative',
+		height: 40,
 	},
-	thumbnail: {
-		width: '100%',
-		paddingTop: '21%',
-		paddingBottom: '21%',
-	},
-	mainTitleCenter: {
-		textAlign: 'center',
-	},
-	titleH2: {
-		fontSize: 26,
-		fontWeight: 'bold',
-		color: '#333333',
-	},
-	titleH4: {
-		paddingTop: 10,
-		fontSize: 13,
-		color: '#888888',
-	},
-	titleH3: {
-		fontSize: 13,
-		fontWeight: 'bold',
-		color: '#333333',
-	},
-	titleParagraph: {
-		paddingLeft: 15,
-		fontSize: 11,
-		color: '#b7b7b7',
-	},
-	titleLink: {
-		fontSize: 13,
-		color: CommonStyles.COLOR_PRIMARY,
-	},
-	titleHr: {
-		height: 1,
-		marginTop: 7,
-		backgroundColor: '#cecece',
-	},
-	linkViewAll: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		width: '100%',
-		height: 36,
-		marginLeft: 'auto',
-		marginRight: 'auto',
-		backgroundColor: '#dddddd',
-	},
-	classLinkViewAll: {
-		marginTop: 15,
-		marginBottom: 30,
-	},
-	linkViewAllText: {
+	tabText: {
 		fontSize: 14,
-		color: '#888888',
+		color: '#a4a4a4',
 	},
-	linkViewAllIcon: {
-		paddingLeft: 7,
-		height: 13,
+	tabTextActive: {
+		fontSize: 14,
+		color: '#000000',
 	},
-	seriesContainer: {
-		paddingTop: 50,
-		paddingBottom: 50,
+	tabHr: {
+		position: 'absolute',
+		left: 0,
+		bottom: 0,
+		width: '100%',
+		height: 3,
+		backgroundColor: '#ffffff',
 	},
-	classContainer: {
-		paddingTop: 50,
-		paddingBottom: 50,
+	tabHrActive: {
+		position: 'absolute',
+		left: 0,
+		bottom: 0,
+		width: '100%',
+		height: 3,
+		backgroundColor: '#26c281',
 	},
-	classCategory: {
-		marginTop: 20,
-		marginBottom: 20,
+	tabContentContainer: {
+		paddingTop: 40,
 	},
-	classCategoryHr: {
-		height: 1,
-		backgroundColor: '#cecece',
-	},
-} );
+});
 
 @observer
 class HomePage extends React.Component {
 
-	@observable slideHeight = null;
-	@observable clipRankContentSize = null;
-	@observable homeSeriesData = {};
-	@observable videoCategoryData = {};
-	@observable classHotData = {};
-	@observable classNewData = {};
-	@observable classRecommendData = {};
-	@observable clipRankData = {};
+	@observable tabStatus = 'video';
 
-	getData = async () => {
-		this.homeSeriesData = await net.getHomeSeries();
-		this.videoCategoryData = await net.getLectureCategory();
-		this.classHotData = await net.getHomeClassHot();
-		this.classNewData = await net.getHomeClassNew();
-		this.classRecommendData = await net.getHomeClassRecommend();
-		this.clipRankData = await net.getHomeClipRank();
+	store = createStore({
+		slideHeight: null,
+		windowWidth: null,
+		clipRankContentSize: null,
+		homeSeriesData: {},
+		videoCategoryData: [],
+		classHotData: {},
+		classNewData: {},
+		classRecommendData: {},
+		clipRankData: [],
+		homeBannerData: [],
+		audioRealTimeChartData: [],
+		audioNewData: {
+			items: [],
+		},
+		audioMonth: [],
+		voucherStatus: null,
+		classUseData: [],
+		audioBuyData: [],
+		audioUseData: [],
+		// audioPlayRecentData: [],
+	});
 
-		console.log( 'get series', this.homeSeriesData );
+	getData = async ( isRefresh = false ) => {
+		// 시리즈는 제일 먼저 읽어온다
+		this.store.homeSeriesData = await net.getHomeSeries();
+
+		// 데이터 가져와서
+		const videoCategoryData = await net.getLectureCategory( isRefresh );
+		const homeContents = await net.getHomeContents( isRefresh );
+		// VO로 정리해서 사용
+		const categoryVOs = videoCategoryData.map( element => {
+			const vo = new PageCategoryItemVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			vo.label = element.title;
+			return vo;
+		} );
+		const hotVOs = homeContents.hot.map( ( element, n ) => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			vo.rankNumber = n + 1;
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+		const newVOs = homeContents.new.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+		const recommendVOs = homeContents.recommend.map( element => {
+			const vo = new SummaryVO();
+			_.each( element, ( value, key ) => vo[ key ] = value );
+			vo.key = element.id.toString();
+			if( !vo.thumbnail ) {
+				vo.thumbnail = vo.images.wide;
+			}
+			return vo;
+		} );
+
+		// mobx 바인딩
+		this.store.videoCategoryData = categoryVOs;
+		this.store.classHotData = hotVOs;
+		this.store.classNewData = newVOs;
+		this.store.classRecommendData = recommendVOs;
+		this.store.clipRankData = await net.getHomeClipRank( isRefresh );
+		this.store.homeBannerData = await net.getMainBanner( isRefresh );
+		this.store.audioRealTimeChartData = await net.getHomeAudioRealTimeChartContents( isRefresh );
+		this.store.audioNewData = await net.getAudioBookList( isRefresh );
+		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
+		// this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
+
+		try {
+			this.store.voucherStatus = await net.getVoucherStatus( isRefresh );
+			this.store.classUseData = await net.getPlayRecentVideoCourses( isRefresh );
+			this.store.audioBuyData = await net.getPurchasedAudioBooks( isRefresh );
+			this.store.audioUseData = await net.getPlayRecentAudioBook( isRefresh );
+		}
+		catch( e ) {
+			console.log( e );
+		}
 	};
 
 	componentDidMount() {
-		let windowWidth = Dimensions.get( 'window' ).width;
+		let windowWidth = Dimensions.get('window').width;
+		let windowHeight = Dimensions.get('window').height;
 
-		this.slideHeight = windowWidth * 0.42;
-		this.clipRankContentSize = windowWidth - 85;
+		this.store.windowWidth = windowWidth;
+		this.store.windowHeight = windowHeight;
+		this.store.slideHeight = windowWidth * 0.42;
+		this.store.clipRankContentSize = windowWidth - 85;
 
-		this.getData();
+		try {
+			this.getData();
+		}
+		catch( e ) {
+			console.log( e );
+		}
 	}
 
+	goPage = pageName => {
+		if( pageName === 'video' ) {
+			this.tabStatus = 'video';
+			this.refs.pager.setPage( 0 );
+		}
+		else if( pageName === 'audioBook' ) {
+			this.tabStatus = 'audioBook';
+			this.refs.pager.setPage( 1 );
+		}
+	};
+
+	onPageSelected = (event) => {
+		if( event.nativeEvent.position === 0 ) {
+			this.tabStatus = 'video';
+		}
+		else if( event.nativeEvent.position === 1 ) {
+			this.tabStatus = 'audioBook';
+		}
+	};
+
 	render() {
-		return <View style={[ CommonStyles.container, { backgroundColor: '#ffffff' } ]}>
-			<ScrollView style={{ width: '100%' }}>
-				{/* 이미지 스와이퍼 */}
-				<View style={{ height: this.slideHeight }}>
-					<Swiper style={styles.wrapper}
-							showsButtons={false}
-							height={window.width}
-							paginationStyle={{ bottom: 10 }}>
-						<View style={styles.slide}>
-							<ImageBackground source={Dummy1} resizeMode="cover" style={styles.thumbnail}/>
+		// TODO: ViewPager 크기 및 위치 조정 필요
+		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
+			<SafeAreaView style={{flex: 1, width: '100%'}}>
+				<ViewPager
+					ref={ 'pager' }
+					initialPage={0}
+					style={{ flex:1, height: this.store.windowHeight - 40 }}
+					onPageSelected={ this.onPageSelected }
+					>
+					<View style={styles.tabContentContainer}>
+						<HomeVideoPage store={this.store} onRefresh={ () => this.getData( true ) }/>
+					</View>
+					<View style={styles.tabContentContainer}>
+						<HomeAudioPage store={this.store} onRefresh={ () => this.getData( true ) }/>
+					</View>
+				</ViewPager>
+				<View style={styles.tabContainer}>
+					<View style={styles.tabFlex}>
+						<View style={styles.tabItemContainer}>
+							<TouchableOpacity activeOpacity={0.9} onPress={ ()=>this.goPage( 'video' ) }>
+								<View style={styles.tabItem}>
+									<Text style={this.tabStatus === 'video' ? styles.tabTextActive : styles.tabText}>
+										비디오
+									</Text>
+									<View style={this.tabStatus === 'video' ? styles.tabHrActive : styles.tabHr}/>
+								</View>
+							</TouchableOpacity>
 						</View>
-						<View style={styles.slide}>
-							<ImageBackground source={Dummy2} resizeMode="cover" style={styles.thumbnail}/>
+						<View style={styles.tabItemContainer}>
+							<TouchableOpacity activeOpacity={0.9} onPress={() => this.goPage( 'audioBook' )}>
+								<View style={styles.tabItem}>
+									<Text
+										style={this.tabStatus === 'audioBook' ? styles.tabTextActive : styles.tabText}>
+										오디오북
+									</Text>
+									<View style={this.tabStatus === 'audioBook' ? styles.tabHrActive : styles.tabHr}/>
+								</View>
+							</TouchableOpacity>
 						</View>
-					</Swiper>
+					</View>
 				</View>
-				{/* /이미지 스와이퍼 */}
 
-				{this.homeSeriesData.length > 6 &&
-				<View style={[ CommonStyles.contentContainer, styles.seriesContainer ]}>
-					<View>
-						<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
-							윌라 추천 시리즈
-						</Text>
-						<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
-							당신이 배우고 싶은 모든 것
-						</Text>
-					</View>
-
-					<Series itemData={this.homeSeriesData}/>
-
-					<TouchableOpacity activeOpacity={0.9}>
-						<View style={styles.linkViewAll} borderRadius={5}>
-							<Text style={styles.linkViewAllText}>
-								추천 시리즈 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
-							</Text>
-						</View>
-					</TouchableOpacity>
-				</View>
-				}
-
-				<View style={[ CommonStyles.contentContainer, styles.classContainer ]}>
-					<View>
-						<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
-							윌라 프리미엄 클래스
-						</Text>
-						<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
-							당신의 커리어 성공과 행복한 일상을 위한 교육
-						</Text>
-					</View>
-
-					<View style={styles.classCategory}>
-						<View style={styles.classCategoryHr}/>
-						<PageCategory data={this.videoCategoryData.items}/>
-						<View style={styles.classCategoryHr}/>
-					</View>
-
-					<View style={CommonStyles.alignJustifyContentBetween}>
-						<Text style={styles.titleH3}>
-							회원들이 듣고 있는 클래스
-						</Text>
-						<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
-							2018. 07.09 업데이트
-						</Text>
-					</View>
-
-					<ClassList classType="hot" itemData={this.classHotData}/>
-
-					<View style={CommonStyles.alignJustifyContentBetween}>
-						<Text style={styles.titleH3}>
-							새로 나온 클래스
-						</Text>
-						<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
-							2018. 07.09 업데이트
-						</Text>
-					</View>
-
-					<ClassList itemData={this.classNewData}/>
-
-					<View style={CommonStyles.alignJustifyContentBetween}>
-						<Text style={styles.titleH3}>
-							윌라 추천 클래스
-						</Text>
-						<Text style={[ styles.titleParagraph, { marginLeft: 0 } ]}>
-							2018. 07.09 업데이트
-						</Text>
-					</View>
-
-					<ClassList itemData={this.classRecommendData}/>
-
-					<TouchableOpacity activeOpacity={0.9}>
-						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
-							<Text style={styles.linkViewAllText}>
-								클래스 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>
-							</Text>
-						</View>
-					</TouchableOpacity>
-
-					<View style={CommonStyles.alignJustifyContentBetween}>
-						<Text style={styles.titleH3}>
-							지금 많이 듣고 있는 강의클립
-						</Text>
-						<Text style={[ styles.titleParagraph, { marginLeft: 'auto' } ]}>
-							2018. 07.09 업데이트
-						</Text>
-					</View>
-					<View style={styles.titleHr}/>
-
-					<ClipRank itemData={this.clipRankData} clipRankContentSize={this.clipRankContentSize}/>
-
-					<View style={CommonStyles.alignJustifyItemCenter}>
-						<Text style={styles.titleH3}>
-							이어보기
-						</Text>
-						<Text style={styles.titleParagraph}>
-							2018. 07.09 업데이트
-						</Text>
-						<TouchableOpacity activeOpacity={0.9} style={{ marginLeft: 'auto' }}>
-							<Text style={styles.titleLink}>마이윌라</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.titleHr}/>
-
-					<ClassContinueList/>
-				</View>
-			</ScrollView>
+			</SafeAreaView>
 		</View>
 	}
 }

@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Button, Modal, StyleSheet, Text, View} from "react-native";
+import {AsyncStorage, Button, Alert, Modal, StyleSheet, Dimensions, View, Text, TouchableOpacity} from "react-native";
+import Image from 'react-native-scalable-image';
 import {COLOR_PRIMARY} from "../../styles/common";
 import moment from 'moment';
+import net from "../commons/net";
 
 class AdvertisingSection extends Component {
 
@@ -10,142 +12,155 @@ class AdvertisingSection extends Component {
 
 		this.style = StyleSheet.create({
 
-			frame: {
+			container: {
 				flex: 1,
 				alignItems: 'center',
 				justifyContent: 'center',
 				backgroundColor: '#00000099',
 			},
 
-			footer: {
-				flexDirection: 'row',
-				backgroundColor: COLOR_PRIMARY,
+			frame:{
+				width: Dimensions.get('window').width - 30,
+				borderRadius: 20,
+				overflow: 'hidden',
+				backgroundColor: '#FFFFFF',
 			},
 
-			button: {
+			img: {
+				// borderTopRightRadius: 20,
+				// borderTopLeftRadius: 20,
+				// overflow: 'hidden',
+			},
+
+			footer: {
+				flexDirection: 'row',
+				width: '100%',
+				alignItems:'center'
+			},
+
+			hideOption:{
+				padding: 10,
+				alignItems: 'flex-start',
+			},
+
+			footer:{
+				width: '100%',
 				backgroundColor: COLOR_PRIMARY,
+				alignItems: 'center',
+			},
+
+			footerText:{
+				alignSelf: 'center',
+				padding: 15,
+				fontSize: 18,
+				color:'#FFFFFF'
 			}
 		});
 
 
 		this.state = {
-			// modalId: 'b'
+			ads:[],
 		}
+
+		this.now = moment();
 	}
 
-	componentDidMount() {
+	componentDidMount = async () => {
+		let data = await net.getMainPopup();
+		if( data.length === 0 ) return;
 
-		// alert( new Date() );
-		// AsyncStorage.setItem('sample', JSON.stringify({ expiryDate: new Date(), data: 'sample data'}));
 
-		// AsyncStorage.getItem( 'sample' ).then( res=>{
-		// 	let data = JSON.parse( res );
-		// 	alert( moment( new Date() ).diff( data.expiryDate, 'days' ));
-		// });
 
+		// 안보기로 한 팝업은 아닌지 날짜 확인
+		const adsIds = data.map( item => `pop-${item.id}` );
+		const adKeyDateMaps = await AsyncStorage.multiGet( adsIds );
+
+
+		// 설정된적이 없거나 날짜가 남았다면 ad리스트에 추가
+		let ads = [];
+		data.forEach( ( ad, idx ) => {
+			let expireDate = adKeyDateMaps[idx][1];
+			if( expireDate === null ){
+				ads.push( ad );
+			}
+			else
+			{
+				let fromNowDays = this.now.diff( moment( expireDate ), 'days' );
+				if( fromNowDays > 0 ) ads.push( ad );
+			}
+
+		});
+
+		this.setState({ ads: ads });
 	}
 
 
 
 	onConfirm = () => {
-		this.setState({ modalId:null });
+		let ads = [...this.state.ads];
+		let closedAd = ads.shift();
+		this.setState({ ads: ads });
+
+		console.log( 'dddd', ads );
+
+		return closedAd;
 	}
 
 	onCancel = () => {
-		this.setState({ modalId:null });
+		// this.setState({ modalId:null });
 	}
 
-	hide3Days = (id) => {
-		// console.log( e );
-		// alert( JSON.stringify( e ));
+	hide3Days = () => {
+		let closedAd = this.onConfirm();
+
+		console.log( closedAd );
+
+		const after3Days = moment().add( 3, 'd' ).format().toString();
+		AsyncStorage.setItem( `pop-${closedAd.id}`, after3Days );
 	}
 
 
 	render() {
 
-		/*
-        * onConfirm: 이 있으면 푸터에 확인&취소 노출, 아니라면 닫기만 노출
-        * hideForDays: "n일동안 보지 않기" 노출,
-        *
-        * ex) 평점 주기,
-        * */
-		// const {onClose, onConfirm, hideForDays} = this.props;
-		//
-		//
-		//
-		// let hideButton;
-		// const footer = onConfirm ?
-		// 	<View style={ this.style.footer }>
-		// 		<Button style={ this.style.button } title="닫기"/>
-		// 	</View>
-		// 	:
-		// 	<View style={ this.style.footer }>
-		// 		<Button style={ this.style.button } title="확인"/>
-		// 		<Button style={ this.style.button } title="취소"/>
-		// 	</View>;
-		//
-		//
-		// if( hideForDays ) hideButton = <View>
-		// 	<Text>3일동안 보지 않기</Text>
-		// </View>;
-
-		let { modalId } = this.state;
-
-		// alert( modalId );
+		let ad = {};
+		const cnt = this.state.ads.length;
+		if( cnt > 0 ) ad = this.state.ads[cnt-1];
 
 
-		return <View>
-
-			<Modal
+		return <Modal
 				animationType="slide"
 				transparent={true}
-				visible={ modalId === 'a' }
-				style={this.style.container}
+				visible={ cnt > 0 }
 				onRequestClose={()=>{}}
 			>
 
-				<View style={this.style.frame}>
-
-					<View>
-						<Text>It's a Modal A</Text>
-					</View>
-
-					<View style={this.style.footer}>
-						<Button title="확인" onPress={()=>this.onConfirm()}/>
-						<Button title="취소" onPress={()=>this.onCancel()}/>
-					</View>
-
-				</View>
-
-			</Modal>
-
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={ modalId === 'b' }
-				style={this.style.container}
-				onRequestClose={()=>{}}
-			>
+			<View style={ this.style.container }>
 
 				<View style={this.style.frame}>
 
-					<View>
-						<Text>It's a Modal B</Text>
-					</View>
+					<Image source={ { uri: ad.img_url } }
+						   width={ Dimensions.get('window').width - 30 }
+						   style={ this.style.img }
+						   resizeMode={ 'cover' }
+					/>
 
-					<View>
-						<Button title="3일동안 보지 않기" onPress={this.hide3Days}/>
-					</View>
+					<TouchableOpacity activeOpacity={ 0.9 }
+									  style={ this.style.hideOption }
+									  onPress={ this.hide3Days }>
+						<Text>3일동안 보지 않기</Text>
+					</TouchableOpacity>
 
-					<View style={this.style.footer}>
-						<Button title="확인" onPress={()=>this.onConfirm()}/>
-						<Button title="취소" onPress={()=>this.onCancel()}/>
-					</View>
+					<TouchableOpacity activeOpacity={ 0.9 }
+									  style={ this.style.footer }
+									  onPress={ this.onConfirm }>
+						<Text style={ this.style.footerText }>닫기</Text>
+					</TouchableOpacity>
 
 				</View>
 
+			</View>
+
 			</Modal>
-		</View>
 	}
 
 }

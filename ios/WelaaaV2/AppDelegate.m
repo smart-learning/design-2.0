@@ -69,9 +69,21 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     return YES;
 }
 
-- (BOOL) application : (UIApplication *) application
-             openURL : (NSURL *) url
-             options : (NSDictionary<UIApplicationOpenURLOptionsKey, id> *) options
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+                                      sourceApplication:(NSString *)sourceApplication
+                                             annotation:(id)annotation {
+  
+  if ([KOSession isKakaoAccountLoginCallback:url]) {
+    return [KOSession handleOpenURL:url];
+  }
+  
+  return YES;
+}
+
+
+- (BOOL) application : (UIApplication *) application openURL : (NSURL *) url
+                                                     options : (NSDictionary<UIApplicationOpenURLOptionsKey, id> *) options
 {
     BOOL handled = [ [FBSDKApplicationDelegate sharedInstance] application : application
                                                                    openURL : url
