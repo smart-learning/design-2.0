@@ -125,6 +125,7 @@ android {
         targetSdkVersion 26
         versionCode 98
         versionName "1.47.336"
+        archivesBaseName="welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -144,21 +145,17 @@ android {
     }
     buildTypes {
         release {
+            applicationIdSuffix ""
+            debuggable false
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
         debug {
+            applicationIdSuffix ".debug"
+            debuggable true
             signingConfig signingConfigs.debug
-        }
-    }
-
-    productFlavors {
-        dev {
-            applicationId "kr.co.influential.youngkangapp.dev"
-        }
-        product {
-            applicationId "kr.co.influential.youngkangapp"
+            minifyEnabled false
         }
     }
 
@@ -244,3 +241,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 //apply plugin: 'com.google.gms.google-services'
+
+def getDate() {
+    return new Date().format('yyyy-MM-dd-HHmm')
+}
