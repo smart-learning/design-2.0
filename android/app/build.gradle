@@ -155,7 +155,7 @@ android {
 
     productFlavors {
         dev {
-            applicationId "kr.co.influential.youngkangapp"
+            applicationId "kr.co.influential.youngkangapp.dev"
         }
         product {
             applicationId "kr.co.influential.youngkangapp"
