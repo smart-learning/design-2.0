@@ -18,7 +18,7 @@
 # Lock Files
 package-lock.json
 yarn.lock
-ios/Podfile.lock 
+ios/Podfile.lock
 
 # Logs
 npm-debug.log*
@@ -160,3 +160,4 @@ ios/WelaaaV2Tests
 .idea/workspace.xml
 ios/PallyConFPSSDK.framework/
 ios/WelaaaV2Tests/
+ios/WelaaaV2.xcodeproj/project.pbxproj

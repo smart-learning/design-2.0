@@ -116,12 +116,16 @@ android {
     }
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
+
+    flavorDimensions "default"
+
     defaultConfig {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 98
+        versionName "1.47.336"
+        archivesBaseName="welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -141,14 +145,20 @@ android {
     }
     buildTypes {
         release {
+            applicationIdSuffix ""
+            debuggable false
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
         debug {
+            applicationIdSuffix ".debug"
+            debuggable true
             signingConfig signingConfigs.debug
+            minifyEnabled false
         }
     }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -176,6 +186,7 @@ buildscript {
 
 apply plugin: 'io.fabric'
 
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
@@ -194,7 +205,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-cast-framework:15.0.0'
     implementation 'com.facebook.react:react-native:+'
     implementation project(':react-native-kakao-signin')
-    implementation project(':react-native-iap')
     implementation project(':react-native-fbsdk')
     implementation project(':react-native-localizable')
     // facebook
@@ -210,6 +220,18 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
         transitive = true
     }
+
+    // android badger
+//    implementation "me.leolin:ShortcutBadger:1.1.21@aar"
+//
+//    implementation 'com.google.firebase:firebase-core:16.0.3'
+//    implementation 'com.google.firebase:firebase-iid:17.0.0'
+//    implementation 'com.google.firebase:firebase-messaging:17.3.0'
+//    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+
+    // Getting a "Could not find" error? Make sure you have
+    // added the Google maven respository to your root build.gradle
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -217,4 +239,9 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+//apply plugin: 'com.google.gms.google-services'
+
+def getDate() {
+    return new Date().format('yyyy-MM-dd-HHmm')
 }

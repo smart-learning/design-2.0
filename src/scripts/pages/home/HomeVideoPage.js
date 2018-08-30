@@ -1,7 +1,7 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
 import {
-	ActivityIndicator,
+	ActivityIndicator, Alert,
 	Image,
 	ImageBackground,
 	ScrollView,
@@ -173,7 +173,7 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 							<Series itemData={this.props.store.homeSeriesData}/>
 						</View>
 
-						<TouchableOpacity activeOpacity={0.9}>
+						<TouchableOpacity activeOpacity={0.9} onPress={() => {Alert.alert('준비중입니다.')}}>
 							<View style={styles.linkViewAll} borderRadius={5}>
 								<Text style={styles.linkViewAllText}>
 									추천 시리즈 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>

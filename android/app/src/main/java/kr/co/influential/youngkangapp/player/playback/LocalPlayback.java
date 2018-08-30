@@ -51,9 +51,6 @@ import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
-import kr.co.influential.youngkangapp.R;
-import kr.co.influential.youngkangapp.player.service.MediaService;
-import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,6 +58,9 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.UUID;
+import kr.co.influential.youngkangapp.R;
+import kr.co.influential.youngkangapp.player.service.MediaService;
+import kr.co.influential.youngkangapp.player.utils.LogHelper;
 
 /**
  * A class that implements local media playback using {@link com.google.android.exoplayer2.ExoPlayer}

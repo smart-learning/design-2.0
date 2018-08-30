@@ -1,0 +1,31 @@
+{
+  "info": {
+    "groupkey": "28",
+    "ckey": "59",
+    "cname": "MLB의 이기는 전략 : 바로 지금 집중적으로",
+    "grouptitle": "매출 10조 메이저리그에서 배우는 성공 전략",
+    "teachername": "송재우 위원",
+    "pbackimg": "http://welaaa.co.kr/contentsUpImage/20170729144455.png",
+    "cmemo": "짧은 시간 내, 확실한 성과를 내기 위한 구단의 선택! 바로 지금 집중적으로 투자하는 MLB의 단기 향상 전략 ",
+//    "curl": "http://mst.aquan.welearn.co.kr/velocita/video/0028/0028_04.mp4",
+    "curl": "https://contents.welaaa.com/public/contents/DASH_0028_004_mp4/stream.mpd",
+    "caurl": "http://mst.aquan.welearn.co.kr/velocita/video/0028/0028_04_a.mp4",
+    "cplay_time": "00:11:06",
+    "cpay": "유료",
+    "cpay_money": "2000",
+    "chitcnt": "548",
+    "ccon_class": "1",
+    "csmi": "http://welaaa.co.kr/common/smi_json.php?eachkey=59"
+  },
+  "data": {
+    "view_author": "true",
+    "view_limitdate": "2018-07-26 05:42:22",
+    "view_time": "0",
+    "user_star": "",
+    "user_logged_in": false
+  },
+  "status": {
+    "code": "200",
+    "msg": "성공"
+  }
+}

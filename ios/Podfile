@@ -34,5 +34,13 @@ target 'WelaaaV2' do
 
 #  pod 'react-native-video', :path => '../node_modules/react-native-video'
 
+
+  # Showing images from web
+  pod 'SDWebImage', '~> 4.0'
+
+  #pod 'RNIap', :path => '../node_modules/react-native-iap'
+
+#  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
 end
 use_frameworks!
