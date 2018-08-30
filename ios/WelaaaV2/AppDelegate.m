@@ -64,7 +64,9 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     // Use Firebase library to configure APIs
     [FIRApp configure];
   
-  
+    [FIRMessaging messaging].delegate = self;
+    NSString *fcmToken = [FIRMessaging messaging].FCMToken;
+    NSLog(@"  FCM registration token: %@", fcmToken);
   
     return YES;
 }
