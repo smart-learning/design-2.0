@@ -676,6 +676,9 @@ public class PlayerActivity extends BasePlayerActivity {
     if (controllerCompat != null) {
       controllerCompat.unregisterCallback(callback);
     }
+
+    // TODO: 2018. 8. 29. temporary demo.
+    getTransportControls().stop();
   }
 
   @Override
