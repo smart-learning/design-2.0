@@ -58,6 +58,10 @@
 		EF9BAE8D211D27F40063FE2C /* ContentPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */; };
 		EFB3E657212BEF1A00C5DF5D /* PlayerSleepTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFB3E656212BED0200C5DF5D /* PlayerSleepTimerButton.m */; };
 		EFB3E658212BEF1D00C5DF5D /* PlayerSleepTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFB3E655212BED0200C5DF5D /* PlayerSleepTimerView.m */; };
+		EFD3A85B2139003A0065674C /* ScriptControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD3A854213900260065674C /* ScriptControlView.m */; };
+		EFD3A85C2139003C0065674C /* MediaPlayerScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD3A859213900270065674C /* MediaPlayerScriptView.m */; };
+		EFD3A85D2139003E0065674C /* PlayerScriptItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD3A857213900270065674C /* PlayerScriptItemView.m */; };
+		EFD3A85E213900410065674C /* PlayerScriptCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD3A853213900260065674C /* PlayerScriptCell.m */; };
 		EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */; };
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
 		EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081E22113ED84006D3F6C /* NSString+GC.m */; };
@@ -481,6 +485,14 @@
 		EFB3E655212BED0200C5DF5D /* PlayerSleepTimerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerSleepTimerView.m; sourceTree = "<group>"; };
 		EFB3E656212BED0200C5DF5D /* PlayerSleepTimerButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerSleepTimerButton.m; sourceTree = "<group>"; };
 		EFD388172138DD4900AC5C39 /* WelaaaV2_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WelaaaV2_Prefix.pch; path = WelaaaV2/WelaaaV2_Prefix.pch; sourceTree = "<group>"; };
+		EFD3A853213900260065674C /* PlayerScriptCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerScriptCell.m; sourceTree = "<group>"; };
+		EFD3A854213900260065674C /* ScriptControlView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScriptControlView.m; sourceTree = "<group>"; };
+		EFD3A855213900260065674C /* PlayerScriptItemView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerScriptItemView.h; sourceTree = "<group>"; };
+		EFD3A856213900260065674C /* MediaPlayerScriptView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaPlayerScriptView.h; sourceTree = "<group>"; };
+		EFD3A857213900270065674C /* PlayerScriptItemView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerScriptItemView.m; sourceTree = "<group>"; };
+		EFD3A858213900270065674C /* ScriptControlView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScriptControlView.h; sourceTree = "<group>"; };
+		EFD3A859213900270065674C /* MediaPlayerScriptView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaPlayerScriptView.m; sourceTree = "<group>"; };
+		EFD3A85A213900270065674C /* PlayerScriptCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerScriptCell.h; sourceTree = "<group>"; };
 		EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+LocalizedError.m"; sourceTree = "<group>"; };
 		EFE081AA2113EB0C006D3F6C /* NSError+LocalizedError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+LocalizedError.h"; sourceTree = "<group>"; };
 		EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Blocks.m"; sourceTree = "<group>"; };
@@ -935,6 +947,21 @@
 			path = SleepTimerView;
 			sourceTree = "<group>";
 		};
+		EFD3A852213900190065674C /* ScriptView */ = {
+			isa = PBXGroup;
+			children = (
+				EFD3A858213900270065674C /* ScriptControlView.h */,
+				EFD3A854213900260065674C /* ScriptControlView.m */,
+				EFD3A856213900260065674C /* MediaPlayerScriptView.h */,
+				EFD3A859213900270065674C /* MediaPlayerScriptView.m */,
+				EFD3A855213900260065674C /* PlayerScriptItemView.h */,
+				EFD3A857213900270065674C /* PlayerScriptItemView.m */,
+				EFD3A85A213900270065674C /* PlayerScriptCell.h */,
+				EFD3A853213900260065674C /* PlayerScriptCell.m */,
+			);
+			path = ScriptView;
+			sourceTree = "<group>";
+		};
 		EFE0821F2114185D006D3F6C /* ContentsPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1078,6 +1105,7 @@
 		EFE0F3872117E23500D4558B /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				EFD3A852213900190065674C /* ScriptView */,
 				EF037104212D2DD80089405C /* ContentsListView */,
 				EFB3E62B212BECF300C5DF5D /* SleepTimerView */,
 				EF9BAE60211D1D9C0063FE2C /* Components */,
@@ -1640,8 +1668,11 @@
 				EFE08313211430E7006D3F6C /* DbContentAudioGroupItemModel.m in Sources */,
 				EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */,
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
+				EFD3A85C2139003C0065674C /* MediaPlayerScriptView.m in Sources */,
 				EFE082572114185D006D3F6C /* IFPlayerScriptItemView.m in Sources */,
 				EFE082502114185D006D3F6C /* UIAlertController+Showable.m in Sources */,
+				EFD3A85B2139003A0065674C /* ScriptControlView.m in Sources */,
+				EFD3A85E213900410065674C /* PlayerScriptCell.m in Sources */,
 				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
 				EFE0F3B12117E25700D4558B /* CreateContact.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
@@ -1671,6 +1702,7 @@
 				EFE082552114185D006D3F6C /* IFMediaPlayerScriptView.m in Sources */,
 				EF28A910212D3091006748C9 /* ContentsListPopupViewCell.m in Sources */,
 				EF230BEF21224CC600F8E802 /* FPSDownloadManager.m in Sources */,
+				EFD3A85D2139003E0065674C /* PlayerScriptItemView.m in Sources */,
 				EFB3E657212BEF1A00C5DF5D /* PlayerSleepTimerButton.m in Sources */,
 				EFE082542114185D006D3F6C /* IFTouchView.m in Sources */,
 				EFE0825D2114185D006D3F6C /* IFCollectionView.m in Sources */,
