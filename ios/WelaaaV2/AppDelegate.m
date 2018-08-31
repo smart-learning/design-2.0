@@ -33,8 +33,8 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     // Push notification badge reset. 앱이 완전히 재구동되어야 뱃지가 디카운팅이 됨. 백그라운드에서 돌아올때는 여기서 리셋되지는 않습니다.
     if ( [UIApplication sharedApplication].applicationIconBadgeNumber != 0 )
     {
-      [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-      NSLog(@"  All push badges removed.");
+        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+        NSLog(@"  All push badges removed.");
     }
   
     // Background Playback Enabled
@@ -44,7 +44,13 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                            error : nil];
   
     NSURL *jsCodeLocation;
-  
+/*
+ #ifdef DEBUG
+ jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+ #else
+ jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+ #endif
+ */
     jsCodeLocation = [ [RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot : @"index"
                                                                      fallbackResource : nil     ];
   
