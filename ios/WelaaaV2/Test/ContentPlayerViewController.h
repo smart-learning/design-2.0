@@ -13,6 +13,7 @@
 #import "ApiManager.h"
 #import "UIAlertController+Showable.h"
 #import "StarRatingView.h"
+#import "MediaPlayerScriptView.h"
 
 @interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate>
 

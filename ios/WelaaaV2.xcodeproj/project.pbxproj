@@ -56,6 +56,7 @@
 		EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9A983A211144A800EA3A8E /* RNNativePlayer.m */; };
 		EF9BAE8C211D27F10063FE2C /* ContentPlayerTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */; };
 		EF9BAE8D211D27F40063FE2C /* ContentPlayerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */; };
+		EFA7577E21392F7000A7DAC3 /* subtitles.json in Resources */ = {isa = PBXBuildFile; fileRef = EFA7577D21392F7000A7DAC3 /* subtitles.json */; };
 		EFB3E657212BEF1A00C5DF5D /* PlayerSleepTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFB3E656212BED0200C5DF5D /* PlayerSleepTimerButton.m */; };
 		EFB3E658212BEF1D00C5DF5D /* PlayerSleepTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFB3E655212BED0200C5DF5D /* PlayerSleepTimerView.m */; };
 		EFD3A85B2139003A0065674C /* ScriptControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD3A854213900260065674C /* ScriptControlView.m */; };
@@ -480,6 +481,7 @@
 		EF9BAE89211D1DED0063FE2C /* ContentPlayerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentPlayerButton.h; sourceTree = "<group>"; };
 		EF9BAE8A211D1DED0063FE2C /* ContentPlayerTouchView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerTouchView.m; sourceTree = "<group>"; };
 		EF9BAE8B211D1DED0063FE2C /* ContentPlayerButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerButton.m; sourceTree = "<group>"; };
+		EFA7577D21392F7000A7DAC3 /* subtitles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = subtitles.json; sourceTree = "<group>"; };
 		EFB3E653212BED0100C5DF5D /* PlayerSleepTimerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerView.h; sourceTree = "<group>"; };
 		EFB3E654212BED0100C5DF5D /* PlayerSleepTimerButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerButton.h; sourceTree = "<group>"; };
 		EFB3E655212BED0200C5DF5D /* PlayerSleepTimerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerSleepTimerView.m; sourceTree = "<group>"; };
@@ -1120,6 +1122,7 @@
 				EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */,
 				EF0946D5212652A200FD849B /* ContentMiniPlayerViewController.h */,
 				EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */,
+				EFA7577D21392F7000A7DAC3 /* subtitles.json */,
 			);
 			name = Test;
 			path = WelaaaV2/Test;
@@ -1556,6 +1559,7 @@
 				EF4F413B211ABE5C005E1CBD /* outlined-iconset.ttf in Resources */,
 				EF4F4138211ABE5C005E1CBD /* NotoSansCJKkr-Medium.otf in Resources */,
 				EF4F413E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf in Resources */,
+				EFA7577E21392F7000A7DAC3 /* subtitles.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

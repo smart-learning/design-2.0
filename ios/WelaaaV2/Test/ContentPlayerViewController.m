@@ -6,8 +6,8 @@
 #define PALLYCON_SITE_ID    @"O8LD"
 #define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
 
-@interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate,
-                                          PlayerSleepTimerViewDelegate, ContentsListPopupViewDelegate>
+@interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate,
+                                          ContentsListPopupViewDelegate, MediaPlayerScriptViewDelegate>
 {
     BOOL _isAudioMode;
     BOOL _statusBarHidden;
@@ -61,6 +61,7 @@
   
     StarRatingView *_rateView;
     PlayerSleepTimerView *_playerSleepTimerSelectView;
+    MediaPlayerScriptView *_scriptView;
   
     NSString *_currentStar;
   
@@ -234,6 +235,8 @@
             _slider.maximumValue = 90.f;  // 90초에 다다르면 슬라이더 메서드에서 적절한 메시지와 함께 콘텐트 재생을 종료시켜야 합니다.
         }
     }
+  
+  [self initScriptUi];
 }
 
 //
@@ -1498,9 +1501,10 @@
     }
   */
   
-    if ( [@"script-mode" isEqualToString: buttonId] )
+    if ( [@"script-mode" isEqualToString : buttonId] )
     {
-      //[self setScriptViewFrameWithStatus: status];
+        [self setScriptViewFrameWithStatus : status];
+      [self readScript];
     }
     else if ( [@"view-mode" isEqualToString : buttonId] )
     {
@@ -1829,6 +1833,155 @@
     }
   
     [self playNext];
+}
+
+# pragma mark - Script View
+- (NSArray *) readScript
+{
+  // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
+  NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"subtitles"
+                                                       ofType : @"json"];
+  NSData *data = [NSData dataWithContentsOfFile : jsonPath];
+  NSError *error = nil;
+  id json = [NSJSONSerialization JSONObjectWithData : data
+                                            options : kNilOptions
+                                              error : &error];
+  
+  NSLog(@"  [pressedListButton] JSON output : %@", json);
+  // 잘 읽어옵니다.
+  return json;
+}
+- (void) initScriptUi
+{
+    NSArray *scriptArray = [self readScript];
+  
+    _scriptView = [[MediaPlayerScriptView alloc] initWithFrame : CGRectZero];
+    _scriptView.frame = CGRectMake(0, CGRectGetMinY(_bottomView.frame), self.view.frame.size.width, 0);
+    _scriptView.delegate = self;
+    [self.view addSubview : _scriptView];
+  
+    [_scriptView setScript : scriptArray];
+  
+    _scriptView.alpha = 0.f;
+    _scriptView.hidden = YES;
+}
+- (void) setScriptViewFrameWithStatus : (NSInteger) status
+{
+    CGRect clientRect = self.view.frame;
+  
+    _scriptView.status = status;
+  
+    if ( _scriptView.status == MediaPlayerScriptViewModeNone )
+    {
+        CGRect menuFrame = CGRectMake(0, CGRectGetMinY(_bottomView.frame)-50.f, self.view.frame.size.width, 50.f);
+        CGRect controlFrame = CGRectMake(0, CGRectGetMinY(menuFrame)-90.f, self.view.frame.size.width, 80.f);
+      
+        [self animationViewsWithTopViewAlpha : 1.f
+                                topViewFrame : CGRectMake(0, 0, self.view.frame.size.width, 60.f)
+                             scriptViewAlpha : 0.f
+                             scriptViewFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame), clientRect.size.width, 0)
+                               menuViewAlpha : 1.f
+                               menuViewFrame : menuFrame
+                            controlViewAlpha : 1.f
+                            controlViewFrame : controlFrame];
+    }
+    else if ( _scriptView.status == MediaPlayerScriptViewModeText )
+    {
+        CGRect scriptFrame;
+        scriptFrame.origin.x = 0.f;
+        scriptFrame.origin.y = CGRectGetMinY(_bottomView.frame) - 110;
+        scriptFrame.size.width = clientRect.size.width;
+        scriptFrame.size.height = 110;
+      
+        CGRect menuFrame;
+        menuFrame.origin.x = 0.f;
+        menuFrame.origin.y = CGRectGetMinY(scriptFrame) - 50.f;
+        menuFrame.size.width = clientRect.size.width;
+        menuFrame.size.height = 50.f;
+      
+        CGRect controlFrame;
+        controlFrame.origin.x = 0.f;
+        controlFrame.origin.y = CGRectGetMinY(menuFrame) - 80.f;
+        controlFrame.size.width = clientRect.size.width;
+        controlFrame.size.height = 80.f;
+      
+        [self animationViewsWithTopViewAlpha : 1.f
+                                topViewFrame : CGRectMake(0, 0, self.view.frame.size.width, 60.f)
+                             scriptViewAlpha : 1.f
+                             scriptViewFrame : scriptFrame
+                               menuViewAlpha : 1.f
+                               menuViewFrame : menuFrame
+                            controlViewAlpha : 1.f
+                            controlViewFrame : controlFrame];
+    }
+    else if ( _scriptView.status == MediaPlayerScriptViewModeList )
+    {
+        CGRect scriptFrame;
+        scriptFrame.origin.x = 0.f;
+        scriptFrame.origin.y = 0.f;
+        scriptFrame.size.width = clientRect.size.width;
+        scriptFrame.size.height = clientRect.size.height - _bottomView.frame.size.height;
+      
+        CGRect menuFrame;
+        menuFrame.origin.x = 0.f;
+        menuFrame.origin.y = CGRectGetMinY(scriptFrame) - 50.f;
+        menuFrame.size.width = clientRect.size.width;
+        menuFrame.size.height = 50.f;
+      
+        CGRect controlFrame;
+        controlFrame.origin.x = 0.f;
+        controlFrame.origin.y = CGRectGetMinY(menuFrame) - 80.f;
+        controlFrame.size.width = clientRect.size.width;
+        controlFrame.size.height = 80.f;
+      
+        [self animationViewsWithTopViewAlpha : 0.f
+                                topViewFrame : CGRectMake(0, 0, self.view.frame.size.width, 60.f)
+                             scriptViewAlpha : 1.f
+                             scriptViewFrame : scriptFrame
+                               menuViewAlpha : 0.f
+                               menuViewFrame : menuFrame
+                            controlViewAlpha : 0.f
+                            controlViewFrame : controlFrame];
+    }
+}
+
+- (void) animationViewsWithTopViewAlpha : (CGFloat) topViewAlpha
+                           topViewFrame : (CGRect) topViewFrame
+                        scriptViewAlpha : (CGFloat) scriptViewAlpha
+                        scriptViewFrame : (CGRect) scriptViewFrame
+                          menuViewAlpha : (CGFloat) menuViewAlpha
+                          menuViewFrame : (CGRect) menuViewFrame
+                       controlViewAlpha : (CGFloat) controlViewAlpha
+                       controlViewFrame : (CGRect) controlViewFrame
+{
+    _topView.hidden = NO;
+    _scriptView.hidden = NO;
+    _menuItemView.hidden = NO;
+    _controlBarView.hidden = NO;
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      _topView.alpha = topViewAlpha;
+                                      _topView.frame = topViewFrame;
+                       
+                                      _scriptView.alpha = scriptViewAlpha;
+                                      _scriptView.frame = scriptViewFrame;
+                       
+                                      _menuItemView.alpha = menuViewAlpha;
+                                      _menuItemView.frame = menuViewFrame;
+                       
+                                      _controlBarView.alpha = controlViewAlpha;
+                                      _controlBarView.frame = controlViewFrame;
+                                  }
+                     completion : ^(BOOL finished)
+                                  {
+                                      _topView.hidden = (topViewAlpha == 0.f);
+                                      _scriptView.hidden = (scriptViewAlpha == 0.f);
+                                      _menuItemView.hidden = (menuViewAlpha == 0.f);
+                                      _controlBarView.hidden = (controlViewAlpha == 0.f);
+                                  }];
 }
 
 # pragma mark - Transmitting with the API server.
