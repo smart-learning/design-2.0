@@ -227,7 +227,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
   };
 
   private Notification createNotification() {
-    LogHelper.d(TAG, "updateNotificationMetadata. mMetadata=" + mMetadata);
+//    LogHelper.d(TAG, "updateNotificationMetadata. mMetadata=" + mMetadata);
     if (mMetadata == null || mPlaybackState == null) {
       return null;
     }
