@@ -139,7 +139,7 @@ export default class Summary extends React.Component {
 					</Text>
 					<TouchableOpacity activeOpacity={0.9}
 									  style={styles.play}
-									  onPress={() => Native.play(this.props.id)}
+									  onPress={() => Native.play(`${this.props.cid}_001`)}
 					>
 						<Image source={IcPlay} style={Style.fullImg}/>
 					</TouchableOpacity>

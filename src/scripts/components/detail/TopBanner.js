@@ -192,7 +192,7 @@ export default class TopBanner extends React.Component {
 			{this.props.learnType === 'audioBook' &&
 			<View style={styles.audioBookPlayButtonContainer}>
 				<ImageBackground source={{uri:this.props.store.itemData.images.cd}} resizeMode={"cover"} borderRadius={70} style={styles.audioBookAuthorThumbnail}>
-					<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.store.itemData.id)}>
+					<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.store.itemData.cid)}>
 						<Image source={IcPlay} style={styles.playButton}/>
 					</TouchableOpacity>
 				</ImageBackground>
@@ -200,7 +200,7 @@ export default class TopBanner extends React.Component {
 			}
 			{this.props.learnType === 'class' &&
 			<View style={styles.classPlayButtonContainer}>
-				<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.store.itemData.id)}>
+				<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.store.itemData.cid + '_001')}>
 					<Image source={IcPlay} style={styles.playButton}/>
 				</TouchableOpacity>
 			</View>
