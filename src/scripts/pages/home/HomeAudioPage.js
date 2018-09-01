@@ -24,7 +24,7 @@ import ClassContinueList from "../../components/home/ClassContinueList";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
-	slide: {
+	slifde: {
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',

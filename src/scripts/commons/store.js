@@ -20,13 +20,9 @@ class Store {
 		AsyncStorage.setItem('socialType', type );
 	}
 
-	get socialToken() {
-		return socialToken;
-	}
-
-	set socialToken( token ) {
-		socialToken = token;
-		AsyncStorage.setItem('socialToken', token );
+	get accessToken() {
+    	if( welaaaAuth === undefined ) return '';
+		return welaaaAuth.access_token;
 	}
 
 	get welaaaAuth() {
@@ -38,6 +34,9 @@ class Store {
 		AsyncStorage.setItem('welaaaAuth', auth );
 		axios.defaults.headers.common[ 'authorization' ] = 'Bearer ' + auth.access_token;
 	}
+
+	/* 미니 플레이어 전환여부 결정 */
+	@observable miniPlayerVisible = false;
 
 	clearTokens=()=>{
 		socialType = null;

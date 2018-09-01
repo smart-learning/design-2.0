@@ -13,6 +13,6 @@ BottomControllerComponent.propTypes = {
     ...View.propTypes,
 }
 
-const BottomController = requireNativeComponent('RCTBottomController', BottomControllerComponent);
+let BottomController = requireNativeComponent('RCTBottomController', BottomControllerComponent);
 
 export default BottomControllerComponent;
