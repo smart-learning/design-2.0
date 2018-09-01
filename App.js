@@ -14,10 +14,10 @@ import BottomController from "./src/scripts/components/BottomController";
 class App extends React.Component {
 
 	getTokenFromAsyncStorage = async () => {
-		let token = await AsyncStorage.getItem( 'welaaaAuth' );
-		if( token ) {
-			token = JSON.parse( token );
-			globalStore.welaaaAuth = token;
+		let welaaaAuth = await AsyncStorage.getItem( 'welaaaAuth' );
+		if( welaaaAuth ) {
+			welaaaAuth = JSON.parse( welaaaAuth );
+			globalStore.welaaaAuth = welaaaAuth;
 
 			globalStore.profile = await net.getProfile();
 		}
