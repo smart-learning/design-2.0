@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import {NativeModules} from 'react-native';
+import store from '../commons/store';
 import globalStore from "./store";
 
 
