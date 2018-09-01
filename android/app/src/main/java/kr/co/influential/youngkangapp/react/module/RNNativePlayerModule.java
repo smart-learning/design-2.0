@@ -1,9 +1,11 @@
 package kr.co.influential.youngkangapp.react.module;
 
+import android.app.Activity;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -207,7 +209,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     public void onResponse(Call call, Response response) throws IOException {
       String body = response.body().string();
 
-      ContextWrapper contextWrapper = new ContextWrapper(getReactApplicationContext());
+      Activity activity = getCurrentActivity();
+      ContextWrapper contextWrapper = new ContextWrapper(activity);
       Intent intent = new Intent(contextWrapper, PlayerActivity.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
       StringBuffer sb = new StringBuffer();
@@ -536,7 +539,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 intent.putExtra("is_free", is_free);
                 intent.putExtra("webPlayerInfo", mWebPlayerInfo);
               }
-              contextWrapper.startActivity(intent);
+              ContextCompat.startActivity(activity, intent, null);
             } else if (callbackMethod.equals("download")) {
 
               // group key => cid v100015
