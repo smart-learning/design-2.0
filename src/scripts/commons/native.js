@@ -25,7 +25,7 @@ export default {
 			uri: '',
 			name: '',
 			drmSchemeUuid: 'widevine',
-			drmLicenseUrl: '',
+			drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
 
 			cid: cid,
 			oid: oid,
