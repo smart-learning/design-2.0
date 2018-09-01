@@ -4,6 +4,7 @@ import CommonStyles from "../../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
+import globalStore from '../../../scripts/commons/store';
 
 const styles = StyleSheet.create({
 	title: {
@@ -52,14 +53,15 @@ class SetAppPage extends React.Component {
 	@observable isAlert = false;
 	@observable isEmail = false;
 
+	logout = () => {
+		globalStore.clearTokens();
+		this.props.navigation.navigate('Login');
+	};
+
 	render() {
 		return <View style={CommonStyles.container}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
-					<Text>SetAppPage 서브페이지</Text>
-					<Switch value={this.isOn}
-							onValueChange={value => this.isOn = value}/>
-
 					<View style={CommonStyles.contentContainer}>
 						<Text style={styles.title}>로그인설정</Text>
 						<View style={styles.setBox}>
@@ -130,7 +132,7 @@ class SetAppPage extends React.Component {
 							</View>
 						</View>
 						<View style={styles.logoutButton}>
-							<TouchableOpacity activeOpacity={0.9}>
+							<TouchableOpacity activeOpacity={0.9} onPress={this.logout}>
 								<Text style={styles.logoutText}>로그아웃</Text>
 							</TouchableOpacity>
 						</View>
