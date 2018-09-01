@@ -9,6 +9,7 @@ import globalStore from "./src/scripts/commons/store";
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
+import BottomController from "./src/scripts/components/BottomController";
 
 class App extends React.Component {
 
@@ -57,13 +58,12 @@ class App extends React.Component {
 					}
 				}}
 			/>
-			{/*<View style={{position: 'absolute', bottom: 20, right: 100}}>*/}
-				{/*<Button title="Open Side"*/}
-						{/*onPress={() => {*/}
-							{/*globalStore.drawer.dispatch(DrawerActions.toggleDrawer())*/}
-						{/*}}*/}
-				{/*/>*/}
-			{/*</View>*/}
+
+			{globalStore.miniPlayerVisible && Platform.select({
+				android: <BottomController/>,
+				ios: null,
+			})}
+
 		</View>
 	}
 }
