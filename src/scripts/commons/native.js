@@ -1,7 +1,6 @@
 ﻿import React from 'react';
 import {NativeModules} from 'react-native';
-import store from '../commons/store';
-import globalStore from "./store";
+import globalStore from '../commons/store';
 
 
 const {RNNativePlayer} = NativeModules;
@@ -11,8 +10,10 @@ import {Alert} from 'react-native'
 export default {
 	play(cid, oid = '') {
 
-		let userId = store.welaaaAuth.profile.id;
-		let accessToken = store.welaaaAuth.access_token;
+		console.log( 'auth:', globalStore.welaaaAuth );
+
+		let userId = globalStore.welaaaAuth.profile.id;
+		let accessToken = globalStore.welaaaAuth.access_token;
 
 		/* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
 
@@ -107,9 +108,14 @@ export default {
 
 	/* 앱 버전 정보 가져오기 */
 	getVersionName() {
-		return RNNativePlayer.versionInfo({
-			webtokem: ''
-		});
+		try{
+			return RNNativePlayer.versionInfo({
+				webtokem: ''
+			});
+		}catch( e ){
+			return '알 수 없음';
+		}
+
 	}
 
 

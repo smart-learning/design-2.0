@@ -31,7 +31,7 @@ class Store {
 
 	set welaaaAuth( auth ) {
 		welaaaAuth = auth;
-		AsyncStorage.setItem('welaaaAuth', auth );
+		AsyncStorage.setItem('welaaaAuth', JSON.stringify(auth) );
 		axios.defaults.headers.common[ 'authorization' ] = 'Bearer ' + auth.access_token;
 	}
 
