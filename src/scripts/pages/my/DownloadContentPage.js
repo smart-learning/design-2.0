@@ -61,6 +61,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingTop: 50,
 		paddingBottom: 50,
+	},
+	downloadItem: {
+		justifyContent: 'flex-start',
+		paddingTop: 10,
+		paddingBottom: 10,
 	}
 });
 
@@ -80,6 +85,13 @@ export default class DownloadContentPage extends React.Component {
 		}, 2000 );
 	}
 
+	makeListItem = ( {item, key} ) =>{
+		return <TouchableOpacity activeOpacity={0.9} key={key}
+								 style={ styles.downloadItem }
+								 onPress={ ()=> Native.download() }>
+			<Text>다운받은 아이템{ item }</Text>
+		</TouchableOpacity>
+	}
 
 	render() {
 
@@ -89,22 +101,18 @@ export default class DownloadContentPage extends React.Component {
 		if( this.videos.length > 0 ){
 			vcontent = <FlatList
 				data = { this.videos }
-				renderItem = { item => <TouchableOpacity activeOpacity={0.9} onPress={ ()=> Native.download() }>
-					<Text>다운받은 아이템{ item }</Text>
-				</TouchableOpacity>
-				}
+				renderItem = { this.makeListItem }
 			/>
 		}
 
 		if( this.audios.length > 0 ){
 			acontent = <FlatList
-				data = { this.videos }
-				renderItem = { item => <TouchableOpacity activeOpacity={0.9} onPress={ ()=> Native.download() }>
-					<Text>다운받은 아이템{ item }</Text>
-				</TouchableOpacity>
-				}
+				data = { this.audios }
+				renderItem = { this.makeListItem }
 			/>
 		}
+
+		console.log( 'videos', this.videos );
 
 
 
