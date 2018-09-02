@@ -6,6 +6,7 @@ import {SafeAreaView} from "react-navigation";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import Native from "../../commons/native";
+import SQLite from 'react-native-sqlite-2';
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -79,6 +80,18 @@ export default class DownloadContentPage extends React.Component {
 
 	componentDidMount(){
 		/* TODO sql로 리스트 가져오기 */
+
+		const db = SQLite.openDatabase( 'welaaa.db', '1.0', '', 1 );
+		console.log( 'db:', db );
+		db.transaction( txn => {
+			console.log( txn );
+
+			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res)=>{
+				console.log( 'res:', res );
+			});
+		});
+
+
 		setTimeout( ()=>{
 			this.videos = [0, 1, 2, 3, 4];
 			this.audios = [];
@@ -112,7 +125,7 @@ export default class DownloadContentPage extends React.Component {
 			/>
 		}
 
-		console.log( 'videos', this.videos );
+		// console.log( 'videos', this.videos );
 
 
 

@@ -10,21 +10,22 @@ import {Alert} from 'react-native'
 export default {
 	play(cid, oid = '') {
 
-		console.log( 'auth:', globalStore.welaaaAuth );
+		const { welaaaAuth } = globalStore;
 
-		let userId = globalStore.welaaaAuth.profile.id;
-		let accessToken = globalStore.welaaaAuth.access_token;
+		console.log( 'welaaaAuth:', welaaaAuth );
 
 		/* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
-
-		if (!userId) {
+		if ( welaaaAuth === undefined || welaaaAuth.profile === undefined || welaaaAuth.profile.id === undefined ) {
 			Alert.alert('비회원은 플레이할 수 없습니다.')
 
 			return true
 		}
 
+		let userId = globalStore.welaaaAuth.profile.id;
+		let accessToken = globalStore.welaaaAuth.access_token;
+
 		let args = {
-			uri: 'https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd',
+			uri: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
 			name: '지기지피 백전백승! 나의 발표 목적을 제일 먼저 고려하라',
 			drmSchemeUuid: 'widevine',
 			drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
@@ -51,20 +52,21 @@ export default {
 	},
 
 	toggleMiniPlayer(bool) {
-		// globalStore.miniPlayerVisible = bool;
-		// RNNativePlayer.toast('playbackState: ' + bool);
+		console.log( 'toggleMiniPlayer:', bool );
+		globalStore.miniPlayerVisible = bool;
+		RNNativePlayer.toast('playbackState: ' + bool);
 	},
 
 
-	download() {
+	download( cid, oid ) {
 		const args = {
 			type: 'download',
-			uri: 'https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd',
+			uri: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
 			name: '140년 지속 성장을 이끈 MLB 사무국의 전략',
 			drmSchemeUuid: 'widevine',
 			drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
-			userId: '93',  // 
-			cid: 'v100015_001',
+			userId: globalStore.welaaaAuth.profile.id + '',
+			cid: 'v200064_001',
 			oid: 'order id',
 			token: globalStore.accessToken
 		}

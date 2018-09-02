@@ -3,8 +3,12 @@ import { requireNativeComponent, View } from 'react-native';
 
 class BottomControllerComponent extends Component {
 
+	componentDidMount(){
+		// alert('mounted');
+	}
+
 	render() {
-        return <BottomController {...this.props} />
+        return <BottomController {...this.props} style={ { height: 50 } }  />
 	}
 
 }
