@@ -188,6 +188,7 @@ apply plugin: 'io.fabric'
 
 
 dependencies {
+    implementation project(':react-native-sqlite-2')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
     compileOnly "com.google.android.wearable:wearable:$wearableVersion"

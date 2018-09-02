@@ -82,11 +82,11 @@ export default class DownloadContentPage extends React.Component {
 		setTimeout( ()=>{
 			this.videos = [0, 1, 2, 3, 4];
 			this.audios = [];
-		}, 2000 );
+		}, 0 );
 	}
 
-	makeListItem = ( {item, key} ) =>{
-		return <TouchableOpacity activeOpacity={0.9} key={key}
+	makeListItem = ( {item, index} ) =>{
+		return <TouchableOpacity activeOpacity={0.9} key={index}
 								 style={ styles.downloadItem }
 								 onPress={ ()=> Native.download() }>
 			<Text>다운받은 아이템{ item }</Text>
