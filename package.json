@@ -6,7 +6,6 @@
 		"babel-preset-react-native-stage-0": "^1.0.1",
 		"jest": "^23.1.0",
 		"jest-react-native": "^18.0.0",
-		"react-devtools": "^3.2.3",
 		"react-native-create-bridge": "^2.0.1",
 		"react-test-renderer": "16.3.1",
 		"watchman": "^1.0.0"
@@ -35,7 +34,6 @@
 		"npm": "^6.4.0",
 		"numeral": "^2.0.6",
 		"react": "16.3.1",
-		"react-devtools": "^3.2.3",
 		"react-dom": "^16.4.2",
 		"react-native": "^0.55.4",
 		"react-native-asyncstorage": "^1.0.0",
