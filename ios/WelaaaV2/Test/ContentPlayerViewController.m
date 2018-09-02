@@ -245,7 +245,7 @@
 - (void) setContentData : (NSMutableDictionary *) args
 {
     _args = args;
-  //NSLog(@"  arguments : %@", [_args description]);
+    NSLog(@"  arguments : %@", [_args description]);
 }
 
 - (void) didReceiveMemoryWarning
@@ -888,10 +888,10 @@
                                                Minute : YES];
     }
   
-    /*if ( _scriptView )
+    if ( _scriptView )
     {
-        [_scriptView setCurrentTime: time];
-    }*/
+        [_scriptView setCurrentTime : time];
+    }
 }
 
 //
@@ -1354,7 +1354,7 @@
                        
                                       if ( !hidden )
                                       {
-                                        //[self setPositionScriptToHideView : hidden];
+                                          [self setPositionScriptToHideView : hidden];
                                       }
                                   }
                      completion : ^(BOOL finished)
@@ -1370,7 +1370,7 @@
        
                                       if ( hidden )
                                       {
-                                        //[self setPositionScriptToHideView : hidden];
+                                          [self setPositionScriptToHideView : hidden];
                                       }
                                   }];
 }
@@ -1474,7 +1474,6 @@
 - (void) pressedPlayerButtonWithId : (NSString *) buttonId
                             status : (NSInteger) status
 {
-  /*
     // 권한이 없으면..
     if ( !_isAuthor )
     {
@@ -1482,7 +1481,7 @@
       
         if ( [@"script-mode" isEqualToString : buttonId] )
         {
-            [_scriptView setStatus: IfMediaPlayerScriptViewModeNone];
+            [_scriptView setStatus: MediaPlayerScriptViewModeNone];
           isToast = YES;
         }
         else if ( [@"download-mode" isEqualToString : buttonId] )
@@ -1499,7 +1498,6 @@
             return ;
         }
     }
-  */
   
     if ( [@"script-mode" isEqualToString : buttonId] )
     {
@@ -1838,18 +1836,18 @@
 # pragma mark - Script View
 - (NSArray *) readScript
 {
-  // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
-  NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"subtitles"
-                                                       ofType : @"json"];
-  NSData *data = [NSData dataWithContentsOfFile : jsonPath];
-  NSError *error = nil;
-  id json = [NSJSONSerialization JSONObjectWithData : data
-                                            options : kNilOptions
-                                              error : &error];
+    // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
+    NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"subtitles"
+                                                         ofType : @"json"];
+    NSData *data = [NSData dataWithContentsOfFile : jsonPath];
+    NSError *error = nil;
+    id json = [NSJSONSerialization JSONObjectWithData : data
+                                              options : kNilOptions
+                                                error : &error];
   
-  NSLog(@"  [pressedListButton] JSON output : %@", json);
-  // 잘 읽어옵니다.
-  return json;
+    //NSLog(@"  [pressedListButton] JSON output : %@", json);
+    // 잘 읽어옵니다.
+    return json;
 }
 - (void) initScriptUi
 {
@@ -1983,7 +1981,29 @@
                                       _controlBarView.hidden = (controlViewAlpha == 0.f);
                                   }];
 }
-
+- (void) setPositionScriptToHideView : (BOOL) hidden
+{
+    if ( _scriptView.status == MediaPlayerScriptViewModeText )
+    {
+        if ( hidden == YES )
+        {
+            CGRect frame = _scriptView.frame;
+            frame.origin.y = self.view.frame.size.height - frame.size.height;
+          
+            [UIView animateWithDuration : 0.3f
+                                  delay : 0
+                                options : UIViewAnimationOptionAllowUserInteraction
+                             animations : ^{
+                                              _scriptView.frame = frame;
+                                          }
+                             completion : ^(BOOL finished) {} ];
+        }
+        else
+        {
+            [self setScriptViewFrameWithStatus : _scriptView.status];
+        }
+    }
+}
 # pragma mark - Transmitting with the API server.
 //
 // group_ID로 콘텐츠 정보를 가져옵니다.
