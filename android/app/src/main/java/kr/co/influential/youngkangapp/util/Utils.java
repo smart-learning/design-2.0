@@ -1,5 +1,7 @@
 package kr.co.influential.youngkangapp.util;
 
+import static android.R.style.Theme_Material_Light_Dialog_Alert;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,7 +22,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -28,10 +29,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 import kr.co.influential.youngkangapp.common.Gateway;
-
-import static android.R.style.Theme_Material_Light_Dialog_Alert;
 
 /**
  * Created by okitoki on 2016. 10. 6.
@@ -65,7 +63,7 @@ public class Utils {
     String TYPE = "api";
     String VERSION = "v1.0";
 
-    welaaaDomain = welaaaDomain + "dev" + "/" + TYPE + "/" + VERSION + "/";
+    welaaaDomain = welaaaDomain + "/" + TYPE + "/" + VERSION + "/";
 //    welaaaDomain = welaaaDomain + BuildConfig.FLAVOR + "/" + TYPE + "/" + VERSION + "/";
 
     return welaaaDomain;
