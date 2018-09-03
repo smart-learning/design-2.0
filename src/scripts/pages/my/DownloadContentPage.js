@@ -74,33 +74,52 @@ const styles = StyleSheet.create({
 export default class DownloadContentPage extends React.Component {
 
 	@observable tabStatus = 'video';
-	@observable videos = [];
+	@observable videos = [
+		{
+			gTitle: '[더미] 청중의 OK를 끌어내는 프레젠테이션 전략',
+			audioVideoType: 'video-course',
+			drmLicenseUrl: 'drmUrl',
+			drmSchemeUuid: 'widevine',
+			cPlayTime: '00:15:16',
+			groupImg: '',
+			oid: '',
+			thumbnailImg: 'https://static.welaaa.co.kr/static/courses/v100015/v100015_list.jpg',
+			userId: 'userId',
+			groupkey: null,
+			groupAllPlayTime: '01:10:55',
+			groupContentScnt: 0,
+			view_limitdate: 'Tue, 27 Jul 2117 00:00:00 GMT',
+			ckey: 'v100015_001',
+			contentPath: '',
+			totalSize: '',
+			groupTeacherName: '유달내 상무',
+			cTitle: '지기지피 백전백승! 나의 발표 목적을 제일 먼저 고려하라',
+			modified: '2018-09-03 14:07:36',
+			cid: 'v100015_001'
+		},
+	];
 	@observable audios = [];
 
 
-	componentDidMount(){
-		/* TODO sql로 리스트 가져오기 */
-
-		const db = SQLite.openDatabase( 'welaaa.db', '1.0', '', 1 );
-		db.transaction( txn => {
-			console.log( 'txn:', txn );
-			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res)=>{
-				console.log( 'res:', res );
+	componentDidMount() {
+		const db = SQLite.openDatabase('welaaa.db', '1.0', '', 1);
+		db.transaction(txn => {
+			console.log('txn:', txn);
+			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res) => {
+				console.log('res:', res);
+				res.rows.forEach( item => {
+					if( item.audioVideoType === 'video-course' ) this.videos.push( item );
+					else                                         this.audios.push( item );
+				});
 			});
 		});
-
-
-		setTimeout( ()=>{
-			this.videos = [0, 1, 2, 3, 4];
-			this.audios = [];
-		}, 0 );
 	}
 
-	makeListItem = ( {item, index} ) =>{
+	makeListItem = ({item, index}) => {
 		return <TouchableOpacity activeOpacity={0.9} key={index}
-								 style={ styles.downloadItem }
-								 onPress={ ()=> Native.download() }>
-			<Text>다운받은 아이템{ item }</Text>
+								 style={styles.downloadItem}
+								 onPress={() => Native.download()}>
+			<Text>다운받은 아이템{item}</Text>
 		</TouchableOpacity>
 	}
 
@@ -109,22 +128,21 @@ export default class DownloadContentPage extends React.Component {
 		let vcontent = <Text>다운받은 항목이 없습니다.</Text>;
 		let acontent = <Text>다운받은 항목이 없습니다.</Text>;
 
-		if( this.videos.length > 0 ){
+		if (this.videos.length > 0) {
 			vcontent = <FlatList
-				data = { this.videos }
-				renderItem = { this.makeListItem }
+				data={this.videos}
+				renderItem={this.makeListItem}
 			/>
 		}
 
-		if( this.audios.length > 0 ){
+		if (this.audios.length > 0) {
 			acontent = <FlatList
-				data = { this.audios }
-				renderItem = { this.makeListItem }
+				data={this.audios}
+				renderItem={this.makeListItem}
 			/>
 		}
 
 		// console.log( 'videos', this.videos );
-
 
 
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
@@ -134,7 +152,7 @@ export default class DownloadContentPage extends React.Component {
 						{this.tabStatus === 'video' &&
 						<View style={styles.tabContent}>
 							<View style={[CommonStyles.contentContainer, styles.noContent]}>
-								{ vcontent }
+								{vcontent}
 							</View>
 						</View>
 						}
@@ -142,7 +160,7 @@ export default class DownloadContentPage extends React.Component {
 						{this.tabStatus === 'audioBook' &&
 						<View style={styles.tabContent}>
 							<View style={[CommonStyles.contentContainer, styles.noContent]}>
-								{ acontent }
+								{acontent}
 							</View>
 						</View>
 						}
@@ -163,7 +181,8 @@ export default class DownloadContentPage extends React.Component {
 						<View style={styles.tabItemContainer}>
 							<TouchableOpacity activeOpacity={0.9} onPress={() => this.tabStatus = 'audioBook'}>
 								<View style={styles.tabItem}>
-									<Text style={this.tabStatus === 'audioBook' ? styles.tabTextActive : styles.tabText}>
+									<Text
+										style={this.tabStatus === 'audioBook' ? styles.tabTextActive : styles.tabText}>
 										오디오북
 									</Text>
 									<View style={this.tabStatus === 'audioBook' ? styles.tabHrActive : styles.tabHr}/>

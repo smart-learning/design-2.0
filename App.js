@@ -38,8 +38,7 @@ import { observer } from "mobx-react";
 			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = Boolean( setting[ 1 ] );
 		} );
 
-		Native.updateSetting( 'cellularDataUsePlay', globalStore.appSettings.isWifiPlay );
-		Native.updateSetting( 'cellularDataUseDownload', globalStore.appSettings.isWifiDownload );
+		Native.updateSettings();
 	};
 
 
