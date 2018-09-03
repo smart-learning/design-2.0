@@ -4,13 +4,13 @@ import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
-import { AsyncStorage, DeviceEventEmitter, NativeModules, View } from "react-native";
+import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
-import SampleScreen from "./src/scripts/pages/sample/SampleScreen";
+import Native from "./src/scripts/commons/native";
 
 class App extends React.Component {
 
@@ -48,7 +48,7 @@ class App extends React.Component {
 
 	componentDidMount() {
         this.subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
-            NativeModules.RNNativePlayer.toast('playbackState: ' + params['visible']);
+			Native.toggleMiniPlayer( params.visible );
         });
     }
 
