@@ -87,6 +87,7 @@ public class Preferences {
     private static String WELAAA_BOTTOM_PLAYER_MODE = "WELAAA_BOTTOM_PLAYER_MODE";
 
     private static String WELAAA_MYREPU_CHECKBOX = "WELAAA_MYREPU_CHECKBOX";
+    private static String WELAAA_OAUTH_TOKEN = "WELAAA_OAUTH_TOKEN";
 
     /************************************************************************
      * FOR SETTING : MAIN ACTIVITY 자동로그인
@@ -966,5 +967,21 @@ public class Preferences {
         SharedPreferences.Editor edit = pref.edit();
         edit.putBoolean(WELAAA_MYREPU_CHECKBOX, value);
         edit.commit();
+    }
+
+    /************************************************************************
+     * FOR API CALL    :   WELAAA_OAUTH_TOKEN
+     ************************************************************************/
+    public static void setWelaaaOauthToken(Context context, String token){
+        SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString(WELAAA_OAUTH_TOKEN, token );
+        edit.commit();
+
+    }
+
+    public static String getWelaaaOauthToken(Context context){
+        SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return pref.getString(WELAAA_OAUTH_TOKEN, "");
     }
 }

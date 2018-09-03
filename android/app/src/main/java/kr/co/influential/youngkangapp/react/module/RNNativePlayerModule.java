@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -19,6 +20,7 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import java.io.IOException;
 import java.util.UUID;
+import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.download.DownloadService;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
@@ -59,6 +61,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   private int contentId = 0;
 
   private WebPlayerInfo mWebPlayerInfo = null;
+  private RNEventEmitter eventEmitter;
 
   @Override
   public String getName() {
@@ -151,6 +154,41 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void welaaaPallyConDownload(String url) {
   }
 
+  @ReactMethod
+  public void setting(ReadableMap content) {
+    // 2018.09.03
+    boolean cellularDataUsePlay = content.getBoolean("cellularDataUsePlay");
+    boolean cellularDataUseDownload = content.getBoolean("cellularDataUseDownload");
+    String token = content.getString("token");
+
+    Preferences.setOnlyWifiView(getReactApplicationContext() , cellularDataUsePlay);
+    Preferences.setOnlyWifiDownload(getReactApplicationContext() , cellularDataUseDownload);
+
+    Preferences.setWelaaaOauthToken(getReactApplicationContext() , token);
+  }
+
+  @ReactMethod
+  public void versionInfo(ReadableMap content) {
+    // 2018.09.03
+    String token = content.getString("token");
+
+    Preferences.setWelaaaOauthToken(getReactApplicationContext() , token);
+
+    String versionInfo = BuildConfig.VERSION_NAME;
+    String versionFlavor = BuildConfig.FLAVOR;
+    String versionType = BuildConfig.BUILD_TYPE;
+    String versionName = BuildConfig.APPLICATION_ID;
+
+    WritableMap params = Arguments.createMap();
+
+    params.putString("versionInfo" , versionInfo);
+    params.putString("versionFlavor" , versionFlavor);
+    params.putString("versionType" , versionType);
+    params.putString("versionName" , versionName);
+
+    eventEmitter.sendEvent("versionInfo" , params);
+  }
+
   @Override
   public void sendEvent(String eventName, @Nullable WritableMap params) {
     sendEvent(getReactApplicationContext(), eventName, params);
@@ -225,6 +263,16 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             if (contentType.equals("video-course")) {
               JSONObject dataObject = json.getJSONObject("data");
               String group_title = dataObject.getString("title");
+
+              JSONObject historyObject = null;
+
+              if (json.isNull("history")) {
+                Log.e(TAG, " history is null ");
+              } else {
+                historyObject = json.getJSONObject("history");
+              }
+
+              JSONObject permissionObject = json.getJSONObject("permission");
 
 //        String group_memo = json.getString("group_memo");
               String group_memo = "";
@@ -314,8 +362,26 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   sb.append("&csmi=" + csmi);
                 }
 
-                if (contentCid.equals(json.getString("cid"))) {
-                  contentId = i;
+                if (historyObject != null) {
+                  if (historyObject.getString("id").equals(json.getString("id"))) {
+
+                    historyObject.getString("id");
+                    historyObject.getString("played_at");
+                    historyObject.getString("start_seconds");
+
+//                    cid 값을 가져와서 셋팅 해주는 과정이 필요 .
+
+                    contentName = json.getString("title");
+
+                    contentCid = json.getString("cid");
+                    contentId = i;
+
+                  }
+
+                } else {
+                  if (contentCid.equals(json.getString("cid"))) {
+                    contentId = i;
+                  }
                 }
               }
 
@@ -329,11 +395,11 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               JSONObject dataObject = json.getJSONObject("data");
               JSONObject historyObject = null;
 
-                  if(json.isNull("history")){
-                    Log.e(TAG , " history is null ");
-                  }else{
-                    historyObject = json.getJSONObject("history");
-                  }
+              if (json.isNull("history")) {
+                Log.e(TAG, " history is null ");
+              } else {
+                historyObject = json.getJSONObject("history");
+              }
 
               JSONObject permissionObject = json.getJSONObject("permission");
 
@@ -429,26 +495,11 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   sb.append("&csmi=" + csmi);
                 }
 
-                // 오디오북의 경우 어디서부터 재생을 할 것 인가요 ?
-                // history , id 값을 가져와야 할까요 ????
-                // b100001 로 들어오는 경우 history 를 확인하고 재생을 시도 합니다.
-                // b100001_005 로 들어오는 경우 바로 b100001_005 를 재생 시도 합니다.
-
-                // history null
-                // progress null
-                // chapter 단위로 재생이 시도 되는 구간에서 확인 할 수 있는 값이 없음 .. 확인 필요 ..
-                // b100001 미움받을 용기 histroy 데이터 있음 . id 값으로 확인 할 수 있습니다.
-//                b300200_001~033 재생 이력 없습니다.
-//                b300201_001~009 재생 이력 없습니다.
-
                 if (historyObject != null) {
 
                   if (historyObject.getString("id").equals(json.getString("id")))
 
                   {
-                    Log.e(TAG, "ID " + historyObject.getString("id"));
-                    Log.e(TAG, "played_at " + historyObject.getString("played_at"));
-                    Log.e(TAG, "start_seconds " + historyObject.getString("start_seconds"));
 
                     historyObject.getString("id");
                     historyObject.getString("played_at");
@@ -463,11 +514,11 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
                   }
 
-                }else{
+                } else {
                   // 처음 부터 재생할 수 있게 끔 ?
-                  Log.e(TAG , " history is null ");
+                  Log.e(TAG, " history is null ");
 
-                  if(i==0){
+                  if (i == 0) {
                     contentCid = json.getString("cid");
                     contentName = json.getString("title");
                     contentId = i;
@@ -504,9 +555,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
             if (contentType.equals("audiobook")) {
 
-              if(json.isNull("history")){
+              if (json.isNull("history")) {
 
-              }else{
+              } else {
                 JSONObject historyObject = json.getJSONObject("history");
               }
 
@@ -568,13 +619,13 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
               service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, contentName);
               service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
-              service.putExtra("contentCid" , contentCid);
+              service.putExtra("contentCid", contentCid);
               intent.putExtra("expire_at", expire_at);
               service.putExtra("webPlayerInfo", mWebPlayerInfo);
 
               contextWrapper.startService(service);
-            }else{
-              Log.e(TAG , " No Action .. ");
+            } else {
+              Log.e(TAG, " No Action .. ");
             }
 
 
