@@ -27,17 +27,22 @@ import { observer } from "mobx-react";
 
 	getAppSettings = async () => {
 		const settings = await AsyncStorage.multiGet( [
-			'config:isAutoLogin',
-			'config:isWifiPlay',
-			'config:isWifiDownload',
-			'config:isAlert',
-			'config:isEmail',
+			'config::isAutoLogin',
+			'config::isWifiPlay',
+			'config::isWifiDownload',
+			'config::isAlert',
+			'config::isEmail',
 		] );
 
 		settings.forEach( setting => {
-			globalStore.appSettings[ setting[ 0 ].split( ':' ).pop() ] = Boolean( setting[ 1 ] );
+			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = Boolean( setting[ 1 ] );
 		} );
+
+		Native.updateSetting( 'cellularDataUsePlay', globalStore.appSettings.isWifiPlay );
+		Native.updateSetting( 'cellularDataUseDownload', globalStore.appSettings.isWifiDownload );
 	};
+
+
 
 	constructor(prop) {
 		super(prop);

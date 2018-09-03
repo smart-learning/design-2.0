@@ -54,24 +54,26 @@ class SetAppPage extends React.Component {
 	};
 
 	setIsAutoLoginChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isAutoLogin', value.toString() );
+		AsyncStorage.setItem( 'config::isAutoLogin', value.toString() );
 		globalStore.appSettings.isAutoLogin = value;
 	};
 
 	setIsWifiPlayChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isWifiPlay', value.toString() );
+		AsyncStorage.setItem( 'config::isWifiPlay', value.toString() );
 		globalStore.appSettings.isWifiPlay = value;
+		Native.updateSetting( 'cellularDataUsePlay', value );
 	};
 	setIsWifiDownloadChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isWifiDownload', value.toString() );
+		AsyncStorage.setItem( 'config::isWifiDownload', value.toString() );
 		globalStore.appSettings.isWifiDownload = value;
+		Native.updateSetting( 'cellularDataUseDownload', value );
 	};
 	setIsAlertChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isAlert', value.toString() );
+		AsyncStorage.setItem( 'config::isAlert', value.toString() );
 		globalStore.appSettings.isAlert = value;
 	};
 	setIsEmailChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isEmail', value.toString() );
+		AsyncStorage.setItem( 'config::isEmail', value.toString() );
 		globalStore.appSettings.isEmail = value;
 	};
 
