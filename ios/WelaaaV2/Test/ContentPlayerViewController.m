@@ -7,7 +7,7 @@
 #define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
 
 @interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate,
-                                          ContentsListPopupViewDelegate, MediaPlayerScriptViewDelegate>
+                                          ContentsListPopupViewDelegate, MediaPlayerScriptViewDelegate, ContentMiniPlayerViewDelegate>
 {
     BOOL _isAudioMode;
     BOOL _statusBarHidden;
@@ -62,6 +62,7 @@
     StarRatingView *_rateView;
     PlayerSleepTimerView *_playerSleepTimerSelectView;
     MediaPlayerScriptView *_scriptView;
+    ContentMiniPlayerView *_miniPlayerUiView;
   
     NSString *_currentStar;
   
@@ -943,6 +944,18 @@
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     //[self showToast : @"미니플레이어로 변환합니다."];
+  /*
+  self.isMiniPlayer = YES;
+  _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+  _miniPlayerUiView.delegate = self;
+  _miniPlayerUiView.isAuthor = _isAuthor;
+  [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
+  [self.view addSubview : _miniPlayerUiView];
+  
+  _playerUiView.hidden = self.isMiniPlayer;
+  _miniPlayerUiView.hidden = !self.isMiniPlayer;
+  [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
+  */
 }
 
 - (void) pressedRateStarButton
@@ -2016,6 +2029,95 @@
 {
     [_scriptButton setStatus : mode];
     [self setScriptViewFrameWithStatus : mode];
+}
+
+# pragma mark - Contents mini Player
+- (void) changedScreenMode : (ContentsPlayerScreenMode) screenMode
+{
+    CGRect moveFrame = CGRectZero;
+  
+    if ( screenMode == ContentsPlayerScreenModeMiniPlayer )
+    {
+        moveFrame.origin.x = 0.f;
+        moveFrame.origin.y = CGRectGetMaxY(self.view.frame)-40.f;
+        moveFrame.size.width = self.view.frame.size.width;
+        moveFrame.size.height = 40.f;
+    }
+    else
+    {
+        moveFrame = self.view.superview.frame;
+    }
+  
+    [self changedPlayerMode : screenMode == ContentsPlayerScreenModeMiniPlayer];
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      self.view.frame = moveFrame;
+                                  }
+                     completion : ^(BOOL finished)
+                                  {
+                                      self.view.frame = self.view.bounds;
+                                  }];
+  
+      _screenMode = screenMode;
+}
+// 플레이어 모드 변경 (미니<->일반 플레이어뷰)
+- (void) changedPlayerMode : (BOOL) isMiniPlayer
+{
+    //_playerUiView.hidden = NO;
+    self.view.hidden = NO;
+    _miniPlayerUiView.hidden = NO;
+  
+    //_playerUiView.alpha = isMiniPlayer ? 1.f : 0.f;
+    self.view.alpha = isMiniPlayer ? 1.f : 0.f;
+    _miniPlayerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      //_playerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
+                                      self.view.alpha = isMiniPlayer ? 0.f : 1.f;
+                                      _miniPlayerUiView.alpha = isMiniPlayer ? 1.f : 0.f;
+                                   }
+                     completion : ^(BOOL finished)
+                                  {
+                                      self.isMiniPlayer = isMiniPlayer;
+                                      //_playerUiView.hidden = self.isMiniPlayer;
+                                      self.view.hidden = self.isMiniPlayer;
+                                      _miniPlayerUiView.hidden = !self.isMiniPlayer;
+                                  }];
+  
+    if (isMiniPlayer)
+    {
+      // 이용로그 전송 시작
+      //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
+      /*
+      NSTimeInterval cTime = 0000;
+      [[LogManager sharedInstance] sendLogWithGroupKey: self.gkey
+                                            contentKey: self.ckey
+                                                status: @"miniPlayer"
+                                            downloaded: self.isDownloadFile
+                                          startingTime: (int) (cTime * 1000)
+                                            endingTime: (int) (cTime * 1000 + 30000)];
+      */
+    }
+    else
+    {
+      // 이용로그 전송 시작
+      //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
+      /*
+      NSTimeInterval cTime = 0000;
+      [[LogManager sharedInstance] sendLogWithGroupKey: self.gkey
+                                            contentKey: self.ckey
+                                                status: @"fullPlayer"
+                                            downloaded: self.isDownloadFile
+                                          startingTime: (int) (cTime * 1000)
+                                            endingTime: (int) (cTime * 1000 + 30000)];
+      */
+    }
 }
 
 # pragma mark - Transmitting with the API server.

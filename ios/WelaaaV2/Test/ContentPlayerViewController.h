@@ -14,12 +14,21 @@
 #import "UIAlertController+Showable.h"
 #import "StarRatingView.h"
 #import "MediaPlayerScriptView.h"
+#import "ContentMiniPlayerView.h"
+
+typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
+{
+    ContentsPlayerScreenModeFullScreen,
+    ContentsPlayerScreenModeMiniPlayer
+};
 
 @interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate>
 
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
 @property AVPlayerLayer *playerLayer;
+@property (nonatomic, assign) ContentsPlayerScreenMode screenMode;
 @property (nonatomic, assign) BOOL isDownloadFile;
+@property (nonatomic, assign) BOOL isMiniPlayer;
 
 - (void) setContentData : (NSDictionary *) args;
 
