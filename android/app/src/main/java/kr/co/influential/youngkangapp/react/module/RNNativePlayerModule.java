@@ -126,35 +126,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void welaaaPallyConPlay(String url) {
-//        try {
-//            ReactApplicationContext context = getReactApplicationContext();
-//            getReac
-////
-//            Intent intent = new Intent(context, PallyConMainActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//
-////            intent.putExtra("ckey", "3025");
-////            intent.putExtra("view_time", 0);
-////            intent.putExtra("speedrate","1.0");
-////            intent.putExtra("position","keepgoing");
-////            intent.putExtra("isPause", false);
-////            intent.putExtra("con_class", "1");
-////            intent.putExtra("call_type","react-native");
-//            context.startActivity(intent);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//
-//            Log.e("welaaa" , "Exception " + e.toString() );
-//        }
-  }
-
-  @ReactMethod
-  public void welaaaPallyConDownload(String url) {
-  }
-
-  @ReactMethod
   public void setting(ReadableMap content) {
     // 2018.09.03
     boolean cellularDataUsePlay = content.getBoolean("cellularDataUsePlay");
@@ -175,14 +146,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     Preferences.setWelaaaOauthToken(getReactApplicationContext() , token);
 
     String versionInfo = BuildConfig.VERSION_NAME;
-    String versionFlavor = BuildConfig.FLAVOR;
     String versionType = BuildConfig.BUILD_TYPE;
     String versionName = BuildConfig.APPLICATION_ID;
 
     WritableMap params = Arguments.createMap();
 
     params.putString("versionInfo" , versionInfo);
-    params.putString("versionFlavor" , versionFlavor);
     params.putString("versionType" , versionType);
     params.putString("versionName" , versionName);
 

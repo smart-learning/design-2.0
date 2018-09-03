@@ -2126,7 +2126,7 @@ public class PlayerActivity extends BasePlayerActivity {
             welean_blank_line2.setVisibility(View.VISIBLE);
             welean_blank_line.setVisibility(View.VISIBLE);
 
-            if (BuildConfig.FLAVOR.equals("dev")) {
+            if (BuildConfig.BUILD_TYPE.equals("debug")) {
               sleeperNum = 2;
             } else {
               sleeperNum = 15;

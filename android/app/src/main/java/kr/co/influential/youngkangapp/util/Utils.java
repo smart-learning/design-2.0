@@ -29,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import kr.co.influential.youngkangapp.BuildConfig;
 
 /**
  * Created by okitoki on 2016. 10. 6.
@@ -42,12 +41,12 @@ public class Utils {
    ************************************************************/
   public static String welaaaWebUrl() {
 
-    String welaaaDomain = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/";
+    String welaaaDomain = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev/";
 
     String TYPE = "api";
     String VERSION = "v1.0";
 
-    welaaaDomain = welaaaDomain + BuildConfig.FLAVOR + "/" + TYPE + "/" + VERSION + "/";
+    welaaaDomain = welaaaDomain + TYPE + "/" + VERSION + "/";
 
     return welaaaDomain;
 
