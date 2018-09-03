@@ -24,7 +24,7 @@ public class WeContentManager extends SQLiteOpenHelper {
 
   private final String DOWNLOAD_CREATE_TABLE =
       "CREATE TABLE IF NOT EXISTS DOWNLOAD (_id integer primary key autoincrement, " +
-          "groupkey text not null, ckey text not null, userId text not null, userId text not null," +
+          "groupkey text not null, ckey text not null, userId text not null," +
           "drmSchemeUuid text not null, drmLicenseUrl text not null, cid text not null, oid text, "
           +
           "filepath text not null, RESOLUTION integer default 1,OVERWRITE integer default 0, UPDATERIGHT integer default 0, "
