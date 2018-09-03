@@ -46,7 +46,8 @@ public class Utils {
     String TYPE = "api";
     String VERSION = "v1.0";
 
-    welaaaDomain = welaaaDomain + TYPE + "/" + VERSION + "/";
+    welaaaDomain = welaaaDomain + "dev" + "/" + TYPE + "/" + VERSION + "/";
+//    welaaaDomain = welaaaDomain + BuildConfig.FLAVOR + "/" + TYPE + "/" + VERSION + "/";
 
     return welaaaDomain;
 

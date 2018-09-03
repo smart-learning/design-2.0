@@ -107,7 +107,7 @@ PODS:
   - Toast (4.0.0)
 
 DEPENDENCIES:
-  - AFNetworking (~> 3.0)
+  - AFNetworking
   - Bolts
   - Crashlytics
   - Fabric
@@ -119,7 +119,7 @@ DEPENDENCIES:
   - KakaoOpenSDK
   - SAMKeychain
   - SDWebImage (~> 4.0)
-  - Toast (~> 4.0.0)
+  - Toast
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -166,6 +166,6 @@ SPEC CHECKSUMS:
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: a97cb4b332f9ad38906160680fbc2c189c739c51
+PODFILE CHECKSUM: 24c8d9a3518b61cafc92ac48c346736791935890
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.5.2

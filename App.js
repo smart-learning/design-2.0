@@ -4,22 +4,38 @@ import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
-import { AsyncStorage, DeviceEventEmitter, NativeModules, View } from "react-native";
+import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
+import BottomController from "./src/scripts/components/BottomController";
+import Native from "./src/scripts/commons/native";
 
 class App extends React.Component {
 
 	getTokenFromAsyncStorage = async () => {
-		let token = await AsyncStorage.getItem( 'welaaaAuth' );
-		if( token ) {
-			token = JSON.parse( token );
-			globalStore.welaaaAuth = token;
+		let welaaaAuth = await AsyncStorage.getItem( 'welaaaAuth' );
+		if( welaaaAuth ) {
+			welaaaAuth = JSON.parse( welaaaAuth );
+			globalStore.welaaaAuth = welaaaAuth;
 
 			globalStore.profile = await net.getProfile();
 		}
+	};
+
+	getAppSettings = async () => {
+		const settings = await AsyncStorage.multiGet( [
+			'config:isAutoLogin',
+			'config:isWifiPlay',
+			'config:isWifiDownload',
+			'config:isAlert',
+			'config:isEmail',
+		] );
+
+		settings.forEach( setting => {
+			globalStore.appSettings[ setting[ 0 ].split( ':' ).pop() ] = Boolean( setting[ 1 ] );
+		} );
 	};
 
 	constructor(prop) {
@@ -27,11 +43,12 @@ class App extends React.Component {
 		this.subscription = null;
 
 		this.getTokenFromAsyncStorage();
+		this.getAppSettings();
 	}
 
 	componentDidMount() {
         this.subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
-            NativeModules.RNNativePlayer.toast('playbackState: ' + params['visible']);
+			Native.toggleMiniPlayer( params.visible );
         });
     }
 
@@ -57,13 +74,12 @@ class App extends React.Component {
 					}
 				}}
 			/>
-			{/*<View style={{position: 'absolute', bottom: 20, right: 100}}>*/}
-				{/*<Button title="Open Side"*/}
-						{/*onPress={() => {*/}
-							{/*globalStore.drawer.dispatch(DrawerActions.toggleDrawer())*/}
-						{/*}}*/}
-				{/*/>*/}
-			{/*</View>*/}
+
+			{globalStore.miniPlayerVisible && Platform.select({
+				android: <BottomController/>,
+				ios: null,
+			})}
+
 		</View>
 	}
 }

@@ -6,7 +6,10 @@ target 'WelaaaV2' do
   # use_frameworks!
 
   # Pods for WelaaaV2
-  
+  pod 'AFNetworking'
+  pod 'SAMKeychain'
+  pod 'Toast'
+
   # Firebase Analytics + Firebase Cloud Message
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
