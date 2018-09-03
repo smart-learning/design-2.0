@@ -11,8 +11,9 @@ import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
+import { observer } from "mobx-react";
 
-class App extends React.Component {
+@observer class App extends React.Component {
 
 	getTokenFromAsyncStorage = async () => {
 		let welaaaAuth = await AsyncStorage.getItem( 'welaaaAuth' );
