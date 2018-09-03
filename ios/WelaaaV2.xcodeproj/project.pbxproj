@@ -885,8 +885,8 @@
 			isa = PBXGroup;
 			children = (
 				EFAEBD87213D33050070F10E /* StarRatingView.h */,
-				EFAEBD88213D33050070F10E /* UIAlertController+Showable.h */,
 				EFAEBD89213D33050070F10E /* StarRatingView.m */,
+				EFAEBD88213D33050070F10E /* UIAlertController+Showable.h */,
 				EFAEBD8A213D33050070F10E /* UIAlertController+Showable.m */,
 			);
 			path = RatingView;
@@ -895,14 +895,14 @@
 		EFAEBD90213D33050070F10E /* ScriptView */ = {
 			isa = PBXGroup;
 			children = (
-				EFAEBD91213D33050070F10E /* PlayerScriptCell.m */,
 				EFAEBD92213D33050070F10E /* MediaPlayerScriptView.h */,
-				EFAEBD93213D33050070F10E /* PlayerScriptItemView.h */,
-				EFAEBD94213D33050070F10E /* ScriptControlView.m */,
-				EFAEBD95213D33050070F10E /* PlayerScriptCell.h */,
 				EFAEBD96213D33050070F10E /* MediaPlayerScriptView.m */,
 				EFAEBD97213D33050070F10E /* ScriptControlView.h */,
+				EFAEBD94213D33050070F10E /* ScriptControlView.m */,
+				EFAEBD93213D33050070F10E /* PlayerScriptItemView.h */,
 				EFAEBD98213D33050070F10E /* PlayerScriptItemView.m */,
+				EFAEBD95213D33050070F10E /* PlayerScriptCell.h */,
+				EFAEBD91213D33050070F10E /* PlayerScriptCell.m */,
 			);
 			path = ScriptView;
 			sourceTree = "<group>";
@@ -911,9 +911,9 @@
 			isa = PBXGroup;
 			children = (
 				EFAEBD9C213D33050070F10E /* ContentPlayerButton.h */,
-				EFAEBD9D213D33050070F10E /* ContentPlayerTouchView.m */,
 				EFAEBD9E213D33050070F10E /* ContentPlayerButton.m */,
 				EFAEBD9F213D33050070F10E /* ContentPlayerTouchView.h */,
+				EFAEBD9D213D33050070F10E /* ContentPlayerTouchView.m */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -921,9 +921,9 @@
 		EFAEBDA0213D33050070F10E /* ContentsListView */ = {
 			isa = PBXGroup;
 			children = (
-				EFAEBDA1213D33050070F10E /* ContentsListPopupViewCell.h */,
-				EFAEBDA2213D33050070F10E /* ContentsListPopupView.m */,
 				EFAEBDA3213D33050070F10E /* ContentsListPopupView.h */,
+				EFAEBDA2213D33050070F10E /* ContentsListPopupView.m */,
+				EFAEBDA1213D33050070F10E /* ContentsListPopupViewCell.h */,
 				EFAEBDA4213D33050070F10E /* ContentsListPopupViewCell.m */,
 			);
 			path = ContentsListView;

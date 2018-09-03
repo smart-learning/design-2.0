@@ -2,6 +2,7 @@
 #import "ContentPlayerViewController.h"
 
 #import "AppDelegate.h"
+#import "IFRecommendViewController.h"
 
 #define PALLYCON_SITE_ID    @"O8LD"
 #define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
@@ -937,12 +938,14 @@
 
 - (void) pressedCloseButton
 {
+  /*
     [_player pause];
     [_playerLayer removeFromSuperlayer];
     _playerLayer.player = nil;
     [self invalidateTimerOnSlider];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+  */
     //[self showToast : @"미니플레이어로 변환합니다."];
   /*
   self.isMiniPlayer = YES;
@@ -956,6 +959,13 @@
   _miniPlayerUiView.hidden = !self.isMiniPlayer;
   [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
   */
+  
+  // 연관 컨텐츠 뷰를 로딩합니다.
+  NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
+  // 헤더 제목을 위해 IFCollectionView클래스에도 ckey를 보내야할 수도 있습니다.
+  self.recommendViewController = [[IFRecommendViewController alloc] init];
+  [self.recommendViewController setDataWithCurrentCkey: @"405"];
+  [self.view addSubview: self.recommendViewController.view];
 }
 
 - (void) pressedRateStarButton

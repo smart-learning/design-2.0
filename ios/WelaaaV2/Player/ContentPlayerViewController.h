@@ -22,6 +22,8 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
     ContentsPlayerScreenModeMiniPlayer
 };
 
+@class IFRecommendViewController;
+
 @interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate>
 
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
@@ -29,6 +31,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
 @property (nonatomic, assign) ContentsPlayerScreenMode screenMode;
 @property (nonatomic, assign) BOOL isDownloadFile;
 @property (nonatomic, assign) BOOL isMiniPlayer;
+@property (strong, nonatomic) IFRecommendViewController *recommendViewController;
 
 - (void) setContentData : (NSDictionary *) args;
 
