@@ -32,10 +32,10 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 {
     // 1.0 로그인 유저의 F_Token을 확인합니다.
     NSString *webToken = [[NSUserDefaults standardUserDefaults] stringForKey : @"webToken"];
-    if ( nil == webToken )
-    {
-        webToken = @"NO_F_TOKEN";
-    }
+    //if ( nil == webToken )
+    //{
+        //webToken = @"NO_F_TOKEN";
+    //}
     NSLog(@"  webToken : %@", webToken);
   
     // Push notification badge reset. 앱이 완전히 재구동되어야 뱃지가 디카운팅이 됨. 백그라운드에서 돌아올때는 여기서 리셋되지는 않습니다.

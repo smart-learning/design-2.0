@@ -225,7 +225,6 @@
     
     if ( currentIndex > -1 && _array.count > currentIndex && currentIndex != _prevIndex )
     {
-        
         NSDictionary *object = _array[currentIndex];
         NSString *memo = object[@"memo"];
         CGFloat startTime = [object[@"time"] floatValue] / 1000.f;

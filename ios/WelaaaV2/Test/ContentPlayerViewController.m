@@ -2004,6 +2004,13 @@
         }
     }
 }
+- (void) mediaPlayerScriptView : (MediaPlayerScriptView *) view
+                  statusChange : (MediaPlayerScriptViewMode) mode
+{
+    [_scriptButton setStatus : mode];
+    [self setScriptViewFrameWithStatus : mode];
+}
+
 # pragma mark - Transmitting with the API server.
 //
 // group_ID로 콘텐츠 정보를 가져옵니다.
