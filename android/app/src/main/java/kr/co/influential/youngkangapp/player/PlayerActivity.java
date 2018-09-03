@@ -86,11 +86,6 @@ import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,8 +98,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-
 import kr.co.influential.youngkangapp.BasePlayerActivity;
+import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.cast.CastControllerActivity;
@@ -125,9 +120,11 @@ import kr.co.influential.youngkangapp.util.WeContentManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by PallyconTeam
@@ -135,10 +132,9 @@ import okhttp3.Response;
 
 public class PlayerActivity extends BasePlayerActivity {
 
-  public static final String TAG = LogHelper.makeLogTag(PlayerActivity.class);
-
   private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
 
+  public static final String TAG = "pallycon_sampleapp";
   public static final String CONTENTS_TITLE = "contents_title";
   public static final String PREFER_EXTENSION_DECODERS = "prefer_extension_decoders";
   public static final String DOWNLOAD_SERVICE_TYPE = "drm_delete";
@@ -316,6 +312,11 @@ public class PlayerActivity extends BasePlayerActivity {
   public String PLAY_MODE = "video"; //(CON_CLASS => video의 audioMode,videoMode
   private String startPosition = "";
 
+  public String CONTENT_TYPE = "";  // course-
+  public Boolean CAN_PLAY = false;
+  public String EXPIRE_AT = "";
+  public Boolean IS_FREE = false;
+
   private WebPlayerInfo mWebPlayerInfo = null;
   private NewWebPlayerInfo mNewWebPlayerInfo = null;
 
@@ -389,6 +390,9 @@ public class PlayerActivity extends BasePlayerActivity {
   private PlaybackStateCompat lastPlaybackState;
   private HttpConnection httpConn = HttpConnection.getInstance();
 
+  private String callbackMethodName = "";
+  private String callbackMethod = "";
+
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
@@ -418,11 +422,6 @@ public class PlayerActivity extends BasePlayerActivity {
         }
       };
 
-  private final float ASPECT_RATIO_MIN = 0.418410f;
-  private final float ASPECT_RATIO_MAX = 2.390000f;
-  private final int denominator = 100;
-  private float aspectRatio;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -434,12 +433,6 @@ public class PlayerActivity extends BasePlayerActivity {
 //		com.google.android.exoplayer2.ui.SimpleExoPlayerView
     simpleExoPlayerView = findViewById(R.id.player_view);
     simpleExoPlayerView.requestFocus();
-    simpleExoPlayerView.setAspectRatioListener(
-        (targetAspectRatio, naturalAspectRatio, aspectRatioMismatch) ->
-            aspectRatio = targetAspectRatio);
-
-    // Set player to playerview.
-    LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
 
     //// Chromecast
     mCastContext = CastContext.getSharedInstance(this);
@@ -498,9 +491,17 @@ public class PlayerActivity extends BasePlayerActivity {
     // 초기 과정 데이터 값 셋팅 오디오북 베이스 getAssets contentsinfo62.json
 
     Intent intent = getIntent();
-    String type = intent.getStringExtra("type");
 
-    initContentList("movie");
+    mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
+
+    CONTENT_TYPE = intent.getStringExtra("type");
+    CAN_PLAY = intent.getBooleanExtra("can_play", false);
+    IS_FREE = intent.getBooleanExtra("is_free", false);
+    EXPIRE_AT = intent.getStringExtra("expire_at");
+
+    // video-course , audiobook //
+    callbackWebPlayerInfo(CONTENT_TYPE, "");
+
     // 베이스 레이아웃
     setBaseUI();
     // 자막 레이아웃
@@ -599,9 +600,35 @@ public class PlayerActivity extends BasePlayerActivity {
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
         connectionCallback, null);
 
-    mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
+    if (CONTENT_TYPE.equals("audiobook")) {
+      RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
+      control_wrap.setOnTouchListener(new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+          return true;
+        }
+      });
 
-    sendData();
+//      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
+
+      mButton_Arrow_Layout.setVisibility(GONE);
+      mRelatedViewBtn.setVisibility(GONE);
+
+      RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
+      subscription_wrap.setVisibility(GONE);
+
+      RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
+      audioVideobtn_wrap.setVisibility(GONE);
+
+      audioModeBackgroundLayout.setVisibility(VISIBLE);
+      audioModeIconHeadset.setVisibility(VISIBLE);
+
+      // Audio Book 에서 화면 항상 켜기 //
+      getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+    }
+
+    mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
   }
 
   @Override
@@ -697,15 +724,16 @@ public class PlayerActivity extends BasePlayerActivity {
     if (controllerCompat != null) {
       controllerCompat.unregisterCallback(callback);
     }
-
-    // TODO: 2018. 8. 29. temporary demo.
-    getTransportControls().stop();
   }
 
   @Override
   protected void onDestroy() {
 
     super.onDestroy();
+
+    if (mPlayTimeHandler != null) {
+      mPlayTimeHandler.removeCallbacksAndMessages(null);
+    }
 
   }
 
@@ -747,18 +775,14 @@ public class PlayerActivity extends BasePlayerActivity {
   @RequiresApi(VERSION_CODES.O)
   @Override
   protected void onUserLeaveHint() {
-    if (aspectRatio > ASPECT_RATIO_MIN && aspectRatio < ASPECT_RATIO_MAX) {
-      int numerator = (int) (aspectRatio * denominator);
-      PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-      builder.setAspectRatio(new Rational(numerator, denominator));
-      enterPictureInPictureMode(builder.build());
-    }
+    PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+    builder.setAspectRatio(new Rational(16, 9));
+    enterPictureInPictureMode(builder.build());
   }
 
   @Override
   public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
     super.onPictureInPictureModeChanged(isInPictureInPictureMode);
-    simpleExoPlayerView.setUseController(!isInPictureInPictureMode);
   }
 
   private void releaseCast() {
@@ -1651,9 +1675,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
     mRelatedViewTopCloseBtn.setOnClickListener(click_control);
 
-    mBtnArrowLeft.setOnClickListener(click_control);
-    mBtnArrowRight.setOnClickListener(click_control);
-
   }
 
   static double timesleep = 0;
@@ -1677,7 +1698,7 @@ public class PlayerActivity extends BasePlayerActivity {
     return String.format("%02d:%02d", nMin, nSec);
   }
 
-  static final class SleepTimeHandler extends Handler {
+  class SleepTimeHandler extends Handler {
 
     private final WeakReference<PlayerActivity> mController;
 
@@ -1691,32 +1712,9 @@ public class PlayerActivity extends BasePlayerActivity {
       if (mController.get().timesleep <= 0) {
         mSleeperHandler.removeCallbacksAndMessages(null);
 
-        try {
+        finishForSleeper();
 
-//					if(Preferences.getWelaaaPlayerSleepMode()) {
-//						Utils.logToast(getApplication(), getString(R.string.info_finish_resons_leepmode));
-//
-//						try{
-//							stopSleepTimeThread();
-//
-//							Preferences.setWelaaaPlayEnd(getApplication(),true);
-//
-//							Preferences.setWelaaaPlayerSleepMode(getApplication(), false);
-//							Preferences.setWelaaaPlayAudioUsed(getApplication(), false);
-//
-//							// 리소스 모니터링 후 종료 확인 합니다. 나중에 다시 확인 해주세요!
-//							finish();
-//
-//						}catch (Exception e){
-//							e.printStackTrace();
-//						}
-//					}
-
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
       } else {
-
         timesleep = timesleep - 1000;
 
         if (mSleeperHandler != null) {
@@ -2035,23 +2033,7 @@ public class PlayerActivity extends BasePlayerActivity {
               Utils.logToast(getApplicationContext(),
                   getApplicationContext().getString(R.string.info_perview_mode));
             } else {
-              if (CON_CLASS.equals("1")) {
-                // PlayerController 에서 호출되는 내용이 없었다 //
-
-                String F_Token = Preferences.getWelaaaLoginToken(getApplicationContext());
-                String weburl = WELEARN_WEB_URL + "/usingapp/play_list.php" + "?f_token=" + F_Token;
-
-//								SendlastedViewListasyncTask sendlastedViewListasyncTask = new SendlastedViewListasyncTask();
-//								if(Build.VERSION.SDK_INT >= 11){
-//									sendlastedViewListasyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, weburl );
-//								}
-//								else{
-//									sendlastedViewListasyncTask.execute(weburl);
-//								}
-
-                updateContentList("movie");
-              }
-
+              callbackWebPlayerInfo(CONTENT_TYPE, "");
               // 일시정지
               if (getTransportControls() != null) {
                 getTransportControls().pause();
@@ -2144,7 +2126,11 @@ public class PlayerActivity extends BasePlayerActivity {
             welean_blank_line2.setVisibility(View.VISIBLE);
             welean_blank_line.setVisibility(View.VISIBLE);
 
-            sleeperNum = 15;
+            if (BuildConfig.BUILD_TYPE.equals("debug")) {
+              sleeperNum = 2;
+            } else {
+              sleeperNum = 15;
+            }
 
             sleepstart();
             mBtnSleeper.setVisibility(View.INVISIBLE);
@@ -2346,12 +2332,11 @@ public class PlayerActivity extends BasePlayerActivity {
             break;
 
           case R.id.leftArrowButton:
-
-//            LocalPlayback.getInstance(PlayerActivity.this).
-
+            doNextPlay(false);
             break;
 
           case R.id.rightArrowButton:
+            doNextPlay(true);
             break;
         }
 
@@ -2621,7 +2606,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
       // 현재 하일라이트 된 자막 영역
       if (j == getTextViewNumber()) {
-//                Log.e(TAG, " J is getTextViewNumber " + j + " getTextViewNumber " + getTextViewNumber());
 
         longSubTitlesTextView[j] = new TextView(getApplicationContext());
         longSubTitlesTextView[j].setText(mSubtitlsmemo[j]);
@@ -2901,51 +2885,50 @@ public class PlayerActivity extends BasePlayerActivity {
 
       {
         try {
-//					if(mWelaaaPlayer.CON_CLASS.equals("1")){
-          mMyRepuBoxLinear.setVisibility(View.VISIBLE);
 
-          // 개발 예외 코드 인데요 .. 이렇게 값이 나올수가 없는데 ..
-          if (mUserStar == null) {
-            if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("0")) {
-              mUserStar = Preferences.getWelaaaMyReputation(getApplicationContext());
-            } else {
-              mUserStar = "";
+          if (CONTENT_TYPE.equals("video-course")) {
+            mMyRepuBoxLinear.setVisibility(View.VISIBLE);
+
+            if (mUserStar == null) {
+              if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("0")) {
+                mUserStar = Preferences.getWelaaaMyReputation(getApplicationContext());
+              } else {
+                mUserStar = "";
+              }
             }
+
+            if (mUserStar.equals("")) {
+              // 등록된 별점 정보가 없는 경우
+              TextView myrepu_text = findViewById(R.id.myrepu_text);
+              myrepu_text.setVisibility(View.GONE);
+
+              LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
+              myrepu_linear.setVisibility(View.GONE);
+
+              LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
+              myrepu_linear_update.setVisibility(View.VISIBLE);
+            } else {
+
+              TextView myrepu_text = findViewById(R.id.myrepu_text);
+              myrepu_text.setVisibility(View.VISIBLE);
+
+              LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
+              myrepu_linear.setVisibility(View.VISIBLE);
+
+              LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
+              myrepu_linear_update.setVisibility(View.GONE);
+
+              TextView myrepu_star_text = findViewById(R.id.myrepu_star);
+              myrepu_star_text
+                  .setText(Preferences.getWelaaaMyReputation(getApplicationContext()) + ".0");
+            }
+          } else if (CONTENT_TYPE.equals("audiobook")) {
+            mMyRepuBoxLinear.setVisibility(View.GONE);
           }
-
-          if (mUserStar.equals("")) {
-            // 등록된 별점 정보가 없는 경우
-            TextView myrepu_text = findViewById(R.id.myrepu_text);
-            myrepu_text.setVisibility(View.GONE);
-
-            LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
-            myrepu_linear.setVisibility(View.GONE);
-
-            LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
-            myrepu_linear_update.setVisibility(View.VISIBLE);
-          } else {
-
-            TextView myrepu_text = findViewById(R.id.myrepu_text);
-            myrepu_text.setVisibility(View.VISIBLE);
-
-            LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
-            myrepu_linear.setVisibility(View.VISIBLE);
-
-            LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
-            myrepu_linear_update.setVisibility(View.GONE);
-
-            TextView myrepu_star_text = findViewById(R.id.myrepu_star);
-            myrepu_star_text
-                .setText(Preferences.getWelaaaMyReputation(getApplicationContext()) + ".0");
-          }
-//					}else{
-//						mMyRepuBoxLinear.setVisibility(View.GONE);
-//					}
         } catch (Exception e) {
           e.printStackTrace();
         }
       }
-
     };
 
     setMyrepuSetUIHandler.sendEmptyMessageDelayed(0, 500);
@@ -2963,6 +2946,10 @@ public class PlayerActivity extends BasePlayerActivity {
 
       {
         try {
+
+          if (CONTENT_TYPE.equals("video-course")) {
+            loadRelatedData();
+          }
 //					if(mWelaaaPlayer.CON_CLASS.equals("1")) {
 //						// 신규 서블릿 주소가 등록될 예정입니다
 //						String weburl = "";
@@ -2995,8 +2982,6 @@ public class PlayerActivity extends BasePlayerActivity {
 //							// http://crashes.to/s/d9fb8aa7b19
 //						}
 //					}
-
-          loadRelatedData();
 
         } catch (Exception e) {
           e.printStackTrace();
@@ -4056,434 +4041,10 @@ public class PlayerActivity extends BasePlayerActivity {
     return sb.toString();
   }
 
-  public void initContentList(String type) {
-
-    StringBuffer sb = new StringBuffer();
-
-    try {
-      if (type.equals("movie")) {
-
-//		InputStream is = getAssets().open("play_list.json");
-//      InputStream is = getAssets().open("contentsinfo28.json");
-        InputStream is = getAssets().open("contents_info_v100015_001.json");
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        String jsonText = readAll(rd);
-        JSONObject json = new JSONObject(jsonText);
-
-//        String group_title = json.getString("group_title");
-
-        JSONObject dataObject = json.getJSONObject("data");
-        String group_title = dataObject.getString("title");
-
-//        String group_memo = json.getString("group_memo");
-        String group_memo = "";
-
-        String group_teachername = dataObject.getJSONObject("teacher").getString("name");
-        String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
-
-        String group_img = "";
-        String group_previewcontent = "";
-        String allplay_time = dataObject.getString("play_time");
-
-        String contentscnt = dataObject.getString("clip_count");
-        String hitcnt = dataObject.getString("hit_count");
-        String likecnt = dataObject.getString("like_count");
-        String zzimcnt = "";
-        String staravg = dataObject.getString("star_avg");
-
-        String con_class = json.getString("type");
-
-        String downloadcnt = "";
-        String audiobookbuy = "";
-        String audiobookbuy_limitdate = "";
-
-        sb.append("group_title=" + group_title);
-        sb.append("&group_memo=" + group_memo);
-        sb.append("&group_teachername=" + group_teachername);
-        sb.append("&group_teachermemo=" + group_teachermemo);
-        sb.append("&group_img=" + group_img);
-        sb.append("&group_previewcontent=" + group_previewcontent);
-        sb.append("&allplay_time=" + allplay_time);
-        sb.append("&contentscnt=" + contentscnt);
-        sb.append("&hitcnt=" + hitcnt);
-        sb.append("&likecnt=" + likecnt);
-        sb.append("&zzimcnt=" + zzimcnt);
-        sb.append("&staravg=" + staravg);
-        sb.append("&con_class=" + con_class);
-        sb.append("&downloadcnt=" + downloadcnt);
-        sb.append("&audiobookbuy=" + audiobookbuy);
-        sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
-
-        JSONArray jArr = dataObject.getJSONArray("clips");
-
-        for (int i = 0; i < jArr.length(); i++) {
-
-          json = jArr.getJSONObject(i);
-          //값을 추출함
-          String ckey = json.getString("cid");
-          String cname = json.getString("title");
-          String cmemo = json.getString("memo");
-
-          String curl = ""; // play_data 에서
-
-          String cplay_time = json.getString("play_time");
-          String cpay = json.getString("pay_type");
-          String cpay_money = json.getString("price");
-
-          String clist_img = json.getJSONObject("images").getString("list");
-
-          String chitcnt = "";
-          String csmi = "";
-
-          String a_depth = "";
-          String history_endtime = json.getString("end_seconds");
-
-          String first_play = "";
-          String calign = "";
-          String audio_preview = "";
-
-          sb.append("&ckey=" + ckey);
-          sb.append("&cname=" + cname);
-          sb.append("&cmemo=" + cmemo);
-          sb.append("&curl=" + curl);
-          sb.append("&cplay_time=" + cplay_time);
-          sb.append("&cpay=" + cpay);
-          sb.append("&cpay_money=" + cpay_money);
-          sb.append("&clist_img=" + clist_img);
-          sb.append("&chitcnt=" + chitcnt);
-          sb.append("&history_endtime=" + history_endtime);
-          sb.append("&a_depth=" + a_depth);
-          sb.append("&first_play=" + first_play);
-          sb.append("&calign=" + calign);
-          sb.append("&audio_preview=" + audio_preview);
-
-          if (csmi.equals("")) {
-            sb.append("&csmi=" + "none");
-          } else {
-            sb.append("&csmi=" + csmi);
-          }
-        }
-
-        if (mWebPlayerInfo != null) {
-          mWebPlayerInfo = null;
-        }
-
-        mWebPlayerInfo = new WebPlayerInfo(sb.toString());
-
-
-      } else if (type.equals("audio")) {
-
-        InputStream is = getAssets().open("contents_info_b300200.json");
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        String jsonText = readAll(rd);
-        JSONObject json = new JSONObject(jsonText);
-        JSONObject dataObject = json.getJSONObject("data");
-
-        // data : chapters {} , cid , id , teacher {} , title
-        // history : cid , position 정보 ..
-        // permission { can_play , expire_at , is_free }
-        // type : audiobook
-
-        // 추가로 받아야 할것 , backGround 이미지 경로 , 전체 재생 시간 , 다운로드 콘텐츠 카운트 값
-        // 권한이 없는 경우 미리듣기 콘텐츠가 history 로 들어 오는 건가요 ?
-
-        String group_title = dataObject.getString("title");
-        String group_memo = "";
-
-        String group_teachername = dataObject.getJSONObject("teacher").getString("name");
-        String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
-
-        String group_img = "";
-        String group_previewcontent = "";
-        String allplay_time = json.getString("allplay_time");
-        String contentscnt = json.getString("contentscnt");
-        String hitcnt = "";
-        String likecnt = "";
-        String zzimcnt = "";
-        String staravg = "";
-        String con_class = json.getString("type");
-        String downloadcnt = "";
-        String audiobookbuy = "";
-        String audiobookbuy_limitdate = "";
-
-        sb.append("group_title=" + group_title);
-        sb.append("&group_memo=" + group_memo);
-        sb.append("&group_teachername=" + group_teachername);
-        sb.append("&group_teachermemo=" + group_teachermemo);
-        sb.append("&group_img=" + group_img);
-        sb.append("&group_previewcontent=" + group_previewcontent);
-        sb.append("&allplay_time=" + allplay_time);
-        sb.append("&contentscnt=" + contentscnt);
-        sb.append("&hitcnt=" + hitcnt);
-        sb.append("&likecnt=" + likecnt);
-        sb.append("&zzimcnt=" + zzimcnt);
-        sb.append("&staravg=" + staravg);
-        sb.append("&con_class=" + con_class);
-        sb.append("&downloadcnt=" + downloadcnt);
-        sb.append("&audiobookbuy=" + audiobookbuy);
-        sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
-
-        //contentsinfo의 값은 배열로 구성 되어있으므로 JSON 배열생성
-        JSONArray jArr = dataObject.getJSONArray("chapters");
-
-        //배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
-        for (int i = 0; i < jArr.length(); i++) {
-
-          json = jArr.getJSONObject(i);
-          //값을 추출함
-          String ckey = json.getString("cid");
-          String cname = json.getString("title");
-          String cmemo = json.getString("memo");
-          String curl = "";
-          String cplay_time = json.getString("play_time");
-          String cpay = "";
-          String cpay_money = "";
-          String clist_img = "";
-          String chitcnt = "";
-          String csmi = "";
-
-          String a_depth = json.getString("depth");
-          String history_endtime = json.getString("history_endtime");
-
-          String first_play = json.getString("is_first_play");
-          String calign = json.getString("align");
-          String audio_preview = json.getString("is_preview");
-
-          sb.append("&ckey=" + ckey);
-          sb.append("&cname=" + cname);
-          sb.append("&cmemo=" + cmemo);
-          sb.append("&curl=" + curl);
-          sb.append("&cplay_time=" + cplay_time);
-          sb.append("&cpay=" + cpay);
-          sb.append("&cpay_money=" + cpay_money);
-          sb.append("&clist_img=" + clist_img);
-          sb.append("&chitcnt=" + chitcnt);
-          sb.append("&history_endtime=" + history_endtime);
-          sb.append("&a_depth=" + a_depth);
-          sb.append("&first_play=" + first_play);
-          sb.append("&calign=" + calign);
-          sb.append("&audio_preview=" + audio_preview);
-
-          if (csmi.equals("")) {
-            sb.append("&csmi=" + "none");
-          } else {
-            sb.append("&csmi=" + csmi);
-          }
-        }
-
-        if (mWebPlayerInfo != null) {
-          mWebPlayerInfo = null;
-        }
-
-        mWebPlayerInfo = new WebPlayerInfo(sb.toString());
-        // 화면 그리기 ..
-        callbackWebPlayerInfo(type, "");
-
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  public void updateContentList(String type) {
-
-    StringBuffer sb = new StringBuffer();
-
-    try {
-      if (type.equals("movie")) {
-
-        InputStream is = getAssets().open("contents_info_v100015_001.json");
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        String jsonText = readAll(rd);
-        JSONObject json = new JSONObject(jsonText);
-
-        JSONObject dataObject = json.getJSONObject("data");
-
-        String group_title = dataObject.getString("title");
-
-//        String group_memo = json.getString("group_memo");
-        String group_memo = "";
-
-        String group_teachername = dataObject.getJSONObject("teacher").getString("name");
-        String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
-
-        JSONArray jArr = dataObject.getJSONArray("clips");
-
-        for (int i = 0; i < jArr.length(); i++) {
-          //i번째 배열 할당
-          json = jArr.getJSONObject(i);
-
-          String grouptitle = group_title;
-          String teachername = group_teachername;
-          String con_class = json.getString("type");
-          String end_time = json.getString("end_seconds");
-          String groupkey = json.getString("cid");
-
-          String group_img = "";
-          String group_hitcnt = "";
-          String group_likecnt = "";
-          String group_zzimcnt = "";
-
-          String ckey = json.getString("cid");
-          String cname = json.getString("title");
-          String cmemo = json.getString("memo");
-
-          String curl = ""; // play_data 에서
-
-          String cplay_time = json.getString("play_time");
-          String cpay = json.getString("pay_type");
-          String cpay_money = json.getString("price");
-
-          String clist_img = json.getJSONObject("images").getString("list");
-
-          String ccon_class = json.getString("type");
-          String csmi = "";
-
-          sb.append("&grouptitle=" + grouptitle);
-          sb.append("&teachername=" + teachername);
-          sb.append("&con_class=" + con_class);
-          sb.append("&end_time=" + end_time);
-          sb.append("&groupkey=" + groupkey);
-
-          sb.append("&group_img=" + group_img);
-          sb.append("&group_hitcnt=" + group_hitcnt);
-          sb.append("&group_likecnt=" + group_likecnt);
-          sb.append("&group_zzimcnt=" + group_zzimcnt);
-          sb.append("&ckey=" + ckey);
-
-          sb.append("&cname=" + cname);
-          sb.append("&cmemo=" + cmemo);
-          sb.append("&clist_img=" + clist_img);
-          sb.append("&curl=" + curl);
-          sb.append("&cplay_time=" + cplay_time);
-
-          sb.append("&cpay=" + cpay);
-          sb.append("&cpay_money=" + cpay_money);
-          sb.append("&ccon_class=" + ccon_class);
-
-          if (csmi.equals("")) {
-            sb.append("&csmi=" + "none");
-          } else {
-            sb.append("&csmi=" + csmi);
-          }
-        }
-
-        if (mNewWebPlayerInfo != null) {
-          mNewWebPlayerInfo = null;
-        }
-
-        mNewWebPlayerInfo = new NewWebPlayerInfo(sb.toString());
-        // 화면 그리기 ..
-        callbackWebPlayerInfo(type, "");
-
-
-      } else if (type.equals("audio")) {
-
-        InputStream is = getAssets().open("contentsinfo28.json");
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        String jsonText = readAll(rd);
-        JSONObject json = new JSONObject(jsonText);
-
-        String group_title = json.getString("group_title");
-        String group_memo = json.getString("group_memo");
-        String group_teachername = json.getString("group_teachername");
-        String group_teachermemo = json.getString("group_teachermemo");
-        String group_img = json.getString("group_img");
-        String group_previewcontent = json.getString("group_previewcontent");
-        String allplay_time = json.getString("allplay_time");
-        String contentscnt = json.getString("contentscnt");
-        String hitcnt = json.getString("hitcnt");
-        String likecnt = json.getString("likecnt");
-        String zzimcnt = json.getString("zzimcnt");
-        String staravg = json.getString("staravg");
-        String con_class = json.getString("con_class");
-        String downloadcnt = json.getString("downloadcnt");
-        String audiobookbuy = json.getString("audiobookbuy");
-        String audiobookbuy_limitdate = json.getString("audiobookbuy_limitdate");
-
-        sb.append("group_title=" + group_title);
-        sb.append("&group_memo=" + group_memo);
-        sb.append("&group_teachername=" + group_teachername);
-        sb.append("&group_teachermemo=" + group_teachermemo);
-        sb.append("&group_img=" + group_img);
-        sb.append("&group_previewcontent=" + group_previewcontent);
-        sb.append("&allplay_time=" + allplay_time);
-        sb.append("&contentscnt=" + contentscnt);
-        sb.append("&hitcnt=" + hitcnt);
-        sb.append("&likecnt=" + likecnt);
-        sb.append("&zzimcnt=" + zzimcnt);
-        sb.append("&staravg=" + staravg);
-        sb.append("&con_class=" + con_class);
-        sb.append("&downloadcnt=" + downloadcnt);
-        sb.append("&audiobookbuy=" + audiobookbuy);
-        sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
-
-        //contentsinfo의 값은 배열로 구성 되어있으므로 JSON 배열생성
-        JSONArray jArr = json.getJSONArray("contentsinfo");
-
-        //배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
-        for (int i = 0; i < jArr.length(); i++) {
-
-          json = jArr.getJSONObject(i);
-          //값을 추출함
-          String ckey = json.getString("ckey");
-          String cname = json.getString("cname");
-          String cmemo = json.getString("cmemo");
-          String curl = json.getString("curl");
-          String cplay_time = json.getString("cplay_time");
-          String cpay = json.getString("cpay");
-          String cpay_money = json.getString("cpay_money");
-          String clist_img = json.getString("clist_img");
-          String chitcnt = json.getString("chitcnt");
-          String csmi = json.getString("csmi");
-
-          String a_depth = json.getString("a_depth");
-          String history_endtime = json.getString("history_endtime");
-
-          String first_play = json.getString("first_play");
-          String calign = json.getString("calign");
-          String audio_preview = json.getString("audio_preview");
-
-          sb.append("&ckey=" + ckey);
-          sb.append("&cname=" + cname);
-          sb.append("&cmemo=" + cmemo);
-          sb.append("&curl=" + curl);
-          sb.append("&cplay_time=" + cplay_time);
-          sb.append("&cpay=" + cpay);
-          sb.append("&cpay_money=" + cpay_money);
-          sb.append("&clist_img=" + clist_img);
-          sb.append("&chitcnt=" + chitcnt);
-          sb.append("&history_endtime=" + history_endtime);
-          sb.append("&a_depth=" + a_depth);
-          sb.append("&first_play=" + first_play);
-          sb.append("&calign=" + calign);
-          sb.append("&audio_preview=" + audio_preview);
-
-          if (csmi.equals("")) {
-            sb.append("&csmi=" + "none");
-          } else {
-            sb.append("&csmi=" + csmi);
-          }
-        }
-
-        if (mWebPlayerInfo != null) {
-          mWebPlayerInfo = null;
-        }
-
-        mWebPlayerInfo = new WebPlayerInfo(sb.toString());
-        // 화면 그리기 ..
-        callbackWebPlayerInfo(type, "");
-
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   public void callbackWebPlayerInfo(String methodName, String params) {
     try {
-      //
-      if (methodName.equals("movie")) {
+
+      if (methodName.equals("video-course")) {
         mPlaylistGroupLayout.setVisibility(View.VISIBLE);
         mPlaylistGroupLayout.startAnimation(mAniSlideShow);
 
@@ -4550,10 +4111,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
         lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
 
-        for (int i = 0; i < itemArray.length(); i++) {
-          JSONObject objItem = itemArray.getJSONObject(i);
-
-          lastViewListArray.add(i, objItem);
+        for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
 
           String playListType = "";
 
@@ -4573,35 +4131,89 @@ public class PlayerActivity extends BasePlayerActivity {
 //
 //          } else {
 
-          if (objItem.getString("end_seconds").equals("0") || objItem.getString("end_seconds")
-              .equals("")) {
+          if (getwebPlayerInfo().getHistory_endtime()[i].equals("0") ||
+              getwebPlayerInfo().getHistory_endtime()[i].equals("")) {
             playListType = "1";
-          } else if (objItem.getString("end_seconds").equals("9999999")) {
+          } else if (getwebPlayerInfo().getHistory_endtime()[i].equals("9999999")) {
             playListType = "3";
           } else {
             playListType = "2";
           }
-//          }
 
-          lectureListItemdapter.add(objItem.getString("play_time"), "",
-              objItem.getString("title"), group_title,
-              group_teachername, objItem.getString("end_seconds"), playListType);
+          lectureListItemdapter
+              .add(getwebPlayerInfo().getCplayTime()[i], "", getwebPlayerInfo().getCname()[i],
+                  getwebPlayerInfo().getGroupTitle(),
+                  getwebPlayerInfo().getGroupTeachername(),
+                  getwebPlayerInfo().getHistory_endtime()[i],
+                  playListType);
           lecturListView.setAdapter(lectureListItemdapter);
         }
 
         lecturListView.setSelection(Integer.parseInt(currentPosition));
         Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
 
-      } else if (methodName.equals("audio")) {
-        // 없네 ㅋㅋ
-        /****************************************************
-         * 오디오모드나 오디오북에서는 keep screen on을 clear 한다.
-         ****************************************************/
+      } else if (methodName.equals("audiobook")) {
 
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mPlaylistGroupLayout.setVisibility(View.VISIBLE);
+        mPlaylistGroupLayout.startAnimation(mAniSlideShow);
 
-        audioModeBackgroundLayout.setVisibility(VISIBLE);
-        audioModeIconHeadset.setVisibility(VISIBLE);
+        mButtonGroupLayout.setVisibility(View.INVISIBLE);
+
+        ListView lecturListView = findViewById(R.id.weleanplaylistview);
+
+        for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
+
+          if(getwebPlayerInfo().getA_depth()[i].equals("1")){
+
+            // Play Item Focus , 강조 구문
+            // AudioBook Buy ? , 플레이 버튼 노출을 위해서
+            lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "2");
+
+          }else if(getwebPlayerInfo().getA_depth()[i].equals("2")){
+
+            lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "4");
+          }else{
+            lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "6");
+          }
+
+        }
+
+        lecturListView.setAdapter(lectureAudioBookListItemdapter);
+
+        lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+          @Override
+          public void onScrollStateChanged(AbsListView absListView, int i) {
+            // scroll Start 1
+            // scroll Ing 2
+            // scroll Stop 0
+          }
+
+          @Override
+          public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+            audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
+            audioItemProgressBar.setVisibility(VISIBLE);
+
+            if (i == 0) {
+              audioItemProgressBar.setProgress(1);
+            }
+
+            if (i > 0 && i < 30) {
+              audioItemProgressBar.setProgress(((i) * 100 / i2));
+            }
+
+            if (i > 30) {
+              audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
+            }
+          }
+        });
+
+        TextView list_grop_title = findViewById(R.id.list_group_title);
+        String gTitle = getwebPlayerInfo().getGroupTitle();
+        list_grop_title.setText(gTitle);
 
       }
 
@@ -4610,7 +4222,19 @@ public class PlayerActivity extends BasePlayerActivity {
     }
   }
 
+  /**************************************************************************
+   *  컨텐츠 id값을 preferences에 set
+   **************************************************************************/
+  public void setContentId(int id) {
+
+    Preferences.setWelaaaPlayListCId(getApplication(), id);
+  }
+
+  /**************************************************************************
+   *  preferences에 저장되어 있는 컨텐츠 id값을 get
+   **************************************************************************/
   public int getContentId() {
+
     return Preferences.getWelaaaPlayListCId(getApplication());
   }
 
@@ -4661,8 +4285,11 @@ public class PlayerActivity extends BasePlayerActivity {
         Preferences.setWelaaaPlayerSleepMode(getApplication(), false);
         Preferences.setWelaaaPlayAudioUsed(getApplication(), false);
 
-        // 리소스 모니터링 후 종료 확인 합니다. 나중에 다시 확인 해주세요!
-        finish();
+        if (getTransportControls() != null) {
+
+          getTransportControls().stop();
+
+        }
 
       } catch (Exception e) {
         e.printStackTrace();
@@ -5104,6 +4731,9 @@ public class PlayerActivity extends BasePlayerActivity {
       Uri uri = intent.getData();
       Bundle extras = intent.getExtras();
       getTransportControls().playFromUri(uri, extras);
+
+      // Set player to playerview.
+      LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
     }
   }
 
@@ -5116,6 +4746,10 @@ public class PlayerActivity extends BasePlayerActivity {
         .getMediaController(PlayerActivity.this);
     if (controllerCompat != null && controllerCompat.getExtras() != null) {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
+    }
+
+    if (CONTENT_TYPE.equals("audiobook")) {
+      LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
     }
 
     switch (state.getState()) {
@@ -5168,17 +4802,70 @@ public class PlayerActivity extends BasePlayerActivity {
     }
   }
 
+  public void doNextPlay(Boolean type) {
+    // Left -- , Right ++
+    //
+
+    if (type) {
+      int id = getContentId();
+      if (getContentId() == 0) {
+        Utils.logToast(getApplicationContext(), getString(R.string.info_fristplay));
+        return;
+      } else {
+        setContentId(++id);
+      }
+
+      if (CONTENT_TYPE.equals("video-course")) {
+//        if (getTransportControls() != null) {
+//          getTransportControls().pause();
+//        }
+        callbackMethodName = "play/play-data/";
+        sendData(
+            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()]);
+
+        setContentId(getContentId());
+
+        // 타이틀 동기화는 meta 데이터를 활용할 것
+        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+            getwebPlayerInfo().getCname()[getContentId()]);
+      } else if (CONTENT_TYPE.equals("audiobook")) {
+
+      }
+    } else {
+      int id = getContentId();
+      if (getContentId() == 0) {
+        Utils.logToast(getApplicationContext(), getString(R.string.info_fristplay));
+        return;
+      } else {
+        setContentId(--id);
+      }
+
+      if (CONTENT_TYPE.equals("video-course")) {
+//        if (getTransportControls() != null) {
+//          getTransportControls().pause();
+//        }
+        callbackMethodName = "play/play-data/";
+        sendData(
+            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()]);
+
+        setContentId(getContentId());
+
+        // 타이틀 동기화는 meta 데이터를 활용할 것
+        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+            getwebPlayerInfo().getCname()[getContentId()]);
+      } else if (CONTENT_TYPE.equals("audiobook")) {
+
+      }
+
+    }
+
+
+  }
+
   /********************************************************
    * autoplay mode
    ********************************************************/
   public void doAutoPlay() {
-
-//    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd",
-//    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_002/stream.mpd",
-//    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_003/stream.mpd",
-//    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_004/stream.mpd",
-//    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_005/stream.mpd",
-//    uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_006/stream.mpd",
 
     Intent intent = getIntent();
     String currentCid = intent.getStringExtra("drm_cid");
@@ -5191,8 +4878,6 @@ public class PlayerActivity extends BasePlayerActivity {
     }
 
     if (getwebPlayerInfo().getCkey().length == currentPosition + 1) {
-      // last suggest list show !
-      //
 
       setBackGroungLayout(true);
       Animation fadeout = null;
@@ -5221,63 +4906,17 @@ public class PlayerActivity extends BasePlayerActivity {
 
     nextPosition = currentPosition + 1;
 
-    String loadFile = "play-data-" + getwebPlayerInfo().getCkey()[nextPosition] + ".json";
-    String dashUrl = "";
+    // getwebPlayerinfo 를 찾아서 . 다음으로 넘어가야 합니다.
 
-    try {
-      InputStream is = getAssets().open(loadFile);
-      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-      String jsonText = readAll(rd);
-      JSONObject json = new JSONObject(jsonText);
+    callbackMethodName = "play/play-data/";
+    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[nextPosition]);
 
-//        String group_title = json.getString("group_title");
-
-      JSONObject dataObject = json.getJSONObject("media_urls");
-
-      dashUrl = dataObject.getString("DASH");
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    setContentId(nextPosition);
 
     // 타이틀 동기화는 meta 데이터를 활용할 것
     setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
         getwebPlayerInfo().getCname()[nextPosition]);
 
-    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-      if (getTransportControls() != null) {
-        Uri uri = Uri.parse(dashUrl);
-
-        intent.setData(uri);
-        intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-            getwebPlayerInfo().getCname()[nextPosition]);
-        intent.putExtra(PlaybackManager.THUMB_URL, "");
-        try {
-
-          if ((getDrmUuid("widevine").toString()) != null) {
-
-            intent
-                .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA, getDrmUuid("widevine").toString());
-            intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
-                "http://tokyo.pallycon.com/ri/licenseManager.do");
-            intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-            intent.putExtra(PlaybackManager.DRM_USERID, "93");
-            intent.putExtra(PlaybackManager.DRM_CID, getwebPlayerInfo().getCkey()[nextPosition]);
-            intent.putExtra(PlaybackManager.DRM_OID, "");
-            intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-            intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-
-          }
-
-        } catch (ParserException e) {
-          e.printStackTrace();
-        }
-
-        Bundle extras = intent.getExtras();
-
-        getTransportControls().playFromUri(uri, extras);
-      }
-    }
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
@@ -5334,7 +4973,7 @@ public class PlayerActivity extends BasePlayerActivity {
           JSONObject postdata = new JSONObject();
           try {
             postdata.put("action", "ING");
-            postdata.put("cid", "v100001_001");
+            postdata.put("cid", getwebPlayerInfo().getCkey()[getContentId()]);
             postdata.put("duration", currentposition);
             postdata.put("end", currentposition);
             postdata.put("error", "NONE");
@@ -5351,7 +4990,7 @@ public class PlayerActivity extends BasePlayerActivity {
           new Thread() {
             public void run() {
               httpConn.requestWebServer(weburl, "CLIENT_ID", "CLIENT_SECRET",
-                  "", body, callbackRequest);
+                  "", body, callbackProgressRequest);
             }
           }.start();
 
@@ -5373,24 +5012,26 @@ public class PlayerActivity extends BasePlayerActivity {
 
 
   /**
-   * 웹 서버로 데이터 전송
+   * 웹 서버로 데이터 전송 // 샘플링
    */
-  private void sendData() {
+  private void sendData(String sendUrl) {
 
-    String LoginOkUrl = WELEARN_WEB_URL + "play/play-data/v100015_001";
+    String requestWebUrl = sendUrl;
+
+    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
 
     new Thread() {
       public void run() {
-        httpConn.requestWebServer(LoginOkUrl, "CLIENT_ID", "CLIENT_SECRET", "", callbackRequest);
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", "",
+            callbackRequest);
       }
     }.start();
   }
 
-  private final Callback callbackRequest = new Callback() {
+  private final Callback callbackProgressRequest = new Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
       Log.e(TAG, "mPlayTimeHandler 중지 콜백오류: " + e.getMessage());
-
       if (mPlayTimeHandler != null) {
         mPlayTimeHandler.removeCallbacksAndMessages(null);
       }
@@ -5403,14 +5044,91 @@ public class PlayerActivity extends BasePlayerActivity {
       if (response.code() == 200) {
         Log.e(TAG, "서버에서 응답한 Body:" + body);
       } else {
-        Log.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
-
         if (mPlayTimeHandler != null) {
           mPlayTimeHandler.removeCallbacksAndMessages(null);
         }
-
       }
-
     }
   };
+
+  private final Callback callbackRequest = new Callback() {
+    @Override
+    public void onFailure(Call call, IOException e) {
+      Log.e(TAG, "mPlayTimeHandler 중지 콜백오류: " + e.getMessage());
+    }
+
+    @Override
+    public void onResponse(Call call, Response response) throws IOException {
+      String body = response.body().string();
+
+      if (response.code() == 200) {
+        Log.e(TAG, "서버에서 응답한 Body:" + body);
+
+        if (callbackMethodName.equals("play/play-data/")) {
+          // doAudoPlay 전용
+          try {
+            JSONObject json = new JSONObject(body);
+            JSONObject media_urlsObject = json.getJSONObject("media_urls");
+            JSONObject permissionObject = json.getJSONObject("permission");
+
+            String dashUrl = media_urlsObject.getString("DASH");
+            Boolean can_play = permissionObject.getBoolean("can_play");
+            String expire_at = permissionObject.getString("expire_at");
+            Boolean is_free = permissionObject.getBoolean("is_free");
+
+            Intent intent = getIntent();
+
+            if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+              if (getTransportControls() != null) {
+                Uri uri = Uri.parse(dashUrl);
+
+                intent.setData(uri);
+                intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                    getwebPlayerInfo().getCname()[getContentId()]);
+                intent.putExtra(PlaybackManager.THUMB_URL, "");
+                try {
+
+                  if ((getDrmUuid("widevine").toString()) != null) {
+
+                    intent
+                        .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                            getDrmUuid("widevine").toString());
+                    intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                        "http://tokyo.pallycon.com/ri/licenseManager.do");
+                    intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                    intent.putExtra(PlaybackManager.DRM_USERID, "93");
+                    intent.putExtra(PlaybackManager.DRM_CID,
+                        getwebPlayerInfo().getCkey()[getContentId()]);
+                    intent.putExtra(PlaybackManager.DRM_OID, "");
+                    intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                    intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+
+                  }
+
+                } catch (ParserException e) {
+                  e.printStackTrace();
+                }
+
+                Bundle extras = intent.getExtras();
+
+                getTransportControls().playFromUri(uri, extras);
+
+                // Set player to playerview.
+                LocalPlayback.getInstance(PlayerActivity.this).setPlayerView(simpleExoPlayerView);
+
+              }
+            }
+
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+
+      } else {
+        Log.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
+      }
+    }
+  };
+
+
 }
