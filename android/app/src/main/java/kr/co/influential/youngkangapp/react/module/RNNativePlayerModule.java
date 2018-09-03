@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -19,13 +18,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.UUID;
-
 import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.download.DownloadService;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
@@ -40,6 +34,8 @@ import kr.co.influential.youngkangapp.util.Utils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class RNNativePlayerModule extends ReactContextBaseJavaModule
     implements RNEventEmitter {
@@ -82,6 +78,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     contentCid = content.getString("cid");
     contentToken = content.getString("token");
 
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+
     callbackMethodName = "play/contents-info";
     callbackMethod = "play";
 
@@ -99,6 +97,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     contentUserId = content.getString("userId");
     contentCid = content.getString("cid");
     contentToken = content.getString("token");
+
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
 
     callbackMethodName = "play/contents-info";
     callbackMethod = "download";
@@ -136,10 +136,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     boolean cellularDataUseDownload = content.getBoolean("cellularDataUseDownload");
     String token = content.getString("token");
 
-    Preferences.setOnlyWifiView(getReactApplicationContext() , cellularDataUsePlay);
-    Preferences.setOnlyWifiDownload(getReactApplicationContext() , cellularDataUseDownload);
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
 
-    Preferences.setWelaaaOauthToken(getReactApplicationContext() , token);
+    Preferences.setOnlyWifiView(getReactApplicationContext(), cellularDataUsePlay);
+    Preferences.setOnlyWifiDownload(getReactApplicationContext(), cellularDataUseDownload);
+
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
   }
 
   @ReactMethod
@@ -147,7 +149,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     // 2018.09.03
     String token = content.getString("token");
 
-    Preferences.setWelaaaOauthToken(getReactApplicationContext() , token);
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
 
     String versionInfo = BuildConfig.VERSION_NAME;
     String versionType = BuildConfig.BUILD_TYPE;
@@ -155,11 +159,11 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     WritableMap params = Arguments.createMap();
 
-    params.putString("versionInfo" , versionInfo);
-    params.putString("versionType" , versionType);
-    params.putString("versionName" , versionName);
+    params.putString("versionInfo", versionInfo);
+    params.putString("versionType", versionType);
+    params.putString("versionName", versionName);
 
-    eventEmitter.sendEvent("versionInfo" , params);
+    eventEmitter.sendEvent("versionInfo", params);
   }
 
   @Override
@@ -201,11 +205,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
+    Log.e(TAG, " requestWebUrl is " + requestWebUrl );
+    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()) );
 
     new Thread() {
       public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", "", callback);
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", Preferences.getWelaaaOauthToken(getCurrentActivity()), callback);
       }
     }.start();
   }
@@ -225,6 +230,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       Intent intent = new Intent(contextWrapper, PlayerActivity.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
       StringBuffer sb = new StringBuffer();
+
+      Log.e(TAG, " response.code() is " + response.code() + " response " +body );
 
       if (response.code() == 200) {
         if (callbackMethodName.contains("play/contents-info")) {
@@ -343,6 +350,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     historyObject.getString("start_seconds");
 
 //                    cid 값을 가져와서 셋팅 해주는 과정이 필요 .
+                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("id") );
+                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("played_at") );
+                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("start_seconds") );
 
                     contentName = json.getString("title");
 
@@ -478,6 +488,10 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     historyObject.getString("played_at");
                     historyObject.getString("start_seconds");
 
+                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("id") );
+                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("played_at") );
+                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("start_seconds") );
+
 //                    cid 값을 가져와서 셋팅 해주는 과정이 필요 .
 
                     contentName = json.getString("title");
@@ -518,7 +532,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
           try {
             JSONObject json = new JSONObject(body);
-            JSONObject media_urlsObject = json.getJSONObject("media_urls");
+            JSONObject media_urlsObject = null;
+
+            if (json.isNull("media_urls")) {
+              Log.e(TAG, " media_urls is null");
+            } else {
+              media_urlsObject = json.getJSONObject("media_urls");
+            }
+
             JSONObject permissionObject = json.getJSONObject("permission");
 
             String dashUrl = media_urlsObject.getString("DASH");
@@ -542,6 +563,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
               } else if (contentType.equals("audiobook")) {
                 Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
+              }
+
+              if (can_play) {
+                Preferences.setWelaaaPreviewPlay(getReactApplicationContext(), false);
+              } else {
+                Preferences.setWelaaaPreviewPlay(getReactApplicationContext(), true);
               }
 
               intent.setData(Uri.parse(dashUrl));
@@ -601,13 +628,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               Log.e(TAG, " No Action .. ");
             }
 
-
           } catch (Exception e) {
             e.printStackTrace();
           }
         }
-      } else {
-
+      }else{
+        
       }
     }
   };

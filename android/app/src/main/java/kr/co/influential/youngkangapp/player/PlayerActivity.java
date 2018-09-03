@@ -3167,7 +3167,7 @@ public class PlayerActivity extends BasePlayerActivity {
         switch (alertWindowId) {
 
           case 1:
-            if (Util.SDK_INT >= 26) {
+            if (Util.SDK_INT >= 19) {
               contentDownload();
               mCustomDialog.dismiss();
             }
@@ -3985,7 +3985,7 @@ public class PlayerActivity extends BasePlayerActivity {
             if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
               a = getNewWebPlayerInfo().getCplay_time();
               b = getNewWebPlayerInfo().getCname();
-              c = getNewWebPlayerInfo().getCurl();
+              c = getNewWebPlayerInfo().getCkey();
               d = getNewWebPlayerInfo().getGroup_title();
               e = getNewWebPlayerInfo().getGroup_teachername();
               f = getNewWebPlayerInfo().getEnd_time();
@@ -4079,31 +4079,6 @@ public class PlayerActivity extends BasePlayerActivity {
         });
 
         String currentPosition = "";
-        String itemArrayTotalCnt = "";
-
-        InputStream is = getAssets().open("contents_info_v100015_001.json");
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-        String jsonText = readAll(rd);
-        JSONObject json = new JSONObject(jsonText);
-
-        JSONObject dataObject = json.getJSONObject("data");
-        String group_title = dataObject.getString("title");
-        String group_teachername = dataObject.getJSONObject("teacher").getString("name");
-
-        JSONArray itemArray = dataObject.getJSONArray("clips");
-
-        int currentListKey = Integer
-            .parseInt(Preferences.getWelaaaRecentPlayListUse(getApplicationContext()));
-
-        if (currentListKey > 0) {
-
-        } else {
-          String playListCount = Preferences.getWelaaaPlayListCount(getApplicationContext());
-          String[] currentPosition2 = playListCount.split(":");
-          currentListKey = itemArray.length() - Integer.parseInt(currentPosition2[0]);
-        }
-
-        currentPosition = String.valueOf(itemArray.length() - currentListKey);
 
         if (lectureListItemdapter != null) {
           lectureListItemdapter = null;
@@ -4141,7 +4116,8 @@ public class PlayerActivity extends BasePlayerActivity {
           }
 
           lectureListItemdapter
-              .add(getwebPlayerInfo().getCplayTime()[i], "", getwebPlayerInfo().getCname()[i],
+              .add(getwebPlayerInfo().getCplayTime()[i], getwebPlayerInfo().getCkey()[i],
+                  getwebPlayerInfo().getCname()[i],
                   getwebPlayerInfo().getGroupTitle(),
                   getwebPlayerInfo().getGroupTeachername(),
                   getwebPlayerInfo().getHistory_endtime()[i],
@@ -4149,7 +4125,7 @@ public class PlayerActivity extends BasePlayerActivity {
           lecturListView.setAdapter(lectureListItemdapter);
         }
 
-        lecturListView.setSelection(Integer.parseInt(currentPosition));
+//        lecturListView.setSelection(Integer.parseInt(currentPosition));
         Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
 
       } else if (methodName.equals("audiobook")) {
@@ -4163,18 +4139,18 @@ public class PlayerActivity extends BasePlayerActivity {
 
         for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
 
-          if(getwebPlayerInfo().getA_depth()[i].equals("1")){
+          if (getwebPlayerInfo().getA_depth()[i].equals("1")) {
 
             // Play Item Focus , 강조 구문
             // AudioBook Buy ? , 플레이 버튼 노출을 위해서
             lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
                 getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "2");
 
-          }else if(getwebPlayerInfo().getA_depth()[i].equals("2")){
+          } else if (getwebPlayerInfo().getA_depth()[i].equals("2")) {
 
             lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
                 getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "4");
-          }else{
+          } else {
             lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
                 getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "6");
           }
@@ -4620,41 +4596,12 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void contentDownload() {
 
-    DownloadService.stopped = false;
+    callbackMethodName = "play/play-data/";
+    callbackMethod = "download";
 
-    Intent service = new Intent(PlayerActivity.this, DownloadService.class);
+    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+        callbackMethodName);
 
-    service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA,
-        "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
-    service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
-
-    startService(service);
-    bindService(service, downloadConnection, getApplicationContext().BIND_AUTO_CREATE);
-
-    isDonwloadBindState = true;
-
-//		Intent service = new Intent(PlayerActivity.this , DownloadService.class);
-//		startService(service);
-
-//		DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
-//		downloadTask = new PallyconDownloadTask(PlayerActivity.this, content.uri, content.name, PlayerActivity.this, eventHandler, downloadCallback);
-
-//		Uri localUri = downloadTask.getLocalUri(content.uri, content.name);
-//		intent.setData(localUri);
-//		intent.putExtra(PlayerActivity.CONTENTS_TITLE, content.name);
-//		//intent.putExtra(PlayerActivity.THUMB_URL, content.thumbUrl);
-//		if (content.drmSchemeUuid != null) {
-//			// TODO: Gets the local content path for local playback.
-//			intent.putExtra(PlayerActivity.DRM_SCHEME_UUID_EXTRA, content.drmSchemeUuid.toString());
-//			intent.putExtra(PlayerActivity.DRM_LICENSE_URL, content.drmLicenseUrl);
-//			intent.putExtra(PlayerActivity.DRM_MULTI_SESSION, content.multiSession);
-//			intent.putExtra(PlayerActivity.DRM_USERID, content.userId);
-//			intent.putExtra(PlayerActivity.DRM_CID, content.cid);
-//			intent.putExtra(PlayerActivity.DRM_OID, content.oid);
-//			intent.putExtra(PlayerActivity.DRM_CUSTOME_DATA, content.customData);
-//			intent.putExtra(PlayerActivity.DRM_TOKEN, content.token);
-//		}
-//		startActivity(intent);
   }
 
   protected class ContentGroup {
@@ -4808,20 +4755,18 @@ public class PlayerActivity extends BasePlayerActivity {
 
     if (type) {
       int id = getContentId();
-      if (getContentId() == 0) {
-        Utils.logToast(getApplicationContext(), getString(R.string.info_fristplay));
-        return;
-      } else {
-        setContentId(++id);
-      }
+
+      setContentId(++id);
 
       if (CONTENT_TYPE.equals("video-course")) {
 //        if (getTransportControls() != null) {
 //          getTransportControls().pause();
 //        }
         callbackMethodName = "play/play-data/";
+        callbackMethod = "play";
         sendData(
-            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()]);
+            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+            callbackMethod);
 
         setContentId(getContentId());
 
@@ -4845,8 +4790,10 @@ public class PlayerActivity extends BasePlayerActivity {
 //          getTransportControls().pause();
 //        }
         callbackMethodName = "play/play-data/";
+        callbackMethod = "play";
         sendData(
-            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()]);
+            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+            callbackMethod);
 
         setContentId(getContentId());
 
@@ -4909,7 +4856,10 @@ public class PlayerActivity extends BasePlayerActivity {
     // getwebPlayerinfo 를 찾아서 . 다음으로 넘어가야 합니다.
 
     callbackMethodName = "play/play-data/";
-    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[nextPosition]);
+    callbackMethod = "play";
+
+    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[nextPosition],
+        callbackMethodName);
 
     setContentId(nextPosition);
 
@@ -5012,18 +4962,19 @@ public class PlayerActivity extends BasePlayerActivity {
 
 
   /**
-   * 웹 서버로 데이터 전송 // 샘플링
+   * 웹 서버로 데이터 전송 // Progress 전용
    */
   private void sendData(String sendUrl) {
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
+    Log.e(TAG, " requestWebUrl is " + requestWebUrl );
+    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()) );
 
     new Thread() {
       public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", "",
-            callbackRequest);
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", Preferences.getWelaaaOauthToken(getApplicationContext()),
+            callbackProgressRequest);
       }
     }.start();
   }
@@ -5044,6 +4995,7 @@ public class PlayerActivity extends BasePlayerActivity {
       if (response.code() == 200) {
         Log.e(TAG, "서버에서 응답한 Body:" + body);
       } else {
+
         if (mPlayTimeHandler != null) {
           mPlayTimeHandler.removeCallbacksAndMessages(null);
         }
@@ -5051,10 +5003,28 @@ public class PlayerActivity extends BasePlayerActivity {
     }
   };
 
+  /**
+   * 웹 서버로 데이터 전송 // content-info , play-data
+   */
+  private void sendData(String sendUrl, String type) {
+
+    String requestWebUrl = sendUrl;
+
+    Log.e(TAG, " requestWebUrl is " + requestWebUrl );
+    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()) );
+
+    new Thread() {
+      public void run() {
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", Preferences.getWelaaaOauthToken(getApplicationContext()),
+            callbackRequest);
+      }
+    }.start();
+  }
+
   private final Callback callbackRequest = new Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
-      Log.e(TAG, "mPlayTimeHandler 중지 콜백오류: " + e.getMessage());
+
     }
 
     @Override
@@ -5062,7 +5032,7 @@ public class PlayerActivity extends BasePlayerActivity {
       String body = response.body().string();
 
       if (response.code() == 200) {
-        Log.e(TAG, "서버에서 응답한 Body:" + body);
+        Log.e(TAG, "서버에서 응답한 Body:" + callbackMethodName);
 
         if (callbackMethodName.equals("play/play-data/")) {
           // doAudoPlay 전용
@@ -5076,48 +5046,72 @@ public class PlayerActivity extends BasePlayerActivity {
             String expire_at = permissionObject.getString("expire_at");
             Boolean is_free = permissionObject.getBoolean("is_free");
 
+            if (can_play) {
+              Preferences.setWelaaaPreviewPlay(getApplicationContext(), false);
+            } else {
+              Preferences.setWelaaaPreviewPlay(getApplicationContext(), true);
+            }
+
             Intent intent = getIntent();
 
-            if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-              if (getTransportControls() != null) {
-                Uri uri = Uri.parse(dashUrl);
+            if (callbackMethod.equals("play")) {
+              if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+                if (getTransportControls() != null) {
+                  Uri uri = Uri.parse(dashUrl);
 
-                intent.setData(uri);
-                intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                    getwebPlayerInfo().getCname()[getContentId()]);
-                intent.putExtra(PlaybackManager.THUMB_URL, "");
-                try {
+                  intent.setData(uri);
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                      getwebPlayerInfo().getCname()[getContentId()]);
+                  intent.putExtra(PlaybackManager.THUMB_URL, "");
+                  try {
 
-                  if ((getDrmUuid("widevine").toString()) != null) {
+                    if ((getDrmUuid("widevine").toString()) != null) {
 
-                    intent
-                        .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                            getDrmUuid("widevine").toString());
-                    intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
-                        "http://tokyo.pallycon.com/ri/licenseManager.do");
-                    intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                    intent.putExtra(PlaybackManager.DRM_USERID, "93");
-                    intent.putExtra(PlaybackManager.DRM_CID,
-                        getwebPlayerInfo().getCkey()[getContentId()]);
-                    intent.putExtra(PlaybackManager.DRM_OID, "");
-                    intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-                    intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                      intent
+                          .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                              getDrmUuid("widevine").toString());
+                      intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                          "http://tokyo.pallycon.com/ri/licenseManager.do");
+                      intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                      intent.putExtra(PlaybackManager.DRM_USERID, "93");
+                      intent.putExtra(PlaybackManager.DRM_CID,
+                          getwebPlayerInfo().getCkey()[getContentId()]);
+                      intent.putExtra(PlaybackManager.DRM_OID, "");
+                      intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                      intent.putExtra(PlaybackManager.DRM_TOKEN, "");
 
+                    }
+
+                  } catch (ParserException e) {
+                    e.printStackTrace();
                   }
 
-                } catch (ParserException e) {
-                  e.printStackTrace();
+                  Bundle extras = intent.getExtras();
+
+                  getTransportControls().playFromUri(uri, extras);
+
+                  // Set player to playerview.
+                  LocalPlayback.getInstance(PlayerActivity.this).setPlayerView(simpleExoPlayerView);
+
                 }
-
-                Bundle extras = intent.getExtras();
-
-                getTransportControls().playFromUri(uri, extras);
-
-                // Set player to playerview.
-                LocalPlayback.getInstance(PlayerActivity.this).setPlayerView(simpleExoPlayerView);
-
               }
+            } else if (callbackMethod.equals("download")) {
+              DownloadService.stopped = false;
+
+              Intent service = new Intent(PlayerActivity.this, DownloadService.class);
+
+              service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
+              service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                  getwebPlayerInfo().getCname()[getContentId()]);
+              service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
+              service.putExtra("contentCid", getwebPlayerInfo().getCkey()[getContentId()]);
+              service.putExtra("expire_at", expire_at);
+              service.putExtra("webPlayerInfo", mWebPlayerInfo);
+
+              startService(service);
+              bindService(service, downloadConnection, getApplicationContext().BIND_AUTO_CREATE);
             }
+
 
           } catch (Exception e) {
             e.printStackTrace();
@@ -5130,5 +5124,68 @@ public class PlayerActivity extends BasePlayerActivity {
     }
   };
 
+  /*******************************************************************
+   * 플레이어 리스트 아답타의 onclick 액션을 받는다. 들어올때 권한을 다시 확인한다 ?
+   *******************************************************************/
+  public void playListOnClick(String pos) {
+
+    int currentPosition = 0;
+    for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
+      if (getwebPlayerInfo().getCkey()[i].equals(pos)) {
+        currentPosition = i;
+      }
+    }
+
+    setBackGroungLayout(true);
+    Animation fadeout = null;
+    fadeout = null;
+    fadeout = AnimationUtils
+        .loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+
+    mRelatedListGroupLayout.startAnimation(fadeout);
+
+    Animation textBlink = null;
+    textBlink = AnimationUtils
+        .loadAnimation(getApplicationContext(), R.anim.blink_animation);
+
+    mRelatedListBlinkText.startAnimation(textBlink);
+    mRelatedListGroupLayout.setVisibility(VISIBLE);
+
+    if (mPlaylistGroupLayout != null) {
+      mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+    }
+    if (mPlaylistGroupLayout != null) {
+      mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+    }
+    if (mButtonGroupLayout != null) {
+      mButtonGroupLayout.setVisibility(VISIBLE);
+    }
+
+    if (lectureListItemdapter != null) {
+      lectureListItemdapter = null;
+    }
+
+    if (lectureAudioBookListItemdapter != null) {
+      lectureAudioBookListItemdapter = null;
+    }
+
+//										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
+    if (getTransportControls() != null) {
+      getTransportControls().pause();
+    }
+
+    callbackMethodName = "play/play-data/";
+    callbackMethod = "play";
+
+    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
+        callbackMethodName);
+
+    setContentId(currentPosition);
+
+    // 타이틀 동기화는 meta 데이터를 활용할 것
+    setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+        getwebPlayerInfo().getCname()[currentPosition]);
+
+  }
 
 }

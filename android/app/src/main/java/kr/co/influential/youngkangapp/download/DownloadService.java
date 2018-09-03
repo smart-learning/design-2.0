@@ -16,7 +16,6 @@ import android.os.NetworkOnMainThreadException;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
@@ -158,6 +157,8 @@ public class DownloadService extends IntentService implements
             Uri.parse(drm_content_uri_extra), drm_content_name_extra, DownloadService.this,
             eventHandler, null);
         downloadTask.removeDownloadContent();
+
+        ContentManager().downloadDeleteFromcid(downloadContentCid);
 
         Handler mHandler = new Handler(getMainLooper());
         mHandler.post(new Runnable() {
