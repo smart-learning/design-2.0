@@ -275,7 +275,7 @@ class PolicyPage extends Component {
 						<Text style={styles.sectionListItem}>3. 제소 당시 회원의 주소 또는 거소가 분명하지 않은 경우에는 민사소송법에 따라 관할법원을 정합니다.</Text>
 					</View>
 
-					<View style={styles.contentTitle}/>
+					<Text style={styles.contentTitle}/>
 					<View style={styles.sectionList}>
 						<Text style={styles.sectionListItem}>[시행일자]</Text>
 						<Text style={styles.sectionListItem}>본 약관은 2017년 8 월 1일부터 적용됩니다.</Text>
