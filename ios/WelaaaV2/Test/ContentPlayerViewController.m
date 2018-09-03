@@ -137,6 +137,7 @@
 // 뷰 컨트롤러가 나타나기 직전에 항상 실행되기 때문에 해당 뷰 컨트롤러가 나타나기 직전마다 일어나는 작업들을 여기에 배치 시킬 수 있습니다.
 - (void) viewWillAppear : (BOOL) animated
 {
+    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
     // _args가 잘못 전달받아도 HLS 경로로 수정합니다.
     NSString *uriString = [_args objectForKey : @"uri"];
     uriString = [uriString stringByReplacingOccurrencesOfString : @"/DASH_"
@@ -285,6 +286,7 @@
         [_playerLayer removeFromSuperlayer];
         [self invalidateTimerOnSlider];
         [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
       
         return ;
     }
@@ -329,6 +331,7 @@
         [_playerLayer removeFromSuperlayer];
         [self invalidateTimerOnSlider];
         [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     }
     else
     {
@@ -336,6 +339,7 @@
         [_playerLayer removeFromSuperlayer];
         [self invalidateTimerOnSlider];
         [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     }
   
     // 추가할 사항 : 연속재생 버튼이 'on'상태이면 플레이어를 종료합니다.
@@ -937,6 +941,7 @@
     _playerLayer.player = nil;
     [self invalidateTimerOnSlider];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     //[self showToast : @"미니플레이어로 변환합니다."];
 }
 
@@ -1436,6 +1441,7 @@
                                                                         [self invalidateTimerOnSlider];
                                                                         [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
                                                                         [self showToast : @"90 초 프리뷰"]; // Root View에서도 보여야 합니다.
+                                                                        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
                                                                     }
                                                                 }
                                                             }];
@@ -1603,6 +1609,7 @@
                                                    handler : ^(UIAlertAction * action)
                              {
                                [alert dismissViewControllerAnimated:YES completion:nil];
+                                [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
                              }];
         [alert addAction : ok];
         
