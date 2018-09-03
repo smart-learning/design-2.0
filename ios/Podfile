@@ -45,5 +45,7 @@ target 'WelaaaV2' do
 
 #  pod 'react-native-video', :path => '../node_modules/react-native-video'
 
+  pod 'react-native-version-number', :path => '../node_modules/react-native-version-number'
+
 end
 use_frameworks!

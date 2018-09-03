@@ -188,6 +188,7 @@ apply plugin: 'io.fabric'
 
 
 dependencies {
+    compile project(':react-native-version-number')
     implementation project(':react-native-sqlite-2')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')

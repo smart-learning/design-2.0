@@ -82,10 +82,8 @@ export default class DownloadContentPage extends React.Component {
 		/* TODO sql로 리스트 가져오기 */
 
 		const db = SQLite.openDatabase( 'welaaa.db', '1.0', '', 1 );
-		console.log( 'db:', db );
 		db.transaction( txn => {
-			console.log( txn );
-
+			console.log( 'txn:', txn );
 			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res)=>{
 				console.log( 'res:', res );
 			});

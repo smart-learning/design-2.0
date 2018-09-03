@@ -6,6 +6,7 @@ import {observer} from "mobx-react";
 import {observable} from "mobx";
 import globalStore from '../../../scripts/commons/store';
 import Native from "../../commons/native";
+import VersionNumber from "react-native-version-number";
 
 const styles = StyleSheet.create({
 	title: {
@@ -144,7 +145,7 @@ class SetAppPage extends React.Component {
 						<View style={styles.setBox}>
 							<View style={[CommonStyles.alignJustifyContentBetween, styles.setContent]}>
 								<View>
-									<Text style={styles.label}>현재버전 {Native.getVersionName()}</Text>
+									<Text style={styles.label}>현재버전 { VersionNumber.appVersion }</Text>
 								</View>
 							</View>
 						</View>
