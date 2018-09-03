@@ -16,9 +16,9 @@ import android.os.NetworkOnMainThreadException;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
 import com.pallycon.widevinelibrary.NetworkConnectedException;
 import com.pallycon.widevinelibrary.PallyconDownloadException;
 import com.pallycon.widevinelibrary.PallyconDownloadTask;
@@ -68,15 +68,6 @@ public class DownloadService extends IntentService implements
   public void onPostExecute() {
     // TODO: Release the UI after the download is complete.
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-      Logger.e(TAG + " 1 onPostExecute ");
-
-      try {
-//				ContentManager().downloadAdd();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-
     }
 
   }
@@ -206,10 +197,7 @@ public class DownloadService extends IntentService implements
         // TODO: Check that the content has already been downloaded.
         boolean result = downloadTask.isDownloadCompleted();
         if (result == true) {
-          // 다운로드 콘텐츠는 어떻게 할까 ? 가만히 ?
-//                Toast.makeText(DownloadService.this, "isExist File ", Toast.LENGTH_LONG).show();
-//				Toast.makeText(getApplicationContext(), "isExist File ", Toast.LENGTH_LONG).show();
-// create a handler to post messages to the main thread
+
           Handler mHandler = new Handler(getMainLooper());
           mHandler.post(new Runnable() {
             @Override
@@ -218,12 +206,8 @@ public class DownloadService extends IntentService implements
                   Toast.LENGTH_SHORT).show();
             }
           });
-//							Logger.e(TAG + " Download Already ! ");
-//							Utils.logToast( getApplicationContext() , " 다운로드가 중지 됩니다. " );
 
         } else {
-          // DownLoad !
-//                downloadTask.execute();
 
           // group key => cid v100015
           // ckey => cid v100015_001
@@ -244,10 +228,10 @@ public class DownloadService extends IntentService implements
           // groupContentScnt
           // groupAllPlayTime
           // view_limitdate
-          // modified
+          // modified  (datetime('now','localtime'))
 
           for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
-            if (mWebPlayerInfo.getCkey().equals(downloadContentCid)) {
+            if (mWebPlayerInfo.getCkey()[i].equals(downloadContentCid)) {
 
               try {
                 ContentManager()
@@ -255,17 +239,19 @@ public class DownloadService extends IntentService implements
                         "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", "", "",
                         mWebPlayerInfo.getGroupTitle(), mWebPlayerInfo.getCname()[i],
                         mWebPlayerInfo.getGroupImg(), mWebPlayerInfo.getClist_img()[i],
-                        mWebPlayerInfo.getCon_class() , mWebPlayerInfo.getGroupTeachername(),
-                        mWebPlayerInfo.getCplayTime()[i] , mWebPlayerInfo.getContentScnt() ,
-                        mWebPlayerInfo.getAllplayTime() , expire_at
-                      );
+                        mWebPlayerInfo.getCon_class(), mWebPlayerInfo.getGroupTeachername(),
+                        mWebPlayerInfo.getCplayTime()[i], mWebPlayerInfo.getContentScnt(),
+                        mWebPlayerInfo.getAllplayTime(), expire_at
+                    );
+
               } catch (Exception e) {
                 e.printStackTrace();
+
               }
             }
           }
 
-          setDownloadServiceListener();
+//          setDownloadServiceListener();
           doStuff(intent);
         }
 

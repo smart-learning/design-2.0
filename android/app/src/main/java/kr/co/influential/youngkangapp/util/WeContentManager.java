@@ -27,13 +27,11 @@ public class WeContentManager extends SQLiteOpenHelper {
           "groupkey text not null, ckey text not null, userId text not null," +
           "drmSchemeUuid text not null, drmLicenseUrl text not null, cid text not null, oid text, "
           +
-          "filepath text not null, RESOLUTION integer default 1,OVERWRITE integer default 0, UPDATERIGHT integer default 0, "
+          "contentPath text not null, totalSize text not null, gTitle text not null, cTitle text not null, "
+          + "groupImg text not null,  thumbnailImg text not null, audioVideoType text not null, "
+          + "groupTeacherName text not null, cPlayTime text not null , "
           +
-          "PLAYTIME integer default 0,totalSize text, gTitle text not null, cTitle text not null, groupImg text not null, "
-          +
-          "thumbnailImg text not null, audioVideoType text not null, groupTeacherName text not null, cPlayTime text not null , "
-          +
-          "groupContentScnt text not null , groupAllPlayTime text not null , view_limitdate text not null ); ";
+          "groupContentScnt text not null , groupAllPlayTime text not null , view_limitdate text not null , modified text not null); ";
 
   private final String PROGRESS_CREATE_TABLE =
       "CREATE TABLE IF NOT EXISTS PROGRESS (_id integer primary key autoincrement, " +
@@ -212,24 +210,26 @@ public class WeContentManager extends SQLiteOpenHelper {
       String groupImg,
       String thumbnailImg, String contentType,
       String groupTeacherName, String cPlayTime, String groupContentScnt, String groupAllPlayTime,
-      String view_limitdate) throws Exception {
+      String view_limitdate ) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
 
     db.execSQL(String.format(
-        "INSERT INTO DOWNLOAD ( groupkey, ckey, userId, drmSchemeUuid, drmLicenseUrl, cid, oid, contentPath, totalSize, gTitle"
-            + ", cTitle, groupImg, thumbnailImg, audioVideoType, groupTeacherName, cPlayTime, groupContentScnt , groupAllPlayTime"
-            + " , view_limitdate ) "
+        "INSERT INTO DOWNLOAD ( groupkey, ckey, userId, drmSchemeUuid, drmLicenseUrl, "
+            + "cid, oid, contentPath, totalSize, gTitle ,"
+            + "cTitle, groupImg, thumbnailImg, audioVideoType, groupTeacherName, "
+            + "cPlayTime, groupContentScnt , groupAllPlayTime, view_limitdate , modified) "
             +
             "values ('%s','%s','%s','%s','%s',"
-                  + "'%s','%s','%s','%s','%s',"
-                  + "'%s','%s','%s','%s','%s',"
-                  + "'%s','%s','%s','%s','%s',"
-                  + ");",
-        gId, cId, userId, drmSchemeUuid, drmLicenseUrl, cid , oid , changeSyntax(contentPath), totalSize,
-        changeSyntax(gTitle), changeSyntax(cTitle), groupImg , thumbnailImg , contentType , groupTeacherName,
-        cPlayTime, groupContentScnt , groupAllPlayTime, view_limitdate ));
+            + "'%s','%s','%s','%s','%s',"
+            + "'%s','%s','%s','%s','%s',"
+            + "'%s','%s','%s','%s', (datetime('now','localtime')) );",
+        gId, cId, userId, drmSchemeUuid, drmLicenseUrl, cid, oid, changeSyntax(contentPath),
+        totalSize,
+        changeSyntax(gTitle), changeSyntax(cTitle), groupImg, thumbnailImg, contentType,
+        groupTeacherName,
+        cPlayTime, groupContentScnt, groupAllPlayTime, view_limitdate));
   }
 
   public void downloadDelete(String gId) {
@@ -424,7 +424,11 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT gId, cId, userId, customerId, downloadListUrl, contentPath, downloadContext, filepath,RESOLUTION,OVERWRITE,UPDATERIGHT,PLAYTIME,totalSize FROM DOWNLOAD WHERE NOT totalSize is NULL ";
+    String query = "SELECT groupkey, ckey, userId, drmSchemeUuid, drmLicenseUrl, cid, oid, "
+        + "contentPath,totalSize,gTitle,cTitle,groupImg,thumbnailImg,audioVideoType,"
+        + "groupTeacherName,cPlayTime,groupContentScnt,groupAllPlayTime,view_limitdate,modified "
+//        + "FROM DOWNLOAD WHERE NOT totalSize is NULL ";
+        + "FROM DOWNLOAD ";
     Cursor c = db.rawQuery(query, null);
     return CursorToDataTable(c);
   }
