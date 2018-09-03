@@ -73,7 +73,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+        entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -125,7 +125,7 @@ android {
         targetSdkVersion 26
         versionCode 99
         versionName "1.47.337"
-        archivesBaseName="welaaa-$versionName-" + getDate()
+        archivesBaseName = "welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
