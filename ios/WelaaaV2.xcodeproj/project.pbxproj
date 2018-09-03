@@ -27,7 +27,7 @@
 		AD28BB2193034979A7C0FB93 /* libRNLocalizable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91F9F617C3954DF3AC999232 /* libRNLocalizable.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		EF056AB921267EFD00F3178B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF056AB821267EFD00F3178B /* StoreKit.framework */; };
-		EF0946D7212652A200FD849B /* ContentMiniPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */; };
+		EF0946D7212652A200FD849B /* ContentMiniPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF0946D6212652A200FD849B /* ContentMiniPlayerView.m */; };
 		EF094701212662B200FD849B /* RNProductPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = EF094700212662B200FD849B /* RNProductPayment.m */; };
 		EF230BEF21224CC600F8E802 /* FPSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */; };
 		EF28A90F212D308F006748C9 /* ContentsListPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF28A90C212D2E6F006748C9 /* ContentsListPopupView.m */; };
@@ -433,8 +433,8 @@
 		AEEDDD9F7C5CBB53DA7FCD50 /* Pods-WelaaaV2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WelaaaV2.release.xcconfig"; path = "Pods/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2.release.xcconfig"; sourceTree = "<group>"; };
 		E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WelaaaV2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF056AB821267EFD00F3178B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		EF0946D5212652A200FD849B /* ContentMiniPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentMiniPlayerViewController.h; sourceTree = "<group>"; };
-		EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentMiniPlayerViewController.m; sourceTree = "<group>"; };
+		EF0946D5212652A200FD849B /* ContentMiniPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContentMiniPlayerView.h; sourceTree = "<group>"; };
+		EF0946D6212652A200FD849B /* ContentMiniPlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContentMiniPlayerView.m; sourceTree = "<group>"; };
 		EF0946FF212662B200FD849B /* RNProductPayment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNProductPayment.h; sourceTree = "<group>"; };
 		EF094700212662B200FD849B /* RNProductPayment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNProductPayment.m; sourceTree = "<group>"; };
 		EF230BED21224CC600F8E802 /* FPSDownloadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FPSDownloadManager.h; sourceTree = "<group>"; };
@@ -1120,8 +1120,8 @@
 				EF4A906D21182A1A00228EB1 /* ContentPlayerViewController.m */,
 				EF230BED21224CC600F8E802 /* FPSDownloadManager.h */,
 				EF230BEE21224CC600F8E802 /* FPSDownloadManager.m */,
-				EF0946D5212652A200FD849B /* ContentMiniPlayerViewController.h */,
-				EF0946D6212652A200FD849B /* ContentMiniPlayerViewController.m */,
+				EF0946D5212652A200FD849B /* ContentMiniPlayerView.h */,
+				EF0946D6212652A200FD849B /* ContentMiniPlayerView.m */,
 				EFA7577D21392F7000A7DAC3 /* subtitles.json */,
 			);
 			name = Test;
@@ -1711,7 +1711,7 @@
 				EFE082542114185D006D3F6C /* IFTouchView.m in Sources */,
 				EFE0825D2114185D006D3F6C /* IFCollectionView.m in Sources */,
 				EF094701212662B200FD849B /* RNProductPayment.m in Sources */,
-				EF0946D7212652A200FD849B /* ContentMiniPlayerViewController.m in Sources */,
+				EF0946D7212652A200FD849B /* ContentMiniPlayerView.m in Sources */,
 				EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */,
 				EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */,
 				EFE0825C2114185D006D3F6C /* InnerShadowView.m in Sources */,
