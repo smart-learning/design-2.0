@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -18,8 +19,13 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.UUID;
+
 import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.download.DownloadService;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
@@ -34,8 +40,6 @@ import kr.co.influential.youngkangapp.util.Utils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class RNNativePlayerModule extends ReactContextBaseJavaModule
     implements RNEventEmitter {
@@ -47,7 +51,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   }
 
   private HttpConnection httpConn = HttpConnection.getInstance();
-  private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
+  private final String WELEARN_WEB_URL = Utils.welaaaApiBaseUrl();
   private String contentUrl = "";
   private String contentName = "";
   private String contentUuid = "";

@@ -1,7 +1,5 @@
 package kr.co.influential.youngkangapp.util;
 
-import static android.R.style.Theme_Material_Light_Dialog_Alert;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,6 +20,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,11 +29,31 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import kr.co.influential.youngkangapp.common.Gateway;
+
+import static android.R.style.Theme_Material_Light_Dialog_Alert;
+
 /**
  * Created by okitoki on 2016. 10. 6.
  */
 
 public class Utils {
+
+  /**
+   * API Gateway
+   */
+  public static String welaaaApiBaseUrl() {
+    Gateway gateway = Gateway.get();
+    String protocol = gateway.getProtocol();
+    String apiHost = gateway.getApiHost();
+    String webHost = gateway.getWebHost();
+    String domain = gateway.getDomain();
+
+    String TYPE = "api";
+    String VERSION = "v1.0";
+
+    return protocol + apiHost + "." + domain + "/" + TYPE + "/" + VERSION + "/";
+  }
 
   /************************************************************
    * Comment   :  웹사이트 메인 url

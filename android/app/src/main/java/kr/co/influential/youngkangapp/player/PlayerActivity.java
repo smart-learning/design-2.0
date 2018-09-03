@@ -3031,9 +3031,9 @@ public class PlayerActivity extends BasePlayerActivity {
             break;
           case WELAAAPLAYER_SUGGEST_CODE:
 
-            if (getTransportControls() != null) {
-              getTransportControls().stop();
-            }
+//            if (getTransportControls() != null) {
+//              getTransportControls().stop();
+//            }
 
             finish();
             break;
