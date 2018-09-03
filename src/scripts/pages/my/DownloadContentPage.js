@@ -1,5 +1,15 @@
 import React from "react";
-import {AsyncStorage, Button, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+	AsyncStorage,
+	Button,
+	FlatList,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from "react-native";
 import CommonStyles from "../../../styles/common";
 import Store from '../../../scripts/commons/store';
 import {SafeAreaView} from "react-navigation";
@@ -67,6 +77,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 		paddingTop: 10,
 		paddingBottom: 10,
+	},
+
+	downloadItemImg: {
+		flex: 1,
+		width: 60,
+		height: 60,
+	},
+
+	downloadItemInfo: {
+		flex: 1,
+		// justifyContent: 'flex-start'
 	}
 });
 
@@ -78,11 +99,11 @@ export default class DownloadContentPage extends React.Component {
 		{
 			gTitle: '[더미] 청중의 OK를 끌어내는 프레젠테이션 전략',
 			audioVideoType: 'video-course',
-			drmLicenseUrl: 'drmUrl',
-			drmSchemeUuid: 'widevine',
+			drmSchemeUuid: "widevine",
+			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
 			cPlayTime: '00:15:16',
 			groupImg: '',
-			oid: '',
+			oid: 'order id',
 			thumbnailImg: 'https://static.welaaa.co.kr/static/courses/v100015/v100015_list.jpg',
 			userId: 'userId',
 			groupkey: null,
@@ -90,12 +111,12 @@ export default class DownloadContentPage extends React.Component {
 			groupContentScnt: 0,
 			view_limitdate: 'Tue, 27 Jul 2117 00:00:00 GMT',
 			ckey: 'v100015_001',
-			contentPath: '',
+			contentPath: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
 			totalSize: '',
 			groupTeacherName: '유달내 상무',
 			cTitle: '지기지피 백전백승! 나의 발표 목적을 제일 먼저 고려하라',
 			modified: '2018-09-03 14:07:36',
-			cid: 'v100015_001'
+			cid: 'v200064_001'
 		},
 	];
 	@observable audios = [];
@@ -111,15 +132,24 @@ export default class DownloadContentPage extends React.Component {
 					if( item.audioVideoType === 'video-course' ) this.videos.push( item );
 					else                                         this.audios.push( item );
 				});
+
+				console.log( 'videos, auidios:', this.videos, this.audios );
 			});
 		});
 	}
 
 	makeListItem = ({item, index}) => {
-		return <TouchableOpacity activeOpacity={0.9} key={index}
+		return <TouchableOpacity activeOpacity={0.9} key={item.cid}
 								 style={styles.downloadItem}
-								 onPress={() => Native.download()}>
-			<Text>다운받은 아이템{item}</Text>
+								 onPress={() => Native.download( item ) }>
+
+			<Image source={ {uri: item.thumbnailImg }} style={ styles.downloadItemImg }/>
+			<View style={ styles.downloadItemInfo }>
+				<Text>{ item.gTitle }</Text>
+				<Text>{ item.cTitle }</Text>
+				<Text>{ item.groupTeacherName }|{ item.cPlayTime }</Text>
+				<Text>{ item.view_limitdate }</Text>
+			</View>
 		</TouchableOpacity>
 	}
 

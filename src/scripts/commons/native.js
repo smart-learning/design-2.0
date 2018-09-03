@@ -58,20 +58,34 @@ export default {
 	},
 
 
-	download(cid, oid) {
-		const args = {
+	download( args ) {
+		// const params = {
+		// 	type: 'download',
+		// 	uri: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
+		// 	name: '140년 지속 성장을 이끈 MLB 사무국의 전략',
+		// 	drmSchemeUuid: 'widevine',
+		// 	drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
+		// 	userId: globalStore.welaaaAuth.profile.id + '',
+		// 	cid: 'v200064_001',
+		// 	oid: 'order id',
+		// 	token: globalStore.accessToken
+		// }
+
+		const params = {
 			type: 'download',
-			uri: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
-			name: '140년 지속 성장을 이끈 MLB 사무국의 전략',
-			drmSchemeUuid: 'widevine',
-			drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
+			uri: args.contentPath || 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
+			name: args.gTitle,
+			drmSchemeUuid: args.drmSchemeUuid,
+			drmLicenseUrl: args.drmLicenseUrl,
 			userId: globalStore.welaaaAuth.profile.id + '',
-			cid: 'v200064_001',
-			oid: 'order id',
-			token: globalStore.accessToken
+			cid: args.cid,
+			oid: args.oid,
+			token: globalStore.accessToken + ''
 		}
 
-		RNNativePlayer.download(args);
+
+		console.log( 'download:', params );
+		RNNativePlayer.download( params );
 	},
 
 	deleteDownloadItem() {
