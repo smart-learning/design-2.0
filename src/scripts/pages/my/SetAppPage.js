@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, StyleSheet, Switch, Text, View, TouchableOpacity} from "react-native";
+import {AsyncStorage, ScrollView, StyleSheet, Switch, Text, View, TouchableOpacity} from "react-native";
 import CommonStyles from "../../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import {observer} from "mobx-react";
@@ -48,15 +48,31 @@ const styles = StyleSheet.create({
 @observer
 class SetAppPage extends React.Component {
 
-	@observable isAutoLogin = false;
-	@observable isWifiPlay = false;
-	@observable isWifiDownload = false;
-	@observable isAlert = false;
-	@observable isEmail = false;
-
 	logout = () => {
 		globalStore.clearTokens();
 		this.props.navigation.navigate('Login');
+	};
+
+	setIsAutoLoginChange = ( value ) => {
+		AsyncStorage.setItem( 'config:isAutoLogin', value.toString() );
+		globalStore.appSettings.isAutoLogin = value;
+	};
+
+	setIsWifiPlayChange = ( value ) => {
+		AsyncStorage.setItem( 'config:isWifiPlay', value.toString() );
+		globalStore.appSettings.isWifiPlay = value;
+	};
+	setIsWifiDownloadChange = ( value ) => {
+		AsyncStorage.setItem( 'config:isWifiDownload', value.toString() );
+		globalStore.appSettings.isWifiDownload = value;
+	};
+	setIsAlertChange = ( value ) => {
+		AsyncStorage.setItem( 'config:isAlert', value.toString() );
+		globalStore.appSettings.isAlert = value;
+	};
+	setIsEmailChange = ( value ) => {
+		AsyncStorage.setItem( 'config:isEmail', value.toString() );
+		globalStore.appSettings.isEmail = value;
 	};
 
 	render() {
@@ -71,8 +87,8 @@ class SetAppPage extends React.Component {
 									<Text style={styles.label}>자동로그인</Text>
 								</View>
 								<View style={styles.switch}>
-									<Switch value={this.isAutoLogin}
-											onValueChange={value => this.isAutoLogin = value}/>
+									<Switch value={globalStore.appSettings.isAutoLogin}
+											onValueChange={this.setIsAutoLoginChange}/>
 								</View>
 							</View>
 						</View>
@@ -83,8 +99,8 @@ class SetAppPage extends React.Component {
 									<Text style={styles.label}>Wifi에서만 재생</Text>
 								</View>
 								<View style={styles.switch}>
-									<Switch value={this.isWifiPlay}
-											onValueChange={value => this.isWifiPlay = value}/>
+									<Switch value={globalStore.appSettings.isWifiPlay}
+											onValueChange={this.setIsWifiPlayChange}/>
 								</View>
 							</View>
 						</View>
@@ -95,8 +111,8 @@ class SetAppPage extends React.Component {
 									<Text style={styles.label}>Wifi에서만 다운</Text>
 								</View>
 								<View style={styles.switch}>
-									<Switch value={this.isWifiDownload}
-											onValueChange={value => this.isWifiDownload = value}/>
+									<Switch value={globalStore.appSettings.isWifiDownload}
+											onValueChange={this.setIsWifiDownloadChange}/>
 								</View>
 							</View>
 						</View>
@@ -107,8 +123,8 @@ class SetAppPage extends React.Component {
 									<Text style={styles.label}>원격푸쉬알림허용</Text>
 								</View>
 								<View style={styles.switch}>
-									<Switch value={this.isAlert}
-											onValueChange={value => this.isAlert = value}/>
+									<Switch value={globalStore.appSettings.isAlert}
+											onValueChange={this.setIsAlertChange}/>
 								</View>
 							</View>
 						</View>
@@ -119,8 +135,8 @@ class SetAppPage extends React.Component {
 									<Text style={styles.label}>이메일수신동의</Text>
 								</View>
 								<View style={styles.switch}>
-									<Switch value={this.isEmail}
-											onValueChange={value => this.isEmail = value}/>
+									<Switch value={globalStore.appSettings.isEmail}
+											onValueChange={this.setIsEmailChange}/>
 								</View>
 							</View>
 						</View>

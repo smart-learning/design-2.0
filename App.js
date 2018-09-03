@@ -10,6 +10,7 @@ import globalStore from "./src/scripts/commons/store";
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
+import SampleScreen from "./src/scripts/pages/sample/SampleScreen";
 
 class App extends React.Component {
 
@@ -23,11 +24,26 @@ class App extends React.Component {
 		}
 	};
 
+	getAppSettings = async () => {
+		const settings = await AsyncStorage.multiGet( [
+			'config:isAutoLogin',
+			'config:isWifiPlay',
+			'config:isWifiDownload',
+			'config:isAlert',
+			'config:isEmail',
+		] );
+
+		settings.forEach( setting => {
+			globalStore.appSettings[ setting[ 0 ].split( ':' ).pop() ] = Boolean( setting[ 1 ] );
+		} );
+	};
+
 	constructor(prop) {
 		super(prop);
 		this.subscription = null;
 
 		this.getTokenFromAsyncStorage();
+		this.getAppSettings();
 	}
 
 	componentDidMount() {
