@@ -9,7 +9,6 @@ package kr.co.influential.youngkangapp.player;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static kr.co.influential.youngkangapp.R.id.audio_mode_backgroundimg;
 
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
@@ -86,7 +85,6 @@ import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
-import com.google.gson.Gson;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -739,6 +737,10 @@ public class PlayerActivity extends BasePlayerActivity {
   protected void onDestroy() {
 
     super.onDestroy();
+
+    if (mPlayTimeHandler != null) {
+      mPlayTimeHandler.removeCallbacksAndMessages(null);
+    }
 
   }
 
@@ -4723,8 +4725,6 @@ public class PlayerActivity extends BasePlayerActivity {
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
 
-        Log.e(TAG , " updatePlaybackState : setRendererDisabled fasle");
-
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
 
@@ -4997,10 +4997,6 @@ public class PlayerActivity extends BasePlayerActivity {
                   Bundle extras = intent.getExtras();
 
                   getTransportControls().playFromUri(uri, extras);
-
-                  // Set player to playerview.
-                  LocalPlayback.getInstance(PlayerActivity.this).setPlayerView(simpleExoPlayerView);
-
                 }
               }
             } else if (callbackMethod.equals("download")) {
