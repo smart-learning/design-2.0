@@ -39,6 +39,7 @@
 		EF4F413E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf */; };
 		EF4F413F211ABE5C005E1CBD /* Simple-Line-Icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410F211ABE5C005E1CBD /* Simple-Line-Icons.ttf */; };
 		EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5D544A211936F8008F60B4 /* Images.xcassets */; };
+		EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EF671AD3213E4BA100767E01 /* libsqlite3.tbd */; };
 		EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F522113E6D500B71BEB /* LogManager.m */; };
 		EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7A2113E6D500B71BEB /* ApiManager.m */; };
 		EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */; };
@@ -431,6 +432,7 @@
 		EF4F410E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Regular.otf"; sourceTree = "<group>"; };
 		EF4F410F211ABE5C005E1CBD /* Simple-Line-Icons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Simple-Line-Icons.ttf"; sourceTree = "<group>"; };
 		EF5D544A211936F8008F60B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WelaaaV2/Images.xcassets; sourceTree = "<group>"; };
+		EF671AD3213E4BA100767E01 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		EF7D6F522113E6D500B71BEB /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogManager.m; sourceTree = "<group>"; };
 		EF7D6F7A2113E6D500B71BEB /* ApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiManager.m; sourceTree = "<group>"; };
 		EF7D6F7B2113E6D500B71BEB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
@@ -528,6 +530,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -666,6 +669,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EF671AD3213E4BA100767E01 /* libsqlite3.tbd */,
 				EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */,
 				EF056AB821267EFD00F3178B /* StoreKit.framework */,
 				EFE0F3B22117E5F900D4558B /* Contacts.framework */,
@@ -955,10 +959,10 @@
 		EFAEBDB3213D33050070F10E /* SleepTimerView */ = {
 			isa = PBXGroup;
 			children = (
-				EFAEBDB4213D33050070F10E /* PlayerSleepTimerView.m */,
-				EFAEBDB5213D33050070F10E /* PlayerSleepTimerButton.m */,
 				EFAEBDB6213D33050070F10E /* PlayerSleepTimerView.h */,
+				EFAEBDB4213D33050070F10E /* PlayerSleepTimerView.m */,
 				EFAEBDB7213D33050070F10E /* PlayerSleepTimerButton.h */,
+				EFAEBDB5213D33050070F10E /* PlayerSleepTimerButton.m */,
 			);
 			path = SleepTimerView;
 			sourceTree = "<group>";
