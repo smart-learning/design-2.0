@@ -960,6 +960,8 @@
   
   // 연관 컨텐츠 뷰를 로딩합니다.
   /*
+   // API : /dev/api/v1.0/contents/video-series
+   
   NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
   // 헤더 제목을 위해 IFCollectionView클래스에도 ckey를 보내야할 수도 있습니다.
   self.recommendViewController = [[IFRecommendViewController alloc] init];
