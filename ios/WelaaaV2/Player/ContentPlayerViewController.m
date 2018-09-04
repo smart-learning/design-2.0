@@ -195,8 +195,8 @@
                                                   name : AVPlayerItemDidPlayToEndTimeNotification
                                                 object : [_player currentItem]  ];
   
-    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+    NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                  andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
   
     // 현재 콘텐트의 재생권한.
     _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
@@ -205,8 +205,8 @@
     // 강좌 전체 클립 또는 오디오북 전체 챕터를 가져옵니다.
     NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
     // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
-    _currentContentsInfo = [self getContentsInfoWithCgid : chunks[0]
-                                           andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+    _currentContentsInfo = [ApiManager getContentsInfoWithCgid : chunks[0]
+                                                 andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
   
     // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
     [_args setObject : _currentContentsInfo[@"data"][@"title"]
@@ -249,6 +249,8 @@
 {
     _args = args;
     NSLog(@"  arguments : %@", [_args description]);
+  
+    // download 일 경우 API서버와 통신하면 안됩니다.
 }
 
 - (void) didReceiveMemoryWarning
@@ -313,8 +315,8 @@
         [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
                   forKey : @"cid"];
       
-        NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+        NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                      andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
       
         // 플레이할 콘텐트의 재생권한.
         _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
@@ -1838,8 +1840,8 @@
                   forKey : @"cid"];
     }
   
-    NSDictionary *playDataDics = [self getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                            andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+    NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                  andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
   
     // 플레이할 콘텐트의 재생권한.
     _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
@@ -2122,104 +2124,7 @@
     }
 }
 
-# pragma mark - Transmitting with the API server.
-//
-// group_ID로 콘텐츠 정보를 가져옵니다.
-//
-- (NSDictionary *) getContentsInfoWithCgid : (NSString *) contentGroupID
-                             andHeaderInfo : (NSString *) authValue
-{
-    NSString *apiContentsInfo = @"/dev/api/v1.0/play/contents-info/"; // dev -> ?
-    NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, contentGroupID];//b300200 와 같은 group_ID
-    NSURL *url = [NSURL URLWithString : urlWithParams];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
-  
-    [request setHTTPMethod : @"GET"];
-    // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
-    [request            setValue : authValue
-              forHTTPHeaderField : @"authorization"];
-  
-    NSError *error;
-    NSURLResponse *resp = nil;
-    // 비동기방식이 아닌 동기방식으로 접속합니다.
-    NSData *data = [ApiManager sendSynchronousRequest : request
-                                    returningResponse : &resp
-                                                error : &error];
-  
-    NSString *jsonData = [[NSString alloc] initWithData : data
-                                               encoding : NSUTF8StringEncoding];
-  
-    NSDictionary *contentsInfoDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                                     options : NSJSONReadingAllowFragments
-                                                                       error : &error];
-  
-    return contentsInfoDics;
-}
 
-//
-// Content_ID로 콘텐츠 재생에 필요한 데이터를 가져옵니다.
-//
-- (NSDictionary *) getPlayDataWithCid : (NSString *) contentID
-                        andHeaderInfo : (NSString *) authValue
-{
-    NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/"; // dev -> ?
-    NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, contentID];//b300200_001 와 같은 content_ID
-    NSURL *url = [NSURL URLWithString : urlWithParams];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
-  
-    [request setHTTPMethod : @"GET"];
-    // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
-    [request            setValue : authValue
-              forHTTPHeaderField : @"authorization"];
-  
-    NSError *error;
-    NSURLResponse *resp = nil;
-    // 비동기방식이 아닌 동기방식으로 접속합니다.
-    NSData *data = [ApiManager sendSynchronousRequest : request
-                                    returningResponse : &resp
-                                                error : &error];
-  
-    NSString *jsonData = [[NSString alloc] initWithData : data
-                                               encoding : NSUTF8StringEncoding];
-  
-    NSDictionary *playDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                                 options : NSJSONReadingAllowFragments
-                                                                   error : &error];
-  
-    return playDataDics;
-}
-
-//
-// 진도 데이터를 전송합니다.
-//
-- (void) sendPlaybackProgress : (NSString *) authValue
-{
-  NSString *apiPlayData = @"/dev/api/v1.0/play/progress/"; // dev -> ?
-  NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, @"parameters_not_set"];//b300200_001 와 같은 content_ID
-  NSURL *url = [NSURL URLWithString : urlWithParams];
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
-  
-  [request setHTTPMethod : @"POST"];
-  // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
-  [request            setValue : authValue
-            forHTTPHeaderField : @"authorization"];
-  
-  NSError *error;
-  NSURLResponse *resp = nil;
-  // 비동기방식이 아닌 동기방식으로 접속합니다.
-  NSData *data = [ApiManager sendSynchronousRequest : request
-                                  returningResponse : &resp
-                                              error : &error];
-  
-  NSString *jsonData = [[NSString alloc] initWithData : data
-                                             encoding : NSUTF8StringEncoding];
-  
-  NSDictionary *playDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                               options : NSJSONReadingAllowFragments
-                                                                 error : &error];
-  
-  return ;
-}
 
 # pragma mark - Labatory
 - (void) toastTestAlert
