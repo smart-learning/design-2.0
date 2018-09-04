@@ -1,26 +1,28 @@
 package kr.co.influential.youngkangapp.react.module;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import java.io.IOException;
 import java.util.UUID;
-import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.download.DownloadService;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
@@ -62,6 +64,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
   private WebPlayerInfo mWebPlayerInfo = null;
   private RNEventEmitter eventEmitter;
+  ProgressDialog mProgressDialog;
+  public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
 
   @Override
   public String getName() {
@@ -70,6 +74,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
   @ReactMethod
   public void play(ReadableMap content) {
+
+    UiThreadUtil.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
+      }
+    });
+
     contentUrl = content.getString("uri");
     contentName = content.getString("name");
     contentUuid = content.getString("drmSchemeUuid");
@@ -79,6 +92,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     contentToken = content.getString("token");
 
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+    Preferences.setWelaaaUserId(getReactApplicationContext() , contentUserId);
 
     callbackMethodName = "play/contents-info";
     callbackMethod = "play";
@@ -99,6 +113,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     contentToken = content.getString("token");
 
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+    Preferences.setWelaaaUserId(getReactApplicationContext() , contentUserId);
 
     callbackMethodName = "play/contents-info";
     callbackMethod = "download";
@@ -144,28 +159,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
   }
 
-  @ReactMethod
-  public void versionInfo(ReadableMap content) {
-    // 2018.09.03
-    String token = content.getString("token");
-
-    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
-
-    Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
-
-    String versionInfo = BuildConfig.VERSION_NAME;
-    String versionType = BuildConfig.BUILD_TYPE;
-    String versionName = BuildConfig.APPLICATION_ID;
-
-    WritableMap params = Arguments.createMap();
-
-    params.putString("versionInfo", versionInfo);
-    params.putString("versionType", versionType);
-    params.putString("versionName", versionName);
-
-    eventEmitter.sendEvent("versionInfo", params);
-  }
-
   @Override
   public void sendEvent(String eventName, @Nullable WritableMap params) {
     sendEvent(getReactApplicationContext(), eventName, params);
@@ -205,12 +198,13 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl );
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()) );
+    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
+    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
 
     new Thread() {
       public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", Preferences.getWelaaaOauthToken(getCurrentActivity()), callback);
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
+            Preferences.getWelaaaOauthToken(getCurrentActivity()), callback);
       }
     }.start();
   }
@@ -219,6 +213,29 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     @Override
     public void onFailure(Call call, IOException e) {
       Log.e(TAG, "콜백오류:" + e.getMessage());
+
+      if (mProgressDialog != null) {
+        mProgressDialog.dismiss();
+      }
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          Activity activity = getCurrentActivity();
+
+          new AlertDialog.Builder(activity)
+              .setTitle("알림")
+              .setMessage(
+                  "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause() + " \n Exception Msg " + e
+                      .getMessage())
+              .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                }
+              }).show();
+        }
+      });
+
     }
 
     @Override
@@ -230,8 +247,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       Intent intent = new Intent(contextWrapper, PlayerActivity.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
       StringBuffer sb = new StringBuffer();
-
-      Log.e(TAG, " response.code() is " + response.code() + " response " +body );
 
       if (response.code() == 200) {
         if (callbackMethodName.contains("play/contents-info")) {
@@ -349,11 +364,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     historyObject.getString("played_at");
                     historyObject.getString("start_seconds");
 
-//                    cid 값을 가져와서 셋팅 해주는 과정이 필요 .
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("id") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("played_at") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("start_seconds") );
-
                     contentName = json.getString("title");
 
                     contentCid = json.getString("cid");
@@ -377,11 +387,17 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
               JSONObject dataObject = json.getJSONObject("data");
               JSONObject historyObject = null;
+              String historyId = "";
+              String historyPlayed_At = "";
+              String history_start_seconds = "";
 
-              if (json.isNull("history")) {
-                Log.e(TAG, " history is null ");
-              } else {
+              if (!json.isNull("history")) {
+
                 historyObject = json.getJSONObject("history");
+
+                historyId = historyObject.getString("id");
+                historyPlayed_At = historyObject.getString("played_at");
+                history_start_seconds = historyObject.getString("start_seconds");
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
@@ -393,7 +409,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String group_teachername = dataObject.getJSONObject("teacher").getString("name");
               String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
 
-              String group_img = "";
+              String group_img = dataObject.getJSONObject("images").getString("background");
               String group_previewcontent = "";
 
               String allplay_time = "";  //  다운로드 데이터에서도 필요 요청 할 것
@@ -478,39 +494,26 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   sb.append("&csmi=" + csmi);
                 }
 
-                if (historyObject != null) {
-
-                  if (historyObject.getString("id").equals(json.getString("id")))
-
-                  {
-
-                    historyObject.getString("id");
-                    historyObject.getString("played_at");
-                    historyObject.getString("start_seconds");
-
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("id") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("played_at") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("start_seconds") );
-
-//                    cid 값을 가져와서 셋팅 해주는 과정이 필요 .
-
-                    contentName = json.getString("title");
-
-                    contentCid = json.getString("cid");
-                    contentId = i;
-
-                  }
-
-                } else {
-                  // 처음 부터 재생할 수 있게 끔 ?
-                  Log.e(TAG, " history is null ");
-
+                if (historyId.equals("")) {
                   if (i == 0) {
+                    // v200072  , 001 로 리턴되고 , 해당 클래식은 002 가 가장 처음이고,
+                    // 001 은 마지막에서 두개 전 .. for 문에서 신기하게 들어가는건가요 ..
+
                     contentCid = json.getString("cid");
                     contentName = json.getString("title");
                     contentId = i;
                   }
+                } else {
+
+                  if (historyId.equals(json.getString("id"))) {
+                    contentName = json.getString("title");
+
+                    contentCid = json.getString("cid");
+                    contentId = i;
+                  }
+
                 }
+
               }
 
               if (mWebPlayerInfo != null) {
@@ -521,7 +524,27 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             }
 
           } catch (Exception e) {
+
             e.printStackTrace();
+
+            UiThreadUtil.runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                Activity activity = getCurrentActivity();
+
+                new AlertDialog.Builder(activity)
+                    .setTitle("알림")
+                    .setMessage(
+                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause() + " \n Exception Msg " + e
+                            .getMessage())
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface arg0, int arg1) {
+                      }
+                    }).show();
+              }
+            });
+
           }
 
           callbackMethodName = "play/play-data/";
@@ -535,7 +558,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             JSONObject media_urlsObject = null;
 
             if (json.isNull("media_urls")) {
-              Log.e(TAG, " media_urls is null");
+
             } else {
               media_urlsObject = json.getJSONObject("media_urls");
             }
@@ -553,6 +576,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
               } else {
                 JSONObject historyObject = json.getJSONObject("history");
+
               }
 
             }
@@ -571,6 +595,10 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 Preferences.setWelaaaPreviewPlay(getReactApplicationContext(), true);
               }
 
+              if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+              }
+
               intent.setData(Uri.parse(dashUrl));
               intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, contentName);
               intent.putExtra(PlaybackManager.THUMB_URL, "");
@@ -584,12 +612,18 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 intent.putExtra(PlaybackManager.DRM_OID, "");
                 intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                 intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                intent.putExtra("duration" , mWebPlayerInfo.getCplayTime()[contentId]);
                 intent.putExtra("type", contentType);
                 intent.putExtra("can_play", can_play);
                 intent.putExtra("expire_at", expire_at);
                 intent.putExtra("is_free", is_free);
                 intent.putExtra("webPlayerInfo", mWebPlayerInfo);
               }
+
+              LogHelper.e(TAG, "url : " + dashUrl);
+              LogHelper.e(TAG, "contentName : " + contentName);
+              LogHelper.e(TAG, "contentType : " + contentType);
+              LogHelper.e(TAG, "contentCid : " + contentCid);
               ContextCompat.startActivity(activity, intent, null);
             } else if (callbackMethod.equals("download")) {
 
@@ -632,8 +666,30 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             e.printStackTrace();
           }
         }
-      }else{
-        
+      } else {
+
+        if (mProgressDialog != null) {
+          mProgressDialog.dismiss();
+        }
+
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            Activity activity = getCurrentActivity();
+
+            new AlertDialog.Builder(activity)
+                .setTitle("알림")
+                .setMessage(
+                    "서비스 이용에 장애가 발생하였습니다. \n Response Code " + response.code() + " \n Response Msg "
+                        + response)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface arg0, int arg1) {
+                  }
+                }).show();
+
+          }
+        });
       }
     }
   };

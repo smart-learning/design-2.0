@@ -117,8 +117,6 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
-    flavorDimensions "default"
-
     defaultConfig {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
@@ -234,6 +232,7 @@ dependencies {
     // Getting a "Could not find" error? Make sure you have
     // added the Google maven respository to your root build.gradle
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
 
 // Run this once to be able to run the application with BUCK
