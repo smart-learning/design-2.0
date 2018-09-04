@@ -8,47 +8,47 @@
 @protocol IFCollectionViewDataSource < NSObject >
 @required
 
-- (NSInteger) customedCollectionView: (IFCollectionView *) collectionView
-              numberOfItemsInSection: (NSInteger) section;
+- (NSInteger) customedCollectionView : (IFCollectionView *) collectionView
+              numberOfItemsInSection : (NSInteger) section;
 
-- (UICollectionViewCell *) customedCollectionView: (IFCollectionView *) collectionView
-                           cellForItemAtIndexPath: (NSIndexPath *) indexPath;
+- (UICollectionViewCell *) customedCollectionView : (IFCollectionView *) collectionView
+                           cellForItemAtIndexPath : (NSIndexPath *) indexPath;
 
 @optional
 
-- (NSInteger) numberOfSectionsIncustomedCollectionView: (IFCollectionView *) collectionView;
+- (NSInteger) numberOfSectionsIncustomedCollectionView : (IFCollectionView *) collectionView;
 
-- (IFReusableView *) customedCollectionView: (IFCollectionView *) collectionView
-                   backgroundViewForSection: (NSInteger) section;
+- (IFReusableView *) customedCollectionView : (IFCollectionView *) collectionView
+                   backgroundViewForSection : (NSInteger) section;
 
 @end
 
-@protocol IFCollectionViewDelegate <NSObject>
+@protocol IFCollectionViewDelegate < NSObject >
 @optional
 
-- (void) customedCollectionView: (IFCollectionView *) collectionView
-       didSelectItemAtIndexPath: (NSIndexPath *) indexPath;
+- (void) customedCollectionView : (IFCollectionView *) collectionView
+       didSelectItemAtIndexPath : (NSIndexPath *) indexPath;
 
-- (void) customedCollectionView: (IFCollectionView *) collectionView
-     didDeselectItemAtIndexPath: (NSIndexPath *) indexPath;
+- (void) customedCollectionView : (IFCollectionView *) collectionView
+     didDeselectItemAtIndexPath : (NSIndexPath *) indexPath;
 
-- (CGFloat) customedCollectionView: (IFCollectionView *) collectionView
-                   heightOfSection:(NSInteger)section;
+- (CGFloat) customedCollectionView : (IFCollectionView *) collectionView
+                   heightOfSection : (NSInteger) section;
 
-- (CGSize) customedCollectionView: (IFCollectionView *) collectionView
-           sizeForItemAtIndexPath: (NSIndexPath *) indexPath;
+- (CGSize) customedCollectionView : (IFCollectionView *) collectionView
+           sizeForItemAtIndexPath : (NSIndexPath *) indexPath;
 
-- (UIEdgeInsets) customedCollectionView: (IFCollectionView *) collectionView
-                 insetForSectionAtIndex: (NSInteger) section;
+- (UIEdgeInsets) customedCollectionView : (IFCollectionView *) collectionView
+                 insetForSectionAtIndex : (NSInteger) section;
 
-- (CGFloat)  customedCollectionView: (IFCollectionView *) collectionView
-minimumLineSpacingForSectionAtIndex: (NSInteger) section;
+- (CGFloat)  customedCollectionView : (IFCollectionView *) collectionView
+minimumLineSpacingForSectionAtIndex : (NSInteger) section;
 
-- (CGFloat)       customedCollectionView: (IFCollectionView *) collectionView
-minimumInteritemSpacingForSectionAtIndex: (NSInteger) section;
+- (CGFloat)       customedCollectionView : (IFCollectionView *) collectionView
+minimumInteritemSpacingForSectionAtIndex : (NSInteger) section;
 
-- (UIEdgeInsets) customedCollectionView: (IFCollectionView *) collectionView
-    scrollContentInsetForSectionAtIndex: (NSInteger) section;
+- (UIEdgeInsets) customedCollectionView : (IFCollectionView *) collectionView
+    scrollContentInsetForSectionAtIndex : (NSInteger) section;
 
 @end
 
@@ -56,7 +56,7 @@ minimumInteritemSpacingForSectionAtIndex: (NSInteger) section;
 
 @property (nonatomic, strong) NSString *reuseIdentifier;
 
-- (id) initWithFrame: (CGRect) frame;
+- (id) initWithFrame : (CGRect) frame;
 
 @end
 
@@ -66,15 +66,15 @@ minimumInteritemSpacingForSectionAtIndex: (NSInteger) section;
 @property (nonatomic, weak) id <IFCollectionViewDataSource> dataSource;
 @property (nonatomic, weak) id <IFCollectionViewDelegate> delegate;
 
-- (void)     registerClass: (Class) cellClass
-forCellWithReuseIdentifier: (NSString *) identifier;
+- (void)     registerClass : (Class) cellClass
+forCellWithReuseIdentifier : (NSString *) identifier;
 
-- (void)                      registerClass: (Class) viewClass
-forSectionBackgroundViewWithReuseIdentifier: (NSString *) identifier;
+- (void)                      registerClass : (Class) viewClass
+forSectionBackgroundViewWithReuseIdentifier : (NSString *) identifier;
 
-- (id) dequeueReusableCellWithReuseIdentifier: (NSString *) identifier
-                                 forIndexPath: (NSIndexPath*) indexPath;
+- (id) dequeueReusableCellWithReuseIdentifier : (NSString *) identifier
+                                 forIndexPath : (NSIndexPath *) indexPath;
 
-- (id) dequeueReusableViewWithReuseIdentifier: (NSString *) identifier;
+- (id) dequeueReusableViewWithReuseIdentifier : (NSString *) identifier;
 
 @end

@@ -3,9 +3,9 @@
 
 @implementation InnerShadowView
 
-- (id) initWithFrame: (CGRect) frame
+- (id) initWithFrame : (CGRect) frame
 {
-    self = [super initWithFrame: frame];
+    self = [super initWithFrame : frame];
     
     if ( self )
     {
@@ -15,7 +15,7 @@
     return self;
 }
 
-- (void) drawRect: (CGRect) rect
+- (void) drawRect : (CGRect) rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
@@ -25,17 +25,6 @@
     CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextSetShadowWithColor(context, CGSizeMake(0, 0), 4.5f, [UIColor colorWithWhite:0 alpha:0.75f].CGColor);
     CGContextEOFillPath(context);
-    
-    //get shape by adding path
-//    CGMutablePathRef path = CGPathCreateMutable();
-//    CGPathAddRect(path, NULL, rect);
-//    CGPathAddRect(path, NULL, CGRectInset(rect, -3, -3));
-//    CGContextAddPath(context, path);
-//    
-//    CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
-//    CGContextSetShadowWithColor(context, CGSizeMake(0, 0), 4.5f, [UIColor colorWithWhite:0 alpha:0.75f].CGColor);
-//    CGContextEOFillPath(context);
-//    CGPathRelease(path);
 }
 
 @end

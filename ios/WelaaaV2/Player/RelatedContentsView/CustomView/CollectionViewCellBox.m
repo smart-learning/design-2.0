@@ -3,11 +3,11 @@
 
 @implementation CollectionViewCellBox
 
-- (id) initWithFrame: (CGRect) frame
+- (id) initWithFrame : (CGRect) frame
 {
-    self = [super initWithFrame: frame];
+    self = [super initWithFrame : frame];
     
-    if (self)
+    if ( self )
     {
         self.backgroundColor = [UIColor clearColor];
     }
@@ -15,13 +15,13 @@
     return self;
 }
 
-- (void) setFrame: (CGRect) frame
+- (void) setFrame : (CGRect) frame
 {
-    [super setFrame: frame];
+    [super setFrame : frame];
     [self setNeedsDisplay];
 }
 
-- (void) drawRect: (CGRect) rect
+- (void) drawRect : (CGRect) rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
