@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import {NativeModules} from 'react-native';
+import {NativeModules, Platform} from 'react-native';
 import globalStore from '../commons/store';
 
 
@@ -32,9 +32,16 @@ export default {
 
 			cid: cid,
 			oid: oid,
-			userId: "" + userId, // 825  ,
+			userId: "93",// + userId, // 825  ,
 			token: accessToken // bearer token
 		};
+
+		if (Platform.OS === 'android') {
+			;
+		} else {
+			args.cid = 'v100015_001';
+			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8';
+		}
 
 		console.log('native.play()', JSON.stringify(args));
 
@@ -46,7 +53,12 @@ export default {
 				alert(e);
 			}
 
-			this.toggleMiniPlayer(true);
+			//this.toggleMiniPlayer(true);
+			if (Platform.OS === 'android') {
+				this.toggleMiniPlayer(true);
+			} else {
+				;
+			}
 		}, 100);
 
 	},
