@@ -284,11 +284,7 @@
   
     if ( [autoPlaySetup isEqualToString : @"N"] )
     {
-        _playerLayer.player = nil;
-        [_playerLayer removeFromSuperlayer];
-        [self invalidateTimerOnSlider];
-        [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+        [self closePlayer];
       
         return ;
     }
@@ -329,19 +325,11 @@
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )
     {
-        _playerLayer.player = nil;
-        [_playerLayer removeFromSuperlayer];
-        [self invalidateTimerOnSlider];
-        [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+        [self closePlayer];
     }
     else
     {
-        _playerLayer.player = nil;
-        [_playerLayer removeFromSuperlayer];
-        [self invalidateTimerOnSlider];
-        [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+        [self closePlayer];
     }
   
     // 추가할 사항 : 연속재생 버튼이 'on'상태이면 플레이어를 종료합니다.
@@ -934,18 +922,25 @@
                   forState : UIControlStateNormal];
 }
 
-#pragma mark - Selectors
-
-- (void) pressedCloseButton
+//
+// 플레이어를 종료합니다.
+//
+- (void) closePlayer
 {
-  /*
     [_player pause];
     [_playerLayer removeFromSuperlayer];
     _playerLayer.player = nil;
     [self invalidateTimerOnSlider];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
-  */
+    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // Status Bar를 다시 보여줍니다.
+}
+
+#pragma mark - Selectors
+
+- (void) pressedCloseButton
+{
+    [self closePlayer];
+  
     //[self showToast : @"미니플레이어로 변환합니다."];
   /*
   self.isMiniPlayer = YES;
@@ -961,11 +956,13 @@
   */
   
   // 연관 컨텐츠 뷰를 로딩합니다.
+  /*
   NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
   // 헤더 제목을 위해 IFCollectionView클래스에도 ckey를 보내야할 수도 있습니다.
   self.recommendViewController = [[IFRecommendViewController alloc] init];
   [self.recommendViewController setDataWithCurrentCkey: @"405"];
   [self.view addSubview: self.recommendViewController.view];
+  */
 }
 
 - (void) pressedRateStarButton
@@ -1458,13 +1455,8 @@
                                                                 {
                                                                     if ( playTime >= 90.f )
                                                                     {
-                                                                        [_player pause];
-                                                                        [_playerLayer removeFromSuperlayer];
-                                                                        _playerLayer.player = nil;
-                                                                        [self invalidateTimerOnSlider];
-                                                                        [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+                                                                        [self closePlayer];
                                                                         [self showToast : @"90 초 프리뷰"]; // Root View에서도 보여야 합니다.
-                                                                        [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
                                                                     }
                                                                 }
                                                             }];
