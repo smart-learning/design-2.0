@@ -10,12 +10,12 @@ import {Alert} from 'react-native'
 export default {
 	play(cid, oid = '') {
 
-		const { welaaaAuth } = globalStore;
+		const {welaaaAuth} = globalStore;
 
-		console.log( 'welaaaAuth:', welaaaAuth );
+		console.log('welaaaAuth:', welaaaAuth);
 
 		/* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
-		if ( welaaaAuth === undefined || welaaaAuth.profile === undefined || welaaaAuth.profile.id === undefined ) {
+		if (welaaaAuth === undefined || welaaaAuth.profile === undefined || welaaaAuth.profile.id === undefined) {
 			Alert.alert('비회원은 플레이할 수 없습니다.')
 
 			return true
@@ -40,10 +40,10 @@ export default {
 
 		setTimeout(() => {
 
-			try{
+			try {
 				RNNativePlayer.play(args);
-			}catch (e) {
-				alert( e );
+			} catch (e) {
+				alert(e);
 			}
 
 			this.toggleMiniPlayer(true);
@@ -52,26 +52,40 @@ export default {
 	},
 
 	toggleMiniPlayer(bool) {
-		console.log( 'toggleMiniPlayer:', bool );
+		console.log('toggleMiniPlayer:', bool);
 		globalStore.miniPlayerVisible = bool;
 		RNNativePlayer.toast('playbackState: ' + bool);
 	},
 
 
-	download( cid, oid ) {
-		const args = {
+	download( args ) {
+		// const params = {
+		// 	type: 'download',
+		// 	uri: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
+		// 	name: '140년 지속 성장을 이끈 MLB 사무국의 전략',
+		// 	drmSchemeUuid: 'widevine',
+		// 	drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
+		// 	userId: globalStore.welaaaAuth.profile.id + '',
+		// 	cid: 'v200064_001',
+		// 	oid: 'order id',
+		// 	token: globalStore.accessToken
+		// }
+
+		const params = {
 			type: 'download',
-			uri: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
-			name: '140년 지속 성장을 이끈 MLB 사무국의 전략',
-			drmSchemeUuid: 'widevine',
-			drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
+			uri: args.contentPath || 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
+			name: args.gTitle,
+			drmSchemeUuid: args.drmSchemeUuid,
+			drmLicenseUrl: args.drmLicenseUrl,
 			userId: globalStore.welaaaAuth.profile.id + '',
-			cid: 'v200064_001',
-			oid: 'order id',
-			token: globalStore.accessToken
+			cid: args.cid,
+			oid: args.oid,
+			token: globalStore.accessToken + ''
 		}
 
-		RNNativePlayer.download(args);
+
+		console.log( 'download:', params );
+		RNNativePlayer.download( params );
 	},
 
 	deleteDownloadItem() {
@@ -92,35 +106,49 @@ export default {
 	/* Native 담당: cellularDataUsePlay: bool, cellularDataUseDownload: bool
 	*  ReactN 담당: autologin: bool, notification: bool
 	* */
-	updateSetting(key, bool) {
-		switch (key) {
-			case 'cellularDataUsePlay':
-			case 'cellularDataUseDownload':
-				return RNNativePlayer.setting({
-					key: bool,
-					token: globalStore.accessToken
-				});
-				break;
-
-			case 'autologin':
-				alert('준비중입니다.');
-				break;
-			case 'notification':
-				alert('준비중입니다.');
-				break;
+	// isAutoLogin: false,
+	// isWifiPlay: false,
+	// isWifiDownload: false,
+	// isAlert: false,
+	// isEmail: false,
+	updateSettings() {
+		const {isWifiPlay, isWifiDownload} = globalStore.appSettings;
+		let config = {
+			token: globalStore.accessToken,
+			cellularDataUsePlay: isWifiPlay,
+			cellularDataUseDownload: isWifiDownload,
 		}
 
+		console.log('updateSetting:', config);
+
+		return RNNativePlayer.setting(config);
 	},
+
+	updateSetting(key, bool) {
+
+		switch (key) {
+			case 'alert':
+				Alert.alert('준비중입니다.');
+				break;
+
+			case 'email':
+				Alert.alert('준비중입니다.');
+				break;
+		}
+	},
+
 
 	/* 앱 버전 정보 가져오기 */
 	getVersionName() {
-		try{
+		try {
 			return RNNativePlayer.versionInfo({
 				webtokem: ''
 			});
-		}catch( e ){
+		} catch (e) {
 			return '알 수 없음';
 		}
+
+		return 'salkdjfklsdjf;';
 
 	}
 

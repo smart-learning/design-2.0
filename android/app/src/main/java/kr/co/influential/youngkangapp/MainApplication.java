@@ -18,6 +18,7 @@ import com.crashlytics.android.core.CrashlyticsCore;
 import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.apsl.versionnumber.RNVersionNumberPackage;
 import dog.craftz.sqlite_2.RNSqlite2Package;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -115,6 +116,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNVersionNumberPackage(),
             new RNSqlite2Package(),
           new RNKaKaoSigninPackage(),
           new FBSDKPackage(mCallbackManager),

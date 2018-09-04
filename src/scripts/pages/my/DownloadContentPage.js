@@ -1,5 +1,15 @@
 import React from "react";
-import {AsyncStorage, Button, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+	AsyncStorage,
+	Button,
+	FlatList,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from "react-native";
 import CommonStyles from "../../../styles/common";
 import Store from '../../../scripts/commons/store';
 import {SafeAreaView} from "react-navigation";
@@ -67,6 +77,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 		paddingTop: 10,
 		paddingBottom: 10,
+	},
+
+	downloadItemImg: {
+		flex: 1,
+		width: 60,
+		height: 60,
+	},
+
+	downloadItemInfo: {
+		flex: 1,
+		// justifyContent: 'flex-start'
 	}
 });
 
@@ -74,35 +95,61 @@ const styles = StyleSheet.create({
 export default class DownloadContentPage extends React.Component {
 
 	@observable tabStatus = 'video';
-	@observable videos = [];
+	@observable videos = [
+		{
+			gTitle: '[더미] 청중의 OK를 끌어내는 프레젠테이션 전략',
+			audioVideoType: 'video-course',
+			drmSchemeUuid: "widevine",
+			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
+			cPlayTime: '00:15:16',
+			groupImg: '',
+			oid: 'order id',
+			thumbnailImg: 'https://static.welaaa.co.kr/static/courses/v100015/v100015_list.jpg',
+			userId: 'userId',
+			groupkey: null,
+			groupAllPlayTime: '01:10:55',
+			groupContentScnt: 0,
+			view_limitdate: 'Tue, 27 Jul 2117 00:00:00 GMT',
+			ckey: 'v100015_001',
+			contentPath: 'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
+			totalSize: '',
+			groupTeacherName: '유달내 상무',
+			cTitle: '지기지피 백전백승! 나의 발표 목적을 제일 먼저 고려하라',
+			modified: '2018-09-03 14:07:36',
+			cid: 'v200064_001'
+		},
+	];
 	@observable audios = [];
 
 
-	componentDidMount(){
-		/* TODO sql로 리스트 가져오기 */
+	componentDidMount() {
+		const db = SQLite.openDatabase('welaaa.db', '1.0', '', 1);
+		db.transaction(txn => {
+			console.log('txn:', txn);
+			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res) => {
+				console.log('res:', res);
+				res.rows.forEach( item => {
+					if( item.audioVideoType === 'video-course' ) this.videos.push( item );
+					else                                         this.audios.push( item );
+				});
 
-		const db = SQLite.openDatabase( 'welaaa.db', '1.0', '', 1 );
-		console.log( 'db:', db );
-		db.transaction( txn => {
-			console.log( txn );
-
-			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res)=>{
-				console.log( 'res:', res );
+				console.log( 'videos, auidios:', this.videos, this.audios );
 			});
 		});
-
-
-		setTimeout( ()=>{
-			this.videos = [0, 1, 2, 3, 4];
-			this.audios = [];
-		}, 0 );
 	}
 
-	makeListItem = ( {item, index} ) =>{
-		return <TouchableOpacity activeOpacity={0.9} key={index}
-								 style={ styles.downloadItem }
-								 onPress={ ()=> Native.download() }>
-			<Text>다운받은 아이템{ item }</Text>
+	makeListItem = ({item, index}) => {
+		return <TouchableOpacity activeOpacity={0.9} key={item.cid}
+								 style={styles.downloadItem}
+								 onPress={() => Native.download( item ) }>
+
+			<Image source={ {uri: item.thumbnailImg }} style={ styles.downloadItemImg }/>
+			<View style={ styles.downloadItemInfo }>
+				<Text>{ item.gTitle }</Text>
+				<Text>{ item.cTitle }</Text>
+				<Text>{ item.groupTeacherName }|{ item.cPlayTime }</Text>
+				<Text>{ item.view_limitdate }</Text>
+			</View>
 		</TouchableOpacity>
 	}
 
@@ -111,22 +158,21 @@ export default class DownloadContentPage extends React.Component {
 		let vcontent = <Text>다운받은 항목이 없습니다.</Text>;
 		let acontent = <Text>다운받은 항목이 없습니다.</Text>;
 
-		if( this.videos.length > 0 ){
+		if (this.videos.length > 0) {
 			vcontent = <FlatList
-				data = { this.videos }
-				renderItem = { this.makeListItem }
+				data={this.videos}
+				renderItem={this.makeListItem}
 			/>
 		}
 
-		if( this.audios.length > 0 ){
+		if (this.audios.length > 0) {
 			acontent = <FlatList
-				data = { this.audios }
-				renderItem = { this.makeListItem }
+				data={this.audios}
+				renderItem={this.makeListItem}
 			/>
 		}
 
 		// console.log( 'videos', this.videos );
-
 
 
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
@@ -136,7 +182,7 @@ export default class DownloadContentPage extends React.Component {
 						{this.tabStatus === 'video' &&
 						<View style={styles.tabContent}>
 							<View style={[CommonStyles.contentContainer, styles.noContent]}>
-								{ vcontent }
+								{vcontent}
 							</View>
 						</View>
 						}
@@ -144,7 +190,7 @@ export default class DownloadContentPage extends React.Component {
 						{this.tabStatus === 'audioBook' &&
 						<View style={styles.tabContent}>
 							<View style={[CommonStyles.contentContainer, styles.noContent]}>
-								{ acontent }
+								{acontent}
 							</View>
 						</View>
 						}
@@ -165,7 +211,8 @@ export default class DownloadContentPage extends React.Component {
 						<View style={styles.tabItemContainer}>
 							<TouchableOpacity activeOpacity={0.9} onPress={() => this.tabStatus = 'audioBook'}>
 								<View style={styles.tabItem}>
-									<Text style={this.tabStatus === 'audioBook' ? styles.tabTextActive : styles.tabText}>
+									<Text
+										style={this.tabStatus === 'audioBook' ? styles.tabTextActive : styles.tabText}>
 										오디오북
 									</Text>
 									<View style={this.tabStatus === 'audioBook' ? styles.tabHrActive : styles.tabHr}/>

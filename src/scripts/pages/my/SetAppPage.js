@@ -6,6 +6,7 @@ import {observer} from "mobx-react";
 import {observable} from "mobx";
 import globalStore from '../../../scripts/commons/store';
 import Native from "../../commons/native";
+import VersionNumber from "react-native-version-number";
 
 const styles = StyleSheet.create({
 	title: {
@@ -54,25 +55,29 @@ class SetAppPage extends React.Component {
 	};
 
 	setIsAutoLoginChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isAutoLogin', value.toString() );
+		AsyncStorage.setItem( 'config::isAutoLogin', value.toString() );
 		globalStore.appSettings.isAutoLogin = value;
 	};
 
 	setIsWifiPlayChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isWifiPlay', value.toString() );
+		AsyncStorage.setItem( 'config::isWifiPlay', value.toString() );
 		globalStore.appSettings.isWifiPlay = value;
+		Native.updateSettings();
 	};
 	setIsWifiDownloadChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isWifiDownload', value.toString() );
+		AsyncStorage.setItem( 'config::isWifiDownload', value.toString() );
 		globalStore.appSettings.isWifiDownload = value;
+		Native.updateSettings();
 	};
 	setIsAlertChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isAlert', value.toString() );
+		AsyncStorage.setItem( 'config::isAlert', value.toString() );
 		globalStore.appSettings.isAlert = value;
+		Native.updateSetting('alert', value );
 	};
 	setIsEmailChange = ( value ) => {
-		AsyncStorage.setItem( 'config:isEmail', value.toString() );
+		AsyncStorage.setItem( 'config::isEmail', value.toString() );
 		globalStore.appSettings.isEmail = value;
+		Native.updateSetting('email', value );
 	};
 
 	render() {
@@ -144,7 +149,7 @@ class SetAppPage extends React.Component {
 						<View style={styles.setBox}>
 							<View style={[CommonStyles.alignJustifyContentBetween, styles.setContent]}>
 								<View>
-									<Text style={styles.label}>현재버전 {Native.getVersionName()}</Text>
+									<Text style={styles.label}>현재버전 { VersionNumber.appVersion }</Text>
 								</View>
 							</View>
 						</View>
