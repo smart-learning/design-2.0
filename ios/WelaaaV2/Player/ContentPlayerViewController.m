@@ -196,7 +196,7 @@
                                                 object : [_player currentItem]  ];
   
     NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                  andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+                                                  andHeaderInfo : [_args objectForKey : @"token"]];
   
     // 현재 콘텐트의 재생권한.
     _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
@@ -206,7 +206,7 @@
     NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
     // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
     _currentContentsInfo = [ApiManager getContentsInfoWithCgid : chunks[0]
-                                                 andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+                                                 andHeaderInfo : [_args objectForKey : @"token"]];
   
     // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
     [_args setObject : _currentContentsInfo[@"data"][@"title"]
@@ -316,7 +316,7 @@
                   forKey : @"cid"];
       
         NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                      andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+                                                      andHeaderInfo : [_args objectForKey : @"token"]];
       
         // 플레이할 콘텐트의 재생권한.
         _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
@@ -1844,7 +1844,7 @@
     }
   
     NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                  andHeaderInfo : @"Bearer grbfOAwtiXFaSBEYJkg2cIFazysGJ9MQ3PBHgcPkhN"];
+                                                  andHeaderInfo : [_args objectForKey : @"token"]];
   
     // 플레이할 콘텐트의 재생권한.
     _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1

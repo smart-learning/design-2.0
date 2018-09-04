@@ -321,10 +321,11 @@
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, contentGroupID];//b300200 와 같은 group_ID
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+    NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
   
     [request setHTTPMethod : @"GET"];
     // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
-    [request            setValue : authValue
+    [request            setValue : headerValue
               forHTTPHeaderField : @"authorization"];
   
     NSError *error;
@@ -354,10 +355,11 @@
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, contentID];//b300200_001 와 같은 content_ID
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+    NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
   
     [request setHTTPMethod : @"GET"];
     // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
-    [request            setValue : authValue
+    [request            setValue : headerValue
               forHTTPHeaderField : @"authorization"];
   
     NSError *error;
@@ -386,10 +388,11 @@
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, @"parameters_not_set"];//b300200_001 와 같은 content_ID
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+    NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
   
     [request setHTTPMethod : @"POST"];
     // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
-    [request            setValue : authValue
+    [request            setValue : headerValue
               forHTTPHeaderField : @"authorization"];
   
     NSError *error;
