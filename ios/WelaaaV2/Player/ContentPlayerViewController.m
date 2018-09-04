@@ -941,6 +941,7 @@
 
 - (void) pressedCloseButton
 {
+  //[self toastTestAlert];
     [self closePlayer];
   
     //[self showToast : @"미니플레이어로 변환합니다."];
@@ -1643,33 +1644,6 @@
     }
 }
 
-//
-// 슬립타이머버튼을 누르면 시간선택 팝업뷰가 뜹니다.
-//
-- (void) openTimerSelectView
-{
-    if ( _playerSleepTimerSelectView )
-    {
-        return ;
-    }
-  
-    CGFloat height = 0;
-  
-    if ( self.view.frame.size.width < self.view.frame.size.height )
-    {
-        height = 60 + (50 * 4);
-    }
-    else
-    {
-        height = 60 + (50 * 2);
-    }
-  
-    CGRect frame = CGRectMake(0, CGRectGetMinY(_bottomView.frame) - height, self.view.frame.size.width, height);
-    _playerSleepTimerSelectView = [[PlayerSleepTimerView alloc] initWithFrame : frame];
-    _playerSleepTimerSelectView.delegate = self;
-    [self.view addSubview: _playerSleepTimerSelectView];
-}
-
 #pragma mark - Notifications
 //
 // 2~3초 정도의 토스트메시지를 보여줍니다.
@@ -1722,6 +1696,33 @@
 }
 
 #pragma mark - SleepTimer
+//
+// 슬립타이머버튼을 누르면 시간선택 팝업뷰가 뜹니다.
+//
+- (void) openTimerSelectView
+{
+    if ( _playerSleepTimerSelectView )
+    {
+        return ;
+    }
+  
+    CGFloat height = 0;
+  
+    if ( self.view.frame.size.width < self.view.frame.size.height )
+    {
+        height = 60 + (50 * 4);
+    }
+    else
+    {
+        height = 60 + (50 * 2);
+    }
+  
+    CGRect frame = CGRectMake(0, CGRectGetMinY(_bottomView.frame) - height, self.view.frame.size.width, height);
+    _playerSleepTimerSelectView = [[PlayerSleepTimerView alloc] initWithFrame : frame];
+    _playerSleepTimerSelectView.delegate = self;
+    [self.view addSubview : _playerSleepTimerSelectView];
+}
+
 - (void) setTimerMode : (NSString *) text
 {
     if ( [@"사용안함" isEqualToString : text] )
@@ -1785,8 +1786,8 @@
                                      stopEpisodeMode : isEpisodeStop];
 }
 
-- (void) playerSleepTimerView: (PlayerSleepTimerView *) view
-                    closeView: (id)sender
+- (void) playerSleepTimerView : (PlayerSleepTimerView *) view
+                    closeView : (id)sender
 {
     if ( _playerSleepTimerSelectView )
     {
@@ -2140,6 +2141,7 @@
                                                                 {
                                                                     //Handle your yes please button action here
                                                                     //[self clearAllData];
+                                                                  [self closePlayer];
                                                                 }];
   
     UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
