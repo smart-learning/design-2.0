@@ -108,11 +108,8 @@ class LoginPage extends React.Component {
 
 		resultAuthToken
 			.then(data => {
-
-				// Alert.alert( 'authToken결과:', JSON.stringify(data) );
-
 				store.socialType = email;
-				store.welaaaAuth = JSON.stringify(data);
+				store.welaaaAuth = data;
 				navigation.navigate( navigation.getParam( 'requestScreenName', 'MyInfoHome' ) );
 			})
 			.catch(error => {

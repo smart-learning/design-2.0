@@ -47,7 +47,7 @@ export default class ReviewItem extends React.Component {
 
 		return <View style={styles.reviewItem}>
 			<View style={CommonStyles.alignJustifyFlex}>
-				<Text style={styles.reviewName}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
+				<Text style={styles.reviewName}>{ globalStore.profile ? globalStore.profile.name || '시연용' : '' }</Text>
 				<View>
 					<View style={CommonStyles.alignJustifyFlex}>
 						<Image source={IcStarOrange} style={styles.reviewIcon}/>

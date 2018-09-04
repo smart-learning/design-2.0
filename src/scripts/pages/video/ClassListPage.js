@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { ActivityIndicator, Alert, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import Lecture from "../../components/video/Lecture";
@@ -166,12 +166,14 @@ const styles = StyleSheet.create( {
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
+												  onPress={() => { Alert.alert('준비중입니다.') }}
 												  style={[ styles.alignJustify, styles.sortButton ]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>인기</Text>
 								</TouchableOpacity>
 								<View style={styles.sortBar}/>
 								<TouchableOpacity activeOpacity={0.9}
+												  onPress={() => { Alert.alert('준비중입니다.') }}
 												  style={[ styles.alignJustify, styles.sortButton ]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>신규</Text>

@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Welaaa</string>
 
-	<!-- host_dev, host_release -->
-	<string name="host_debug">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
-	<string name="host_release">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
-	<!-- -->
+    <!-- host_dev, host_release -->
+    <string name="host_debug">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
+    <string name="host_release">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
+    <!-- -->
 
     <string name="retry">Retry</string>
     <string name="storage_permission_denied">Permission to access storage was denied</string>

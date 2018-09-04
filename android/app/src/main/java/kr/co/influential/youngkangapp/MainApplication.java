@@ -15,11 +15,11 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
-import com.dooboolab.RNIap.RNIapPackage;
 import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
-import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
+import com.apsl.versionnumber.RNVersionNumberPackage;
+import dog.craftz.sqlite_2.RNSqlite2Package;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.Arguments;
@@ -28,17 +28,17 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.soloader.SoLoader;
 import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
+
+import java.util.Arrays;
+import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.react.RNEventEmitter;
 import kr.co.influential.youngkangapp.react.pakcage.RNNativePlayerPackage;
 import kr.co.influential.youngkangapp.util.ONotificationManager;
 import kr.co.influential.youngkangapp.util.WeContentManager;
-
-import java.util.Arrays;
-import java.util.List;
-
-import io.fabric.sdk.android.Fabric;
 
 //import test.welaaa.WelaaaPackageManager;
 
@@ -116,9 +116,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNLocalizablePackage(),
+            new RNVersionNumberPackage(),
+            new RNSqlite2Package(),
           new RNKaKaoSigninPackage(),
-          new RNIapPackage(),
           new FBSDKPackage(mCallbackManager),
           new RNLocalizablePackage(R.string.class),
           new RNNativePlayerPackage(MainApplication.this)

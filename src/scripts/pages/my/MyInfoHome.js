@@ -179,7 +179,7 @@ export default class MyInfoHome extends React.Component {
 							<Image source={DummyProfile} style={styles.myInfoProfile} borderRadius={30}/>
 							<View>
 								<View style={styles.myInfoContentItem}>
-									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '' }</Text>
+									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name || '시연용' : '' }</Text>
 									<View>
 										<Text>{/*package*/}</Text>
 									</View>
@@ -202,10 +202,10 @@ export default class MyInfoHome extends React.Component {
 						<Text style={styles.sectionTitle}>콘텐츠 이용 현황</Text>
 
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('LectureUsePage', {title: '최근 재생중 강좌'})}>
+										  onPress={() => navigation.navigate('LectureUsePage', {title: '최근 재생 클래스'})}>
 							<View style={styles.listItem}>
 								<Image source={IcPlay} style={styles.listItemIcon}/>
-								<Text style={styles.listItemTitle}>최근 재생중 강좌</Text>
+								<Text style={styles.listItemTitle}>최근 재생 클래스</Text>
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
@@ -214,10 +214,10 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('LectureBuyPage', {title: '구매한 강좌'})}>
+										  onPress={() => navigation.navigate('LectureBuyPage', {title: '구매한 클래스'})}>
 							<View style={styles.listItem}>
 								<Image source={IcPlay} style={styles.listItemIcon}/>
-								<Text style={styles.listItemTitle}>구매한 강좌</Text>
+								<Text style={styles.listItemTitle}>구매한 클래스</Text>
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
@@ -238,10 +238,10 @@ export default class MyInfoHome extends React.Component {
 							<View style={styles.listItemBarBullet}/>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('AudioBookUsePage', {title: '이용중 오디오북'})}>
+										  onPress={() => navigation.navigate('AudioBookUsePage', {title: '최근 재생 오디오북'})}>
 							<View style={styles.listItem}>
 								<Image source={IcMusic} style={styles.listItemIcon}/>
-								<Text style={styles.listItemTitle}>이용중 오디오북</Text>
+								<Text style={styles.listItemTitle}>최근 재생 오디오북</Text>
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
@@ -290,10 +290,10 @@ export default class MyInfoHome extends React.Component {
 						</View>
 						}
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('ClipPlayListPage', {title: '최근 재생 강의클립 목록'})}>
+										  onPress={() => navigation.navigate('ClipPlayListPage', {title: '최근 재생 강의클립'})}>
 							<View style={styles.listItem}>
 								<Image source={IcPlay} style={styles.listItemIcon}/>
-								<Text style={styles.listItemTitle}>최근 재생 강의클립 목록</Text>
+								<Text style={styles.listItemTitle}>최근 재생 강의클립</Text>
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>

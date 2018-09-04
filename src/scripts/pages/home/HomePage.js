@@ -220,7 +220,7 @@ class HomePage extends React.Component {
 							<TouchableOpacity activeOpacity={0.9} onPress={ ()=>this.goPage( 'video' ) }>
 								<View style={styles.tabItem}>
 									<Text style={this.tabStatus === 'video' ? styles.tabTextActive : styles.tabText}>
-										비디오
+										클래스
 									</Text>
 									<View style={this.tabStatus === 'video' ? styles.tabHrActive : styles.tabHr}/>
 								</View>

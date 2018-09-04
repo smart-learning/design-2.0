@@ -123,7 +123,7 @@ export default class SidebarUserInfo extends React.Component {
 						<TouchableOpacity activeOpacity={0.9}
 										  onPress={() => this.props.navigation.navigate('MyScreen')}>
 							<View>
-								<Text style={styles.userName}><Text style={styles.userNameImportant}>{ globalStore.profile ? globalStore.profile.name || '사용자' : '사용자' }</Text>님</Text>
+								<Text style={styles.userName}><Text style={styles.userNameImportant}>{ globalStore.profile ? globalStore.profile.name || '시연용' : '시연용' }</Text></Text>
 								<Text style={styles.userEmail}>{ globalStore.profile ? globalStore.profile.email : '' }</Text>
 							</View>
 						</TouchableOpacity>
