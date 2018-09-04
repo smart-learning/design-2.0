@@ -45,8 +45,9 @@ export default {
 			} catch (e) {
 				alert(e);
 			}
-
-			this.toggleMiniPlayer(true);
+			// 2018.09.04 김중온
+			// 미니 플레이어는 네이티브 상태 값으로 제어함.
+			// this.toggleMiniPlayer(true);
 		}, 100);
 
 	},

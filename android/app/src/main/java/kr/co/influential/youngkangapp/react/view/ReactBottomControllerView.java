@@ -25,12 +25,12 @@ public class ReactBottomControllerView extends FrameLayout {
 
   public static final String TAG = LogHelper.makeLogTag(ReactBottomControllerView.class);
 
+  private ProgressBar timeBar;
   private TextView title;
   private TextView currentTime;
   private TextView durationTime;
   private ImageButton pause;
   private ImageButton play;
-  private ProgressBar timeBar;
   private ProgressBar loading;
 
   private MediaBrowserCompat mediaBrowser;
@@ -47,10 +47,6 @@ public class ReactBottomControllerView extends FrameLayout {
     timeBar = findViewById(R.id.mini_time_bar);
     loading = findViewById(R.id.mini_loading);
 
-    // event listener.
-    pause.setOnClickListener(v -> pause());
-    play.setOnClickListener(v -> play());
-
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(context, new ComponentName(context, MediaService.class),
         connectionCallback, null);
@@ -61,6 +57,9 @@ public class ReactBottomControllerView extends FrameLayout {
     super.onAttachedToWindow();
     LogHelper.d(TAG, "onAttachedToWindow");
     mediaBrowser.connect();
+
+    // initialize.
+    initializeViews();
   }
 
   @Override
@@ -158,6 +157,18 @@ public class ReactBottomControllerView extends FrameLayout {
     if (mediaController.getMetadata() != null) {
       updateMediaDescription(mediaController.getMetadata().getDescription());
     }
+  }
+
+  private void initializeViews() {
+    timeBar.setProgress(0);
+    timeBar.setMax(100);
+
+    currentTime.setText("00:00");
+    durationTime.setText("00:00");
+
+    // event listener.
+    pause.setOnClickListener(v -> pause());
+    play.setOnClickListener(v -> play());
   }
 
   private void pause() {

@@ -78,22 +78,33 @@
           android:layout_gravity="center_vertical"
           android:ellipsize="end"
           android:marqueeRepeatLimit="marquee_forever"
-          android:maxLines="2"/>
+          android:maxLines="2"
+          android:textColor="@color/colorWhite"/>
 
         <TextView
           android:id="@+id/mini_current_time"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
-          android:paddingStart="5dp"
+          android:paddingStart="10dp"
           android:textColor="@color/colorControlTextEnable"/>
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:paddingStart="5dp"
+          android:paddingEnd="5dp"
+          android:text="/"
+          android:textColor="@color/colorWhite"/>
 
         <TextView
           android:id="@+id/mini_duration_time"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
-          android:paddingEnd="10dp"/>
+          android:paddingEnd="10dp"
+          android:textColor="@color/colorWhite"/>
       </LinearLayout>
     </LinearLayout>
   </RelativeLayout>
