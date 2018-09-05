@@ -19,6 +19,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		422DC0D108704F3993D18D54 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1494E3C5B5B4B74924FF6DD /* libRNFirebase.a */; };
 		5D2A6FC4AE30619FDFF422A3 /* Pods_WelaaaV2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		63053DE2212E8479007958D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 63053DE1212E8479007958D8 /* Localizable.strings */; };
@@ -356,6 +357,13 @@
 			remoteGlobalIDString = 358F4ED71D1E81A9004DF814;
 			remoteInfo = RCTBlob;
 		};
+		EF4C84D4213F8D4900699AF1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D58EAB0BBCFB456B9BC25B11 /* RNFirebase.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNFirebase;
+		};
 		EF9A9872211144F400EA3A8E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 192C495226694CA1A01C963C /* RCTFBSDK.xcodeproj */;
@@ -416,6 +424,8 @@
 		91F9F617C3954DF3AC999232 /* libRNLocalizable.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNLocalizable.a; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		AEEDDD9F7C5CBB53DA7FCD50 /* Pods-WelaaaV2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WelaaaV2.release.xcconfig"; path = "Pods/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2.release.xcconfig"; sourceTree = "<group>"; };
+		D1494E3C5B5B4B74924FF6DD /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
+		D58EAB0BBCFB456B9BC25B11 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WelaaaV2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF056AB821267EFD00F3178B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EF0946FF212662B200FD849B /* RNProductPayment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNProductPayment.h; sourceTree = "<group>"; };
@@ -550,6 +560,7 @@
 				FEB4A0A1AA6341EE8ED27C0B /* libRCTFBSDK.a in Frameworks */,
 				7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */,
 				AD28BB2193034979A7C0FB93 /* libRNLocalizable.a in Frameworks */,
+				422DC0D108704F3993D18D54 /* libRNFirebase.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -732,6 +743,7 @@
 				192C495226694CA1A01C963C /* RCTFBSDK.xcodeproj */,
 				801AC0D92C074BDBB6EC7D3E /* RNKaKaoSignin.xcodeproj */,
 				8206B466E5AE4E088043ED37 /* RNLocalizable.xcodeproj */,
+				D58EAB0BBCFB456B9BC25B11 /* RNFirebase.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -806,6 +818,14 @@
 			path = WelaaaV2/Utils;
 			sourceTree = "<group>";
 		};
+		EF4C84D1213F8D4900699AF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EF4C84D5213F8D4900699AF1 /* libRNFirebase.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		EF4F4106211ABE5C005E1CBD /* UIFonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -840,6 +860,7 @@
 				2EC83BF071F44EB699826325 /* libRCTFBSDK.a */,
 				1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */,
 				91F9F617C3954DF3AC999232 /* libRNLocalizable.a */,
+				D1494E3C5B5B4B74924FF6DD /* libRNFirebase.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1116,6 +1137,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = EF4C84D1213F8D4900699AF1 /* Products */;
+					ProjectRef = D58EAB0BBCFB456B9BC25B11 /* RNFirebase.xcodeproj */;
 				},
 				{
 					ProductGroup = EF9A98A72111452000EA3A8E /* Products */;
@@ -1400,6 +1425,13 @@
 			remoteRef = ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		EF4C84D5213F8D4900699AF1 /* libRNFirebase.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFirebase.a;
+			remoteRef = EF4C84D4213F8D4900699AF1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		EF9A9873211144F400EA3A8E /* libRCTFBSDK.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1617,11 +1649,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-kakao-signin/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-localizable/ios/RNLocalizable",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = WelaaaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/WelaaaV2\"",
 					"\"$(SRCROOT)/WelaaaV2\"",
 					"\"$(SRCROOT)/WelaaaV2\"",
 					"\"$(SRCROOT)/WelaaaV2\"",
@@ -1658,11 +1692,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 					"$(SRCROOT)/../node_modules/react-native-kakao-signin/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-localizable/ios/RNLocalizable",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = WelaaaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/WelaaaV2\"",
 					"\"$(SRCROOT)/WelaaaV2\"",
 					"\"$(SRCROOT)/WelaaaV2\"",
 					"\"$(SRCROOT)/WelaaaV2\"",
