@@ -85,6 +85,7 @@ import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
+import com.google.gson.Gson;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -119,11 +120,8 @@ import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -737,11 +735,6 @@ public class PlayerActivity extends BasePlayerActivity {
   protected void onDestroy() {
 
     super.onDestroy();
-
-    if (mPlayTimeHandler != null) {
-      mPlayTimeHandler.removeCallbacksAndMessages(null);
-    }
-
   }
 
   @Override
@@ -2016,7 +2009,7 @@ public class PlayerActivity extends BasePlayerActivity {
           case R.id.BTN_AUDIO: {
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
 
-            ImageView audioModeBackgroundImg = findViewById(audio_mode_backgroundimg);
+            ImageView audioModeBackgroundImg = findViewById(R.id.audio_mode_backgroundimg);
 
             Glide
                 .with(getApplicationContext())
@@ -3058,7 +3051,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //              getTransportControls().stop();
 //            }
 
-            finish();
+//            finish();
             break;
           case WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER:
             break;
@@ -4987,6 +4980,7 @@ public class PlayerActivity extends BasePlayerActivity {
                       intent.putExtra(PlaybackManager.DRM_OID, "");
                       intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                       intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                      intent.putExtra("duration" , mWebPlayerInfo.getCplayTime()[contentId]);
 
                     }
 
@@ -4997,6 +4991,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   Bundle extras = intent.getExtras();
 
                   getTransportControls().playFromUri(uri, extras);
+                  // Meta data update 정상 .
                 }
               }
             } else if (callbackMethod.equals("download")) {

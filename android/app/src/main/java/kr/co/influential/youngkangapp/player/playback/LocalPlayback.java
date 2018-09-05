@@ -287,7 +287,6 @@ public final class LocalPlayback implements Playback {
     registerAudioNoisyReceiver();
     Uri uri = item.getDescription().getMediaUri();
 
-    Log.e(TAG , "290 play uri is " + uri );
     boolean mediaHasChanged = currentMedia == null ||
         !uri.equals(currentMedia.getDescription().getMediaUri());
     if (mediaHasChanged) {
@@ -559,7 +558,7 @@ public final class LocalPlayback implements Playback {
           if (mCallback != null) {
             mCallback.onPlaybackStatusChanged(getState());
 
-            if(getState()==3){
+            if (getState() == 3) {
               setRendererDisabled(false);
             }
 
@@ -894,8 +893,6 @@ public final class LocalPlayback implements Playback {
 
         RequestBody body = RequestBody.create(JSON, postdata.toString());
 
-        Log.e(TAG, " 20180901 Progress " + mWebPlayerInfo.getCkey()[currentId] );
-
         // playing ???
         if (getState() == 3) {
           new Thread() {
@@ -990,14 +987,23 @@ public final class LocalPlayback implements Playback {
     int nextPosition = 0;
 
     nextPosition = currentPosition + 1;
+    setContentId(nextPosition);
+
+    if (mWebPlayerInfo.getCon_class().equals("audiobook")) {
+      // next chapters , play_seconds 값이 0 , 0.0 이라면 다시 ++
+      if (mWebPlayerInfo.getCurl()[nextPosition].equals("0") ||
+          mWebPlayerInfo.getCurl()[nextPosition].equals("0.0")) {
+
+        doAutoPlay();
+        return;
+      }
+    }
 
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
 
     sendData(API_BASE_URL + callbackMethodName + mWebPlayerInfo.getCkey()[nextPosition],
         callbackMethodName);
-
-    setContentId(nextPosition);
 
   }
 
@@ -1031,8 +1037,6 @@ public final class LocalPlayback implements Playback {
       String body = response.body().string();
 
       int currentId = Preferences.getWelaaaPlayListCId(mContext);
-
-      Log.e(TAG , " onResponse currentId is " + currentId );
 
       Gson gson = new Gson();
       String json = Preferences.getWelaaaWebPlayInfo(mContext);
@@ -1073,27 +1077,16 @@ public final class LocalPlayback implements Playback {
               String thumbUrl = "";
               String customData = "";
 
-              Log.i(TAG, " doAutoPlay  dashUrl ==> " + dashUrl );
-              Log.i(TAG, " doAutoPlay  cId ==> " + cId );
-              Log.i(TAG, " doAutoPlay  name ==> " + name );
-              Log.i(TAG, " doAutoPlay  getCplayTime ==> " + mWebPlayerInfo.getCplayTime()[currentId] );
-              Log.i(TAG, " doAutoPlay  getCplayTime ==> " + Utils.webTimeToSec(mWebPlayerInfo.getCplayTime()[currentId]) );
-
-
-//              mWebPlayerInfo.getCplayTime()
-//
-//                  Utils.timeToConvert()
-
               MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
               builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
               builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
-              builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION ,
+              builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
                   Utils.webTimeToSec(mWebPlayerInfo.getCplayTime()[currentId]));
-
               // drm information.
-              builder.putString(PlaybackManager.DRM_CONTENT_URI_EXTRA , uri.toString());
+              builder.putString(PlaybackManager.DRM_CONTENT_URI_EXTRA, uri.toString());
               builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
-              builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA, getDrmUuid(drmSchemeUuid).toString() );
+              builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                  getDrmUuid(drmSchemeUuid).toString());
               builder.putString(PlaybackManager.DRM_LICENSE_URL, drmLicenseUrl);
               builder.putString(PlaybackManager.DRM_USERID, userId);
               builder.putString(PlaybackManager.DRM_CID, cId);
@@ -1101,7 +1094,7 @@ public final class LocalPlayback implements Playback {
               builder.putString(PlaybackManager.DRM_TOKEN, token);
               builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
               builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
-              builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
+
               currentMedia = builder.build();
 
               mPlayOnFocusGain = true;
@@ -1177,6 +1170,8 @@ public final class LocalPlayback implements Playback {
 
               attachPlayerView();
               configurePlayerState();
+
+
 
             }
 

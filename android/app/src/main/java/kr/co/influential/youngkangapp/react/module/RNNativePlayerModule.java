@@ -456,7 +456,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 String cname = json.getString("title");
                 String cmemo = json.getString("memo");
 
-                String curl = ""; // play_data 에서
+                String curl = json.getString("play_seconds"); // play_data 에서
 
                 String cplay_time = json.getString("play_time");
                 String cpay = "";
@@ -600,7 +600,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               }
 
               intent.setData(Uri.parse(dashUrl));
-              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, contentName);
+              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, mWebPlayerInfo.getCname()[contentId]);
               intent.putExtra(PlaybackManager.THUMB_URL, "");
               if (contentUuid != null) {
                 intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
@@ -651,7 +651,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               Intent service = new Intent(contextWrapper, DownloadService.class);
 
               service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
-              service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, contentName);
+              service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, mWebPlayerInfo.getCname()[contentId]);
               service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
               service.putExtra("contentCid", contentCid);
               intent.putExtra("expire_at", expire_at);
