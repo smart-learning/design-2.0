@@ -23,7 +23,7 @@ import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 
 public class HLVAdapter extends RecyclerView.Adapter<HLVAdapter.ViewHolder> {
 
-  private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
+  private final String WELEARN_WEB_URL = Utils.welaaaApiBaseUrl();
   private final String TAG = "HLVAdapter";
 
   private final int STARTACTIVITY_RESULT_CODE = 1001;

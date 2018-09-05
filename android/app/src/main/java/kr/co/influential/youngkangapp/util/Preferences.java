@@ -88,6 +88,8 @@ public class Preferences {
 
     private static String WELAAA_MYREPU_CHECKBOX = "WELAAA_MYREPU_CHECKBOX";
     private static String WELAAA_OAUTH_TOKEN = "WELAAA_OAUTH_TOKEN";
+    private static String WELAAA_PLAYER_INFO = "WELAAA_PLAYER_INFO";
+    private static String WELAAA_UESR_ID = "WELAAA_UESR_ID";
 
     /************************************************************************
      * FOR SETTING : MAIN ACTIVITY 자동로그인
@@ -984,4 +986,36 @@ public class Preferences {
         SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return pref.getString(WELAAA_OAUTH_TOKEN, "");
     }
+
+    /************************************************************************
+     * FOR webPlayerInfo    :   webPlayerInfo
+     ************************************************************************/
+    public static void setWelaaaWebPlayInfo(Context context, String webPlayerInfo){
+        SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString(WELAAA_PLAYER_INFO, webPlayerInfo );
+        edit.commit();
+
+    }
+
+    public static String getWelaaaWebPlayInfo(Context context){
+        SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return pref.getString(WELAAA_PLAYER_INFO, "");
+    }
+
+  /************************************************************************
+   * FOR User ID ( SEQ )     :   USER ID
+   ************************************************************************/
+  public static void setWelaaaUserId(Context context, String userId){
+    SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    SharedPreferences.Editor edit = pref.edit();
+    edit.putString(WELAAA_UESR_ID, userId );
+    edit.commit();
+
+  }
+
+  public static String getWelaaaUserId(Context context){
+    SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    return pref.getString(WELAAA_UESR_ID, "");
+  }
 }

@@ -1,5 +1,7 @@
 package kr.co.influential.youngkangapp.util;
 
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -19,16 +21,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import kr.co.influential.youngkangapp.R;
-
 import java.io.InputStream;
-
-import static android.view.View.VISIBLE;
+import kr.co.influential.youngkangapp.R;
 
 public class CustomDialog extends Dialog {
 
-    private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
+    private final String WELEARN_WEB_URL = Utils.welaaaApiBaseUrl();
     private final String TAG = "CustomDialog";
 
     private String mTitle;

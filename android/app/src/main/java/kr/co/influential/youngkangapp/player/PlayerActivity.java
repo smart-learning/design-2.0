@@ -85,6 +85,7 @@ import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
+import com.google.gson.Gson;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -119,11 +120,8 @@ import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -131,8 +129,6 @@ import org.json.JSONObject;
  */
 
 public class PlayerActivity extends BasePlayerActivity {
-
-  private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
 
   public static final String TAG = "pallycon_sampleapp";
   public static final String CONTENTS_TITLE = "contents_title";
@@ -392,6 +388,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
   private String callbackMethodName = "";
   private String callbackMethod = "";
+  private final String API_BASE_URL = Utils.welaaaApiBaseUrl();
 
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
@@ -493,6 +490,11 @@ public class PlayerActivity extends BasePlayerActivity {
     Intent intent = getIntent();
 
     mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
+
+    Gson gson = new Gson();
+    String json = gson.toJson(mWebPlayerInfo);
+
+    Preferences.setWelaaaWebPlayInfo(getApplicationContext() , json);
 
     CONTENT_TYPE = intent.getStringExtra("type");
     CAN_PLAY = intent.getBooleanExtra("can_play", false);
@@ -600,35 +602,38 @@ public class PlayerActivity extends BasePlayerActivity {
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
         connectionCallback, null);
 
-    if (CONTENT_TYPE.equals("audiobook")) {
-      RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
-      control_wrap.setOnTouchListener(new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-          return true;
-        }
-      });
+    if (CONTENT_TYPE!=null){
+      if (CONTENT_TYPE.equals("audiobook")) {
+        RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
+        control_wrap.setOnTouchListener(new View.OnTouchListener() {
+          @Override
+          public boolean onTouch(View v, MotionEvent event) {
+            return true;
+          }
+        });
 
 //      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
 
-      mButton_Arrow_Layout.setVisibility(GONE);
-      mRelatedViewBtn.setVisibility(GONE);
+        mButton_Arrow_Layout.setVisibility(GONE);
+        mRelatedViewBtn.setVisibility(GONE);
 
-      RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
-      subscription_wrap.setVisibility(GONE);
+        RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
+        subscription_wrap.setVisibility(GONE);
 
-      RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
-      audioVideobtn_wrap.setVisibility(GONE);
+        RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
+        audioVideobtn_wrap.setVisibility(GONE);
 
-      audioModeBackgroundLayout.setVisibility(VISIBLE);
-      audioModeIconHeadset.setVisibility(VISIBLE);
+        audioModeBackgroundLayout.setVisibility(VISIBLE);
+        audioModeIconHeadset.setVisibility(VISIBLE);
 
-      // Audio Book 에서 화면 항상 켜기 //
-      getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        // Audio Book 에서 화면 항상 켜기 //
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+      }else{
+
+        LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
+      }
     }
-
-    mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
   }
 
   @Override
@@ -730,11 +735,6 @@ public class PlayerActivity extends BasePlayerActivity {
   protected void onDestroy() {
 
     super.onDestroy();
-
-    if (mPlayTimeHandler != null) {
-      mPlayTimeHandler.removeCallbacksAndMessages(null);
-    }
-
   }
 
   @Override
@@ -775,9 +775,15 @@ public class PlayerActivity extends BasePlayerActivity {
   @RequiresApi(VERSION_CODES.O)
   @Override
   protected void onUserLeaveHint() {
-    PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-    builder.setAspectRatio(new Rational(16, 9));
-    enterPictureInPictureMode(builder.build());
+
+    try{
+      PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+      builder.setAspectRatio(new Rational(16, 9));
+      enterPictureInPictureMode(builder.build());
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
   }
 
   @Override
@@ -2003,6 +2009,16 @@ public class PlayerActivity extends BasePlayerActivity {
           case R.id.BTN_AUDIO: {
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
 
+            ImageView audioModeBackgroundImg = findViewById(R.id.audio_mode_backgroundimg);
+
+            Glide
+                .with(getApplicationContext())
+                .load(getwebPlayerInfo().getGroupImg())
+                .centerCrop()
+                .placeholder(null)
+                .crossFade()
+                .into(audioModeBackgroundImg);
+
             audioModeBackgroundLayout.setVisibility(View.VISIBLE); //이미지보이고
             audioModeIconHeadset.setVisibility(View.VISIBLE); //아이콘보이고
             mButtonAudio.setVisibility(View.INVISIBLE); //오디오버튼아이콘 안보이고
@@ -3035,7 +3051,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //              getTransportControls().stop();
 //            }
 
-            finish();
+//            finish();
             break;
           case WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER:
             break;
@@ -3309,7 +3325,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //									ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
                 }
 
-                weburl = WELEARN_WEB_URL + "/usingapp/update_star.php?star="
+                weburl = API_BASE_URL + "/usingapp/update_star.php?star="
                     + Preferences.getWelaaaMyReputation(getApplicationContext()) + "&ckey=" + ckey;
 
                 if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("")) {
@@ -3347,7 +3363,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
               ckey = "";
 
-              weburl = WELEARN_WEB_URL + "/usingapp/update_star.php?star="
+              weburl = API_BASE_URL + "/usingapp/update_star.php?star="
                   + Preferences.getWelaaaMyReputation(getApplicationContext()) + "&ckey=" + ckey;
 
               Logger.e(TAG + " 20170902 case 2 : " + weburl);
@@ -3495,11 +3511,9 @@ public class PlayerActivity extends BasePlayerActivity {
         }
       }
 
-      url = "http://welaaa.co.kr/contentsUpImage/20170731000721_2.png";
-
       Glide
           .with(getApplicationContext())
-          .load(url)
+          .load(getwebPlayerInfo().getGroupImg())
           .centerCrop()
           .placeholder(null)
           .crossFade()
@@ -4599,7 +4613,7 @@ public class PlayerActivity extends BasePlayerActivity {
     callbackMethodName = "play/play-data/";
     callbackMethod = "download";
 
-    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+    sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
         callbackMethodName);
 
   }
@@ -4695,17 +4709,23 @@ public class PlayerActivity extends BasePlayerActivity {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
     }
 
-    if (CONTENT_TYPE.equals("audiobook")) {
-      LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
+    if(CONTENT_TYPE!=null){
+      if (CONTENT_TYPE.equals("audiobook")) {
+        LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
+      }
     }
 
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
+
+        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+            getwebPlayerInfo().getCname()[getContentId()]);
+
         break;
       case PlaybackStateCompat.STATE_PAUSED:
         boolean isCompleted = LocalPlayback.getInstance(this).isCompleted();
         if (isCompleted) {
-          doAutoPlay();
+//          doAutoPlay();
         }
         break;
       case PlaybackStateCompat.STATE_NONE:
@@ -4765,7 +4785,7 @@ public class PlayerActivity extends BasePlayerActivity {
         callbackMethodName = "play/play-data/";
         callbackMethod = "play";
         sendData(
-            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+            API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
             callbackMethod);
 
         setContentId(getContentId());
@@ -4792,7 +4812,7 @@ public class PlayerActivity extends BasePlayerActivity {
         callbackMethodName = "play/play-data/";
         callbackMethod = "play";
         sendData(
-            WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+            API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
             callbackMethod);
 
         setContentId(getContentId());
@@ -4858,7 +4878,7 @@ public class PlayerActivity extends BasePlayerActivity {
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
 
-    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[nextPosition],
+    sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[nextPosition],
         callbackMethodName);
 
     setContentId(nextPosition);
@@ -4883,125 +4903,6 @@ public class PlayerActivity extends BasePlayerActivity {
         }
     }
   }
-
-
-  Handler mPlayTimeHandler = new Handler() {
-    @SuppressWarnings("unchecked")
-    @Override
-    public void handleMessage(Message msg) {
-      try {
-
-        if (getTransportControls() != null) {
-          String ckey;
-          String gkey;
-          String status;
-          long currentposition = 0;
-          String nTitle = "";
-
-          TextView play_network_type_text = findViewById(R.id.wrap_welean_play_network_type_text);
-
-          Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
-
-          if (start_current_time == 0) {
-            status = "START";
-          } else {
-            status = "ING";
-          }
-
-          if (player != null) {
-            currentposition = player.getContentPosition();
-          }
-//                    getCid
-
-          long duration_time = currentposition - start_current_time;
-
-          String weburl = WELEARN_WEB_URL + "play/progress";
-
-          final MediaType JSON
-              = MediaType.parse("application/json; charset=utf-8");
-
-          JSONObject postdata = new JSONObject();
-          try {
-            postdata.put("action", "ING");
-            postdata.put("cid", getwebPlayerInfo().getCkey()[getContentId()]);
-            postdata.put("duration", currentposition);
-            postdata.put("end", currentposition);
-            postdata.put("error", "NONE");
-            postdata.put("net_status", "WIFI");
-            postdata.put("platform", "android");
-            postdata.put("start", start_current_time);
-          } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-
-          RequestBody body = RequestBody.create(JSON, postdata.toString());
-
-          new Thread() {
-            public void run() {
-              httpConn.requestWebServer(weburl, "CLIENT_ID", "CLIENT_SECRET",
-                  "", body, callbackProgressRequest);
-            }
-          }.start();
-
-          start_current_time = (int) currentposition;
-
-          if (mPlayTimeHandler != null) {
-            // 한개만 호출될 수 있도록 확인 해봅시다
-            mPlayTimeHandler.removeCallbacksAndMessages(null);
-
-            mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
-          }
-
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  };
-
-
-  /**
-   * 웹 서버로 데이터 전송 // Progress 전용
-   */
-  private void sendData(String sendUrl) {
-
-    String requestWebUrl = sendUrl;
-
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl );
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()) );
-
-    new Thread() {
-      public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", Preferences.getWelaaaOauthToken(getApplicationContext()),
-            callbackProgressRequest);
-      }
-    }.start();
-  }
-
-  private final Callback callbackProgressRequest = new Callback() {
-    @Override
-    public void onFailure(Call call, IOException e) {
-      Log.e(TAG, "mPlayTimeHandler 중지 콜백오류: " + e.getMessage());
-      if (mPlayTimeHandler != null) {
-        mPlayTimeHandler.removeCallbacksAndMessages(null);
-      }
-    }
-
-    @Override
-    public void onResponse(Call call, Response response) throws IOException {
-      String body = response.body().string();
-
-      if (response.code() == 200) {
-        Log.e(TAG, "서버에서 응답한 Body:" + body);
-      } else {
-
-        if (mPlayTimeHandler != null) {
-          mPlayTimeHandler.removeCallbacksAndMessages(null);
-        }
-      }
-    }
-  };
 
   /**
    * 웹 서버로 데이터 전송 // content-info , play-data
@@ -5073,12 +4974,13 @@ public class PlayerActivity extends BasePlayerActivity {
                       intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
                           "http://tokyo.pallycon.com/ri/licenseManager.do");
                       intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                      intent.putExtra(PlaybackManager.DRM_USERID, "93");
+                      intent.putExtra(PlaybackManager.DRM_USERID, Preferences.getWelaaaUserId(getApplicationContext()));
                       intent.putExtra(PlaybackManager.DRM_CID,
                           getwebPlayerInfo().getCkey()[getContentId()]);
                       intent.putExtra(PlaybackManager.DRM_OID, "");
                       intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                       intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                      intent.putExtra("duration" , mWebPlayerInfo.getCplayTime()[contentId]);
 
                     }
 
@@ -5089,10 +4991,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   Bundle extras = intent.getExtras();
 
                   getTransportControls().playFromUri(uri, extras);
-
-                  // Set player to playerview.
-                  LocalPlayback.getInstance(PlayerActivity.this).setPlayerView(simpleExoPlayerView);
-
+                  // Meta data update 정상 .
                 }
               }
             } else if (callbackMethod.equals("download")) {
@@ -5137,19 +5036,6 @@ public class PlayerActivity extends BasePlayerActivity {
     }
 
     setBackGroungLayout(true);
-    Animation fadeout = null;
-    fadeout = null;
-    fadeout = AnimationUtils
-        .loadAnimation(getApplicationContext(), R.anim.slide_in_right);
-
-    mRelatedListGroupLayout.startAnimation(fadeout);
-
-    Animation textBlink = null;
-    textBlink = AnimationUtils
-        .loadAnimation(getApplicationContext(), R.anim.blink_animation);
-
-    mRelatedListBlinkText.startAnimation(textBlink);
-    mRelatedListGroupLayout.setVisibility(VISIBLE);
 
     if (mPlaylistGroupLayout != null) {
       mPlaylistGroupLayout.startAnimation(mAniSlideHide);
@@ -5177,7 +5063,7 @@ public class PlayerActivity extends BasePlayerActivity {
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
 
-    sendData(WELEARN_WEB_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
+    sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);
 
     setContentId(currentPosition);
