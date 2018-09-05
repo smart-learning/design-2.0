@@ -1194,12 +1194,10 @@
     if ( [_currentContentsInfo[@"type"] hasPrefix : @"video"] )
     {
         playListArray = _currentContentsInfo[@"data"][@"clips"];
-        _listView.isAudioContentType = false;
     }
     else if ( [_currentContentsInfo[@"type"] hasPrefix : @"audio"] )
     {
         playListArray = _currentContentsInfo[@"data"][@"chapters"];
-        _listView.isAudioContentType = true;
     }
   
     NSInteger currentIndex = playListArray.count;

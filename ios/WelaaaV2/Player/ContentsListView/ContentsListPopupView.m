@@ -13,6 +13,8 @@
     UIView *_scrollingLine;
     
     UITableView *_tableView;
+  
+    BOOL _isAudioContentType;
 }
 
 @end
@@ -58,6 +60,15 @@
 
 - (void) initSubviews
 {
+    if ( [self.contentsInfoDictionary[@"type"] hasPrefix : @"audio"] )
+    {
+        _isAudioContentType = true;
+    }
+    else if ( [self.contentsInfoDictionary[@"type"] hasPrefix : @"video"] )
+    {
+        _isAudioContentType = false;
+    }
+  
     CGRect frame = self.bounds;
     frame.origin.y = CGRectGetMaxY(frame);
     
@@ -68,7 +79,7 @@
     _titleView = [self makeTitleView : CGRectMake(0, 0, self.frame.size.width, 60.f)];
     [contentView addSubview : _titleView];
     
-    UIColor *barColor = self.isAudioContentType ? UIColorFromRGB(0xff4f72, 1.f) : UIColorFromRGB(0x09b774, 1.f);
+    UIColor *barColor = _isAudioContentType ? UIColorFromRGB(0xff4f72, 1.f) : UIColorFromRGB(0x09b774, 1.f);
     _scrollingLine = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetHeight(_titleView.frame)-2, 0.f, _titleView.frame.size.height)];
     _scrollingLine.backgroundColor = barColor;
     [_titleView addSubview : _scrollingLine];
@@ -141,7 +152,7 @@
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     [itemView addSubview : _titleLabel];
     
-    if ( !self.isAudioContentType )
+    if ( !_isAudioContentType )
     {
         _titleLabel.text = @"최근 재생 강의클립 리스트";
     }
@@ -321,7 +332,7 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
 {
     CGFloat height = 123.f;
     
-    if ( self.isAudioContentType )
+    if ( _isAudioContentType )
     {
         NSArray *playList = _contentsInfoDictionary[@"data"][@"chapters"];
       
@@ -382,8 +393,8 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     
     cell.isSelected = (indexPath.row == self.currentPlayIndex);
     cell.index = indexPath.row;
-    cell.isAudioContentType = self.isAudioContentType;
-    cell.isPreviewMode = (self.isAudioContentType && !self.isAuthor && cell.isSelected);
+    cell.isAudioContentType = _isAudioContentType;
+    cell.isPreviewMode = (_isAudioContentType && !self.isAuthor && cell.isSelected);
     
     [cell updateCell];
     
