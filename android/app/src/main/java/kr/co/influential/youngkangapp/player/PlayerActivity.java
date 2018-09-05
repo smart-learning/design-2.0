@@ -10,10 +10,13 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.Activity;
 import android.app.PictureInPictureParams;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -65,6 +68,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -115,6 +119,7 @@ import kr.co.influential.youngkangapp.util.HLVAdapter;
 import kr.co.influential.youngkangapp.util.HttpCon;
 import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Logger;
+import kr.co.influential.youngkangapp.util.MyBroadcastReceiver;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
@@ -390,6 +395,9 @@ public class PlayerActivity extends BasePlayerActivity {
   private String callbackMethod = "";
   private final String API_BASE_URL = Utils.welaaaApiBaseUrl();
 
+  private MyBroadcastReceiver myBroadcastReceiver = null;
+  private String mIsNetworkType = "";
+
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
@@ -494,7 +502,7 @@ public class PlayerActivity extends BasePlayerActivity {
     Gson gson = new Gson();
     String json = gson.toJson(mWebPlayerInfo);
 
-    Preferences.setWelaaaWebPlayInfo(getApplicationContext() , json);
+    Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
 
     CONTENT_TYPE = intent.getStringExtra("type");
     CAN_PLAY = intent.getBooleanExtra("can_play", false);
@@ -602,7 +610,9 @@ public class PlayerActivity extends BasePlayerActivity {
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
         connectionCallback, null);
 
-    if (CONTENT_TYPE!=null){
+    setBroadCatReceiver();
+
+    if (CONTENT_TYPE != null) {
       if (CONTENT_TYPE.equals("audiobook")) {
         RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
         control_wrap.setOnTouchListener(new View.OnTouchListener() {
@@ -629,7 +639,7 @@ public class PlayerActivity extends BasePlayerActivity {
         // Audio Book 에서 화면 항상 켜기 //
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-      }else{
+      } else {
 
         LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
       }
@@ -735,6 +745,11 @@ public class PlayerActivity extends BasePlayerActivity {
   protected void onDestroy() {
 
     super.onDestroy();
+
+    if (myBroadcastReceiver != null) {
+      unregisterReceiver(myBroadcastReceiver);
+    }
+
   }
 
   @Override
@@ -776,11 +791,11 @@ public class PlayerActivity extends BasePlayerActivity {
   @Override
   protected void onUserLeaveHint() {
 
-    try{
+    try {
       PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
       builder.setAspectRatio(new Rational(16, 9));
       enterPictureInPictureMode(builder.build());
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -3050,8 +3065,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //            if (getTransportControls() != null) {
 //              getTransportControls().stop();
 //            }
-
-//            finish();
+            finish();
             break;
           case WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER:
             break;
@@ -3062,8 +3076,6 @@ public class PlayerActivity extends BasePlayerActivity {
     View.OnClickListener rightListner = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-
-        Logger.e(TAG + " rightListner  windowId is " + windowId);
 
         mCustomDialog.dismiss();
         switch (windowId) {
@@ -4709,7 +4721,7 @@ public class PlayerActivity extends BasePlayerActivity {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
     }
 
-    if(CONTENT_TYPE!=null){
+    if (CONTENT_TYPE != null) {
       if (CONTENT_TYPE.equals("audiobook")) {
         LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
       }
@@ -4911,12 +4923,13 @@ public class PlayerActivity extends BasePlayerActivity {
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl );
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()) );
+    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
+    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()));
 
     new Thread() {
       public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", Preferences.getWelaaaOauthToken(getApplicationContext()),
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
+            Preferences.getWelaaaOauthToken(getApplicationContext()),
             callbackRequest);
       }
     }.start();
@@ -4974,13 +4987,14 @@ public class PlayerActivity extends BasePlayerActivity {
                       intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
                           "http://tokyo.pallycon.com/ri/licenseManager.do");
                       intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                      intent.putExtra(PlaybackManager.DRM_USERID, Preferences.getWelaaaUserId(getApplicationContext()));
+                      intent.putExtra(PlaybackManager.DRM_USERID,
+                          Preferences.getWelaaaUserId(getApplicationContext()));
                       intent.putExtra(PlaybackManager.DRM_CID,
                           getwebPlayerInfo().getCkey()[getContentId()]);
                       intent.putExtra(PlaybackManager.DRM_OID, "");
                       intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                       intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                      intent.putExtra("duration" , mWebPlayerInfo.getCplayTime()[contentId]);
+                      intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
 
                     }
 
@@ -5074,4 +5088,76 @@ public class PlayerActivity extends BasePlayerActivity {
 
   }
 
+  public void setBroadCatReceiver() {
+
+    myBroadcastReceiver = new MyBroadcastReceiver(this);
+    IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+    registerReceiver(myBroadcastReceiver, filter);
+    myBroadcastReceiver.setPlayerListener(new MyBroadcastReceiver.PlayerListener() {
+
+      @Override
+      public void isNetworkType(final String type) {
+        mIsNetworkType = type;
+        isNetworkTypeHandler.sendEmptyMessageDelayed(0, 500);
+      }
+
+      @Override
+      public void isNotConnected() {
+
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            Utils.logToast(getApplicationContext(), getString(R.string.info_networkfail));
+
+            mIsNetworkType = "OFFLINE";
+            isNetworkTypeHandler.sendEmptyMessageDelayed(0, 500);
+          }
+        });
+
+      }
+
+    });
+  }
+
+  final Handler isNetworkTypeHandler = new Handler() {
+    public void handleMessage(android.os.Message msg) {
+
+      try {
+        TextView play_network_type_text = findViewById(R.id.wrap_welean_play_network_type_text);
+        String ckey = getwebPlayerInfo().getCkey()[getContentId()];
+
+        if (ContentManager().existCid(ckey)) {
+          play_network_type_text.setText("다운로드 재생");
+        } else {
+          if (mIsNetworkType.equals("TYPE_WIFI")) {
+
+            play_network_type_text.setText("Wi-Fi 재생");
+
+          } else if (mIsNetworkType.equals("TYPE_MOBILE")) {
+
+            Utils.logToast(getApplicationContext(),
+                "현재 네트워크 환경이  Wi-Fi 가 아닙니다. \n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다.");
+
+            boolean isonlywifiview = Preferences.getOnlyWifiView(getApplication());
+
+            play_network_type_text.setText("LTE/3G 재생");
+
+            if (isonlywifiview) {
+              if (getTransportControls() != null) {
+                getTransportControls().pause();
+              }
+            }
+          }else{
+            play_network_type_text.setText(mIsNetworkType);
+            if (getTransportControls() != null) {
+              getTransportControls().pause();
+            }
+          }
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  };
 }

@@ -151,27 +151,27 @@
                     android:background="@drawable/item_myrepu_star"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                >
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:gravity="center"-->
+                <!--&gt;-->
 
-                <CheckBox
-                    android:id="@+id/myrepu_check_box"
-                    style="@style/myrepu_checkbox_style" />
+                <!--<CheckBox-->
+                    <!--android:id="@+id/myrepu_check_box"-->
+                    <!--style="@style/myrepu_checkbox_style" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="#636363"
-                    android:letterSpacing="-0.03"
-                    android:lineSpacingExtra="11sp"
-                    android:text="별점 주기 자동 제시 해제"/>
-            </LinearLayout>
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textSize="13sp"-->
+                    <!--android:textColor="#636363"-->
+                    <!--android:letterSpacing="-0.03"-->
+                    <!--android:lineSpacingExtra="11sp"-->
+                    <!--android:text="별점 주기 자동 제시 해제"/>-->
+            <!--</LinearLayout>-->
 
         </LinearLayout>
         <RelativeLayout
