@@ -22,10 +22,10 @@ const styles = StyleSheet.create({
 		width: 30,
 		height: 15,
 		borderWidth: 2,
-		borderColor: '#26c281',
+		borderColor: CommonStyles.COLOR_PRIMARY,
 	},
 	labelActive: {
-		backgroundColor: '#26c281',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	labelNormal: {
 		backgroundColor: '#ffffff',
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
 		paddingLeft: 15,
 		paddingRight: 15,
 		borderWidth: 2,
-		borderColor: '#26c281',
-		backgroundColor: '#26c281'
+		borderColor: CommonStyles.COLOR_PRIMARY,
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	tagActiveText: {
 		fontSize: 15,

@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 		borderRightWidth: 0,
 		borderBottomWidth: 1,
 		borderLeftWidth: 0,
-		borderColor: '#00b870',
+		borderColor: CommonStyles.COLOR_PRIMARY,
 	},
 	classTitle: {
 		fontSize: 16,
