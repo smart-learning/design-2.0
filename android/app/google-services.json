@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "579074894753",
+    "firebase_url": "https://welaaa-5ab6c.firebaseio.com",
+    "project_id": "welaaa-5ab6c",
+    "storage_bucket": "welaaa-5ab6c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579074894753:android:9c444ed6cafc3504",
+        "android_client_info": {
+          "package_name": "kr.co.influential.youngkangapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579074894753-ulgqs9p7cgt1lp53s72bcatumreb6gdo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHC-4RaHv0rl-3i7QkYS_bMYDnA_5L5Ww"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
