@@ -36,6 +36,37 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579074894753:android:8e89249a1ddea85a",
+        "android_client_info": {
+          "package_name": "kr.co.influential.youngkangapp.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579074894753-ulgqs9p7cgt1lp53s72bcatumreb6gdo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHC-4RaHv0rl-3i7QkYS_bMYDnA_5L5Ww"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

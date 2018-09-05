@@ -39,6 +39,7 @@
 		"react-native-asyncstorage": "^1.0.0",
 		"react-native-cli": "^2.0.1",
 		"react-native-fbsdk": "^0.7.0",
+		"react-native-firebase": "^4.3.8",
 		"react-native-kakao-signin": "git+https://github.com/kyejune/react-native-kakao-signin.git",
 		"react-native-localizable": "^1.0.1",
 		"react-native-pull-to-refresh": "^2.1.3",
