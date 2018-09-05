@@ -117,8 +117,6 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
-    flavorDimensions "default"
-
     defaultConfig {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
@@ -188,9 +186,13 @@ apply plugin: 'io.fabric'
 
 
 dependencies {
-    compile project(':react-native-firebase')
-    compile project(':react-native-version-number')
+    implementation project(':react-native-firebase')
+    implementation project(':react-native-version-number')
     implementation project(':react-native-sqlite-2')
+    implementation project(':react-native-kakao-signin')
+    implementation project(':react-native-fbsdk')
+    implementation project(':react-native-localizable')
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
     compileOnly "com.google.android.wearable:wearable:$wearableVersion"
@@ -205,11 +207,7 @@ dependencies {
     implementation "com.android.support:support-compat:$supportLibVersion"
     implementation "com.google.android.support:wearable:$wearableVersion"
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.gms:play-services-cast-framework:15.0.0'
     implementation 'com.facebook.react:react-native:+'
-    implementation project(':react-native-kakao-signin')
-    implementation project(':react-native-fbsdk')
-    implementation project(':react-native-localizable')
     // facebook
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     // exoplayer2
@@ -224,6 +222,18 @@ dependencies {
         transitive = true
     }
 
+    // Google play services.
+    implementation 'com.google.android.gms:play-services-cast-framework:15.0.1'
+
+    // Firebase dependencies.
+    implementation "com.google.android.gms:play-services-base:15.0.1"
+    implementation "com.google.firebase:firebase-core:16.0.1"
+
+    // Firebase Cloud Messaging.
+    implementation "com.google.firebase:firebase-messaging:17.1.0"
+    // Add this line if you wish to use badge on Android.
+    implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
+
     // android badger
 //    implementation "me.leolin:ShortcutBadger:1.1.21@aar"
 //
@@ -235,6 +245,7 @@ dependencies {
     // Getting a "Could not find" error? Make sure you have
     // added the Google maven respository to your root build.gradle
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -243,7 +254,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
 
 def getDate() {
     return new Date().format('yyyy-MM-dd-HHmm')

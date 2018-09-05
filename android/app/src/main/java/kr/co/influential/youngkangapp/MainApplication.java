@@ -12,15 +12,12 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-
+import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
-import io.invertase.firebase.RNFirebasePackage;
-import com.apsl.versionnumber.RNVersionNumberPackage;
-import dog.craftz.sqlite_2.RNSqlite2Package;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.Arguments;
@@ -29,11 +26,11 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.soloader.SoLoader;
 import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
-
+import dog.craftz.sqlite_2.RNSqlite2Package;
+import io.fabric.sdk.android.Fabric;
+import io.invertase.firebase.RNFirebasePackage;
 import java.util.Arrays;
 import java.util.List;
-
-import io.fabric.sdk.android.Fabric;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.react.RNEventEmitter;
@@ -117,9 +114,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFirebasePackage(),
-            new RNVersionNumberPackage(),
-            new RNSqlite2Package(),
+          new RNFirebasePackage(),
+          new RNVersionNumberPackage(),
+          new RNSqlite2Package(),
           new RNKaKaoSigninPackage(),
           new FBSDKPackage(mCallbackManager),
           new RNLocalizablePackage(R.string.class),

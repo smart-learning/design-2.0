@@ -331,23 +331,6 @@ export default {
 				console.log(error);
 			});
 	},
-	getHomeAudioRealTimeChartContents(isRefresh = false) {
-		let expired = DEFAULT_EXPIRED;
-		let itemNumber = 1;
-		if (isRefresh) {
-			expired = 1;
-		}
-		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/realtime-chart', expired)
-			.then(data => {
-				data.forEach(element => {
-					element.itemNumber = itemNumber++;
-				});
-				return data;
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	},
 	getHomeAudioBookMonth(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
 		if (isRefresh) {
@@ -447,5 +430,19 @@ export default {
 					reject(error);
 				});
 		});
+	},
+
+	getHomeAudioBookContents(isRefresh = false) {
+		let expired = DEFAULT_EXPIRED;
+		if (isRefresh) {
+			expired = 1;
+		}
+		return cacheOrLoad(API_PREFIX + 'cms/main/audiobook', expired)
+			.then(data => {
+				return data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	},
 }

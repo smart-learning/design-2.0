@@ -1,7 +1,6 @@
 package kr.co.influential.youngkangapp.util;
 
-import android.util.Log;
-
+import java.util.concurrent.TimeUnit;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -21,6 +20,8 @@ public class HttpConnection {
     public void requestWebServer(String requestUrl ,String parameter, String parameter2, String parameter3, Callback callback) {
 
         OkHttpClient client = new OkHttpClient.Builder()
+            .writeTimeout(5000, TimeUnit.SECONDS)
+            .readTimeout(5000, TimeUnit.SECONDS)
                 .build();
 
         RequestBody body = new FormBody.Builder()
@@ -34,15 +35,14 @@ public class HttpConnection {
 //                .post(body)
                 .build();
 
-        Log.e("HttpConnection Call " , "requestUrl " + requestUrl);
-        Log.e("HttpConnection Call " , "Authorization Bearer " + parameter3);
-
         client.newCall(request).enqueue(callback);
     }
 
     public void requestWebServer(String requestUrl ,String parameter, String parameter2, String parameter3, RequestBody body , Callback callback) {
 
         OkHttpClient client = new OkHttpClient.Builder()
+            .writeTimeout(5000 , TimeUnit.SECONDS)
+            .readTimeout(5000 , TimeUnit.SECONDS)
                 .build();
 
         // body {"error":true,"message":"validation error"} response code 400
@@ -54,10 +54,6 @@ public class HttpConnection {
                 .addHeader("Authorization" , "Bearer "+parameter3)
                 .post(body)
                 .build();
-
-        Log.e("HttpConnection Call " , "requestUrl " + requestUrl);
-        Log.e("HttpConnection Call " , "Authorization Bearer " + parameter3);
-        Log.e("HttpConnection Call " , "body my " + body.toString());
 
         client.newCall(request).enqueue(callback);
 

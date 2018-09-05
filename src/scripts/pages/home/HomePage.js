@@ -1,5 +1,5 @@
 import React from "react";
-import { observable } from 'mobx';
+import { toJS, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import CommonStyles from "../../../styles/common";
 import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -81,15 +81,20 @@ class HomePage extends React.Component {
 		classRecommendData: {},
 		clipRankData: [],
 		homeBannerData: [],
-		audioRealTimeChartData: [],
-		audioNewData: {
-			items: [],
-		},
+		audioHotData: [],
+		audioNewData: [],
+		audioRecommendData: [],
 		audioMonth: [],
 		voucherStatus: null,
 		classUseData: [],
 		audioBuyData: [],
 		audioUseData: [],
+		test: {
+			hot: [],
+			new: [],
+			recommend: [],
+		},
+
 		// audioPlayRecentData: [],
 	});
 
@@ -100,6 +105,7 @@ class HomePage extends React.Component {
 		// 데이터 가져와서
 		const videoCategoryData = await net.getLectureCategory( isRefresh );
 		const homeContents = await net.getHomeContents( isRefresh );
+		const homeAudioBookContents = await net.getHomeAudioBookContents( isRefresh );
 		// VO로 정리해서 사용
 		const categoryVOs = videoCategoryData.map( element => {
 			const vo = new PageCategoryItemVO();
@@ -144,9 +150,11 @@ class HomePage extends React.Component {
 		this.store.classRecommendData = recommendVOs;
 		this.store.clipRankData = await net.getHomeClipRank( isRefresh );
 		this.store.homeBannerData = await net.getMainBanner( isRefresh );
-		this.store.audioRealTimeChartData = await net.getHomeAudioRealTimeChartContents( isRefresh );
 		this.store.audioNewData = await net.getAudioBookList( isRefresh );
 		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
+		this.store.audioHotData = homeAudioBookContents.hot;
+		this.store.audioNewData = homeAudioBookContents.new;
+		this.store.audioRecommendData = homeAudioBookContents.recommend;
 		// this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
 
 		try {
@@ -198,6 +206,7 @@ class HomePage extends React.Component {
 	};
 
 	render() {
+		console.log( 'this.store', this.store );
 		// TODO: ViewPager 크기 및 위치 조정 필요
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
