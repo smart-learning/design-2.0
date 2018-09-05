@@ -218,9 +218,11 @@
     [self setPlayState : YES];
   
     // 영상시작후 3초간 입력이 없으면 컨트롤러를 자동으로 Hide.
+    /*
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
+    */
   
     // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
     CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
