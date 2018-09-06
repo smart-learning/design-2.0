@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -25,6 +26,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.UUID;
 import kr.co.influential.youngkangapp.MainApplication;
@@ -220,7 +222,13 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void selectDatabase(ReadableMap content) {
     // 2018.09.06
     try{
-      Log.e(TAG , " getDatabase : " +ContentManager().getDatabase() ) ;
+      Gson gson = new Gson();
+      String json = gson.toJson(ContentManager().getDatabase());
+
+      WritableMap params = Arguments.createMap();
+
+      params.putString("selectDownload" , json);
+      sendEvent("selectDownload", params);
 
     }catch (Exception e){
       e.printStackTrace();

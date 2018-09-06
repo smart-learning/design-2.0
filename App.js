@@ -55,9 +55,16 @@ import { observer } from "mobx-react";
 	componentDidMount() {
         this.subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
 			Native.toggleMiniPlayer( params.visible );
-        });
+		});
+		
     }
 
+	componentDidMount() {
+
+		this.subscription = DeviceEventEmitter.addListener('selectDownload', (params) => {
+			Native.selectDownload( params );
+        });
+	}
 	componentWillUnmount() {
 		this.subscription.remove();
 	}
