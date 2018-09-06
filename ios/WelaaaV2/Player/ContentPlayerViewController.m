@@ -190,12 +190,12 @@
             NSInteger i = 0;
             for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
             {
-                if ( contentsListArray[i][@"play_seconds"] != 0 )
+                if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
                 {
                     break;
                 }
             }
-          
+            NSLog(@"  몇번 배열? : %lu", i);
             [_args setObject : contentsListArray[i][@"cid"]
                       forKey : @"cid"];
           
