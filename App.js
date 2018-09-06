@@ -6,6 +6,7 @@ import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
+import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
@@ -136,9 +137,9 @@ const AppDrawer = createDrawerNavigator(
 		// BottomControllerTEST: {
 		// 	screen: BottomControllerPage,
 		// },
-		// AndroidNativeCall: {
-		// 	screen: PlaygroundJune,
-		// }
+		AndroidNativeCall: {
+			screen: PlaygroundJune,
+		}
 	},
 
 	{

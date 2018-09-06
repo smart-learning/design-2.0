@@ -41,8 +41,7 @@ class PlaygroundJune extends Component {
 			userId: "93", // 825  , 
 			cid: "v100015_001",
 			oid: "",
-			token: "", 
-			webToken: "" 
+			token: ""
 		}
 
 		try {
@@ -55,12 +54,20 @@ class PlaygroundJune extends Component {
 	onDownload = () => {
 		// alert('play');
 		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
+
 		var args = {
-			uri: "uri",
-			DOWNLOAD_SERVICE_TYPE: "false"
-
+			type: "streaming",
+			uri: "https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd",
+			name: "지기지피 백전백승! 나의 발표 목적을 제일 먼저 고려하라",
+			drmSchemeUuid: "widevine",
+			drmLicenseUrl: "http://tokyo.pallycon.com/ri/licenseManager.do",
+			userId: "93", // 825  , 
+			cid: "v100015_001",
+			oid: "",
+			token: ""
+		
 		}
-
+		
 		try {
 			NativeModules.RNNativePlayer.download(args);
 		}catch (e) {
@@ -87,6 +94,23 @@ class PlaygroundJune extends Component {
 
 	}
 
+	selectDatabase = () => {
+		// alert('play');
+		// RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
+		var args = {
+			uri: "uri",
+			DOWNLOAD_SERVICE_TYPE: "true"
+		}
+
+		try {
+			NativeModules.RNNativePlayer.selectDatabase(args);
+		}catch (e) {
+			alert('실패');
+		}
+
+
+	}	
+
 	getNativeVariable = () =>{
 		alert( `host_debug: ${Localizable.host_debug} \n\n host_release: ${Localizable.host_release}` );
 	}
@@ -107,6 +131,10 @@ class PlaygroundJune extends Component {
 
 			<Button title="RN => Delete DownloadService Call"
 				onPress={this.onDownloadDelete}
+			/>
+
+			<Button title="RN => select DB "
+				onPress={this.selectDatabase}
 			/>
 
 			<Button title="디바이스 언어 가져오기"

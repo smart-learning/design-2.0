@@ -631,4 +631,13 @@ public class WeContentManager extends SQLiteOpenHelper {
     db.execSQL(sql);
   }
 
+  public ArrayList<HashMap<String, Object>> getDatabase() throws Exception {
+    if (!db.isOpen()) {
+      openDb();
+    }
+    String query = "SELECT * FROM DOWNLOAD ";
+    Cursor c = db.rawQuery(query, null);
+    return CursorToDataTable(c);
+  }
+
 }

@@ -3,13 +3,17 @@ package kr.co.influential.youngkangapp.react.module;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -23,16 +27,20 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import java.io.IOException;
 import java.util.UUID;
+import kr.co.influential.youngkangapp.MainApplication;
+import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.download.DownloadService;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.react.RNEventEmitter;
+import kr.co.influential.youngkangapp.util.CustomDialog;
 import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
+import kr.co.influential.youngkangapp.util.WeContentManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -62,10 +70,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   private String contentType = "";
   private int contentId = 0;
 
+  private int contentHistory_seconds = 0;
+
   private WebPlayerInfo mWebPlayerInfo = null;
   private RNEventEmitter eventEmitter;
   ProgressDialog mProgressDialog;
   public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
+
+  private final int FLAG_PLAY_NETWORK_CHECK = 6;
+  private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
 
   @Override
   public String getName() {
@@ -75,14 +88,11 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   @ReactMethod
   public void play(ReadableMap content) {
 
-    UiThreadUtil.runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        Activity activity = getCurrentActivity();
-        mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
-      }
-    });
+    ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+        .getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
+    boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
     contentUrl = content.getString("uri");
     contentName = content.getString("name");
     contentUuid = content.getString("drmSchemeUuid");
@@ -92,12 +102,38 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     contentToken = content.getString("token");
 
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
-    Preferences.setWelaaaUserId(getReactApplicationContext() , contentUserId);
+    Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
 
-    callbackMethodName = "play/contents-info";
-    callbackMethod = "play";
+    if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
-    sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
+              "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
+              getReactApplicationContext().getString(R.string.info_dial_ok),
+              getReactApplicationContext().getString(R.string.info_dial_cancel),
+              FLAG_PLAY_NETWORK_CHECK, "");
+        }
+      });
+
+      return;
+    } else {
+      callbackMethodName = "play/contents-info";
+      callbackMethod = "play";
+
+      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+    }
+
+    UiThreadUtil.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
+      }
+    });
+
+
   }
 
   @ReactMethod
@@ -113,13 +149,34 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     contentToken = content.getString("token");
 
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
-    Preferences.setWelaaaUserId(getReactApplicationContext() , contentUserId);
+    Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
 
-    callbackMethodName = "play/contents-info";
-    callbackMethod = "download";
+    ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+        .getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-    sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+    boolean isOnlyWifiDownload = Preferences.getOnlyWifiDownload(getReactApplicationContext());
 
+    if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
+              "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
+              getReactApplicationContext().getString(R.string.info_dial_ok),
+              getReactApplicationContext().getString(R.string.info_dial_cancel),
+              FLAG_DOWNLOAD_NETWORK_CHECK, "");
+        }
+      });
+
+      return;
+    } else {
+      callbackMethodName = "play/contents-info";
+      callbackMethod = "download";
+
+      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+    }
   }
 
   @ReactMethod
@@ -157,6 +214,18 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     Preferences.setOnlyWifiDownload(getReactApplicationContext(), cellularDataUseDownload);
 
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
+  }
+
+  @ReactMethod
+  public void selectDatabase(ReadableMap content) {
+    // 2018.09.06
+    try{
+      Log.e(TAG , " getDatabase : " +ContentManager().getDatabase() ) ;
+
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
   }
 
   @Override
@@ -226,7 +295,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           new AlertDialog.Builder(activity)
               .setTitle("알림")
               .setMessage(
-                  "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause() + " \n Exception Msg " + e
+                  "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause() + " \n Exception Msg "
+                      + e
                       .getMessage())
               .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
@@ -265,6 +335,13 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 Log.e(TAG, " history is null ");
               } else {
                 historyObject = json.getJSONObject("history");
+
+                historyObject.getString("id");
+                historyObject.getString("played_at");
+
+                Log.e(TAG , "start_seconds " + historyObject.getInt("start_seconds"));
+
+                contentHistory_seconds = historyObject.getInt("start_seconds");
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
@@ -398,6 +475,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 historyId = historyObject.getString("id");
                 historyPlayed_At = historyObject.getString("played_at");
                 history_start_seconds = historyObject.getString("start_seconds");
+
+                contentHistory_seconds = historyObject.getInt("start_seconds");
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
@@ -535,7 +614,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 new AlertDialog.Builder(activity)
                     .setTitle("알림")
                     .setMessage(
-                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause() + " \n Exception Msg " + e
+                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
+                            + " \n Exception Msg " + e
                             .getMessage())
                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                       @Override
@@ -600,7 +680,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               }
 
               intent.setData(Uri.parse(dashUrl));
-              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, mWebPlayerInfo.getCname()[contentId]);
+              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                  mWebPlayerInfo.getCname()[contentId]);
               intent.putExtra(PlaybackManager.THUMB_URL, "");
               if (contentUuid != null) {
                 intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
@@ -612,18 +693,20 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 intent.putExtra(PlaybackManager.DRM_OID, "");
                 intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                 intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                intent.putExtra("duration" , mWebPlayerInfo.getCplayTime()[contentId]);
+                intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
                 intent.putExtra("type", contentType);
                 intent.putExtra("can_play", can_play);
                 intent.putExtra("expire_at", expire_at);
                 intent.putExtra("is_free", is_free);
                 intent.putExtra("webPlayerInfo", mWebPlayerInfo);
+                intent.putExtra("history_start_seconds" , contentHistory_seconds);
               }
 
               LogHelper.e(TAG, "url : " + dashUrl);
               LogHelper.e(TAG, "contentName : " + contentName);
               LogHelper.e(TAG, "contentType : " + contentType);
               LogHelper.e(TAG, "contentCid : " + contentCid);
+              LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
               ContextCompat.startActivity(activity, intent, null);
             } else if (callbackMethod.equals("download")) {
 
@@ -651,7 +734,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               Intent service = new Intent(contextWrapper, DownloadService.class);
 
               service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
-              service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, mWebPlayerInfo.getCname()[contentId]);
+              service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                  mWebPlayerInfo.getCname()[contentId]);
               service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
               service.putExtra("contentCid", contentCid);
               intent.putExtra("expire_at", expire_at);
@@ -693,5 +777,65 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       }
     }
   };
+
+  public CustomDialog mCustomDialog;
+
+  public void alertDownloadWindow(String title, String message, String str2, String str1,
+      final int alertWindowId, final String startwithUrl) {
+
+    View.OnClickListener leftListner = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        switch (alertWindowId) {
+          case FLAG_PLAY_NETWORK_CHECK:
+            break;
+          case FLAG_DOWNLOAD_NETWORK_CHECK:
+            break;
+        }
+
+        mCustomDialog.dismiss();
+      }
+    };
+
+    View.OnClickListener rightListner = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        switch (alertWindowId) {
+          case FLAG_PLAY_NETWORK_CHECK:
+            callbackMethodName = "play/contents-info";
+            callbackMethod = "play";
+
+            sendData(WELEARN_WEB_URL + "play/contents-info/" + contentCid);
+            break;
+          case FLAG_DOWNLOAD_NETWORK_CHECK:
+            callbackMethodName = "play/contents-info";
+            callbackMethod = "download";
+
+            sendData(WELEARN_WEB_URL + "play/contents-info/" + contentCid);
+
+            break;
+        }
+        mCustomDialog.dismiss();
+      }
+    };
+
+    Activity activity = getCurrentActivity();
+
+    mCustomDialog = new CustomDialog(activity, title, message, str1, str2,
+        leftListner, rightListner);
+    mCustomDialog.show();
+  }
+
+  /******************************
+   * Comment   : 등록된 컨텐츠 매니져
+   ******************************/
+  public WeContentManager ContentManager() {
+    Activity activity = getCurrentActivity();
+
+    MainApplication myApp = (MainApplication) activity.getApplicationContext();
+    return myApp.getContentMgr();
+  }
 
 }

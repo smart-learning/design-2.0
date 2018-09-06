@@ -317,6 +317,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public Boolean CAN_PLAY = false;
   public String EXPIRE_AT = "";
   public Boolean IS_FREE = false;
+  public int CONTENT_HISTORY_SEC = 0;
 
   private WebPlayerInfo mWebPlayerInfo = null;
   private NewWebPlayerInfo mNewWebPlayerInfo = null;
@@ -508,6 +509,7 @@ public class PlayerActivity extends BasePlayerActivity {
     CAN_PLAY = intent.getBooleanExtra("can_play", false);
     IS_FREE = intent.getBooleanExtra("is_free", false);
     EXPIRE_AT = intent.getStringExtra("expire_at");
+    CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
 
     // video-course , audiobook //
     callbackWebPlayerInfo(CONTENT_TYPE, "");
@@ -4717,19 +4719,18 @@ public class PlayerActivity extends BasePlayerActivity {
     lastPlaybackState = state;
     MediaControllerCompat controllerCompat = MediaControllerCompat
         .getMediaController(PlayerActivity.this);
+
     if (controllerCompat != null && controllerCompat.getExtras() != null) {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
     }
 
-    if (CONTENT_TYPE != null) {
-      if (CONTENT_TYPE.equals("audiobook")) {
-        LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
-      }
-    }
+    Log.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
+        .getMediaUri());
+    Log.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
+        .getTitle());
 
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
-
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
 
@@ -4737,7 +4738,9 @@ public class PlayerActivity extends BasePlayerActivity {
       case PlaybackStateCompat.STATE_PAUSED:
         boolean isCompleted = LocalPlayback.getInstance(this).isCompleted();
         if (isCompleted) {
-//          doAutoPlay();
+          if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+            doAutoPlay();
+          }
         }
         break;
       case PlaybackStateCompat.STATE_NONE:
@@ -5148,7 +5151,7 @@ public class PlayerActivity extends BasePlayerActivity {
                 getTransportControls().pause();
               }
             }
-          }else{
+          } else {
             play_network_type_text.setText(mIsNetworkType);
             if (getTransportControls() != null) {
               getTransportControls().pause();
