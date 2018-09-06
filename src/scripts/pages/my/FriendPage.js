@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		width: '100%',
 		height: 3,
-		backgroundColor: '#26c281',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	tabContentContainer: {
 		paddingTop: 40,

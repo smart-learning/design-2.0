@@ -5,6 +5,7 @@ import Bg from "../../../images/bg-audiobook-month.png";
 import Swiper from "react-native-swiper";
 import _ from "underscore";
 import {withNavigation} from "react-navigation";
+import CommonStyles from "../../../styles/common";
 
 const styles = StyleSheet.create( {
 	bookMonthly: {
@@ -129,7 +130,7 @@ export default withNavigation(class BookMonthly extends React.Component {
 						showsButtons={false}
 						height={160}
 						dotColor={"#9bcdba"}
-						activeDotColor={"#379b75"}
+						activeDotColor={CommonStyles.COLOR_PRIMARY}
 						paginationStyle={{bottom: 0}}>
 
 					{bookList.map( ( item, key ) => {
