@@ -66,6 +66,7 @@
     ContentMiniPlayerView *_miniPlayerUiView;
   
     NSString *_currentStar;
+    NSString *_currentLectureTitle; // 현재 재생중인 소제목명. 플레이어가 처음 구동되거나 playNext를 실행할때마다 변경해야 합니다.
   
     AVPlayer *_player;
     AVPlayerItem *_playerItem;
@@ -168,6 +169,16 @@
     _currentContentsInfo = [ApiManager getContentsInfoWithCgid : chunks[0]
                                                  andHeaderInfo : [_args objectForKey : @"token"]];
   
+    // _currentLectureTitle 를 set합니다.
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
+    {
+      _isAudioContent = YES;
+    }
+    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"v"] )
+    {
+      _isAudioContent = NO;
+    }
+  
     // 오디오북 제목 챕터로 시작되면 다음챕터로 넘깁니다.
     // 오디오북 콘텐츠만이 제목챕터를 가지고 있습니다.
     if ( _isAudioContent )
@@ -175,7 +186,7 @@
         NSArray *contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
         NSInteger indexOfCurrentContent = 0;
       
-        for (int i=0; i<contentsListArray.count; i++)
+        for ( int i=0; i<contentsListArray.count; i++ )
         {
             // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
             if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
@@ -184,6 +195,7 @@
             }
         }
       
+        _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명 세팅도 겸사겸사 합니다.
         NSString *playSeconds = [contentsListArray[indexOfCurrentContent][@"play_seconds"] stringValue];
       
         // 현재 재생할 콘텐트의 play_seconds의 정수값이 0일 경우
@@ -210,7 +222,24 @@
             _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
             [_args setObject : playDataDics[@"media_urls"][@"HLS"]
                       forKey : @"uri"];
+            _currentLectureTitle = contentsListArray[i][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명 세팅도 겸사겸사 합니다.
         }
+    }
+    else if ( !_isAudioContent )  // 영상 콘텐츠의 경우 소챕터명만 세팅합니다.
+    {
+        NSArray *contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+        NSInteger indexOfCurrentContent = 0;
+      
+        for ( int i=0; i<contentsListArray.count; i++ )
+        {
+            // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
+            if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+            {
+                indexOfCurrentContent = i;
+            }
+        }
+      
+        _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
   
     // _args가 잘못 전달받아도 HLS 경로로 수정합니다.
@@ -386,6 +415,7 @@
             _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
             [_args setObject : playDataDics[@"media_urls"][@"HLS"]
                       forKey : @"uri"];
+            _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];
         }
@@ -401,6 +431,7 @@
             _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
             [_args setObject : playDataDics[@"media_urls"][@"HLS"]
                       forKey : @"uri"];
+            _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];
         }
@@ -450,6 +481,7 @@
     [self setPreparedToPlay];
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [self setPlayState : YES];
+    _lectureTitleLabel.text = _currentLectureTitle;
 }
 
 // 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
@@ -524,7 +556,7 @@
     _lectureTitleLabel.numberOfLines = 1;
     _lectureTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _lectureTitleLabel.adjustsFontSizeToFitWidth = NO;
-    _lectureTitleLabel.text = [_args objectForKey : @"name"];
+    _lectureTitleLabel.text = _currentLectureTitle;
     [_topView addSubview : _lectureTitleLabel];
   
     // 탑뷰내의 별점주기 버튼
@@ -1912,11 +1944,13 @@
     {
         [_args setObject : _currentContentsInfo[@"data"][@"chapters"][index][@"cid"]
                   forKey : @"cid"];
+        _currentLectureTitle = _currentContentsInfo[@"data"][@"chapters"][index][@"title"];
     }
     else if ( !_isAudioContent )
     {
         [_args setObject : _currentContentsInfo[@"data"][@"clips"][index][@"cid"]
                   forKey : @"cid"];
+        _currentLectureTitle = _currentContentsInfo[@"data"][@"clips"][index][@"title"];
     }
   
     NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
