@@ -652,8 +652,7 @@
   
     _slider = [[UISlider alloc] initWithFrame : CGRectMake(margin + labelWidth + padding, _bottomView.frame.size.height-44, barWidth, 30.f)];
   
-    _isAudioMode = FALSE; // 테스트 목적으로 강제로 value를 지정했습니다. 오디오모드를 구분하는 기능이 구현되는 시점에 제거될 예정입니다.
-    if ( _isAudioMode )
+    if ( _isAudioContent )
     {
         _slider.minimumTrackTintColor = UIColorFromRGB(0xff4f72, 1.f);
         _slider.maximumTrackTintColor = [UIColor grayColor];
@@ -969,7 +968,7 @@
   //CGFloat totalTime = [self getDuration]; // nan이 나오면 에러...
     CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);
   
-    _isAudioMode = false; // 테스트를 목적으로 강제로 value를 set하였습니다. 모든 기능이 구현되면 삭제될 예정입니다.
+  //_isAudioMode = false; // 테스트를 목적으로 강제로 value를 set하였습니다. 모든 기능이 구현되면 삭제될 예정입니다.
   
     if ( _slider )
     {
