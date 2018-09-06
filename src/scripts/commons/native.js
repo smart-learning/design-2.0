@@ -64,6 +64,11 @@ export default {
 		globalStore.miniPlayerVisible = bool;
 	},
 
+	selectDownload(args) {
+		console.log('selectDownload:', args);
+		
+	},
+
 
 	download( args ) {
 		// const params = {
