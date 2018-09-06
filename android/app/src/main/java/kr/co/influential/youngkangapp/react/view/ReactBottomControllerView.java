@@ -187,7 +187,6 @@ public class ReactBottomControllerView extends FrameLayout {
     }
     LogHelper.d(TAG, "updateDuration called");
     int duration = (int) (metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION) / 1_000l);
-    duration = 3000;
     timeBar.setMax(duration);
     durationTime.setText(DateUtils.formatElapsedTime(duration));
   }
