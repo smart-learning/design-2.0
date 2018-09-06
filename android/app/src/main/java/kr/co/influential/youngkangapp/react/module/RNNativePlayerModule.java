@@ -225,8 +225,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       WritableMap params = Arguments.createMap();
 
-      params.putString("selectDownload" , json);
-      sendEvent("selectDownload", params);
+      params.putString("selectDatabase" , json);
+      sendEvent("selectDatabase", params);
 
     }catch (Exception e){
       e.printStackTrace();

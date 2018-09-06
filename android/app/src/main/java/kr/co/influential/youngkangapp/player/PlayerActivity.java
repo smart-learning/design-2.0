@@ -1819,7 +1819,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
         switch (v.getId()) {
           case R.id.BTN_AUTOPLAY: {
-            Utils.logToast(getApplicationContext(), R.string.auto_play_option_on);
+            Utils.logToast(getApplicationContext(), getString(R.string.auto_play_option_on));
 
             mBtnAutoplay.setVisibility(View.INVISIBLE);
             mBtnAutoplayCancel.setVisibility(View.VISIBLE);
@@ -1828,7 +1828,7 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.BTN_AUTOPLAY_CANCEL: {
-            Utils.logToast(getApplicationContext(), R.string.auto_play_option);
+            Utils.logToast(getApplicationContext(), getString(R.string.auto_play_option));
 
             mBtnAutoplay.setVisibility(View.VISIBLE);
             mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
@@ -2278,6 +2278,10 @@ public class PlayerActivity extends BasePlayerActivity {
               lectureAudioBookListItemdapter = null;
             }
 
+            if(getTransportControls()!=null){
+              getTransportControls().play();
+            }
+
           }
 
           break;
@@ -2299,12 +2303,36 @@ public class PlayerActivity extends BasePlayerActivity {
             if (lectureAudioBookListItemdapter != null) {
               lectureAudioBookListItemdapter = null;
             }
+
+            if(getTransportControls()!=null){
+              getTransportControls().play();
+            }
           }
 
           break;
 
           case R.id.BUTTON_PLAYLIST_CLOSE_LINEAR:
-            finish();
+            if (mPlaylistGroupLayout != null) {
+              mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+            }
+            if (mPlaylistGroupLayout != null) {
+              mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+            }
+            if (mButtonGroupLayout != null) {
+              mButtonGroupLayout.setVisibility(VISIBLE);
+            }
+
+            if (lectureListItemdapter != null) {
+              lectureListItemdapter = null;
+            }
+            if (lectureAudioBookListItemdapter != null) {
+              lectureAudioBookListItemdapter = null;
+            }
+
+            if(getTransportControls()!=null){
+              getTransportControls().play();
+            }
+
             break;
           case R.id.BTN_CLOSE_LINEAR:
             finish();
@@ -3095,24 +3123,24 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case WELAAAPLAYER_SUGGEST_CODE:
 
-            Animation fadeout = null;
-
-            fadeout = AnimationUtils.loadAnimation(getApplication(), R.anim.slide_out_left);
-
-            mRelatedListGroupLayout.startAnimation(fadeout);
-            mRelatedListGroupLayout.setVisibility(View.GONE);
-
-            if (PLAY_MODE != null) {
-              if (PLAY_MODE.equals("audio")) {
-                audioModeBackgroundLayout.setVisibility(VISIBLE); //이미지보이고
-                audioModeIconHeadset.setVisibility(VISIBLE); //아이콘보이고
-              }
-            }
+//            Animation fadeout = null;
+//
+//            fadeout = AnimationUtils.loadAnimation(getApplication(), R.anim.slide_out_left);
+//
+//            mRelatedListGroupLayout.startAnimation(fadeout);
+//            mRelatedListGroupLayout.setVisibility(View.GONE);
+//
+//            if (PLAY_MODE != null) {
+//              if (PLAY_MODE.equals("audio")) {
+//                audioModeBackgroundLayout.setVisibility(VISIBLE); //이미지보이고
+//                audioModeIconHeadset.setVisibility(VISIBLE); //아이콘보이고
+//              }
+//            }
 
             break;
 
           case WELAAAPLAYER_SUGGEST_CODE_PLAYERCONTROLLER:
-
+            Animation fadeout = null;
             fadeout = AnimationUtils.loadAnimation(getApplication(), R.anim.slide_out_left);
 
             mRelatedListGroupLayout.startAnimation(fadeout);
@@ -4720,11 +4748,6 @@ public class PlayerActivity extends BasePlayerActivity {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
     }
 
-    LogHelper.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
-        .getMediaUri());
-    LogHelper.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
-        .getTitle());
-
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
@@ -5024,6 +5047,10 @@ public class PlayerActivity extends BasePlayerActivity {
    * 플레이어 리스트 아답타의 onclick 액션을 받는다. 들어올때 권한을 다시 확인한다 ?
    *******************************************************************/
   public void playListOnClick(String pos) {
+
+    if (getTransportControls() != null) {
+      getTransportControls().play();
+    }
 
     int currentPosition = 0;
     for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
