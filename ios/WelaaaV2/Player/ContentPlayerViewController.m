@@ -1304,7 +1304,12 @@
     NSString *groupTitle = _currentContentsInfo[@"data"][@"title"]; //group_title
 
     CGRect frame = self.view.bounds;
-    frame.size.height = frame.size.height - _bottomView.frame.size.height;
+  
+    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+        frame.size.height = frame.size.height - _bottomView.frame.size.height - 20;
+    else
+        frame.size.height = frame.size.height - _bottomView.frame.size.height;
+  
     _listView = [[ContentsListPopupView alloc] initWithFrame : frame];
     _listView.delegate = self;
 
