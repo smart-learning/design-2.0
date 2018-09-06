@@ -15,7 +15,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -26,7 +25,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.UUID;
 import kr.co.influential.youngkangapp.MainApplication;
@@ -262,12 +260,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     }
   }
 
-  @Deprecated
-  @ReactMethod
-  public void toast(String message) {
-    Toast.makeText(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
-  }
-
   /**
    * 웹 서버로 데이터 전송
    */
@@ -347,7 +339,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 historyObject.getString("id");
                 historyObject.getString("played_at");
 
-                Log.e(TAG , "start_seconds " + historyObject.getInt("start_seconds"));
+                Log.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
 
                 contentHistory_seconds = historyObject.getInt("start_seconds");
               }

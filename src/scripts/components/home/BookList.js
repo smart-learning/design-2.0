@@ -50,12 +50,6 @@ const styles = StyleSheet.create({
 			list = this.props.itemData;
 		}
 
-		if( this.props.itemType === 'new' ) {
-			list = _.filter(list, (element) => {
-				return element.is_new == true;
-			} );
-		}
-
 		for (let i = 0; i < Math.ceil(list.length / 2); i++) {
 			let listObject = [];
 

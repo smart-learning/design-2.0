@@ -1,0 +1,23 @@
+//
+//  WelaaaV2_Prefix.pch
+//  WelaaaV2
+//
+//  Created by SmartLearning_iOSDev on 2018. 8. 31..
+//  Copyright © 2018년 Facebook. All rights reserved.
+//
+
+#ifndef WelaaaV2_Prefix_pch
+#define WelaaaV2_Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+/* NSLog only on DEBUG_MODE */
+#ifdef DEBUG
+#define NSLog( s, ... ) NSLog( @"<%p %@:(%d)> %@", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
+#else
+#define NSLog( s, ... )
+#endif
+/* NSLog only on DEBUG_MODE */
+
+#endif /* WelaaaV2_Prefix_pch */

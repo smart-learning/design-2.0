@@ -115,6 +115,7 @@ class HomeAudioPage extends React.Component {
 
 	render() {
 		let updatedAt = moment().format('YYYY. MM. DD');
+		console.log( 'this.props.store.audioNewData', this.props.store.audioNewData );
 		return (
 			<PTRView onRefresh={() => this.props.onRefresh()}>
 				<ScrollView style={{ flex: 1 }}>
@@ -184,7 +185,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList itemType="hot" itemData={this.props.store.audioRealTimeChartData}/>
+						<BookList itemType="hot" itemData={this.props.store.audioHotData.items ? this.props.store.audioHotData.items : this.props.store.audioHotData}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -192,7 +193,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items}/>
+						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items ? this.props.store.audioNewData.items : this.props.store.audioNewData}/>
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
@@ -200,15 +201,7 @@ class HomeAudioPage extends React.Component {
 							</Text>
 						</View>
 
-						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items}/>
-
-						<View style={CommonStyles.alignJustifyContentBetween}>
-							<Text style={styles.titleH3}>
-								매일 책 한권 - 무료 북 리뷰
-							</Text>
-						</View>
-
-						<BookFreeList itemType={"review"} itemData={this.props.store.audioNewData.items}/>
+						<BookList itemType={"new"} itemData={this.props.store.audioRecommendData.items ? this.props.store.audioRecommendData.items : this.props.store.audioRecommendData}/>
 
 						<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('AudioBookPage')}>
 							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>

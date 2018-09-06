@@ -10,7 +10,9 @@
 
 #import "common.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@import Firebase;
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate, FIRMessagingDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 @property (strong, nonatomic) UINavigationController *navigationController;

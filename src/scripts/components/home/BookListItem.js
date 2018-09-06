@@ -6,6 +6,7 @@ import IcView from "../../../images/ic-detail-view.png";
 import IcStar from "../../../images/ic-detail-star.png";
 import IcComment from "../../../images/ic-detail-message.png";
 import {withNavigation} from "react-navigation";
+import {observer} from "mobx-react";
 
 const styles = StyleSheet.create( {
 	alignJustify: {
@@ -119,7 +120,7 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default withNavigation(class BookListItem extends React.Component {
+export default withNavigation(@observer class BookListItem extends React.Component {
 	constructor( props ) {
 		super( props );
 	}
@@ -143,6 +144,11 @@ export default withNavigation(class BookListItem extends React.Component {
 				</Text>
 			</TouchableOpacity>
 			<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
+				{(!this.props.itemData.is_exclusive && !this.props.itemData.is_free) &&
+				<View style={[ styles.bookLabel, styles.bookLabelBlank ]} borderRadius={10}>
+					<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}/>
+				</View>
+				}
 				{!!this.props.itemData.is_exclusive &&
 				<View style={[ styles.bookLabel, styles.bookLabelExclusive ]} borderRadius={10}>
 					<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}>독점</Text>
