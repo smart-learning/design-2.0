@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {NativeModules, Platform} from 'react-native';
 import globalStore from '../commons/store';
 
@@ -52,13 +52,9 @@ export default {
 			} catch (e) {
 				alert(e);
 			}
-
-			//this.toggleMiniPlayer(true);
-			if (Platform.OS === 'android') {
-				this.toggleMiniPlayer(true);
-			} else {
-				;
-			}
+			// 2018.09.04 김중온
+			// 미니 플레이어는 네이티브 상태 값으로 제어함.
+			// this.toggleMiniPlayer(true);
 		}, 100);
 
 	},
@@ -66,7 +62,6 @@ export default {
 	toggleMiniPlayer(bool) {
 		console.log('toggleMiniPlayer:', bool);
 		globalStore.miniPlayerVisible = bool;
-		RNNativePlayer.toast('playbackState: ' + bool);
 	},
 
 

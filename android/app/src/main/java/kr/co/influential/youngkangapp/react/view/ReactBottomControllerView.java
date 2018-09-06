@@ -3,7 +3,9 @@ package kr.co.influential.youngkangapp.react.view;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Handler;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -11,11 +13,16 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
@@ -25,15 +32,29 @@ public class ReactBottomControllerView extends FrameLayout {
 
   public static final String TAG = LogHelper.makeLogTag(ReactBottomControllerView.class);
 
+  private static final long PROGRESS_UPDATE_INTERNAL = 1_000l;
+  private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
+
+  private ProgressBar timeBar;
   private TextView title;
   private TextView currentTime;
   private TextView durationTime;
   private ImageButton pause;
   private ImageButton play;
-  private ProgressBar timeBar;
   private ProgressBar loading;
 
   private MediaBrowserCompat mediaBrowser;
+
+  private final Handler handler = new Handler();
+
+  private final Runnable updateProgressTask = () -> updateProgress();
+
+  private final ScheduledExecutorService executorService =
+      Executors.newSingleThreadScheduledExecutor();
+
+  private ScheduledFuture<?> scheduleFuture;
+
+  private PlaybackStateCompat lastPlaybackState;
 
   public ReactBottomControllerView(@NonNull Context context) {
     super(context);
@@ -47,9 +68,8 @@ public class ReactBottomControllerView extends FrameLayout {
     timeBar = findViewById(R.id.mini_time_bar);
     loading = findViewById(R.id.mini_loading);
 
-    // event listener.
-    pause.setOnClickListener(v -> pause());
-    play.setOnClickListener(v -> play());
+    // initialize.
+    initializeViews();
 
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(context, new ComponentName(context, MediaService.class),
@@ -60,14 +80,27 @@ public class ReactBottomControllerView extends FrameLayout {
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     LogHelper.d(TAG, "onAttachedToWindow");
-    mediaBrowser.connect();
+    if (mediaBrowser != null) {
+      mediaBrowser.connect();
+    }
   }
 
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
     LogHelper.d(TAG, "onDetachedFromWindow");
-    mediaBrowser.disconnect();
+    if (mediaBrowser != null) {
+      mediaBrowser.disconnect();
+    }
+    Activity activity = Utils.getActivity(getContext());
+    MediaControllerCompat mediaController = MediaControllerCompat
+        .getMediaController(activity);
+    if (mediaController != null) {
+      mediaController.unregisterCallback(callback);
+    }
+
+    stopSeekbarUpdate();
+    executorService.shutdown();
   }
 
   private final MediaBrowserCompat.ConnectionCallback connectionCallback =
@@ -94,6 +127,7 @@ public class ReactBottomControllerView extends FrameLayout {
     public void onMetadataChanged(MediaMetadataCompat metadata) {
       if (metadata != null) {
         updateMediaDescription(metadata.getDescription());
+        updateDuration(metadata);
       }
     }
   };
@@ -103,28 +137,33 @@ public class ReactBottomControllerView extends FrameLayout {
       return;
     }
 
+    lastPlaybackState = state;
     LogHelper.d(TAG, "playbackstate", state.getPlaybackState());
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
         loading.setVisibility(View.GONE);
         pause.setVisibility(View.VISIBLE);
         play.setVisibility(View.GONE);
+        scheduleSeekbarUpdate();
         break;
       case PlaybackStateCompat.STATE_PAUSED:
         loading.setVisibility(View.GONE);
         pause.setVisibility(View.GONE);
         play.setVisibility(View.VISIBLE);
+        stopSeekbarUpdate();
         break;
       case PlaybackStateCompat.STATE_NONE:
       case PlaybackStateCompat.STATE_STOPPED:
         loading.setVisibility(View.GONE);
         pause.setVisibility(View.GONE);
         play.setVisibility(View.VISIBLE);
+        stopSeekbarUpdate();
         break;
       case PlaybackStateCompat.STATE_BUFFERING:
         loading.setVisibility(View.VISIBLE);
         pause.setVisibility(View.GONE);
         play.setVisibility(View.GONE);
+        stopSeekbarUpdate();
         break;
       default:
         LogHelper.d(TAG, "Unhandled state ", state.getState());
@@ -136,12 +175,21 @@ public class ReactBottomControllerView extends FrameLayout {
 
   private void updateMediaDescription(MediaDescriptionCompat description) {
     if (description == null) {
-      title.setText("");
       return;
     }
-
-    LogHelper.d(TAG, "description", description.getTitle());
+    LogHelper.d(TAG, "updateMediaDescription called");
     title.setText(description.getTitle());
+  }
+
+  private void updateDuration(MediaMetadataCompat metadata) {
+    if (metadata == null) {
+      return;
+    }
+    LogHelper.d(TAG, "updateDuration called");
+    int duration = (int) (metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION) / 1_000l);
+    duration = 3000;
+    timeBar.setMax(duration);
+    durationTime.setText(DateUtils.formatElapsedTime(duration));
   }
 
   private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
@@ -153,11 +201,24 @@ public class ReactBottomControllerView extends FrameLayout {
     }
     MediaControllerCompat.setMediaController(activity, mediaController);
     mediaController.registerCallback(callback);
-
-    updatePlaybackState(mediaController.getPlaybackState());
-    if (mediaController.getMetadata() != null) {
-      updateMediaDescription(mediaController.getMetadata().getDescription());
+    PlaybackStateCompat state = mediaController.getPlaybackState();
+    updatePlaybackState(state);
+    MediaMetadataCompat metadata = mediaController.getMetadata();
+    if (metadata != null) {
+      updateMediaDescription(metadata.getDescription());
+      updateDuration(metadata);
     }
+    updateProgress();
+    if (state != null && (PlaybackStateCompat.STATE_PLAYING == state.getState() ||
+        PlaybackStateCompat.STATE_BUFFERING == state.getState())) {
+      scheduleSeekbarUpdate();
+    }
+  }
+
+  private void initializeViews() {
+    // event listener.
+    pause.setOnClickListener(v -> pause());
+    play.setOnClickListener(v -> play());
   }
 
   private void pause() {
@@ -178,5 +239,39 @@ public class ReactBottomControllerView extends FrameLayout {
       return;
     }
     mediaController.getTransportControls().play();
+  }
+
+  private void scheduleSeekbarUpdate() {
+    stopSeekbarUpdate();
+    if (!executorService.isShutdown()) {
+      scheduleFuture = executorService.scheduleAtFixedRate(
+          () -> handler.post(updateProgressTask),
+          PROGRESS_UPDATE_INITIAL_INTERVAL, PROGRESS_UPDATE_INTERNAL, TimeUnit.MILLISECONDS);
+    }
+  }
+
+  private void stopSeekbarUpdate() {
+    if (scheduleFuture != null) {
+      scheduleFuture.cancel(false);
+    }
+  }
+
+  private void updateProgress() {
+    if (lastPlaybackState == null) {
+      return;
+    }
+    long currentPosition = lastPlaybackState.getPosition();
+    if (PlaybackStateCompat.STATE_PLAYING == lastPlaybackState.getState()) {
+      // Calculate the elapsed time between the last position update and now and unless
+      // paused, we can assume (delta * speed) + current position is approximately the
+      // latest position. This ensure that we do not repeatedly call the getPlaybackState()
+      // on MediaControllerCompat.
+      long timeDelta = SystemClock.elapsedRealtime() -
+          lastPlaybackState.getLastPositionUpdateTime();
+      currentPosition += timeDelta * lastPlaybackState.getPlaybackSpeed();
+    }
+    int current = (int) (currentPosition / 1_000l);
+    timeBar.setProgress(current);
+    currentTime.setText(DateUtils.formatElapsedTime(current));
   }
 }
