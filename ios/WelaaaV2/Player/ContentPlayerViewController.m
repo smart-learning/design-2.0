@@ -359,19 +359,47 @@
     if ( indexOfCurrentContent < contentsListArray.count-1 )
     {
         // 무조건 다음 CID와 URI를 세팅하지 말고 오디오북의 제목챕터인지 검사하여 정상적인 다음 순서의 콘텐츠로 재생해야 합니다.
-      
-        [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
-                  forKey : @"cid"];
-      
-        NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                      andHeaderInfo : [_args objectForKey : @"token"]];
-      
-        // 플레이할 콘텐트의 재생권한.
-        _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
-        [_args setObject : playDataDics[@"media_urls"][@"HLS"]
-                  forKey : @"uri"];
-      
-        [self playNext];
+        // 일단 오디오북 콘텐츠인지 확인부터 합니다.
+        if ( _isAudioContent )
+        {
+            // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
+            NSInteger i = 0;
+            for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
+            {
+                if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                {
+                    break;
+                }
+            }
+            NSLog(@"  몇번 배열? : %lu", i);
+            [_args setObject : contentsListArray[i][@"cid"]
+                      forKey : @"cid"];
+          
+            NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                          andHeaderInfo : [_args objectForKey : @"token"]];
+          
+            // 플레이할 콘텐트의 재생권한.
+            _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
+            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+                      forKey : @"uri"];
+          
+            [self playNext];
+        }
+        else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
+        {
+            [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
+                      forKey : @"cid"];
+          
+            NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                          andHeaderInfo : [_args objectForKey : @"token"]];
+          
+            // 플레이할 콘텐트의 재생권한.
+            _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
+            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+                      forKey : @"uri"];
+          
+            [self playNext];
+        }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것이므로 종료합니다.
     {
