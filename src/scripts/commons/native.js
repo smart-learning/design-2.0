@@ -39,8 +39,8 @@ export default {
 		if (Platform.OS === 'android') {
 			;
 		} else {
-			args.cid = 'v100015_001';
-			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8';
+			args.cid = 'b100001_001';
+			args.uri = 'https://contents.welaaa.com/media/b100001/HLS_b100001_001/master.m3u8';
 		}
 
 		console.log('native.play()', JSON.stringify(args));

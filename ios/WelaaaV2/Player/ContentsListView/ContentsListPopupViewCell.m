@@ -226,17 +226,29 @@
         }
         
         NSString *playImageName = @"";
-        NSInteger history_endTime = [self.itemDict[@"end_time"] integerValue];
-        
-        if ( history_endTime == 0 )
+        NSInteger progress = 0;
+  
+        // dictionary의 nil 체크를 합니다.
+        if ( [self.itemDict[@"progress"] isKindOfClass : [NSDictionary class]] )
+        {
+            // handle the dictionary
+            progress = [self.itemDict[@"progress"][@"percent"] integerValue];
+        }
+        else
+        {
+            // some kind of error, handle appropriately
+            progress = 0;
+        }
+      
+        if ( progress == 0 )
         {
             playImageName = !self.isAudioContentType ? @"icon_play_green" : @"icon_play_pink";
         }
-        else if ( history_endTime < timeNum )
+        else if ( progress < 100 )
         {
             playImageName = !self.isAudioContentType ? @"icon_video_list_play_half_filled" : @"icon_audiobook_play_half_filled";
         }
-        else
+        else if ( progress == 100 )
         {
             playImageName = !self.isAudioContentType ? @"icon_video_list_play_filled" : @"icon_audiobook_play_filled";
         }
