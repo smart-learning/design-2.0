@@ -57,7 +57,7 @@ import firebase from 'react-native-firebase';
 
 	constructor(prop) {
 		super(prop);
-		this.subscription = null;
+		this.subscription = [];
 
 		this.getTokenFromAsyncStorage();
 		this.getAppSettings();
@@ -65,20 +65,22 @@ import firebase from 'react-native-firebase';
 	}
 
 	componentDidMount() {
-        this.subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
+		this.subscription.push( DeviceEventEmitter.addListener('miniPlayer', (params) => {
 			Native.toggleMiniPlayer( params.visible );
-		});
-		
+		}));
+		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
+			console.log( 'callback selectDatabase', params );
+		}));
+		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
+			Native.selectDownload( params );
+		}));
     }
 
-	componentDidMount() {
-
-		this.subscription = DeviceEventEmitter.addListener('selectDownload', (params) => {
-			Native.selectDownload( params );
-        });
-	}
 	componentWillUnmount() {
-		this.subscription.remove();
+		this.subscription.forEach( listener => {
+			listener.remove();
+		} );
+		this.subscription.length = 0;
 	}
 
  	render() {

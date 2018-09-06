@@ -64,9 +64,17 @@ export default {
 		globalStore.miniPlayerVisible = bool;
 	},
 
+	getDatabase() {
+		try {
+			RNNativePlayer.selectDatabase();
+		}
+		catch (error) {
+			console.log( error );
+		}
+	},
+
 	selectDownload(args) {
 		console.log('selectDownload:', args);
-		
 	},
 
 
