@@ -301,6 +301,7 @@
         }
     }
   
+    [self setPreparedToPlay];
     [self initScriptUi];
   
     // 재생 시작.
@@ -722,9 +723,9 @@
     [_menuItemView addSubview : _menuItemTopLineView];
   
   
-    NSInteger buttonCount = _isAudioMode ? 4 : 6;
+    NSInteger buttonCount = _isAudioContent ? 4 : 6;
   
-    CGFloat buttonPadding = _isAudioMode ? 70 : 10;
+    CGFloat buttonPadding = _isAudioContent ? 70 : 10;
     CGFloat buttonWidth = ((_menuItemView.frame.size.width - (buttonPadding * 2)) / buttonCount);
   
     CGFloat buttonOffsetX = buttonPadding;
@@ -757,7 +758,7 @@
       buttonOffsetX = buttonOffsetX + buttonWidth;
     }
   
-    if ( !_isAudioMode )
+    if ( !_isAudioContent )
     {
         _scriptButton = [[ContentPlayerButton alloc] initWithId : @"script-mode"
                                                     normalImage : @"icon_caption"
@@ -770,7 +771,7 @@
         buttonOffsetX = buttonOffsetX + buttonWidth;
     }
   
-    if ( !_isAudioMode )
+    if ( !_isAudioContent )
     {
         _modeChangeButton = [[ContentPlayerButton alloc] initWithId : @"view-mode"
                                                         normalImage : @"icon_audiomode"
