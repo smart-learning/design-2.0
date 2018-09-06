@@ -23,6 +23,11 @@
 		5D2A6FC4AE30619FDFF422A3 /* Pods_WelaaaV2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E80CEED546790C5F7396A360 /* Pods_WelaaaV2.framework */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		63053DE2212E8479007958D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 63053DE1212E8479007958D8 /* Localizable.strings */; };
+		63A387712140C8FB00E61CB0 /* Clip.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387702140C8FB00E61CB0 /* Clip.m */; };
+		63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387732140C91B00E61CB0 /* FPSDownload.m */; };
+		63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387762140C95500E61CB0 /* FPSDownloadManager.m */; };
+		63A3877A2140C97A00E61CB0 /* QueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387792140C97A00E61CB0 /* QueryService.m */; };
+		63A3877D2140D2E800E61CB0 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A3877C2140D2E800E61CB0 /* DatabaseManager.m */; };
 		7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		AD28BB2193034979A7C0FB93 /* libRNLocalizable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91F9F617C3954DF3AC999232 /* libRNLocalizable.a */; };
@@ -53,7 +58,6 @@
 		EFAEBDB9213D33050070F10E /* UIAlertController+Showable.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8A213D33050070F10E /* UIAlertController+Showable.m */; };
 		EFAEBDBA213D33050070F10E /* subtitles.json in Resources */ = {isa = PBXBuildFile; fileRef = EFAEBD8B213D33050070F10E /* subtitles.json */; };
 		EFAEBDBB213D33050070F10E /* CreateContact.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8C213D33050070F10E /* CreateContact.m */; };
-		EFAEBDBC213D33050070F10E /* FPSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8D213D33050070F10E /* FPSDownloadManager.m */; };
 		EFAEBDBD213D33050070F10E /* MediaController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8E213D33050070F10E /* MediaController.m */; };
 		EFAEBDBE213D33050070F10E /* PlayerScriptCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD91213D33050070F10E /* PlayerScriptCell.m */; };
 		EFAEBDBF213D33050070F10E /* ScriptControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD94213D33050070F10E /* ScriptControlView.m */; };
@@ -76,11 +80,6 @@
 		EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081E22113ED84006D3F6C /* NSString+GC.m */; };
 		EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0821C2113F89B006D3F6C /* IFSleepTimerManager.m */; };
 		EFE08265211419EF006D3F6C /* UIImage+TintColor.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE08263211419EF006D3F6C /* UIImage+TintColor.m */; };
-		EFE08313211430E7006D3F6C /* DbContentAudioGroupItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */; };
-		EFE08314211430E7006D3F6C /* DbContentVideoGroupItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830E211430E7006D3F6C /* DbContentVideoGroupItemModel.m */; };
-		EFE08315211430E7006D3F6C /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0830F211430E7006D3F6C /* DownloadManager.m */; };
-		EFE08316211430E7006D3F6C /* DbContentDownloadItemModel.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE08311211430E7006D3F6C /* DbContentDownloadItemModel.m */; };
-		EFE08317211430E7006D3F6C /* DbManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE08312211430E7006D3F6C /* DbManager.m */; };
 		EFE0835621144239006D3F6C /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832721144239006D3F6C /* IAPHelper.m */; };
 		EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832821144239006D3F6C /* NSString+Base64.m */; };
 		EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */; };
@@ -417,6 +416,16 @@
 		2EC83BF071F44EB699826325 /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		63053DE1212E8479007958D8 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = WelaaaV2/Localizable.strings; sourceTree = "<group>"; };
+		63A3876F2140C8FB00E61CB0 /* Clip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clip.h; sourceTree = "<group>"; };
+		63A387702140C8FB00E61CB0 /* Clip.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clip.m; sourceTree = "<group>"; };
+		63A387722140C91B00E61CB0 /* FPSDownload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FPSDownload.h; sourceTree = "<group>"; };
+		63A387732140C91B00E61CB0 /* FPSDownload.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FPSDownload.m; sourceTree = "<group>"; };
+		63A387752140C95500E61CB0 /* FPSDownloadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FPSDownloadManager.h; sourceTree = "<group>"; };
+		63A387762140C95500E61CB0 /* FPSDownloadManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FPSDownloadManager.m; sourceTree = "<group>"; };
+		63A387782140C97A00E61CB0 /* QueryService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueryService.h; sourceTree = "<group>"; };
+		63A387792140C97A00E61CB0 /* QueryService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryService.m; sourceTree = "<group>"; };
+		63A3877B2140D2E800E61CB0 /* DatabaseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
+		63A3877C2140D2E800E61CB0 /* DatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		801AC0D92C074BDBB6EC7D3E /* RNKaKaoSignin.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNKaKaoSignin.xcodeproj; path = "../node_modules/react-native-kakao-signin/ios/RNKaKaoSignin.xcodeproj"; sourceTree = "<group>"; };
 		8206B466E5AE4E088043ED37 /* RNLocalizable.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNLocalizable.xcodeproj; path = "../node_modules/react-native-localizable/ios/RNLocalizable.xcodeproj"; sourceTree = "<group>"; };
@@ -465,7 +474,6 @@
 		EFAEBD8A213D33050070F10E /* UIAlertController+Showable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Showable.m"; sourceTree = "<group>"; };
 		EFAEBD8B213D33050070F10E /* subtitles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = subtitles.json; sourceTree = "<group>"; };
 		EFAEBD8C213D33050070F10E /* CreateContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateContact.m; sourceTree = "<group>"; };
-		EFAEBD8D213D33050070F10E /* FPSDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPSDownloadManager.m; sourceTree = "<group>"; };
 		EFAEBD8E213D33050070F10E /* MediaController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaController.m; sourceTree = "<group>"; };
 		EFAEBD8F213D33050070F10E /* ContentMiniPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentMiniPlayerView.h; sourceTree = "<group>"; };
 		EFAEBD91213D33050070F10E /* PlayerScriptCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerScriptCell.m; sourceTree = "<group>"; };
@@ -486,7 +494,6 @@
 		EFAEBDA2213D33050070F10E /* ContentsListPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupView.m; sourceTree = "<group>"; };
 		EFAEBDA3213D33050070F10E /* ContentsListPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentsListPopupView.h; sourceTree = "<group>"; };
 		EFAEBDA4213D33050070F10E /* ContentsListPopupViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupViewCell.m; sourceTree = "<group>"; };
-		EFAEBDA5213D33050070F10E /* FPSDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPSDownloadManager.h; sourceTree = "<group>"; };
 		EFAEBDA6213D33050070F10E /* MediaController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaController.h; sourceTree = "<group>"; };
 		EFAEBDA8213D33050070F10E /* IFRecommendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRecommendViewController.m; sourceTree = "<group>"; };
 		EFAEBDA9213D33050070F10E /* IFCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCollectionView.h; sourceTree = "<group>"; };
@@ -513,16 +520,6 @@
 		EFE0821D2113F89B006D3F6C /* IFSleepTimerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSleepTimerManager.h; sourceTree = "<group>"; };
 		EFE08263211419EF006D3F6C /* UIImage+TintColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TintColor.m"; sourceTree = "<group>"; };
 		EFE08264211419EF006D3F6C /* UIImage+TintColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TintColor.h"; sourceTree = "<group>"; };
-		EFE08309211430E7006D3F6C /* DbContentVideoGroupItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbContentVideoGroupItemModel.h; sourceTree = "<group>"; };
-		EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbContentAudioGroupItemModel.m; sourceTree = "<group>"; };
-		EFE0830B211430E7006D3F6C /* DownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadManager.h; sourceTree = "<group>"; };
-		EFE0830C211430E7006D3F6C /* DbManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbManager.h; sourceTree = "<group>"; };
-		EFE0830D211430E7006D3F6C /* DbContentDownloadItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbContentDownloadItemModel.h; sourceTree = "<group>"; };
-		EFE0830E211430E7006D3F6C /* DbContentVideoGroupItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbContentVideoGroupItemModel.m; sourceTree = "<group>"; };
-		EFE0830F211430E7006D3F6C /* DownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadManager.m; sourceTree = "<group>"; };
-		EFE08310211430E7006D3F6C /* DbContentAudioGroupItemModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DbContentAudioGroupItemModel.h; sourceTree = "<group>"; };
-		EFE08311211430E7006D3F6C /* DbContentDownloadItemModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbContentDownloadItemModel.m; sourceTree = "<group>"; };
-		EFE08312211430E7006D3F6C /* DbManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DbManager.m; sourceTree = "<group>"; };
 		EFE0832721144239006D3F6C /* IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPHelper.m; sourceTree = "<group>"; };
 		EFE0832821144239006D3F6C /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
 		EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
@@ -716,6 +713,26 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		63A3876D2140C88100E61CB0 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				63A387782140C97A00E61CB0 /* QueryService.h */,
+				63A387792140C97A00E61CB0 /* QueryService.m */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		63A3876E2140C8C900E61CB0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				63A3876F2140C8FB00E61CB0 /* Clip.h */,
+				63A387702140C8FB00E61CB0 /* Clip.m */,
+				63A387722140C91B00E61CB0 /* FPSDownload.h */,
+				63A387732140C91B00E61CB0 /* FPSDownload.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -892,8 +909,6 @@
 				EFAEBDB3213D33050070F10E /* SleepTimerView */,
 				EFAEBDB2213D33050070F10E /* ContentPlayerViewController.h */,
 				EFAEBD99213D33050070F10E /* ContentPlayerViewController.m */,
-				EFAEBDA5213D33050070F10E /* FPSDownloadManager.h */,
-				EFAEBD8D213D33050070F10E /* FPSDownloadManager.m */,
 				EFAEBD8F213D33050070F10E /* ContentMiniPlayerView.h */,
 				EFAEBDB1213D33050070F10E /* ContentMiniPlayerView.m */,
 				EFAEBD8B213D33050070F10E /* subtitles.json */,
@@ -991,16 +1006,12 @@
 		EFE08308211430E7006D3F6C /* DownloadManager */ = {
 			isa = PBXGroup;
 			children = (
-				EFE08309211430E7006D3F6C /* DbContentVideoGroupItemModel.h */,
-				EFE0830A211430E7006D3F6C /* DbContentAudioGroupItemModel.m */,
-				EFE0830B211430E7006D3F6C /* DownloadManager.h */,
-				EFE0830F211430E7006D3F6C /* DownloadManager.m */,
-				EFE0830C211430E7006D3F6C /* DbManager.h */,
-				EFE08312211430E7006D3F6C /* DbManager.m */,
-				EFE0830D211430E7006D3F6C /* DbContentDownloadItemModel.h */,
-				EFE08311211430E7006D3F6C /* DbContentDownloadItemModel.m */,
-				EFE08310211430E7006D3F6C /* DbContentAudioGroupItemModel.h */,
-				EFE0830E211430E7006D3F6C /* DbContentVideoGroupItemModel.m */,
+				63A3876E2140C8C900E61CB0 /* Model */,
+				63A3876D2140C88100E61CB0 /* Networking */,
+				63A387752140C95500E61CB0 /* FPSDownloadManager.h */,
+				63A387762140C95500E61CB0 /* FPSDownloadManager.m */,
+				63A3877B2140D2E800E61CB0 /* DatabaseManager.h */,
+				63A3877C2140D2E800E61CB0 /* DatabaseManager.m */,
 			);
 			name = DownloadManager;
 			path = WelaaaV2/DownloadManager;
@@ -1571,6 +1582,7 @@
 				EFAEBDBE213D33050070F10E /* PlayerScriptCell.m in Sources */,
 				EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */,
 				EFAEBDC8213D33050070F10E /* CollectionViewCellBox.m in Sources */,
+				63A3877D2140D2E800E61CB0 /* DatabaseManager.m in Sources */,
 				EFAEBDC7213D33050070F10E /* IFRecommendViewController.m in Sources */,
 				EFE0835621144239006D3F6C /* IAPHelper.m in Sources */,
 				EFAEBDC5213D33050070F10E /* ContentsListPopupView.m in Sources */,
@@ -1578,10 +1590,8 @@
 				EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */,
 				EFAEBDC0213D33050070F10E /* MediaPlayerScriptView.m in Sources */,
 				EFAEBDC4213D33050070F10E /* ContentPlayerButton.m in Sources */,
-				EFE08315211430E7006D3F6C /* DownloadManager.m in Sources */,
 				EFAEBDC9213D33050070F10E /* InnerShadowView.m in Sources */,
 				EFAEBDCA213D33050070F10E /* IFCollectionView.m in Sources */,
-				EFE08313211430E7006D3F6C /* DbContentAudioGroupItemModel.m in Sources */,
 				EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */,
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
 				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
@@ -1590,21 +1600,21 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				EFAEBDBB213D33050070F10E /* CreateContact.m in Sources */,
 				EFAEBDC6213D33050070F10E /* ContentsListPopupViewCell.m in Sources */,
+				63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */,
 				EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */,
 				EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */,
+				63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */,
 				EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,
-				EFAEBDBC213D33050070F10E /* FPSDownloadManager.m in Sources */,
-				EFE08316211430E7006D3F6C /* DbContentDownloadItemModel.m in Sources */,
 				EFAEBDC1213D33050070F10E /* PlayerScriptItemView.m in Sources */,
 				EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */,
 				EFAEBDC2213D33050070F10E /* ContentPlayerViewController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				EFE08317211430E7006D3F6C /* DbManager.m in Sources */,
+				63A3877A2140C97A00E61CB0 /* QueryService.m in Sources */,
 				EFE08265211419EF006D3F6C /* UIImage+TintColor.m in Sources */,
-				EFE08314211430E7006D3F6C /* DbContentVideoGroupItemModel.m in Sources */,
 				EFAEBDCB213D33050070F10E /* ContentMiniPlayerView.m in Sources */,
 				EF7D6F8D2113E6D600B71BEB /* common.m in Sources */,
+				63A387712140C8FB00E61CB0 /* Clip.m in Sources */,
 				EF094701212662B200FD849B /* RNProductPayment.m in Sources */,
 				EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */,
 				EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */,

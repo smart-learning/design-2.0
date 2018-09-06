@@ -3,6 +3,7 @@
 
 #import "AppDelegate.h"
 #import "IFRecommendViewController.h"
+#import "Clip.h"
 
 #define PALLYCON_SITE_ID    @"O8LD"
 #define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
@@ -124,6 +125,9 @@
                  forControlEvents : UIControlEventTouchUpInside];
     _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
     [_contentView addSubview : _hideAndShowButton];
+  
+  _fpsDownloadManager = [FPSDownloadManager sharedInstance];
+  _fpsDownloadManager.delegateFpsMsg = self;
   
     // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
   /* 일단 주석 처리
@@ -1637,12 +1641,22 @@
         
         return ;
       }
-      /*
+      /* 기존 사용 코드(윌라 1.0)
       [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
-      
       self.isDownloading = YES;
       [self setTouchEnable: _downloadButton
                     isLock: YES];*/
+      // 2018.9.6 ~
+      Clip* clipToDownload = [[Clip alloc] initWithTitle:[_args objectForKey:@"name"]
+                                                    memo:@""
+                                                     cid:[_args objectForKey:@"cid"]
+                                                playTime:@""
+                                                   index:0];
+      [_fpsDownloadManager startDownload:clipToDownload completion:^(NSString* downloadMsg){
+        if(downloadMsg){
+          [self showToast:downloadMsg]; // "다운로드를 시작합니다." 등.
+        }
+      }];
     }
 }
 
@@ -2162,6 +2176,16 @@
                        animated : YES
                      completion : nil];
 }
+
+
+# pragma mark - FPSDownloadDelegate
+
+-(void)fpsDownloadMsg:(NSString *)downloadMsg{
+  if(downloadMsg){
+    [self showToast:downloadMsg]; // 다운로드 진행상황 관련 메시지
+  }
+}
+
 
 // 슬라이더 이동시 썸네일 이미지를 보여주면 좋을듯.. ( http://devhkh.tistory.com/18 )
 
