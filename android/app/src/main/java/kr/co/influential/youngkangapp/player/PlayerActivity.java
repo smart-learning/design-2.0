@@ -638,6 +638,8 @@ public class PlayerActivity extends BasePlayerActivity {
         audioModeBackgroundLayout.setVisibility(VISIBLE);
         audioModeIconHeadset.setVisibility(VISIBLE);
 
+
+        LogHelper.e(TAG , " 20180901 FLAG_KEEP_SCREEN_ON ! ");
         // Audio Book 에서 화면 항상 켜기 //
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -2675,7 +2677,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //
 //
 //
-//                Log.e(TAG , "textViewSumHightValue " + textViewSumHeight);
+//                LogHelper.e(TAG , "textViewSumHightValue " + textViewSumHeight);
 //
 //                highlightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //                    @Override
@@ -2695,7 +2697,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
         position = getTextviewHeight() * getTextViewNumber();
 
-//                Log.e(TAG, "position is  :: " + position + " position ");
+//                LogHelper.e(TAG, "position is  :: " + position + " position ");
 
         if (fontSize.equals("small")) {
 
@@ -2752,7 +2754,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //                        highlightTimeView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
 //
 //
-//                        Log.e(TAG , "highlightView " + highlightView.getText() + " :: " +highlightView.getHeight() );
+//                        LogHelper.e(TAG , "highlightView " + highlightView.getText() + " :: " +highlightView.getHeight() );
 //
 //                        highlightView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 //                    }
@@ -4327,15 +4329,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
     // 최근 재생 리스트가 있는 경우
     if (mPlaylistGroupLayout.getVisibility() == VISIBLE) {
-      if (mPlaylistGroupLayout != null) {
-        mPlaylistGroupLayout.startAnimation(mAniSlideHide);
-      }
-      if (mPlaylistGroupLayout != null) {
-        mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
-      }
-      if (mButtonGroupLayout != null) {
-        mButtonGroupLayout.setVisibility(VISIBLE);
-      }
+      if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+      if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+      if (mButtonGroupLayout != null) mButtonGroupLayout.setVisibility(View.VISIBLE);
 
       if (player != null) {
         player.setPlayWhenReady(true);
@@ -4724,9 +4720,9 @@ public class PlayerActivity extends BasePlayerActivity {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
     }
 
-    Log.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
+    LogHelper.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
         .getMediaUri());
-    Log.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
+    LogHelper.e(TAG, " updatePlaybackState getMediaUri " + controllerCompat.getMetadata().getDescription()
         .getTitle());
 
     switch (state.getState()) {
@@ -4849,59 +4845,43 @@ public class PlayerActivity extends BasePlayerActivity {
    ********************************************************/
   public void doAutoPlay() {
 
-    Intent intent = getIntent();
-    String currentCid = intent.getStringExtra("drm_cid");
+    int currentId = Preferences.getWelaaaPlayListCId(getApplicationContext());
+
+    Gson gson = new Gson();
+    String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
+    WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
 
     int currentPosition = 0;
-    for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
-      if (getwebPlayerInfo().getCkey()[i].equals(currentCid)) {
+    for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
+      if (mWebPlayerInfo.getCkey()[i].equals(mWebPlayerInfo.getCkey()[currentId])) {
         currentPosition = i;
       }
     }
 
-    if (getwebPlayerInfo().getCkey().length == currentPosition + 1) {
-
-      setBackGroungLayout(true);
-      Animation fadeout = null;
-      fadeout = null;
-      fadeout = AnimationUtils
-          .loadAnimation(getApplicationContext(), R.anim.slide_in_right);
-
-      mRelatedListGroupLayout.startAnimation(fadeout);
-
-      Animation textBlink = null;
-      textBlink = AnimationUtils
-          .loadAnimation(getApplicationContext(), R.anim.blink_animation);
-
-      mRelatedListBlinkText.startAnimation(textBlink);
-      mRelatedListGroupLayout.setVisibility(VISIBLE);
-
-//										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
-      if (getTransportControls() != null) {
-        getTransportControls().pause();
-      }
-
+    if (mWebPlayerInfo.getCkey().length == currentPosition + 1) {
       return;
     }
 
     int nextPosition = 0;
 
     nextPosition = currentPosition + 1;
+    setContentId(nextPosition);
 
-    // getwebPlayerinfo 를 찾아서 . 다음으로 넘어가야 합니다.
+    if (mWebPlayerInfo.getCon_class().equals("audiobook")) {
+      // next chapters , play_seconds 값이 0 , 0.0 이라면 다시 ++
+      if (mWebPlayerInfo.getCurl()[nextPosition].equals("0") ||
+          mWebPlayerInfo.getCurl()[nextPosition].equals("0.0")) {
+
+        doAutoPlay();
+        return;
+      }
+    }
 
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
 
-    sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[nextPosition],
+    sendData(API_BASE_URL + callbackMethodName + mWebPlayerInfo.getCkey()[nextPosition],
         callbackMethodName);
-
-    setContentId(nextPosition);
-
-    // 타이틀 동기화는 meta 데이터를 활용할 것
-    setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-        getwebPlayerInfo().getCname()[nextPosition]);
-
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
@@ -4926,8 +4906,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()));
+    LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
+    LogHelper.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()));
 
     new Thread() {
       public void run() {
@@ -4949,7 +4929,7 @@ public class PlayerActivity extends BasePlayerActivity {
       String body = response.body().string();
 
       if (response.code() == 200) {
-        Log.e(TAG, "서버에서 응답한 Body:" + callbackMethodName);
+        LogHelper.e(TAG, "서버에서 응답한 Body:" + callbackMethodName);
 
         if (callbackMethodName.equals("play/play-data/")) {
           // doAudoPlay 전용
@@ -5035,7 +5015,7 @@ public class PlayerActivity extends BasePlayerActivity {
         }
 
       } else {
-        Log.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
+        LogHelper.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
       }
     }
   };
@@ -5051,18 +5031,12 @@ public class PlayerActivity extends BasePlayerActivity {
         currentPosition = i;
       }
     }
+//
+//    setBackGroungLayout(true);
 
-    setBackGroungLayout(true);
-
-    if (mPlaylistGroupLayout != null) {
-      mPlaylistGroupLayout.startAnimation(mAniSlideHide);
-    }
-    if (mPlaylistGroupLayout != null) {
-      mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
-    }
-    if (mButtonGroupLayout != null) {
-      mButtonGroupLayout.setVisibility(VISIBLE);
-    }
+    if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+    if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+    if (mButtonGroupLayout != null) mButtonGroupLayout.setVisibility(View.VISIBLE);
 
     if (lectureListItemdapter != null) {
       lectureListItemdapter = null;
@@ -5072,11 +5046,6 @@ public class PlayerActivity extends BasePlayerActivity {
       lectureAudioBookListItemdapter = null;
     }
 
-//										setRelatedEable(); // 추천 뷰 커스트마이징 제스쳐 넣기
-    if (getTransportControls() != null) {
-      getTransportControls().pause();
-    }
-
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
 
@@ -5084,11 +5053,6 @@ public class PlayerActivity extends BasePlayerActivity {
         callbackMethodName);
 
     setContentId(currentPosition);
-
-    // 타이틀 동기화는 meta 데이터를 활용할 것
-    setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-        getwebPlayerInfo().getCname()[currentPosition]);
-
   }
 
   public void setBroadCatReceiver() {

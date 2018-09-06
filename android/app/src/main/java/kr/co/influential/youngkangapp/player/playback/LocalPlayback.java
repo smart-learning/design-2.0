@@ -17,7 +17,6 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 import android.util.JsonReader;
-import android.util.Log;
 import android.util.Pair;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -926,8 +925,8 @@ public final class LocalPlayback implements Playback {
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " 20180901 requestWebUrl is " + requestWebUrl);
-    Log.e(TAG, " 20180901 requestWebUrl is " + Preferences.getWelaaaOauthToken(mContext));
+    LogHelper.e(TAG, " 20180901 requestWebUrl is " + requestWebUrl);
+    LogHelper.e(TAG, " 20180901 requestWebUrl is " + Preferences.getWelaaaOauthToken(mContext));
 
     new Thread() {
       public void run() {
@@ -1014,8 +1013,8 @@ public final class LocalPlayback implements Playback {
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(mContext));
+    LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
+    LogHelper.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(mContext));
 
     new Thread() {
       public void run() {
@@ -1043,7 +1042,7 @@ public final class LocalPlayback implements Playback {
       WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
 
       if (response.code() == 200) {
-        Log.e(TAG, "서버에서 응답한 Body:" + callbackMethodName);
+        LogHelper.e(TAG, "서버에서 응답한 Body:" + callbackMethodName);
 
         if (callbackMethodName.equals("play/play-data/")) {
           // doAudoPlay 전용
@@ -1180,7 +1179,7 @@ public final class LocalPlayback implements Playback {
         }
 
       } else {
-        Log.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
+        LogHelper.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
       }
     }
   };
