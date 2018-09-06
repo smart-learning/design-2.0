@@ -3,7 +3,6 @@ package kr.co.influential.youngkangapp.common;
 import kr.co.influential.youngkangapp.BuildConfig;
 
 public enum Gateway {
-//  DEBUG("https://", "api-elb", "demo", "welaaa.com"),
   DEBUG("https://", "api-dev", "demo", "welaaa.com"),
   RELEASE("https://", "api-dev", "demo", "welaaa.com");
 

@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -219,10 +218,10 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   @ReactMethod
   public void selectDatabase(ReadableMap content) {
     // 2018.09.06
-    try{
-      Log.e(TAG , " getDatabase : " +ContentManager().getDatabase() ) ;
+    try {
+      Log.e(TAG, " getDatabase : " + ContentManager().getDatabase());
 
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -252,12 +251,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           throw new ParserException("Unsupported drm type: " + typeString);
         }
     }
-  }
-
-  @Deprecated
-  @ReactMethod
-  public void toast(String message) {
-    Toast.makeText(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
   }
 
   /**
@@ -339,7 +332,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 historyObject.getString("id");
                 historyObject.getString("played_at");
 
-                Log.e(TAG , "start_seconds " + historyObject.getInt("start_seconds"));
+                Log.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
 
                 contentHistory_seconds = historyObject.getInt("start_seconds");
               }
@@ -578,6 +571,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     // v200072  , 001 로 리턴되고 , 해당 클래식은 002 가 가장 처음이고,
                     // 001 은 마지막에서 두개 전 .. for 문에서 신기하게 들어가는건가요 ..
 
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("id"));
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("played_at"));
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("start_seconds"));
                     contentCid = json.getString("cid");
                     contentName = json.getString("title");
                     contentId = i;
@@ -699,7 +698,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 intent.putExtra("expire_at", expire_at);
                 intent.putExtra("is_free", is_free);
                 intent.putExtra("webPlayerInfo", mWebPlayerInfo);
-                intent.putExtra("history_start_seconds" , contentHistory_seconds);
+                intent.putExtra("history_start_seconds", contentHistory_seconds);
               }
 
               LogHelper.e(TAG, "url : " + dashUrl);
