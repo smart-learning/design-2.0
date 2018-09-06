@@ -16,7 +16,6 @@ import {SafeAreaView} from "react-navigation";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import Native from "../../commons/native";
-import SQLite from 'react-native-sqlite-2';
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		width: '100%',
 		height: 3,
-		backgroundColor: '#26c281',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	tabContentContainer: {
 		paddingTop: 40,
@@ -123,19 +122,7 @@ export default class DownloadContentPage extends React.Component {
 
 
 	componentDidMount() {
-		const db = SQLite.openDatabase('welaaa.db', '1.0', '', 1);
-		db.transaction(txn => {
-			console.log('txn:', txn);
-			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res) => {
-				console.log('res:', res);
-				res.rows.forEach( item => {
-					if( item.audioVideoType === 'video-course' ) this.videos.push( item );
-					else                                         this.audios.push( item );
-				});
-
-				console.log( 'videos, auidios:', this.videos, this.audios );
-			});
-		});
+		Native.getDatabase();
 	}
 
 	makeListItem = ({item, index}) => {

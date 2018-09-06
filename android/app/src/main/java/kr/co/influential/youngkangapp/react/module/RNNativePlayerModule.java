@@ -12,7 +12,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -226,8 +225,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       WritableMap params = Arguments.createMap();
 
-      params.putString("selectDownload" , json);
-      sendEvent("selectDownload", params);
+      params.putString("selectDatabase" , json);
+      sendEvent("selectDatabase", params);
 
     }catch (Exception e){
       e.printStackTrace();
@@ -268,8 +267,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
+    LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
+    LogHelper.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
 
     new Thread() {
       public void run() {
@@ -282,7 +281,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   private final Callback callback = new Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
-      Log.e(TAG, "콜백오류:" + e.getMessage());
+      LogHelper.e(TAG, "콜백오류:" + e.getMessage());
 
       if (mProgressDialog != null) {
         mProgressDialog.dismiss();
@@ -333,14 +332,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               JSONObject historyObject = null;
 
               if (json.isNull("history")) {
-                Log.e(TAG, " history is null ");
+                LogHelper.e(TAG, " history is null ");
               } else {
                 historyObject = json.getJSONObject("history");
 
                 historyObject.getString("id");
                 historyObject.getString("played_at");
 
-                Log.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
+                LogHelper.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
 
                 contentHistory_seconds = historyObject.getInt("start_seconds");
               }
@@ -744,7 +743,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
               contextWrapper.startService(service);
             } else {
-              Log.e(TAG, " No Action .. ");
+              LogHelper.e(TAG, " No Action .. ");
             }
 
           } catch (Exception e) {

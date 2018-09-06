@@ -144,9 +144,6 @@ public class Utils {
      * Comment   :  RETURN TIME
      ************************************************************/
     public static String timeToConvert(String time) {
-//        Log.e(TAG , "time is " + time );
-        // 2037 0822 11 11 11s
-
         String convertTime =
                 time.substring(0, 4) + "-" + time.substring(4, 6) + "-" + time.substring(6, 8) + " " +
                         time.substring(8, 10) + ":" + time.substring(10, 12) + ":" + time.substring(12);
@@ -261,11 +258,6 @@ public class Utils {
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-
-//        final int realRight = location[0] + view.getWidth();
-//        final int realBottom = location[1] + view.getHeight();
-//
-//        Log.e(TAG, "mBtnUnRock realRight is " + realRight + " realBottom " + realBottom);
 
         return location;
     }

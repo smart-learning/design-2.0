@@ -13,6 +13,7 @@ import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
 import { observer } from "mobx-react";
+import firebase from 'react-native-firebase';
 
 @observer class App extends React.Component {
 
@@ -42,31 +43,44 @@ import { observer } from "mobx-react";
 		Native.updateSettings();
 	};
 
+	initFCM = async () => {
+		const fcmToken = await firebase.messaging().getToken();
+		if (fcmToken) {
+			console.log( 'fcmToken', fcmToken );
+			// 토큰 있음
+		} else {
+			console.log( '유저가 토큰을 가지고 있지 않음' );
+			// 유저가 토큰을 가지고 있지 않음
+		}
+	};
 
 
 	constructor(prop) {
 		super(prop);
-		this.subscription = null;
+		this.subscription = [];
 
 		this.getTokenFromAsyncStorage();
 		this.getAppSettings();
+		this.initFCM();
 	}
 
 	componentDidMount() {
-        this.subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
+		this.subscription.push( DeviceEventEmitter.addListener('miniPlayer', (params) => {
 			Native.toggleMiniPlayer( params.visible );
-		});
-		
+		}));
+		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
+			console.log( 'callback selectDatabase', params );
+		}));
+		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
+			Native.selectDownload( params );
+		}));
     }
 
-	componentDidMount() {
-
-		this.subscription = DeviceEventEmitter.addListener('selectDownload', (params) => {
-			Native.selectDownload( params );
-        });
-	}
 	componentWillUnmount() {
-		this.subscription.remove();
+		this.subscription.forEach( listener => {
+			listener.remove();
+		} );
+		this.subscription.length = 0;
 	}
 
  	render() {

@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
 	},
 	thumbnail: {
 		width: '100%',
-		paddingTop: '21%',
-		paddingBottom: '21%',
+		paddingTop: '17.3571428572%',
+		paddingBottom: '17.3571428572%',
 	},
 	mainTitleCenter: {
 		textAlign: 'center',
