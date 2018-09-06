@@ -13,6 +13,7 @@ import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
 import { observer } from "mobx-react";
+import firebase from 'react-native-firebase';
 
 @observer class App extends React.Component {
 
@@ -42,6 +43,16 @@ import { observer } from "mobx-react";
 		Native.updateSettings();
 	};
 
+	initFCM = async () => {
+		const fcmToken = await firebase.messaging().getToken();
+		if (fcmToken) {
+			console.log( 'fcmToken', fcmToken );
+			// 토큰 있음
+		} else {
+			console.log( '유저가 토큰을 가지고 있지 않음' );
+			// 유저가 토큰을 가지고 있지 않음
+		}
+	};
 
 
 	constructor(prop) {
@@ -50,6 +61,7 @@ import { observer } from "mobx-react";
 
 		this.getTokenFromAsyncStorage();
 		this.getAppSettings();
+		this.initFCM();
 	}
 
 	componentDidMount() {
