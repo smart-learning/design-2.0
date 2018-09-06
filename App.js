@@ -69,10 +69,12 @@ import firebase from 'react-native-firebase';
 			Native.toggleMiniPlayer( params.visible );
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
-			console.log( 'callback selectDatabase', params );
+			console.log( 'database receiveDownloadList:', params );
+			globalStore.downloadItems = params;
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
-			Native.selectDownload( params );
+			console.log( 'download receiveDownloadList:', params );
+			globalStore.downloadItems = params;
 		}));
     }
 
