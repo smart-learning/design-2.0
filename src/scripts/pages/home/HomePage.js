@@ -174,7 +174,7 @@ class HomePage extends React.Component {
 
 		this.store.windowWidth = windowWidth;
 		this.store.windowHeight = windowHeight;
-		this.store.slideHeight = windowWidth * 0.42;
+		this.store.slideHeight = windowWidth * 0.347;
 		this.store.clipRankContentSize = windowWidth - 85;
 
 		try {
@@ -206,8 +206,6 @@ class HomePage extends React.Component {
 	};
 
 	render() {
-		console.log( 'this.store', this.store );
-		// TODO: ViewPager 크기 및 위치 조정 필요
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ViewPager
