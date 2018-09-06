@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -192,12 +191,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     }
   }
 
-  @Deprecated
-  @ReactMethod
-  public void toast(String message) {
-    Toast.makeText(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
-  }
-
   /**
    * 웹 서버로 데이터 전송
    */
@@ -205,12 +198,13 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl );
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()) );
+    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
+    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
 
     new Thread() {
       public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET", Preferences.getWelaaaOauthToken(getCurrentActivity()), callback);
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
+            Preferences.getWelaaaOauthToken(getCurrentActivity()), callback);
       }
     }.start();
   }
@@ -231,7 +225,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
       StringBuffer sb = new StringBuffer();
 
-      Log.e(TAG, " response.code() is " + response.code() + " response " +body );
+      Log.e(TAG, " response.code() is " + response.code() + " response " + body);
 
       if (response.code() == 200) {
         if (callbackMethodName.contains("play/contents-info")) {
@@ -350,9 +344,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     historyObject.getString("start_seconds");
 
 //                    cid 값을 가져와서 셋팅 해주는 과정이 필요 .
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("id") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("played_at") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("start_seconds") );
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("id"));
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("played_at"));
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("start_seconds"));
 
                     contentName = json.getString("title");
 
@@ -488,9 +485,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     historyObject.getString("played_at");
                     historyObject.getString("start_seconds");
 
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("id") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("played_at") );
-                    Log.e(TAG , "contentType "+contentType+" history Object " + historyObject.getString("start_seconds") );
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("id"));
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("played_at"));
+                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
+                        .getString("start_seconds"));
 
 //                    cid 값을 가져와서 셋팅 해주는 과정이 필요 .
 
@@ -632,8 +632,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             e.printStackTrace();
           }
         }
-      }else{
-        
+      } else {
+
       }
     }
   };

@@ -55,7 +55,6 @@ export default {
 	toggleMiniPlayer(bool) {
 		console.log('toggleMiniPlayer:', bool);
 		globalStore.miniPlayerVisible = bool;
-		RNNativePlayer.toast('playbackState: ' + bool);
 	},
 
 
