@@ -1817,6 +1817,7 @@
 //
 - (void) openTimerSelectView
 {
+    NSLog(@"  [openTimerSelectView]");
     if ( _playerSleepTimerSelectView )
     {
         return ;
@@ -1841,6 +1842,7 @@
 
 - (void) setTimerMode : (NSString *) text
 {
+    NSLog(@"  [setTimerMode] : %@", text);
     if ( [@"사용안함" isEqualToString : text] )
     {
         if ( [IFSleepTimerManager sharedInstance].isAlive )
@@ -1902,9 +1904,13 @@
                                      stopEpisodeMode : isEpisodeStop];
 }
 
+//
+// 슬립타이머 선택 뷰를 닫습니다.
+//
 - (void) playerSleepTimerView : (PlayerSleepTimerView *) view
-                    closeView : (id)sender
+                    closeView : (id) sender
 {
+    NSLog(@"  [playerSleepTimerView:closeView:]");
     if ( _playerSleepTimerSelectView )
     {
         [_playerSleepTimerSelectView removeFromSuperview];
@@ -1915,14 +1921,29 @@
 - (void) playerSleepTimerView : (PlayerSleepTimerView *) view
               didSelectedTime : (NSString *) time
 {
+    NSLog(@"  [playerSleepTimerView:didSelectedTime:]");
     [self setTimerMode : time];
 }
 
-/*
- *
- * 더 많은 PlayerSleepTimer method 들의 구현이 필요합니다.
- *
- */
+- (void) secondFromSleepTimerManager : (NSInteger) second
+{
+    if ( _sleepButton && second >= 0 )
+    {
+        [_sleepButton setText : [common convertTimeToString : (float) second
+                                                     Minute : YES]];
+    }
+}
+
+- (void) finishFromSleepTimerManager
+{
+    if ( _sleepButton )
+    {
+        [_sleepButton setStatus : 0];
+        [_sleepButton setText : @""];
+    }
+  
+    [self pressedPauseButton];
+}
 
 # pragma mark - Contents Pop-up List
 //
