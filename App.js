@@ -70,11 +70,11 @@ import firebase from 'react-native-firebase';
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
 			console.log( 'database receiveDownloadList:', params );
-			globalStore.downloadItems = params;
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
 			console.log( 'download receiveDownloadList:', params );
-			globalStore.downloadItems = params;
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
 		}));
     }
 
