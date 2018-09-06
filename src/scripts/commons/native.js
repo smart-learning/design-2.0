@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import {NativeModules} from 'react-native';
+import React from 'react';
+import {NativeModules, Platform} from 'react-native';
 import globalStore from '../commons/store';
 
 
@@ -32,9 +32,16 @@ export default {
 
 			cid: cid,
 			oid: oid,
-			userId: "" + userId, // 825  ,
+			userId: "93",// + userId, // 825  ,
 			token: accessToken // bearer token
 		};
+
+		if (Platform.OS === 'android') {
+			;
+		} else {
+			args.cid = 'v100015_001';
+			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8';
+		}
 
 		console.log('native.play()', JSON.stringify(args));
 
@@ -45,8 +52,9 @@ export default {
 			} catch (e) {
 				alert(e);
 			}
-
-			this.toggleMiniPlayer(true);
+			// 2018.09.04 김중온
+			// 미니 플레이어는 네이티브 상태 값으로 제어함.
+			// this.toggleMiniPlayer(true);
 		}, 100);
 
 	},
@@ -54,7 +62,11 @@ export default {
 	toggleMiniPlayer(bool) {
 		console.log('toggleMiniPlayer:', bool);
 		globalStore.miniPlayerVisible = bool;
-		RNNativePlayer.toast('playbackState: ' + bool);
+	},
+
+	selectDownload(args) {
+		console.log('selectDownload:', args);
+		
 	},
 
 

@@ -40,6 +40,12 @@ typedef void (^kErrorBlock)(NSError *error);
                   returningResponse : (NSURLResponse **) response
                               error : (NSError **) error;
 
++ (NSDictionary *) getContentsInfoWithCgid : (NSString *) contentGroupID
+                             andHeaderInfo : (NSString *) authValue;
++ (NSDictionary *) getPlayDataWithCid : (NSString *) contentID
+                        andHeaderInfo : (NSString *) authValue;
++ (void) sendPlaybackProgress : (NSString *) authValue;
+
 - (void) setReachabilityStatusChangeBlock : (void (^)(NSInteger status)) block;
 - (BOOL) isConnectionWifi;
 - (BOOL) isConnectionCellular;

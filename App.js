@@ -6,6 +6,7 @@ import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
+import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
@@ -54,9 +55,16 @@ import { observer } from "mobx-react";
 	componentDidMount() {
         this.subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
 			Native.toggleMiniPlayer( params.visible );
-        });
+		});
+		
     }
 
+	componentDidMount() {
+
+		this.subscription = DeviceEventEmitter.addListener('selectDownload', (params) => {
+			Native.selectDownload( params );
+        });
+	}
 	componentWillUnmount() {
 		this.subscription.remove();
 	}
@@ -136,9 +144,9 @@ const AppDrawer = createDrawerNavigator(
 		// BottomControllerTEST: {
 		// 	screen: BottomControllerPage,
 		// },
-		// AndroidNativeCall: {
-		// 	screen: PlaygroundJune,
-		// }
+		AndroidNativeCall: {
+			screen: PlaygroundJune,
+		}
 	},
 
 	{

@@ -70,6 +70,16 @@ public class Utils {
 
     }
 
+    public static String welaaaAndroidDrmSchemeUuid(){
+        String welaaaAndroidDrmSchemeUuid = "widevine";
+        return  welaaaAndroidDrmSchemeUuid;
+    }
+
+    public static String welaaaDrmLicenseUrl(){
+        String welaaaDrmLicenseUrl = "http://tokyo.pallycon.com/ri/licenseManager.do";
+        return  welaaaDrmLicenseUrl;
+    }
+
     /************************************************************
      * Comment   :  Toast Massage
      ************************************************************/
@@ -104,6 +114,19 @@ public class Utils {
         }
 
         return timesplit[0] + "시간 " + timesplit[1] + "분 " + timesplit[2] + "초";
+    }
+
+    /************************************************************
+     * Comment   :  RETURN TIME
+     ************************************************************/
+    public static int webTimeToSec(String time) {
+        String[] timesplit = time.split(":");
+
+        if (timesplit[0].equals("00")) {
+            return ((Integer.parseInt(timesplit[1])*60)+(Integer.parseInt(timesplit[2])))*1000;
+        }
+
+        return ((Integer.parseInt(timesplit[0])*60*60)+(Integer.parseInt(timesplit[1])*60)+(Integer.parseInt(timesplit[2]))) *1000;
     }
 
     /************************************************************

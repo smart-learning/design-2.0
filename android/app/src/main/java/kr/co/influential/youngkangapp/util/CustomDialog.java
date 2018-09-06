@@ -1,5 +1,7 @@
 package kr.co.influential.youngkangapp.util;
 
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,23 +14,17 @@ import android.os.Message;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import kr.co.influential.youngkangapp.R;
-
 import java.io.InputStream;
-
-import static android.view.View.VISIBLE;
+import kr.co.influential.youngkangapp.R;
 
 public class CustomDialog extends Dialog {
 
-    private final String WELEARN_WEB_URL = Utils.welaaaWebUrl();
+    private final String WELEARN_WEB_URL = Utils.welaaaApiBaseUrl();
     private final String TAG = "CustomDialog";
 
     private String mTitle;
@@ -142,27 +138,27 @@ public class CustomDialog extends Dialog {
             mProgressBar = findViewById(R.id.myrepu_progress_bar);
             mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
-            CheckBox myRepuCheck = findViewById (R.id.myrepu_check_box);
+//            CheckBox myRepuCheck = findViewById (R.id.myrepu_check_box);
 
-            if(Preferences.getMyreCheckBox(getContext())){
-                myRepuCheck.setChecked(true);
-            }
-
-            myRepuCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(isChecked){
-                        Preferences.setMyreCheckBox(getContext() , true);
-
-                        Logger.e(TAG + " 20170904 setOnCheckedChangeListener is " + Preferences.getMyreCheckBox(getContext()));
-                    }else{
-                        Preferences.setMyreCheckBox(getContext() , false);
-
-                        Logger.e(TAG + " 20170904 setOnCheckedChangeListener is " + Preferences.getMyreCheckBox(getContext()));
-                    }
-                }
-            });
+//            if(Preferences.getMyreCheckBox(getContext())){
+//                myRepuCheck.setChecked(true);
+//            }
+//
+//            myRepuCheck.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+//
+//                @Override
+//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                    if(isChecked){
+//                        Preferences.setMyreCheckBox(getContext() , true);
+//
+//                        Logger.e(TAG + " 20170904 setOnCheckedChangeListener is " + Preferences.getMyreCheckBox(getContext()));
+//                    }else{
+//                        Preferences.setMyreCheckBox(getContext() , false);
+//
+//                        Logger.e(TAG + " 20170904 setOnCheckedChangeListener is " + Preferences.getMyreCheckBox(getContext()));
+//                    }
+//                }
+//            });
 
 
 
@@ -429,9 +425,9 @@ public class CustomDialog extends Dialog {
 
                 case R.id.modal_close:
                 {
-                    CheckBox myRepuCheck = findViewById (R.id.myrepu_check_box);
-                    boolean isMyRepuCheck = myRepuCheck.isChecked();
-                    Preferences.setMyreCheckBox(getContext(),isMyRepuCheck);
+//                    CheckBox myRepuCheck = findViewById (R.id.myrepu_check_box);
+//                    boolean isMyRepuCheck = myRepuCheck.isChecked();
+//                    Preferences.setMyreCheckBox(getContext(),isMyRepuCheck);
                 }
                 break;
             }
@@ -534,9 +530,9 @@ public class CustomDialog extends Dialog {
                     mMyRepuTimeRefeatHandler.removeCallbacksAndMessages(null);
                 }else{
 
-                    CheckBox myRepuCheck = findViewById (R.id.myrepu_check_box);
-                    boolean isMyRepuCheck = myRepuCheck.isChecked();
-                    Preferences.setMyreCheckBox(getContext(),isMyRepuCheck);
+//                    CheckBox myRepuCheck = findViewById (R.id.myrepu_check_box);
+//                    boolean isMyRepuCheck = myRepuCheck.isChecked();
+//                    Preferences.setMyreCheckBox(getContext(),isMyRepuCheck);
 
                     mMyRepuTimeRefeatHandler.sendEmptyMessageDelayed(0, 500);
                 }

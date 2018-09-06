@@ -18,17 +18,33 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-@import Firebase;
+@import UserNotifications;
 
-@interface AppDelegate ()
-
+@interface AppDelegate () <UNUserNotificationCenterDelegate>
 @end
 
 @implementation AppDelegate
 
+NSString *const kGCMMessageIDKey = @"gcm.message_id";
+
 - (BOOL)          application : (UIApplication *) application
 didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 {
+    // 1.0 로그인 유저의 F_Token을 확인합니다.
+    NSString *webToken = [[NSUserDefaults standardUserDefaults] stringForKey : @"webToken"];
+    //if ( nil == webToken )
+    //{
+        //webToken = @"NO_F_TOKEN";
+    //}
+    NSLog(@"  webToken : %@", webToken);
+  
+    // Push notification badge reset. 앱이 완전히 재구동되어야 뱃지가 디카운팅이 됨. 백그라운드에서 돌아올때는 여기서 리셋되지는 않습니다.
+    if ( [UIApplication sharedApplication].applicationIconBadgeNumber != 0 )
+    {
+        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+        NSLog(@"  All push badges removed.");
+    }
+  
     // Background Playback Enabled
     // Allow the app sound to continue to play when the screen is locked.
     //https://stackoverflow.com/questions/4771105/how-do-i-get-my-avplayer-to-play-while-app-is-in-background
@@ -36,9 +52,14 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                            error : nil];
   
     NSURL *jsCodeLocation;
-  
+
+#ifdef DEBUG
     jsCodeLocation = [ [RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot : @"index"
                                                                      fallbackResource : nil     ];
+#else
+    jsCodeLocation = [ [NSBundle mainBundle] URLForResource : @"main"
+                                              withExtension : @"jsbundle" ];
+#endif
   
     RCTRootView *rootView = [ [RCTRootView alloc] initWithBundleURL : jsCodeLocation
                                                          moduleName : @"WelaaaV2"
@@ -64,26 +85,66 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     // Use Firebase library to configure APIs
     [FIRApp configure];
   
+    // Set messaging delegate
+    [FIRMessaging messaging].delegate = self;
   
+    // Register for remote notifications.
+    // This shows a permission dialog on first run, to show the dialog at a more appropriate time move this registration accordingly.
+    if ( [UNUserNotificationCenter class] != nil )
+    {
+        // iOS 10 or later
+        // For iOS 10 display notification (sent via APNS)
+        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+        UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
+        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions : authOptions
+                                                                            completionHandler : ^(BOOL granted, NSError * _Nullable error)
+        {
+          //[[UIApplication sharedApplication] registerForRemoteNotifications];
+        }];
+    }
+    else
+    {
+      // iOS 10 notifications aren't available; fall back to iOS 8-9 notifications.
+      /*
+      UIUserNotificationType allNotificationTypes = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+      UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
+      [application registerUserNotificationSettings:settings];
+      */
+    }
+  
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+  
+  
+  
+    NSString *fcmToken = [FIRMessaging messaging].FCMToken;
+    NSLog(@"  FCM registration token: %@", fcmToken);
+  
+    NSLog(@"  [DeviceInfo] This model    :  %@", [common getModel]);     // 171025 김태현
+    NSLog(@"  [DeviceInfo] idForVendor   :  %@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);  // 171025 김태현
+    NSLog(@"  [DeviceInfo] Cellular Type :  %@", [common getCellularType]);
+    NSLog(@"  [DeviceInfo] Device Name   :  %@", [[UIDevice currentDevice] name]);
+    [common getNetInterfaceNames];
   
     return YES;
 }
 
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-                                      sourceApplication:(NSString *)sourceApplication
-                                             annotation:(id)annotation {
+#pragma mark - Open URL
+- (BOOL) application : (UIApplication *) application
+             openURL : (NSURL *) url
+   sourceApplication : (NSString *) sourceApplication
+          annotation : (id) annotation
+{
+    if ( [KOSession isKakaoAccountLoginCallback : url] )
+    {
+      return [KOSession handleOpenURL : url];
+    }
   
-  if ([KOSession isKakaoAccountLoginCallback:url]) {
-    return [KOSession handleOpenURL:url];
-  }
-  
-  return YES;
+    return YES;
 }
 
-
-- (BOOL) application : (UIApplication *) application openURL : (NSURL *) url
-                                                     options : (NSDictionary<UIApplicationOpenURLOptionsKey, id> *) options
+- (BOOL) application : (UIApplication *) application
+             openURL : (NSURL *) url
+             options : (NSDictionary<UIApplicationOpenURLOptionsKey, id> *) options
 {
     BOOL handled = [ [FBSDKApplicationDelegate sharedInstance] application : application
                                                                    openURL : url
@@ -122,6 +183,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 
 //
 // 앱 활성화 로깅
+// 일시적으로 Springboard에서 pause상태에서 다시 active상태로 돌아올때 호출됩니다.
 //
 - (void) applicationDidBecomeActive : (UIApplication *) application
 {
@@ -129,9 +191,161 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     UIView *colorView = [self.window viewWithTag : 9999];
     [colorView removeFromSuperview];
   
+    // Push notification badge reset. 백그라운드에서 돌아올 때 리셋됩니다.
+    if ( [UIApplication sharedApplication].applicationIconBadgeNumber != 0 )
+    {
+        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+        NSLog(@"  All push badges removed.");
+    }
+  
     [FBSDKAppEvents activateApp];
   
     [KOSession handleDidBecomeActive];
+  //[self connectToFcm];
+}
+
+#pragma mark - Firebase Cloud Messaging
+/*
+ * https://github.com/firebase/quickstart-ios/blob/master/messaging/MessagingExample/ViewController.m
+ * 정상적인 구현 및 테스트가 완료되면 불필요한 코드를 추후에 제거해야 합니다.
+ */
+
+//
+// Start receive message
+//
+- (void)         application : (UIApplication *) application
+didReceiveRemoteNotification : (NSDictionary *) userInfo
+{
+    // If you are receiving a notification message while your app is in the background,
+    // this callback will not be fired till the user taps on the notification launching the application.
+    // TODO: Handle data of notification
+  
+    // With swizzling disabled you must let Messaging know about the message, for Analytics
+    // [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
+  
+    // Print message ID.
+    if ( userInfo[kGCMMessageIDKey] )
+    {
+        NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+    }
+  
+    // Print full message.
+    NSLog(@"  %@", userInfo);
+}
+- (void)         application : (UIApplication *) application
+didReceiveRemoteNotification : (NSDictionary *) userInfo
+      fetchCompletionHandler : (void (^) (UIBackgroundFetchResult)) completionHandler
+{
+    // If you are receiving a notification message while your app is in the background,
+    // this callback will not be fired till the user taps on the notification launching the application.
+    // TODO: Handle data of notification
+  
+    // With swizzling disabled you must let Messaging know about the message, for Analytics
+    // [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
+  
+    // Print message ID.
+    if ( userInfo[kGCMMessageIDKey] )
+    {
+      NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+    }
+  
+    // Print full message.
+    NSLog(@"  %@", userInfo);
+  
+    completionHandler(UIBackgroundFetchResultNewData);
+}
+
+//
+// START ios_10_message_handling
+// Receive displayed notifications for iOS 10 devices.
+// Handle incoming notification messages while app is in the foreground.
+//
+- (void) userNotificationCenter : (UNUserNotificationCenter *) center
+        willPresentNotification : (UNNotification *) notification
+          withCompletionHandler : (void (^) (UNNotificationPresentationOptions)) completionHandler
+{
+    NSDictionary *userInfo = notification.request.content.userInfo;
+  
+    // With swizzling disabled you must let Messaging know about the message, for Analytics
+    // [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
+  
+    // Print message ID.
+    if ( userInfo[kGCMMessageIDKey] )
+    {
+        NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+    }
+  
+    // Print full message.
+    NSLog(@"  %@", userInfo);
+  
+    // Change this to your preferred presentation option
+    completionHandler(UNNotificationPresentationOptionNone);
+}
+
+// Handle notification messages after display notification is tapped by the user.
+- (void) userNotificationCenter : (UNUserNotificationCenter *) center
+ didReceiveNotificationResponse : (UNNotificationResponse *) response
+          withCompletionHandler : (void(^) (void)) completionHandler
+{
+    NSDictionary *userInfo = response.notification.request.content.userInfo;
+  
+    if ( userInfo[kGCMMessageIDKey] )
+    {
+      NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+    }
+  
+    // Print full message.
+    NSLog(@"  %@", userInfo);
+  
+    completionHandler();
+}
+// [END ios_10_message_handling]
+
+//
+// Refresh token
+//
+- (void)          messaging : (FIRMessaging *) messaging
+didReceiveRegistrationToken : (NSString *) fcmToken
+{
+    NSLog(@"FCM registration token: %@", fcmToken);
+    // Notify about received token.
+    NSDictionary *dataDict = [NSDictionary dictionaryWithObject : fcmToken
+                                                         forKey : @"token"];
+    [[NSNotificationCenter defaultCenter] postNotificationName : @"FCMToken"
+                                                        object : nil
+                                                      userInfo : dataDict];
+    // TODO: If necessary send token to application server.
+    // Note: This callback is fired at each app startup and whenever a new token is generated.
+}
+
+//
+// iOS 10 data message
+// Receive data messages on iOS 10+ directly from FCM (bypassing APNs) when the app is in the foreground.
+// To enable direct data messages, you can set [Messaging messaging].shouldEstablishDirectChannel to YES.
+//
+- (void) messaging : (FIRMessaging *) messaging
+ didReceiveMessage : (FIRMessagingRemoteMessage *) remoteMessage
+{
+    NSLog(@"  Received data message: %@", remoteMessage.appData);
+}
+
+- (void)                             application : (UIApplication *) application
+didFailToRegisterForRemoteNotificationsWithError : (NSError *) error
+{
+    NSLog(@"  Unable to register for remote notifications: %@", error);
+}
+
+//
+// This function is added here only for debugging purposes, and can be removed if swizzling is enabled.
+// If swizzling is disabled then this function must be implemented so that the APNs device token can be paired to the FCM registration token.
+//
+- (void)                             application : (UIApplication *) application
+didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
+{
+    NSLog(@"  APNs device token retrieved: %@", deviceToken);
+  
+    // With swizzling disabled you must set the APNs device token here.
+    // [FIRMessaging messaging].APNSToken = deviceToken;
 }
 
 #pragma mark - Core Data stack

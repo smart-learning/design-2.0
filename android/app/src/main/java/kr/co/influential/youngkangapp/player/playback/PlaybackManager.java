@@ -13,9 +13,10 @@ import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconServerResponseException;
-import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import java.util.Iterator;
 import java.util.Map;
+import kr.co.influential.youngkangapp.player.utils.LogHelper;
+import kr.co.influential.youngkangapp.util.Utils;
 
 /**
  * Manage the interactions among the container service, the queue manager and the actual playback.
@@ -403,10 +404,13 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     String token = extras.getString(PlaybackManager.DRM_TOKEN);
     String thumbUrl = extras.getString(PlaybackManager.THUMB_URL);
     String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
+    String duration = extras.getString("duration");
 
     MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
     builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
     builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
+    builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION ,
+        Utils.webTimeToSec(duration));
     // drm information.
     builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
     builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA, drmSchemeUuid);

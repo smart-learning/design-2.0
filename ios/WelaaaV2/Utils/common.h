@@ -14,8 +14,10 @@
 
 #define SYSTEM_VERSION  [[UIDevice currentDevice] systemVersion]
 
-#define BASE_DOMAIN     [[NSUserDefaults standardUserDefaults] objectForKey:@"domain"] ?: @"welaaa.co.kr"
-#define TEST_DOMAIN     [[NSUserDefaults standardUserDefaults] objectForKey:@"domain"] ?: @"welaaa.co.kr"  //  @"welearn.co.kr" 에서 재생 테스트가 안되서 임시로..
+#define BASE_DOMAIN   [[NSUserDefaults standardUserDefaults] objectForKey:@"domain"] ?: @"welaaa.co.kr"
+#define TEST_DOMAIN   [[NSUserDefaults standardUserDefaults] objectForKey:@"domain"] ?: @"welaaa.co.kr"  //  @"welearn.co.kr" 에서 재생 테스트가 안되서 임시로..
+
+#define API_HOST  @"https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com"
 
 
 #define nullStr(str) (str==nil || [str isEqualToString:@""])

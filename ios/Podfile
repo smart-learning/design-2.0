@@ -6,10 +6,7 @@ target 'WelaaaV2' do
   # use_frameworks!
 
   # Pods for WelaaaV2
-  pod 'AFNetworking'
-  pod 'SAMKeychain'
-  pod 'Toast'
-
+  
   # Firebase Analytics + Firebase Cloud Message
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
@@ -27,25 +24,17 @@ target 'WelaaaV2' do
   # KakaoOpenSDK
   pod 'KakaoOpenSDK'
 
-  # Video Player
-  # pod 'PlayerKit'
-
-  # Realm Swift
-  #pod 'RealmSwift'
-
-  #pod 'RNIap', :path => '../node_modules/react-native-iap'
-
-#  pod 'react-native-video', :path => '../node_modules/react-native-video'
-
+  # AFNetworking
+  pod 'AFNetworking', '~> 3.0'
+  
+  # KeyChain
+  pod 'SAMKeychain'
+  
+  # Toast message
+  pod 'Toast', '~> 4.0.0'
 
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
-
-  #pod 'RNIap', :path => '../node_modules/react-native-iap'
-
-#  pod 'react-native-video', :path => '../node_modules/react-native-video'
-
-  pod 'react-native-version-number', :path => '../node_modules/react-native-version-number'
 
 end
 use_frameworks!
