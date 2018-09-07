@@ -1043,9 +1043,10 @@
 - (void) pressedCloseButton
 {
   //[self toastTestAlert];
-    [self closePlayer];
   
-    //[self showToast : @"미니플레이어로 변환합니다."];
+  //[self closePlayer];
+  
+  //[self showToast : @"미니플레이어로 변환합니다."];
   /*
   self.isMiniPlayer = YES;
   _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
@@ -1069,6 +1070,11 @@
   [self.recommendViewController setDataWithCurrentCkey: @"405"];
   [self.view addSubview: self.recommendViewController.view];
   */
+  
+  /*
+   
+   */
+  [ApiManager sendPlaybackProgress : [_args objectForKey : @"token"]];
 }
 
 - (void) pressedRateStarButton

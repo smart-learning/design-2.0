@@ -384,11 +384,14 @@
 //
 + (void) sendPlaybackProgress : (NSString *) authValue
 {
-    NSString *apiPlayData = @"/dev/api/v1.0/play/progress/"; // dev -> ?
-    NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, @"parameters_not_set"];//b300200_001 와 같은 content_ID
+    NSString *apiProgress = @"/dev/api/v1.0/play/progress"; // dev -> ?
+    NSString *urlWithParams = [NSString stringWithFormat : @"%@%@", API_HOST, apiProgress];
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
     NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
+  
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
   
     [request setHTTPMethod : @"POST"];
     // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
@@ -397,6 +400,22 @@
   
     NSError *error;
     NSURLResponse *resp = nil;
+  
+    NSMutableDictionary *dictionary;
+    dictionary = [@{@"action"     : @"ING",
+                    @"cid"        : @"string",
+                    @"duration"   : @0,
+                    @"end"        : @0,
+                    @"error"      : @"string",
+                    @"net_status" : @"string",
+                    @"platform"   : @"iphone",
+                    @"start"      : @0} mutableCopy];
+  
+    NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
+                                                       options : 0
+                                                         error : &error];
+    [request setHTTPBody : postData];
+  
     // 비동기방식이 아닌 동기방식으로 접속합니다.
     NSData *data = [ApiManager sendSynchronousRequest : request
                                     returningResponse : &resp
@@ -408,6 +427,8 @@
     NSDictionary *playDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
                                                                  options : NSJSONReadingAllowFragments
                                                                    error : &error];
+  
+    NSLog(@"  [sendPlaybackProgress] result : %@", playDataDics);
   
     return ;
 }
