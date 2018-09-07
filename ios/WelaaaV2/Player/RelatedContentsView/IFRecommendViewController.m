@@ -91,11 +91,7 @@
 
 @implementation IFRecommendViewController
 
-NSMutableArray *masterDataArray;
-NSMutableArray *slaveDataArray0;
-NSMutableArray *slaveDataArray1;
-NSMutableArray *slaveDataArray2;
-NSString *currentCkey;
+NSMutableArray *_dataArray;
 
 - (void) viewDidLoad
 {
@@ -105,8 +101,8 @@ NSString *currentCkey;
     testView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     testView.dataSource = self;
     testView.delegate = self;
-    [testView registerClass:[CustomCollectionViewCell class] forCellWithReuseIdentifier:@"CollectionViewCell"];
-    [testView registerClass:[CustomBackgroundView class] forSectionBackgroundViewWithReuseIdentifier:@"Cell"];
+    [testView registerClass : [CustomCollectionViewCell class] forCellWithReuseIdentifier : @"CollectionViewCell"];
+    [testView registerClass : [CustomBackgroundView class] forSectionBackgroundViewWithReuseIdentifier : @"Cell"];
     [self.view addSubview : testView];
 }
 
@@ -116,56 +112,31 @@ NSString *currentCkey;
 }
 
 // IFContentsPlayerView에서 리스트의 마지막 영상이 끝나면 ckey를 여기로 전달하여 세팅합니다.
-- (void) setDataWithCurrentCkey : (NSString *) ckeyFromPlayer
+- (void) setDataWithCurrentCgid : (NSString *) cgidFromPlayer
 {
-    currentCkey = ckeyFromPlayer;
-#if APPSTORE | ADHOC
-    NSString *playlistSuggestUrl = [NSString stringWithFormat : @"http://%@/usingapp/playlist_suggest.php", BASE_DOMAIN];
-#else
-    NSString *playlistSuggestUrl = [NSString stringWithFormat : @"http://%@/usingapp/playlist_suggest.php", TEST_DOMAIN];
-#endif
-    NSString *post = [NSString stringWithFormat : @"ckey=%@", ckeyFromPlayer];
-    NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
-    
+    NSString *playlistSuggestUrl = [NSString stringWithFormat : @"https://api-dev.welaaa.com/api/v1.0/contents/playlist-suggest/%@", cgidFromPlayer];
+    NSLog(@"  URL : %@", playlistSuggestUrl);
+  
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", playlistSuggestUrl]]];
-    [request setHTTPBody : postData];
-    [request setHTTPMethod : @"POST"];
+    [request setHTTPMethod : @"GET"];
     NSError *error;
     NSURLResponse *resp = nil;
     // 비동기방식이 아닌 동기방식으로 접속합니다.
-    NSData *data = [NSURLConnection sendSynchronousRequest : request
-                                         returningResponse : &resp
-                                                     error : &error];
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
     
     NSString *jsonDataStr = [[NSString alloc] initWithData : data
                                                   encoding : NSUTF8StringEncoding];
-    
+
     NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonDataStr dataUsingEncoding : NSUTF8StringEncoding]
                                                                  options : NSJSONReadingAllowFragments
                                                                    error : &error];
-    
-    NSDictionary *statusDictionary = jsonResponse[@"status"];
-    NSDictionary *dataDictionary = jsonResponse[@"data"];
-    
-    // status가 200이면 정상이므로 뷰를 그려야하고, 아니라면 연관 컨텐츠 뷰를 뿌릴 일 없이 pass시켜야 합니다.
-    if ( [[statusDictionary description] isEqualToString : @"200"] )
-    {
-        masterDataArray = [dataDictionary mutableCopy];   // dataDictionary는 'array of dictionaries'구조이므로 통째로 배열로 copy하였습니다.
-      //NSLog(@"아래 3개의 타이틀은 연관 컨텐츠 뷰에서 3개의 CollectionView상단의 header에 넣을 제목입니다.");
-        for ( int i = 0; i < [masterDataArray count]; i++ )
-        {
-          //NSLog(@"  title [%d] = %@", i, [[masterDataArray objectAtIndex : i] valueForKey : @"title"]);
-        }
-        
-        NSMutableDictionary *tempDict;
-        tempDict = [[[masterDataArray objectAtIndex : 0] valueForKey : @"data"] mutableCopy];
-        slaveDataArray0 = [tempDict mutableCopy];
-        tempDict = [[[masterDataArray objectAtIndex : 1] valueForKey : @"data"] mutableCopy];
-        slaveDataArray1 = [tempDict mutableCopy];
-        tempDict = [[[masterDataArray objectAtIndex : 2] valueForKey : @"data"] mutableCopy];
-        slaveDataArray2 = [tempDict mutableCopy];
-    }
+    _dataArray = [jsonResponse mutableCopy];
+    NSLog(@"  추천영상0 : %@", _dataArray[0]);
+    NSLog(@"  추천영상1 : %@", _dataArray[1]);
+    NSLog(@"  추천영상2 : %@", _dataArray[2]);
 }
 
 #pragma mark - customedCollectionView DataSource
@@ -175,15 +146,18 @@ NSString *currentCkey;
 {
     if ( section == 0 )
     {
-        return [slaveDataArray0 count];
+        NSLog(@"  _dataArray[0][items] count: %lu", [_dataArray[0][@"items"] count]);
+        return [_dataArray[0][@"items"] count];
     }
     else if ( section == 1 )
     {
-        return [slaveDataArray1 count];
+        NSLog(@"  _dataArray[1][items] count: %lu", [_dataArray[1][@"items"] count]);
+        return [_dataArray[1][@"items"] count];
     }
     else if ( section == 2 )
     {
-        return [slaveDataArray2 count];
+        NSLog(@"  _dataArray[2][items] count: %lu", [_dataArray[2][@"items"] count]);
+        return [_dataArray[2][@"items"] count];
     }
     
     return 6;
@@ -243,23 +217,23 @@ NSString *currentCkey;
     
     NSURL *imageUrl;
     UIImage *image;
-    NSMutableArray *tempArray;
+    NSDictionary *tempData;
     
     if ( indexPath.section == 0 )
     {
-        tempArray = [slaveDataArray0 mutableCopy];
+        tempData = [_dataArray[0] mutableCopy];
     }
     else if ( indexPath.section == 1 )
     {
-        tempArray = [slaveDataArray1 mutableCopy];
+        tempData = [_dataArray[1] mutableCopy];
     }
     else if ( indexPath.section == 2 )
     {
-        tempArray = [slaveDataArray2 mutableCopy];
+        tempData = [_dataArray[2] mutableCopy];
     }
-    
-    titleLabel.text = [[tempArray objectAtIndex : indexPath.row] valueForKey : @"cname"];
-    imageUrl = [NSURL URLWithString : [[tempArray objectAtIndex : indexPath.row] valueForKey : @"clist_img"]];
+  
+    titleLabel.text = tempData[@"items"][indexPath.row][@"title"];
+    imageUrl = [NSURL URLWithString : tempData[@"items"][indexPath.row][@"images"][@"wide"]];
     numberLabel.text = [NSString stringWithFormat : @"%ld", indexPath.row+1];    // 0번부터 시작하므로 +1 처리하였습니다.
     
     image = [UIImage imageWithData : [NSData dataWithContentsOfURL : imageUrl]];
@@ -300,18 +274,18 @@ NSString *currentCkey;
     
     if ( indexPath.section == 0 )
     {
-        ckey = [[[slaveDataArray0 objectAtIndex : indexPath.row] valueForKey : @"ckey"] stringValue];
-        gkey = [[[slaveDataArray0 objectAtIndex : indexPath.row] valueForKey : @"groupkey"] stringValue];
+        //ckey = [[[slaveDataArray0 objectAtIndex : indexPath.row] valueForKey : @"ckey"] stringValue];
+        //gkey = [[[slaveDataArray0 objectAtIndex : indexPath.row] valueForKey : @"groupkey"] stringValue];
     }
     else if ( indexPath.section == 1 )
     {
-        ckey = [[[slaveDataArray1 objectAtIndex : indexPath.row] valueForKey : @"ckey"] stringValue];
-        gkey = [[[slaveDataArray1 objectAtIndex : indexPath.row] valueForKey : @"groupkey"] stringValue];
+        //ckey = [[[slaveDataArray1 objectAtIndex : indexPath.row] valueForKey : @"ckey"] stringValue];
+        //gkey = [[[slaveDataArray1 objectAtIndex : indexPath.row] valueForKey : @"groupkey"] stringValue];
     }
     else if ( indexPath.section == 2 )
     {
-        ckey = [[[slaveDataArray2 objectAtIndex: indexPath.row] valueForKey: @"ckey"] stringValue];
-        gkey = [[[slaveDataArray2 objectAtIndex: indexPath.row] valueForKey: @"groupkey"] stringValue];
+        //ckey = [[[slaveDataArray2 objectAtIndex: indexPath.row] valueForKey: @"ckey"] stringValue];
+        //gkey = [[[slaveDataArray2 objectAtIndex: indexPath.row] valueForKey: @"groupkey"] stringValue];
     }
     
     AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];

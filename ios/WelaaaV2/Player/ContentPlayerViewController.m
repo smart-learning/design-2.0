@@ -1061,20 +1061,18 @@
   */
   
   // 연관 컨텐츠 뷰를 로딩합니다.
-  /*
-   // API : /dev/api/v1.0/contents/video-series
+   // API : https://api-dev.welaaa.com/api/v1.0/contents/playlist-suggest/v100001
    
-  NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
-  // 헤더 제목을 위해 IFCollectionView클래스에도 ckey를 보내야할 수도 있습니다.
-  self.recommendViewController = [[IFRecommendViewController alloc] init];
-  [self.recommendViewController setDataWithCurrentCkey: @"405"];
-  [self.view addSubview: self.recommendViewController.view];
-  */
+    NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
+    // 오디오북은 연관컨텐츠뷰를 띄우면 안됩니다.
+    self.recommendViewController = [[IFRecommendViewController alloc] init];
+    NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
+    [self.recommendViewController setDataWithCurrentCgid : chunks[0]];
+    [self.view addSubview : self.recommendViewController.view];
   
-  /*
-   
-   */
-  [ApiManager sendPlaybackProgress : [_args objectForKey : @"token"]];
+  
+    // 진도 데이터 전송.
+  //[ApiManager sendPlaybackProgress : [_args objectForKey : @"token"]];
 }
 
 - (void) pressedRateStarButton
