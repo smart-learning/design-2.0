@@ -170,12 +170,9 @@ class SignUpLandingPage extends React.Component {
 
 	render() {
 		return <View style={[CommonStyles.container, styles.landingContainer]}>
-			<View style={styles.logoWrap}>
-				<Image source={logo} style={styles.logo}/>
-			</View>
 
 			{/* 이미지 스와이퍼 */}
-			<View style={{height: this.state.slideHeight}}>
+			<View style={{width: '100%', height: this.state.slideHeight}}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
 						height={window.width}
