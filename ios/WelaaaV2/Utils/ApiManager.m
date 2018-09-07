@@ -433,6 +433,38 @@
     return ;
 }
 
+//
+// 자막 데이터를 가져옵니다.
+//
++ (NSArray *) getSubtitles : (NSString *) contentID
+{
+    if ( [contentID hasPrefix : @"b"] )
+        return @[];
+  
+    NSString *subtitlesUrl = [NSString stringWithFormat : @"https://api-dev.welaaa.com/api/v1.0/play/contents-smi/%@", contentID];
+  
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", subtitlesUrl]]];
+    [request setHTTPMethod : @"GET"];
+    NSError *error;
+    NSURLResponse *resp = nil;
+    // 비동기방식이 아닌 동기방식으로 접속합니다.
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
+  
+    NSString *jsonDataStr = [[NSString alloc] initWithData : data
+                                                  encoding : NSUTF8StringEncoding];
+  
+    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonDataStr dataUsingEncoding : NSUTF8StringEncoding]
+                                                                 options : NSJSONReadingAllowFragments
+                                                                   error : &error];
+  
+    NSArray *array = [jsonResponse mutableCopy];
+  
+    return array;
+}
+
 @end
 
 

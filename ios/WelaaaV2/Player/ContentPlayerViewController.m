@@ -2004,18 +2004,7 @@
 # pragma mark - Script View
 - (NSArray *) readScript
 {
-    // 로컬에 있는 json을 읽어와서 일단 nslog로 출력해보겠습니다.
-    NSString *jsonPath = [[NSBundle mainBundle] pathForResource : @"subtitles"
-                                                         ofType : @"json"];
-    NSData *data = [NSData dataWithContentsOfFile : jsonPath];
-    NSError *error = nil;
-    id json = [NSJSONSerialization JSONObjectWithData : data
-                                              options : kNilOptions
-                                                error : &error];
-  
-    //NSLog(@"  [pressedListButton] JSON output : %@", json);
-    // 잘 읽어옵니다.
-    return json;
+    return [ApiManager getSubtitles : [_args objectForKey : @"cid"]];
 }
 - (void) initScriptUi
 {
