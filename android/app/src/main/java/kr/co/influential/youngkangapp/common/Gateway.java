@@ -4,7 +4,7 @@ import kr.co.influential.youngkangapp.BuildConfig;
 
 public enum Gateway {
   DEBUG("https://", "api-dev", "demo", "welaaa.com"),
-  RELEASE("https://", "api", "demo", "welaaa.com");
+  RELEASE("https://", "api-dev", "demo", "welaaa.com");
 
   String protocol;
   String apiHost;

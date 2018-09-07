@@ -567,14 +567,15 @@ public final class LocalPlayback implements Playback {
           break;
         case Player.STATE_ENDED:
           // The media player finished playing the current media.
-
-          Log.e(TAG, " Player.STATE_ENDED ! ");
-          if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
-            doAutoPlay();
-          }
-
           if (mCallback != null) {
+            // PlayerActivity O
             mCallback.onCompletion();
+          } else {
+            // PlayerActivity X
+            if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
+              // Meta Data 갱신 안됨 .. 2018.09.05
+              doAutoPlay();
+            }
           }
           break;
       }
@@ -1004,7 +1005,6 @@ public final class LocalPlayback implements Playback {
 
     sendData(API_BASE_URL + callbackMethodName + mWebPlayerInfo.getCkey()[nextPosition],
         callbackMethodName);
-
   }
 
   /**
@@ -1170,7 +1170,6 @@ public final class LocalPlayback implements Playback {
 
               attachPlayerView();
               configurePlayerState();
-
 
 
             }
