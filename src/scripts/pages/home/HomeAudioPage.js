@@ -21,6 +21,7 @@ import BookContinueList from "../../components/home/BookCoutinueList";
 import PTRView from 'react-native-pull-to-refresh';
 import moment from "moment";
 import ClassContinueList from "../../components/home/ClassContinueList";
+import BookDailyList from "../../components/home/BookDailyList";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -148,6 +149,11 @@ class HomeAudioPage extends React.Component {
 
 					<View style={styles.monthContainer}>
 						<BookMonthly itemData={this.props.store.audioMonth} voucherStatus={ this.props.store.voucherStatus }/>
+					</View>
+
+					{/*매일 책 한 권*/}
+					<View style={CommonStyles.contentContainer}>
+						<BookDailyList />
 					</View>
 
 					<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>
