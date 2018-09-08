@@ -128,18 +128,18 @@ export default {
 			});
 	},
 
-	getClassList( ccode = null, page = 1 ) {
+	getClassList(ccode = null, page = 1) {
 		let url = API_PREFIX + 'contents/video-courses';
 		const params = {};
-		if( ccode ) {
+		if (ccode) {
 			params.ccode = ccode;
 		}
-		if( page ) {
+		if (page) {
 			params.page = page;
 		}
-		url += '?' + encodeParams( params );
-		return cacheOrLoad( url, DEFAULT_EXPIRED )
-			.then( data => {
+		url += '?' + encodeParams(params);
+		return cacheOrLoad(url, DEFAULT_EXPIRED)
+			.then(data => {
 				return data;
 			})
 			.catch(error => {
@@ -157,18 +157,18 @@ export default {
 			});
 	},
 
-	getAudioBookList( ccode = null, page = 1 ) {
+	getAudioBookList(ccode = null, page = 1) {
 		let url = API_PREFIX + 'contents/audiobooks';
 		const params = {};
-		if( ccode ) {
+		if (ccode) {
 			params.ccode = ccode;
 		}
-		if( page ) {
+		if (page) {
 			params.page = page;
 		}
-		url += '?' + encodeParams( params );
-		return cacheOrLoad( url, DEFAULT_EXPIRED )
-			.then( data => {
+		url += '?' + encodeParams(params);
+		return cacheOrLoad(url, DEFAULT_EXPIRED)
+			.then(data => {
 				data.items.forEach(element => {
 					element.key = element.id.toString();
 				});
@@ -245,7 +245,7 @@ export default {
 		// console.log('encodedParams:', params);
 
 		return new Promise((resolve, reject) => {
-			axios.post( API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token',
+			axios.post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token',
 				params,
 				{
 					headers: {
@@ -399,35 +399,35 @@ export default {
 				console.log(error);
 			});
 	},
-	
+
 	getMembershipVouchers() {
 		const expired = 1;
-		return cacheOrLoad( API_PREFIX + 'membership/vouchers', expired )
-			.then( data => {
+		return cacheOrLoad(API_PREFIX + 'membership/vouchers', expired)
+			.then(data => {
 				return data;
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	},
 
 	getVoucherStatus(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
-		if( isRefresh ) {
+		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad( API_PREFIX + 'membership/vouchers/status', expired )
-			.then( data => {
+		return cacheOrLoad(API_PREFIX + 'membership/vouchers/status', expired)
+			.then(data => {
 				return data;
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	},
 
 	getBookReviewList(cid) {
 		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'action/comments/' + cid )
+			axios.get(API_PREFIX + 'action/comments/' + cid)
 				.then((response) => {
 					response.data.forEach(element => {
 						element.key = element.id.toString();
@@ -456,14 +456,14 @@ export default {
 	},
 
 	// fcm token 등록
-	async registeFcmToken( bool ){
+	async registeFcmToken(bool) {
 
 		const fcmToken = await firebase.messaging().getToken();
 
-		if( fcmToken ){
+		if (fcmToken) {
 			let params = encodeParams({
 				"app_name": "welaaa",
-				"app_os": (Platform.OS === 'ios' ? 0: 1),
+				"app_os": (Platform.OS === 'ios' ? 0 : 1),
 				"app_os_version": Platform.Version,
 				"app_version": VersionNumber.appVersion,
 				"device_id": DeviceInfo.getDeviceId(),
@@ -473,7 +473,7 @@ export default {
 			});
 
 			return new Promise((resolve, reject) => {
-				axios.post( API_PREFIX + 'message/fcm-tokens',
+				axios.post(API_PREFIX + 'message/fcm-tokens',
 					params,
 					{
 						headers: {
@@ -484,14 +484,14 @@ export default {
 					.then(response => {
 						resolve(response.data);
 					})
-					.catch( ( error, a, b ) => {
+					.catch((error, a, b) => {
 						reject(error);
 					});
 			});
 
 
-		}else{
-			reject( 'no token' );
+		} else {
+			reject('no token');
 		}
 	},
 
@@ -502,13 +502,23 @@ export default {
 		}
 		return cacheOrLoad(API_PREFIX + 'contents/video-series', expired)
 			.then(data => {
-				if( data !== undefined ) {
+				if (data !== undefined) {
 					data.forEach(elements => {
-						elements.item.forEach( element => {
+						elements.item.forEach(element => {
 							element.key = element.id.toString();
-						}  );
+						});
 					});
 				}
+			})
+	},
+
+	getDailyBookList( isRefresh = false ) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad(API_PREFIX + 'cms/main/a-book-a-day', expired)
+			.then(data => {
 				return data;
 			})
 			.catch(error => {

@@ -86,6 +86,8 @@ class HomePage extends React.Component {
 		audioNewData: [],
 		audioRecommendData: [],
 		audioMonth: [],
+		audioDaily: [],
+		dailyTabSelected: 'mon',
 		voucherStatus: null,
 		classUseData: [],
 		audioBuyData: [],
@@ -179,6 +181,11 @@ class HomePage extends React.Component {
 			this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
 		}
 		catch( error ) { console.log( error ) }
+		this.store.clipRankData = await net.getHomeClipRank( isRefresh );
+		this.store.homeBannerData = await net.getMainBanner( isRefresh );
+		this.store.audioNewData = await net.getAudioBookList( isRefresh );
+		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
+		this.store.audioDaily = await net.getDailyBookList( isRefresh );
 		this.store.audioHotData = homeAudioBookContents.hot;
 		this.store.audioNewData = homeAudioBookContents.new;
 		this.store.audioRecommendData = homeAudioBookContents.recommend;
