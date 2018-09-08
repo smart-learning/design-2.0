@@ -15,29 +15,30 @@ const styles = StyleSheet.create({
 		paddingLeft: 15,
 		paddingRight: 15,
 	},
-	labelContainer: {
+	titleLabelContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		marginBottom: 10,
 	},
-	label: {
+	titleLabel: {
 		marginRight: 7,
 		paddingTop: 2,
 		paddingRight: 7,
 		paddingBottom: 2,
 		paddingLeft: 7,
 	},
-	labelText: {
+	titleLabelText: {
 		fontSize: 12,
 		fontWeight: 'bold',
 		color: '#ffffff',
 	},
-	labelAudioBook: {
+	titleLabelAudioBook: {
 		backgroundColor: '#ffb71b',
 	},
-	labelClass: {
+	titleLabelClass: {
 		backgroundColor: '#ff761b',
 	},
-	labelTitle: {
+	titleLabelTitle: {
 		fontSize: 12,
 		color: '#ff761b',
 	},
@@ -164,18 +165,22 @@ export default class TopBanner extends React.Component {
 	}
 
 	render() {
+		console.log( 'this.props.store.itemData.headline',this.props.store.itemData.headline );
 		return <ImageBackground style={styles.banner} resizeMode="cover" source={Dummy}>
-			<View style={styles.labelContainer}>
+			<View style={styles.titleLabelContainer}>
 				<View
-					style={this.props.learnType === 'audioBook' ? [styles.label, styles.labelAudioBook] : [styles.label, styles.labelClass]}
+					style={this.props.learnType === 'audioBook' ? [styles.titleLabel, styles.titleLabelAudioBook] : [styles.titleLabel, styles.titleLabelClass]}
 					borderRadius={10}>
-					<Text style={styles.labelText}>인기{this.learnType()}</Text>
+					<Text style={styles.titleLabelText}>인기{this.learnType()}</Text>
 				</View>
 				<Text style={styles.labelTitle}>종합순위 30위! 비즈니스스킬 5위!</Text>
 			</View>
-			<Text style={styles.headline}>
-				{this.props.store.itemData.headline}
-			</Text>
+			{this.props.learnType === 'class' &&
+			<Text style={styles.headline}>{this.props.store.itemData.headline}</Text>
+			}
+			{this.props.learnType === 'audioBook' &&
+				<Text style={styles.headline}>{this.props.store.itemData.subtitle}</Text>
+			}
 			<Text style={styles.title}>
 				{this.props.store.itemData.title}
 			</Text>
