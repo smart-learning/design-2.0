@@ -63,8 +63,6 @@ const styles = StyleSheet.create({
 			BookList.push(listObject);
 		}
 
-		console.log( 'BookList',BookList );
-
 		return <View style={styles.bookContainer}>
 			<View style={styles.bookList}>
 				{BookList.map((items, key) => {
