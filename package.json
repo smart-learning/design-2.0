@@ -45,7 +45,6 @@
 		"react-native-localizable": "^1.0.1",
 		"react-native-pull-to-refresh": "^2.1.3",
 		"react-native-scalable-image": "^0.4.0",
-		"react-native-sqlite-2": "git+https://github.com/kyejune/react-native-sqlite-2.git",
 		"react-native-swiper": "^1.5.13",
 		"react-native-version-number": "^0.3.4",
 		"react-native-video": "2.2.0",
