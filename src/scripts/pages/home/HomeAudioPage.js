@@ -115,7 +115,6 @@ class HomeAudioPage extends React.Component {
 
 	render() {
 		let updatedAt = moment().format('YYYY. MM. DD');
-		console.log( 'this.props.store.audioNewData', this.props.store.audioNewData );
 		return (
 			<PTRView onRefresh={() => this.props.onRefresh()}>
 				<ScrollView style={{ flex: 1 }}>
