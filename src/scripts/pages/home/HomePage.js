@@ -144,15 +144,41 @@ class HomePage extends React.Component {
 			return vo;
 		} );
 
+		// 오디오 카테고리 로드
+		try {
+			const audioCategoryData = await net.getAudioBookCategory( isRefresh );
+			// VO로 정리해서 사용
+			this.store.audioBookCategoryData = audioCategoryData.map( element => {
+				const vo = new PageCategoryItemVO();
+				_.each( element, ( value, key ) => vo[ key ] = value );
+				vo.key = element.id.toString();
+				vo.label = element.title;
+				return vo;
+			} );
+		}
+		catch( error ) { console.log( error ) }
+
 		// mobx 바인딩
 		this.store.videoCategoryData = categoryVOs;
 		this.store.classHotData = hotVOs;
 		this.store.classNewData = newVOs;
 		this.store.classRecommendData = recommendVOs;
-		this.store.clipRankData = await net.getHomeClipRank( isRefresh );
-		this.store.homeBannerData = await net.getMainBanner( isRefresh );
-		this.store.audioNewData = await net.getAudioBookList( isRefresh );
-		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
+		try {
+			this.store.clipRankData = await net.getHomeClipRank( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
+		try {
+			this.store.homeBannerData = await net.getMainBanner( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
+		try {
+			this.store.audioNewData = await net.getAudioBookList( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
+		try {
+			this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
 		this.store.audioHotData = homeAudioBookContents.hot;
 		this.store.audioNewData = homeAudioBookContents.new;
 		this.store.audioRecommendData = homeAudioBookContents.recommend;
@@ -160,13 +186,22 @@ class HomePage extends React.Component {
 
 		try {
 			this.store.voucherStatus = await net.getVoucherStatus( isRefresh );
-			this.store.classUseData = await net.getPlayRecentVideoCourses( isRefresh );
-			this.store.audioBuyData = await net.getPurchasedAudioBooks( isRefresh );
-			this.store.audioUseData = await net.getPlayRecentAudioBook( isRefresh );
 		}
 		catch( e ) {
 			console.log( e );
 		}
+		try {
+			this.store.classUseData = await net.getPlayRecentVideoCourses( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
+		try {
+			this.store.audioBuyData = await net.getPurchasedAudioBooks( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
+		try {
+			this.store.audioUseData = await net.getPlayRecentAudioBook( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
 	};
 
 
@@ -182,8 +217,8 @@ class HomePage extends React.Component {
 		try {
 			this.getData();
 		}
-		catch( e ) {
-			console.log( e );
+		catch( error ) {
+			console.log( error );
 		}
 
 		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);

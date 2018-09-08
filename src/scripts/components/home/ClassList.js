@@ -42,7 +42,6 @@ const styles = StyleSheet.create( {
 		if( !this.store.isOpen ) {
 			list = list.slice( 0, 3 );
 		}
-		console.log( 'list', list  );
 		return <View style={styles.classContainer}>
 			<View style={styles.classList}>
 				<FlatList

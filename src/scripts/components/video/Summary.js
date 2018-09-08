@@ -122,7 +122,6 @@ const styles = StyleSheet.create( {
 
 export default class Summary extends React.Component {
 	render() {
-		console.log( 'summary > this.props', this.props );
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
 				{this.props.type !== 'detailClip' &&

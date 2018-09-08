@@ -114,8 +114,12 @@ export default {
 			});
 	},
 
-	getAudioBookCategory() {
-		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/categories', DEFAULT_EXPIRED)
+	getAudioBookCategory(isRefresh = false) {
+		let expired = DEFAULT_EXPIRED;
+		if (isRefresh) {
+			expired = 1;
+		}
+		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/categories', expired)
 			.then(data => {
 				return data;
 			})
