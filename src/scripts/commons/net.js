@@ -96,6 +96,7 @@ export default {
 				return null;
 			});
 	},
+
 	getLectureCategory(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
 		if (isRefresh) {
@@ -488,7 +489,19 @@ export default {
 		}else{
 			reject( 'no token' );
 		}
+	},
 
-
+	getSeriesContents(isRefresh = false) {
+		let expired = DEFAULT_EXPIRED;
+		if (isRefresh) {
+			expired = 1;
+		}
+		return cacheOrLoad(API_PREFIX + 'contents/video-series', expired)
+			.then(data => {
+				return data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	},
 }
