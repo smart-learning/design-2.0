@@ -68,7 +68,7 @@ const styles = StyleSheet.create( {
 	},
 	monthContainer: {
 		paddingTop: 50,
-		paddingBottom: 50,
+		paddingBottom: 30,
 		backgroundColor: '#8cd8b1',
 	},
 	dailyContainer: {
@@ -148,15 +148,6 @@ class HomeAudioPage extends React.Component {
 					{/* /이미지 스와이퍼 */}
 
 					<View style={styles.monthContainer}>
-						<View>
-							<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
-								8월 이달의 책
-							</Text>
-							<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
-								이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
-							</Text>
-						</View>
-
 						<BookMonthly itemData={this.props.store.audioMonth} voucherStatus={ this.props.store.voucherStatus }/>
 					</View>
 

@@ -338,7 +338,7 @@ export default {
 		}
 		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/botm', expired)
 			.then(data => {
-				return data;
+				return data.reverse();
 			})
 			.catch(error => {
 				console.log(error);
