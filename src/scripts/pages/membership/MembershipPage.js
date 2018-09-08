@@ -6,6 +6,7 @@ import IcClub from "../../../images/ic-m-audiobookclub.png"
 import IcCampus from "../../../images/ic-m-campus.png"
 import IcPremium from "../../../images/ic-m-premium.png"
 import IcAngleRight from "../../../images/ic-my-angle-right-white.png";
+import globalStore from "../../commons/store";
 
 const styles = StyleSheet.create({
 	sectionTitle: {
@@ -236,6 +237,24 @@ export default class MembershipPage extends React.Component {
 	}
 
 	render() {
+		// 멤버쉽이 존재할 경우
+		if (globalStore.currentMembership && globalStore.currentMembership.type_text !== '')
+			return this.renderMembership()
+		else
+			return this.renderNonMembership()
+	}
+
+	renderMembership() {
+		return (
+			<View>
+				<Text>
+				{JSON.stringify(globalStore.currentMembership, null, 2)}
+				</Text>
+			</View>
+		)
+	}
+
+	renderNonMembership() {
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<ScrollView style={{width: '100%'}}>
 				<View style={CommonStyles.contentContainer}>
