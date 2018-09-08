@@ -498,6 +498,13 @@ export default {
 		}
 		return cacheOrLoad(API_PREFIX + 'contents/video-series', expired)
 			.then(data => {
+				if( data !== undefined ) {
+					data.forEach(elements => {
+						elements.item.forEach( element => {
+							element.key = element.id.toString();
+						}  );
+					});
+				}
 				return data;
 			})
 			.catch(error => {

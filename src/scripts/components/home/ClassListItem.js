@@ -119,6 +119,7 @@ export default withNavigation(class ClassListItem extends React.Component {
 				{this.props.itemData.teacher.name}
 			</Text>
 			<Summary type="course"
+					 classType={this.props.classType}
 					 {...this.props.itemData}
 			/>
 		</View>

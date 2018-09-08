@@ -173,7 +173,7 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 							<Series itemData={this.props.store.homeSeriesData}/>
 						</View>
 
-						<TouchableOpacity activeOpacity={0.9} onPress={() => {Alert.alert('준비중입니다.')}}>
+						<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('HomeSeriesPage', { title: '윌라 추천 시리즈'})}>
 							<View style={styles.linkViewAll} borderRadius={5}>
 								<Text style={styles.linkViewAllText}>
 									추천 시리즈 전체 보기 <Image source={IcAngleRightGrey} style={styles.linkViewAllIcon}/>

@@ -122,11 +122,12 @@ const styles = StyleSheet.create( {
 
 export default class Summary extends React.Component {
 	render() {
+		console.log( 'summary > this.props', this.props );
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
 				{this.props.type !== 'detailClip' &&
 				<ImageBackground
-					source={{uri: this.props.thumbnail}}
+					source={{ uri: this.props.classType === 'series' ? this.props.images.wide : this.props.thumbnail}}
 					resizeMode="cover"
 					style={styles.thumbnail}>
 					<Text style={styles.thumbnailTitle}>

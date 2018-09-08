@@ -41,7 +41,7 @@ export default withNavigation( class Series extends React.Component {
 			{this.props.itemData.map((item, key) => {
 				return (
 					<View style={styles.seriesItemLg} key={key}>
-						<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('HomeSeriesPage', {id: '', title: ''})}>
+						<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('HomeSeriesPage', { title: '윌라 추천 시리즈'})}>
 							<ImageBackground
 								source={{uri: item.image}}
 								resizeMode="cover"
