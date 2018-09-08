@@ -18,6 +18,8 @@ import bgLogin from '../../../images/bg-signup.jpg';
 import FBLoginButton from "../../components/auth/FBLoginButton";
 import store from '../../../scripts/commons/store';
 import net from "../../commons/net";
+import { observable } from "mobx";
+import { observer } from "mobx-react";
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -29,16 +31,15 @@ const styles = StyleSheet.create( {
 		paddingTop: 50,
 	},
 	logoWrap: {
-		position: 'absolute',
-		top: 20,
 		zIndex: 9,
 		alignItems: 'center',
 		height: 50,
+		marginTop: -70,
+		marginBottom: 50,
 	},
 	logo: {
 		width: 110,
 		height: 28,
-		marginTop: 20,
 	},
 	contentWrap: {
 		flex: 1,
@@ -64,37 +65,19 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-
 class LoginPage extends React.Component {
-
 	componentDidMount() {
-		this.keyboardWillShowSub = Keyboard.addListener( 'keyboardWillShow', this.keyboardWillShow );
-		this.keyboardWillHideSub = Keyboard.addListener( 'keyboardWillHide', this.keyboardWillHide );
-
 		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
-		console.log( this.props.navigation );
 	}
 
 	componentWillUnmount() {
-		this.keyboardWillShowSub.remove();
-		this.keyboardWillHideSub.remove();
-
 		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
 	}
 
 	handleBackPress = () => {
 		this.props.navigation.navigate('HomeScreen');
 		return true;
-	}
-
-	keyboardWillShow = ( event ) => {
-		console.log( '키보드 나옴' );
-	}
-
-	keyboardWillHide = ( event ) => {
-		console.log( '키보드 들어감' );
-	}
+	};
 
 	/*
 	* @params email: 이메일이나 소셜 타입
@@ -103,8 +86,6 @@ class LoginPage extends React.Component {
 	login = ( email, password ) => {
 		let { navigation } = this.props;
 		const resultAuthToken = net.getAuthToken( email, password);
-
-		console.log( 'authToken요청:', email, password );
 
 		resultAuthToken
 			.then(data => {
@@ -119,45 +100,45 @@ class LoginPage extends React.Component {
 					message += ` (server message: ${error.response.data.error})`;
 				}
 				Alert.alert( message );
-				console.log( error );
 			});
 	}
 
 
 	render() {
-		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
+		return (
+			<View style={[ CommonStyles.container, styles.loginContainer ]}>
+				<ImageBackground source={bgLogin}
+								 style={styles.background}
+				>
+					<View style={styles.contentWrap}>
+						<View style={styles.logoWrap}>
+							<Image source={logo} style={styles.logo}/>
+						</View>
 
-			<View style={styles.logoWrap}>
-				<Image source={logo} style={styles.logo}/>
+						<Text style={styles.headline}>LOGIN</Text>
+
+						<FBLoginButton
+							onAccess={token => this.login( 'facebook', token )}
+							type={'login'}
+						/>
+
+						<KakaoLoginButton
+							onAccess={token => this.login( 'kakaotalk', token )}
+							type={'login'}
+						/>
+
+						<Text style={styles.bulletText}>OR</Text>
+
+						<EmailAuthPack
+							onAccess={ this.login }
+							onNavigate={routerName => this.props.navigation.navigate( routerName )}
+						/>
+
+					</View>
+
+				</ImageBackground>
 			</View>
-			<ImageBackground source={bgLogin}
-							 style={styles.background}
-			>
-				<View style={styles.contentWrap}>
-					<Text style={styles.headline}>LOGIN</Text>
-
-					<FBLoginButton
-						onAccess={token => this.login( 'facebook', token )}
-						type={'login'}
-					/>
-
-					<KakaoLoginButton
-						onAccess={token => this.login( 'kakaotalk', token )}
-						type={'login'}
-					/>
-
-					<Text style={styles.bulletText}>OR</Text>
-
-					<EmailAuthPack
-						onAccess={ this.login }
-						onNavigate={routerName => this.props.navigation.navigate( routerName )}
-					/>
-
-				</View>
-
-			</ImageBackground>
-
-		</KeyboardAvoidingView>
+		);
 	}
 }
 
