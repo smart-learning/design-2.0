@@ -238,7 +238,7 @@ export default class MembershipPage extends React.Component {
 
 	render() {
 		// 멤버쉽이 존재할 경우
-		if (globalStore.currentMembership && globalStore.currentMembership.type_text !== '')
+		if (globalStore.currentMembership && globalStore.currentMembership.type_text)
 			return this.renderMembership()
 		else
 			return this.renderNonMembership()

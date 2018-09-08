@@ -122,8 +122,8 @@ export default withNavigation( @observer class AudioBookPage extends React.Compo
 	};
 
 	loadMore = () => {
-		if( this.store.pagination.has_next ) {
-			this.loadAudioList( this.store.ccode, this.store.pagination.next_page );
+		if( this.store.pagination['has-next'] ) {
+			this.loadAudioList( this.store.ccode, this.store.pagination.page + 1 );
 		}
 	};
 
@@ -204,7 +204,7 @@ export default withNavigation( @observer class AudioBookPage extends React.Compo
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 					</View>
 					}
-					{ ( !this.store.isLoading && this.store.pagination.has_next ) &&
+					{ ( !this.store.isLoading && this.store.pagination['has-next'] ) &&
 					<TouchableOpacity activeOpacity={0.9} onPress={this.loadMore}>
 						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 							<Text style={styles.linkViewAllText}>더보기</Text>
