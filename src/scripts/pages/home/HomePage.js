@@ -2,7 +2,7 @@ import React from "react";
 import { toJS, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import CommonStyles from "../../../styles/common";
-import { ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {ActivityIndicator, BackHandler, Dimensions, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import net from "../../commons/net";
 import { SafeAreaView } from "react-navigation";
 import createStore from "../../commons/createStore";
@@ -13,6 +13,7 @@ import PageCategoryItemVO from "../../vo/PageCategoryItemVO";
 import SummaryVO from "../../vo/SummaryVO";
 import _ from 'underscore';
 import AdvertisingSection from "../../components/AdvertisingSection";
+import Store from "../../commons/store";
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -168,6 +169,7 @@ class HomePage extends React.Component {
 		}
 	};
 
+
 	componentDidMount() {
 		let windowWidth = Dimensions.get('window').width;
 		let windowHeight = Dimensions.get('window').height;
@@ -183,7 +185,17 @@ class HomePage extends React.Component {
 		catch( e ) {
 			console.log( e );
 		}
+
+		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 	}
+
+	componentWillUnmount() {
+		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+	}
+
+	handleBackPress = () => {
+		BackHandler.exitApp();
+	};
 
 	goPage = pageName => {
 		if( pageName === 'video' ) {

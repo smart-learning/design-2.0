@@ -20,6 +20,7 @@ import store from '../../../scripts/commons/store';
 import net from "../../commons/net";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
+import Store from "../../commons/store";
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -75,7 +76,7 @@ class LoginPage extends React.Component {
 	}
 
 	handleBackPress = () => {
-		this.props.navigation.navigate('HomeScreen');
+		this.props.navigation.navigate( 'HomeScreen' );
 		return true;
 	};
 
