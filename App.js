@@ -37,10 +37,18 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		] );
 
 		settings.forEach( setting => {
-			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = Boolean( setting[ 1 ] );
+			const bool = (setting[1] === 'true');
+			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = bool;
 		} );
 
+		console.log( 'setting:', globalStore.appSettings );
+
 		Native.updateSettings();
+
+
+		// 자동로그인상태면 토큰 가져오기 시도
+		if( globalStore.appSetting.isAutoLogin )
+			this.getTokenFromAsyncStorage();
 	};
 
 	initFCM = async () => {
@@ -72,7 +80,6 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		super(prop);
 		this.subscription = [];
 
-		this.getTokenFromAsyncStorage();
 		this.getAppSettings();
 		this.initFCM();
 	}
