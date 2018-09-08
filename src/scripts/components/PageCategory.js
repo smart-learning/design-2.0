@@ -5,6 +5,7 @@ import { observer } from "mobx-react";
 const styles = StyleSheet.create( {
 	categoryContainer: {
 		width: '100%',
+		height: 40,
 	},
 	categoryItem: {
 		alignItems: 'center',
@@ -27,12 +28,15 @@ const styles = StyleSheet.create( {
 	};
 
 	render() {
+		if( !this.props.data ) {
+			return <View/>;
+		}
 		return <FlatList
 			style={styles.categoryContainer}
 			data={this.props.data}
 			horizontal={true}
 			showsHorizontalScrollIndicator={false}
-			extraData={this.props.selectedCategory}
+			extraData={this.props.data}
 			renderItem={
 				( { item } ) => {
 					const localStyle = {
