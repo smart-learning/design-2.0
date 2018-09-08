@@ -213,6 +213,7 @@ class EmailSignUpForm extends Component {
 							<View style={styles.inputBr}/>
 							<TextInput
 								style={styles.input}
+								keyboardType="email-address"
 								underlineColorAndroid={'rgba(0,0,0,0)'}
 								onFocus={this.validityEmailOnFocus}
 								value={this.email}

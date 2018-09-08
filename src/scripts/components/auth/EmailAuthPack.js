@@ -75,6 +75,7 @@ class EmailAuthPack extends Component {
 			<View borderRadius={4} style={styles.inputWrap}>
 				<TextInput
 					style={styles.input}
+					keyboardType="email-address"
 					underlineColorAndroid={'rgba(0,0,0,0)'}
 					value={this.state.email}
 					autoCapitalize={'none'}
