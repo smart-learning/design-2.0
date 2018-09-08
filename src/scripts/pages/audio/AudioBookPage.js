@@ -1,7 +1,7 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
 import {ActivityIndicator, Alert, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
-import { SafeAreaView } from "react-navigation";
+import {SafeAreaView, withNavigation} from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
 import Book from "../../components/audio/Book";
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-@observer class AudioBookPage extends React.Component {
+export default withNavigation( @observer class AudioBookPage extends React.Component {
 	store = createStore({
 		isLoading: true,
 		categories: [],
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{marginLeft: 'auto'}}
 										  onPress={() => {
-											  this.props.navigation.navigate('MyAudioBookPage')
+											  this.props.navigation.navigate('AudioBookBuyPage')
 										  }}
 						>
 							<View style={styles.myButton} borderRadius={3}>
@@ -215,6 +215,4 @@ const styles = StyleSheet.create({
 			</ScrollView>
 		</SafeAreaView>
 	}
-}
-
-export default AudioBookPage;
+} );
