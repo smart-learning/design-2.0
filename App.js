@@ -48,7 +48,7 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		try{
 			await net.registeFcmToken( true );
 		}catch( e ){
-			alert( 'FCM: ' + e );
+			console.log( 'FCM: ' + e );
 		}
 
 		// 권한 체크 후 없으면 요청
