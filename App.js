@@ -13,12 +13,13 @@ import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
 import { observer } from "mobx-react";
-import firebase from 'react-native-firebase';
+import firebase, { RemoteMessage } from 'react-native-firebase';
 
 @observer class App extends React.Component {
 
 	getTokenFromAsyncStorage = async () => {
 		let welaaaAuth = await AsyncStorage.getItem( 'welaaaAuth' );
+		console.log( 'welaaaAuth:', welaaaAuth );
 		if( welaaaAuth ) {
 			welaaaAuth = JSON.parse( welaaaAuth );
 			globalStore.welaaaAuth = welaaaAuth;
@@ -44,13 +45,26 @@ import firebase from 'react-native-firebase';
 	};
 
 	initFCM = async () => {
-		const fcmToken = await firebase.messaging().getToken();
-		if (fcmToken) {
-			console.log( 'fcmToken', fcmToken );
-			// 토큰 있음
+		try{
+			await net.registeFcmToken( true );
+		}catch( e ){
+			alert( 'FCM: ' + e );
+		}
+
+		// 권한 체크 후 없으면 요청
+		const enabled = await firebase.messaging().hasPermission();
+		if (enabled) {
+			// user has permissions
 		} else {
-			console.log( '유저가 토큰을 가지고 있지 않음' );
-			// 유저가 토큰을 가지고 있지 않음
+			// user doesn't have permission
+
+			try {
+				await firebase.messaging().requestPermission();
+				// User has authorised
+			} catch (error) {
+				// User has rejected permissions
+			}
+
 		}
 	};
 
@@ -70,12 +84,19 @@ import firebase from 'react-native-firebase';
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
 			console.log( 'database receiveDownloadList:', params );
-			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase || 'null';
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
 			console.log( 'download receiveDownloadList:', params );
-			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase || 'null';
 		}));
+
+
+
+		this.messageListener = firebase.messaging().onMessage( message => {
+			// Process your message as required
+			console.log( 'FCM 메시지 처리:', message );
+		});
     }
 
 	componentWillUnmount() {
@@ -83,6 +104,7 @@ import firebase from 'react-native-firebase';
 			listener.remove();
 		} );
 		this.subscription.length = 0;
+		this.messageListener();
 	}
 
  	render() {
@@ -160,9 +182,9 @@ const AppDrawer = createDrawerNavigator(
 		// BottomControllerTEST: {
 		// 	screen: BottomControllerPage,
 		// },
-		AndroidNativeCall: {
-			screen: PlaygroundJune,
-		}
+		// AndroidNativeCall: {
+		// 	screen: PlaygroundJune,
+		// }
 	},
 
 	{

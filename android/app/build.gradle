@@ -186,6 +186,7 @@ apply plugin: 'io.fabric'
 
 
 dependencies {
+    compile project(':react-native-device-info')
     implementation project(':react-native-firebase')
     implementation project(':react-native-version-number')
     implementation project(':react-native-sqlite-2')
@@ -209,7 +210,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.facebook.react:react-native:+'
     // facebook
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:4.36.0'
     // exoplayer2
     implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
     // PallyCon SDK
@@ -234,14 +235,6 @@ dependencies {
     // Add this line if you wish to use badge on Android.
     implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
 
-    // android badger
-//    implementation "me.leolin:ShortcutBadger:1.1.21@aar"
-//
-//    implementation 'com.google.firebase:firebase-core:16.0.3'
-//    implementation 'com.google.firebase:firebase-iid:17.0.0'
-//    implementation 'com.google.firebase:firebase-messaging:17.3.0'
-//    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
-
     // Getting a "Could not find" error? Make sure you have
     // added the Google maven respository to your root build.gradle
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
@@ -249,7 +242,7 @@ dependencies {
 }
 
 // Run this once to be able to run the application with BUCK
-// puts all compile dependencies into folder libs for BUCK to use
+// puts all implementation dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'

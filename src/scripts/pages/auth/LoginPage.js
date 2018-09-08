@@ -123,6 +123,7 @@ class LoginPage extends React.Component {
 			});
 	}
 
+
 	render() {
 		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
 

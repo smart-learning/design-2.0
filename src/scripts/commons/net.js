@@ -2,7 +2,10 @@ import axios from 'axios';
 import Base64 from "Base64";
 import Localizable from 'react-native-localizable';
 import moment from 'moment';
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Platform } from "react-native";
+import VersionNumber from "react-native-version-number";
+import DeviceInfo from "react-native-device-info";
+import firebase from "react-native-firebase";
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
 let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
@@ -18,6 +21,7 @@ const HOST = host;
 const TYPE = 'api';
 const VERSION = 'v1.0';
 const API_PREFIX = `${HOST}/${TYPE}/${VERSION}/`;
+const API_PREFIX_FOR_AUTH_TOKEN = host;
 
 const clientId = 'wyk27OuFanxIcxzGRO68F13n';
 const clientSecret = 'IcQUptRiZBe3mqLbx8BIB7dqfySP52J4He6TmMXnnzupUNIj';
@@ -232,11 +236,11 @@ export default {
 	getAuthToken(email, password) {
 
 		let params = encodeParams({username: email, password: password, scope: 'profile', 'grant_type': 'password'});
-		console.log('getAuthToken:', HOST + '/oauth/token', email, password);
-		console.log('encodedParams:', params);
+		// console.log('getAuthToken:', HOS + 'oauth/token', email, password);
+		// console.log('encodedParams:', params);
 
 		return new Promise((resolve, reject) => {
-			axios.post(HOST + '/oauth/token',
+			axios.post( API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token',
 				params,
 				{
 					headers: {
@@ -444,5 +448,47 @@ export default {
 			.catch(error => {
 				console.log(error);
 			});
+	},
+
+	// fcm token 등록
+	async registeFcmToken( bool ){
+
+		const fcmToken = await firebase.messaging().getToken();
+
+		if( fcmToken ){
+			let params = encodeParams({
+				"app_name": "welaaa",
+				"app_os": (Platform.OS === 'ios' ? 0: 1),
+				"app_os_version": Platform.Version,
+				"app_version": VersionNumber.appVersion,
+				"device_id": DeviceInfo.getDeviceId(),
+				"device_model": DeviceInfo.getModel(),
+				"fcm_token": fcmToken,
+				"push_receive": bool
+			});
+
+			return new Promise((resolve, reject) => {
+				axios.post( API_PREFIX + 'message/fcm-tokens',
+					params,
+					{
+						headers: {
+							'Authorization': 'Basic ' + authBasicCode,
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+					})
+					.then(response => {
+						resolve(response.data);
+					})
+					.catch( ( error, a, b ) => {
+						reject(error);
+					});
+			});
+
+
+		}else{
+			reject( 'no token' );
+		}
+
+
 	},
 }

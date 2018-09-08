@@ -229,6 +229,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       params.putString("selectDownload" , json);
       sendEvent("selectDownload", params);
 
+      Log.e("DOWNLOAD:", json.toString() );
+
     }catch (Exception e){
       e.printStackTrace();
     }
