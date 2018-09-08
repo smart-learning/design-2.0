@@ -6,6 +6,7 @@ import {observable} from "mobx";
 let socialType;
 let socialToken;
 let welaaaAuth;
+let currentMembership
 
 class Store {
 	drawer = null;
@@ -33,6 +34,14 @@ class Store {
 		welaaaAuth = auth;
 		AsyncStorage.setItem('welaaaAuth', JSON.stringify(auth));
 		axios.defaults.headers.common['authorization'] = 'Bearer ' + auth.access_token;
+	}
+
+	get currentMembership() {
+		return currentMembership;
+	}
+
+	set currentMembership(membership) {
+		currentMembership = membership
 	}
 
 	/* 미니 플레이어 전환여부 결정 */

@@ -4,6 +4,7 @@ import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
+import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
@@ -24,6 +25,7 @@ import firebase from 'react-native-firebase';
 			globalStore.welaaaAuth = welaaaAuth;
 
 			globalStore.profile = await net.getProfile();
+			globalStore.currentMembership = await net.getMembershipCurrent();
 		}
 	};
 
@@ -145,6 +147,10 @@ const AppDrawer = createDrawerNavigator(
 
 		AudioScreen: {
 			screen: AudioScreen,
+		},
+
+		MembershipScreen: {
+			screen: MembershipScreens,
 		},
 
 		MyScreen: {

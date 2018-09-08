@@ -402,6 +402,14 @@ export default {
 			} );
 	},
 
+	getMembershipCurrent() {
+		const expired = 0;
+		return cacheOrLoad( API_PREFIX + 'membership/current', expired )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
 	getVoucherStatus(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
 		if( isRefresh ) {

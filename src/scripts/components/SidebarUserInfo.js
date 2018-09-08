@@ -123,7 +123,7 @@ export default class SidebarUserInfo extends React.Component {
 						<TouchableOpacity activeOpacity={0.9}
 										  onPress={() => this.props.navigation.navigate('MyScreen')}>
 							<View>
-								<Text style={styles.userName}><Text style={styles.userNameImportant}>{ globalStore.profile ? globalStore.profile.name || '시연용' : '시연용' }</Text></Text>
+								<Text style={styles.userName}><Text style={styles.userNameImportant}>{ globalStore.profile ? globalStore.profile.name || '<윌라회원님>' : '<윌라회원님>' }</Text></Text>
 								<Text style={styles.userEmail}>{ globalStore.profile ? globalStore.profile.email : '' }</Text>
 							</View>
 						</TouchableOpacity>
@@ -133,16 +133,27 @@ export default class SidebarUserInfo extends React.Component {
 			</View>
 			{/*noMembership*/}
 			<View style={styles.memberShipContainerNoMembership}>
-				<TouchableOpacity activeOpacity={0.9}>
-					<View style={styles.membershipButton} borderRadius={4}>
-						<Image source={IcFree} style={styles.membershipButtonBullet}/>
-						<View>
-							<Text style={styles.membershipButtonText}>멤버십 첫 달 무료로</Text>
-							<Text style={styles.membershipButtonText}>클래스&오디오북 마음껏 보기!</Text>
+				{ /* 현재 멤버쉽에 따라 버튼 또는 내용을 출력, TODO delayed show */
+					globalStore.currentMembership && globalStore.currentMembership.type_text
+					? <Text>{globalStore.currentMembership.type_text} 입니다.</Text>
+					: <TouchableOpacity activeOpacity={0.9}>
+						<View style={styles.membershipButton} borderRadius={4}>
+							<Image source={IcFree} style={styles.membershipButtonBullet}/>
+							<View>
+								<Text style={styles.membershipButtonText}>멤버십 첫 달 무료로</Text>
+								<Text style={styles.membershipButtonText}>클래스&오디오북 마음껏 보기!</Text>
+							</View>
+							<Image source={IcAngleRight} style={styles.membershipButtonIcon}></Image>
 						</View>
-						<Image source={IcAngleRight} style={styles.membershipButtonIcon}></Image>
-					</View>
-				</TouchableOpacity>
+					</TouchableOpacity>
+				}
+
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={ ()=> this.props.navigation.navigate('MembershipScreen') }
+						>
+							<Text>멤버쉽</Text>
+						</TouchableOpacity>
+
 			</View>
 			{/*isMembership*/}
 			{/*<View style={styles.memberShipContainer}>*/}
