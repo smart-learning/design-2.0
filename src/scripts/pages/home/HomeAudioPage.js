@@ -154,7 +154,7 @@ class HomeAudioPage extends React.Component {
 
 					{/*매일 책 한 권*/}
 					<View style={CommonStyles.contentContainer}>
-						<BookDailyList />
+						<BookDailyList itemData={this.props.store.audioDaily} store={ this.props.store }/>
 					</View>
 
 					<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>

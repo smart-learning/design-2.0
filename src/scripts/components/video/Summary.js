@@ -124,7 +124,7 @@ export default class Summary extends React.Component {
 	render() {
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
-				{this.props.type !== 'detailClip' &&
+				{ (this.props.type !== 'detailClip') && (this.props.type !== 'dailyBook') &&
 				<ImageBackground
 					source={{ uri: this.props.classType === 'series' ? this.props.images.wide : this.props.thumbnail}}
 					resizeMode="cover"
@@ -161,6 +161,19 @@ export default class Summary extends React.Component {
 					<TouchableOpacity activeOpacity={0.9}
 									  style={styles.detailClipPlay}
 									  onPress={() => Native.play(this.props.itemData.id)}
+					>
+						<Image source={IcPlay} style={Style.fullImg}/>
+					</TouchableOpacity>
+				</ImageBackground>
+				}
+				{this.props.type === 'dailyBook' &&
+				<ImageBackground
+					source={{uri: this.props.thumbnail}}
+					resizeMode="cover"
+					style={styles.thumbnail}>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.play}
+									  onPress={() => Native.play(this.props.cid)}
 					>
 						<Image source={IcPlay} style={Style.fullImg}/>
 					</TouchableOpacity>
