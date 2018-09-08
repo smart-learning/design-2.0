@@ -6,7 +6,6 @@ import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
-import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
@@ -121,7 +120,11 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 					const prevScreen = getActiveRouteName(prevState);
 
 					if (prevScreen !== currentScreen) {
-						if (currentScreen !== 'AuthCheck') globalStore.lastLocation = currentScreen;
+						if (currentScreen !== 'AuthCheck'){
+							globalStore.lastLocation = currentScreen;
+							globalStore.prevLocations.push( prevScreen );
+							globalStore.prevLocations.length = Math.min( globalStore.prevLocations.length, 10 );
+						}
 					}
 				}}
 			/>

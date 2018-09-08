@@ -1,7 +1,7 @@
 import React from "react";
 import {createStackNavigator} from "react-navigation";
 import AuthLoadingScreen from "../auth/AuthLoadingScreen";
-import {NAV_OPTS_DRAWER, NAV_OPTS_STACK} from "../../commons/nav";
+import {NAV_OPTS_DRAWER, NAV_OPTS_STACK, NAV_OPTS_STACK_HISTORY_BACK} from "../../commons/nav";
 import MyInfoHome from "./MyInfoHome";
 import LoginPage from "../auth/LoginPage";
 import FindPasswordPage from "../auth/FindPasswordPage";
@@ -80,7 +80,7 @@ const MyScreens = createStackNavigator(
 
 		LectureUsePage: {
 			screen: LectureUsePage,
-			navigationOptions: NAV_OPTS_STACK,
+			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
 		},
 		LectureBuyPage: {
 			screen: LectureBuyPage,
@@ -92,7 +92,7 @@ const MyScreens = createStackNavigator(
 		},
 		AudioBookUsePage: {
 			screen: AudioBookUsePage,
-			navigationOptions: NAV_OPTS_STACK,
+			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
 		},
 		AudioBookBuyPage: {
 			screen: AudioBookBuyPage,

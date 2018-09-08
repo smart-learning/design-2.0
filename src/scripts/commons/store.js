@@ -10,6 +10,7 @@ let welaaaAuth;
 class Store {
 	drawer = null;
 	lastLocation = 'HomeScreen';
+	prevLocations = [];
 
 	get socialType() {
 		return socialType;
