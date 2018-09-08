@@ -93,7 +93,7 @@ export default class BookContinueList extends React.Component {
 				return (
 					<View style={styles.continueItem} key={key}>
 						{/* TODO: itemData만큼 repeat해줘야되는거 아닌가요? 맞으시다면 밑에 itemData[0 << 대신 index] 로 부탁드려요. */}
-						<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play( this.props.itemData[0].data.cid ) }>
+						<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play( item.data.cid ) }>
 							<ImageBackground
 								source={{uri: (item.data.teacher && item.data.teacher.images) ? item.data.teacher.images.default : null}}
 								resizeMode={"cover"} style={styles.thumbnail}/>
