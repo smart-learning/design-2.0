@@ -33,6 +33,7 @@ class AdvertisingSection extends Component {
 			},
 
 			footer: {
+				backgroundColor: COLOR_PRIMARY,
 				flexDirection: 'row',
 				width: '100%',
 				alignItems:'center'
@@ -41,12 +42,6 @@ class AdvertisingSection extends Component {
 			hideOption:{
 				padding: 10,
 				alignItems: 'flex-start',
-			},
-
-			footer:{
-				width: '100%',
-				backgroundColor: COLOR_PRIMARY,
-				alignItems: 'center',
 			},
 
 			footerText:{
