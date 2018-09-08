@@ -6,6 +6,7 @@ import IcHeart from "../../../images/ic-heart-pink.png";
 import IcHeartLine from "../../../images/ic-heart-pink-line.png";
 import IcView from "../../../images/ic-view-dark.png";
 import Device from "../../commons/device";
+import moment from "moment";
 
 
 const styles = StyleSheet.create({
@@ -152,6 +153,10 @@ const styles = StyleSheet.create({
 	},
 	recommendPriceSale: {
 		color: '#ff4f72',
+	},
+	teacherName: {
+		fontSize: 12,
+		color: '#999999',
 	}
 });
 
@@ -165,6 +170,7 @@ export default class Book extends React.Component {
 		if( this.props.itemData.teacher === null ) {
 			this.props.itemData.teacher = {};
 		}
+		const time = moment.duration(this.props.itemData.play_time);
 		return <View style={styles.itemContainer}>
 			{this.props.type === 'best' &&
 			<View style={[styles.alignJustify, styles.socialButtonWrap]}>
@@ -192,8 +198,14 @@ export default class Book extends React.Component {
 					<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
 						<Text style={styles.bookTitleBest}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
+					<Text style={styles.teacherName}>{this.props.itemData.teacher.name}</Text>
 					<View style={styles.alignJustify}>
-						<Text style={styles.playTime}>06시간 23분</Text>
+						{time.hours() === 0 &&
+						<Text style={styles.playTime}>{time.minutes()}분</Text>
+						}
+						{time.hours() > 0 &&
+						<Text style={styles.playTime}>{time.hours()}시간 {time.minutes()}분</Text>
+						}
 						<View style={styles.bar}/>
 						<Text style={styles.price}>{this.props.itemData.pay_money}</Text>
 					</View>
