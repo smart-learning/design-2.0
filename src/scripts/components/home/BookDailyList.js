@@ -1,7 +1,7 @@
 import React from "react";
 import {
 	StyleSheet, Text, View, TouchableOpacity, FlatList } from "react-native";
-import CommonStyles from "../../../styles/common";
+import CommonStyles, {COLOR_PRIMARY} from "../../../styles/common";
 import BookDailyListItem from "../../components/home/BookDailyListItem";
 import {observer} from "mobx-react";
 
@@ -34,16 +34,39 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	categoryText: {
-		color: '#A1A1A1',
+		color: '#555555',
 		fontSize: 14,
 		textAlign: 'center',
 	},
-	categoryButtonHrActive: {
-		width: 10,
-		height: 1,
-		backgroundColor: '#ff0000',
+	categoryButton: {
+		position: 'relative',
+		padding: 12
 	},
-	categoryButtonHr: {},
+	categoryButtonHr: {
+		position: 'absolute',
+		bottom: -10,
+		left: -3,
+		width: 20,
+		height: 3,
+		backgroundColor: '#ffffff',
+	},
+	categoryButtonHrActive: {
+		position: 'absolute',
+		bottom: -10,
+		left: -3,
+		width: 20,
+		height: 3,
+		backgroundColor: COLOR_PRIMARY,
+	},
+	dailyBookContentHeadline: {
+
+	},
+	dailyBookHeadlineText: {
+		marginTop: 20,
+		marginBottom: 20,
+		fontSize: 16,
+		color: '#333333',
+	},
 	dailyBookListBlock: {
 
 	},
@@ -76,7 +99,7 @@ class BookDailyList extends React.Component {
 			<View style={styles.categoryHr}/>
 			<View style={[CommonStyles.alignJustifyFlex, styles.categoryContainer]}>
 				<View style={styles.categoryItem}>
-					<TouchableOpacity onPress={() => this.props.store.dailyTabSelected = 'mon'}>
+					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'mon'}>
 						<View>
 							<Text style={styles.categoryText}>월</Text>
 							<View
@@ -85,7 +108,7 @@ class BookDailyList extends React.Component {
 					</TouchableOpacity>
 				</View>
 				<View style={styles.categoryItem}>
-					<TouchableOpacity onPress={() => this.props.store.dailyTabSelected = 'tue'}>
+					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'tue'}>
 						<View>
 							<Text style={styles.categoryText}>화</Text>
 							<View
@@ -94,7 +117,7 @@ class BookDailyList extends React.Component {
 					</TouchableOpacity>
 				</View>
 				<View style={styles.categoryItem}>
-					<TouchableOpacity onPress={() => this.props.store.dailyTabSelected = 'wed'}>
+					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'wed'}>
 						<View>
 							<Text style={styles.categoryText}>수</Text>
 							<View
@@ -103,7 +126,7 @@ class BookDailyList extends React.Component {
 					</TouchableOpacity>
 				</View>
 				<View style={styles.categoryItem}>
-					<TouchableOpacity onPress={() => this.props.store.dailyTabSelected = 'thu'}>
+					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'thu'}>
 						<View>
 							<Text style={styles.categoryText}>목</Text>
 							<View
@@ -112,7 +135,7 @@ class BookDailyList extends React.Component {
 					</TouchableOpacity>
 				</View>
 				<View style={styles.categoryItem}>
-					<TouchableOpacity onPress={() => this.props.store.dailyTabSelected = 'fri'}>
+					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'fri'}>
 						<View>
 							<Text style={styles.categoryText}>금</Text>
 							<View
@@ -125,47 +148,41 @@ class BookDailyList extends React.Component {
 
 			{/*콘텐츠*/}
 			<View>
-
 				{this.props.store.dailyTabSelected === 'mon' &&
-				<View
-					style={this.props.store.mondayTab === true ? styles.dailyBookListBlock : styles.dailyBookListHidden}>
-					<Text>[월] 하지현의 마음을 치유하는 책</Text>
+				<View style={styles.dailyBookContentHeadline}>
+					<Text style={styles.dailyBookHeadlineText}>[월] 하지현의 마음을 치유하는 책</Text>
 					<View>
 						<BookDailyListItem itemData={monday}/>
 					</View>
 				</View>
 				}
 				{this.props.store.dailyTabSelected === 'tue' &&
-				<View
-					style={this.props.store.tuesdayTab === true ? styles.dailyBookListBlock : styles.dailyBookListHidden}>
-					<Text>[화] 하지현의 마음을 치유하는 책</Text>
+				<View style={styles.dailyBookContentHeadline}>
+					<Text style={styles.dailyBookHeadlineText}>[화] 하지현의 마음을 치유하는 책</Text>
 					<View>
 						<BookDailyListItem itemData={tuesday}/>
 					</View>
 				</View>
 				}
 				{this.props.store.dailyTabSelected === 'wed' &&
-				<View
-					style={this.props.store.wednesdayTab === true ? styles.dailyBookListBlock : styles.dailyBookListHidden}>
-					<Text>[수] 하지현의 마음을 치유하는 책</Text>
+				<View style={styles.dailyBookContentHeadline}>
+					<Text style={styles.dailyBookHeadlineText}>[수] 하지현의 마음을 치유하는 책</Text>
 					<View>
 						<BookDailyListItem itemData={wednesday}/>
 					</View>
 				</View>
 				}
 				{this.props.store.dailyTabSelected === 'thu' &&
-				<View
-					style={this.props.store.thursdayTab === true ? styles.dailyBookListBlock : styles.dailyBookListHidden}>
-					<Text>[목] 하지현의 마음을 치유하는 책</Text>
+				<View style={styles.dailyBookContentHeadline}>
+					<Text style={styles.dailyBookHeadlineText}>[목] 하지현의 마음을 치유하는 책</Text>
 					<View>
 						<BookDailyListItem itemData={thursday}/>
 					</View>
 				</View>
 				}
 				{this.props.store.dailyTabSelected === 'fri' &&
-				<View
-					style={this.props.store.fridayTab === true ? styles.dailyBookListBlock : styles.dailyBookListHidden}>
-					<Text>[금] 하지현의 마음을 치유하는 책</Text>
+				<View style={styles.dailyBookContentHeadline}>
+					<Text style={styles.dailyBookHeadlineText}>[금] 하지현의 마음을 치유하는 책</Text>
 					<View>
 						<BookDailyListItem itemData={friday}/>
 					</View>
