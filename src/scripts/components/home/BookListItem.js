@@ -138,7 +138,7 @@ export default withNavigation(@observer class BookListItem extends React.Compone
 				<View style={styles.bookRankHr}/>
 			</View>
 			}
-			<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.itemData.id, title: ' '})}>
+			<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.itemData.id, title: this.props.itemData.title})}>
 				<Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={1}>
 					{this.props.itemData.title}
 				</Text>

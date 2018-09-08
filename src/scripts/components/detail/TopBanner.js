@@ -173,7 +173,7 @@ export default class TopBanner extends React.Component {
 					borderRadius={10}>
 					<Text style={styles.titleLabelText}>인기{this.learnType()}</Text>
 				</View>
-				<Text style={styles.labelTitle}>종합순위 30위! 비즈니스스킬 5위!</Text>
+				<Text style={styles.titleLabelText}>종합순위 30위! 비즈니스스킬 5위!</Text>
 			</View>
 			{this.props.learnType === 'class' &&
 			<Text style={styles.headline}>{this.props.store.itemData.headline}</Text>
