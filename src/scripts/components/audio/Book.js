@@ -7,6 +7,7 @@ import IcHeartLine from "../../../images/ic-heart-pink-line.png";
 import IcView from "../../../images/ic-view-dark.png";
 import Device from "../../commons/device";
 import moment from "moment";
+import CommonStyles from "../../../styles/common";
 
 
 const styles = StyleSheet.create({
@@ -19,8 +20,12 @@ const styles = StyleSheet.create({
 	},
 	itemInfo: {
 		width: '100%',
-		height: 115,
-		padding: 20,
+		height: 130,
+		paddingTop: 15,
+		paddingBottom: 15,
+		paddingLeft: 20,
+		paddingRight: 20,
+
 		backgroundColor: '#ffffff',
 	},
 	itemContent: {
@@ -157,7 +162,39 @@ const styles = StyleSheet.create({
 	teacherName: {
 		fontSize: 12,
 		color: '#999999',
-	}
+	},
+	bookLabels: {
+		marginBottom: 15,
+	},
+	bookLabel: {
+		height: 22,
+		marginTop: 9,
+		marginRight: 3,
+		paddingTop: 3,
+		paddingRight: 10,
+		paddingBottom: 3,
+		paddingLeft: 10,
+	},
+	bookLabelText: {
+		fontSize: 12,
+		color: '#ffffff',
+	},
+	bookLabelBlank: {
+		borderColor: 'transparent',
+		opacity: 0,
+	},
+	bookLabelNew: {
+		backgroundColor: '#5f45b4',
+	},
+	bookLabelExclusive: {
+		backgroundColor: '#ff761b',
+	},
+	bookLabelFree: {
+		backgroundColor: '#00afba',
+	},
+	bookLabelDefault: {
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
+	},
 });
 
 export default class Book extends React.Component {
@@ -196,7 +233,7 @@ export default class Book extends React.Component {
 
 				<View style={styles.bookInfoWrap}>
 					<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
-						<Text style={styles.bookTitleBest}>{this.props.itemData.title}</Text>
+						<Text style={styles.bookTitleBest} numberOfLines={2} ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
 					<Text style={styles.teacherName}>{this.props.itemData.teacher.name}</Text>
 					<View style={styles.alignJustify}>
@@ -209,13 +246,44 @@ export default class Book extends React.Component {
 						<View style={styles.bar}/>
 						<Text style={styles.price}>{this.props.itemData.pay_money}</Text>
 					</View>
+					<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
+						{(!this.props.itemData.is_new && !this.props.itemData.is_exclusive && !this.props.itemData.is_free && !this.props.itemData.audiobook_type) &&
+						<View style={[ styles.bookLabel, styles.bookLabelBlank ]} borderRadius={10}>
+							<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}/>
+						</View>
+						}
+						{!!this.props.itemData.is_new &&
+						<View style={[ styles.bookLabel, styles.bookLabelNew ]} borderRadius={10}>
+							<Text style={[ styles.bookLabelText]}>New</Text>
+						</View>
+						}
+						{!!this.props.itemData.is_exclusive &&
+						<View style={[ styles.bookLabel, styles.bookLabelExclusive ]} borderRadius={10}>
+							<Text style={[ styles.bookLabelText]}>독점</Text>
+						</View>
+						}
+						{!!this.props.itemData.is_free &&
+						<View style={[styles.bookLabel, styles.bookLabelFree]} borderRadius={10}>
+							<Text style={[styles.bookLabelText]}>무료</Text>
+						</View>
+						}
+						{this.props.itemData.audiobook_type === '완독' &&
+						<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+							<Text style={[styles.bookLabelText]}>완독</Text>
+						</View>
+						}
+						{this.props.itemData.audiobook_type === '요약' &&
+						<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+							<Text style={[styles.bookLabelText]}>요약</Text>
+						</View>
+						}
+					</View>
 				</View>
 				}
 				{this.props.type === 'recommend' &&
 				<View style={styles.bookInfoWrap}>
 					<TouchableOpacity activeOpacity={0.5} onPress={this.changePage}>
-						<Text style={styles.bookTitleRecommend} numberOfLines={1}
-							  ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
+						<Text style={styles.bookTitleRecommend} numberOfLines={2} ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
 					<View style={[styles.alignJustify, styles.recommendButtonWrap]}>
 						<Image source={IcHeartLine} style={[styles.btnSetLarge, styles.recommendButton]}/>
@@ -231,6 +299,38 @@ export default class Book extends React.Component {
 								<Text style={styles.recommendPriceOrigin}>{this.props.itemdata.pay_money}</Text>
 								<Text style={styles.recommendPriceSale}>(0%)</Text>
 							</Text>
+						</View>
+						}
+					</View>
+					<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
+						{(!this.props.itemData.is_new && !this.props.itemData.is_exclusive && !this.props.itemData.is_free && !this.props.itemData.audiobook_type) &&
+						<View style={[ styles.bookLabel, styles.bookLabelBlank ]} borderRadius={10}>
+							<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}/>
+						</View>
+						}
+						{!!this.props.itemData.is_new &&
+						<View style={[ styles.bookLabel, styles.bookLabelNew ]} borderRadius={10}>
+							<Text style={[ styles.bookLabelText]}>New</Text>
+						</View>
+						}
+						{!!this.props.itemData.is_exclusive &&
+						<View style={[ styles.bookLabel, styles.bookLabelExclusive ]} borderRadius={10}>
+							<Text style={[ styles.bookLabelText]}>독점</Text>
+						</View>
+						}
+						{!!this.props.itemData.is_free &&
+						<View style={[styles.bookLabel, styles.bookLabelFree]} borderRadius={10}>
+							<Text style={[styles.bookLabelText]}>무료</Text>
+						</View>
+						}
+						{this.props.itemData.audiobook_type === '완독' &&
+						<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+							<Text style={[styles.bookLabelText]}>완독</Text>
+						</View>
+						}
+						{this.props.itemData.audiobook_type === '요약' &&
+						<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+							<Text style={[styles.bookLabelText]}>요약</Text>
 						</View>
 						}
 					</View>
