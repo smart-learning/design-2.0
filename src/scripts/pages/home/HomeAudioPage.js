@@ -22,6 +22,7 @@ import PTRView from 'react-native-pull-to-refresh';
 import moment from "moment";
 import ClassContinueList from "../../components/home/ClassContinueList";
 import BookDailyList from "../../components/home/BookDailyList";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -244,4 +245,4 @@ class HomeAudioPage extends React.Component {
 	}
 }
 
-export default HomeAudioPage;
+export default withNavigation(HomeAudioPage);
