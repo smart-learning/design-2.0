@@ -31,6 +31,8 @@ import io.fabric.sdk.android.Fabric;
 import io.invertase.firebase.RNFirebasePackage;
 import java.util.Arrays;
 import java.util.List;
+
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.react.RNEventEmitter;
@@ -115,6 +117,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new RNFirebasePackage(),
+          new RNFirebaseMessagingPackage(),
           new RNVersionNumberPackage(),
           new RNSqlite2Package(),
           new RNKaKaoSigninPackage(),
