@@ -59,7 +59,7 @@ export default class ChapterListItem extends React.Component {
 			}
 			<View>
 				<View style={[CommonStyles.alignJustifyContentBetween, styles.chapterItem]}>
-					<Text style={styles.itemTitleText}>{this.props.itemData.course.title}</Text>
+					<Text style={styles.itemTitleText}>{this.props.itemData.title}</Text>
 					<Text style={styles.itemTime}>
 						{time.hours() === 0 &&
 						<Text style={styles.playTime}>{time.minutes()}분</Text>
