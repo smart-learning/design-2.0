@@ -107,7 +107,9 @@ export default class SidebarUserInfo extends React.Component {
 		return <View>
 			<View style={styles.userInfoContainer}>
 				<View style={styles.userInfo}>
+					{1 === 2 &&
 					<ImageBackground source={DummyUser} resizeMode="cover" borderRadius={25} style={styles.thumbnail}/>
+					}
 					<View>
 						{/*beforeLogin*/}
 						{store.welaaaAuth === undefined &&

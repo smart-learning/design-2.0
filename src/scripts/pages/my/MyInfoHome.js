@@ -176,7 +176,9 @@ export default class MyInfoHome extends React.Component {
 
 
 						<View style={[styles.myInfoContent, {height: 105}]}>
+							{1 === 2 &&
 							<Image source={DummyProfile} style={styles.myInfoProfile} borderRadius={30}/>
+							}
 							<View>
 								<View style={styles.myInfoContentItem}>
 									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name || '시연용' : '' }</Text>
