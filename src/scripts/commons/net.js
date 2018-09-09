@@ -454,6 +454,17 @@ export default {
 			});
 	},
 
+	getVouchersStatus() {
+		const expired = 1;
+		return cacheOrLoad(API_PREFIX + 'v1.0/membership/vouchers/status', expired)
+			.then( data => {
+				return data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	},
+
 	getMembershipCurrent() {
 		const expired = 0;
 		return cacheOrLoad( API_PREFIX + 'v1.0/membership/current', expired )
