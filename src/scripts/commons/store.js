@@ -6,7 +6,7 @@ import {observable} from "mobx";
 let socialType;
 let socialToken;
 let welaaaAuth;
-let currentMembership
+let currentMembership;
 
 class Store {
 	emitter = null;

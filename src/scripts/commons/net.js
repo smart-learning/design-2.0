@@ -430,6 +430,9 @@ export default {
 	getMembershipCurrent() {
 		const expired = 0;
 		return cacheOrLoad( API_PREFIX + 'v1.0/membership/current', expired )
+			.then( data => {
+				return data;
+			})
 			.catch( error => {
 				console.log( error );
 			} );
