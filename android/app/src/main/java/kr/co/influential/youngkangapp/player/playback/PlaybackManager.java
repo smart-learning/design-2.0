@@ -1,5 +1,6 @@
 package kr.co.influential.youngkangapp.player.playback;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -199,6 +200,29 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
   @Override
   public void setCurrentMedia(MediaMetadataCompat item) {
     LogHelper.d(TAG, "setCurrentMedia", item);
+  }
+
+  @Override
+  public void doAutoPlay(Uri uri , MediaMetadataCompat item , Intent intent) {
+
+//    handleStopRequest(null);
+
+    handlePauseRequest();
+
+    if (currentMedia != null) {
+
+      Bundle extras = intent.getExtras();
+
+      // onPlayFromUri
+      setMediaFromUri(uri, extras);
+      handlePlayRequest();
+
+      updateMetadata();
+
+    }else{
+      LogHelper.e(TAG, " currentMedia is null ");
+    }
+
   }
 
   @Override

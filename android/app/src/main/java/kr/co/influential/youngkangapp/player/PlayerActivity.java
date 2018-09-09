@@ -4716,8 +4716,13 @@ public class PlayerActivity extends BasePlayerActivity {
 
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
-        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-            getwebPlayerInfo().getCname()[getContentId()]);
+
+        try{
+          setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+              getwebPlayerInfo().getCname()[getContentId()]);
+        }catch (Exception e){
+          e.printStackTrace();
+        }
 
         break;
       case PlaybackStateCompat.STATE_PAUSED:

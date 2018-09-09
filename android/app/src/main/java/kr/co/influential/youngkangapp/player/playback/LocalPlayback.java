@@ -18,6 +18,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.Pair;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -62,6 +63,7 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.UUID;
+import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
@@ -557,22 +559,39 @@ public final class LocalPlayback implements Playback {
           if (mCallback != null) {
             mCallback.onPlaybackStatusChanged(getState());
 
-            if (getState() == 3) {
-              setRendererDisabled(false);
-            }
+            int currentId = Preferences.getWelaaaPlayListCId(mContext);
+
+            Gson gson = new Gson();
+            String json = Preferences.getWelaaaWebPlayInfo(mContext);
+            WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
+
+            boolean can_play = Preferences.getWelaaaPreviewPlay(mContext);
+            String content_type = mWebPlayerInfo.getCon_class();
 
             mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
+
+            if(content_type.equals("audiobook")){
+              if(can_play){
+
+              }else{
+                // can_play false 오디오북에서는 재생이 안되야 ..
+              }
+
+            }else if(content_type.equals("video-course")){
+              if(can_play){
+                //
+              }else{
+                mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
+              }
+            }
           }
           break;
         case Player.STATE_ENDED:
-          // The media player finished playing the current media.
           if (mCallback != null) {
             // PlayerActivity O
             mCallback.onCompletion();
-          } else {
-            // PlayerActivity X
+
             if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
-              // Meta Data 갱신 안됨 .. 2018.09.05
               doAutoPlay();
             }
           }
@@ -746,9 +765,16 @@ public final class LocalPlayback implements Playback {
 
   private void attachPlayerView() {
     if (playerView != null) {
-      playerView.setPlayer(mExoPlayer);
-      playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
-      playerView.requestFocus();
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          playerView.setPlayer(mExoPlayer);
+          playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
+          playerView.requestFocus();
+        }
+      });
+
     }
   }
 
@@ -835,6 +861,49 @@ public final class LocalPlayback implements Playback {
     public String siteKey;
   }
 
+
+  /**
+   * CAN_PLAY ?
+   **/
+
+  Handler mCanPlayTimeHandler = new Handler() {
+    @SuppressWarnings("unchecked")
+    @Override
+    public void handleMessage(Message msg) {
+      try {
+
+        long currentposition = 0;
+
+        if (mExoPlayer != null) {
+          currentposition = mExoPlayer.getCurrentPosition();
+
+          if (mCanPlayTimeHandler != null) {
+            // 한개만 호출될 수 있도록 확인 해봅시다
+            mCanPlayTimeHandler.removeCallbacksAndMessages(null);
+
+            mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
+          }
+
+          if(currentposition >= 90000){
+            LogHelper.e(TAG , " mCanPlayTimeHandler Stop currentposition is " + currentposition );
+
+            if (mCanPlayTimeHandler != null) {
+              // 한개만 호출될 수 있도록 확인 해봅시다
+              mCanPlayTimeHandler.removeCallbacksAndMessages(null);
+              mCallback.onCompletion();
+
+              doAutoPlay();
+
+            }
+          }
+        }
+
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  };
 
   /**
    * LocalPlayback Progress Check
@@ -1056,10 +1125,22 @@ public final class LocalPlayback implements Playback {
             String expire_at = permissionObject.getString("expire_at");
             Boolean is_free = permissionObject.getBoolean("is_free");
 
-            if (can_play) {
-              Preferences.setWelaaaPreviewPlay(mContext, false);
-            } else {
-              Preferences.setWelaaaPreviewPlay(mContext, true);
+            LogHelper.e(TAG, "can_play  Body:" + can_play);
+            LogHelper.e(TAG, "expire_at  Body:" + expire_at);
+            LogHelper.e(TAG, "is_free  Body:" + is_free);
+
+            if (BuildConfig.BUILD_TYPE.equals("debug")) {
+              if (can_play) {
+                Preferences.setWelaaaPreviewPlay(mContext, false);
+              } else {
+                Preferences.setWelaaaPreviewPlay(mContext, true);
+              }
+            }else{
+              if (can_play) {
+                Preferences.setWelaaaPreviewPlay(mContext, true);
+              } else {
+                Preferences.setWelaaaPreviewPlay(mContext, false);
+              }
             }
 
             if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
@@ -1096,80 +1177,53 @@ public final class LocalPlayback implements Playback {
 
               currentMedia = builder.build();
 
-              mPlayOnFocusGain = true;
-              tryToGetAudioFocus();
-              registerAudioNoisyReceiver();
+              Intent intent = new Intent(mContext, MediaService.class);
 
-              boolean mediaHasChanged = true;
+              intent.setData(uri);
+              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                  mWebPlayerInfo.getCname()[currentId]);
+              intent.putExtra(PlaybackManager.THUMB_URL, "");
+              try {
 
-              mExoPlayer = getPlayer();
+                if ((getDrmUuid("widevine").toString()) != null) {
 
-              if (mediaHasChanged || mExoPlayer == null) {
-                releaseResources(true);
+                  intent
+                      .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                          getDrmUuid("widevine").toString());
+                  intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                      "http://tokyo.pallycon.com/ri/licenseManager.do");
+                  intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                  intent.putExtra(PlaybackManager.DRM_USERID, userId);
+                  intent.putExtra(PlaybackManager.DRM_CID, cId);
+                  intent.putExtra(PlaybackManager.DRM_OID, "");
+                  intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                  intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                  intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
 
-                String source = currentMedia.getDescription().getMediaUri().toString();
-                if (source != null) {
-                  source = source.replaceAll(" ", "%20"); // Escape spaces for URLs
                 }
 
-                @DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
-                    DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
-                DefaultRenderersFactory renderersFactory =
-                    new DefaultRenderersFactory(mContext, extensionRendererMode);
-
-                TrackSelection.Factory trackSelectionFactory =
-                    new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
-                trackSelector = new DefaultTrackSelector(trackSelectionFactory);
-                trackSelector.setParameters(trackSelectorParameters);
-
-                DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
-                try {
-                  drmSessionManager = createDrmSessionManager();
-                } catch (PallyconDrmException e) {
-                  e.printStackTrace();
-                }
-
-                try {
-                  mediaSource = buildMediaSource(Uri.parse(source));
-                } catch (IllegalArgumentException e) {
-                  e.printStackTrace();
-                } catch (IllegalStateException e) {
-                  e.printStackTrace();
-                }
-
-                mExoPlayer = ExoPlayerFactory.newSimpleInstance(
-                    renderersFactory, trackSelector, drmSessionManager);
-                mExoPlayer.addListener(mEventListener);
-                mExoPlayer.setPlayWhenReady(startAutoPlay);
-
-                // Prepares media to play (happens on background thread) and triggers
-                // {@code onPlayerStateChanged} callback when the stream is ready to play.
-                boolean haveStartPosition = !mediaHasChanged && startWindow != C.INDEX_UNSET;
-                if (haveStartPosition) {
-                  mExoPlayer.seekTo(startWindow, startPosition);
-                }
-                mExoPlayer.prepare(mediaSource, !haveStartPosition, false);
-
-                final AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setContentType(CONTENT_TYPE_SPEECH)
-                    .setUsage(USAGE_MEDIA)
-                    .build();
-                mExoPlayer.setAudioAttributes(audioAttributes);
-
-                // If we are streaming from the internet, we want to hold a
-                // Wifi lock, which prevents the Wifi radio from going to
-                // sleep while the song is playing.
-                mWifiLock.acquire();
-              } else {
-                int state = mExoPlayer.getPlaybackState();
-                if (Player.STATE_ENDED == state) {
-                  mExoPlayer.seekTo(startPosition);
-                }
+              } catch (ParserException e) {
+                e.printStackTrace();
               }
 
-              attachPlayerView();
-              configurePlayerState();
+              if(mCallback!=null){
 
+                // stop ?
+                giveUpAudioFocus();
+                unregisterAudioNoisyReceiver();
+                releaseResources(true);
+                clearStartPosition();
+                // release true .. 화면이 안나옴 .. 다음 으로 진행은 됨 . META X
+                // 화면이 정상적으로 나오고 META 데이터까지 업데이트 될 수 있어야 성공
+                // attachPlayerView(); // 적용해야 나온다고 합니다.
+
+                if (mCanPlayTimeHandler != null) {
+                  mCanPlayTimeHandler.removeCallbacksAndMessages(null);
+                }
+
+                mCallback.doAutoPlay(uri , currentMedia , intent);
+
+              }
 
             }
 
