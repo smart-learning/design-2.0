@@ -1,13 +1,17 @@
-import React from 'react';
+﻿import React from 'react';
 import {NativeModules, Platform} from 'react-native';
 import globalStore from '../commons/store';
 
 
-const {RNNativePlayer} = NativeModules;
+const {RNNativePlayer, RNNativeBase} = NativeModules;
 
 import {Alert} from 'react-native'
 
 export default {
+	getF_TOKEN() {
+		RNNativeBase.getF_TOKEN(f_token => { /* do sutff */ });
+	},
+
 	play(cid, oid = '') {
 
 		const {welaaaAuth} = globalStore;

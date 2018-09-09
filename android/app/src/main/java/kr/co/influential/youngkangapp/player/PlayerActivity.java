@@ -2921,7 +2921,7 @@ public class PlayerActivity extends BasePlayerActivity {
                 mUserStar = "";
               }
             }
-
+            Preferences.setWelaaaMyReputation(PlayerActivity.this, "");
             if (mUserStar.equals("")) {
               // 등록된 별점 정보가 없는 경우
               TextView myrepu_text = findViewById(R.id.myrepu_text);
