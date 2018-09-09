@@ -189,6 +189,9 @@
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명 세팅도 겸사겸사 합니다.
         NSString *playSeconds = [contentsListArray[indexOfCurrentContent][@"play_seconds"] stringValue];
       
+        // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
+        [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
+      
         // 현재 재생할 콘텐트의 play_seconds의 정수값이 0일 경우
         if ( [playSeconds isEqualToString : @"0"] )
         {
@@ -214,6 +217,9 @@
             [_args setObject : playDataDics[@"media_urls"][@"HLS"]
                       forKey : @"uri"];
             _currentLectureTitle = contentsListArray[i][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명 세팅도 겸사겸사 합니다.
+          
+            // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
+            [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
         }
     }
     else if ( !_isAudioContent )  // 영상 콘텐츠의 경우 소챕터명만 세팅합니다.
@@ -232,10 +238,6 @@
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
-  
-    // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
-    //[self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"background"]];
-    [self setAudioContentBackgroundImageUrl : @"https://static.welaaa.co.kr/contentsUpImage/20180525213750.jpg"];
   
     // _args가 잘못 전달받아도 HLS 경로로 수정합니다.
     NSString *uriString = [_args objectForKey : @"uri"];
@@ -496,8 +498,7 @@
     {
         // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
         // 해당 경로는 오디오북만 해당됩니다.
-      //[self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"background"]];
-      [self setAudioContentBackgroundImageUrl : @"https://static.welaaa.co.kr/contentsUpImage/20180525213750.jpg"];
+        [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
     }
 }
 
