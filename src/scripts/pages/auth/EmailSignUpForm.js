@@ -20,11 +20,10 @@ const styles = StyleSheet.create({
 		paddingTop: 50,
 	},
 	logoWrap: {
-		position: 'absolute',
-		top: 20,
-		zIndex: 9,
 		alignItems: 'center',
 		height: 50,
+		marginTop: 0,
+		marginBottom: 20,
 	},
 	logo: {
 		width: 88,
@@ -196,12 +195,12 @@ class Data {
 		return (
 			<View style={[CommonStyles.container, styles.loginContainer]} behavior="padding">
 
-				<View style={styles.logoWrap}>
-					<Image source={logo} style={styles.logo}/>
-				</View>
 				<ImageBackground source={bgSignUp}
 								 style={styles.background}
 				>
+					<View style={styles.logoWrap}>
+						<Image source={logo} style={styles.logo}/>
+					</View>
 					<View style={styles.contentWrap}>
 						<View style={styles.content}>
 							<Text style={styles.headline}>무료계정만들기</Text>
