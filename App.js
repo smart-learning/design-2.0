@@ -5,7 +5,7 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
+import {AsyncStorage, DeviceEventEmitter, Platform, View, Linking} from "react-native";
 import EventEmitter from 'events';
 import globalStore from "./src/scripts/commons/store";
 
@@ -61,6 +61,7 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 
 		// 권한 체크 후 없으면 요청
 		const enabled = await firebase.messaging().hasPermission();
+		console.log( 'FCM enabled:', enabled );
 		if (enabled) {
 			// user has permissions
 		} else {
@@ -108,11 +109,23 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		}));
 
 
+		/* FireBase 메시지 수신 */
+		// this.messageListener = firebase.messaging().onMessage( message => {
+		// 	// Process your message as required
+		// 	console.log( 'FCM 메시지 처리:', message );
+		// });
 
-		this.messageListener = firebase.messaging().onMessage( message => {
-			// Process your message as required
-			console.log( 'FCM 메시지 처리:', message );
+		// this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification) => {
+		// 	console.log( 'FCM NOTI-D:', notification );
+		// 	// Process your notification as required
+		// 	// ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
+		// });
+		this.notificationListener = firebase.notifications().onNotification((notification) => {
+			console.log( 'FCM NOTI:', notification );
+			// Process your notification as required
+			// _body에 타이틀, _data안에 key:value 값
 		});
+
     }
 
 	componentWillUnmount() {
@@ -126,8 +139,11 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 
  	render() {
 
+		const prefix = Platform.OS == 'android' ? 'welaaa://welaaa/' : 'welaaa://';
+
 		return <View style={{flex: 1}}>
 			<AppDrawer
+				uriPrefix={prefix}
 				ref={navigatorRef => {
 					globalStore.drawer = navigatorRef
 				}}

@@ -484,6 +484,9 @@ export default {
 		const fcmToken = await firebase.messaging().getToken();
 
 		if (fcmToken) {
+
+			console.log( 'fcm token:', fcmToken );
+
 			let params = encodeParams({
 				"app_name": "welaaa",
 				"app_os": (Platform.OS === 'ios' ? 0 : 1),
