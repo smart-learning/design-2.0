@@ -373,6 +373,14 @@
       
         return ;
     }
+  
+    // 현재 재생중인 콘텐트의 권한이 없다면 종료시킵니다.
+    if ( !_isAuthor )
+    {
+        [self closePlayer];
+      
+        return ;
+    }
     
     // 다음 재생할 item이 있는지 검색하여 플레이할 것인지 추천영상뷰를 띄울것인지 결정해야합니다.
     NSArray *contentsListArray;
@@ -1653,8 +1661,8 @@
       
         if ( [@"script-mode" isEqualToString : buttonId] )
         {
-            [_scriptView setStatus: MediaPlayerScriptViewModeNone];
-          isToast = YES;
+            [_scriptView setStatus : MediaPlayerScriptViewModeNone];
+            isToast = YES;
         }
         else if ( [@"download-mode" isEqualToString : buttonId] )
         {
@@ -1664,7 +1672,6 @@
       
         if ( isToast )
         {
-            //AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
             [_contentView makeToast : @"미리보기에서는 이용 하실 수 없습니다."];
           
             return ;
@@ -1674,7 +1681,7 @@
     if ( [@"script-mode" isEqualToString : buttonId] )
     {
         [self setScriptViewFrameWithStatus : status];
-      [self readScript];
+        [self readScript];
     }
     else if ( [@"view-mode" isEqualToString : buttonId] )
     {
@@ -2040,10 +2047,17 @@
 }
 
 # pragma mark - Script View
+//
+// API를 통해 자막데이터를 가져옵니다.
+//
 - (NSArray *) readScript
 {
     return [ApiManager getSubtitles : [_args objectForKey : @"cid"]];
 }
+
+//
+// 자막UI를 초기화합니다.
+//
 - (void) initScriptUi
 {
     NSArray *scriptArray = [self readScript];
@@ -2340,10 +2354,6 @@
   }
 }
 
-
-// 슬라이더 이동시 썸네일 이미지를 보여주면 좋을듯.. ( http://devhkh.tistory.com/18 )
-
-// 모든 기능 안정화 전까지 세로모드 만 적용합시다.
 
 @end
 
