@@ -179,7 +179,7 @@ export default class MyInfoHome extends React.Component {
 							<Image source={DummyProfile} style={styles.myInfoProfile} borderRadius={30}/>
 							<View>
 								<View style={styles.myInfoContentItem}>
-									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name || '시연용' : '' }</Text>
+									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name : '' }</Text>
 									<View>
 										<Text>{/*package*/}</Text>
 									</View>

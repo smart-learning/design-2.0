@@ -12,8 +12,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -24,6 +24,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.UUID;
 import kr.co.influential.youngkangapp.MainApplication;
@@ -218,10 +219,16 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   @ReactMethod
   public void selectDatabase(ReadableMap content) {
     // 2018.09.06
-    try {
-      Log.e(TAG, " getDatabase : " + ContentManager().getDatabase());
+    try{
+      Gson gson = new Gson();
+      String json = gson.toJson(ContentManager().getDatabase());
 
-    } catch (Exception e) {
+      WritableMap params = Arguments.createMap();
+
+      params.putString("selectDatabase" , json);
+      sendEvent("selectDatabase", params);
+
+    }catch (Exception e){
       e.printStackTrace();
     }
 
@@ -260,8 +267,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     String requestWebUrl = sendUrl;
 
-    Log.e(TAG, " requestWebUrl is " + requestWebUrl);
-    Log.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
+    LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
+    LogHelper.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
 
     new Thread() {
       public void run() {
@@ -274,7 +281,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   private final Callback callback = new Callback() {
     @Override
     public void onFailure(Call call, IOException e) {
-      Log.e(TAG, "콜백오류:" + e.getMessage());
+      LogHelper.e(TAG, "콜백오류:" + e.getMessage());
 
       if (mProgressDialog != null) {
         mProgressDialog.dismiss();
@@ -325,14 +332,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               JSONObject historyObject = null;
 
               if (json.isNull("history")) {
-                Log.e(TAG, " history is null ");
+                LogHelper.e(TAG, " history is null ");
               } else {
                 historyObject = json.getJSONObject("history");
 
                 historyObject.getString("id");
                 historyObject.getString("played_at");
 
-                Log.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
+                LogHelper.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
 
                 contentHistory_seconds = historyObject.getInt("start_seconds");
               }
@@ -571,12 +578,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     // v200072  , 001 로 리턴되고 , 해당 클래식은 002 가 가장 처음이고,
                     // 001 은 마지막에서 두개 전 .. for 문에서 신기하게 들어가는건가요 ..
 
-                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
-                        .getString("id"));
-                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
-                        .getString("played_at"));
-                    Log.e(TAG, "contentType " + contentType + " history Object " + historyObject
-                        .getString("start_seconds"));
                     contentCid = json.getString("cid");
                     contentName = json.getString("title");
                     contentId = i;
@@ -698,7 +699,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 intent.putExtra("expire_at", expire_at);
                 intent.putExtra("is_free", is_free);
                 intent.putExtra("webPlayerInfo", mWebPlayerInfo);
-                intent.putExtra("history_start_seconds", contentHistory_seconds);
+                intent.putExtra("history_start_seconds" , contentHistory_seconds);
               }
 
               LogHelper.e(TAG, "url : " + dashUrl);
@@ -742,7 +743,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
               contextWrapper.startService(service);
             } else {
-              Log.e(TAG, " No Action .. ");
+              LogHelper.e(TAG, " No Action .. ");
             }
 
           } catch (Exception e) {

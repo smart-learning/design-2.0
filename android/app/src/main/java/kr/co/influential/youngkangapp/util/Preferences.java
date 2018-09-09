@@ -579,7 +579,7 @@ public class Preferences {
 
     public static String getWelaaaLoginToken(Context context){
         SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
-        return pref.getString(F_TOKEN_VALUE, "0");
+        return pref.getString(F_TOKEN_VALUE, "");
     }
 
     /************************************************************************

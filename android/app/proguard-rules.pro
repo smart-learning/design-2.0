@@ -72,3 +72,10 @@
 # react-native-firebase.
 -keep class io.invertase.firebase.** { *; }
 -dontwarn io.invertase.firebase.**
+
+# PallyconSDK
+-keep class com.pallycon.widevinelibrary.** { *; }
+-dontwarn com.pallycon.widevinelibrary.**
+
+-keep class org.bouncycastle.** { *; }
+-dontwarn org.bouncycastle.**

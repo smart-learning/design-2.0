@@ -223,15 +223,8 @@ public class AudioBookPlayerListAdapter extends BaseAdapter {
 				convertView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if(m_PlayUrlList.get(pos).contains(".mp4")) {
-//							if(pos==mController.getContentId()){
-//								mController.btnPlaylistClose();
-//								mController.btnPlaylistClose_start();
-//							}else {
-//								mController.playListOnclickAudio(pos , m_End_Time.get(pos) );
-////								mController.setAudioBookScroll(pos);
-//								mController.setLectureItem();
-//							}
+						if (m_PlayUrlList.get(pos)!=null) {
+							mController.playListOnClick(m_PlayUrlList.get(pos));
 						}
 					}
 				});
@@ -252,15 +245,8 @@ public class AudioBookPlayerListAdapter extends BaseAdapter {
 				convertView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if(m_PlayUrlList.get(pos).contains(".mp4")) {
-//							if(pos==mController.getContentId()){
-//								mController.btnPlaylistClose();
-//								mController.btnPlaylistClose_start();
-//							}else {
-//								mController.playListOnclickAudio(pos , m_End_Time.get(pos) );
-////								mController.setAudioBookScroll(pos);
-//								mController.setLectureItem();
-//							}
+						if (m_PlayUrlList.get(pos)!=null) {
+							mController.playListOnClick(m_PlayUrlList.get(pos));
 						}
 					}
 				});
@@ -280,16 +266,8 @@ public class AudioBookPlayerListAdapter extends BaseAdapter {
 				convertView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						if(m_PlayUrlList.get(pos).contains(".mp4")) {
-//							if(pos==mController.getContentId()){
-//								mController.btnPlaylistClose();
-//								mController.btnPlaylistClose_start();
-//							}else {
-//								mController.playListOnclickAudio(pos , m_End_Time.get(pos) );
-////								mController.setAudioBookScroll(pos);
-//
-//								mController.setLectureItem();
-//							}
+						if (m_PlayUrlList.get(pos)!=null) {
+							mController.playListOnClick(m_PlayUrlList.get(pos));
 						}
 					}
 				});

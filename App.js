@@ -4,6 +4,7 @@ import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
+import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
@@ -13,6 +14,7 @@ import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
 import { observer } from "mobx-react";
+import firebase from 'react-native-firebase';
 
 @observer class App extends React.Component {
 
@@ -23,6 +25,7 @@ import { observer } from "mobx-react";
 			globalStore.welaaaAuth = welaaaAuth;
 
 			globalStore.profile = await net.getProfile();
+			globalStore.currentMembership = await net.getMembershipCurrent();
 		}
 	};
 
@@ -42,24 +45,46 @@ import { observer } from "mobx-react";
 		Native.updateSettings();
 	};
 
+	initFCM = async () => {
+		const fcmToken = await firebase.messaging().getToken();
+		if (fcmToken) {
+			console.log( 'fcmToken', fcmToken );
+			// 토큰 있음
+		} else {
+			console.log( '유저가 토큰을 가지고 있지 않음' );
+			// 유저가 토큰을 가지고 있지 않음
+		}
+	};
 
 
 	constructor(prop) {
 		super(prop);
-		this.subscription = null;
+		this.subscription = [];
 
 		this.getTokenFromAsyncStorage();
 		this.getAppSettings();
+		this.initFCM();
 	}
 
 	componentDidMount() {
-        this.subscription = DeviceEventEmitter.addListener('miniPlayer', (params) => {
+		this.subscription.push( DeviceEventEmitter.addListener('miniPlayer', (params) => {
 			Native.toggleMiniPlayer( params.visible );
-        });
+		}));
+		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
+			console.log( 'database receiveDownloadList:', params );
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
+		}));
+		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
+			console.log( 'download receiveDownloadList:', params );
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
+		}));
     }
 
 	componentWillUnmount() {
-		this.subscription.remove();
+		this.subscription.forEach( listener => {
+			listener.remove();
+		} );
+		this.subscription.length = 0;
 	}
 
  	render() {
@@ -122,6 +147,10 @@ const AppDrawer = createDrawerNavigator(
 
 		AudioScreen: {
 			screen: AudioScreen,
+		},
+
+		MembershipScreen: {
+			screen: MembershipScreens,
 		},
 
 		MyScreen: {

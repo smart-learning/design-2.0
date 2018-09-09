@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 		borderRightWidth: 0,
 		borderBottomWidth: 1,
 		borderLeftWidth: 0,
-		borderColor: '#00b870',
+		borderColor: CommonStyles.COLOR_PRIMARY,
 	},
 	classTitle: {
 		fontSize: 16,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
 export default withNavigation(class ClassListItem extends React.Component {
 
 	gotoClassPage = () => {
-		this.props.navigation.navigate('ClassDetailPage', {id: this.props.itemData.id, title: ' '});
+		this.props.navigation.navigate('ClassDetailPage', {id: this.props.itemData.id, title: this.props.itemData.title});
 	}
 
 

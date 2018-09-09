@@ -1,7 +1,7 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
 import {ActivityIndicator, Alert, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
-import { SafeAreaView } from "react-navigation";
+import {SafeAreaView, withNavigation} from "react-navigation";
 import PageCategory from "../../components/PageCategory";
 import net from "../../commons/net";
 import Book from "../../components/audio/Book";
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-@observer class AudioBookPage extends React.Component {
+export default withNavigation( @observer class AudioBookPage extends React.Component {
 	store = createStore({
 		isLoading: true,
 		categories: [],
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
 	};
 
 	loadMore = () => {
-		if( this.store.pagination.has_next ) {
-			this.loadAudioList( this.store.ccode, this.store.pagination.next_page );
+		if( this.store.pagination['has-next'] ) {
+			this.loadAudioList( this.store.ccode, this.store.pagination.page + 1 );
 		}
 	};
 
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{marginLeft: 'auto'}}
 										  onPress={() => {
-											  this.props.navigation.navigate('MyAudioBookPage')
+											  this.props.navigation.navigate('AudioBookBuyPage')
 										  }}
 						>
 							<View style={styles.myButton} borderRadius={3}>
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 					</View>
 					}
-					{ ( !this.store.isLoading && this.store.pagination.has_next ) &&
+					{ ( !this.store.isLoading && this.store.pagination['has-next'] ) &&
 					<TouchableOpacity activeOpacity={0.9} onPress={this.loadMore}>
 						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 							<Text style={styles.linkViewAllText}>더보기</Text>
@@ -215,6 +215,4 @@ const styles = StyleSheet.create({
 			</ScrollView>
 		</SafeAreaView>
 	}
-}
-
-export default AudioBookPage;
+} );

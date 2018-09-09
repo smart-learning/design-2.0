@@ -1,19 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    tools:context="kr.co.influential.youngkangapp.SplashActivity">
-
-    <TextView
-        android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/app_name"
-        android:textColor="@color/colorWhite"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@drawable/splash"
+  tools:context="kr.co.influential.youngkangapp.SplashActivity">
 
 </FrameLayout>

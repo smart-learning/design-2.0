@@ -18,8 +18,8 @@ const styles = StyleSheet.create( {
 		alignItems: 'center',
 		position: 'relative',
 		width: '100%',
-		paddingTop: '29.41176471%',
-		paddingBottom: '29.41176471%',
+		paddingTop: '29.8245614035%',
+		paddingBottom: '29.8245614035%',
 		backgroundColor: '#efefef',
 	},
 	title: {

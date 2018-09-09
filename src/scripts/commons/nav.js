@@ -10,10 +10,11 @@ import IcAngleRight from "../../images/ic-angle-right-primary.png";
 
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
-		backgroundColor: '#00b870',
+		backgroundColor: CommonStyle.COLOR_PRIMARY,
 	},
 	headerTintColor: '#fff',
 	headerTitleStyle: {
+		fontSize: 16,
 		fontWeight: 'bold',
 	}
 };

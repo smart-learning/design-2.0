@@ -188,11 +188,9 @@ public class HLVAdapter extends RecyclerView.Adapter<HLVAdapter.ViewHolder> {
       @Override
       public void onClick(View view, int position, boolean isLongClick) {
         if (isLongClick) {
-          // insert playList .php 호출 되는 구조
-//                    mWelaaaPlayer.hlvAdater(ckey.get(position));
+          mWelaaaPlayer.hlvAdater(ckey.get(position));
         } else {
-          // insert playList .php 호출 되는 구조
-//                    mWelaaaPlayer.hlvAdater(ckey.get(position));
+          mWelaaaPlayer.hlvAdater(ckey.get(position));
         }
       }
     });

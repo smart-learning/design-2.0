@@ -3,11 +3,15 @@ import {NativeModules, Platform} from 'react-native';
 import globalStore from '../commons/store';
 
 
-const {RNNativePlayer} = NativeModules;
+const {RNNativePlayer, RNNativeBase} = NativeModules;
 
 import {Alert} from 'react-native'
 
 export default {
+	getF_TOKEN() {
+		RNNativeBase.getF_TOKEN(f_token => { /* do sutff */ });
+	},
+
 	play(cid, oid = '') {
 
 		const {welaaaAuth} = globalStore;
@@ -37,7 +41,7 @@ export default {
 		};
 
 		if (Platform.OS === 'android') {
-			;
+			null;
 		} else {
 			args.cid = 'v100015_002';
 			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_002/master.m3u8';
@@ -63,6 +67,19 @@ export default {
 		console.log('toggleMiniPlayer:', bool);
 		globalStore.miniPlayerVisible = bool;
 	},
+
+	getDatabase() {
+		try {
+			RNNativePlayer.selectDatabase({});
+		}
+		catch (error) {
+			console.log( error );
+		}
+	},
+
+	// receiveDownloadList(args) {
+	// 	console.log('naive.receiveDownloadList:', args);
+	// },
 
 
 	download( args ) {

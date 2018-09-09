@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		width: '100%',
 		height: 3,
-		backgroundColor: '#26c281',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	tabContentContainer: {
 		paddingTop: 40,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
 		top: 1,
 		marginRight: 5,
 		fontSize: 15,
-		color: '#26c281',
+		color: CommonStyles.COLOR_PRIMARY,
 	},
 	logText: {
 		marginRight: 5,

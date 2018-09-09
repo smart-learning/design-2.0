@@ -83,9 +83,9 @@ public class PlayerListPopClipAdapter extends BaseAdapter {
 
 //			if(m_End_Time.get(pos).equals("9999999")){
 //
-//				Log.e(TAG , "getCount " + getCount() );
-//				Log.e(TAG ,Integer.toString(mController.getContentId()));
-//				Log.e(TAG ,Integer.toString(pos));
+//				LogHelper.e(TAG , "getCount " + getCount() );
+//				LogHelper.e(TAG ,Integer.toString(mController.getContentId()));
+//				LogHelper.e(TAG ,Integer.toString(pos));
 //
 //				// 재생 완료된 히스토리 !
 ////				ImageView btnimg = (ImageView) convertView.findViewById(R.id.playbtnimageview);

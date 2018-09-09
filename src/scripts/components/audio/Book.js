@@ -6,6 +6,8 @@ import IcHeart from "../../../images/ic-heart-pink.png";
 import IcHeartLine from "../../../images/ic-heart-pink-line.png";
 import IcView from "../../../images/ic-view-dark.png";
 import Device from "../../commons/device";
+import moment from "moment";
+import CommonStyles from "../../../styles/common";
 
 
 const styles = StyleSheet.create({
@@ -19,7 +21,11 @@ const styles = StyleSheet.create({
 	itemInfo: {
 		width: '100%',
 		height: 115,
-		padding: 20,
+		paddingTop: 15,
+		paddingBottom: 15,
+		paddingLeft: 20,
+		paddingRight: 20,
+
 		backgroundColor: '#ffffff',
 	},
 	itemContent: {
@@ -152,12 +158,16 @@ const styles = StyleSheet.create({
 	},
 	recommendPriceSale: {
 		color: '#ff4f72',
-	}
+	},
+	teacherName: {
+		fontSize: 12,
+		color: '#999999',
+	},
 });
 
 export default class Book extends React.Component {
 	changePage = () => {
-		this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.id, title:' '});
+		this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.id, title:this.props.itemData.title});
 	};
 
 	render() {
@@ -165,6 +175,7 @@ export default class Book extends React.Component {
 		if( this.props.itemData.teacher === null ) {
 			this.props.itemData.teacher = {};
 		}
+		const time = moment.duration(this.props.itemData.play_time);
 		return <View style={styles.itemContainer}>
 			{this.props.type === 'best' &&
 			<View style={[styles.alignJustify, styles.socialButtonWrap]}>
@@ -190,10 +201,16 @@ export default class Book extends React.Component {
 
 				<View style={styles.bookInfoWrap}>
 					<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
-						<Text style={styles.bookTitleBest}>{this.props.itemData.title}</Text>
+						<Text style={styles.bookTitleBest} numberOfLines={2} ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
+					<Text style={styles.teacherName}>{this.props.itemData.teacher.name}</Text>
 					<View style={styles.alignJustify}>
-						<Text style={styles.playTime}>06시간 23분</Text>
+						{time.hours() === 0 &&
+						<Text style={styles.playTime}>{time.minutes()}분</Text>
+						}
+						{time.hours() > 0 &&
+						<Text style={styles.playTime}>{time.hours()}시간 {time.minutes()}분</Text>
+						}
 						<View style={styles.bar}/>
 						<Text style={styles.price}>{this.props.itemData.pay_money}</Text>
 					</View>
@@ -202,8 +219,7 @@ export default class Book extends React.Component {
 				{this.props.type === 'recommend' &&
 				<View style={styles.bookInfoWrap}>
 					<TouchableOpacity activeOpacity={0.5} onPress={this.changePage}>
-						<Text style={styles.bookTitleRecommend} numberOfLines={1}
-							  ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
+						<Text style={styles.bookTitleRecommend} numberOfLines={2} ellipsizeMode={'tail'}>{this.props.itemData.title}</Text>
 					</TouchableOpacity>
 					<View style={[styles.alignJustify, styles.recommendButtonWrap]}>
 						<Image source={IcHeartLine} style={[styles.btnSetLarge, styles.recommendButton]}/>

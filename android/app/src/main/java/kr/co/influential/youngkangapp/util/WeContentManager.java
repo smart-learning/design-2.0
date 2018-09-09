@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -47,8 +45,6 @@ public class WeContentManager extends SQLiteOpenHelper {
 
     super(context, database, null, VERSION);
     String dbPath = context.getApplicationContext().getDatabasePath("welaaa.db").getPath();
-
-    Log.e("WeContentManager ", " WeContentManager dbPath is " + dbPath);
     //  super(context, database, null, VERSION);
     if (db != null && db.isOpen()) {
       db.close();
@@ -165,7 +161,6 @@ public class WeContentManager extends SQLiteOpenHelper {
 
     int nCount = 0;
     nCount = c.getCount();
-    Logger.i("countDownload =>" + nCount);
 
     ArrayList<HashMap<String, Object>> data = CursorToDataTable(c);
     return data;
@@ -521,7 +516,6 @@ public class WeContentManager extends SQLiteOpenHelper {
     while (c.moveToNext()) {
       HashMap<String, Object> dr = new HashMap<String, Object>();
       for (int j = 0; j < names.length; j++) {
-        Logger.d("CursorToDataTable name[" + names[j] + "]  Value[" + c.getString(j) + "]");
         dr.put(names[j], changeSyntaxRestore(c.getString(j)));
       }
       dt.add(dr);

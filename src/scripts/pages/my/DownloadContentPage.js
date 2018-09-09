@@ -11,12 +11,11 @@ import {
 	View
 } from "react-native";
 import CommonStyles from "../../../styles/common";
-import Store from '../../../scripts/commons/store';
+import globalStore from '../../../scripts/commons/store';
 import {SafeAreaView} from "react-navigation";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import Native from "../../commons/native";
-import SQLite from 'react-native-sqlite-2';
 
 const styles = StyleSheet.create({
 	tabContainer: {
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		width: '100%',
 		height: 3,
-		backgroundColor: '#26c281',
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	tabContentContainer: {
 		paddingTop: 40,
@@ -123,19 +122,7 @@ export default class DownloadContentPage extends React.Component {
 
 
 	componentDidMount() {
-		const db = SQLite.openDatabase('welaaa.db', '1.0', '', 1);
-		db.transaction(txn => {
-			console.log('txn:', txn);
-			txn.executeSql('SELECT * FROM DOWNLOAD', [], (tx, res) => {
-				console.log('res:', res);
-				res.rows.forEach( item => {
-					if( item.audioVideoType === 'video-course' ) this.videos.push( item );
-					else                                         this.audios.push( item );
-				});
-
-				console.log( 'videos, auidios:', this.videos, this.audios );
-			});
-		});
+		Native.getDatabase();
 	}
 
 	makeListItem = ({item, index}) => {
@@ -158,16 +145,43 @@ export default class DownloadContentPage extends React.Component {
 		let vcontent = <Text>다운받은 항목이 없습니다.</Text>;
 		let acontent = <Text>다운받은 항목이 없습니다.</Text>;
 
-		if (this.videos.length > 0) {
+
+		let vvv = [];
+		let aaa = [];
+		// store의 downloadItems이 변경되면..
+		if( globalStore.downloadItems !== 'null' ){
+
+			/* TODO: 어떤 형태로 들어오는지는 봐야되는데, audioVideoType 값을 가지고 videos, audios로 각각 분배*/
+			// 일단 array안에 object라고 가정하고...
+			try {
+				const json = JSON.parse( globalStore.downloadItems );
+				json.forEach( item => {
+					if( item.audioVideoType === 'video_course' ) vvv.push( item );
+					else                                         aaa.push( item );
+				});
+			}catch( e ){
+				console.log( e );
+			}
+
+		}else{
+
+			// 데이터 없을경우 임시로 더미 생성 TODO: 추후 삭제
+			vvv.push( this.videos[0] );
+		}
+
+
+
+		// 데이터를 가지고 리스트를 생성
+		if (vvv.length > 0) {
 			vcontent = <FlatList
-				data={this.videos}
+				data={this.vvv}
 				renderItem={this.makeListItem}
 			/>
 		}
 
-		if (this.audios.length > 0) {
+		if (aaa.length > 0) {
 			acontent = <FlatList
-				data={this.audios}
+				data={this.aaa}
 				renderItem={this.makeListItem}
 			/>
 		}

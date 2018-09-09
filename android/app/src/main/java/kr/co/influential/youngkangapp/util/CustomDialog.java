@@ -293,7 +293,9 @@ public class CustomDialog extends Dialog {
             iconMyRepuStat4.setOnClickListener(click_control);
             iconMyRepuStat5.setOnClickListener(click_control);
 
-            btn_myrepu_close.setOnClickListener(mSingleListener);
+            // TODO: 2018. 9. 7. 닫기 버튼 리스터 제거
+            btn_myrepu_close.setOnClickListener(v -> dismiss());
+//            btn_myrepu_close.setOnClickListener(mSingleListener);
         }
 
         try{

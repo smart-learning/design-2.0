@@ -45,7 +45,7 @@ const styles = StyleSheet.create( {
 		borderRightWidth: 0,
 		borderBottomWidth: 1,
 		borderLeftWidth: 0,
-		borderColor: '#00b870',
+		borderColor: CommonStyles.COLOR_PRIMARY,
 	},
 	bookTitle: {
 		fontSize: 16,
@@ -66,26 +66,26 @@ const styles = StyleSheet.create( {
 		paddingRight: 10,
 		paddingBottom: 3,
 		paddingLeft: 10,
-		borderWidth: 1,
 	},
 	bookLabelText: {
 		fontSize: 12,
+		color: '#ffffff',
 	},
 	bookLabelBlank: {
 		borderColor: 'transparent',
 		opacity: 0,
 	},
-	bookLabelExclusive: {
-		borderColor: '#ff761b',
+	bookLabelNew: {
+		backgroundColor: '#5f45b4',
 	},
-	bookLabelExclusiveText: {
-		color: '#ff761b',
+	bookLabelExclusive: {
+		backgroundColor: '#ff761b',
 	},
 	bookLabelFree: {
-		borderColor: '#00afba',
+		backgroundColor: '#00afba',
 	},
-	bookLabelFreeText: {
-		color: '#00afba',
+	bookLabelDefault: {
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	thumbnail: {
 		position: 'relative',
@@ -138,25 +138,40 @@ export default withNavigation(@observer class BookListItem extends React.Compone
 				<View style={styles.bookRankHr}/>
 			</View>
 			}
-			<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.itemData.id, title: ' '})}>
+			<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: this.props.itemData.id, title: this.props.itemData.title})}>
 				<Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={1}>
 					{this.props.itemData.title}
 				</Text>
 			</TouchableOpacity>
 			<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
-				{(!this.props.itemData.is_exclusive && !this.props.itemData.is_free) &&
+				{(!this.props.itemData.is_new && !this.props.itemData.is_exclusive && !this.props.itemData.is_free && !this.props.itemData.audiobook_type) &&
 				<View style={[ styles.bookLabel, styles.bookLabelBlank ]} borderRadius={10}>
 					<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}/>
 				</View>
 				}
+				{!!this.props.itemData.is_new &&
+				<View style={[ styles.bookLabel, styles.bookLabelNew ]} borderRadius={10}>
+					<Text style={[ styles.bookLabelText]}>New</Text>
+				</View>
+				}
 				{!!this.props.itemData.is_exclusive &&
 				<View style={[ styles.bookLabel, styles.bookLabelExclusive ]} borderRadius={10}>
-					<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}>독점</Text>
+					<Text style={[ styles.bookLabelText]}>독점</Text>
 				</View>
 				}
 				{!!this.props.itemData.is_free &&
 				<View style={[styles.bookLabel, styles.bookLabelFree]} borderRadius={10}>
-					<Text style={[styles.bookLabelText, styles.bookLabelFreeText]}>무료</Text>
+					<Text style={[styles.bookLabelText]}>무료</Text>
+				</View>
+				}
+				{this.props.itemData.audiobook_type === '완독' &&
+				<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+					<Text style={[styles.bookLabelText]}>완독</Text>
+				</View>
+				}
+				{this.props.itemData.audiobook_type === '요약' &&
+				<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+					<Text style={[styles.bookLabelText]}>요약</Text>
 				</View>
 				}
 			</View>
