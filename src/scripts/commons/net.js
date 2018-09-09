@@ -470,8 +470,5 @@ export default {
 	},
 	registerMembership(data) {
 		return axios.post(API_PREFIX + 'v1.0/payment/import/subscriptions/issue-billing', data)
-			.catch((error) => {
-				console.error(error);
-			});
 	}
 }

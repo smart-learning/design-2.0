@@ -3,6 +3,7 @@ import {
 	Text,
 	View,
 	ScrollView,
+	Alert,
 	TouchableOpacity,
 	StyleSheet,
 	Platform,
@@ -11,10 +12,12 @@ import {
 } from "react-native";
 import {SafeAreaView} from "react-navigation";
 import CommonStyles from "../../../styles/common";
+import net from "../../commons/net";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import BulletBoxCheck from "../../../images/ic-checkbox.png"
 import BulletBoxChecked from "../../../images/ic-checkbox-checked.png"
+import globalStore from "../../commons/store";
 
 
 const productItem = {
@@ -223,16 +226,21 @@ const styles = StyleSheet.create({
 class MembershipFormPage extends React.Component {
 
 	@observable formType = null;
-	@observable name = null;
-	@observable phone = null;
-	@observable email = null;
-	@observable creditNumber = null;
-	@observable validityPeriodMonth = '';
-	@observable validityPeriodYear = '';
-	@observable birth = '';
-	@observable gender = null;
-	@observable password = null;
-	@observable isAgree = false;
+
+	state = {
+		submitButtonDisabled: false,
+
+		user_name: '',
+		phone: '',
+		email: '',
+		card_num: '',
+		expire_m: '',
+		expire_y: '',
+		birth: '',
+		gender: '',
+		card_pass: '',
+		isAgree: '',
+	}
 
 	constructor(props) {
 		super(props);
@@ -243,13 +251,13 @@ class MembershipFormPage extends React.Component {
 	}
 
 	validityPeriodMonthOnFocus = () => {
-		if (this.validityPeriodMonth === '월') {
-			this.validityPeriodMonth = '';
+		if (this.expire_m === '월') {
+			this.expire_m = '';
 		}
 	};
 	validityPeriodYearOnFocus = () => {
-		if (this.validityPeriodYear === '년') {
-			this.validityPeriodYear = '';
+		if (this.expire_y === '년') {
+			this.expire_y = '';
 		}
 	};
 	birthOnFocus = () => {
@@ -269,29 +277,46 @@ class MembershipFormPage extends React.Component {
 	onSubmit = async () => {
 		// TODO
 		// validation
+		this.setState({ submitButtonDisabled: true })
 
 		const data = {
-			name: this.name,
-			phone: this.phone,
-			email: this.email,
-			creditNumber: this.creditNumber,
-			validityPeriodMonth: this.validityPeriodMonth,
-			validityPeriodYear: this.validityPeriodYear,
-			birth: this.birth,
-			gender: this.gender,
-			password: this.password,
+			...this.state,
+			membership: this.formType,
 		}
+		delete data.submitButtonDisabled
+		console.log(data)
 
 		try{
-			await net.registerMembership(data)
+			const data = await net.registerMembership(data)
 			// register 성공
+			// 결제 요청 완료에 멤버십 데이터로 갱신
+			if (data && data.currentMembership)
+				globalStore.currentMembership = data.currentMembership
+			this.setState({ submitButtonDisabled: false })
+			this.props.navigation.popToTop()
+			this.props.navigation.navigate('MembershipScreen')
 		} catch(e) {
 			// register 실패 (axios response not 200)
+			console.log(e)
+			this.setState({ submitButtonDisabled: false })
+			Alert.alert('오류', '입력정보를 확인해 주세요.')
 		}
 	}
 
 	render() {
 		const data = productItem[this.formType || 'none']
+		const {
+			user_name,
+			phone,
+			email,
+			card_num,
+			expire_m,
+			expire_y,
+			birth,
+			gender,
+			card_pass,
+			isAgree,
+		} = this.state
 
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<ScrollView style={{width: '100%'}}>
@@ -332,9 +357,9 @@ class MembershipFormPage extends React.Component {
 							<View style={styles.formInputContainer}>
 								<TextInput style={styles.formInput}
 										   underlineColorAndroid={'rgba(0,0,0,0)'}
-										   value={this.name}
-										   onChangeText={text => {
-											   this.name = {text}
+										   value={user_name}
+										   onChangeText={user_name => {
+											   this.setState({ user_name })
 										   }}/>
 							</View>
 						</View>
@@ -345,9 +370,9 @@ class MembershipFormPage extends React.Component {
 								<TextInput style={styles.formInput}
 										   underlineColorAndroid={'rgba(0,0,0,0)'}
 										   keyboardType={'numeric'}
-										   value={this.phone}
-										   onChangeText={text => {
-											   this.phone = {text}
+										   value={phone}
+										   onChangeText={phone => {
+											   this.setState({ phone })
 										   }}/>
 							</View>
 						</View>
@@ -357,9 +382,9 @@ class MembershipFormPage extends React.Component {
 							<View style={styles.formInputContainer}>
 								<TextInput style={styles.formInput}
 										   underlineColorAndroid={'rgba(0,0,0,0)'}
-										   value={this.email}
-										   onChangeText={text => {
-											   this.email = {text}
+										   value={email}
+										   onChangeText={email => {
+											   this.setState({ email })
 										   }}/>
 							</View>
 						</View>
@@ -378,9 +403,9 @@ class MembershipFormPage extends React.Component {
 								<TextInput style={styles.formInput}
 										   underlineColorAndroid={'rgba(0,0,0,0)'}
 										   keyboardType={'numeric'}
-										   value={this.creditNumber}
-										   onChangeText={text => {
-											   this.creditNumber = {text}
+										   value={card_num}
+										   onChangeText={card_num => {
+											   this.setState({ card_num })
 										   }}/>
 								<Text style={styles.itemTextSm}>'-'없이 기재해주세요.</Text>
 							</View>
@@ -395,9 +420,9 @@ class MembershipFormPage extends React.Component {
 											   onFocus={this.validityPeriodMonthOnFocus}
 											   placeholder="월"
 											   keyboardType={'numeric'}
-											   value={this.validityPeriodMonth}
-											   onChangeText={text => {
-												   this.validityPeriodMonth = {text}
+											   value={expire_m}
+											   onChangeText={expire_m => {
+												   this.setState({ expire_m })
 											   }}/>
 									<Text style={styles.validityPeriodBullet}>/</Text>
 									<TextInput style={styles.validityPeriodInput}
@@ -405,9 +430,9 @@ class MembershipFormPage extends React.Component {
 											   onFocus={this.validityPeriodYearOnFocus}
 											   placeholder="년"
 											   keyboardType={'numeric'}
-											   value={this.validityPeriodYear}
-											   onChangeText={text => {
-												   this.validityPeriodYear = {text}
+											   value={expire_y}
+											   onChangeText={expire_y => {
+												   this.setState({ expire_y })
 											   }}/>
 								</View>
 							</View>
@@ -422,17 +447,17 @@ class MembershipFormPage extends React.Component {
 											   onFocus={this.birthOnFocus}
 											   keyboardType={'numeric'}
 											   placeholder="YYMMDD"
-											   value={this.birth}
-											   onChangeText={text => {
-												   this.birth = {text}
+											   value={birth}
+											   onChangeText={birth => {
+												   this.setState({ birth })
 											   }}/>
 									<Text style={styles.validityPeriodBullet}>-</Text>
 									<TextInput style={styles.genderInput}
 											   underlineColorAndroid={'rgba(0,0,0,0)'}
 											   keyboardType={'numeric'}
-											   value={this.gender}
-											   onChangeText={text => {
-												   this.gender = {text}
+											   value={gender}
+											   onChangeText={gender => {
+												   this.setState({ gender })
 											   }}/>
 									<Text style={styles.validityPeriodBullet}>******</Text>
 								</View>
@@ -447,9 +472,9 @@ class MembershipFormPage extends React.Component {
 											   underlineColorAndroid={'rgba(0,0,0,0)'}
 											   secureTextEntry={true}
 											   keyboardType={'numeric'}
-											   value={this.password}
-											   onChangeText={text => {
-												   this.password = {text}
+											   value={card_pass}
+											   onChangeText={card_pass => {
+												   this.setState({ card_pass })
 											   }}/>
 									<Text style={styles.validityPeriodBullet}>**</Text>
 								</View>
@@ -492,9 +517,13 @@ class MembershipFormPage extends React.Component {
 						</View>
 						<View style={styles.totalHr}/>
 						<View>
-							<TouchableOpacity onPress={this.onSubmit}>
+							<TouchableOpacity onPress={this.onSubmit}
+							disabled={this.state.submitButtonDisabled}>
 								<Text>
-									결제
+									{this.state.submitButtonDisabled
+										?'처리중'
+										:'등록'
+									}
 								</Text>
 							</TouchableOpacity>
 						</View>
