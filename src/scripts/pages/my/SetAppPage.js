@@ -85,7 +85,7 @@ class SetAppPage extends React.Component {
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
 					<View style={CommonStyles.contentContainer}>
-						<Text style={styles.title}>로그인설정</Text>
+						{/* <Text style={styles.title}>로그인설정</Text>
 						<View style={styles.setBox}>
 							<View style={[CommonStyles.alignJustifyContentBetween, styles.setContent]}>
 								<View>
@@ -96,7 +96,7 @@ class SetAppPage extends React.Component {
 											onValueChange={this.setIsAutoLoginChange}/>
 								</View>
 							</View>
-						</View>
+						</View> */}
 						<Text style={styles.title}>재생설정</Text>
 						<View style={styles.setBox}>
 							<View style={[CommonStyles.alignJustifyContentBetween, styles.setContent]}>
@@ -154,7 +154,7 @@ class SetAppPage extends React.Component {
 							</View>
 						</View>
 						<View style={styles.logoutButton}>
-							<TouchableOpacity activeOpacity={0.9} onPress={this.logout}>
+							<TouchableOpacity activeOpacity={0.7} onPress={this.logout}>
 								<Text style={styles.logoutText}>로그아웃</Text>
 							</TouchableOpacity>
 						</View>

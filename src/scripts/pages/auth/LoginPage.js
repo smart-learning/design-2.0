@@ -18,6 +18,7 @@ import bgLogin from '../../../images/bg-signup.jpg';
 import FBLoginButton from "../../components/auth/FBLoginButton";
 import store from '../../../scripts/commons/store';
 import net from "../../commons/net";
+import globalStore from "../../commons/store";
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -30,9 +31,9 @@ const styles = StyleSheet.create( {
 	},
 	logoWrap: {
 		position: 'absolute',
-		top: 20,
-		zIndex: 9,
+		justifyContent: 'center',
 		alignItems: 'center',
+		top: 20, left: 0, right: 0, bottom: 0,
 		height: 50,
 	},
 	logo: {
@@ -100,7 +101,7 @@ class LoginPage extends React.Component {
 	* @params email: 이메일이나 소셜 타입
 	* @params password: 이메일비번이나 소셜 토큰
 	* */
-	login = ( email, password ) => {
+	login = ( email, password, cb ) => {
 		let { navigation } = this.props;
 		const resultAuthToken = net.getAuthToken( email, password);
 
@@ -111,37 +112,48 @@ class LoginPage extends React.Component {
 				store.socialType = email;
 				store.welaaaAuth = data;
 				navigation.navigate( navigation.getParam( 'requestScreenName', 'MyInfoHome' ) );
+
+				// 로그인이 완료 되면 loginCompleted를 보내 App.js의
+				// 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
+				globalStore.emitter.emit('loginCompleted')
+				cb && cb()
 			})
 			.catch(error => {
-				const code = error.response.code;
-				let message = '로그인 실패';
-				if( error.response.data && error.response.data.error ) {
-					message += ` (server message: ${error.response.data.error})`;
+				// 이 부분에 서버에서 오는 다양한 코드 및 메시지를 통해
+				// 에러 메시지를 사용자에게 출력하면 됨
+				let message = ''
+				switch (error.response.data.error) {
+					case 'invalid_grant':
+						message =  '아이디와 비밀번호를 다시 확인해 주세요.' 
+						break
+					default:
+						message =  '관리자에게 문의해 주세요.' 
+						break
 				}
-				Alert.alert( message );
-				console.log( error );
+				Alert.alert( '로그인에 실패하였습니다.', message );
+				cb && cb()
 			});
 	}
 
 	render() {
 		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
 
-			<View style={styles.logoWrap}>
-				<Image source={logo} style={styles.logo}/>
-			</View>
 			<ImageBackground source={bgLogin}
 							 style={styles.background}
 			>
+				<View style={styles.logoWrap}>
+					<Image source={logo} style={styles.logo}/>
+				</View>
 				<View style={styles.contentWrap}>
 					<Text style={styles.headline}>LOGIN</Text>
 
 					<FBLoginButton
-						onAccess={token => this.login( 'facebook', token )}
+						onAccess={(token, cb) => this.login( 'facebook', token, cb )}
 						type={'login'}
 					/>
 
 					<KakaoLoginButton
-						onAccess={token => this.login( 'kakaotalk', token )}
+						onAccess={(token, cb) => this.login( 'kakaotalk', token, cb )}
 						type={'login'}
 					/>
 
@@ -159,6 +171,5 @@ class LoginPage extends React.Component {
 		</KeyboardAvoidingView>
 	}
 }
-
 
 export default LoginPage;

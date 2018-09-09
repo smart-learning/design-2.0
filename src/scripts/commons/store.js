@@ -9,6 +9,7 @@ let welaaaAuth;
 let currentMembership
 
 class Store {
+	emitter = null;
 	drawer = null;
 	lastLocation = 'HomeScreen';
 
@@ -51,6 +52,7 @@ class Store {
 		socialType = null;
 		socialToken = null;
 		welaaaAuth = null;
+		delete axios.defaults.headers.common['authorization']
 
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
@@ -68,6 +70,7 @@ class Store {
 		isAlert: false,
 		isEmail: false,
 	};
+
 }
 
 const store = new Store();

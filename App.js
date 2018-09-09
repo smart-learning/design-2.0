@@ -6,6 +6,7 @@ import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
+import EventEmitter from 'events';
 import globalStore from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
 
@@ -25,6 +26,7 @@ import firebase from 'react-native-firebase';
 			globalStore.welaaaAuth = welaaaAuth;
 
 			globalStore.profile = await net.getProfile();
+			// 멤버쉽 가져오기
 			globalStore.currentMembership = await net.getMembershipCurrent();
 		}
 	};
@@ -64,6 +66,12 @@ import firebase from 'react-native-firebase';
 		this.getTokenFromAsyncStorage();
 		this.getAppSettings();
 		this.initFCM();
+
+		// 로그인 이후 발생된 이벤트를 캐치하여 "프로필" 및 "현재멤버십" 가져오기
+		globalStore.emitter = new EventEmitter();
+		globalStore.emitter.addListener('loginCompleted', () => {
+			this.getTokenFromAsyncStorage();
+		});
 	}
 
 	componentDidMount() {
@@ -85,6 +93,7 @@ import firebase from 'react-native-firebase';
 			listener.remove();
 		} );
 		this.subscription.length = 0;
+		globalStore.emitter.removeAllListeners();
 	}
 
  	render() {

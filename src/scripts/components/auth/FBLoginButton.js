@@ -62,8 +62,12 @@ const landingStyles = StyleSheet.create( {
 } );
 class FBLoginButton extends Component {
 
+	state = {
+		loginButtonDisabled: false,
+	}
 
 	handleFacebookLogin = ()=> {
+		this.setState({ loginButtonDisabled: true })
 		LoginManager.logOut()
 		LoginManager.logInWithReadPermissions([])
 			.then( result=>{
@@ -73,12 +77,15 @@ class FBLoginButton extends Component {
 					AccessToken.getCurrentAccessToken().then(
 						( data ) => {
 							//alert( data.accessToken.toString() )
-							this.props.onAccess( data.accessToken.toString() );
+							this.props.onAccess( data.accessToken.toString(), () => {
+								this.setState({ loginButtonDisabled: false })
+							} );
 						}
 					)
 				}
 			})
 			.catch( error =>{
+				this.setState({ loginButtonDisabled: false })
 				alert( error );
 			});
 	}
@@ -87,12 +94,17 @@ class FBLoginButton extends Component {
         return <TouchableOpacity
 			activeOpacity={0.9}
 			onPress={ this.handleFacebookLogin }
+			disabled={this.state.loginButtonDisabled}
 			style={ styles.FbButtonWrap }
 		>
 			{this.props.type === 'login' &&
 			<View style={ loginStyles.FbButton } borderRadius={4}>
 				<Image source={ icFb } style={ loginStyles.FbImage }/>
-				<Text style={ loginStyles.FbText }>Facebook 계정으로</Text>
+				<Text style={ loginStyles.FbText }>
+					{this.state.loginButtonDisabled
+						? '로그인 중'
+						: 'Facebook 계정으로' }
+				</Text>
 			</View>
 			}
 			{this.props.type === 'landing' &&
@@ -103,7 +115,11 @@ class FBLoginButton extends Component {
 				  borderRadius={4}
 				  >
 				<Image source={ icFbBox } style={ landingStyles.FbImage }/>
-				<Text style={ landingStyles.FbText }>페이스북 계정으로</Text>
+				<Text style={ landingStyles.FbText }>
+					{this.state.loginButtonDisabled
+						? '로그인 중'
+						: '페이스북 계정으로' }
+				</Text>
 			</View>
 			}
             </TouchableOpacity>;

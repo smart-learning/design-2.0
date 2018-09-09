@@ -2,6 +2,7 @@ import React from "react";
 import CommonStyles from "../../../styles/common";
 import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStore from '../../../scripts/commons/store';
+import { observer } from "mobx-react";
 import BgMy from "../../../images/bg-my.png";
 import IcAngleRight from "../../../images/ic-my-angle-right.png";
 import IcDownload from "../../../images/ic-my-download.png";
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
 /*
 * 로그인 후 보여지는 화면
 * */
+@observer
 export default class MyInfoHome extends React.Component {
 
 	render() {
