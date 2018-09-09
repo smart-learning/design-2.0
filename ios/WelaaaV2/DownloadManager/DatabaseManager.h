@@ -16,6 +16,7 @@
 
 + (DatabaseManager *)sharedInstance;
 - (void)saveDownloadedContent:(NSDictionary*)downloadedContent;
+- (NSMutableArray *)searchDownloadedContentsAllDics;
 - (void)searchDownloadedContentsAll:(void (^)(NSMutableArray* results, NSString* errMsg))resultHandler;
 - (void)searchDownloadedContents:(NSString *)cid completion:(void (^)(NSMutableArray* results, NSString* errMsg))resultHandler;
 - (void)removeDownloadedContents:(NSString *)cid;

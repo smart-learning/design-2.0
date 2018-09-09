@@ -175,6 +175,50 @@
 }
 
 
+
+- (NSMutableArray *)searchDownloadedContentsAllDics{
+  
+  NSMutableArray* results = [[NSMutableArray alloc] init];
+  
+  const char *dbPath = [_databasePath UTF8String];
+  sqlite3_stmt *statement;
+  
+  if(sqlite3_open(dbPath, &_downloadDB) == SQLITE_OK){
+    NSString *querySQL = [NSString stringWithFormat:@"SELECT _id, cid, cTitle, contentPath FROM DOWNLOAD"];
+    
+    const char *query_stmt = [querySQL UTF8String];
+    
+    if (sqlite3_prepare_v2(_downloadDB, query_stmt, -1, &statement, NULL) == SQLITE_OK) {
+      
+      while (sqlite3_step(statement) == SQLITE_ROW) {
+        NSString *aid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 0)];
+        NSString *cid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 1)];
+        NSString *cTitle = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 2)];
+        NSString *contentPath = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 3)];
+        
+        NSLog(@"_id : %@, cid : %@, cTitle : %@, contentPath : %@",aid,cid,cTitle,contentPath);
+        
+        NSDictionary* dic = [[NSDictionary alloc] initWithObjectsAndKeys:cid,@"cid",cTitle,@"cTitle",contentPath,@"contentPath", nil];
+        
+        [results addObject:dic];
+      }
+      sqlite3_finalize(statement);
+    }
+    
+    // TODO : 여기서도 예외처리
+    
+    sqlite3_close(_downloadDB);
+  }else{
+    // DB Open Error
+    NSLog(@"DB Open Error!");
+    return nil;
+  }
+  
+  return results;
+}
+
+
+
 - (void)searchDownloadedContentsAll:(void (^)(NSMutableArray* results, NSString* errMsg))resultHandler
 {
   NSMutableArray* results = [[NSMutableArray alloc] init];
