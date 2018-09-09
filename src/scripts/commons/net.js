@@ -16,8 +16,7 @@ if (Localizable) {
 
 const HOST = host;
 const TYPE = 'api';
-const VERSION = 'v1.0';
-const API_PREFIX = `${HOST}/${TYPE}/${VERSION}/`;
+const API_PREFIX = `${HOST}/${TYPE}/`;
 
 const clientId = 'wyk27OuFanxIcxzGRO68F13n';
 const clientSecret = 'IcQUptRiZBe3mqLbx8BIB7dqfySP52J4He6TmMXnnzupUNIj';
@@ -31,7 +30,6 @@ function encodeParams(obj) {
 	for (let p in obj) {
 		params.push(p + '=' + encodeURIComponent(obj[p]));
 	}
-
 	return params.join('&');
 }
 
@@ -83,7 +81,7 @@ function cacheOrLoad(uri, expired = 0) {
 export default {
 	getProfile() {
 		const expired = 1;
-		return cacheOrLoad(API_PREFIX + 'users/profile', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/users/profile', expired)
 			.then(data => {
 				return data;
 			})
@@ -97,7 +95,7 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'contents/video-courses/categories', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/video-courses/categories', expired)
 			.then(data => {
 				data.forEach(element => {
 					element.key = element.id.toString();
@@ -110,7 +108,7 @@ export default {
 	},
 
 	getAudioBookCategory() {
-		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/categories', DEFAULT_EXPIRED)
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/audiobooks/categories', DEFAULT_EXPIRED)
 			.then(data => {
 				return data;
 			})
@@ -120,7 +118,8 @@ export default {
 	},
 
 	getClassList( ccode = null, page = 1 ) {
-		let url = API_PREFIX + 'contents/video-courses';
+		// let url = API_PREFIX + 'v1.0/contents/video-courses';
+		let url = API_PREFIX + 'v1.1/contents/video-courses';
 		const params = {};
 		if( ccode ) {
 			params.ccode = ccode;
@@ -139,7 +138,7 @@ export default {
 	},
 
 	getLectureListByCategories() {
-		return cacheOrLoad(API_PREFIX + 'contents/video-courses/promotion-with-categories', DEFAULT_EXPIRED)
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/video-courses/promotion-with-categories', DEFAULT_EXPIRED)
 			.then(data => {
 				return data;
 			})
@@ -149,7 +148,8 @@ export default {
 	},
 
 	getAudioBookList( ccode = null, page = 1 ) {
-		let url = API_PREFIX + 'contents/audiobooks';
+		// let url = API_PREFIX + 'v1.0/contents/audiobooks';
+		let url = API_PREFIX + 'v1.1/contents/audiobooks';
 		const params = {};
 		if( ccode ) {
 			params.ccode = ccode;
@@ -158,12 +158,27 @@ export default {
 			params.page = page;
 		}
 		url += '?' + encodeParams( params );
-		return cacheOrLoad( url, DEFAULT_EXPIRED )
-			.then( data => {
-				data.items.forEach(element => {
-					element.key = element.id.toString();
-				});
-				return data;
+
+		return axios.get(url)
+			.then( (response) => {
+				const headers = response.headers
+				const data = response.data
+				const pagination = {}
+				Object.keys(response.headers).forEach((key) => {
+					if (key.indexOf('pagination-') === 0) {
+						try{
+							pagination[key.replace('pagination-', '')] = eval(response.headers[key].toLowerCase())
+						} catch(e) {
+						}
+					}
+				})
+				return {
+					items: data.map((element) => ({
+						...element,
+						key: element.id.toString(),
+					})),
+					pagination, 
+				}
 			})
 			.catch(error => {
 				console.log(error);
@@ -171,7 +186,7 @@ export default {
 	},
 
 	getAudioBookByCategories() {
-		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/group-by/categories', DEFAULT_EXPIRED)
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/audiobooks/group-by/categories', DEFAULT_EXPIRED)
 			.then(data => {
 				return data;
 			})
@@ -182,7 +197,7 @@ export default {
 
 	getLectureItem(id) {
 		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/video-courses/' + id)
+			axios.get(API_PREFIX + 'v1.0/contents/video-courses/' + id)
 				.then((response) => {
 					resolve(response.data);
 				})
@@ -195,7 +210,7 @@ export default {
 
 	getLectureClipList(id) {
 		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/video-courses/' + id + '/video-clips')
+			axios.get(API_PREFIX + 'v1.0/contents/video-courses/' + id + '/video-clips')
 				.then((response) => {
 					let itemNumber = 1;
 					response.data.forEach(element => {
@@ -213,7 +228,7 @@ export default {
 
 	getBookChapterList(id) {
 		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/audiobooks/' + id + '/chapters')
+			axios.get(API_PREFIX + 'v1.0/contents/audiobooks/' + id + '/chapters')
 				.then((response) => {
 					let itemNumber = 1;
 					response.data.forEach(element => {
@@ -255,7 +270,7 @@ export default {
 	},
 
 	getMainPopup() {
-		return cacheOrLoad(API_PREFIX + 'cms/main/popup', DEFAULT_EXPIRED)
+		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/popup', DEFAULT_EXPIRED)
 			.then(data => {
 				return data;
 			})
@@ -269,7 +284,7 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'cms/main/video', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/video', expired)
 			.then(data => {
 				return data;
 			})
@@ -283,7 +298,7 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'contents/video-clips/realtime-chart', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/video-clips/realtime-chart', expired)
 			.then(data => {
 				data.forEach(element => {
 					element.key = element.id.toString();
@@ -295,7 +310,7 @@ export default {
 			});
 	},
 	getHomeSeries() {
-		return cacheOrLoad(API_PREFIX + 'cms/main/series', DEFAULT_EXPIRED)
+		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/series', DEFAULT_EXPIRED)
 			.then(data => {
 				return data;
 			})
@@ -305,7 +320,7 @@ export default {
 	},
 	getBookItem(id) {
 		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'contents/audiobooks/' + id)
+			axios.get(API_PREFIX + 'v1.0/contents/audiobooks/' + id)
 				.then((response) => {
 					resolve(response.data);
 				})
@@ -320,7 +335,7 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'cms/main/banner', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/banner', expired)
 			.then(data => {
 				data.forEach(element => {
 					element.key = element.id.toString();
@@ -336,7 +351,7 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'contents/audiobooks/botm', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/audiobooks/botm', expired)
 			.then(data => {
 				return data;
 			})
@@ -349,7 +364,7 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'play/recent/audiobooks', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/play/recent/audiobooks', expired)
 			.then(data => {
 				return data;
 			})
@@ -360,7 +375,7 @@ export default {
 
 	getPlayRecentVideoCourses() {
 		const expired = 1;
-		return cacheOrLoad(API_PREFIX + 'play/recent/video-courses', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/play/recent/video-courses', expired)
 			.then(data => {
 				return data;
 			})
@@ -371,7 +386,7 @@ export default {
 
 	getPurchasedVideoCourses() {
 		const expired = 1;
-		return cacheOrLoad(API_PREFIX + 'play/purchased/video-courses', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/play/purchased/video-courses', expired)
 			.then(data => {
 				return data;
 			})
@@ -382,7 +397,7 @@ export default {
 
 	getPurchasedAudioBooks() {
 		const expired = 1;
-		return cacheOrLoad(API_PREFIX + 'play/purchased/audiobooks', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/play/purchased/audiobooks', expired)
 			.then(data => {
 				return data;
 			})
@@ -393,10 +408,18 @@ export default {
 	
 	getMembershipVouchers() {
 		const expired = 1;
-		return cacheOrLoad( API_PREFIX + 'membership/vouchers', expired )
+		return cacheOrLoad( API_PREFIX + 'v1.0/membership/vouchers', expired )
 			.then( data => {
 				return data;
 			} )
+			.catch( error => {
+				console.log( error );
+			} );
+	},
+
+	getMembershipCurrent() {
+		const expired = 0;
+		return cacheOrLoad( API_PREFIX + 'v1.0/membership/current', expired )
 			.catch( error => {
 				console.log( error );
 			} );
@@ -407,7 +430,7 @@ export default {
 		if( isRefresh ) {
 			expired = 1;
 		}
-		return cacheOrLoad( API_PREFIX + 'membership/vouchers/status', expired )
+		return cacheOrLoad( API_PREFIX + 'v1.0/membership/vouchers/status', expired )
 			.then( data => {
 				return data;
 			} )
@@ -418,7 +441,7 @@ export default {
 
 	getBookReviewList(cid) {
 		return new Promise((resolve, reject) => {
-			axios.get(API_PREFIX + 'action/comments/' + cid )
+			axios.get(API_PREFIX + 'v1.0/action/comments/' + cid )
 				.then((response) => {
 					response.data.forEach(element => {
 						element.key = element.id.toString();
@@ -437,7 +460,7 @@ export default {
 		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad(API_PREFIX + 'cms/main/audiobook', expired)
+		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/audiobook', expired)
 			.then(data => {
 				return data;
 			})
@@ -445,4 +468,10 @@ export default {
 				console.log(error);
 			});
 	},
+	registerMembership(data) {
+		return axios.post(API_PREFIX + 'v1.0/payment/import/subscriptions/issue-billing', data)
+			.catch((error) => {
+				console.error(error);
+			});
+	}
 }

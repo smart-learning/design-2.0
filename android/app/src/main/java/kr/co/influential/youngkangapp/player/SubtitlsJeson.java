@@ -3,16 +3,14 @@ package kr.co.influential.youngkangapp.player;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * 1. FileNae  : SubtitlsJeson.java
@@ -28,6 +26,7 @@ public class SubtitlsJeson {
     public SubtitlsJeson(String url, PlayerActivity playercontroller){
 
 //      url = "http://welearn.co.kr/usingapp/contentsinfo.php?groupkey=6";
+
         mJasonurl = url;
 
         if(Build.VERSION.SDK_INT >= 11){
@@ -77,8 +76,6 @@ public class SubtitlsJeson {
                 //값을 추출함
                 String time = jObject.getString("time");
                 String memo = jObject.getString("memo");
-
-//                System.out.println();
 
                 //StringBuffer 출력할 값을 저장
                 sb.append("&time="+time);

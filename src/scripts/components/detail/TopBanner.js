@@ -15,29 +15,30 @@ const styles = StyleSheet.create({
 		paddingLeft: 15,
 		paddingRight: 15,
 	},
-	labelContainer: {
+	titleLabelContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		marginBottom: 10,
 	},
-	label: {
+	titleLabel: {
 		marginRight: 7,
 		paddingTop: 2,
 		paddingRight: 7,
 		paddingBottom: 2,
 		paddingLeft: 7,
 	},
-	labelText: {
+	titleLabelText: {
 		fontSize: 12,
 		fontWeight: 'bold',
 		color: '#ffffff',
 	},
-	labelAudioBook: {
+	titleLabelAudioBook: {
 		backgroundColor: '#ffb71b',
 	},
-	labelClass: {
+	titleLabelClass: {
 		backgroundColor: '#ff761b',
 	},
-	labelTitle: {
+	titleLabelTitle: {
 		fontSize: 12,
 		color: '#ff761b',
 	},
@@ -86,23 +87,37 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 50,
 	},
-	tagContainer: {
-		flexDirection: 'row',
+	bookLabels: {
+		marginBottom: 15,
 	},
-	tag: {
-		justifyContent: 'center',
-		alignItems: 'center',
+	bookLabel: {
 		height: 22,
-		marginRight: 10,
-		marginBottom: 10,
+		marginTop: 9,
+		marginRight: 3,
+		paddingTop: 3,
 		paddingRight: 10,
+		paddingBottom: 3,
 		paddingLeft: 10,
-		borderWidth: 1,
-		borderColor: '#7a7a7a',
 	},
-	tagText: {
+	bookLabelText: {
 		fontSize: 12,
-		color: '#888888',
+		color: '#ffffff',
+	},
+	bookLabelBlank: {
+		borderColor: 'transparent',
+		opacity: 0,
+	},
+	bookLabelNew: {
+		backgroundColor: '#5f45b4',
+	},
+	bookLabelExclusive: {
+		backgroundColor: '#ff761b',
+	},
+	bookLabelFree: {
+		backgroundColor: '#00afba',
+	},
+	bookLabelDefault: {
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
 	},
 	itemDownload: {
 		alignItems: 'center',
@@ -150,33 +165,58 @@ export default class TopBanner extends React.Component {
 	}
 
 	render() {
+		console.log( 'this.props.store.itemData.headline',this.props.store.itemData.headline );
 		return <ImageBackground style={styles.banner} resizeMode="cover" source={Dummy}>
-			<View style={styles.labelContainer}>
+			<View style={styles.titleLabelContainer}>
 				<View
-					style={this.props.learnType === 'audioBook' ? [styles.label, styles.labelAudioBook] : [styles.label, styles.labelClass]}
+					style={this.props.learnType === 'audioBook' ? [styles.titleLabel, styles.titleLabelAudioBook] : [styles.titleLabel, styles.titleLabelClass]}
 					borderRadius={10}>
-					<Text style={styles.labelText}>인기{this.learnType()}</Text>
+					<Text style={styles.titleLabelText}>인기{this.learnType()}</Text>
 				</View>
-				<Text style={styles.labelTitle}>종합순위 30위! 비즈니스스킬 5위!</Text>
+				<Text style={styles.titleLabelText}>종합순위 30위! 비즈니스스킬 5위!</Text>
 			</View>
-			<Text style={styles.headline}>
-				{this.props.store.itemData.headline}
-			</Text>
+			{this.props.learnType === 'class' &&
+			<Text style={styles.headline}>{this.props.store.itemData.headline}</Text>
+			}
+			{this.props.learnType === 'audioBook' &&
+				<Text style={styles.headline}>{this.props.store.itemData.subtitle}</Text>
+			}
 			<Text style={styles.title}>
 				{this.props.store.itemData.title}
 			</Text>
 			<Text style={styles.author}>
 				{this.props.store.itemData.teacher.name}
 			</Text>
-			<View style={styles.tagContainer}>
+			<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
+				{(!this.props.store.itemData.is_new && !this.props.store.itemData.is_exclusive && !this.props.store.itemData.is_free && !this.props.store.itemData.audiobook_type) &&
+				<View style={[ styles.bookLabel, styles.bookLabelBlank ]} borderRadius={10}>
+					<Text style={[ styles.bookLabelText, styles.bookLabelExclusiveText ]}/>
+				</View>
+				}
 				{!!this.props.store.itemData.is_new &&
-				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>NEW</Text></View>
+				<View style={[ styles.bookLabel, styles.bookLabelNew ]} borderRadius={10}>
+					<Text style={[ styles.bookLabelText]}>New</Text>
+				</View>
 				}
-				{!!this.props.store.itemData.is_exculsive &&
-				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>독점</Text></View>
+				{!!this.props.store.itemData.is_exclusive &&
+				<View style={[ styles.bookLabel, styles.bookLabelExclusive ]} borderRadius={10}>
+					<Text style={[ styles.bookLabelText]}>독점</Text>
+				</View>
 				}
-				{!!this.props.store.itemData.is_featured &&
-				<View style={styles.tag} borderRadius={11}><Text style={styles.tagText}>추천</Text></View>
+				{!!this.props.store.itemData.is_free &&
+				<View style={[styles.bookLabel, styles.bookLabelFree]} borderRadius={10}>
+					<Text style={[styles.bookLabelText]}>무료</Text>
+				</View>
+				}
+				{this.props.store.itemData.audiobook_type === '완독' &&
+				<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+					<Text style={[styles.bookLabelText]}>완독</Text>
+				</View>
+				}
+				{this.props.store.itemData.audiobook_type === '요약' &&
+				<View style={[styles.bookLabel, styles.bookLabelDefault]} borderRadius={10}>
+					<Text style={[styles.bookLabelText]}>요약</Text>
+				</View>
 				}
 			</View>
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.itemDownload]}>

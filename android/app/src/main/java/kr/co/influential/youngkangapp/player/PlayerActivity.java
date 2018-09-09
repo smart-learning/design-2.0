@@ -11,10 +11,12 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -399,6 +401,13 @@ public class PlayerActivity extends BasePlayerActivity {
   private MyBroadcastReceiver myBroadcastReceiver = null;
   private String mIsNetworkType = "";
 
+  private int contentHistory_seconds = 0;
+  private String contentName = "";
+  private String contentCid = "";
+
+  ProgressDialog mProgressDialog;
+  public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
+
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
@@ -409,6 +418,10 @@ public class PlayerActivity extends BasePlayerActivity {
     @Override
     public void onMetadataChanged(MediaMetadataCompat metadata) {
       if (metadata != null) {
+
+        LogHelper.d(TAG, "onMetadataChanged changed", metadata.getDescription().getMediaUri());
+        LogHelper.d(TAG, "onMetadataChanged changed", metadata.getDescription().getTitle());
+
         updateMediaDescription(metadata.getDescription());
         updateDuration(metadata);
       }
@@ -510,6 +523,15 @@ public class PlayerActivity extends BasePlayerActivity {
     IS_FREE = intent.getBooleanExtra("is_free", false);
     EXPIRE_AT = intent.getStringExtra("expire_at");
     CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
+
+    if (!CAN_PLAY) {
+      Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+
+      // 윌라 기존 버전 ,
+      // 1) seekbar 핸들링 못함
+      // 2) duration Total Time 90 초로 고정 됨 .
+      // 차선 책으로 타이머라도 돌릴까요 ???
+    }
 
     // video-course , audiobook //
     callbackWebPlayerInfo(CONTENT_TYPE, "");
@@ -638,8 +660,7 @@ public class PlayerActivity extends BasePlayerActivity {
         audioModeBackgroundLayout.setVisibility(VISIBLE);
         audioModeIconHeadset.setVisibility(VISIBLE);
 
-
-        LogHelper.e(TAG , " 20180901 FLAG_KEEP_SCREEN_ON ! ");
+        LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
         // Audio Book 에서 화면 항상 켜기 //
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -1442,32 +1463,12 @@ public class PlayerActivity extends BasePlayerActivity {
         setNoneSubtilteText();
         hasSubTitlsJesonUrl = false;
       } else {
-        if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-          if (i != contentId) {
-            subTitlsWebUrl = getNewWebPlayerInfo().getCsmi()[i];
-          } else {
-            subTitlsWebUrl = getNewWebPlayerInfo().getCsmi()[getContentId()];
-          }
 
-          if (subTitlsWebUrl.equals("")) {
-            subTitlsWebUrl = "none";
-          }
+        callbackMethodName = "play/contents-smi/";
 
-        } else {
-          try {
-            subTitlsWebUrl = getwebPlayerInfo().getCsmi()[i];
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
+        sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+            callbackMethodName);
 
-        if (!subTitlsWebUrl.equals("none")) {
-          new SubtitlsJeson(subTitlsWebUrl, this);
-          hasSubTitlsJesonUrl = true;
-        } else {
-          setNoneSubtilteText();
-          hasSubTitlsJesonUrl = false;
-        }
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -1581,63 +1582,33 @@ public class PlayerActivity extends BasePlayerActivity {
 
     if (Utils.isAirModeOn(getApplicationContext())) {
       ckey = "70";
+
     } else {
       try {
-        if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-//					ckey = mWelaaaPlayer.getNewWebPlayerInfo().getCkey()[getContentId()];
-        } else {
-//					ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
-        }
+        ckey = getwebPlayerInfo().getCkey()[getContentId()];
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
 
     try {
-
       if (ContentManager().existCid(ckey)) {
 //            mBtnDownload.setEnabled(false);
         mBtnDownload.setAlpha(0.5f);
       } else {
         mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
       }
-    } catch (Exception e) {
+    } catch (
+        Exception e)
+
+    {
       e.printStackTrace();
     }
 
-    mSeekBar = findViewById(R.id.exo_progress);
-    mRelatedViewBtn.setVisibility(View.VISIBLE);
+    mSeekBar =
 
-    // audioBook mode , video/audio mode
-
-    try {
-//			if(getApplicationContext().CON_CLASS.equals("2")){
-//
-////            mSeekBar = ((SeekBar)findViewById(R.id.WELEAN_AUDIO_SEEK_BAR));
-//
-//				mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio)  );
-//
-//				mButton_Arrow_Layout.setVisibility(View.GONE);
-//
-//				mRelatedViewBtn.setVisibility(View.GONE);
-//
-//			}else{
-//				mRelatedViewBtn.setVisibility(View.VISIBLE);
-//
-//				if(Preferences.getWelaaaPreviewPlay(getApplicationContext())){
-//					mButton_Arrow_Layout.setVisibility(View.GONE);
-//				}else{
-//					mButton_Arrow_Layout.setVisibility(View.VISIBLE);
-//				}
-//			}
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    //강의텍스트버튼
-//        int colorGreen = ContextCompat.getColor(getApplicationContext(), R.color.playlist_text_color);
-//        TextView lecture = (TextView)findViewById(R.id.BUTTON_LECTURE);
-//        lecture.setTextColor(colorGreen);
+        findViewById(R.id.exo_progress);
+//    mRelatedViewBtn.setVisibility(View.VISIBLE);
 
     mBtnForward.setOnClickListener(click_control);
     mBtnBackward.setOnClickListener(click_control);
@@ -1882,27 +1853,22 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case R.id.BTN_SMI_ON: {
 
-//						simpleExoPlayerView.setVisibility(View.VISIBLE);
+            if (CAN_PLAY) {
+              mBtnSubtitlesOff.setVisibility(View.VISIBLE);
+              mBtnSubtitlesOn.setVisibility(View.INVISIBLE);
 
-            // 미리 보기 모드에서는 자막 모드를 지원 하지 않습니다.
-//						if(!mWelaaaPlayer.mPreview){
-            mBtnSubtitlesOff.setVisibility(View.VISIBLE);
-            mBtnSubtitlesOn.setVisibility(View.INVISIBLE);
+              msubtitls_view.setVisibility(View.VISIBLE);
+              msubtitls_view_long.setVisibility(View.INVISIBLE);
 
-            msubtitls_view.setVisibility(View.VISIBLE);
-            msubtitls_view_long.setVisibility(View.INVISIBLE);
+              final int positoinY = getTextviewHeight() * getTextViewNumber();
 
-            final int positoinY = getTextviewHeight() * getTextViewNumber();
+              mscrollview.scrollTo(0, positoinY);
 
-            mscrollview.scrollTo(0, positoinY);
-//						}else{
-//							Utils.logToast(mAppcontext , mAppcontext.getString(R.string.info_perview_mode)) ;
-//						}
-
-            // 1.Call setController Show Time out 0 , disable timeout
-            // 2.Call setController Hide On Touch false
-            simpleExoPlayerView.setControllerShowTimeoutMs(0);
-            simpleExoPlayerView.setControllerHideOnTouch(false);
+              simpleExoPlayerView.setControllerShowTimeoutMs(0);
+              simpleExoPlayerView.setControllerHideOnTouch(false);
+            } else {
+              Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+            }
 
           }
           break;
@@ -2056,7 +2022,11 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.BTN_DOWNLOAD: {
-            alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
+            if (CAN_PLAY) {
+              alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
+            } else {
+              Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+            }
           }
           break;
 
@@ -2278,7 +2248,7 @@ public class PlayerActivity extends BasePlayerActivity {
               lectureAudioBookListItemdapter = null;
             }
 
-            if(getTransportControls()!=null){
+            if (getTransportControls() != null) {
               getTransportControls().play();
             }
 
@@ -2304,7 +2274,7 @@ public class PlayerActivity extends BasePlayerActivity {
               lectureAudioBookListItemdapter = null;
             }
 
-            if(getTransportControls()!=null){
+            if (getTransportControls() != null) {
               getTransportControls().play();
             }
           }
@@ -2329,7 +2299,7 @@ public class PlayerActivity extends BasePlayerActivity {
               lectureAudioBookListItemdapter = null;
             }
 
-            if(getTransportControls()!=null){
+            if (getTransportControls() != null) {
               getTransportControls().play();
             }
 
@@ -2917,19 +2887,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
           int progressInt = Math.round(100 / nMax) * progress;
 
-          Logger.e(TAG + "onProgressChanged is " + progressInt + " nMax is " + nMax
-              + " :: Progress is " + progress);
-
           if (progressInt > 89) {
             progressInt = 100;
           }
 
           mTextViewVolumeText.setText(progressInt + "%");
-
-          // Activity , setVolumeControlStream 를 활용해봅시다 2017.08.23
-          // 여기서 스크롤바가 핸들링 되는거 같았는데 아닌가요 ???
-          // 1회차 , 2회차 , 3회차 ( ) , 4회차 , 5회차 상자 구입
-
         }
       });
     } catch (Exception e) {
@@ -3011,40 +2973,22 @@ public class PlayerActivity extends BasePlayerActivity {
         try {
 
           if (CONTENT_TYPE.equals("video-course")) {
-            loadRelatedData();
+//            loadRelatedData();
+
+            callbackMethodName = "contents/playlist-suggest/";
+
+            String callbackCid = "";
+
+            if (getwebPlayerInfo().getCkey()[getContentId()].contains("_")) {
+              String[] cid = getwebPlayerInfo().getCkey()[getContentId()].split("_");
+
+              callbackCid = cid[0];
+            }
+
+            sendData(API_BASE_URL + callbackMethodName + callbackCid,
+                callbackMethodName);
+
           }
-//					if(mWelaaaPlayer.CON_CLASS.equals("1")) {
-//						// 신규 서블릿 주소가 등록될 예정입니다
-//						String weburl = "";
-//
-//						try{
-//
-//							String ckey = "";
-//							if(Preferences.getWelaaaPlayListUsed(mAppcontext)){
-//								ckey = mWelaaaPlayer.getNewWebPlayerInfo().getCkey()[getContentId()];
-//							}else{
-//								ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
-//							}
-//
-//							String F_Token = Preferences.getWelaaaLoginToken(mAppcontext);
-//
-//							weburl = WELEARN_WEB_URL + "/usingapp/playlist_suggest.php?ckey="+ ckey	 + "&f_token=" + F_Token;
-//
-//							PlaylistSuggestListasyncTask playlistSuggestListasyncTask = new PlaylistSuggestListasyncTask();
-//
-//							if(Build.VERSION.SDK_INT >= 11){
-//								playlistSuggestListasyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, weburl );
-//							}else{
-//								playlistSuggestListasyncTask.execute(weburl);
-//							}
-//
-//						}catch (Exception e ){
-//							e.printStackTrace();
-//
-//							// getContentId 이슈로 인해서 발생하는 경우가 확인 됩니다
-//							// http://crashes.to/s/d9fb8aa7b19
-//						}
-//					}
 
         } catch (Exception e) {
           e.printStackTrace();
@@ -4357,9 +4301,15 @@ public class PlayerActivity extends BasePlayerActivity {
 
     // 최근 재생 리스트가 있는 경우
     if (mPlaylistGroupLayout.getVisibility() == VISIBLE) {
-      if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.startAnimation(mAniSlideHide);
-      if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
-      if (mButtonGroupLayout != null) mButtonGroupLayout.setVisibility(View.VISIBLE);
+      if (mPlaylistGroupLayout != null) {
+        mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+      }
+      if (mPlaylistGroupLayout != null) {
+        mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+      }
+      if (mButtonGroupLayout != null) {
+        mButtonGroupLayout.setVisibility(View.VISIBLE);
+      }
 
       if (player != null) {
         player.setPlayWhenReady(true);
@@ -4756,9 +4706,12 @@ public class PlayerActivity extends BasePlayerActivity {
         break;
       case PlaybackStateCompat.STATE_PAUSED:
         boolean isCompleted = LocalPlayback.getInstance(this).isCompleted();
+
+        LogHelper.e(TAG, " isCompleted " + isCompleted);
+
         if (isCompleted) {
           if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-            doAutoPlay();
+//            doAutoPlay();
           }
         }
         break;
@@ -4930,7 +4883,8 @@ public class PlayerActivity extends BasePlayerActivity {
     String requestWebUrl = sendUrl;
 
     LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
-    LogHelper.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()));
+    LogHelper
+        .e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()));
 
     new Thread() {
       public void run() {
@@ -4965,6 +4919,10 @@ public class PlayerActivity extends BasePlayerActivity {
             Boolean can_play = permissionObject.getBoolean("can_play");
             String expire_at = permissionObject.getString("expire_at");
             Boolean is_free = permissionObject.getBoolean("is_free");
+
+            //추천 콘텐츠 뷰
+
+            Preferences.setWelaaaPlayListCId(getApplicationContext(), contentId);
 
             if (can_play) {
               Preferences.setWelaaaPreviewPlay(getApplicationContext(), false);
@@ -5035,10 +4993,386 @@ public class PlayerActivity extends BasePlayerActivity {
           } catch (Exception e) {
             e.printStackTrace();
           }
+        } else if (callbackMethodName.equals("play/contents-smi/")) {
+          StringBuffer sb = new StringBuffer();
+          try {
+
+            //읽어들인 JSON포맷의 데이터를 JSON객체로 변환
+            JSONArray jArr = new JSONArray(body);
+
+            //배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
+            for (int i = 0; i < jArr.length(); i++) {
+
+              JSONObject jObject = jArr.getJSONObject(i);
+              //값을 추출함
+              String time = jObject.getString("time");
+              String memo = jObject.getString("memo");
+
+              //StringBuffer 출력할 값을 저장
+              sb.append("&time=" + time);
+              sb.append("&memo=" + memo);
+
+              setSubtitls(sb.toString());
+            }
+
+          } catch (Exception e) {
+            // TODO: handle exception
+            setNoneSubtilteText();
+            hasSubTitlsJesonUrl = false;
+          }
+        } else if (callbackMethodName.equals("contents/playlist-suggest/")) {
+
+          try {
+
+            JSONArray itemArray = new JSONArray(body);
+
+            for (int i = 0; i < itemArray.length(); i++) {
+              JSONObject objItem = itemArray.getJSONObject(i);
+
+              objItem.getString("title");
+
+              LogHelper.e(TAG, " TITLE " + objItem.getString("title"));
+
+              TextView same_series_title = findViewById(R.id.same_series_title);
+              TextView same_category_title = findViewById(R.id.same_category_title);
+              TextView pop_title = findViewById(R.id.pop_title);
+
+              if (i == 0) {
+                same_series_title.setText(objItem.getString("title"));
+              } else if (i == 1) {
+                same_category_title.setText(objItem.getString("title"));
+              } else if (i == 2) {
+                pop_title.setText(objItem.getString("title"));
+              }
+
+              JSONArray suggestObj = objItem.getJSONArray("items");
+
+              for (int j = 0; j < suggestObj.length(); j++) {
+                JSONObject suggestObjItem = suggestObj.getJSONObject(j);
+
+                suggestObjItem.put("suggestTitle", objItem.getString("title"));
+                suggestObjItem.put("listkey", i);
+
+//                                Logger.e(TAG + " 20170902 :: suggest " + suggestObjItem.getString("suggestTitle") +
+//                                suggestObjItem.getString("cname") + " " +i + " " + suggestObjItem.getString("ckey"));
+
+                suggestListArray1.add(i, suggestObjItem);
+              }
+            }
+
+            alName = new ArrayList<>();
+            alImage = new ArrayList<>();
+            alTeacherName = new ArrayList<>();
+            alTotalTime = new ArrayList<>();
+            alEndTime = new ArrayList<>();
+            alViewCnt = new ArrayList<>();
+            alStarCnt = new ArrayList<>();
+            alReplyCnt = new ArrayList<>();
+            alCkeyCnt = new ArrayList<>();
+
+            alName2 = new ArrayList<>();
+            alImage2 = new ArrayList<>();
+            alTeacherName2 = new ArrayList<>();
+            alTotalTime2 = new ArrayList<>();
+            alEndTime2 = new ArrayList<>();
+            alViewCnt2 = new ArrayList<>();
+            alStarCnt2 = new ArrayList<>();
+            alReplyCnt2 = new ArrayList<>();
+            alCkeyCnt2 = new ArrayList<>();
+
+            alName3 = new ArrayList<>();
+            alImage3 = new ArrayList<>();
+            alTeacherName3 = new ArrayList<>();
+            alTotalTime3 = new ArrayList<>();
+            alEndTime3 = new ArrayList<>();
+            alViewCnt3 = new ArrayList<>();
+            alStarCnt3 = new ArrayList<>();
+            alReplyCnt3 = new ArrayList<>();
+            alCkeyCnt3 = new ArrayList<>();
+
+            int k = 0;
+            int l = 0;
+            int m = 0;
+
+            try {
+              for (int j = suggestListArray1.size() - 1; j >= 0; j--) {
+
+                if (suggestListArray1.get(j).getString("listkey").equals("0")) {
+                  alName.add(k, suggestListArray1.get(j).getString("title"));
+                  alImage
+                      .add(k, suggestListArray1.get(j).getJSONObject("images").getString("list"));
+//                  alTeacherName.add(k, suggestListArray1.get(j).getString("teachername"));
+                  alTeacherName.add(k, "");
+                  alTotalTime.add(k, suggestListArray1.get(j).getString("play_time"));
+                  alEndTime.add(k, suggestListArray1.get(j).getString("end_time"));
+                  alViewCnt.add(k, suggestListArray1.get(j).getString("hit_count"));
+                  alStarCnt.add(k, suggestListArray1.get(j).getString("star_count"));
+                  alReplyCnt.add(k, suggestListArray1.get(j).getString("review_count"));
+                  alCkeyCnt.add(k, suggestListArray1.get(j).getString("cid"));
+                  k++;
+                }
+
+                if (suggestListArray1.get(j).getString("listkey").equals("1")) {
+                  alName2.add(l, suggestListArray1.get(j).getString("title"));
+                  alImage2
+                      .add(l, suggestListArray1.get(j).getJSONObject("images").getString("list"));
+//                  alTeacherName2.add(l, suggestListArray1.get(j).getString("teachername"));
+                  alTeacherName2.add(l, "");
+                  alTotalTime2.add(l, suggestListArray1.get(j).getString("play_time"));
+                  alEndTime2.add(l, suggestListArray1.get(j).getString("end_time"));
+                  alViewCnt2.add(l, suggestListArray1.get(j).getString("hit_count"));
+                  alStarCnt2.add(l, suggestListArray1.get(j).getString("star_count"));
+                  alReplyCnt2.add(l, suggestListArray1.get(j).getString("review_count"));
+                  alCkeyCnt2.add(l, suggestListArray1.get(j).getString("cid"));
+                  l++;
+                }
+
+                if (suggestListArray1.get(j).getString("listkey").equals("2")) {
+                  alName3.add(m, suggestListArray1.get(j).getString("title"));
+                  alImage3
+                      .add(m, suggestListArray1.get(j).getJSONObject("images").getString("list"));
+//                  alTeacherName3.add(m, suggestListArray1.get(j).getString("teachername"));
+                  alTeacherName3.add(m, "");
+                  alTotalTime3.add(m, suggestListArray1.get(j).getString("play_time"));
+                  alEndTime3.add(m, suggestListArray1.get(j).getString("end_time"));
+                  alViewCnt3.add(m, suggestListArray1.get(j).getString("hit_count"));
+                  alStarCnt3.add(m, suggestListArray1.get(j).getString("star_count"));
+                  alReplyCnt3.add(m, suggestListArray1.get(j).getString("review_count"));
+                  alCkeyCnt3.add(m, suggestListArray1.get(j).getString("cid"));
+                  m++;
+                }
+
+              }
+
+              k = 0;
+              l = 0;
+              m = 0;
+
+              String ckey = "";
+              try {
+                ckey = getwebPlayerInfo().getCkey()[getContentId()];
+              } catch (Exception ECkey) {
+                ECkey.printStackTrace();
+              }
+
+              mRecyclerView = findViewById(R.id.related_recyclerView1);
+              mRecyclerView.setHasFixedSize(true);
+
+              // The number of Columns
+              mLayoutManager = new LinearLayoutManager(getApplicationContext(),
+                  LinearLayoutManager.HORIZONTAL, false);
+              mRecyclerView.setLayoutManager(mLayoutManager);
+
+              mAdapter = new HLVAdapter(getApplicationContext(), PlayerActivity.this, alName,
+                  alImage,
+                  alTeacherName,
+                  alTotalTime, alEndTime, alViewCnt, alStarCnt, alReplyCnt, alCkeyCnt, ckey);
+              mRecyclerView.setAdapter(mAdapter);
+
+              // Calling the RecyclerView 1
+              mRecyclerView2 = findViewById(R.id.related_recyclerView2);
+              mRecyclerView2.setHasFixedSize(true);
+
+              // The number of Columns
+              mLayoutManager2 = new LinearLayoutManager(getApplicationContext(),
+                  LinearLayoutManager.HORIZONTAL, false);
+              mRecyclerView2.setLayoutManager(mLayoutManager2);
+
+              mAdapter2 = new HLVAdapter(getApplicationContext(), PlayerActivity.this, alName2,
+                  alImage2,
+                  alTeacherName2,
+                  alTotalTime2, alEndTime2, alViewCnt2, alStarCnt2, alReplyCnt2, alCkeyCnt2, ckey);
+              mRecyclerView2.setAdapter(mAdapter2);
+
+              // Calling the RecyclerView 1
+              mRecyclerView3 = findViewById(R.id.related_recyclerView3);
+              mRecyclerView3.setHasFixedSize(true);
+
+              // The number of Columns
+              mLayoutManager3 = new LinearLayoutManager(getApplicationContext(),
+                  LinearLayoutManager.HORIZONTAL, false);
+              mRecyclerView3.setLayoutManager(mLayoutManager3);
+
+              mAdapter3 = new HLVAdapter(getApplicationContext(), PlayerActivity.this, alName3,
+                  alImage3,
+                  alTeacherName3,
+                  alTotalTime3, alEndTime3, alViewCnt3, alStarCnt3, alReplyCnt3, alCkeyCnt3, ckey);
+              mRecyclerView3.setAdapter(mAdapter3);
+
+            } catch (Exception e3) {
+              e3.printStackTrace();
+            }
+          } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+          }
+
+        } else if (callbackMethodName.equals("play/contents-info/")) {
+          //
+          StringBuffer sb = new StringBuffer();
+
+          try {
+            JSONObject json = new JSONObject(body);
+
+            JSONObject dataObject = json.getJSONObject("data");
+            String group_title = dataObject.getString("title");
+
+            JSONObject historyObject = null;
+
+            if (json.isNull("history")) {
+              LogHelper.e(TAG, " history is null ");
+            } else {
+              historyObject = json.getJSONObject("history");
+
+              historyObject.getString("id");
+              historyObject.getString("played_at");
+
+              LogHelper.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
+
+              contentHistory_seconds = historyObject.getInt("start_seconds");
+            }
+
+            JSONObject permissionObject = json.getJSONObject("permission");
+
+//        String group_memo = json.getString("group_memo");
+            String group_memo = "";
+
+            String group_teachername = dataObject.getJSONObject("teacher").getString("name");
+            String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
+
+            String group_img = "";
+            String group_previewcontent = "";
+            String allplay_time = dataObject.getString("play_time");
+
+            String contentscnt = dataObject.getString("clip_count");
+            String hitcnt = dataObject.getString("hit_count");
+            String likecnt = dataObject.getString("like_count");
+            String zzimcnt = "";
+            String staravg = dataObject.getString("star_avg");
+
+            String con_class = json.getString("type");
+
+            String downloadcnt = "";
+            String audiobookbuy = "";
+            String audiobookbuy_limitdate = "";
+
+            sb.append("group_title=" + group_title);
+            sb.append("&group_memo=" + group_memo);
+            sb.append("&group_teachername=" + group_teachername);
+            sb.append("&group_teachermemo=" + group_teachermemo);
+            sb.append("&group_img=" + group_img);
+            sb.append("&group_previewcontent=" + group_previewcontent);
+            sb.append("&allplay_time=" + allplay_time);
+            sb.append("&contentscnt=" + contentscnt);
+            sb.append("&hitcnt=" + hitcnt);
+            sb.append("&likecnt=" + likecnt);
+            sb.append("&zzimcnt=" + zzimcnt);
+            sb.append("&staravg=" + staravg);
+            sb.append("&con_class=" + con_class);
+            sb.append("&downloadcnt=" + downloadcnt);
+            sb.append("&audiobookbuy=" + audiobookbuy);
+            sb.append("&audiobookbuy_limitdate=" + audiobookbuy_limitdate);
+
+            JSONArray jArr = dataObject.getJSONArray("clips");
+
+            for (int i = 0; i < jArr.length(); i++) {
+
+              json = jArr.getJSONObject(i);
+              //값을 추출함
+              String ckey = json.getString("cid");
+              String cname = json.getString("title");
+              String cmemo = json.getString("memo");
+
+              String curl = ""; // play_data 에서
+
+              String cplay_time = json.getString("play_time");
+              String cpay = json.getString("pay_type");
+              String cpay_money = json.getString("price");
+
+              String clist_img = json.getJSONObject("images").getString("list");
+
+              String chitcnt = "";
+              String csmi = "";
+
+              String a_depth = "";
+              String history_endtime = json.getString("end_seconds");
+
+              String first_play = "";
+              String calign = "";
+              String audio_preview = "";
+
+              sb.append("&ckey=" + ckey);
+              sb.append("&cname=" + cname);
+              sb.append("&cmemo=" + cmemo);
+              sb.append("&curl=" + curl);
+              sb.append("&cplay_time=" + cplay_time);
+              sb.append("&cpay=" + cpay);
+              sb.append("&cpay_money=" + cpay_money);
+              sb.append("&clist_img=" + clist_img);
+              sb.append("&chitcnt=" + chitcnt);
+              sb.append("&history_endtime=" + history_endtime);
+              sb.append("&a_depth=" + a_depth);
+              sb.append("&first_play=" + first_play);
+              sb.append("&calign=" + calign);
+              sb.append("&audio_preview=" + audio_preview);
+
+              if (csmi.equals("")) {
+                sb.append("&csmi=" + "none");
+              } else {
+                sb.append("&csmi=" + csmi);
+              }
+
+              // 추천 콘텐츠 뷰에서는 히스토리를 참조할 필요가 없을까요 ?
+              if (contentCid.equals(json.getString("cid"))) {
+                contentId = i;
+              }
+
+              if (mWebPlayerInfo != null) {
+                mWebPlayerInfo = null;
+              }
+
+              mWebPlayerInfo = new WebPlayerInfo(sb.toString());
+            }
+
+          } catch (Exception e) {
+
+            e.printStackTrace();
+
+            UiThreadUtil.runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+
+                new AlertDialog.Builder(getApplicationContext())
+                    .setTitle("알림")
+                    .setMessage(
+                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
+                            + " \n Exception Msg " + e
+                            .getMessage())
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface arg0, int arg1) {
+                      }
+                    }).show();
+              }
+            });
+
+          }
+
+          callbackMethodName = "play/play-data/";
+
+          sendData(API_BASE_URL + callbackMethodName + contentCid, callbackMethodName);
+
+//          setContentId(contentId);
+
         }
 
       } else {
         LogHelper.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
+
+        if (callbackMethodName.equals("play/contents-smi/")) {
+          setNoneSubtilteText();
+          hasSubTitlsJesonUrl = false;
+        }
       }
     }
   };
@@ -5061,9 +5395,15 @@ public class PlayerActivity extends BasePlayerActivity {
 //
 //    setBackGroungLayout(true);
 
-    if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.startAnimation(mAniSlideHide);
-    if (mPlaylistGroupLayout != null) mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
-    if (mButtonGroupLayout != null) mButtonGroupLayout.setVisibility(View.VISIBLE);
+    if (mPlaylistGroupLayout != null) {
+      mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+    }
+    if (mPlaylistGroupLayout != null) {
+      mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+    }
+    if (mButtonGroupLayout != null) {
+      mButtonGroupLayout.setVisibility(View.VISIBLE);
+    }
 
     if (lectureListItemdapter != null) {
       lectureListItemdapter = null;
@@ -5154,4 +5494,31 @@ public class PlayerActivity extends BasePlayerActivity {
       }
     }
   };
+
+
+  public void hlvAdater(final String ckey) {
+
+    callbackMethodName = "play/contents-info/";
+    callbackMethod = "play";
+
+    contentCid = ckey;
+
+    sendData(API_BASE_URL + callbackMethodName + ckey, callbackMethodName);
+
+    if (mRelatedListGroupLayout.getVisibility() == VISIBLE) {
+      Animation fadeout = AnimationUtils
+          .loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+
+      if (mRelatedListGroupLayout != null) {
+        mRelatedListGroupLayout.startAnimation(fadeout);
+      }
+      if (mRelatedListGroupLayout != null) {
+        mRelatedListGroupLayout.setVisibility(View.INVISIBLE);
+      }
+      if (mButtonGroupLayout != null) {
+        mButtonGroupLayout.setVisibility(VISIBLE);
+      }
+      setBackGroungLayout(false);
+    }
+  }
 }

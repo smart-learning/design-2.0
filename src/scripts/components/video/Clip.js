@@ -48,11 +48,10 @@ export default class Lecture extends React.Component {
 	}
 
 	changePage() {
-		this.props.navigation.navigate( 'ClassDetailPage', { id: this.props.id, title:' ' } );
+		this.props.navigation.navigate( 'ClassDetailPage', { id: this.props.id, title: this.props.title } );
 	}
 
 	render() {
-		console.log( 'this.changePage', this.changePage );
 		return <View style={styles.itemContainer}>
 			{/*타이틀*/}
 			<TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
