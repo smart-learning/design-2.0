@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import com.google.android.exoplayer2.drm.KeysExpiredException;
 import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
@@ -39,6 +40,9 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
   public static final String DRM_CUSTOME_DATA = "drm_custom_data";
   public static final String DRM_MULTI_SESSION = "drm_multi_session";
   public static final String THUMB_URL = "thumb_url";
+
+  // Whether played from mediasession.
+  public static final String FROM_MEDIA_SESSION = "from_media_session";
 
   private Playback mPlayback;
   private MediaSessionCallback mMediaSessionCallback;
@@ -404,13 +408,15 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     String token = extras.getString(PlaybackManager.DRM_TOKEN);
     String thumbUrl = extras.getString(PlaybackManager.THUMB_URL);
     String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
-    String duration = extras.getString("duration");
 
     MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
     builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
     builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
-    builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION ,
-        Utils.webTimeToSec(duration));
+    String duration = extras.getString("duration");
+    if (!TextUtils.isEmpty(duration)) {
+      builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
+          Utils.webTimeToSec(duration));
+    }
     // drm information.
     builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
     builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA, drmSchemeUuid);

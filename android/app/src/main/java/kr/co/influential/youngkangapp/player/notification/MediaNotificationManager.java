@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
+import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 
@@ -180,7 +181,8 @@ public class MediaNotificationManager extends BroadcastReceiver {
 
   private PendingIntent createContentIntent(MediaDescriptionCompat description) {
     Intent openUI = new Intent(mService, PlayerActivity.class);
-//    openUI.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    openUI.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    openUI.putExtra(PlaybackManager.FROM_MEDIA_SESSION, true);
     if (description != null) {
 //      openUI.putExtra(PlayerActivity.EXTRA_CURRENT_MEDIA_DESCRIPTION, description);
     }
