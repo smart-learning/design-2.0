@@ -465,8 +465,8 @@
 		EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMessageNoticeView.m; sourceTree = "<group>"; };
 		EF8C2D20212B8EAD00140F8F /* WelaaaV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = WelaaaV2.entitlements; path = WelaaaV2/WelaaaV2.entitlements; sourceTree = "<group>"; };
 		EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "WelaaaV2/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		EF9A9839211144A800EA3A8E /* RNNativePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNNativePlayer.h; path = WelaaaV2/RNNativePlayer.h; sourceTree = "<group>"; };
-		EF9A983A211144A800EA3A8E /* RNNativePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNNativePlayer.m; path = WelaaaV2/RNNativePlayer.m; sourceTree = "<group>"; };
+		EF9A9839211144A800EA3A8E /* RNNativePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNNativePlayer.h; sourceTree = "<group>"; };
+		EF9A983A211144A800EA3A8E /* RNNativePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNNativePlayer.m; sourceTree = "<group>"; };
 		EFAEBD87213D33050070F10E /* StarRatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarRatingView.h; sourceTree = "<group>"; };
 		EFAEBD88213D33050070F10E /* UIAlertController+Showable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Showable.h"; sourceTree = "<group>"; };
 		EFAEBD89213D33050070F10E /* StarRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingView.m; sourceTree = "<group>"; };
@@ -635,8 +635,6 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				EF9A9839211144A800EA3A8E /* RNNativePlayer.h */,
-				EF9A983A211144A800EA3A8E /* RNNativePlayer.m */,
 				EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				EF8C2D20212B8EAD00140F8F /* WelaaaV2.entitlements */,
@@ -905,6 +903,8 @@
 				EFAEBDA7213D33050070F10E /* RelatedContentsView */,
 				EFAEBD90213D33050070F10E /* ScriptView */,
 				EFAEBDB3213D33050070F10E /* SleepTimerView */,
+				EF9A9839211144A800EA3A8E /* RNNativePlayer.h */,
+				EF9A983A211144A800EA3A8E /* RNNativePlayer.m */,
 				EFAEBDB2213D33050070F10E /* ContentPlayerViewController.h */,
 				EFAEBD99213D33050070F10E /* ContentPlayerViewController.m */,
 				EFAEBD8F213D33050070F10E /* ContentMiniPlayerView.h */,
