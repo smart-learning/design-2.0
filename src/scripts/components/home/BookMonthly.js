@@ -174,8 +174,8 @@ export default withNavigation(class BookMonthly extends React.Component {
 											<Text style={styles.title}>{item.book_a.title}</Text>
 											<Text style={styles.author}>{item.book_a.mentor.name}</Text>
 
-											<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('HomeMonthlyReviewPage', {itemData: item.book_a})}>
-
+											<TouchableOpacity activeOpacity={0.9}
+															  onPress={ () => this.props.navigation.navigate('HomeMonthlyReviewPage', {itemData: item.book_a, title: '이달의 책 북리뷰'})}>
 												<View style={styles.detailButton} borderRadius={13}>
 													<Text style={styles.detailButtonText}>자세히보기</Text>
 												</View>
@@ -190,8 +190,8 @@ export default withNavigation(class BookMonthly extends React.Component {
 											<Text style={styles.title}>{item.book_b.title}</Text>
 											<Text style={styles.author}>{item.book_b.mentor.name}</Text>
 
-											<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('HomeMonthlyReviewPage', {itemData: item.book_b})}>
-
+											<TouchableOpacity activeOpacity={0.9}
+															  onPress={ () => this.props.navigation.navigate('HomeMonthlyReviewPage', {itemData: item.book_b, title: '이달의 책 북리뷰'})}>
 												<View style={styles.detailButton} borderRadius={13}>
 													<Text style={styles.detailButtonText}>자세히보기</Text>
 												</View>
