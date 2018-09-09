@@ -7,6 +7,7 @@ import {Image, View} from "react-native";
 import HomeButton from "../components/header/HomeButton";
 import logo from "../../images/logo-white.png"
 import IcAngleRight from "../../images/ic-angle-right-primary.png";
+import HistoryBackButton from "../components/header/HistoryBackButton";
 
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
@@ -35,7 +36,17 @@ export const NAV_OPTS_STACK = ({navigation, navigationOptions}) => {
 export const NAV_OPTS_STACK_WITH_SEARCH = ({navigation, navigationOptions}) => {
 	return {
 		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
-		headerRight: <SearchButton/>
+		headerRight: <SearchButton/>,
+		headerLeft: <HomeButton/>
+	}
+};
+
+export const NAV_OPTS_STACK_HISTORY_BACK = ({navigation, navigationOptions}) => {
+	return {
+		...NAV_OPTS_COMMON,
+		title: (navigation.state.params && navigation.state.params.title) || navigation.state.routeName,
+		headerRight: <SearchButton/>,
+		headerLeft: <HistoryBackButton/>
 	}
 };
 

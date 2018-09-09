@@ -69,11 +69,13 @@ class FBLoginButton extends Component {
 	handleFacebookLogin = ()=> {
 		this.setState({ loginButtonDisabled: true })
 		LoginManager.logOut()
-		LoginManager.logInWithReadPermissions([])
+		LoginManager.logInWithReadPermissions(['public-profile'])
 			.then( result=>{
+				console.log( result );
 				if (result.isCancelled) {
-					alert('Login cancelled')
+					alert('Login cancelled!')
 				} else {
+					console.log( 'Login Passsed form Facebook');
 					AccessToken.getCurrentAccessToken().then(
 						( data ) => {
 							//alert( data.accessToken.toString() )

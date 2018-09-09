@@ -12,6 +12,7 @@ class Store {
 	emitter = null;
 	drawer = null;
 	lastLocation = 'HomeScreen';
+	prevLocations = [];
 
 	get socialType() {
 		return socialType;

@@ -6,7 +6,9 @@ import IcSearch from "../../../images/ic-search.png"
 class SearchButton extends Component {
 	render() {
 		return <View>
-			<Image source={IcSearch} style={[ Styles.size24, { marginRight: 15, opacity: 0, } ]}/>
+			{1 === 2 &&
+			<Image source={IcSearch} style={[Styles.size24, {marginRight: 15, opacity: 0,}]}/>
+			}
 		</View>;
 	}
 }

@@ -8,19 +8,19 @@ import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import EventEmitter from 'events';
 import globalStore from "./src/scripts/commons/store";
-import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
 
 import SidebarUserInfo from "./src/scripts/components/SidebarUserInfo";
 import net from "./src/scripts/commons/net";
 import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
 import { observer } from "mobx-react";
-import firebase from 'react-native-firebase';
+import firebase, { RemoteMessage } from 'react-native-firebase';
 
 @observer class App extends React.Component {
 
 	getTokenFromAsyncStorage = async () => {
 		let welaaaAuth = await AsyncStorage.getItem( 'welaaaAuth' );
+		console.log( 'welaaaAuth:', welaaaAuth );
 		if( welaaaAuth ) {
 			welaaaAuth = JSON.parse( welaaaAuth );
 			globalStore.welaaaAuth = welaaaAuth;
@@ -41,20 +41,41 @@ import firebase from 'react-native-firebase';
 		] );
 
 		settings.forEach( setting => {
-			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = Boolean( setting[ 1 ] );
+			const bool = (setting[1] === 'true');
+			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = bool;
 		} );
 
+		console.log( 'setting:', globalStore.appSettings );
+
 		Native.updateSettings();
+
+
+		// 자동로그인상태면 토큰 가져오기 시도
+		if( globalStore.appSetting.isAutoLogin )
+			this.getTokenFromAsyncStorage();
 	};
 
 	initFCM = async () => {
-		const fcmToken = await firebase.messaging().getToken();
-		if (fcmToken) {
-			console.log( 'fcmToken', fcmToken );
-			// 토큰 있음
+		try{
+			await net.registeFcmToken( true );
+		}catch( e ){
+			console.log( 'FCM: ' + e );
+		}
+
+		// 권한 체크 후 없으면 요청
+		const enabled = await firebase.messaging().hasPermission();
+		if (enabled) {
+			// user has permissions
 		} else {
-			console.log( '유저가 토큰을 가지고 있지 않음' );
-			// 유저가 토큰을 가지고 있지 않음
+			// user doesn't have permission
+
+			try {
+				await firebase.messaging().requestPermission();
+				// User has authorised
+			} catch (error) {
+				// User has rejected permissions
+			}
+
 		}
 	};
 
@@ -63,7 +84,6 @@ import firebase from 'react-native-firebase';
 		super(prop);
 		this.subscription = [];
 
-		this.getTokenFromAsyncStorage();
 		this.getAppSettings();
 		this.initFCM();
 
@@ -80,12 +100,19 @@ import firebase from 'react-native-firebase';
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
 			console.log( 'database receiveDownloadList:', params );
-			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase || 'null';
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
 			console.log( 'download receiveDownloadList:', params );
-			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase || 'null';
 		}));
+
+
+
+		this.messageListener = firebase.messaging().onMessage( message => {
+			// Process your message as required
+			console.log( 'FCM 메시지 처리:', message );
+		});
     }
 
 	componentWillUnmount() {
@@ -94,6 +121,7 @@ import firebase from 'react-native-firebase';
 		} );
 		this.subscription.length = 0;
 		globalStore.emitter.removeAllListeners();
+		this.messageListener();
 	}
 
  	render() {
@@ -110,7 +138,11 @@ import firebase from 'react-native-firebase';
 					const prevScreen = getActiveRouteName(prevState);
 
 					if (prevScreen !== currentScreen) {
-						if (currentScreen !== 'AuthCheck') globalStore.lastLocation = currentScreen;
+						if (currentScreen !== 'AuthCheck'){
+							globalStore.lastLocation = currentScreen;
+							globalStore.prevLocations.push( prevScreen );
+							globalStore.prevLocations.length = Math.min( globalStore.prevLocations.length, 10 );
+						}
 					}
 				}}
 			/>
@@ -175,9 +207,9 @@ const AppDrawer = createDrawerNavigator(
 		// BottomControllerTEST: {
 		// 	screen: BottomControllerPage,
 		// },
-		AndroidNativeCall: {
-			screen: PlaygroundJune,
-		}
+		// AndroidNativeCall: {
+		// 	screen: PlaygroundJune,
+		// }
 	},
 
 	{

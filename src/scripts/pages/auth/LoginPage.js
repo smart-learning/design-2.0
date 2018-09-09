@@ -19,6 +19,9 @@ import FBLoginButton from "../../components/auth/FBLoginButton";
 import store from '../../../scripts/commons/store';
 import net from "../../commons/net";
 import globalStore from "../../commons/store";
+import { observable } from "mobx";
+import { observer } from "mobx-react";
+import Store from "../../commons/store";
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -35,11 +38,12 @@ const styles = StyleSheet.create( {
 		alignItems: 'center',
 		top: 20, left: 0, right: 0, bottom: 0,
 		height: 50,
+		marginTop: -70,
+		marginBottom: 50,
 	},
 	logo: {
 		width: 110,
 		height: 28,
-		marginTop: 20,
 	},
 	contentWrap: {
 		flex: 1,
@@ -65,37 +69,19 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-
 class LoginPage extends React.Component {
-
 	componentDidMount() {
-		this.keyboardWillShowSub = Keyboard.addListener( 'keyboardWillShow', this.keyboardWillShow );
-		this.keyboardWillHideSub = Keyboard.addListener( 'keyboardWillHide', this.keyboardWillHide );
-
 		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
-		console.log( this.props.navigation );
 	}
 
 	componentWillUnmount() {
-		this.keyboardWillShowSub.remove();
-		this.keyboardWillHideSub.remove();
-
 		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
 	}
 
 	handleBackPress = () => {
-		this.props.navigation.navigate('HomeScreen');
+		this.props.navigation.navigate( 'HomeScreen' );
 		return true;
-	}
-
-	keyboardWillShow = ( event ) => {
-		console.log( '키보드 나옴' );
-	}
-
-	keyboardWillHide = ( event ) => {
-		console.log( '키보드 들어감' );
-	}
+	};
 
 	/*
 	* @params email: 이메일이나 소셜 타입
@@ -104,8 +90,6 @@ class LoginPage extends React.Component {
 	login = ( email, password, cb ) => {
 		let { navigation } = this.props;
 		const resultAuthToken = net.getAuthToken( email, password);
-
-		console.log( 'authToken요청:', email, password );
 
 		resultAuthToken
 			.then(data => {
@@ -135,40 +119,42 @@ class LoginPage extends React.Component {
 			});
 	}
 
+
 	render() {
-		return <KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
+		return (
+			<KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
+				<ImageBackground source={bgLogin}
+								style={styles.background}
+				>
+					<View style={styles.logoWrap}>
+						<Image source={logo} style={styles.logo}/>
+					</View>
+					<View style={styles.contentWrap}>
+						<Text style={styles.headline}>LOGIN</Text>
 
-			<ImageBackground source={bgLogin}
-							 style={styles.background}
-			>
-				<View style={styles.logoWrap}>
-					<Image source={logo} style={styles.logo}/>
-				</View>
-				<View style={styles.contentWrap}>
-					<Text style={styles.headline}>LOGIN</Text>
+						<FBLoginButton
+							onAccess={(token, cb) => this.login( 'facebook', token, cb )}
+							type={'login'}
+						/>
 
-					<FBLoginButton
-						onAccess={(token, cb) => this.login( 'facebook', token, cb )}
-						type={'login'}
-					/>
+						<KakaoLoginButton
+							onAccess={(token, cb) => this.login( 'kakaotalk', token, cb )}
+							type={'login'}
+						/>
 
-					<KakaoLoginButton
-						onAccess={(token, cb) => this.login( 'kakaotalk', token, cb )}
-						type={'login'}
-					/>
+						<Text style={styles.bulletText}>OR</Text>
 
-					<Text style={styles.bulletText}>OR</Text>
+						<EmailAuthPack
+							onAccess={ this.login }
+							onNavigate={routerName => this.props.navigation.navigate( routerName )}
+						/>
 
-					<EmailAuthPack
-						onAccess={ this.login }
-						onNavigate={routerName => this.props.navigation.navigate( routerName )}
-					/>
+					</View>
 
-				</View>
+				</ImageBackground>
 
-			</ImageBackground>
-
-		</KeyboardAvoidingView>
+			</KeyboardAvoidingView>
+		)
 	}
 }
 
