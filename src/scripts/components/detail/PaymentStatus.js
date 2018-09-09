@@ -106,6 +106,11 @@ export default class PaymentStatus extends React.Component {
 		this.learnType = this.learnType.bind(this);
 	}
 
+	state = {
+		paymentType: 0, // 0 무료, 1 구매, 2 이용권 사용, 3 소장중
+		expire: null,
+	}
+
 	learnType() {
 		if( this.props.learnType === 'audioBook' ) {
 			return '오디오북';
@@ -116,7 +121,42 @@ export default class PaymentStatus extends React.Component {
 		}
 	}
 
+	componentWillReceiveProps(props) {
+		const { itemData, permissions, voucherStatus } = props
+		let paymentType = 0
+		let expire = null
+		if (permissions.permission) {
+			paymentType = 3
+			if (permissions.expire_at !== null)
+				expire = `${permissions.expire_at}`
+		} else {
+			// 구매버튼 가격뿌리지 않음
+			if (itemData.sale_price > 0) {
+				if (voucherStatus.botm > 0 && itemData.is_botm) {
+					paymentType = 2
+				} else if (!itemData.is_botm && voucherStatus.total > 0) {
+					paymentType = 2
+				} else {
+					paymentType = 1
+				}
+			} else {
+				paymentType = 0
+			}
+		}
+		console.log('========', {
+			paymentType,
+			expire,
+		})
+		this.setState({
+			paymentType,
+			expire,
+		})
+	}
+
 	render() {
+		const { itemData } = this.props
+		const { paymentType, expire } = this.state
+
 		return <View>
 			{this.props.paymentType === 'normal' &&
 			// 구매 전
@@ -124,18 +164,32 @@ export default class PaymentStatus extends React.Component {
 				<View>
 					<View style={[ CommonStyles.alignJustifyFlex, styles.priceContainer ]}>
 						<Text style={styles.priceOriginal}>
-							₩00,000
+							₩{itemData.sale_price}
 						</Text>
 						<Text style={styles.priceText}>
-							<Text style={styles.priceDiscount}>30,000</Text> (00일)
+							<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
 						</Text>
 					</View>
 				</View>
-				<TouchableOpacity>
-					<View style={styles.buttonBuy} borderRadius={5}>
-						<Text style={styles.buttonBuyText}>구매</Text>
-					</View>
-				</TouchableOpacity>
+
+				{/* paymentType: 0, // 0 무료, 1 구매, 2 이용권 사용, 3 소장중 */}
+				{paymentType === 1 || paymentType === 2
+					? <TouchableOpacity
+						onPress={() => this.props.purchase(paymentType)}
+					>
+						<View style={[styles.buttonBuy, {width: paymentType === 2 ? 120 : 80}]} borderRadius={5}>
+							<Text style={styles.buttonBuyText}>
+							{paymentType === 2
+							? '이용권 사용'
+							: '구매'}
+							</Text>
+						</View>
+					</TouchableOpacity>
+					: <Text>
+						{paymentType === 0
+						? '무료'
+						: `소장중${expire ? ` ${expire}` : ''}`}
+					</Text>}
 			</View>
 			}
 			{this.props.paymentType !== 'normal' &&

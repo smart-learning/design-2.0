@@ -4,6 +4,6 @@
 
 @interface IFRecommendViewController : UIViewController
 
-- (void) setDataWithCurrentCkey : (NSString *) ckeyFromPlayer;
+- (void) setDataWithCurrentCgid : (NSString *) cgidFromPlayer;
 
 @end

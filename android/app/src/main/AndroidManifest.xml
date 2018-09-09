@@ -54,6 +54,7 @@
       android:name=".pallycon.PallyConMainActivity"/>
     <activity
       android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
+      android:launchMode="singleTop"
       android:name=".player.PlayerActivity"
       android:resizeableActivity="false"
       android:supportsPictureInPicture="false"

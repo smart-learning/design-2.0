@@ -5,12 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Utils;
 import okhttp3.Call;
@@ -18,6 +13,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -25,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private final String API_BASE_URL = Utils.welaaaApiBaseUrl();
 
-    private final String API_ENDPOINT = "platform/versions";
+    private final String API_ENDPOINT = "platform/versions/android";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +73,11 @@ public class SplashActivity extends AppCompatActivity {
     private void handleResponse(final String responseBody) {
         try {
             JSONObject body = new JSONObject(responseBody);
-            JSONObject android = body.getJSONObject("android");
-            String description = android.getString("description");
-            boolean forceUpdate = android.getBoolean("force_update");
-            String storeUrl = android.getString("store_url");
-            JSONObject version = android.getJSONObject("version");
+
+            String description = body.getString("description");
+            boolean forceUpdate = body.getBoolean("force_update");
+            String storeUrl = body.getString("store_url");
+            JSONObject version = body.getJSONObject("version");
             String currentVersion = version.getString("current");
             String minVersion = version.getString("min");
 

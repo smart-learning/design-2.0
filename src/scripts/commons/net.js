@@ -557,7 +557,6 @@ export default {
 			});
 	},
 
-
 	//회원가입
 	signUp(email, password) {
 

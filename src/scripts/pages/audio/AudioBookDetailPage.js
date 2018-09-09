@@ -1,13 +1,13 @@
 import React from "react";
 import {observer} from 'mobx-react';
-import {ActivityIndicator, View,} from "react-native";
+import {ActivityIndicator, View, Alert} from "react-native";
 import net from "../../commons/net";
 import CommonStyles from "../../../styles/common";
 import createStore from "../../commons/createStore";
 import DetailLayout from "../../components/detail/DetailLayout";
 
 @observer
-class ClassDetailPage extends React.Component {
+class AudioBookDetailPage extends React.Component {
 	store = createStore({
 		isLoading: true,
 		itemData: null,
@@ -19,7 +19,24 @@ class ClassDetailPage extends React.Component {
 		slideHeight: null,
 		reviewText: '',
 		reviewStar: 0,
+
+		permissions: {
+			permission: false,
+			expire_at: null,
+		},
+		voucherStatus: {},
 	});
+
+	purchase = (paymentType) => {
+		if (paymentType === 1) { // 구매
+			Alert.alert('알림', '오디오북 단품 결제는 준비중입니다.')
+		} else if (paymentType === 2) { // 이용권 사용
+			this.store.permissions = {
+				permission: true,
+				expire_at: new Date(),
+			}
+		}
+	}
 
 	getData = async () => {
 		this.store.isLoading = true;
@@ -39,8 +56,14 @@ class ClassDetailPage extends React.Component {
 		this.store.isLoading = false;
 	};
 
-	componentDidMount() {
+	async getPermissions() {
+		this.store.permissions = await net.getContentPermission('audiobooks', this.props.navigation.state.params.id)
+		this.store.voucherStatus = await net.getVoucherStatus(true)
+	}
+
+	async componentDidMount() {
 		this.getData();
+		await this.getPermissions()
 	}
 
 	render() {
@@ -51,10 +74,10 @@ class ClassDetailPage extends React.Component {
 			</View>
 			}
 			{( !this.store.isLoading && this.store.itemData !== null ) &&
-			<DetailLayout learnType={"audioBook"} store={this.store}/>
+			<DetailLayout purchase={this.purchase} voucherStatus={this.store.voucherStatus} permissions={this.store.permissions} itemData={this.store.itemData} learnType={"audioBook"} store={this.store}/>
 			}
 		</View>
 	}
 }
 
-export default ClassDetailPage;
+export default AudioBookDetailPage;

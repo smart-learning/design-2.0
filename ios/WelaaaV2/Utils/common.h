@@ -41,19 +41,19 @@
 
 + (BOOL) isNullString: (NSString *) str;
 
-+ (UIImage *) imageWithColor: (UIColor *) color
-                       width: (CGFloat) widht
-                      height: (CGFloat) height;
++ (UIImage *) imageWithColor : (UIColor *) color
+                       width : (CGFloat) widht
+                      height : (CGFloat) height;
 
-+ (UIImage *) blurredImageWithImage: (UIImage *) sourceImage;
++ (UIImage *) blurredImageWithImage : (UIImage *) sourceImage;
 
-+ (NSString *) convertTimeToString: (float) time
-                            Minute: (BOOL) isMinute;
++ (NSString *) convertTimeToString : (float) time
+                            Minute : (BOOL) isMinute;
 
-+ (NSInteger) convertStringToTime: (NSString *) timeString;
++ (NSInteger) convertStringToTime : (NSString *) timeString;
 
-+ (NSInteger) getDistanceDateWithStartDate: (NSDate *) sDate
-                                   EndDate: (NSDate *) eDate;
++ (NSInteger) getDistanceDateWithStartDate : (NSDate *) sDate
+                                   EndDate : (NSDate *) eDate;
 
 + (NSString *) getDocumentsFolderPath;
 
@@ -65,26 +65,29 @@
 
 + (NSString *) uuidFromKeyChain;
 
-+ (void) saveUuidForKeyChain: (NSString *) udid;
++ (void) saveUuidForKeyChain : (NSString *) udid;
 
 
-+ (id)getUserSettingValueWithKey:(NSString *)key;
++ (id) getUserSettingValueWithKey : (NSString *) key;
 
-+ (void)setUserSettingValueWithKey:(NSString *)key value:(id)value;
++ (void) setUserSettingValueWithKey : (NSString *) key
+                              value : (id) value;
 
-+ (NSString *) forceStringValue: (id) value;
++ (NSString *) forceStringValue : (id) value;
 
-+ (CGFloat) getRatioWidth: (CGSize) originSize
-             screenHeight: (CGFloat) screenHeight;
++ (CGFloat) getRatioWidth : (CGSize) originSize
+             screenHeight : (CGFloat) screenHeight;
 
-+ (CGFloat) getRatioHeight: (CGSize) originSize
-               screenWidth: (CGFloat) screenWidth;
++ (CGFloat) getRatioHeight : (CGSize) originSize
+               screenWidth : (CGFloat) screenWidth;
 
 + (NSString *) timeStamp;
 
-+ (NSString *) checkRoot;   // 171024 김태현
++ (NSString *) checkRoot;
 
-+ (NSString *) getModel;    // 171025 김태현
++ (NSString *) getModel;
+
++ (BOOL) hasNotch;
 
 + (NSString *) getHostname;
 
@@ -96,7 +99,7 @@
 
 + (NSString *) getVPNIPAddress;
 
-+ (NSString *) getIPAddress: (NSString *) interfaceName;
++ (NSString *) getIPAddress : (NSString *) interfaceName;
 
 + (NSString *) getExternalIPAddress;
 

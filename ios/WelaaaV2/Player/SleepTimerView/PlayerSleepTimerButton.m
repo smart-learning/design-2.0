@@ -67,8 +67,10 @@
 
 - (void) pressedButton: (id) sender
 {
+    NSLog(@"  pressed some sleep timer Button 1 : 로그는 나옴..");
     if ( [self.delegate respondsToSelector : @selector(playerSleepTimerButton:didTouchTimer:)] )
     {
+        NSLog(@"  pressed some sleep timer Button 2 : 현재 잘 안나옴...");
         [self.delegate playerSleepTimerButton : self
                                 didTouchTimer : _label.text];
     }

@@ -226,17 +226,29 @@
         }
         
         NSString *playImageName = @"";
-        NSInteger history_endTime = [self.itemDict[@"end_time"] integerValue];
-        
-        if ( history_endTime == 0 )
+        NSInteger progress = 0;
+  
+        // dictionary의 nil 체크를 합니다.
+        if ( [self.itemDict[@"progress"] isKindOfClass : [NSDictionary class]] )
+        {
+            // handle the dictionary
+            progress = [self.itemDict[@"progress"][@"percent"] integerValue];
+        }
+        else
+        {
+            // some kind of error, handle appropriately
+            progress = 0;
+        }
+      
+        if ( progress == 0 )
         {
             playImageName = !self.isAudioContentType ? @"icon_play_green" : @"icon_play_pink";
         }
-        else if ( history_endTime < timeNum )
+        else if ( progress < 100 )
         {
             playImageName = !self.isAudioContentType ? @"icon_video_list_play_half_filled" : @"icon_audiobook_play_half_filled";
         }
-        else
+        else if ( progress == 100 )
         {
             playImageName = !self.isAudioContentType ? @"icon_video_list_play_filled" : @"icon_audiobook_play_filled";
         }
@@ -281,19 +293,14 @@
 - (BOOL) hasContent
 {
   // 오디오북의 경우 'contentsInfoDics[@"data"][@"chapters"][i][@"play_seconds"]'의 값이 '0'이면 재생불가한 챕터 타이틀입니다.
-  // 영상강의는 일단 YES를 리턴하거나 .m3u8 유무를 체크합니다.
+  // 영상강의는 일단 YES를 리턴합니다.
+    NSString *play_seconds = [self.itemDict[@"play_seconds"] stringValue];
   
-  /*
-    NSString *curl = self.itemDict[@"curl"];
-    
-    if ( !nullStr(curl) && [[curl lowercaseString] hasSuffix : @".m3u8"] )
+    if ( [play_seconds isEqualToString : @"0"] )
     {
-        return YES;
+        return NO;
     }
-    
-    return NO;
-  */
-    // 일단 YES 로 세팅하였습니다.
+  
     return YES;
 }
 
