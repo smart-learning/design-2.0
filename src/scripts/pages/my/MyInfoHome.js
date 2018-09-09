@@ -184,6 +184,7 @@ export default class MyInfoHome extends React.Component {
 							<View>
 								<View style={styles.myInfoContentItem}>
 									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name : '' }</Text>
+									{ globalStore.currentMembership && globalStore.currentMembership.type_text ? <Text>{globalStore.currentMembership.type_text}</Text> : undefined }
 									<View>
 										<Text>{/*package*/}</Text>
 									</View>
