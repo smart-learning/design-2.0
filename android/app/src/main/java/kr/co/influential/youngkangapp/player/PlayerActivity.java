@@ -10,7 +10,6 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
@@ -408,6 +407,8 @@ public class PlayerActivity extends BasePlayerActivity {
   ProgressDialog mProgressDialog;
   public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
 
+  private boolean fromMediaSession;
+
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
@@ -511,30 +512,67 @@ public class PlayerActivity extends BasePlayerActivity {
 
     Intent intent = getIntent();
 
-    mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
+    fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
 
-    Gson gson = new Gson();
-    String json = gson.toJson(mWebPlayerInfo);
+    if (!fromMediaSession) {
+      mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
 
-    Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
+      Gson gson = new Gson();
+      String json = gson.toJson(mWebPlayerInfo);
 
-    CONTENT_TYPE = intent.getStringExtra("type");
-    CAN_PLAY = intent.getBooleanExtra("can_play", false);
-    IS_FREE = intent.getBooleanExtra("is_free", false);
-    EXPIRE_AT = intent.getStringExtra("expire_at");
-    CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
+      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
 
-    if (!CAN_PLAY) {
-      Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+      CONTENT_TYPE = intent.getStringExtra("type");
+      CAN_PLAY = intent.getBooleanExtra("can_play", false);
+      IS_FREE = intent.getBooleanExtra("is_free", false);
+      EXPIRE_AT = intent.getStringExtra("expire_at");
+      CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
 
-      // 윌라 기존 버전 ,
-      // 1) seekbar 핸들링 못함
-      // 2) duration Total Time 90 초로 고정 됨 .
-      // 차선 책으로 타이머라도 돌릴까요 ???
+      if (!CAN_PLAY) {
+        Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+
+        // 윌라 기존 버전 ,
+        // 1) seekbar 핸들링 못함
+        // 2) duration Total Time 90 초로 고정 됨 .
+        // 차선 책으로 타이머라도 돌릴까요 ???
+      }
+
+      // video-course , audiobook //
+      callbackWebPlayerInfo(CONTENT_TYPE, "");
+
+      if (CONTENT_TYPE != null) {
+        if (CONTENT_TYPE.equals("audiobook")) {
+          RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
+          control_wrap.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+              return true;
+            }
+          });
+
+//      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
+
+          mButton_Arrow_Layout.setVisibility(GONE);
+          mRelatedViewBtn.setVisibility(GONE);
+
+          RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
+          subscription_wrap.setVisibility(GONE);
+
+          RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
+          audioVideobtn_wrap.setVisibility(GONE);
+
+          audioModeBackgroundLayout.setVisibility(VISIBLE);
+          audioModeIconHeadset.setVisibility(VISIBLE);
+
+          LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
+          // Audio Book 에서 화면 항상 켜기 //
+          getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        } else {
+          LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
+        }
+      }
     }
-
-    // video-course , audiobook //
-    callbackWebPlayerInfo(CONTENT_TYPE, "");
 
     // 베이스 레이아웃
     setBaseUI();
@@ -635,40 +673,6 @@ public class PlayerActivity extends BasePlayerActivity {
         connectionCallback, null);
 
     setBroadCatReceiver();
-
-    if (CONTENT_TYPE != null) {
-      if (CONTENT_TYPE.equals("audiobook")) {
-        RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
-        control_wrap.setOnTouchListener(new View.OnTouchListener() {
-          @Override
-          public boolean onTouch(View v, MotionEvent event) {
-            return true;
-          }
-        });
-
-//      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
-
-        mButton_Arrow_Layout.setVisibility(GONE);
-        mRelatedViewBtn.setVisibility(GONE);
-
-        RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
-        subscription_wrap.setVisibility(GONE);
-
-        RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
-        audioVideobtn_wrap.setVisibility(GONE);
-
-        audioModeBackgroundLayout.setVisibility(VISIBLE);
-        audioModeIconHeadset.setVisibility(VISIBLE);
-
-        LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
-        // Audio Book 에서 화면 항상 켜기 //
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-      } else {
-
-        LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
-      }
-    }
   }
 
   @Override
@@ -775,6 +779,11 @@ public class PlayerActivity extends BasePlayerActivity {
       unregisterReceiver(myBroadcastReceiver);
     }
 
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
   }
 
   @Override
@@ -4672,18 +4681,25 @@ public class PlayerActivity extends BasePlayerActivity {
     MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
     mediaController.registerCallback(callback);
 
-    playFromUri(getIntent());
+    if (fromMediaSession) {
+      Bundle extras = mediaController.getMetadata().getBundle();
+      Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+      playFromUri(uri, extras);
+    } else {
+      Intent intent = getIntent();
+      Uri uri = intent.getData();
+      playFromUri(uri, intent.getExtras());
+    }
   }
 
-  private void playFromUri(Intent intent) {
-    if (intent != null && intent.getData() != null && getTransportControls() != null) {
-      Uri uri = intent.getData();
-      Bundle extras = intent.getExtras();
-      getTransportControls().playFromUri(uri, extras);
+  private void playFromUri(Uri uri, Bundle extras) {
+    getTransportControls().playFromUri(uri, extras);
+    attachPlayerToPlayerView();
+  }
 
-      // Set player to playerview.
-      LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
-    }
+  private void attachPlayerToPlayerView() {
+    // Set player to playerview.
+    LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
   }
 
   private void updatePlaybackState(PlaybackStateCompat state) {

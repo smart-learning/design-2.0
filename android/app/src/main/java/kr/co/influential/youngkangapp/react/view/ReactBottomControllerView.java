@@ -3,10 +3,12 @@ package kr.co.influential.youngkangapp.react.view;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -24,6 +26,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import kr.co.influential.youngkangapp.R;
+import kr.co.influential.youngkangapp.player.PlayerActivity;
+import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Utils;
@@ -216,8 +220,16 @@ public class ReactBottomControllerView extends FrameLayout {
 
   private void initializeViews() {
     // event listener.
+    getRootView().setOnClickListener(v -> moveToPlayer());
     pause.setOnClickListener(v -> pause());
     play.setOnClickListener(v -> play());
+  }
+
+  private void moveToPlayer() {
+    Intent intent = new Intent(getContext(), PlayerActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    intent.putExtra(PlaybackManager.FROM_MEDIA_SESSION, true);
+    ContextCompat.startActivity(getContext(), intent, null);
   }
 
   private void pause() {
