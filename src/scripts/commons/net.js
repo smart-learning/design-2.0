@@ -25,7 +25,14 @@ const authBasicCode = Base64.btoa(`${clientId}:${clientSecret}`);
 // 데이터 캐시 기본 유효시간 (초)
 const DEFAULT_EXPIRED = 300;
 
-const encodeParams = obj => Object.keys(obj).map(o => `${o}=${encodeURIComponent(obj[o])}`)
+function encodeParams(obj) {
+	let params = [];
+	for (let p in obj) {
+		params.push(p + '=' + encodeURIComponent(obj[p]));
+	}
+	return params.join('&');
+}
+
 
 /**
  * `axios`의 `get`요청으로 받은 `json`데이터를 캐싱한다. 다른 형태의 데이터는 아직 지원하지 않는다.
