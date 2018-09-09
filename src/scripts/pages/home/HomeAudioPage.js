@@ -192,6 +192,7 @@ class HomeAudioPage extends React.Component {
 
 						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items ? this.props.store.audioNewData.items : this.props.store.audioNewData}/>
 
+						{1 === 2 && <View>
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
 								윌라 추천 오디오북
@@ -199,6 +200,7 @@ class HomeAudioPage extends React.Component {
 						</View>
 
 						<BookList itemType={"new"} itemData={this.props.store.audioRecommendData.items ? this.props.store.audioRecommendData.items : this.props.store.audioRecommendData}/>
+						</View>}
 
 						<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('AudioBookPage')}>
 							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>

@@ -231,9 +231,9 @@ const AppDrawer = createDrawerNavigator(
 			screen: AudioScreen,
 		},
 
-		MembershipScreen: {
-			screen: MembershipScreens,
-		},
+		// MembershipScreen: {
+		// 	screen: MembershipScreens,
+		// },
 
 		MyScreen: {
 			screen: MyScreens,

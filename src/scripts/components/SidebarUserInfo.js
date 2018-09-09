@@ -6,6 +6,7 @@ import IcAngleRight from '../../images/ic-my-angle-right.png';
 import CommonStyles from "../../styles/common";
 import store from "../commons/store";
 import globalStore from "../commons/store";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create({
 	userInfoContainer: {
@@ -108,10 +109,15 @@ export default class SidebarUserInfo extends React.Component {
 
 			return (
 				<TouchableOpacity activeOpacity={0.9}
-									onPress={ ()=> {} }
-				>
-
-					<Text style={styles.loginText}>회원가입을 하세요.</Text>
+								  onPress={ ()=> this.props.navigation.navigate('SignUpPage') }>
+					<View style={styles.membershipButton} borderRadius={4}>
+						<Image source={IcFree} style={styles.membershipButtonBullet}/>
+						<View>
+							<Text style={styles.membershipButtonText}>계정 만들고</Text>
+							<Text style={styles.membershipButtonText}>무료 콘텐츠 마음껏 보기!</Text>
+						</View>
+						<Image source={IcAngleRight} style={styles.membershipButtonIcon}/>
+					</View>
 				</TouchableOpacity>
 			)
 		}
@@ -139,7 +145,7 @@ export default class SidebarUserInfo extends React.Component {
 						<Text style={styles.membershipButtonText}>멤버십 첫 달 무료로</Text>
 						<Text style={styles.membershipButtonText}>클래스&오디오북 마음껏 보기!</Text>
 					</View>
-					<Image source={IcAngleRight} style={styles.membershipButtonIcon}></Image>
+					<Image source={IcAngleRight} style={styles.membershipButtonIcon}/>
 				</View>
 			</TouchableOpacity>
 		)
