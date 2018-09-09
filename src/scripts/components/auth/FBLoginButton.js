@@ -5,6 +5,7 @@ import {
 	TouchableOpacity,
 	View,
 	Image,
+	Alert,
 } from "react-native";
 import {AccessToken, LoginManager} from "react-native-fbsdk";
 import icFb from '../../../images/ic-fb.png';
@@ -69,11 +70,11 @@ class FBLoginButton extends Component {
 	handleFacebookLogin = ()=> {
 		this.setState({ loginButtonDisabled: true })
 		LoginManager.logOut()
-		LoginManager.logInWithReadPermissions(['public-profile'])
+		LoginManager.logInWithReadPermissions([''])
 			.then( result=>{
 				console.log( result );
 				if (result.isCancelled) {
-					alert('Login cancelled!')
+					Alert.alert('알림', '로그인이 취소 되었습니다.')
 				} else {
 					console.log( 'Login Passsed form Facebook');
 					AccessToken.getCurrentAccessToken().then(
