@@ -1,12 +1,12 @@
 import React from "react";
-import { observable } from 'mobx';
-import { observer } from 'mobx-react';
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, Image, } from "react-native";
+import {observable} from 'mobx';
+import {observer} from 'mobx-react';
+import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, Image,} from "react-native";
 import CommonStyles from "../../../styles/common";
 import icChartStar from '../../../images/ic-chart-star.png';
 import icChartMessage from '../../../images/ic-chart-message.png';
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 
 	rankGridItem: {
 		marginBottom: 15,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create( {
 		fontSize: 11,
 		color: '#888888',
 	},
-} );
+});
 
 export default class ClipRankItem extends React.Component {
 	render() {
@@ -50,24 +50,28 @@ export default class ClipRankItem extends React.Component {
 					</Text>
 				</View>
 				<ImageBackground
-					source={{ uri: this.props.itemData.images.list }}
+					source={{uri: this.props.itemData.images.list}}
 					resizeMode="cover"
 					style={styles.thumbnail}/>
-				<View style={{ width: this.props.itemData.clipRankContentSize }}>
+				<View style={{width: this.props.itemData.clipRankContentSize}}>
 					<TouchableOpacity>
 						<Text>
 							{this.props.itemData.title}
 						</Text>
 					</TouchableOpacity>
 					<View style={CommonStyles.alignJustifyFlex}>
-						<Image source={icChartStar} style={styles.rankIcon}/>
-						<Text style={styles.rankContentText}>
-							{this.props.itemData.star_avg.toFixed( 1 )}
-						</Text>
-						<Image source={icChartMessage} style={styles.rankIcon}/>
-						<Text style={styles.rankContentText}>
-							{this.props.itemData.review_count}
-						</Text>
+						{1 === 2 &&
+						<View>
+							<Image source={icChartStar} style={styles.rankIcon}/>
+							<Text style={styles.rankContentText}>
+								{this.props.itemData.star_avg.toFixed(1)}
+							</Text>
+							<Image source={icChartMessage} style={styles.rankIcon}/>
+							<Text style={styles.rankContentText}>
+								{this.props.itemData.review_count}
+							</Text>
+						</View>
+						}
 						<Text style={styles.rankContentText}>
 							{this.props.itemData.course.teacher.name}
 						</Text>
