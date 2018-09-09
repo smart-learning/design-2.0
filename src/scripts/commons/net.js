@@ -562,27 +562,22 @@ export default {
 
 	//회원가입
 	signUp(email, password) {
+		let params = { username: email, password: password, grant_type: 'password' };
+		params = encodeParams( params );
 
-		let params = {username: email, password: password};
-		// console.log('getAuthToken:', HOS + 'oauth/token', email, password);
-		// console.log('encodedParams:', params);
-
-		return new Promise((resolve, reject) => {
-			axios.post(API_PREFIX + 'v1.0/signup',
-				params,
-				{
-					headers: {
-						'Authorization': 'Basic ' + authBasicCode,
-						'Content-Type': 'application/json'
-					}
-				})
-				.then(response => {
-					resolve(response.data);
-				})
-				.catch((error) => {
-					console.log(error);
-					reject(error);
-				});
-		});
-	},
+		return axios.post( API_PREFIX + 'v1.0/signup',
+			params,
+			{
+				headers: {
+					'Authorization': 'Basic ' + authBasicCode,
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			} )
+			.then( response => {
+				return response.data;
+			} )
+			.catch( ( error ) => {
+				console.log( error );
+			} );
+	}
 }

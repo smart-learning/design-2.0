@@ -179,10 +179,9 @@ class Data {
 		// }
 
 		Net.signUp( this.data.email, this.data.password )
-			.then( res => {
-				store.socialType = this.data.email;
+			.then( data => {
 				store.welaaaAuth = data;
-				navigation.navigate( 'HomeScreen' );
+				this.props.navigation.navigate( 'HomeScreen' );
 			})
 			.catch( e => {
 				alert( e );
