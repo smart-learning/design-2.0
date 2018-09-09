@@ -483,6 +483,13 @@
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [self setPlayState : YES];
     _lectureTitleLabel.text = _currentLectureTitle;
+  
+    // 자막뷰가 on인 경우 초기화 시키고 다음 콘텐트의 자막을 가져옵니다. 오디오북일 경우는 수행하지 않습니다.
+    if ( !_isAudioContent )
+    {   [self setScriptViewFrameWithStatus : 0];
+        [_scriptView setScript : [self readScript]];
+        [_scriptButton setStatus : 0];
+    }
 }
 
 // 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
