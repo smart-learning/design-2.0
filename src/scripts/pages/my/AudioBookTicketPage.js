@@ -27,39 +27,40 @@ const styles = StyleSheet.create({
 });
 
 @observer class AudioBookTicketPage extends React.Component {
-	store = createStore( {
+	state = {
+		list: [],
 		isLoading: true,
-		list: null,
-	} );
-
-	load = async () => {
-		this.store.isLoading = true;
-		this.store.list = await net.getMembershipVouchers();
-		this.store.isLoading = false;
-	};
-
-	componentDidMount() {
-		this.load();
+	}
+	async componentDidMount() {
+		this.setState({
+			isLoading: true
+		})
+		this.setState({
+			list: await net.getMembershipVouchers(),
+		})
+		this.setState({
+			isLoading: false
+		})
 	}
 
 	render() {
+		const { isLoading, list } = this.state
+
 		return <View style={CommonStyles.container}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
 					<View style={CommonStyles.contentContainer}>
-						{this.store.isLoading &&
+						{isLoading &&
 						<View style={{ marginTop: 12 }}>
 							<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
-						</View>
-						}
+						</View>}
 
-
-						{ ( !this.store.isLoading && ( !this.store.list || this.store.list.length === 0 ) ) &&
+						{ ( !isLoading && ( !list || list.length === 0 ) ) &&
 						<View style={styles.ticketBox} borderRadius={10}>
 							<Text style={styles.ticketBoxText}>보유하고 있는 오디오북 이용권이 없습니다.</Text>
 						</View>
 						}
-						{ ( !this.store.isLoading && ( this.store.list && this.store.list.length > 0 ) ) &&
+						{ ( !isLoading && ( list && list.length > 0 ) ) &&
 							<View>
 								<Text style={styles.ticketText}>전체 이용권 0개</Text>
 								<Text style={styles.ticketText}>인기 오디오북 이용권 0개 보유중</Text>
@@ -67,6 +68,17 @@ const styles = StyleSheet.create({
 							</View>
 						}
 					</View>
+
+					{list
+						? list.map(item => (
+							<View>
+								<Text>
+									{JSON.stringify(item, null, 2)}
+								</Text>
+							</View>
+						))
+						: <View />}
+
 				</ScrollView>
 			</SafeAreaView>
 		</View>
