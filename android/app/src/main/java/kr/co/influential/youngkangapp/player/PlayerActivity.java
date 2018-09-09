@@ -836,17 +836,19 @@ public class PlayerActivity extends BasePlayerActivity {
     return true;
   }
 
-  @RequiresApi(VERSION_CODES.O)
+
   @Override
   protected void onUserLeaveHint() {
-
-    try {
-      PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-      builder.setAspectRatio(new Rational(16, 9));
-      enterPictureInPictureMode(builder.build());
-    } catch (Exception e) {
-      e.printStackTrace();
+    if(Build.VERSION.SDK_INT>=VERSION_CODES.O){
+      try {
+        PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+        builder.setAspectRatio(new Rational(16, 9));
+        enterPictureInPictureMode(builder.build());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
+
 
   }
 

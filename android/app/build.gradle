@@ -123,7 +123,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 99
-        versionName "1.47.337"
+        versionName "1.50.000"
         archivesBaseName = "welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
