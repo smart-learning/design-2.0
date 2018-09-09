@@ -180,7 +180,7 @@ export default class Summary extends React.Component {
 				</ImageBackground>
 				}
 			</TouchableOpacity>
-			{this.props.type !== 'detailClip' &&
+			{( 1 === 2 && this.props.type !== 'detailClip' ) &&
 			<View style={styles.btnGroup}>
 				<View style={styles.alignJustify}>
 					<Image source={IcView} style={styles.btnSetSmall}/>
