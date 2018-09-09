@@ -7,6 +7,7 @@ import IcCampus from "../../../images/ic-m-campus.png"
 import IcPremium from "../../../images/ic-m-premium.png"
 import IcAngleRight from "../../../images/ic-my-angle-right-white.png";
 import globalStore from "../../commons/store";
+import {observer} from "mobx-react";
 
 const styles = StyleSheet.create({
 	sectionTitle: {
@@ -230,6 +231,7 @@ const MembershipRule = Platform.select({
 	android: renderRuleAndroid(),
 });
 
+@observer
 export default class MembershipPage extends React.Component {
 
 	constructor(props) {
@@ -321,7 +323,7 @@ export default class MembershipPage extends React.Component {
 							})}
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => this.props.navigation.navigate('MembershipFormPage', {title: '오디오북클럽 멤버십 결제', type: 'bookClub'})}>
+										  onPress={() => this.props.navigation.navigate('MembershipFormPage', {title: '오디오북클럽 멤버십 결제', type: 'bookclub'})}>
 							<View style={[CommonStyles.alignJustifyContentBetween, styles.memberShipButton]}>
 								<View>
 									<Text style={styles.memberShipButtonTitle}>첫 1개월 무료</Text>
