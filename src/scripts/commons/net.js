@@ -452,6 +452,11 @@ export default {
 			});
 	},
 
+	async voucherExchange(audiobook_id) {
+		let params = {audiobook_id}
+		return axios.post(API_PREFIX + 'v1.0/membership/vouchers/exchange', params)
+	},
+
 	getBookReviewList(cid) {
 		return new Promise((resolve, reject) => {
 			axios.get(API_PREFIX + 'v1.0/action/comments/' + cid )
@@ -579,5 +584,11 @@ export default {
 			.catch( ( error ) => {
 				console.log( error );
 			} );
+	},
+
+	getContentPermission(type, id) {
+		return axios.get(`${API_PREFIX}v1.0/membership/permissions/${type}/${id}`)
+			.then(resp => resp.data)
 	}
+
 }

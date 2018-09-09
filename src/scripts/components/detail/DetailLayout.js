@@ -1,14 +1,12 @@
 import React from "react";
-import { observer } from 'mobx-react';
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, ScrollView, } from "react-native";
+import {observer} from 'mobx-react';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 import CommonStyles from "../../../styles/common";
 import TabContentInfo from "./TabContentInfo";
-// import TabContentList from "./TabContentList";
-import TabContentReview from "./TabContentReview";
-import PaymentStatus from "./PaymentStatus";
 import TopBanner from "./TopBanner";
-import CountView from "./CountView";
 import TabContentList from "./TabContentList";
+import AudiobookPaymentStatus from "./AudiobookPaymentStatus";
+import VideoPaymentStatus from "./VideoPaymentStatus";
 
 const styles = StyleSheet.create( {
 	tabContainer: {
@@ -64,34 +62,36 @@ class DetailLayout extends React.Component {
 			<ScrollView style={{ width: '100%' }}>
 				<TopBanner learnType={this.props.learnType} store={this.props.store}/>
 
+				{this.props.learnType === 'audioBook' ? (
+					<AudiobookPaymentStatus
+						purchase={this.props.purchase}
+						voucherStatus={this.props.voucherStatus}
+						permissions={this.props.permissions}
+						itemData={this.props.itemData}
+						learnType={this.props.learnType}
+						store={this.props.store}
+						paymentType={this.props.paymentType}
+						expire={this.props.expire}
+						permissionLoading={this.props.permissionLoading}
+					/>
+				) : (
+					<VideoPaymentStatus
+						purchase={this.props.purchase}
+						voucherStatus={this.props.voucherStatus}
+						permissions={this.props.permissions}
+						itemData={this.props.itemData}
+						learnType={this.props.learnType}
+						store={this.props.store}
+						paymentType={this.props.paymentType}
+						expire={this.props.expire}
+						permissionLoading={this.props.permissionLoading}
+					/>
+				)
+				}
+
 				{1 === 2 &&
 				<CountView store={this.props.store}/>
 				}
-				<PaymentStatus purchase={this.props.purchase} voucherStatus={this.props.voucherStatus} permissions={this.props.store.permissions} itemData={this.props.store.itemData} learnType={this.props.learnType} paymentType={"normal"}/>
-
-				{/*<Text>일반 회원 구매 전 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"normal"}/>*/}
-
-				{/*<Text>일반 회원 구매 전 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"normal"}/>*/}
-
-				{/*<Text>일반 회원 구매 후 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"buy"}/>*/}
-
-				{/*<Text>일반 회원 구매 후 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"buy"}/>*/}
-
-				{/*<Text>멤버십 회원 수강 전 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"membershipBeforeLearn"}/>*/}
-
-				{/*<Text>멤버십 회원 수강 전 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"membershipBeforeLearn"}/>*/}
-
-				{/*<Text>멤버십 회원 수강 시작 - 오디오북</Text>*/}
-				{/*<PaymentStatus learnType={"audioBook"} paymentType={"membershipStartLearn"}/>*/}
-
-				{/*<Text>멤버십 회원 수강 시작 - 클래스</Text>*/}
-				{/*<PaymentStatus learnType={"class"} paymentType={"membershipStartLearn"}/>*/}
 
 				<View style={CommonStyles.alignJustifyContentBetween}>
 					<View style={styles.tabContainer}>
@@ -121,7 +121,7 @@ class DetailLayout extends React.Component {
 							<View style={styles.tabItem}>
 								<Text style={this.props.store.tabStatus === 'list' ? styles.tabActiveText : styles.tabNormalText}>
 									{this.props.learnType === 'audioBook' &&
-										<Text>목차({this.props.store.itemClipData.length})</Text>
+									<Text>목차({this.props.store.itemClipData.length})</Text>
 									}
 									{this.props.learnType === 'class' &&
 									<Text>강의목차({this.props.store.itemClipData.length})</Text>
@@ -131,23 +131,6 @@ class DetailLayout extends React.Component {
 							</View>
 						</TouchableOpacity>
 					</View>
-					{1 === 2 &&
-					<View style={styles.tabContainer}>
-						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => {
-											  this.props.store.tabStatus = 'review'
-										  }}>
-							<View style={styles.tabItem}>
-								<Text
-									style={this.props.store.tabStatus === 'review' ? styles.tabActiveText : styles.tabNormalText}>
-									리뷰 ({this.props.store.itemData.review_count})
-								</Text>
-								<View
-									style={this.props.store.tabStatus === 'review' ? styles.tabActiveHr : styles.tabNormalHr}/>
-							</View>
-						</TouchableOpacity>
-					</View>
-					}
 				</View>
 				{this.props.store.tabStatus === 'info' &&
 				<TabContentInfo store={ this.props.store } learnType={this.props.learnType}/>
@@ -155,16 +138,10 @@ class DetailLayout extends React.Component {
 				{this.props.store.tabStatus === 'list' &&
 				<TabContentList store={ this.props.store } learnType={this.props.learnType}/>
 				}
-				{1 === 2 &&
-				<View>
-					{this.props.store.tabStatus === 'review' &&
-					<TabContentReview store={this.props.store}/>
-					}
-				</View>
-				}
 			</ScrollView>
 		</View>
 	}
+
 }
 
 export default DetailLayout

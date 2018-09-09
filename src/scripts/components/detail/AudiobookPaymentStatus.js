@@ -97,7 +97,7 @@ const styles = StyleSheet.create( {
 	},
 } );
 
-export default class PaymentStatus extends React.Component {
+export default class AudiobookPaymentStatus extends React.Component {
 	constructor( props ) {
 		super( props );
 
@@ -122,27 +122,27 @@ export default class PaymentStatus extends React.Component {
 		// 3: 소장중
 		return (
 			<View>
-				{/*{*/}
-					{/*paymentType === 3 ? (*/}
-						{/*<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>*/}
-							{/*<Text style={styles.priceText}>*/}
-								{/*{expire}*/}
-							{/*</Text>*/}
-						{/*</View>*/}
-					{/*) : (*/}
-						{/*<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>*/}
-							{/*<Text style={styles.priceOriginal}>*/}
-								{/*₩{itemData.sale_price}*/}
-							{/*</Text>*/}
-							{/*{*/}
-								{/*(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&*/}
-								{/*<Text style={styles.priceText}>*/}
-									{/*<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>*/}
-								{/*</Text>*/}
-							{/*}*/}
-						{/*</View>*/}
-					{/*)*/}
-				{/*}*/}
+				{
+					paymentType === 3 ? (
+						<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+							<Text style={styles.priceText}>
+								{expire}
+							</Text>
+						</View>
+					) : (
+						<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+							<Text style={styles.priceOriginal}>
+								₩{itemData.sale_price}
+							</Text>
+							{
+								(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&
+								<Text style={styles.priceText}>
+									<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
+								</Text>
+							}
+						</View>
+					)
+				}
 			</View>
 		)
 	}
@@ -152,38 +152,38 @@ export default class PaymentStatus extends React.Component {
 
 		return <View>
 
-			{/*{ permissionLoading ? (*/}
-				{/*<View style={[ CommonStyles.alignJustifyContentBetween, styles.paymentContainer ]}>*/}
-                    {/*<Text style={[styles.priceText, {alignItems: 'center'}]}>구매 정보를 로딩 중입니다.</Text>*/}
-				{/*</View>*/}
-			{/*) : (*/}
-				{/*<View style={[ CommonStyles.alignJustifyContentBetween, styles.paymentContainer ]}>*/}
-					{/*{ this.renderPriceOrExpire(itemData, paymentType, expire) }*/}
+			{ permissionLoading ? (
+				<View style={[ CommonStyles.alignJustifyContentBetween, styles.paymentContainer ]}>
+                    <Text style={[styles.priceText, {alignItems: 'center'}]}>구매 정보를 로딩 중입니다.</Text>
+				</View>
+			) : (
+				<View style={[ CommonStyles.alignJustifyContentBetween, styles.paymentContainer ]}>
+					{ this.renderPriceOrExpire(itemData, paymentType, expire) }
 
-					{/*/!* paymentType: 0, // 0 무료, 1 구매, 2 이용권 사용, 3 소장중 *!/*/}
-					{/*{(paymentType === 1 || paymentType === 2)*/}
-						{/*? (*/}
-							{/*<TouchableOpacity*/}
-								{/*onPress={() => this.props.purchase(paymentType)}*/}
-							{/*>*/}
-								{/*<View style={[styles.buttonBuy, {width: paymentType === 2 ? 120 : 80}]}*/}
-									  {/*borderRadius={5}>*/}
-									{/*<Text style={styles.buttonBuyText}>*/}
-										{/*{paymentType === 2 ? '이용권 사용' : '구매'}*/}
-									{/*</Text>*/}
-								{/*</View>*/}
-							{/*</TouchableOpacity>*/}
-						{/*)*/}
-						{/*: (*/}
-							{/*<View style={styles.buttonBuy} borderRadius={5}>*/}
-								{/*<Text style={styles.buttonBuyText}>*/}
-									{/*{paymentType === 0 ? '무료' : '소장중'}*/}
-								{/*</Text>*/}
-							{/*</View>*/}
-						{/*)*/}
-					{/*}*/}
-				{/*</View>*/}
-			{/*) }*/}
+					{/* paymentType: 0, // 0 무료, 1 구매, 2 이용권 사용, 3 소장중 */}
+					{(paymentType === 1 || paymentType === 2)
+						? (
+							<TouchableOpacity
+								onPress={() => this.props.purchase(paymentType)}
+							>
+								<View style={[styles.buttonBuy, {width: paymentType === 2 ? 120 : 80}]}
+									  borderRadius={5}>
+									<Text style={styles.buttonBuyText}>
+										{paymentType === 2 ? '이용권 사용' : '구매'}
+									</Text>
+								</View>
+							</TouchableOpacity>
+						)
+						: (
+							<View style={styles.buttonBuy} borderRadius={5}>
+								<Text style={styles.buttonBuyText}>
+									{paymentType === 0 ? '무료' : '소장중'}
+								</Text>
+							</View>
+						)
+					}
+				</View>
+			) }
 
 		</View>
 	}
