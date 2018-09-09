@@ -165,6 +165,7 @@ export default class TopBanner extends React.Component {
 	}
 
 	render() {
+		console.log(this.props.store.itemData)
 		return <ImageBackground style={styles.banner} resizeMode="cover" source={Dummy}>
 			<View style={styles.titleLabelContainer}>
 				<View
@@ -184,7 +185,7 @@ export default class TopBanner extends React.Component {
 				{this.props.store.itemData.title}
 			</Text>
 			<Text style={styles.author}>
-				{this.props.store.itemData.teacher.name}
+				{/* {this.props.store.itemData.teacher.name} */}
 			</Text>
 			<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
 				{(!this.props.store.itemData.is_new && !this.props.store.itemData.is_exclusive && !this.props.store.itemData.is_free && !this.props.store.itemData.audiobook_type) &&
