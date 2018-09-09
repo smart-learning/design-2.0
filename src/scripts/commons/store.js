@@ -45,6 +45,7 @@ class Store {
 		welaaaAuth = null;
 
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
+		delete axios.defaults.headers.common["authorization"];
 	}
 
 	@observable profile = {};
