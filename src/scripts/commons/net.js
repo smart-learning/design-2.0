@@ -136,13 +136,40 @@ export default {
 			params.page = page;
 		}
 		url += '?' + encodeParams(params);
-		return cacheOrLoad(url, DEFAULT_EXPIRED)
-			.then(data => {
-				return data;
+
+		// return cacheOrLoad(url, DEFAULT_EXPIRED)
+		// 	.then(data => {
+		// 		return data;
+		// 	})
+		// 	.catch(error => {
+		// 		console.log(error);
+		// 	});
+
+		return axios.get(url)
+			.then((response) => {
+				const headers = response.headers
+				const data = response.data
+				const pagination = {}
+				Object.keys(headers).forEach((key) => {
+					if (key.indexOf('pagination-') === 0) {
+						try{
+							pagination[key.replace('pagination-', '')] = eval(headers[key].toLowerCase())
+						} catch(e) {
+						}
+					}
+				})
+				return {
+					items: data.map((element) => ({
+						...element,
+						key: element.id.toString(),
+					})),
+					pagination,
+				}
 			})
 			.catch(error => {
 				console.log(error);
-			});
+			})
+
 	},
 
 	getLectureListByCategories() {

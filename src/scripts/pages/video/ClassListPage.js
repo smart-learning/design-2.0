@@ -102,7 +102,7 @@ const styles = StyleSheet.create( {
 		if( !_.isArray( list ) ) {
 			list = [];
 		}
-		const VOs = list.map( element => {
+		const VOs = data.items.map( element => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
@@ -120,13 +120,13 @@ const styles = StyleSheet.create( {
 		}
 		this.store.ccode = ccode;
 		// TODO: V1.1 대응 페이지네이션 처리 추가.
-		// this.store.pagination = data.pagination;
+		this.store.pagination = data.pagination;
 		this.store.isLoading = false;
 	};
 
 	loadMore = () => {
-		if( this.store.has_next ) {
-			this.loadClassList( this.store.ccode, this.store.next_page );
+		if( this.store.pagination['has-next'] ) {
+			this.loadClassList( this.store.ccode, this.store.pagination.page + 1);
 		}
 	};
 
@@ -144,21 +144,22 @@ const styles = StyleSheet.create( {
 			return vo;
 		} );
 
-		// action으로 정해둔 네임에 따라 초기 행동을 결정
-		const action = this.props.navigation.getParam('action');
-		const actionData = this.props.navigation.getParam('data');
-
-		// console.log( 'navigate params:', action, actionData );
-
-		switch( action ){
-			case 'category': // from HomeVideoPage
-				this.onCategorySelect( actionData );
-				break;
-
-			// case 'item': // from ClassListPage
-			// 	// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
-			// 	break;
-		}
+		// // action으로 정해둔 네임에 따라 초기 행동을 결정
+		// const action = this.props.navigation.getParam('action');
+		// const actionData = this.props.navigation.getParam('data');
+		//
+		// // console.log( 'navigate params:', action, actionData );
+		//
+		// switch( action ){
+		// 	case 'category': // from HomeVideoPage
+		// 		this.onCategorySelect( actionData );
+		// 		break;
+		//
+		// 	// case 'item': // from ClassListPage
+		// 	// 	// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
+		// 	// 	break;
+		// }
+		this.loadClassList();
 	}
 
 	onCategorySelect = item => {
@@ -230,7 +231,7 @@ const styles = StyleSheet.create( {
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 					</View>
 					}
-					{( !this.store.isLoading && this.store.has_next ) &&
+					{( !this.store.isLoading && this.store.pagination['has-next'] ) &&
 					<TouchableOpacity activeOpacity={0.9} onPress={ this.loadMore }>
 						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 							<Text style={styles.linkViewAllText}>더보기</Text>
