@@ -453,6 +453,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //		com.google.android.exoplayer2.ui.SimpleExoPlayerView
     simpleExoPlayerView = findViewById(R.id.player_view);
     simpleExoPlayerView.requestFocus();
+    setPlayerView(simpleExoPlayerView);
 
     //// Chromecast
     mCastContext = CastContext.getSharedInstance(this);
@@ -528,145 +529,8 @@ public class PlayerActivity extends BasePlayerActivity {
       EXPIRE_AT = intent.getStringExtra("expire_at");
       CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
 
-      if (!CAN_PLAY) {
-        Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
-
-        // 윌라 기존 버전 ,
-        // 1) seekbar 핸들링 못함
-        // 2) duration Total Time 90 초로 고정 됨 .
-        // 차선 책으로 타이머라도 돌릴까요 ???
-      }
-
-      // video-course , audiobook //
-      callbackWebPlayerInfo(CONTENT_TYPE, "");
-
-      if (CONTENT_TYPE != null) {
-        if (CONTENT_TYPE.equals("audiobook")) {
-          RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
-          control_wrap.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-              return true;
-            }
-          });
-
-//      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
-
-          mButton_Arrow_Layout.setVisibility(GONE);
-          mRelatedViewBtn.setVisibility(GONE);
-
-          RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
-          subscription_wrap.setVisibility(GONE);
-
-          RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
-          audioVideobtn_wrap.setVisibility(GONE);
-
-          audioModeBackgroundLayout.setVisibility(VISIBLE);
-          audioModeIconHeadset.setVisibility(VISIBLE);
-
-          LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
-          // Audio Book 에서 화면 항상 켜기 //
-          getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        } else {
-          LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
-        }
-      }
+      initialize();
     }
-
-    // 베이스 레이아웃
-    setBaseUI();
-    // 자막 레이아웃
-    setSubtitlesUI();
-    // 버튼 클릭 준비
-    buttonInit();
-    // Volume Controller Init
-    initControls();
-    // 별점 뷰 셋팅 하기
-    setMyrepuSetUI();
-    //오디오북 or 오디오모드에서 보이는 이미지
-    setAudioModeImageUI();
-    // 네트워크 상태 , 다운로드 상태 출력
-    setDownloadHandlering();
-    //플레이리스트UI
-    setLectureItem();
-    //sleep Timer
-    setSleeperUI();
-    //플레이어 타이틀
-    setPlayerTitle();
-    // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
-    setRelatedUI();
-
-    mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
-
-      @Override
-      public boolean onTouch(View v, MotionEvent event) {
-
-        RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
-        RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
-        RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
-        RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
-        RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
-        RelativeLayout welean_blank_line2 = findViewById(R.id.welean_blank_line2);
-        RelativeLayout welean_blank_line = findViewById(R.id.welean_blank_line);
-        RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
-        RelativeLayout play_network_type_text = findViewById(R.id.wrap_welean_play_network_type);
-
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-          if (msubtitls_view.getVisibility() == View.VISIBLE
-              || msubtitls_view_long.getVisibility() == View.VISIBLE) {
-
-            if (!visible) {
-
-              control_wrap_bg.setVisibility(View.INVISIBLE);
-              general_button_group.setVisibility(View.INVISIBLE);
-              myrepu_button_group.setVisibility(View.INVISIBLE);
-              play_button_group.setVisibility(View.INVISIBLE);
-              smart_button_wrap.setVisibility(View.INVISIBLE);
-              welean_blank_line2.setVisibility(View.INVISIBLE);
-              welean_blank_line.setVisibility(View.INVISIBLE);
-              welean_wrap_bg.setVisibility(View.INVISIBLE);
-
-              msleep_view.setVisibility(View.INVISIBLE);
-
-              play_network_type_text.setVisibility(View.INVISIBLE);
-
-              msubtitls_view.setY(msubtitls_view.getY() + control_wrap_bg.getHeight());
-              msubtitls_view_long.setY(
-                  msubtitls_view_long.getY() + control_wrap_bg.getHeight() + smart_button_wrap
-                      .getHeight() + welean_blank_line2.getHeight());
-              visible = true;
-
-              return true;
-
-            } else {
-
-              control_wrap_bg.setVisibility(View.VISIBLE);
-              general_button_group.setVisibility(View.VISIBLE);
-              myrepu_button_group.setVisibility(View.VISIBLE);
-              play_button_group.setVisibility(View.VISIBLE);
-              smart_button_wrap.setVisibility(View.VISIBLE);
-              welean_blank_line2.setVisibility(View.VISIBLE);
-              welean_blank_line.setVisibility(View.VISIBLE);
-              welean_wrap_bg.setVisibility(View.VISIBLE);
-
-              msleep_view.setVisibility(View.INVISIBLE);
-
-              play_network_type_text.setVisibility(View.VISIBLE);
-
-              msubtitls_view.setY(msubtitls_view.getY() - control_wrap_bg.getHeight());
-              msubtitls_view_long.setY(
-                  msubtitls_view_long.getY() - control_wrap_bg.getHeight() - smart_button_wrap
-                      .getHeight() - welean_blank_line2.getHeight());
-              visible = false;
-              return true;
-            }
-          }
-        }
-        return false;
-      }
-    });
 
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
@@ -795,6 +659,150 @@ public class PlayerActivity extends BasePlayerActivity {
           .show();
       finish();
     }
+  }
+
+  /**
+   * initialize
+   */
+  private void initialize() {
+    if (!CAN_PLAY) {
+      Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+
+      // 윌라 기존 버전 ,
+      // 1) seekbar 핸들링 못함
+      // 2) duration Total Time 90 초로 고정 됨 .
+      // 차선 책으로 타이머라도 돌릴까요 ???
+    }
+
+    // video-course , audiobook //
+    callbackWebPlayerInfo(CONTENT_TYPE, "");
+
+    if (CONTENT_TYPE != null) {
+      if (CONTENT_TYPE.equals("audiobook")) {
+        RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
+        control_wrap.setOnTouchListener(new View.OnTouchListener() {
+          @Override
+          public boolean onTouch(View v, MotionEvent event) {
+            return true;
+          }
+        });
+
+//      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
+
+        mButton_Arrow_Layout.setVisibility(GONE);
+        mRelatedViewBtn.setVisibility(GONE);
+
+        RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
+        subscription_wrap.setVisibility(GONE);
+
+        RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
+        audioVideobtn_wrap.setVisibility(GONE);
+
+        audioModeBackgroundLayout.setVisibility(VISIBLE);
+        audioModeIconHeadset.setVisibility(VISIBLE);
+
+        LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
+        // Audio Book 에서 화면 항상 켜기 //
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+      } else {
+        LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
+      }
+    }
+
+    // 베이스 레이아웃
+    setBaseUI();
+    // 자막 레이아웃
+    setSubtitlesUI();
+    // 버튼 클릭 준비
+    buttonInit();
+    // Volume Controller Init
+    initControls();
+    // 별점 뷰 셋팅 하기
+    setMyrepuSetUI();
+    //오디오북 or 오디오모드에서 보이는 이미지
+    setAudioModeImageUI();
+    // 네트워크 상태 , 다운로드 상태 출력
+    setDownloadHandlering();
+    //플레이리스트UI
+    setLectureItem();
+    //sleep Timer
+    setSleeperUI();
+    //플레이어 타이틀
+    setPlayerTitle();
+    // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
+    setRelatedUI();
+
+    mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
+
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+
+        RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+        RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+        RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
+        RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+        RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+        RelativeLayout welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+        RelativeLayout welean_blank_line = findViewById(R.id.welean_blank_line);
+        RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+        RelativeLayout play_network_type_text = findViewById(R.id.wrap_welean_play_network_type);
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+          if (msubtitls_view.getVisibility() == View.VISIBLE
+              || msubtitls_view_long.getVisibility() == View.VISIBLE) {
+
+            if (!visible) {
+
+              control_wrap_bg.setVisibility(View.INVISIBLE);
+              general_button_group.setVisibility(View.INVISIBLE);
+              myrepu_button_group.setVisibility(View.INVISIBLE);
+              play_button_group.setVisibility(View.INVISIBLE);
+              smart_button_wrap.setVisibility(View.INVISIBLE);
+              welean_blank_line2.setVisibility(View.INVISIBLE);
+              welean_blank_line.setVisibility(View.INVISIBLE);
+              welean_wrap_bg.setVisibility(View.INVISIBLE);
+
+              msleep_view.setVisibility(View.INVISIBLE);
+
+              play_network_type_text.setVisibility(View.INVISIBLE);
+
+              msubtitls_view.setY(msubtitls_view.getY() + control_wrap_bg.getHeight());
+              msubtitls_view_long.setY(
+                  msubtitls_view_long.getY() + control_wrap_bg.getHeight() + smart_button_wrap
+                      .getHeight() + welean_blank_line2.getHeight());
+              visible = true;
+
+              return true;
+
+            } else {
+
+              control_wrap_bg.setVisibility(View.VISIBLE);
+              general_button_group.setVisibility(View.VISIBLE);
+              myrepu_button_group.setVisibility(View.VISIBLE);
+              play_button_group.setVisibility(View.VISIBLE);
+              smart_button_wrap.setVisibility(View.VISIBLE);
+              welean_blank_line2.setVisibility(View.VISIBLE);
+              welean_blank_line.setVisibility(View.VISIBLE);
+              welean_wrap_bg.setVisibility(View.VISIBLE);
+
+              msleep_view.setVisibility(View.INVISIBLE);
+
+              play_network_type_text.setVisibility(View.VISIBLE);
+
+              msubtitls_view.setY(msubtitls_view.getY() - control_wrap_bg.getHeight());
+              msubtitls_view_long.setY(
+                  msubtitls_view_long.getY() - control_wrap_bg.getHeight() - smart_button_wrap
+                      .getHeight() - welean_blank_line2.getHeight());
+              visible = false;
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+    });
   }
 
   //// Chromecast
@@ -4681,25 +4689,49 @@ public class PlayerActivity extends BasePlayerActivity {
     MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
     mediaController.registerCallback(callback);
 
-    if (fromMediaSession) {
-      Bundle extras = mediaController.getMetadata().getBundle();
-      Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+    if (!fromMediaSession) {
+      Bundle extras = getIntent().getExtras();
+
+      // Save play information.
+      extras.putString("webPlayerInfo", new Gson().toJson(mWebPlayerInfo));
+      extras.putString("type", CONTENT_TYPE);
+      extras.putString("can_play", String.valueOf(CAN_PLAY));
+      extras.putString("is_free", String.valueOf(IS_FREE));
+      extras.putString("expire_at", EXPIRE_AT);
+      extras.putLong("history_start_seconds", CONTENT_HISTORY_SEC);
+
+      Uri uri = getIntent().getData();
       playFromUri(uri, extras);
     } else {
-      Intent intent = getIntent();
-      Uri uri = intent.getData();
-      playFromUri(uri, intent.getExtras());
+      Bundle extras = mediaController.getMetadata().getBundle();
+
+      // Restore play information from mediasession metadata.
+      String playInfoJson = extras.getString("webPlayerInfo");
+      Gson gson = new Gson();
+      mWebPlayerInfo = gson.fromJson(playInfoJson, WebPlayerInfo.class);
+      CONTENT_TYPE = extras.getString("type");
+      CAN_PLAY = Boolean.parseBoolean(extras.getString("can_play"));
+      IS_FREE = Boolean.parseBoolean(extras.getString("is_free"));
+      EXPIRE_AT = extras.getString("expire_at");
+      CONTENT_HISTORY_SEC = (int) extras.getLong("history_start_seconds");
+      initialize();
+
+      attachPlayerView();
     }
   }
 
   private void playFromUri(Uri uri, Bundle extras) {
     getTransportControls().playFromUri(uri, extras);
-    attachPlayerToPlayerView();
+    attachPlayerView();
   }
 
-  private void attachPlayerToPlayerView() {
+  private void setPlayerView(PlayerView playerView) {
+    LocalPlayback.getInstance(this).setPlayerView(playerView);
+  }
+
+  private void attachPlayerView() {
     // Set player to playerview.
-    LocalPlayback.getInstance(this).setPlayerView(simpleExoPlayerView);
+    LocalPlayback.getInstance(this).attachPlayerView();
   }
 
   private void updatePlaybackState(PlaybackStateCompat state) {

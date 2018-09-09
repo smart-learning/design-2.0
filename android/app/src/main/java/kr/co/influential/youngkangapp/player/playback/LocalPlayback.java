@@ -126,6 +126,8 @@ public final class LocalPlayback implements Playback {
 
   private Handler eventHandler = new Handler();
 
+  private PlayerErrorMessageProvider errorMessageProvider;
+
   private PlayerView playerView;
 
   private static volatile LocalPlayback instance;
@@ -217,6 +219,8 @@ public final class LocalPlayback implements Playback {
     this.mWifiLock =
         ((WifiManager) applicationContext.getSystemService(Context.WIFI_SERVICE))
             .createWifiLock(WifiManager.WIFI_MODE_FULL, "welaaa_lock");
+
+    errorMessageProvider = new PlayerErrorMessageProvider();
   }
 
   @Override
@@ -744,10 +748,10 @@ public final class LocalPlayback implements Playback {
     this.playerView = playerView;
   }
 
-  private void attachPlayerView() {
-    if (playerView != null) {
+  public void attachPlayerView() {
+    if (playerView != null && mExoPlayer != null) {
       playerView.setPlayer(mExoPlayer);
-      playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
+      playerView.setErrorMessageProvider(errorMessageProvider);
       playerView.requestFocus();
     }
   }

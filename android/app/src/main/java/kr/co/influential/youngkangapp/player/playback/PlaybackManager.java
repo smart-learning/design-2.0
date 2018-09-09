@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.text.TextUtils;
 import com.google.android.exoplayer2.drm.KeysExpiredException;
 import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
@@ -409,14 +408,20 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     String thumbUrl = extras.getString(PlaybackManager.THUMB_URL);
     String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
 
+    String duration = extras.getString("duration");
+    String playerInfo = extras.getString("webPlayerInfo");
+    String type = extras.getString("type");
+    String canPlay = extras.getString("can_play");
+    String isFree = extras.getString("is_free");
+    String expiredAt = extras.getString("expire_at");
+    long contentHistorySecond = extras.getLong("history_start_seconds");
+
     MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
     builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
     builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
-    String duration = extras.getString("duration");
-    if (!TextUtils.isEmpty(duration)) {
-      builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
-          Utils.webTimeToSec(duration));
-    }
+    builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
+        Utils.webTimeToSec(duration));
+
     // drm information.
     builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
     builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA, drmSchemeUuid);
@@ -427,6 +432,16 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     builder.putString(PlaybackManager.DRM_TOKEN, token);
     builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
     builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
+
+    // Play information.
+    builder.putString("duration", duration);
+    builder.putString("webPlayerInfo", playerInfo);
+    builder.putString("type", type);
+    builder.putString("can_play", canPlay);
+    builder.putString("is_free", isFree);
+    builder.putString("expire_at", expiredAt);
+    builder.putLong("history_start_seconds", contentHistorySecond);
+
     currentMedia = builder.build();
   }
 
