@@ -37,8 +37,10 @@
       android:windowSoftInputMode="adjustResize">
 
       <intent-filter>
-        <action android:name=".MainActivity" />
+        <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="welaaa" android:host="welaaa" />
       </intent-filter>
 
     </activity>

@@ -7,6 +7,8 @@ import { observer } from "mobx-react";
 import { observable } from "mobx";
 import BulletBoxCheck from "../../../images/ic-checkbox.png"
 import BulletBoxChecked from "../../../images/ic-checkbox-checked.png"
+import Net from "../../commons/net";
+import store from "../../commons/store";
 
 const styles = StyleSheet.create({
 	landingContainer: {
@@ -167,9 +169,19 @@ class Data {
 			return false;
 		}
 
-		if( this.props.onAccess ) {
-			this.props.onAccess(this.state.email, this.state.password);
-		}
+		// if( this.props.onAccess ) {
+		// 	this.props.onAccess(this.state.email, this.state.password);
+		// }
+
+		Net.signUp( this.data.email, this.data.password )
+			.then( res => {
+				store.socialType = this.data.email;
+				store.welaaaAuth = data;
+				navigation.navigate( 'HomeScreen' );
+			})
+			.catch( e => {
+				alert( e );
+			})
 	};
 
 	agreeStatus = () => {

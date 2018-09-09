@@ -5,7 +5,7 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import {AsyncStorage, DeviceEventEmitter, Platform, View, AppState} from "react-native";
+import {AsyncStorage, DeviceEventEmitter, Platform, View, Linking} from "react-native";
 import EventEmitter from 'events';
 import globalStore from "./src/scripts/commons/store";
 
@@ -15,6 +15,7 @@ import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
 import { observer } from "mobx-react";
 import firebase, { RemoteMessage } from 'react-native-firebase';
+import nav from "./src/scripts/commons/nav";
 
 @observer class App extends React.Component {
 
@@ -144,15 +145,12 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 
 
 
-		AppState.addEventListener('change', this._handleAppStateChange);
+		Linking.getInitialURL().then((url) => {
+			if (url) {
+				nav.parseDeepLink( url );
+			}
+		}).catch(err => console.error('An error occurred', err));
 	}
-
-	_handleAppStateChange =(nextAppState)=>{
-		console.log( 'NEXT APP STATE:', nextAppState );
-		PushNotification.popInitialNotification(notification => notification && onNotification(notification));
-
-	}
-
 
 	componentWillUnmount() {
 		this.subscription.forEach( listener => {
@@ -167,13 +165,11 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 
  	render() {
 
-		const prefix = Platform.OS == 'android' ? 'welaaa://welaaa/' : 'welaaa://';
-
 		return <View style={{flex: 1}}>
 			<AppDrawer
-				uriPrefix={prefix}
 				ref={navigatorRef => {
 					globalStore.drawer = navigatorRef
+					nav.setNav( navigatorRef );
 				}}
 				style={{width: '80%'}}
 
@@ -228,6 +224,7 @@ const AppDrawer = createDrawerNavigator(
 
 		VideoScreen: {
 			screen: VideoScreen,
+			path: 'video_list',
 		},
 
 		AudioScreen: {

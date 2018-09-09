@@ -198,3 +198,95 @@ export const NAV_OPTS_DRAWER = ({navigation, navigationOptions}) => {
 
 	return option;
 }
+
+
+let navigation = null;
+export default {
+
+	setNav: ( nav )=>{
+		navigation = nav._navigation;
+		console.log( 'set global nav:', navigation );
+
+
+		// setTimeout(()=>{
+		// 	navigation.navigate('SetAppPage');
+		// }, 3000 );
+	},
+	// welaaa://video_list 동영상 리스트
+	// welaaa://video_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
+	// welaaa://video/{cid} 동영상 상세
+	// welaaa://video_play/{cid} 동영상 재생
+	// welaaa://audiobook_list 오디오북 리스트
+	// welaaa://audiobook_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
+	// welaaa://audiobook/{cid} 오디오북 상세
+	// welaaa://audiobook_play/{cid} 오디오북 재생
+	// welaaa://in_browser/{url} 인앱 브라우져로 url 이동(닫기버튼포함)
+	// welaaa://out_browser/{url}` 외부 브라우져 실행
+	// welaaa://sign_up 회원가입 이동
+	// welaaa://sign_in 로그인 이동
+	// welaaa://mywela 마이윌라로 이동
+
+	// welaaa://app_setting 설정으로 이동
+	// welaaa://membership 나의 멤버십으로 이동
+	parseDeepLink: ( scheme )=>{
+
+		// 필요한 내용만 '/' 로 나눠서
+		const schemes = scheme.replace('welaaa://', '').split('/');
+
+		// 맨 앞에 내용을 action 뒤에 내용을 params으로 분리
+		const action = schemes[0];
+
+		const paramsLen = schemes.length - 1; // action을 제외한 길이
+
+		switch( action ){
+			case 'video_list':
+				navigation.navigate('ClassListPage');
+				break;
+
+			case 'video':
+
+				break;
+
+			case 'video_play':
+
+				break;
+
+			case 'audiobook_list':
+
+				break;
+
+			case 'audio':
+				navigation.navigate('AudioBookPage');
+				break;
+
+			case 'audiobook_play':
+
+				break;
+
+			case 'in_browser':
+
+				break;
+
+			case 'out_browser':
+
+				break;
+
+			case 'sign_up':
+				navigation.navigate('SignUpPage');
+				break;
+
+			case 'sign_in':
+				navigation.navigate('Login');
+				break;
+
+			case 'my_welaaa':
+				navigation.navigate('MyScreen');
+				break;
+
+			case 'app_setting':
+				// 로그인 처리 후 시도..
+				// navigation.navigate('SetAppPage');
+				break;
+		}
+	}
+}
