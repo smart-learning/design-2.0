@@ -125,10 +125,9 @@ public class ReactBottomControllerView extends FrameLayout {
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
       LogHelper.d(TAG, "onPlaybackstate changed", state);
       updatePlaybackState(state);
-    }
-
-    @Override
-    public void onMetadataChanged(MediaMetadataCompat metadata) {
+      Activity activity = Utils.getActivity(getContext());
+      MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(activity);
+      MediaMetadataCompat metadata = mediaController.getMetadata();
       if (metadata != null) {
         updateMediaDescription(metadata.getDescription());
         updateDuration(metadata);
@@ -178,21 +177,19 @@ public class ReactBottomControllerView extends FrameLayout {
   }
 
   private void updateMediaDescription(MediaDescriptionCompat description) {
-    if (description == null) {
-      return;
-    }
     LogHelper.d(TAG, "updateMediaDescription called");
-    title.setText(description.getTitle());
+    if (description != null) {
+      title.setText(description.getTitle());
+    }
   }
 
   private void updateDuration(MediaMetadataCompat metadata) {
-    if (metadata == null) {
-      return;
-    }
     LogHelper.d(TAG, "updateDuration called");
-    int duration = (int) (metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION) / 1_000l);
-    timeBar.setMax(duration);
-    durationTime.setText(DateUtils.formatElapsedTime(duration));
+    if (metadata != null) {
+      int duration = (int) (metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION) / 1_000l);
+      timeBar.setMax(duration);
+      durationTime.setText(DateUtils.formatElapsedTime(duration));
+    }
   }
 
   private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
@@ -236,20 +233,18 @@ public class ReactBottomControllerView extends FrameLayout {
     Activity activity = Utils.getActivity(getContext());
     MediaControllerCompat mediaController = MediaControllerCompat
         .getMediaController(activity);
-    if (mediaController == null) {
-      return;
+    if (mediaController != null) {
+      mediaController.getTransportControls().pause();
     }
-    mediaController.getTransportControls().pause();
   }
 
   private void play() {
     Activity activity = Utils.getActivity(getContext());
     MediaControllerCompat mediaController = MediaControllerCompat
         .getMediaController(activity);
-    if (mediaController == null) {
-      return;
+    if (mediaController != null) {
+      mediaController.getTransportControls().play();
     }
-    mediaController.getTransportControls().play();
   }
 
   private void scheduleSeekbarUpdate() {
