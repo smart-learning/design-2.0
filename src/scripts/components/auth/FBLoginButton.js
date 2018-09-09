@@ -64,7 +64,7 @@ class FBLoginButton extends Component {
 
 
 	handleFacebookLogin = ()=> {
-
+		LoginManager.logOut()
 		LoginManager.logInWithReadPermissions([])
 			.then( result=>{
 				if (result.isCancelled) {

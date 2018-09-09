@@ -17,6 +17,50 @@ import BulletBoxCheck from "../../../images/ic-checkbox.png"
 import BulletBoxChecked from "../../../images/ic-checkbox-checked.png"
 
 
+const productItem = {
+	campus: {
+		name: '캠퍼스',
+		ios: {
+			price: '$9.89',
+		},
+		android: {
+			price: '7,700원',
+			originPrice: '30,000원',
+		}, 
+	},
+	bookClub: {
+		name: '오디오북클럽',
+		ios: {
+			price: '$8.79',
+		},
+		android: {
+			price: '6,600원',
+			originPrice: '15,000원',
+		},
+	},
+	premium: {
+		name: '프리미엄',
+		ios: {
+			price: '$18.69',
+		},
+		android: {
+			price: '14,300원',
+			originPrice: '40,000원',
+		},
+	},
+	none: {
+		name: '',
+		ios: {
+			price: '',
+		},
+		android: {
+			price: '',
+			originPrice: '',
+		},
+	}
+
+}
+
 const styles = StyleSheet.create({
 	itemInfoContainer: {
 		position: 'relative',
@@ -183,9 +227,9 @@ class MembershipFormPage extends React.Component {
 	@observable phone = null;
 	@observable email = null;
 	@observable creditNumber = null;
-	@observable validityPeriodMonth = '월';
-	@observable validityPeriodYear = '년';
-	@observable birth = 'YYMMDD';
+	@observable validityPeriodMonth = '';
+	@observable validityPeriodYear = '';
+	@observable birth = '';
 	@observable gender = null;
 	@observable password = null;
 	@observable isAgree = false;
@@ -222,50 +266,52 @@ class MembershipFormPage extends React.Component {
 	// 	}
 	// };
 
+	onSubmit = async () => {
+		// TODO
+		// validation
+
+		const data = {
+			name: this.name,
+			phone: this.phone,
+			email: this.email,
+			creditNumber: this.creditNumber,
+			validityPeriodMonth: this.validityPeriodMonth,
+			validityPeriodYear: this.validityPeriodYear,
+			birth: this.birth,
+			gender: this.gender,
+			password: this.password,
+		}
+
+		try{
+			await net.registerMembership(data)
+			// register 성공
+		} catch(e) {
+			// register 실패 (axios response not 200)
+		}
+	}
+
 	render() {
+		const data = productItem[this.formType || 'none']
+
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			<ScrollView style={{width: '100%'}}>
 				<View style={CommonStyles.contentContainer}>
 					<View style={styles.itemInfoContainer}>
 						<View style={styles.itemInfo}>
 							<View>
-								<Text style={styles.itemText}>구매상품 : <Text style={styles.itemTextImportant}>멤버십이름</Text></Text>
+								<Text style={styles.itemText}>구매상품 : <Text style={styles.itemTextImportant}>{data.name} 멤버십</Text></Text>
 								<View style={styles.itemMonthlyPrice}>
 									<Text style={styles.itemText}>매월</Text>
 									<View>
-										{this.formType === 'campus' &&
 										<View>
 											{Platform.select({
-												ios: <Text style={styles.itemTextImportant}> $9.89 </Text>,
+												ios: <Text style={styles.itemTextImportant}> {data.ios.price} </Text>,
 												android: <Text>
-													<Text style={styles.itemTextImportant}> 7,700원 </Text>
-													<Text style={styles.itemPriceOrigin}>(30,000원)</Text>
+													<Text style={styles.itemTextImportant}> {data.android.price} </Text>
+													<Text style={styles.itemPriceOrigin}>{data.android.originPrice}</Text>
 												</Text>,
 											})}
 										</View>
-										}
-										{this.formType === 'bookClub' &&
-										<View>
-											{Platform.select({
-												ios: <Text style={styles.itemTextImportant}> $8.79 </Text>,
-												android: <Text>
-													<Text style={styles.itemTextImportant}> 6,600원 </Text>
-													<Text style={styles.itemPriceOrigin}>(15,000원)</Text>
-												</Text>,
-											})}
-										</View>
-										}
-										{this.formType === 'premium' &&
-										<View>
-											{Platform.select({
-												ios: <Text style={styles.itemTextImportant}> $18.69 </Text>,
-												android: <Text>
-													<Text style={styles.itemTextImportant}> 14,300원 </Text>
-													<Text style={styles.itemPriceOrigin}>(40,000원)</Text>
-												</Text>,
-											})}
-										</View>
-										}
 									</View>
 									<Text style={styles.itemText}> 정기결제</Text>
 								</View>
@@ -347,6 +393,7 @@ class MembershipFormPage extends React.Component {
 									<TextInput style={styles.validityPeriodInput}
 											   underlineColorAndroid={'rgba(0,0,0,0)'}
 											   onFocus={this.validityPeriodMonthOnFocus}
+											   placeholder="월"
 											   keyboardType={'numeric'}
 											   value={this.validityPeriodMonth}
 											   onChangeText={text => {
@@ -356,6 +403,7 @@ class MembershipFormPage extends React.Component {
 									<TextInput style={styles.validityPeriodInput}
 											   underlineColorAndroid={'rgba(0,0,0,0)'}
 											   onFocus={this.validityPeriodYearOnFocus}
+											   placeholder="년"
 											   keyboardType={'numeric'}
 											   value={this.validityPeriodYear}
 											   onChangeText={text => {
@@ -373,6 +421,7 @@ class MembershipFormPage extends React.Component {
 											   underlineColorAndroid={'rgba(0,0,0,0)'}
 											   onFocus={this.birthOnFocus}
 											   keyboardType={'numeric'}
+											   placeholder="YYMMDD"
 											   value={this.birth}
 											   onChangeText={text => {
 												   this.birth = {text}
@@ -442,6 +491,13 @@ class MembershipFormPage extends React.Component {
 							}
 						</View>
 						<View style={styles.totalHr}/>
+						<View>
+							<TouchableOpacity onPress={this.onSubmit}>
+								<Text>
+									결제
+								</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
 
 					{/*<View style={styles.checkboxContainer}>*/}

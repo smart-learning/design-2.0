@@ -45,6 +45,10 @@ const styles = StyleSheet.create({
 		let BookList = [];
 
 		if( !this.store.isOpen ) {
+			let itemNumber = 1;
+			this.props.itemData.forEach(element => {
+				element.itemNumber = itemNumber++;
+			});
 			list = this.props.itemData.slice( 0, 4 );
 		} else {
 			list = this.props.itemData;

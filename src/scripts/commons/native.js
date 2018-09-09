@@ -37,7 +37,7 @@ export default {
 		};
 
 		if (Platform.OS === 'android') {
-			;
+			null;
 		} else {
 			args.cid = 'v100015_001';
 			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8';
@@ -66,16 +66,16 @@ export default {
 
 	getDatabase() {
 		try {
-			RNNativePlayer.selectDatabase();
+			RNNativePlayer.selectDatabase({});
 		}
 		catch (error) {
 			console.log( error );
 		}
 	},
 
-	selectDownload(args) {
-		console.log('selectDownload:', args);
-	},
+	// receiveDownloadList(args) {
+	// 	console.log('naive.receiveDownloadList:', args);
+	// },
 
 
 	download( args ) {

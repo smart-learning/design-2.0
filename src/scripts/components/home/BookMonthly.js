@@ -143,7 +143,7 @@ export default withNavigation(class BookMonthly extends React.Component {
 									<View style={{width: '48%'}}>
 										<Text style={styles.title}>{item.audiobook.title}</Text>
 										<Text style={styles.author}>{item.audiobook.teacher.name}</Text>
-										<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: item.audiobook.id, title: ' '})}>
+										<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: item.audiobook.id, title: item.audiobook.title})}>
 											<View style={styles.detailButton} borderRadius={13}>
 												<Text style={styles.detailButtonText}>자세히보기</Text>
 											</View>

@@ -10,7 +10,10 @@ const MembershipScreen = createStackNavigator({
 
 		MembershipPage: {
 			screen: MembershipPage,
-			navigationOptions: NAV_OPTS_STACK,
+			navigationOptions: {
+				...NAV_OPTS_STACK,
+				title: '윌라 멤버쉽',
+			}
 		},
 		MembershipFormPage: {
 			screen: MembershipFormPage,

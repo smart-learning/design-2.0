@@ -75,6 +75,7 @@ class EmailAuthPack extends Component {
 			<View borderRadius={4} style={styles.inputWrap}>
 				<TextInput
 					style={styles.input}
+					keyboardType="email-address"
 					underlineColorAndroid={'rgba(0,0,0,0)'}
 					value={this.state.email}
 					autoCapitalize={'none'}
@@ -102,17 +103,19 @@ class EmailAuthPack extends Component {
 			</TouchableOpacity>
 
 			<View style={styles.linkWrap}>
-				<TouchableOpacity
-					activeOpacity={0.9}
-					onPress={() => this.props.onNavigate('FindPassword')}>
-					<Text style={styles.btnLinkText}>비밀번호 찾기</Text>
-				</TouchableOpacity>
+				{/*<TouchableOpacity*/}
+					{/*activeOpacity={0.9}*/}
+					{/*onPress={() => this.props.onNavigate('FindPassword')}>*/}
+					{/*<Text style={styles.btnLinkText}>비밀번호 찾기</Text>*/}
+				{/*</TouchableOpacity>*/}
 
+				<View style={{marginLeft: 'auto'}}>
 				<TouchableOpacity
 					activeOpacity={0.9}
 					onPress={() => this.props.onNavigate('SignUpPage')}>
 					<Text style={styles.btnLinkText}>무료 계정만들기</Text>
 				</TouchableOpacity>
+				</View>
 			</View>
 
 		</View>

@@ -4,6 +4,7 @@ import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
+import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import {AsyncStorage, DeviceEventEmitter, Platform, View} from "react-native";
 import globalStore from "./src/scripts/commons/store";
 import PlaygroundJune from "./src/scripts/pages/PlaygroundJune"
@@ -24,6 +25,7 @@ import firebase from 'react-native-firebase';
 			globalStore.welaaaAuth = welaaaAuth;
 
 			globalStore.profile = await net.getProfile();
+			globalStore.currentMembership = await net.getMembershipCurrent();
 		}
 	};
 
@@ -69,10 +71,12 @@ import firebase from 'react-native-firebase';
 			Native.toggleMiniPlayer( params.visible );
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDatabase', (params) => {
-			console.log( 'callback selectDatabase', params );
+			console.log( 'database receiveDownloadList:', params );
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
 		}));
 		this.subscription.push( DeviceEventEmitter.addListener('selectDownload', (params) => {
-			Native.selectDownload( params );
+			console.log( 'download receiveDownloadList:', params );
+			globalStore.downloadItems = params.selectDownload || params.selectDatabase;
 		}));
     }
 
@@ -143,6 +147,10 @@ const AppDrawer = createDrawerNavigator(
 
 		AudioScreen: {
 			screen: AudioScreen,
+		},
+
+		MembershipScreen: {
+			screen: MembershipScreens,
 		},
 
 		MyScreen: {
