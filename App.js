@@ -49,10 +49,7 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 
 		Native.updateSettings();
 
-
-		// 자동로그인상태면 토큰 가져오기 시도
-		if( globalStore.appSetting.isAutoLogin )
-			this.getTokenFromAsyncStorage();
+		this.getTokenFromAsyncStorage();
 	};
 
 	initFCM = async () => {
