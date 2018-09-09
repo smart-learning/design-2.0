@@ -139,13 +139,13 @@ export default class SidebarUserInfo extends React.Component {
 					<View>
 						<View style={styles.membershipItem}>
 							<Text style={styles.membershipItemLabel}>가입한 멤버십</Text>
-							{globalStore.currentMembership.type_text === "프리미엄 멤버십" &&
+							{globalStore.currentMembership.type === 2 &&
 							<Image source={MembershipPremium}/>
 							}
-							{globalStore.currentMembership.type_text === "캠퍼스" &&
+							{globalStore.currentMembership.type === 1 &&
 							<Image source={MembershipCampus}/>
 							}
-							{globalStore.currentMembership.type_text === "오디오 북 클럽" &&
+							{globalStore.currentMembership.type === 4 &&
 							<Image source={MembershipBookClub}/>
 							}
 						</View>
@@ -160,16 +160,16 @@ export default class SidebarUserInfo extends React.Component {
 						<View style={styles.membershipItem}>
 							<Text style={styles.membershipItemLabel}>이용권한</Text>
 							<View>
-								{globalStore.currentMembership.type_text === "프리미엄 멤버십" &&
+								{globalStore.currentMembership.type === 2 &&
 								<View>
 									<Text style={styles.membershipItemText}>모든 클래스 무제한 보기,</Text>
 									<Text style={styles.membershipItemText}>오디오북 이용권 2개</Text>
 								</View>
 								}
-								{globalStore.currentMembership.type_text === "캠퍼스" &&
+								{globalStore.currentMembership.type === 1 &&
 								<Text style={styles.membershipItemText}>모든 클래스 무제한 보기,</Text>
 								}
-								{globalStore.currentMembership.type_text === "오디오 북 클럽" &&
+								{globalStore.currentMembership.type === 4 &&
 								<Text style={styles.membershipItemText}>오디오북 이용권 2개</Text>
 								}
 							</View>
@@ -197,6 +197,7 @@ export default class SidebarUserInfo extends React.Component {
 	}
 
 	render() {
+		console.log( 'globalStore.currentMembership', globalStore.currentMembership );
 		return <View>
 			<View style={styles.userInfoContainer}>
 				<View style={styles.userInfo}>
