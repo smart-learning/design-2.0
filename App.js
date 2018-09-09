@@ -5,7 +5,7 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import {AsyncStorage, DeviceEventEmitter, Platform, View, Linking} from "react-native";
+import {AsyncStorage, DeviceEventEmitter, Platform, View, AppState} from "react-native";
 import EventEmitter from 'events';
 import globalStore from "./src/scripts/commons/store";
 
@@ -53,17 +53,17 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 	};
 
 	initFCM = async () => {
-		try{
-			await net.registeFcmToken( true );
-		}catch( e ){
-			console.log( 'FCM: ' + e );
-		}
 
 		// 권한 체크 후 없으면 요청
 		const enabled = await firebase.messaging().hasPermission();
 		console.log( 'FCM enabled:', enabled );
 		if (enabled) {
 			// user has permissions
+			try{
+				await net.registeFcmToken( true );
+			}catch( e ){
+				console.log( 'FCM: ' + e );
+			}
 		} else {
 			// user doesn't have permission
 
@@ -95,7 +95,7 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		});
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		this.subscription.push( DeviceEventEmitter.addListener('miniPlayer', (params) => {
 			Native.toggleMiniPlayer( params.visible );
 		}));
@@ -109,24 +109,50 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		}));
 
 
-		/* FireBase 메시지 수신 */
-		// this.messageListener = firebase.messaging().onMessage( message => {
-		// 	// Process your message as required
-		// 	console.log( 'FCM 메시지 처리:', message );
-		// });
-
-		// this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification) => {
-		// 	console.log( 'FCM NOTI-D:', notification );
-		// 	// Process your notification as required
-		// 	// ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
-		// });
+		/* 앱 떠있는 상태에서 노티 들어올때 */
 		this.notificationListener = firebase.notifications().onNotification((notification) => {
 			console.log( 'FCM NOTI:', notification );
-			// Process your notification as required
-			// _body에 타이틀, _data안에 key:value 값
+
+			if( Platform.OS !== 'ios'){
+				notification.android.setChannelId( 'welaaa' );
+			}
 		});
 
-    }
+		// https://rnfirebase.io/docs/v4.3.x/notifications/introduction
+		// 백그라운드 상태에서 노티 클릭등을 햇을때
+		this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+			// Get the action triggered by the notification being opened
+			const action = notificationOpen.action;
+			// Get information about the notification that was opened
+			const notification = notificationOpen.notification;
+
+			console.log( 'OPEN BY NOTI:', action, notification );
+		});
+
+
+		// 앱 종료상태에서 노티등을 클릭했을때
+		const notificationOpen = await firebase.notifications().getInitialNotification();
+		if (notificationOpen) {
+			// App was opened by a notification
+			// Get the action triggered by the notification being opened
+			const action = notificationOpen.action;
+			// Get information about the notification that was opened
+			const notification = notificationOpen.notification;
+
+			console.log( 'OPEN BY NOTI-C:', action, notification );
+		}
+
+
+
+		AppState.addEventListener('change', this._handleAppStateChange);
+	}
+
+	_handleAppStateChange =(nextAppState)=>{
+		console.log( 'NEXT APP STATE:', nextAppState );
+		PushNotification.popInitialNotification(notification => notification && onNotification(notification));
+
+	}
+
 
 	componentWillUnmount() {
 		this.subscription.forEach( listener => {
@@ -134,7 +160,9 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		} );
 		this.subscription.length = 0;
 		globalStore.emitter.removeAllListeners();
-		this.messageListener();
+		// this.messageListener();
+		// this.notificationDisplayedListener();
+		// this.notificationListener();
 	}
 
  	render() {
