@@ -26,8 +26,12 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		justifyContent: 'center',
 		alignItems: 'center',
+		width: '100%',
+		paddingLeft: 15,
+		paddingRight: 15,
 		fontSize: 24,
 		color: '#ffffff',
+		textAlign: 'center',
 	},
 });
 

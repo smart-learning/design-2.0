@@ -45,6 +45,7 @@ typedef void (^kErrorBlock)(NSError *error);
 + (NSDictionary *) getPlayDataWithCid : (NSString *) contentID
                         andHeaderInfo : (NSString *) authValue;
 + (void) sendPlaybackProgress : (NSString *) authValue;
++ (NSArray *) getSubtitles : (NSString *) contentID;
 
 - (void) setReachabilityStatusChangeBlock : (void (^)(NSInteger status)) block;
 - (BOOL) isConnectionWifi;

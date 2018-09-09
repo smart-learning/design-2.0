@@ -192,6 +192,7 @@ class HomeAudioPage extends React.Component {
 
 						<BookList itemType={"new"} itemData={this.props.store.audioNewData.items ? this.props.store.audioNewData.items : this.props.store.audioNewData}/>
 
+						{1 === 2 && <View>
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
 								윌라 추천 오디오북
@@ -199,6 +200,7 @@ class HomeAudioPage extends React.Component {
 						</View>
 
 						<BookList itemType={"new"} itemData={this.props.store.audioRecommendData.items ? this.props.store.audioRecommendData.items : this.props.store.audioRecommendData}/>
+						</View>}
 
 						<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('AudioBookPage')}>
 							<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
@@ -208,35 +210,37 @@ class HomeAudioPage extends React.Component {
 							</View>
 						</TouchableOpacity>
 
+						{1 === 2 && <View>
 						<View style={CommonStyles.alignJustifyItemCenter}>
 							<Text style={styles.titleH3}>
 								구매한 오디오북
 							</Text>
 						</View>
-						<View style={styles.titleHr}/>
+						< View style={styles.titleHr}/>
 
 						{(this.props.store.audioBuyData && this.props.store.audioBuyData.length === 0) &&
-						<Text style={{paddingTop: 20, paddingBottom: 20, textAlign: 'center'}}>구매한 내역이 없습니다</Text>
+							<Text style={{paddingTop: 20, paddingBottom: 20, textAlign: 'center'}}>구매한 내역이 없습니다</Text>
 						}
 
 						{(this.props.store.audioBuyData && this.props.store.audioBuyData.length > 0) &&
-						<BookContinueList itemData={this.props.store.audioBuyData}/>
+							<BookContinueList itemData={this.props.store.audioBuyData}/>
 						}
 
-						<View style={CommonStyles.alignJustifyItemCenter}>
+							<View style={CommonStyles.alignJustifyItemCenter}>
 							<Text style={styles.titleH3}>
-								최근재생 오디오북
+							최근재생 오디오북
 							</Text>
-						</View>
-						<View style={styles.titleHr}/>
+							</View>
+							<View style={styles.titleHr}/>
 
 						{(this.props.store.audioUseData && this.props.store.audioUseData.length === 0) &&
-						<Text style={{paddingTop: 20, paddingBottom: 20, textAlign: 'center'}}>재생 내역이 없습니다</Text>
+							<Text style={{paddingTop: 20, paddingBottom: 20, textAlign: 'center'}}>재생 내역이 없습니다</Text>
 						}
 
 						{(this.props.store.audioUseData && this.props.store.audioUseData.length > 0) &&
-						<BookContinueList itemData={this.props.store.audioUseData}/>
+							<BookContinueList itemData={this.props.store.audioUseData}/>
 						}
+						</View>}
 					</View>
 				</ScrollView>
 			</PTRView>

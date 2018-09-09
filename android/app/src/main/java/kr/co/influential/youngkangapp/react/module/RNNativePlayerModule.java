@@ -681,35 +681,98 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 mProgressDialog.dismiss();
               }
 
-              intent.setData(Uri.parse(dashUrl));
-              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                  mWebPlayerInfo.getCname()[contentId]);
-              intent.putExtra(PlaybackManager.THUMB_URL, "");
-              if (contentUuid != null) {
-                intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                    getDrmUuid(contentUuid).toString());
-                intent.putExtra(PlaybackManager.DRM_LICENSE_URL, contentDrmLicenseUrl);
-                intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                intent.putExtra(PlaybackManager.DRM_USERID, contentUserId);
-                intent.putExtra(PlaybackManager.DRM_CID, contentCid);
-                intent.putExtra(PlaybackManager.DRM_OID, "");
-                intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-                intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
-                intent.putExtra("type", contentType);
-                intent.putExtra("can_play", can_play);
-                intent.putExtra("expire_at", expire_at);
-                intent.putExtra("is_free", is_free);
-                intent.putExtra("webPlayerInfo", mWebPlayerInfo);
-                intent.putExtra("history_start_seconds" , contentHistory_seconds);
+              if(contentType.equals("audiobook")){
+                if(!can_play){
+
+                  if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                  }
+
+                  UiThreadUtil.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                      Activity activity = getCurrentActivity();
+
+                      new AlertDialog.Builder(activity)
+                          .setTitle("알림")
+                          .setMessage(
+                              "구매 후 이용할 수 있습니다.")
+                          .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                              return;
+                            }
+                          }).show();
+                    }
+                  });
+
+                }else{
+                  intent.setData(Uri.parse(dashUrl));
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                      mWebPlayerInfo.getCname()[contentId]);
+                  intent.putExtra(PlaybackManager.THUMB_URL, "");
+                  if (contentUuid != null) {
+                    intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                        getDrmUuid(contentUuid).toString());
+                    intent.putExtra(PlaybackManager.DRM_LICENSE_URL, contentDrmLicenseUrl);
+                    intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                    intent.putExtra(PlaybackManager.DRM_USERID, contentUserId);
+                    intent.putExtra(PlaybackManager.DRM_CID, contentCid);
+                    intent.putExtra(PlaybackManager.DRM_OID, "");
+                    intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                    intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                    intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
+                    intent.putExtra("type", contentType);
+                    intent.putExtra("can_play", can_play);
+                    intent.putExtra("expire_at", expire_at);
+                    intent.putExtra("is_free", is_free);
+                    intent.putExtra("webPlayerInfo", mWebPlayerInfo);
+                    intent.putExtra("history_start_seconds" , contentHistory_seconds);
+                  }
+
+                  LogHelper.e(TAG, "url : " + dashUrl);
+                  LogHelper.e(TAG, "contentName : " + contentName);
+                  LogHelper.e(TAG, "contentType : " + contentType);
+                  LogHelper.e(TAG, "contentCid : " + contentCid);
+                  LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
+                  ContextCompat.startActivity(activity, intent, null);
+                }
+
+                return;
+
+              }else{
+
+                intent.setData(Uri.parse(dashUrl));
+                intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                    mWebPlayerInfo.getCname()[contentId]);
+                intent.putExtra(PlaybackManager.THUMB_URL, "");
+                if (contentUuid != null) {
+                  intent.putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                      getDrmUuid(contentUuid).toString());
+                  intent.putExtra(PlaybackManager.DRM_LICENSE_URL, contentDrmLicenseUrl);
+                  intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                  intent.putExtra(PlaybackManager.DRM_USERID, contentUserId);
+                  intent.putExtra(PlaybackManager.DRM_CID, contentCid);
+                  intent.putExtra(PlaybackManager.DRM_OID, "");
+                  intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                  intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                  intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
+                  intent.putExtra("type", contentType);
+                  intent.putExtra("can_play", can_play);
+                  intent.putExtra("expire_at", expire_at);
+                  intent.putExtra("is_free", is_free);
+                  intent.putExtra("webPlayerInfo", mWebPlayerInfo);
+                  intent.putExtra("history_start_seconds" , contentHistory_seconds);
+                }
+
+                LogHelper.e(TAG, "url : " + dashUrl);
+                LogHelper.e(TAG, "contentName : " + contentName);
+                LogHelper.e(TAG, "contentType : " + contentType);
+                LogHelper.e(TAG, "contentCid : " + contentCid);
+                LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
+                ContextCompat.startActivity(activity, intent, null);
               }
 
-              LogHelper.e(TAG, "url : " + dashUrl);
-              LogHelper.e(TAG, "contentName : " + contentName);
-              LogHelper.e(TAG, "contentType : " + contentType);
-              LogHelper.e(TAG, "contentCid : " + contentCid);
-              LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
-              ContextCompat.startActivity(activity, intent, null);
             } else if (callbackMethod.equals("download")) {
 
               // group key => cid v100015

@@ -15,6 +15,7 @@ import BottomController from "./src/scripts/components/BottomController";
 import Native from "./src/scripts/commons/native";
 import { observer } from "mobx-react";
 import firebase, { RemoteMessage } from 'react-native-firebase';
+import nav from "./src/scripts/commons/nav";
 
 @observer class App extends React.Component {
 
@@ -45,25 +46,23 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = bool;
 		} );
 
-		console.log( 'setting:', globalStore.appSettings );
-
 		Native.updateSettings();
 
 		await this.getTokenFromAsyncStorage();
 	};
 
 	initFCM = async () => {
-		try{
-			await net.registeFcmToken( true );
-		}catch( e ){
-			console.log( 'FCM: ' + e );
-		}
 
 		// 권한 체크 후 없으면 요청
 		const enabled = await firebase.messaging().hasPermission();
 		console.log( 'FCM enabled:', enabled );
 		if (enabled) {
 			// user has permissions
+			try{
+				await net.registeFcmToken( true );
+			}catch( e ){
+				console.log( 'FCM: ' + e );
+			}
 		} else {
 			// user doesn't have permission
 
@@ -95,7 +94,7 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		});
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		this.subscription.push( DeviceEventEmitter.addListener('miniPlayer', (params) => {
 			Native.toggleMiniPlayer( params.visible );
 		}));
@@ -109,24 +108,47 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		}));
 
 
-		/* FireBase 메시지 수신 */
-		// this.messageListener = firebase.messaging().onMessage( message => {
-		// 	// Process your message as required
-		// 	console.log( 'FCM 메시지 처리:', message );
-		// });
-
-		// this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification) => {
-		// 	console.log( 'FCM NOTI-D:', notification );
-		// 	// Process your notification as required
-		// 	// ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
-		// });
+		/* 앱 떠있는 상태에서 노티 들어올때 */
 		this.notificationListener = firebase.notifications().onNotification((notification) => {
 			console.log( 'FCM NOTI:', notification );
-			// Process your notification as required
-			// _body에 타이틀, _data안에 key:value 값
+
+			if( Platform.OS !== 'ios'){
+				notification.android.setChannelId( 'welaaa' );
+			}
 		});
 
-    }
+		// https://rnfirebase.io/docs/v4.3.x/notifications/introduction
+		// 백그라운드 상태에서 노티 클릭등을 햇을때
+		this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+			// Get the action triggered by the notification being opened
+			const action = notificationOpen.action;
+			// Get information about the notification that was opened
+			const notification = notificationOpen.notification;
+
+			console.log( 'OPEN BY NOTI:', action, notification );
+		});
+
+
+		// 앱 종료상태에서 노티등을 클릭했을때
+		const notificationOpen = await firebase.notifications().getInitialNotification();
+		if (notificationOpen) {
+			// App was opened by a notification
+			// Get the action triggered by the notification being opened
+			const action = notificationOpen.action;
+			// Get information about the notification that was opened
+			const notification = notificationOpen.notification;
+
+			console.log( 'OPEN BY NOTI-C:', action, notification );
+		}
+
+
+
+		Linking.getInitialURL().then((url) => {
+			if (url) {
+				nav.parseDeepLink( url );
+			}
+		}).catch(err => console.error('An error occurred', err));
+	}
 
 	componentWillUnmount() {
 		this.subscription.forEach( listener => {
@@ -134,18 +156,18 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 		} );
 		this.subscription.length = 0;
 		globalStore.emitter.removeAllListeners();
-		this.messageListener();
+		// this.messageListener();
+		// this.notificationDisplayedListener();
+		// this.notificationListener();
 	}
 
  	render() {
 
-		const prefix = Platform.OS == 'android' ? 'welaaa://welaaa/' : 'welaaa://';
-
 		return <View style={{flex: 1}}>
 			<AppDrawer
-				uriPrefix={prefix}
 				ref={navigatorRef => {
 					globalStore.drawer = navigatorRef
+					nav.setNav( navigatorRef );
 				}}
 				style={{width: '80%'}}
 
@@ -200,15 +222,16 @@ const AppDrawer = createDrawerNavigator(
 
 		VideoScreen: {
 			screen: VideoScreen,
+			path: 'video_list',
 		},
 
 		AudioScreen: {
 			screen: AudioScreen,
 		},
 
-		MembershipScreen: {
-			screen: MembershipScreens,
-		},
+		// MembershipScreen: {
+		// 	screen: MembershipScreens,
+		// },
 
 		MyScreen: {
 			screen: MyScreens,

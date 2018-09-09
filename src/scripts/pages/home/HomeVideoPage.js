@@ -244,6 +244,7 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 							</View>
 						</TouchableOpacity>
 
+						{ 1 === 2 && <View>
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
 								지금 많이 듣고 있는 강의클립
@@ -278,6 +279,7 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 							}
 						</View>
 						}
+						</View>}
 					</View>
 					}
 				</ScrollView>

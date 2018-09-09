@@ -10,9 +10,7 @@
 @interface ContentsListPopupView : UIView
 
 @property (nonatomic, weak) id <ContentsListPopupViewDelegate> delegate;
-//@property (nonatomic, strong) NSArray *playList;
 @property (nonatomic, strong) NSDictionary *contentsInfoDictionary;
-@property (nonatomic, assign) BOOL isAudioContentType;
 @property (nonatomic, assign) NSInteger currentPlayIndex;
 @property (nonatomic, assign) BOOL isAuthor;
 

@@ -33,12 +33,9 @@ const styles = StyleSheet.create( {
 		paddingTop: 50,
 	},
 	logoWrap: {
-		position: 'absolute',
-		justifyContent: 'center',
 		alignItems: 'center',
-		top: 20, left: 0, right: 0, bottom: 0,
 		height: 50,
-		marginTop: -70,
+		marginTop: 0,
 		marginBottom: 50,
 	},
 	logo: {
@@ -122,7 +119,7 @@ class LoginPage extends React.Component {
 
 	render() {
 		return (
-			<KeyboardAvoidingView style={[ CommonStyles.container, styles.loginContainer ]} behavior="padding">
+			<View style={[ CommonStyles.container, styles.loginContainer ]}>
 				<ImageBackground source={bgLogin}
 								style={styles.background}
 				>
@@ -153,7 +150,7 @@ class LoginPage extends React.Component {
 
 				</ImageBackground>
 
-			</KeyboardAvoidingView>
+			</View>
 		)
 	}
 }

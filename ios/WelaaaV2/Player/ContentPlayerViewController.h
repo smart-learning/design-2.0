@@ -3,6 +3,7 @@
 #import <AVKit/AVKit.h>
 #import <PallyConFPSSDK/PallyConFPSSDK-Swift.h>
 #import <Toast/UIView+Toast.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "common.h"
 #import "UIImage+TintColor.h"
@@ -16,6 +17,8 @@
 #import "MediaPlayerScriptView.h"
 #import "ContentMiniPlayerView.h"
 
+#import "FPSDownloadManager.h"
+
 typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
 {
     ContentsPlayerScreenModeFullScreen,
@@ -24,7 +27,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
 
 @class IFRecommendViewController;
 
-@interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate>
+@interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate,FPSDownloadDelegate>
 
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
 @property AVPlayerLayer *playerLayer;
@@ -32,6 +35,8 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
 @property (nonatomic, assign) BOOL isDownloadFile;
 @property (nonatomic, assign) BOOL isMiniPlayer;
 @property (strong, nonatomic) IFRecommendViewController *recommendViewController;
+@property (strong, nonatomic) FPSDownloadManager *fpsDownloadManager;
+
 
 - (void) setContentData : (NSDictionary *) args;
 

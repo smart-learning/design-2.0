@@ -16,6 +16,7 @@ import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
 import Device from "../../commons/device";
 import Native from "../../commons/native";
+import Dummy from "../../../images/dummy-dailybook.png"
 
 
 const styles = StyleSheet.create( {
@@ -126,7 +127,6 @@ export default class Summary extends React.Component {
 			return this.props.images.wide;
 		}
 		else if( this.props.type === 'detailClip' ) {
-			console.log( 'this.props.course.images.wide', this.props.course.images.wide );
 			return this.props.course.images.wide;
 		}
 		else {
@@ -181,7 +181,7 @@ export default class Summary extends React.Component {
 				}
 				{this.props.type === 'dailyBook' &&
 				<ImageBackground
-					source={{uri: this.props.thumbnail}}
+					source={{uri: this.props.thumbnail === 'bookDummy' ? null : this.props.thumbnail}}
 					resizeMode="cover"
 					style={styles.thumbnail}>
 					<TouchableOpacity activeOpacity={0.9}

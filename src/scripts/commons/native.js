@@ -1,14 +1,18 @@
-import React from 'react';
+﻿import React from 'react';
 import {NativeModules, Platform} from 'react-native';
 import globalStore from '../commons/store';
 
 
-const {RNNativePlayer} = NativeModules;
+const {RNNativePlayer, RNNativeBase} = NativeModules;
 
 import {Alert} from 'react-native'
 import * as firebase from "react-native-firebase";
 
 export default {
+	getF_TOKEN() {
+		RNNativeBase.getF_TOKEN(f_token => { /* do sutff */ });
+	},
+
 	play(cid, oid = '') {
 
 		const {welaaaAuth} = globalStore;
@@ -40,8 +44,8 @@ export default {
 		if (Platform.OS === 'android') {
 			null;
 		} else {
-			args.cid = 'v100015_001';
-			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8';
+			args.cid = 'v100015_002';
+			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_002/master.m3u8';
 		}
 
 		console.log('native.play()', JSON.stringify(args));

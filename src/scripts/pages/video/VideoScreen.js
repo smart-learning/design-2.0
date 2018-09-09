@@ -17,7 +17,7 @@ const VideoScreen = createStackNavigator({
 		ClassListPage: {
 			screen: ClassListPage,
 			navigationOptions: NAV_OPTS_MAIN,
-			path: 'welaaa/:video_list',
+			path: 'video_list',
 		},
 		ClassDetailPage: {
 			screen: ClassDetailPage,

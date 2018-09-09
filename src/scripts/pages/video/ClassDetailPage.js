@@ -19,6 +19,11 @@ class ClassDetailPage extends React.Component {
 		slideHeight: null,
 		reviewText: '',
 		reviewStar: 0,
+		permissions: {
+			permission: false,
+			expire_at: null,
+		},
+		voucherStatus: {},
 	});
 
 	getData = async () => {

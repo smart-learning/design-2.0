@@ -89,6 +89,7 @@ const styles = StyleSheet.create( {
 		selectedCategory: null,
 		ccode: null,
 		pagination: {},
+		has_next: false,
 	} );
 
 	loadClassList = async ( ccode = null, page = 1 ) => {
@@ -97,7 +98,11 @@ const styles = StyleSheet.create( {
 			this.store.displayData = null;
 		}
 		const data = await net.getClassList( ccode, page );
-		const VOs = data.items.map( element => {
+		let list = data;
+		if( !_.isArray( list ) ) {
+			list = [];
+		}
+		const VOs = list.map( element => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
 			vo.key = element.id.toString();
@@ -114,20 +119,23 @@ const styles = StyleSheet.create( {
 			_.each( VOs, e => this.store.displayData.push( e ) );
 		}
 		this.store.ccode = ccode;
-		this.store.pagination = data.pagination;
+		// TODO: V1.1 대응 페이지네이션 처리 추가.
+		// this.store.pagination = data.pagination;
 		this.store.isLoading = false;
 	};
 
 	loadMore = () => {
-		if( this.store.pagination.has_next ) {
-			console.log( 'this.store.pagination.next_page', this.store.pagination.next_page );
-			this.loadClassList( this.store.ccode, this.store.pagination.next_page );
+		if( this.store.has_next ) {
+			this.loadClassList( this.store.ccode, this.store.next_page );
 		}
 	};
 
 	async componentDidMount() {
 		await this.loadClassList();
-		const categories = await net.getLectureCategory();
+		let categories = await net.getLectureCategory();
+		if( !_.isArray( categories ) ) {
+			categories = [];
+		}
 		this.store.categories = categories.map( element => {
 			const vo = new PageCategoryItemVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
@@ -161,9 +169,9 @@ const styles = StyleSheet.create( {
 	render() {
 		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
 			<ScrollView style={{ width: '100%' }}>
+				{1 === 2 &&
 				<View style={styles.toggleGroup}>
 					<View style={styles.alignJustify}>
-						{1 === 2 &&
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
@@ -185,7 +193,6 @@ const styles = StyleSheet.create( {
 								</TouchableOpacity>
 							</View>
 						</View>
-						}
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{ marginLeft: 'auto' }}
 										  onPress={() => {
@@ -198,6 +205,7 @@ const styles = StyleSheet.create( {
 						</TouchableOpacity>
 					</View>
 				</View>
+				}
 
 				<PageCategory data={this.store.categories}
 							  selectedCategory={this.store.selectedCategory}
@@ -222,7 +230,7 @@ const styles = StyleSheet.create( {
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 					</View>
 					}
-					{( !this.store.isLoading && this.store.pagination.has_next ) &&
+					{( !this.store.isLoading && this.store.has_next ) &&
 					<TouchableOpacity activeOpacity={0.9} onPress={ this.loadMore }>
 						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 							<Text style={styles.linkViewAllText}>더보기</Text>

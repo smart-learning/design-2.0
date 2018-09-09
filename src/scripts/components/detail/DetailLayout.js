@@ -71,9 +71,11 @@ class DetailLayout extends React.Component {
 					paymentType={this.props.paymentType}
 					expire={this.props.expire}
 					permissionLoading={this.props.permissionLoading}
-
-					// paymentType={"normal"}
 				/>
+
+				{1 === 2 &&
+				<CountView store={this.props.store}/>
+				}
 
 				<View style={CommonStyles.alignJustifyContentBetween}>
 					<View style={styles.tabContainer}>

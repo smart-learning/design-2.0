@@ -276,6 +276,9 @@ export default {
 		});
 	},
 
+
+
+
 	getMainPopup() {
 		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/popup', DEFAULT_EXPIRED)
 			.then(data => {
@@ -427,6 +430,9 @@ export default {
 	getMembershipCurrent() {
 		const expired = 0;
 		return cacheOrLoad( API_PREFIX + 'v1.0/membership/current', expired )
+			.then( data => {
+				return data;
+			})
 			.catch( error => {
 				console.log( error );
 			} );
@@ -488,6 +494,8 @@ export default {
 	async registeFcmToken(bool) {
 
 		const fcmToken = await firebase.messaging().getToken();
+
+		console.log('fcmToken:', fcmToken );
 
 		if (fcmToken) {
 			let params = encodeParams({
@@ -556,8 +564,31 @@ export default {
 				console.log(error);
 			});
 	},
+
+	//회원가입
+	signUp(email, password) {
+		let params = { username: email, password: password, grant_type: 'password' };
+		params = encodeParams( params );
+
+		return axios.post( API_PREFIX + 'v1.0/signup',
+			params,
+			{
+				headers: {
+					'Authorization': 'Basic ' + authBasicCode,
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			} )
+			.then( response => {
+				return response.data;
+			} )
+			.catch( ( error ) => {
+				console.log( error );
+			} );
+	},
+
 	getContentPermission(type, id) {
 		return axios.get(`${API_PREFIX}v1.0/membership/permissions/${type}/${id}`)
 			.then(resp => resp.data)
-	},
+	}
+
 }
