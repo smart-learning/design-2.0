@@ -182,6 +182,7 @@ export default withNavigation(@observer class BookListItem extends React.Compone
 					</View>
 				</ImageBackground>
 			</View>
+			{1 === 2 &&
 			<View style={styles.alignJustify}>
 				<Image source={IcView} style={styles.btnSetSmall}/>
 				<Text style={styles.countText}>{this.props.itemData.hit_count}</Text>
@@ -190,6 +191,7 @@ export default withNavigation(@observer class BookListItem extends React.Compone
 				<Image source={IcComment} style={styles.btnSetSmall}/>
 				<Text style={styles.countText}>{this.props.itemData.review_count}</Text>
 			</View>
+			}
 		</View>
 	}
 } )
