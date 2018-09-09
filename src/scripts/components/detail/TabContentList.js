@@ -43,6 +43,18 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: CommonStyles.COLOR_PRIMARY,
 	},
+	chapterTitleText: {
+		paddingTop: 40,
+		paddingBottom: 15,
+		fontWeight: 'bold',
+		fontSize: 18,
+		color: CommonStyles.COLOR_PRIMARY,
+	},
+	chapterHr: {
+		width: '100%',
+		height: 1,
+		backgroundColor: '#dddddd',
+	},
 });
 
 export default class TabContentList extends React.Component {
@@ -79,21 +91,23 @@ export default class TabContentList extends React.Component {
 				<View style={styles.chapterListContainer}>
 					<View style={CommonStyles.contentContainer}>
 						<Text style={styles.chapterInfoText}>
-							<Text style={styles.clipInfoTextImportant}>7개</Text>
+							<Text style={styles.clipInfoTextImportant}>{this.props.store.itemClipData.length}개</Text>
 							강의클립, 전체 재생시간
-							<Text style={styles.clipInfoTextImportant}>6시간 20분</Text>
+							<Text style={styles.clipInfoTextImportant}>{`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
 						</Text>
 
-						<Text style={styles.notReadyText}>데이터 준비중입니다.</Text>
+						<View>
+							<Text style={styles.chapterTitleText}>목차</Text>
+							<View style={styles.chapterHr}/>
+						</View>
 
-						{/*<ChapterListItem/>*/}
-						{/*<FlatList*/}
-						{/*style={{width: '100%'}}*/}
-						{/*data={this.props.store.itemClipData}*/}
-						{/*renderItem={*/}
-						{/*({item}) => <ClipListItem type={'detailClip'} itemData={item}/>*/}
-						{/*}*/}
-						{/*/>*/}
+						<FlatList
+						style={{width: '100%'}}
+						data={this.props.store.itemClipData}
+						renderItem={
+						({item}) => <ChapterListItem itemData={item}/>
+						}
+						/>
 					</View>
 				</View>
 				}
