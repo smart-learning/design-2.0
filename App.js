@@ -167,7 +167,8 @@ import nav from "./src/scripts/commons/nav";
 			<AppDrawer
 				ref={navigatorRef => {
 					globalStore.drawer = navigatorRef
-					nav.setNav( navigatorRef );
+					// 	// 플래이어 크래시 때문에 코드 추가
+					// 	nav.setNav(navigatorRef);
 				}}
 				style={{width: '80%'}}
 
