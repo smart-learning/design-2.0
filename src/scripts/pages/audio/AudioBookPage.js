@@ -150,9 +150,9 @@ export default withNavigation( @observer class AudioBookPage extends React.Compo
 	render() {
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
 			<ScrollView style={{width: '100%'}}>
+				{1 === 2 &&
 				<View style={styles.toggleGroup}>
 					<View style={styles.alignJustify}>
-						{1 === 2 &&
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
@@ -174,7 +174,6 @@ export default withNavigation( @observer class AudioBookPage extends React.Compo
 								</TouchableOpacity>
 							</View>
 						</View>
-						}
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{marginLeft: 'auto'}}
 										  onPress={() => {
@@ -187,6 +186,7 @@ export default withNavigation( @observer class AudioBookPage extends React.Compo
 						</TouchableOpacity>
 					</View>
 				</View>
+				}
 
 				<PageCategory selectedCategory={ this.store.selectedCategory }
 							  data={this.store.categories} onCategorySelect={ this.onCategorySelect }/>

@@ -55,7 +55,6 @@ class BookDailyListItem extends React.Component {
 			month = m( itemData.open_date ).format( "M" );
 			day = m( itemData.open_date ).format( "D" );
 		}
-		console.log( '데이터', this.props.itemData );
 		return <View style={styles.bookListItemContainer}>
 			<View style={styles.bookListItemHeadline}>
 				<View style={styles.dateBox}>
@@ -66,7 +65,7 @@ class BookDailyListItem extends React.Component {
 			</View>
 			<View>
 				<Summary type={ 'dailyBook' }
-						 thumbnail={ itemData ? itemData.image : '' }
+						 thumbnail={ itemData ? itemData.image : 'bookDummy' }
 						 cid={ itemData ? itemData.cid : '' }
 						 hitCount={ itemData ? itemData.hit_count : '' }
 						 starAvg={ itemData ? itemData.star_avg : '' }
