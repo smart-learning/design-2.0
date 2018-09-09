@@ -46,6 +46,7 @@
 		EF4F413F211ABE5C005E1CBD /* Simple-Line-Icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410F211ABE5C005E1CBD /* Simple-Line-Icons.ttf */; };
 		EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5D544A211936F8008F60B4 /* Images.xcassets */; };
 		EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EF671AD3213E4BA100767E01 /* libsqlite3.tbd */; };
+		EF7D07E42144DA5A00B5BCA9 /* RNNativeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */; };
 		EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F522113E6D500B71BEB /* LogManager.m */; };
 		EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7A2113E6D500B71BEB /* ApiManager.m */; };
 		EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */; };
@@ -451,6 +452,8 @@
 		EF4F410F211ABE5C005E1CBD /* Simple-Line-Icons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Simple-Line-Icons.ttf"; sourceTree = "<group>"; };
 		EF5D544A211936F8008F60B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WelaaaV2/Images.xcassets; sourceTree = "<group>"; };
 		EF671AD3213E4BA100767E01 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		EF7D07E22144DA5A00B5BCA9 /* RNNativeBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RNNativeBase.h; path = WelaaaV2/RNNativeBase.h; sourceTree = "<group>"; };
+		EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RNNativeBase.m; path = WelaaaV2/RNNativeBase.m; sourceTree = "<group>"; };
 		EF7D6F522113E6D500B71BEB /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogManager.m; sourceTree = "<group>"; };
 		EF7D6F7A2113E6D500B71BEB /* ApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiManager.m; sourceTree = "<group>"; };
 		EF7D6F7B2113E6D500B71BEB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
@@ -635,6 +638,8 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				EF7D07E22144DA5A00B5BCA9 /* RNNativeBase.h */,
+				EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */,
 				EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				EF8C2D20212B8EAD00140F8F /* WelaaaV2.entitlements */,
@@ -1591,6 +1596,7 @@
 				EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */,
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
 				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
+				EF7D07E42144DA5A00B5BCA9 /* RNNativeBase.m in Sources */,
 				EFAEBDBD213D33050070F10E /* MediaController.m in Sources */,
 				EFAEBDB8213D33050070F10E /* StarRatingView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
