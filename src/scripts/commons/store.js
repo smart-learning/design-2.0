@@ -58,6 +58,7 @@ class Store {
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
 
+	@observable currentMembership = {};
 	@observable profile = {};
 
 	/* 이벤트로 넘겨받은 다운로드받은 아이템 DB조회목록 */

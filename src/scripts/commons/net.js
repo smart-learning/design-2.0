@@ -477,6 +477,7 @@ export default {
 	},
 	registerMembership(data) {
 		return axios.post(API_PREFIX + 'v1.0/payment/import/subscriptions/issue-billing', data)
+			.then(resp => resp.data)
 	},
 	// fcm token 등록
 	async registeFcmToken(bool) {
@@ -484,9 +485,6 @@ export default {
 		const fcmToken = await firebase.messaging().getToken();
 
 		if (fcmToken) {
-
-			console.log( 'fcm token:', fcmToken );
-
 			let params = encodeParams({
 				"app_name": "welaaa",
 				"app_os": (Platform.OS === 'ios' ? 0 : 1),
@@ -499,20 +497,22 @@ export default {
 			});
 
 			return new Promise((resolve, reject) => {
-				axios.post(API_PREFIX + 'v1.0/message/fcm-tokens',
-					params,
-					{
-						headers: {
-							'Authorization': 'Basic ' + authBasicCode,
-							'Content-Type': 'application/x-www-form-urlencoded'
-						}
-					})
-					.then(response => {
-						resolve(response.data);
-					})
-					.catch((error, a, b) => {
-						reject(error);
-					});
+				axios.post(API_PREFIX + 'v1.0/message/fcm-tokens', {
+						app_name: "welaaa",
+						app_os: (Platform.OS === 'ios' ? 0 : 1),
+						app_os_version: Platform.Version,
+						app_version: VersionNumber.appVersion,
+						device_id: DeviceInfo.getDeviceId(),
+						device_model: DeviceInfo.getModel(),
+						fcm_token: fcmToken,
+						push_receive: true,
+				})
+				.then(response => {
+					resolve(response.data);
+				})
+				.catch((error, a, b) => {
+					reject(error);
+				});
 			});
 
 

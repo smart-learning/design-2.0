@@ -31,7 +31,7 @@ const productItem = {
 			originPrice: '30,000원',
 		}, 
 	},
-	bookClub: {
+	bookclub: {
 		name: '오디오북클럽',
 		ios: {
 			price: '$8.79',
@@ -239,7 +239,6 @@ class MembershipFormPage extends React.Component {
 		birth: '',
 		gender: '',
 		card_pass: '',
-		isAgree: '',
 	}
 
 	constructor(props) {
@@ -279,19 +278,19 @@ class MembershipFormPage extends React.Component {
 		// validation
 		this.setState({ submitButtonDisabled: true })
 
-		const data = {
+		const payload = {
 			...this.state,
 			membership: this.formType,
 		}
-		delete data.submitButtonDisabled
-		console.log(data)
+		delete payload.submitButtonDisabled
+		console.log(payload)
 
 		try{
-			const data = await net.registerMembership(data)
+			const data = await net.registerMembership(payload)
 			// register 성공
 			// 결제 요청 완료에 멤버십 데이터로 갱신
-			if (data && data.currentMembership)
-				globalStore.currentMembership = data.currentMembership
+			if (data && data.membership)
+				globalStore.currentMembership = data.membership
 			this.setState({ submitButtonDisabled: false })
 			this.props.navigation.popToTop()
 			this.props.navigation.navigate('MembershipScreen')
@@ -496,7 +495,7 @@ class MembershipFormPage extends React.Component {
 								})}
 							</View>
 							}
-							{this.formType === 'bookClub' &&
+							{this.formType === 'bookclub' &&
 							<View>
 								{Platform.select({
 									ios: <Text style={styles.totalPrice}>$8.79</Text>,
