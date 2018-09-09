@@ -19,6 +19,10 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		color: '#888888',
 	},
+	dailyCategory: {
+		marginTop: 20,
+		marginBottom: 20,
+	},
 	categoryHr: {
 		width: '100%',
 		height: 1,
@@ -58,20 +62,11 @@ const styles = StyleSheet.create({
 		height: 3,
 		backgroundColor: COLOR_PRIMARY,
 	},
-	dailyBookContentHeadline: {
-
-	},
 	dailyBookHeadlineText: {
 		marginTop: 20,
 		marginBottom: 20,
 		fontSize: 16,
 		color: '#333333',
-	},
-	dailyBookListBlock: {
-
-	},
-	dailyBookListHidden: {
-
 	},
 });
 
@@ -96,55 +91,57 @@ class BookDailyList extends React.Component {
 			</View>
 
 			{/*카테고리*/}
-			<View style={styles.categoryHr}/>
-			<View style={[CommonStyles.alignJustifyFlex, styles.categoryContainer]}>
-				<View style={styles.categoryItem}>
-					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'mon'}>
-						<View>
-							<Text style={styles.categoryText}>월</Text>
-							<View
-								style={this.props.store.dailyTabSelected === 'mon' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
-						</View>
-					</TouchableOpacity>
+			<View style={styles.dailyCategory}>
+				<View style={styles.categoryHr}/>
+				<View style={[CommonStyles.alignJustifyFlex, styles.categoryContainer]}>
+					<View style={styles.categoryItem}>
+						<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'mon'}>
+							<View>
+								<Text style={styles.categoryText}>월</Text>
+								<View
+									style={this.props.store.dailyTabSelected === 'mon' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
+							</View>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.categoryItem}>
+						<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'tue'}>
+							<View>
+								<Text style={styles.categoryText}>화</Text>
+								<View
+									style={this.props.store.dailyTabSelected === 'tue' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
+							</View>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.categoryItem}>
+						<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'wed'}>
+							<View>
+								<Text style={styles.categoryText}>수</Text>
+								<View
+									style={this.props.store.dailyTabSelected === 'wed' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
+							</View>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.categoryItem}>
+						<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'thu'}>
+							<View>
+								<Text style={styles.categoryText}>목</Text>
+								<View
+									style={this.props.store.dailyTabSelected === 'thu' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
+							</View>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.categoryItem}>
+						<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'fri'}>
+							<View>
+								<Text style={styles.categoryText}>금</Text>
+								<View
+									style={this.props.store.dailyTabSelected === 'fri' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
+							</View>
+						</TouchableOpacity>
+					</View>
 				</View>
-				<View style={styles.categoryItem}>
-					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'tue'}>
-						<View>
-							<Text style={styles.categoryText}>화</Text>
-							<View
-								style={this.props.store.dailyTabSelected === 'tue' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
-						</View>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.categoryItem}>
-					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'wed'}>
-						<View>
-							<Text style={styles.categoryText}>수</Text>
-							<View
-								style={this.props.store.dailyTabSelected === 'wed' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
-						</View>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.categoryItem}>
-					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'thu'}>
-						<View>
-							<Text style={styles.categoryText}>목</Text>
-							<View
-								style={this.props.store.dailyTabSelected === 'thu' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
-						</View>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.categoryItem}>
-					<TouchableOpacity style={styles.categoryButton} onPress={() => this.props.store.dailyTabSelected = 'fri'}>
-						<View>
-							<Text style={styles.categoryText}>금</Text>
-							<View
-								style={this.props.store.dailyTabSelected === 'fri' ? styles.categoryButtonHrActive : styles.categoryButtonHr}/>
-						</View>
-					</TouchableOpacity>
-				</View>
+				<View style={styles.categoryHr}/>
 			</View>
-			<View style={styles.categoryHr}/>
 
 			{/*콘텐츠*/}
 			<View>
