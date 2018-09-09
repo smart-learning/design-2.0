@@ -9,6 +9,7 @@ import {
 	NAV_OPTS_STACK
 } from "../../commons/nav";
 import HomeSeriesPage from "./HomeSeriesPage";
+import AudioBookInfoPage from "../audio/AudioBookInfoPage";
 
 
 const HomeScreen = createStackNavigator({
@@ -20,6 +21,11 @@ const HomeScreen = createStackNavigator({
 
 		HomeSeriesPage: {
 			screen: HomeSeriesPage,
+			navigationOptions: NAV_OPTS_STACK,
+		},
+
+		HomeMonthlyReviewPage: {
+			screen: AudioBookInfoPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
 
