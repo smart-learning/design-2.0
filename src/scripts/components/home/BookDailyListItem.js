@@ -20,17 +20,22 @@ const styles = StyleSheet.create({
 	},
 	dateBox: {
 		position: 'relative',
-		flexDirection: 'row',
-		justifyContent: 'center',
+		flexDirection: 'column',
+		marginTop: 0,
+		marginBottom: 0,
+		marginRight: 'auto',
+		marginLeft: 'auto',
 	},
 	date: {
+		width: 50,
+		textAlign: 'center',
 		fontSize: 15,
 		color: COLOR_PRIMARY,
 	},
 	dateHr: {
-		width: 20,
-		height: 10,
-		color: COLOR_PRIMARY,
+		width: 50,
+		height: 1,
+		backgroundColor: COLOR_PRIMARY,
 	},
 	listItemTitle: {
 		fontSize: 16,
