@@ -49,7 +49,7 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 
 		Native.updateSettings();
 
-		this.getTokenFromAsyncStorage();
+		await this.getTokenFromAsyncStorage();
 	};
 
 	initFCM = async () => {
@@ -80,8 +80,11 @@ import firebase, { RemoteMessage } from 'react-native-firebase';
 	constructor(prop) {
 		super(prop);
 		this.subscription = [];
+		this.initialize()
+	} 
 
-		this.getAppSettings();
+	async initialize() {
+		await this.getAppSettings();
 		this.initFCM();
 
 		// 로그인 이후 발생된 이벤트를 캐치하여 "프로필" 및 "현재멤버십" 가져오기
