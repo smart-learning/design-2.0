@@ -551,4 +551,8 @@ export default {
 				console.log(error);
 			});
 	},
+	getContentPermission(type, id) {
+		return axios.get(`${API_PREFIX}v1.0/membership/permissions/${type}/${id}`)
+			.then(resp => resp.data)
+	},
 }

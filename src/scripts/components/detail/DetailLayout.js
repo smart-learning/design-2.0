@@ -51,6 +51,10 @@ const styles = StyleSheet.create( {
 @observer
 class DetailLayout extends React.Component {
 
+	state = {
+		permission: false,
+	}
+
 	constructor( props ) {
 		super( props );
 	}
@@ -63,7 +67,7 @@ class DetailLayout extends React.Component {
 				{1 === 2 &&
 				<CountView store={this.props.store}/>
 				}
-				<PaymentStatus learnType={this.props.learnType} paymentType={"normal"}/>
+				<PaymentStatus purchase={this.props.purchase} voucherStatus={this.props.voucherStatus} permissions={this.props.permissions} itemData={this.props.itemData} learnType={this.props.learnType} paymentType={"normal"}/>
 
 				{/*<Text>일반 회원 구매 전 - 오디오북</Text>*/}
 				{/*<PaymentStatus learnType={"audioBook"} paymentType={"normal"}/>*/}

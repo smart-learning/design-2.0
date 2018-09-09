@@ -173,7 +173,7 @@ export default withNavigation(class BookMonthly extends React.Component {
 										<View style={{width: '48%'}}>
 											<Text style={styles.title}>{item.book_a.title}</Text>
 											<Text style={styles.author}>{item.book_a.mentor.name}</Text>
-											<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: item.book_a.id, title: item.book_a.title})}>
+											<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: item.book_a.audiobook.id, title: item.book_a.title})}>
 												<View style={styles.detailButton} borderRadius={13}>
 													<Text style={styles.detailButtonText}>자세히보기</Text>
 												</View>
@@ -187,7 +187,7 @@ export default withNavigation(class BookMonthly extends React.Component {
 										<View style={{width: '48%'}}>
 											<Text style={styles.title}>{item.book_b.title}</Text>
 											<Text style={styles.author}>{item.book_b.mentor.name}</Text>
-											<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: item.book_b.id, title: item.book_b.title})}>
+											<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: item.book_b.audiobook.id, title: item.book_b.title})}>
 												<View style={styles.detailButton} borderRadius={13}>
 													<Text style={styles.detailButtonText}>자세히보기</Text>
 												</View>
