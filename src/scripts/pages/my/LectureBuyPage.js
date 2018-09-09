@@ -28,7 +28,7 @@ import net from "../../commons/net";
 	}
 
 	goLecture = ( item ) => {
-		this.props.navigation.navigate( 'ClassDetailPage', { id: item.data.id } );
+		this.props.navigation.navigate( 'ClassDetailPage', { id: this.props.id, title: this.props.title } );
 	};
 
 	render() {
