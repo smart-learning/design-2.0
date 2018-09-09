@@ -46,8 +46,6 @@ import nav from "./src/scripts/commons/nav";
 			globalStore.appSettings[ setting[ 0 ].split( '::' ).pop() ] = bool;
 		} );
 
-		console.log( 'setting:', globalStore.appSettings );
-
 		Native.updateSettings();
 
 		await this.getTokenFromAsyncStorage();

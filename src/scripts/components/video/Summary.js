@@ -127,7 +127,6 @@ export default class Summary extends React.Component {
 			return this.props.images.wide;
 		}
 		else if( this.props.type === 'detailClip' ) {
-			console.log( 'this.props.course.images.wide', this.props.course.images.wide );
 			return this.props.course.images.wide;
 		}
 		else {

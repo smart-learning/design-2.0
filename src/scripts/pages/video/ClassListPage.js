@@ -126,7 +126,6 @@ const styles = StyleSheet.create( {
 
 	loadMore = () => {
 		if( this.store.has_next ) {
-			console.log( 'this.store.next_page', this.store.next_page );
 			this.loadClassList( this.store.ccode, this.store.next_page );
 		}
 	};

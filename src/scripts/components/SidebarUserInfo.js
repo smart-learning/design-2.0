@@ -197,7 +197,6 @@ export default class SidebarUserInfo extends React.Component {
 	}
 
 	render() {
-		console.log('globalStore.currentMembership', globalStore.currentMembership);
 		return <View>
 			<View style={styles.userInfoContainer}>
 				<View style={styles.userInfo}>

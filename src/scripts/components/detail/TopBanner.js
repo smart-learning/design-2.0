@@ -165,7 +165,6 @@ export default class TopBanner extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.store.itemData)
 		return <ImageBackground style={styles.banner} resizeMode="cover" source={Dummy}>
 			<View style={styles.titleLabelContainer}>
 				<View
