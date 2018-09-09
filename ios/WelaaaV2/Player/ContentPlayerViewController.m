@@ -95,7 +95,19 @@
                                    fpsLicenseDelegate : self
                                                 error : nil             ];
   
-    _isAudioMode = false; // 기본적으로 오디오모드 off인 상태에서 콘텐츠 재생을 시작합니다.
+    // 오디오 콘텐츠인지 구분.
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
+    {
+        _isAudioContent = YES;
+        _isAudioMode = YES;   // 오디오북일 경우 기본적으로 오디오모드 on인 상태에서 콘텐츠 재생을 시작합니다.
+    }
+    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"v"] )
+    {
+        _isAudioContent = NO;
+        _isAudioMode = false; // 영상강의의 경우 기본적으로 오디오모드 off인 상태에서 콘텐츠 재생을 시작합니다.
+    }
+    NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
+  
     // 오디오 UI
     {
         _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
@@ -145,17 +157,6 @@
 {
     [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
   
-    // 오디오 콘텐츠인지 구분.
-    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
-    {
-      _isAudioContent = YES;
-    }
-    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"v"] )
-    {
-      _isAudioContent = NO;
-    }
-    NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
-  
     NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                   andHeaderInfo : [_args objectForKey : @"token"]];
   
@@ -168,16 +169,6 @@
     // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
     _currentContentsInfo = [ApiManager getContentsInfoWithCgid : chunks[0]
                                                  andHeaderInfo : [_args objectForKey : @"token"]];
-  
-    // _currentLectureTitle 를 set합니다.
-    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
-    {
-      _isAudioContent = YES;
-    }
-    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"v"] )
-    {
-      _isAudioContent = NO;
-    }
   
     // 오디오북 제목 챕터로 시작되면 다음챕터로 넘깁니다.
     // 오디오북 콘텐츠만이 제목챕터를 가지고 있습니다.
@@ -242,6 +233,10 @@
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
   
+    // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
+    //[self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"background"]];
+    [self setAudioContentBackgroundImageUrl : @"https://static.welaaa.co.kr/contentsUpImage/20180525213750.jpg"];
+  
     // _args가 잘못 전달받아도 HLS 경로로 수정합니다.
     NSString *uriString = [_args objectForKey : @"uri"];
     uriString = [uriString stringByReplacingOccurrencesOfString : @"/DASH_"
@@ -270,6 +265,12 @@
     [_playerLayer setVideoGravity : AVLayerVideoGravityResizeAspect]; // 가로세로 비율을 유지하고 비디오를 레이어의 경계 내에 맞출 수 있도록 지정합니다.
   
     [_contentView.layer addSublayer : _playerLayer];
+  
+    // 오디오북 콘텐츠일 경우 Player Layer를 숨깁니다.
+    if ( _isAudioContent )
+    {
+        _playerLayer.hidden = YES;
+    }
 }
 
 // 뷰 컨트롤러가 화면에 나타난 직후에 실행됩니다.
@@ -486,9 +487,17 @@
   
     // 자막뷰가 on인 경우 초기화 시키고 다음 콘텐트의 자막을 가져옵니다. 오디오북일 경우는 수행하지 않습니다.
     if ( !_isAudioContent )
-    {   [self setScriptViewFrameWithStatus : 0];
+    {
+        [self setScriptViewFrameWithStatus : 0];
         [_scriptView setScript : [self readScript]];
         [_scriptButton setStatus : 0];
+    }
+    else if ( _isAudioContent )
+    {
+        // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
+        // 해당 경로는 오디오북만 해당됩니다.
+      //[self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"background"]];
+      [self setAudioContentBackgroundImageUrl : @"https://static.welaaa.co.kr/contentsUpImage/20180525213750.jpg"];
     }
 }
 
@@ -970,6 +979,27 @@
   
     [_speedButton setImage : [image tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                   forState : UIControlStateHighlighted];
+}
+
+- (void) setAudioContentBackgroundImageUrl : (NSString *) url
+{
+    if ( !nullStr(url) )
+    {
+        [_backgroundImageView sd_setImageWithURL : [NSURL URLWithString: url]
+                                       completed : ^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL)
+                                                   {
+                                                       if ( self.view.frame.size.width > self.view.frame.size.height && _backgroundImageView.image )
+                                                       {
+                                                           CGFloat width = [common getRatioWidth : _backgroundImageView.image.size
+                                                                                    screenHeight : self.view.frame.size.height];
+                                                         
+                                                           CGFloat height = [common getRatioHeight : _backgroundImageView.image.size
+                                                                                       screenWidth : width];
+                                                         
+                                                           _backgroundImageView.frame = CGRectMake((self.view.frame.size.width - width)/2.f, 0, width, height);
+                                                       }
+                                                   }];
+    }
 }
 
 #pragma mark - Public Methods

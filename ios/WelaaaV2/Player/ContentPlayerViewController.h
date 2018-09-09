@@ -3,6 +3,7 @@
 #import <AVKit/AVKit.h>
 #import <PallyConFPSSDK/PallyConFPSSDK-Swift.h>
 #import <Toast/UIView+Toast.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "common.h"
 #import "UIImage+TintColor.h"
