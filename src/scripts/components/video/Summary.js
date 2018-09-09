@@ -121,12 +121,25 @@ const styles = StyleSheet.create( {
 } );
 
 export default class Summary extends React.Component {
+	thumbnailUri = () => {
+		if( this.props.classType === 'series' ) {
+			return this.props.images.wide;
+		}
+		else if( this.props.type === 'detailClip' ) {
+			console.log( 'this.props.course.images.wide', this.props.course.images.wide );
+			return this.props.course.images.wide;
+		}
+		else {
+			return this.props.thumbnail;
+		}
+	}
+
 	render() {
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
 				{ (this.props.type !== 'detailClip') && (this.props.type !== 'dailyBook') &&
 				<ImageBackground
-					source={{ uri: this.props.classType === 'series' ? this.props.images.wide : this.props.thumbnail}}
+					source={{ uri: this.thumbnailUri() }}
 					resizeMode="cover"
 					style={styles.thumbnail}>
 					<Text style={styles.thumbnailTitle}>

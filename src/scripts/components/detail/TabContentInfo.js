@@ -215,12 +215,14 @@ class TabContentInfo extends React.Component {
 				</View>
 			</View>
 
+			{1 === 2 &&
 			<View style={styles.review}>
 				<Text style={styles.sectionTitle}>학습자 평가</Text>
 
 				<Evaluation itemData={this.props.store.itemData}/>
 
 			</View>
+			}
 
 		</View>
 	}
