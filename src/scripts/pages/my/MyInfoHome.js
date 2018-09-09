@@ -2,6 +2,7 @@ import React from "react";
 import CommonStyles from "../../../styles/common";
 import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import globalStore from '../../../scripts/commons/store';
+import { observer } from "mobx-react";
 import BgMy from "../../../images/bg-my.png";
 import IcAngleRight from "../../../images/ic-my-angle-right.png";
 import IcDownload from "../../../images/ic-my-download.png";
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
 /*
 * 로그인 후 보여지는 화면
 * */
+@observer
 export default class MyInfoHome extends React.Component {
 
 	render() {
@@ -176,10 +178,13 @@ export default class MyInfoHome extends React.Component {
 
 
 						<View style={[styles.myInfoContent, {height: 105}]}>
+							{1 === 2 &&
 							<Image source={DummyProfile} style={styles.myInfoProfile} borderRadius={30}/>
+							}
 							<View>
 								<View style={styles.myInfoContentItem}>
 									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name : '' }</Text>
+									{ globalStore.currentMembership && globalStore.currentMembership.type_text ? <Text>{globalStore.currentMembership.type_text}</Text> : undefined }
 									<View>
 										<Text>{/*package*/}</Text>
 									</View>

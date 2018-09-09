@@ -12,7 +12,8 @@ import TabContentList from "./TabContentList";
 
 const styles = StyleSheet.create( {
 	tabContainer: {
-		width: '33.3%',
+		// width: '33.3%',
+		width: '50%',
 	},
 	tabItem: {
 		justifyContent: 'center',
@@ -59,8 +60,9 @@ class DetailLayout extends React.Component {
 			<ScrollView style={{ width: '100%' }}>
 				<TopBanner learnType={this.props.learnType} store={this.props.store}/>
 
+				{1 === 2 &&
 				<CountView store={this.props.store}/>
-
+				}
 				<PaymentStatus learnType={this.props.learnType} paymentType={"normal"}/>
 
 				{/*<Text>일반 회원 구매 전 - 오디오북</Text>*/}
@@ -125,19 +127,23 @@ class DetailLayout extends React.Component {
 							</View>
 						</TouchableOpacity>
 					</View>
+					{1 === 2 &&
 					<View style={styles.tabContainer}>
 						<TouchableOpacity activeOpacity={0.9}
 										  onPress={() => {
 											  this.props.store.tabStatus = 'review'
 										  }}>
 							<View style={styles.tabItem}>
-								<Text style={ this.props.store.tabStatus === 'review' ? styles.tabActiveText : styles.tabNormalText }>
+								<Text
+									style={this.props.store.tabStatus === 'review' ? styles.tabActiveText : styles.tabNormalText}>
 									리뷰 ({this.props.store.itemData.review_count})
 								</Text>
-								<View style={ this.props.store.tabStatus === 'review' ? styles.tabActiveHr : styles.tabNormalHr }/>
+								<View
+									style={this.props.store.tabStatus === 'review' ? styles.tabActiveHr : styles.tabNormalHr}/>
 							</View>
 						</TouchableOpacity>
 					</View>
+					}
 				</View>
 				{this.props.store.tabStatus === 'info' &&
 				<TabContentInfo store={ this.props.store } learnType={this.props.learnType}/>
@@ -145,8 +151,12 @@ class DetailLayout extends React.Component {
 				{this.props.store.tabStatus === 'list' &&
 				<TabContentList store={ this.props.store } learnType={this.props.learnType}/>
 				}
-				{this.props.store.tabStatus === 'review' &&
-				<TabContentReview store={ this.props.store }/>
+				{1 === 2 &&
+				<View>
+					{this.props.store.tabStatus === 'review' &&
+					<TabContentReview store={this.props.store}/>
+					}
+				</View>
 				}
 			</ScrollView>
 		</View>

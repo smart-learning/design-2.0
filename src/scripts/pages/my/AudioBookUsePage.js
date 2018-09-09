@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import CommonStyles from "../../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import SummaryListItem from "../../components/my/SummaryListItem";
@@ -17,6 +17,9 @@ import { observer } from "mobx-react";
 	load = async () => {
 		this.store.isLoading = true;
 		this.store.list = await net.getPlayRecentAudioBook( true );
+		if( !this.store.list ) {
+			this.store.list = [];
+		}
 		this.store.isLoading = false;
 	};
 
@@ -35,6 +38,11 @@ import { observer } from "mobx-react";
 					{this.store.isLoading &&
 					<View style={{ marginTop: 12 }}>
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+					</View>
+					}
+					{(!this.store.isLoading && this.store.list.length === 0) &&
+					<View style={{ marginTop: 12 }}>
+						<Text style={{ textAlign: 'center' }}>최근 재생 오디오북이 없습니다.</Text>
 					</View>
 					}
 					{ this.store.list && this.store.list.map( ( item, key ) => {

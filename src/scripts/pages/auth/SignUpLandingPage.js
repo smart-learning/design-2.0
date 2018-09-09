@@ -175,6 +175,8 @@ class SignUpLandingPage extends React.Component {
 			<View style={{width: '100%', height: this.state.slideHeight}}>
 				<Swiper style={styles.wrapper}
 						showsButtons={false}
+						dotColor={"#888888"}
+						activeDotColor={"#ffffff"}
 						height={window.width}
 						paginationStyle={{bottom: '50%'}}>
 					<View style={styles.slide}>

@@ -6,6 +6,7 @@ import globalStore from '../commons/store';
 const {RNNativePlayer, RNNativeBase} = NativeModules;
 
 import {Alert} from 'react-native'
+import * as firebase from "react-native-firebase";
 
 export default {
 	getF_TOKEN() {
@@ -152,7 +153,7 @@ export default {
 
 		switch (key) {
 			case 'alert':
-				Alert.alert('준비중입니다.');
+				this.setFirebase( bool );
 				break;
 
 			case 'email':
@@ -174,7 +175,6 @@ export default {
 
 		return 'salkdjfklsdjf;';
 
-	}
-
+	},
 
 }

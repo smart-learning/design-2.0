@@ -92,7 +92,7 @@ export default class BookContinueList extends React.Component {
 
 				return (
 					<View style={styles.continueItem} key={key}>
-						<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(item.data.id)}>
+						<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play( item.data.cid ) }>
 							<ImageBackground
 								source={{uri: (item.data.teacher && item.data.teacher.images) ? item.data.teacher.images.default : null}}
 								resizeMode={"cover"} style={styles.thumbnail}/>

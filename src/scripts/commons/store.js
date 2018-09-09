@@ -9,8 +9,10 @@ let welaaaAuth;
 let currentMembership
 
 class Store {
+	emitter = null;
 	drawer = null;
 	lastLocation = 'HomeScreen';
+	prevLocations = [];
 
 	get socialType() {
 		return socialType;
@@ -51,10 +53,12 @@ class Store {
 		socialType = null;
 		socialToken = null;
 		welaaaAuth = null;
+		delete axios.defaults.headers.common['authorization']
 
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
 
+	@observable currentMembership = {};
 	@observable profile = {};
 
 	/* 이벤트로 넘겨받은 다운로드받은 아이템 DB조회목록 */
@@ -68,6 +72,7 @@ class Store {
 		isAlert: false,
 		isEmail: false,
 	};
+
 }
 
 const store = new Store();

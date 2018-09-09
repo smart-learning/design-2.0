@@ -21,6 +21,8 @@ import BookContinueList from "../../components/home/BookCoutinueList";
 import PTRView from 'react-native-pull-to-refresh';
 import moment from "moment";
 import ClassContinueList from "../../components/home/ClassContinueList";
+import BookDailyList from "../../components/home/BookDailyList";
+import {withNavigation} from "react-navigation";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -68,7 +70,7 @@ const styles = StyleSheet.create( {
 	},
 	monthContainer: {
 		paddingTop: 50,
-		paddingBottom: 50,
+		paddingBottom: 30,
 		backgroundColor: '#8cd8b1',
 	},
 	dailyContainer: {
@@ -115,7 +117,6 @@ class HomeAudioPage extends React.Component {
 
 	render() {
 		let updatedAt = moment().format('YYYY. MM. DD');
-		console.log( 'this.props.store.audioNewData', this.props.store.audioNewData );
 		return (
 			<PTRView onRefresh={() => this.props.onRefresh()}>
 				<ScrollView style={{ flex: 1 }}>
@@ -148,16 +149,12 @@ class HomeAudioPage extends React.Component {
 					{/* /이미지 스와이퍼 */}
 
 					<View style={styles.monthContainer}>
-						<View>
-							<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
-								8월 이달의 책
-							</Text>
-							<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
-								이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
-							</Text>
-						</View>
-
 						<BookMonthly itemData={this.props.store.audioMonth} voucherStatus={ this.props.store.voucherStatus }/>
+					</View>
+
+					{/*매일 책 한 권*/}
+					<View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
+						<BookDailyList itemData={this.props.store.audioDaily} store={ this.props.store }/>
 					</View>
 
 					<View style={[ CommonStyles.contentContainer, styles.audioBookContainer ]}>
@@ -248,4 +245,4 @@ class HomeAudioPage extends React.Component {
 	}
 }
 
-export default HomeAudioPage;
+export default withNavigation(HomeAudioPage);

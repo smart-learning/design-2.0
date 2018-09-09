@@ -52,6 +52,7 @@ export default class TabContentList extends React.Component {
 
 	render() {
 		const playTime = moment.duration( this.props.store.itemData.play_time );
+
 		return <View>
 			<ScrollView style={{flex: 1}}>
 				{this.props.learnType === 'class' &&
