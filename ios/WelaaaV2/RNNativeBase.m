@@ -25,10 +25,10 @@ RCT_EXPORT_MODULE();
 // Obj-C -> JS callback method
 // 참고 : https://gist.github.com/chourobin/f83f3b3a6fd2053fad29fff69524f91c#file-callbacks-md
 //
-RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) callback )
+RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) resultCallback )
 {
     NSString *f_token = [self getWebToken];
-    callback(@[[NSNull null], f_token]); // (error, someData) in js
+    resultCallback(@[[NSNull null], f_token]); // (error, someData) in js
 }
 
 @end
