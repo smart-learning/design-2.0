@@ -4261,7 +4261,7 @@ public class PlayerActivity extends BasePlayerActivity {
    *  컨텐츠 id값을 preferences에 set
    **************************************************************************/
   public void setContentId(int id) {
-
+    contentId = id;
     Preferences.setWelaaaPlayListCId(getApplication(), id);
   }
 
@@ -5469,6 +5469,7 @@ public class PlayerActivity extends BasePlayerActivity {
     for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
       if (getwebPlayerInfo().getCkey()[i].equals(pos)) {
         currentPosition = i;
+        break;
       }
     }
 //
@@ -5495,10 +5496,10 @@ public class PlayerActivity extends BasePlayerActivity {
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
 
+    setContentId(currentPosition);
+
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);
-
-    setContentId(currentPosition);
   }
 
   public void setBroadCatReceiver() {
