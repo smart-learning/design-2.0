@@ -130,9 +130,9 @@ const styles = StyleSheet.create({
 
 class Data {
 	@observable name = '이름';
-	@observable email = '이메일';
-	@observable password = '비밀번호';
-	@observable passconf = '비밀번호확인';
+	@observable email = null;
+	@observable password = null;
+	@observable passconf = null;
 	@observable isAgree = false;
 }
 
@@ -166,6 +166,11 @@ class Data {
 			return false;
 		} else if (this.data.password === null) {
 			Alert.alert('비밀번호는 필수 입력항목입니다.');
+			return false;
+		}
+
+		if( this.data.passconf !== this.data.password ){
+			Alert.alert('비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
 			return false;
 		}
 
@@ -203,21 +208,22 @@ class Data {
 							<Text style={styles.headline}>무료계정만들기</Text>
 
 							<View borderRadius={4} style={styles.inputWrap}>
-								<TextInput
-									style={styles.input}
-									underlineColorAndroid={'rgba(0,0,0,0)'}
-									onFocus={this.validityNameOnFocus}
-									value={this.data.name}
-									autoCapitalize={'none'}
-									onChangeText={text => {
-										this.data.name = text
-									}}/>
-								<View style={styles.inputBr}/>
+								{/*<TextInput*/}
+									{/*style={styles.input}*/}
+									{/*underlineColorAndroid={'rgba(0,0,0,0)'}*/}
+									{/*onFocus={this.validityNameOnFocus}*/}
+									{/*value={this.data.name}*/}
+									{/*autoCapitalize={'none'}*/}
+									{/*onChangeText={text => {*/}
+										{/*this.data.name = text*/}
+									{/*}}/>*/}
+								{/*<View style={styles.inputBr}/>*/}
 								<TextInput
 									style={styles.input}
 									underlineColorAndroid={'rgba(0,0,0,0)'}
 									onFocus={this.validityEmailOnFocus}
 									keyboardType="email-address"
+									placeholder="이메일"
 									value={this.data.email}
 									autoCapitalize={'none'}
 									onChangeText={text => {
@@ -231,6 +237,7 @@ class Data {
 									secureTextEntry={true}
 									autoCapitalize={'none'}
 									value={this.data.password}
+									placeholder="비밀번호"
 									onChangeText={text => {
 										this.data.password = text
 									}}/>
@@ -242,6 +249,7 @@ class Data {
 									secureTextEntry={true}
 									autoCapitalize={'none'}
 									value={this.data.passconf}
+									placeholder="비밀번호 확인"
 									onChangeText={text => {
 										this.data.passconf = text
 									}}/>
@@ -257,23 +265,23 @@ class Data {
 								</TouchableOpacity>
 							</View>
 
-							<View style={styles.checkboxContainer}>
-								<View style={styles.checkbox}>
-									<TouchableOpacity activeOpacity={0.9} onPress={this.agreeStatus}>
-										{!!this.data.isAgree &&
-										<Image source={BulletBoxChecked} style={styles.checkBoxImage}/>
-										}
-										{!this.data.isAgree &&
-										<Image source={BulletBoxCheck} style={styles.checkBoxImage}/>
-										}
-									</TouchableOpacity>
-									<View>
-										<Text style={styles.agreeText}>
-											새로운 콘텐츠 및 이벤트 정보 받기
-										</Text>
-									</View>
-								</View>
-							</View>
+							{/*<View style={styles.checkboxContainer}>*/}
+								{/*<View style={styles.checkbox}>*/}
+									{/*<TouchableOpacity activeOpacity={0.9} onPress={this.agreeStatus}>*/}
+										{/*{!!this.data.isAgree &&*/}
+										{/*<Image source={BulletBoxChecked} style={styles.checkBoxImage}/>*/}
+										{/*}*/}
+										{/*{!this.data.isAgree &&*/}
+										{/*<Image source={BulletBoxCheck} style={styles.checkBoxImage}/>*/}
+										{/*}*/}
+									{/*</TouchableOpacity>*/}
+									{/*<View>*/}
+										{/*<Text style={styles.agreeText}>*/}
+											{/*새로운 콘텐츠 및 이벤트 정보 받기*/}
+										{/*</Text>*/}
+									{/*</View>*/}
+								{/*</View>*/}
+							{/*</View>*/}
 
 							<View style={styles.ruleWrap}>
 								<View style={styles.ruleTextContainer}>
