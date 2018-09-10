@@ -304,6 +304,31 @@ export default {
 	},
 
 
+	// 2018. 9. 10 김중온
+	// f_token 갱신
+	issueAuthToken(f_token) {
+
+		let params = encodeParams({username: 'f_token', password: f_token, scope: 'profile', grant_type: 'password'});
+		console.log('encodedParams:', params);
+
+		return new Promise((resolve, reject) => {
+			axios.post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token',
+				params,
+				{
+					headers: {
+						'Authorization': 'Basic ' + authBasicCode,
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				})
+				.then(response => {
+					resolve(response.data);
+				})
+				.catch((error) => {
+					reject(error);
+				});
+		});
+	},
+
 
 
 	getMainPopup() {
