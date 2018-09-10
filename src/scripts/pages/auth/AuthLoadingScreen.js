@@ -14,9 +14,9 @@ class AuthLoadingScreen extends React.Component {
 		let requestScreenName = this.props.navigation.getParam('requestScreenName', 'MyInfoHome');
 
 		if( store.welaaaAuth )
-			this.props.navigation.replace(requestScreenName);
+			this.props.navigation.navigate(requestScreenName);
 		else
-			this.props.navigation.replace('Login', { requestScreenName: requestScreenName });
+			this.props.navigation.navigate('Login', { requestScreenName: requestScreenName });
 
 	};
 
