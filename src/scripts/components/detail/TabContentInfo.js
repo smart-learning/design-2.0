@@ -188,10 +188,12 @@ class TabContentInfo extends React.Component {
 					<Image style={styles.labelInfoImage} source={IcFile}/>
 					<Text style={styles.labelInfoText}>콘텐츠 용량 {this.props.store.itemData.file_size} MB</Text>
 				</View>
+				{/*
 				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
 					<Image style={styles.labelInfoImage} source={IcPrize}/>
 					<Text style={styles.labelInfoText}>학습 완료 시 수료증 제공</Text>
 				</View>
+				*/}
 			</View>
 
 			<View style={styles.author}>
