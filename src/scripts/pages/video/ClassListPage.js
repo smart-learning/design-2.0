@@ -195,9 +195,9 @@ const styles = StyleSheet.create( {
 							</View>
 						</View>
 						<TouchableOpacity activeOpacity={0.9}
-										  style={{ marginLeft: 'auto' }}
+										  style={{marginLeft: 'auto'}}
 										  onPress={() => {
-											  this.props.navigation.navigate( 'ClipPage' )
+											  this.props.navigation.navigate('ClipPage')
 										  }}
 						>
 							<View style={styles.clipButton} borderRadius={3}>
@@ -213,30 +213,36 @@ const styles = StyleSheet.create( {
 							  onCategorySelect={this.onCategorySelect}
 				/>
 
-				{this.store.displayData !== null &&
-				<FlatList
-					style={{ width: '100%' }}
-					data={this.store.displayData}
-					renderItem={
-						( { item } ) => <Lecture id={item.id}
-												 navigation={this.props.navigation}
-												 item={item}/>
-					}
-				/>
+				{
+					this.store.displayData !== null ? (
+						<FlatList
+							style={{width: '100%'}}
+							data={this.store.displayData}
+							renderItem={
+								({item}) => <Lecture id={item.id}
+													 navigation={this.props.navigation}
+													 item={item}/>
+							}
+						/>
+					) : undefined
 				}
 
 				<View style={CommonStyles.contentContainer}>
-					{this.store.isLoading &&
-					<View style={{ marginTop: 12 }}>
-						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
-					</View>
+					{
+						this.store.isLoading ? (
+							<View style={{marginTop: 12}}>
+								<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+							</View>
+						) : undefined
 					}
-					{( !this.store.isLoading && this.store.pagination['has-next'] ) &&
-					<TouchableOpacity activeOpacity={0.9} onPress={ this.loadMore }>
-						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
-							<Text style={styles.linkViewAllText}>더보기</Text>
-						</View>
-					</TouchableOpacity>
+					{
+						(!this.store.isLoading && this.store.pagination['has-next']) ? (
+							<TouchableOpacity activeOpacity={0.9} onPress={this.loadMore}>
+								<View style={[styles.linkViewAll, styles.classLinkViewAll]} borderRadius={5}>
+									<Text style={styles.linkViewAllText}>더보기</Text>
+								</View>
+							</TouchableOpacity>
+						) : undefined
 					}
 				</View>
 			</ScrollView>
