@@ -9,8 +9,8 @@ import {Alert} from 'react-native'
 import * as firebase from "react-native-firebase";
 
 export default {
-	getF_TOKEN() {
-		RNNativeBase.getF_TOKEN(f_token => { /* do sutff */ });
+	getF_TOKEN(callback) {
+		RNNativeBase.getF_TOKEN(callback);
 	},
 
 	play(cid, oid = '') {
