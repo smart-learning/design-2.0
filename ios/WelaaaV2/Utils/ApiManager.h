@@ -44,7 +44,7 @@ typedef void (^kErrorBlock)(NSError *error);
                              andHeaderInfo : (NSString *) authValue;
 + (NSDictionary *) getPlayDataWithCid : (NSString *) contentID
                         andHeaderInfo : (NSString *) authValue;
-+ (void) sendPlaybackProgress : (NSString *) authValue;
++ (void) sendPlaybackProgress : (NSDictionary *) params;
 + (NSArray *) getSubtitles : (NSString *) contentID;
 
 - (void) setReachabilityStatusChangeBlock : (void (^)(NSInteger status)) block;

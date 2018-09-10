@@ -28,6 +28,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) resultCallback )
 {
     NSString *f_token = [self getWebToken];
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"webToken"]; // F_Token을 삭제합니다.
     resultCallback(@[[NSNull null], f_token]); // (error, someData) in js
 }
 

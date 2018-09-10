@@ -381,14 +381,17 @@
 
 //
 // 진도 데이터를 전송합니다.
+// parameters : header auth, cid, action, start, end, 다운로드파일인지의 여부 (6개.)
 //
-+ (void) sendPlaybackProgress : (NSString *) authValue
++ (void) sendPlaybackProgress : (NSDictionary *) params
 {
+    // Dealing with parameters...
+  
     NSString *apiProgress = @"/dev/api/v1.0/play/progress"; // dev -> ?
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@", API_HOST, apiProgress];
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
-    NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
+    NSString *headerValue = [@"Bearer " stringByAppendingString : params[@"authValue"]];
   
     [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -402,14 +405,14 @@
     NSURLResponse *resp = nil;
   
     NSMutableDictionary *dictionary;
-    dictionary = [@{@"action"     : @"ING",
-                    @"cid"        : @"string",
-                    @"duration"   : @0,
-                    @"end"        : @0,
-                    @"error"      : @"string",
-                    @"net_status" : @"string",
+    dictionary = [@{@"cid"        : params[@"cid"],
                     @"platform"   : @"iphone",
-                    @"start"      : @0} mutableCopy];
+                    @"action"     : params[@"action"],     // START / ING / END / FORWARD / BACK
+                    @"start"      : params[@"start"],         // msec
+                    @"end"        : params[@"end"],         // msec
+                    @"duration"   : params[@"action"],         // end - start = msec
+                    @"net_status" : params[@"action"],  // "DOWNLOAD" / "Wi-Fi" / "LTE/3G"
+                    @"error"      : params[@"action"]} mutableCopy];
   
     NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
                                                        options : 0

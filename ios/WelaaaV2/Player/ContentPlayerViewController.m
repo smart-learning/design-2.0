@@ -76,6 +76,7 @@
     CGFloat _currentPlaybackDuration;
   
     NSTimer *_seekTimer;
+    NSTimer *_logTimer;
 }
 @end
 
@@ -205,7 +206,7 @@
                     break;
                 }
             }
-            NSLog(@"  몇번 배열? : %lu", i);
+          //NSLog(@"  몇번 배열? : %lu", i);
             [_args setObject : contentsListArray[i][@"cid"]
                       forKey : @"cid"];
           
@@ -217,9 +218,6 @@
             [_args setObject : playDataDics[@"media_urls"][@"HLS"]
                       forKey : @"uri"];
             _currentLectureTitle = contentsListArray[i][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명 세팅도 겸사겸사 합니다.
-          
-            // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
-            [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
         }
     }
     else if ( !_isAudioContent )  // 영상 콘텐츠의 경우 소챕터명만 세팅합니다.
@@ -258,7 +256,7 @@
                   liveKeyRotation : NO              ];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
-    _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련. 속도 변경을 하면 퀄리티가 위 옵션보다는 좋음.
+    _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
@@ -460,56 +458,6 @@
     // 추가할 사항 : 연속재생 버튼이 'on'상태이면 플레이어를 종료합니다.
 }
 
-//
-// 다음 콘텐트를 재생합니다. 재생할 _args가 미리 세팅되어 있기때문에 파라미터가 필요하지 않습니다.
-//
-- (void) playNext
-{
-    [_player pause];
-    [self invalidateTimerOnSlider];
-  
-    NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                         options : nil       ];
-  
-    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                           userId : [_args objectForKey : @"userId"]
-                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                  liveKeyRotation : NO              ];
-  
-    _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
-    [_player replaceCurrentItemWithPlayerItem : _playerItem];
-    [_player play];
-  
-    [ [NSNotificationCenter defaultCenter] addObserver : self
-                                              selector : @selector(videoPlayBackDidFinish:)
-                                                  name : AVPlayerItemDidPlayToEndTimeNotification
-                                                object : [_player currentItem]  ];
-  
-    _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
-                                                Minute : YES];
-    [self setPreparedToPlay];
-    [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
-    [self setPlayState : YES];
-    _lectureTitleLabel.text = _currentLectureTitle;
-  
-    // 자막뷰가 on인 경우 초기화 시키고 다음 콘텐트의 자막을 가져옵니다. 오디오북일 경우는 수행하지 않습니다.
-    if ( !_isAudioContent )
-    {
-        [self setScriptViewFrameWithStatus : 0];
-        [_scriptView setScript : [self readScript]];
-        [_scriptButton setStatus : 0];
-    }
-    else if ( _isAudioContent )
-    {
-        // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
-        // 해당 경로는 오디오북만 해당됩니다.
-        [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
-    }
-}
-
 // 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
 - (void) applicationDidEnterBackground : (NSNotification *) notification
 {
@@ -525,7 +473,7 @@
 {
     // 탑뷰 구성 시작
     //  iPhone X일 경우 notch에 타이틀과 챕터 타이틀이 가려지므로 사이즈 조정이 필요합니다.
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
     {
       _topView = [[UIView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 75.f)];
     }
@@ -547,7 +495,7 @@
   
     CGRect frame = CGRectZero;
     frame.origin.x = CGRectGetMaxX(_closeButton.frame) + 10.f;
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
     {
       frame.origin.y = 30.f;
     }
@@ -667,7 +615,7 @@
     /*
      * iPhone X 의 경우 슬라이더와 Anchor가 충돌하므로 기기에 따른 분기 처리가 필요합니다.
      */
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
     {
       _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-80.f, self.view.frame.size.width, 60.f)];
     }
@@ -1072,6 +1020,56 @@
 }
 
 //
+// 다음 콘텐트를 재생합니다. 재생할 _args가 미리 세팅되어 있기때문에 파라미터가 필요하지 않습니다.
+//
+- (void) playNext
+{
+    [_player pause];
+    [self invalidateTimerOnSlider];
+  
+    NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
+    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
+                                         options : nil       ];
+  
+    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+    [ _fpsSDK prepareWithUrlAsset : _urlAsset
+                           userId : [_args objectForKey : @"userId"]
+                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                  liveKeyRotation : NO              ];
+  
+    _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
+    [_player replaceCurrentItemWithPlayerItem : _playerItem];
+    [_player play];
+  
+    [ [NSNotificationCenter defaultCenter] addObserver : self
+                                              selector : @selector(videoPlayBackDidFinish:)
+                                                  name : AVPlayerItemDidPlayToEndTimeNotification
+                                                object : [_player currentItem]  ];
+  
+    _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
+                                                Minute : YES];
+    [self setPreparedToPlay];
+    [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+    [self setPlayState : YES];
+    _lectureTitleLabel.text = _currentLectureTitle;
+  
+    // 자막뷰가 on인 경우 초기화 시키고 다음 콘텐트의 자막을 가져옵니다. 오디오북일 경우는 수행하지 않습니다.
+    if ( !_isAudioContent )
+    {
+        [self setScriptViewFrameWithStatus : 0];
+        [_scriptView setScript : [self readScript]];
+        [_scriptButton setStatus : 0];
+    }
+    else if ( _isAudioContent )
+    {
+        // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
+        // 해당 경로는 오디오북만 해당됩니다.
+        [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
+    }
+}
+
+//
 // 플레이어를 종료합니다.
 //
 - (void) closePlayer
@@ -1080,6 +1078,7 @@
     [_playerLayer removeFromSuperlayer];
     _playerLayer.player = nil;
     [self invalidateTimerOnSlider];
+    [self stopLogTimer];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // Status Bar를 다시 보여줍니다.
 }
@@ -1090,7 +1089,7 @@
 {
   //[self toastTestAlert];
   
-  //[self closePlayer];
+    [self closePlayer];
   
   //[self showToast : @"미니플레이어로 변환합니다."];
   /*
@@ -1108,17 +1107,14 @@
   
   // 연관 컨텐츠 뷰를 로딩합니다.
    // API : https://api-dev.welaaa.com/api/v1.0/contents/playlist-suggest/v100001
-   
+   /*
     NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
     // 오디오북은 연관컨텐츠뷰를 띄우면 안됩니다.
     self.recommendViewController = [[IFRecommendViewController alloc] init];
     NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
     [self.recommendViewController setDataWithCurrentCgid : chunks[0]];
     [self.view addSubview : self.recommendViewController.view];
-  
-  
-    // 진도 데이터 전송.
-  //[ApiManager sendPlaybackProgress : [_args objectForKey : @"token"]];
+  */
 }
 
 - (void) pressedRateStarButton
@@ -1356,7 +1352,7 @@
 
     CGRect frame = self.view.bounds;
   
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
         frame.size.height = frame.size.height - _bottomView.frame.size.height - 20;
     else
         frame.size.height = frame.size.height - _bottomView.frame.size.height;
@@ -2309,7 +2305,27 @@
     }
 }
 
+#pragma mark - Timer event
+//
+// 정해진 타이머대로 로그데이터를 전송합니다.
+//
+- (void) reloadLogData : (NSTimer *) timer
+{
+    // 이용로그 전송 시작
+  //[ApiManager send... : authValue];
+  
+    NSLog(@"  [reloadLogData] 타이머에 예약에 의해 30초마다 서버로 사용로그를 전송합니다.");
+}
 
+//
+// 시간탐색, 플레이어 종료, 일시 중지, 등의 이벤트 시 타이머를 종료시킵니다.
+//
+- (void) stopLogTimer
+{
+    // 타이머 종료.
+    [_logTimer invalidate];
+    NSLog(@"  [__NSTimer__] 타이머가 종료되었습니다..");
+}
 
 # pragma mark - Labatory
 - (void) toastTestAlert
