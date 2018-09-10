@@ -109,6 +109,9 @@
     }
     NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
   
+    // 테스트 목적으로 강제로 set하였습니다.
+    _isDownloadFile = false;
+  
     // 오디오 UI
     {
         _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
@@ -305,7 +308,7 @@
     [self setPreparedToPlay];
     [self initScriptUi];
   
-    // 재생 시작.
+    // 플레이어 뷰컨트롤러가 생성되고 첫 재생 시작.
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [_player play];   // 플레이어 재생 실행
@@ -314,6 +317,38 @@
                                                   name : AVPlayerItemDidPlayToEndTimeNotification
                                                 object : [_player currentItem]  ];
     [self setPlayState : YES];
+  
+    // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
+    [self stopLogTimer];
+  
+    NSString *netStatus = @"no_network";
+    if ( _isDownloadFile )
+    {
+        netStatus = @"DOWNLOAD";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+        netStatus = @"Wi-Fi";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+        netStatus = @"LTE/3G";
+    }
+    NSLog(@"  Net Status = %@", netStatus);
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"START"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime] + 30
+                                duration : 30 - [self getCurrentPlaybackTime]
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
+    // NSTimer를 통해 30초마다 로그내역을 전송
+    _logTimer = [NSTimer scheduledTimerWithTimeInterval : 30
+                                                 target : self
+                                               selector : @selector(reloadLogData:)
+                                               userInfo : nil
+                                                repeats : YES];
+  
   
     // 영상시작후 3초간 입력이 없으면 컨트롤러를 자동으로 Hide.
     /*
@@ -446,9 +481,22 @@
             [self playNext];
         }
     }
-    else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것이므로 종료합니다.
+    else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
     {
-        [self closePlayer];
+        // 영상 콘텐츠의 마지막이면 연관 콘텐츠 뷰를 로딩합니다.
+        if ( !_isAudioContent )
+        {
+            NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
+            // 오디오북은 연관컨텐츠뷰를 띄우면 안됩니다.
+            self.recommendViewController = [[IFRecommendViewController alloc] init];
+            NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
+            [self.recommendViewController setDataWithCurrentCgid : chunks[0]];
+            [self.view addSubview : self.recommendViewController.view];
+        }
+        else if ( _isAudioContent )
+        {
+            [self closePlayer];
+        }
     }
     else
     {
@@ -1067,6 +1115,37 @@
         // 해당 경로는 오디오북만 해당됩니다.
         [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
     }
+  
+    // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
+    [self stopLogTimer];
+  
+    NSString *netStatus;
+    if ( _isDownloadFile )
+    {
+        netStatus = @"DOWNLOAD";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+        netStatus = @"Wi-Fi";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+        netStatus = @"LTE/3G";
+    }
+  
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"START"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime] + 30
+                                duration : 30 - [self getCurrentPlaybackTime]
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
+    // NSTimer를 통해 30초마다 로그내역을 전송
+    _logTimer = [NSTimer scheduledTimerWithTimeInterval : 30
+                                                 target : self
+                                               selector : @selector(reloadLogData:)
+                                               userInfo : nil
+                                                repeats : YES];
 }
 
 //
@@ -1078,7 +1157,31 @@
     [_playerLayer removeFromSuperlayer];
     _playerLayer.player = nil;
     [self invalidateTimerOnSlider];
+    // 기존 타이머를 종료시키고 재시작
     [self stopLogTimer];
+    // 이용로그 전송 시작
+    NSString *netStatus;
+    if ( _isDownloadFile )
+    {
+      netStatus = @"DOWNLOAD";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+      netStatus = @"Wi-Fi";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+      netStatus = @"LTE/3G";
+    }
+  
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"END"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime]
+                                duration : 0
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
+  
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // Status Bar를 다시 보여줍니다.
 }
@@ -1103,17 +1206,6 @@
   _playerUiView.hidden = self.isMiniPlayer;
   _miniPlayerUiView.hidden = !self.isMiniPlayer;
   [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  */
-  
-  // 연관 컨텐츠 뷰를 로딩합니다.
-   // API : https://api-dev.welaaa.com/api/v1.0/contents/playlist-suggest/v100001
-   /*
-    NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
-    // 오디오북은 연관컨텐츠뷰를 띄우면 안됩니다.
-    self.recommendViewController = [[IFRecommendViewController alloc] init];
-    NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
-    [self.recommendViewController setDataWithCurrentCgid : chunks[0]];
-    [self.view addSubview : self.recommendViewController.view];
   */
 }
 
@@ -1246,9 +1338,6 @@
 - (void) pressedRwButton
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
-    // 이용로그 전송 시작
-    //
-    // 이용로그 전송 종료
   
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
@@ -1265,14 +1354,35 @@
         [_player seekToTime : newTime];//playImmediatelyAtRate
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     }
+  
+    // 이용로그 전송 시작
+    NSString *netStatus;
+    if ( _isDownloadFile )
+    {
+        netStatus = @"DOWNLOAD";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+        netStatus = @"Wi-Fi";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+        netStatus = @"LTE/3G";
+    }
+  
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"BACK"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime] + 30
+                                duration : 30
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
+    // 이용로그 전송 종료
 }
 
 - (void) pressedFfButton
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
-    // 이용로그 전송 시작
-    //
-    // 이용로그 전송 종료
   
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
@@ -1289,6 +1399,30 @@
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     }
+  
+    // 이용로그 전송 시작
+    NSString *netStatus;
+    if ( _isDownloadFile )
+    {
+        netStatus = @"DOWNLOAD";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+        netStatus = @"Wi-Fi";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+        netStatus = @"LTE/3G";
+    }
+  
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"FORWARD"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime] + 30
+                                duration : 30
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
+    // 이용로그 전송 종료
 }
 
 - (void) pressedSpeedButton
@@ -1450,10 +1584,37 @@
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
     [_player setRate : _playbackRate];
+  
     // 기존 타이머를 종료시키고 재시작
-    //[self stopLogTimer];
+    [self stopLogTimer];
+    // 이용로그 전송 시작
+    NSString *netStatus;
+    if ( _isDownloadFile )
+    {
+      netStatus = @"DOWNLOAD";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+      netStatus = @"Wi-Fi";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+      netStatus = @"LTE/3G";
+    }
+  
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"MOVE"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime] + 30
+                                duration : 30
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
     // NSTimer를 통해 30초마다 로그내역을 전송
-    //NSLog(@"  [__NSTimer__] 30초 뒤에 타이머가 가동됩니다.");
+    _logTimer = [NSTimer scheduledTimerWithTimeInterval : 30
+                                                 target : self
+                                               selector : @selector(reloadLogData:)
+                                               userInfo : nil
+                                                repeats : YES];
 }
 
 //
@@ -2311,10 +2472,29 @@
 //
 - (void) reloadLogData : (NSTimer *) timer
 {
-    // 이용로그 전송 시작
-  //[ApiManager send... : authValue];
-  
     NSLog(@"  [reloadLogData] 타이머에 예약에 의해 30초마다 서버로 사용로그를 전송합니다.");
+    // 이용로그 전송 시작
+    NSString *netStatus;
+    if ( _isDownloadFile )
+    {
+        netStatus = @"DOWNLOAD";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+        netStatus = @"Wi-Fi";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+        netStatus = @"LTE/3G";
+    }
+  
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"ING"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime] + 30
+                                duration : 30
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
 }
 
 //

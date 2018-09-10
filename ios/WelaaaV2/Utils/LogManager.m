@@ -84,7 +84,7 @@
     }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
     {
-        netStatus = @"Wi-FI";
+        netStatus = @"Wi-Fi";
     }
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
     {
