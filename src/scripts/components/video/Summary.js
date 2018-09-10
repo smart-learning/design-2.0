@@ -16,6 +16,7 @@ import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
 import Device from "../../commons/device";
 import Native from "../../commons/native";
+import Dummy from "../../../images/dummy-dailybook.png"
 
 
 const styles = StyleSheet.create( {
@@ -121,12 +122,24 @@ const styles = StyleSheet.create( {
 } );
 
 export default class Summary extends React.Component {
+	thumbnailUri = () => {
+		if( this.props.classType === 'series' ) {
+			return this.props.images.wide;
+		}
+		else if( this.props.type === 'detailClip' ) {
+			return this.props.course.images.wide;
+		}
+		else {
+			return this.props.thumbnail;
+		}
+	}
+
 	render() {
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
-				{this.props.type !== 'detailClip' &&
+				{ (this.props.type !== 'detailClip') && (this.props.type !== 'dailyBook') &&
 				<ImageBackground
-					source={{uri: this.props.thumbnail}}
+					source={{ uri: this.thumbnailUri() }}
 					resizeMode="cover"
 					style={styles.thumbnail}>
 					<Text style={styles.thumbnailTitle}>
@@ -166,8 +179,21 @@ export default class Summary extends React.Component {
 					</TouchableOpacity>
 				</ImageBackground>
 				}
+				{this.props.type === 'dailyBook' &&
+				<ImageBackground
+					source={{uri: this.props.thumbnail === 'bookDummy' ? null : this.props.thumbnail}}
+					resizeMode="cover"
+					style={styles.thumbnail}>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.play}
+									  onPress={() => Native.play(this.props.cid)}
+					>
+						<Image source={IcPlay} style={Style.fullImg}/>
+					</TouchableOpacity>
+				</ImageBackground>
+				}
 			</TouchableOpacity>
-			{this.props.type !== 'detailClip' &&
+			{( 1 === 2 && this.props.type !== 'detailClip' ) &&
 			<View style={styles.btnGroup}>
 				<View style={styles.alignJustify}>
 					<Image source={IcView} style={styles.btnSetSmall}/>

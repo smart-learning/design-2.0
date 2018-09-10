@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import CommonStyles from "../../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import SummaryListItem from "../../components/my/SummaryListItem";
@@ -28,7 +28,7 @@ import net from "../../commons/net";
 	}
 
 	goLecture = ( item ) => {
-		this.props.navigation.navigate( 'ClassDetailPage', { id: item.data.id } );
+		this.props.navigation.navigate( 'ClassDetailPage', { id: this.props.id, title: this.props.title } );
 	};
 
 	render() {
@@ -39,6 +39,11 @@ import net from "../../commons/net";
 					{this.store.isLoading &&
 					<View style={{ marginTop: 12 }}>
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+					</View>
+					}
+					{(!this.store.isLoading && this.store.list.length === 0) &&
+					<View style={{ marginTop: 12 }}>
+						<Text style={{ textAlign: 'center' }}>최근 재생 클래스가 없습니다.</Text>
 					</View>
 					}
 					{ this.store.list && this.store.list.map( ( item, key ) => {

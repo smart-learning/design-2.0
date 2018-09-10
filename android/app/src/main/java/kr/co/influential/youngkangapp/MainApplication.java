@@ -17,6 +17,7 @@ import com.crashlytics.android.core.CrashlyticsCore;
 import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.Arguments;
@@ -25,11 +26,13 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.soloader.SoLoader;
 import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
-import dog.craftz.sqlite_2.RNSqlite2Package;
 import io.fabric.sdk.android.Fabric;
 import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import java.util.Arrays;
 import java.util.List;
+
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.react.RNEventEmitter;
@@ -107,9 +110,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDeviceInfo(),
           new RNFirebasePackage(),
+          new RNFirebaseMessagingPackage(),
+          new RNFirebaseNotificationsPackage(),
           new RNVersionNumberPackage(),
-          new RNSqlite2Package(),
           new RNKaKaoSigninPackage(),
           new FBSDKPackage(mCallbackManager),
           new RNLocalizablePackage(R.string.class),

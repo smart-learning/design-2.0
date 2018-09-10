@@ -1,7 +1,8 @@
 import React from "react";
 import CommonStyles from "../../../styles/common";
-import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import globalStore from '../../../scripts/commons/store';
+import {observer} from "mobx-react";
 import BgMy from "../../../images/bg-my.png";
 import IcAngleRight from "../../../images/ic-my-angle-right.png";
 import IcDownload from "../../../images/ic-my-download.png";
@@ -11,7 +12,7 @@ import IcProfile from "../../../images/ic-my-profile.png";
 import IcTag from "../../../images/ic-my-tag.png";
 import IcCog from "../../../images/ic-my-cog.png";
 import DummyProfile from "../../../images/dummy-my-profile.png";
-import { SafeAreaView } from "react-navigation";
+import {SafeAreaView} from "react-navigation";
 import HomeButton from "../../components/header/HomeButton";
 
 
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
 /*
 * 로그인 후 보여지는 화면
 * */
+@observer
 export default class MyInfoHome extends React.Component {
 
 	render() {
@@ -176,13 +178,19 @@ export default class MyInfoHome extends React.Component {
 
 
 						<View style={[styles.myInfoContent, {height: 105}]}>
+							{1 === 2 &&
 							<Image source={DummyProfile} style={styles.myInfoProfile} borderRadius={30}/>
+							}
 							<View>
 								<View style={styles.myInfoContentItem}>
-									<Text style={styles.myInfoName}>{ globalStore.profile ? globalStore.profile.name : '' }</Text>
+									<Text
+										style={styles.myInfoName}>{globalStore.profile ? globalStore.profile.name : ''}</Text>
+									{1 === 2 &&
 									<View>
-										<Text>{/*package*/}</Text>
+										{globalStore.currentMembership && globalStore.currentMembership.type_text ?
+											<Text>{globalStore.currentMembership.type_text}</Text> : undefined}
 									</View>
+									}
 								</View>
 								{/*고객사 요청으로 화면에서 감춤 처리*/}
 								{1 === 2 &&
@@ -193,7 +201,8 @@ export default class MyInfoHome extends React.Component {
 									</TouchableOpacity>
 								</View>
 								}
-								<Text style={styles.myInfoEmail}>{ globalStore.profile ? globalStore.profile.email : '' }</Text>
+								<Text
+									style={styles.myInfoEmail}>{globalStore.profile ? globalStore.profile.email : ''}</Text>
 							</View>
 						</View>
 					</ImageBackground>
@@ -257,6 +266,7 @@ export default class MyInfoHome extends React.Component {
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
+						{/*
 						<View style={styles.listItemBarContainer}>
 							<View style={styles.listItemBar}/>
 							<View style={styles.listItemBarBullet}/>
@@ -269,6 +279,7 @@ export default class MyInfoHome extends React.Component {
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
+						*/}
 						<View style={styles.listItemBarContainer}>
 							<View style={styles.listItemBar}/>
 							<View style={styles.listItemBarBullet}/>
@@ -280,7 +291,8 @@ export default class MyInfoHome extends React.Component {
 								<View style={styles.listItem}>
 									<Image source={IcTag} style={styles.listItemIcon}/>
 									<Text style={styles.listItemTitle}>관심태그 설정하기</Text>
-									<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
+									<Image source={IcAngleRight}
+										   style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 								</View>
 							</TouchableOpacity>
 							< View style={styles.listItemBarContainer}>
@@ -289,6 +301,7 @@ export default class MyInfoHome extends React.Component {
 							</View>
 						</View>
 						}
+						{/*
 						<TouchableOpacity activeOpacity={0.9}
 										  onPress={() => navigation.navigate('ClipPlayListPage', {title: '최근 재생 강의클립'})}>
 							<View style={styles.listItem}>
@@ -297,6 +310,7 @@ export default class MyInfoHome extends React.Component {
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
+						*/}
 						{/*고객사 요청으로 화면에서 감춤 처리*/}
 						{1 === 2 && <View>
 							<View style={styles.listItemBarContainer}>
@@ -308,7 +322,8 @@ export default class MyInfoHome extends React.Component {
 								<View style={styles.listItem}>
 									<Image source={IcProfile} style={styles.listItemIcon}/>
 									<Text style={styles.listItemTitle}>활동로그 보기</Text>
-									<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
+									<Image source={IcAngleRight}
+										   style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 								</View>
 							</TouchableOpacity>
 						</View>
@@ -329,28 +344,30 @@ export default class MyInfoHome extends React.Component {
 						</View>
 					</View>
 					}
-					<View style={{height: 8}}/>
-					<View style={styles.sectionLayout}>
-						<Text style={styles.sectionTitle}>알림 문의</Text>
+					{1 === 2 && <View>
+						<View style={{height: 8}}/>
+						<View style={styles.sectionLayout}>
+							<Text style={styles.sectionTitle}>알림 문의</Text>
 
-						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('GuideListPage', {title: '윌라소개 & 이용가이드'})}>
-							<View style={styles.guideItem}>
-								<Text style={styles.guideTitle}>윌라소개 & 이용가이드</Text>
-							</View>
-						</TouchableOpacity>
-						<View style={styles.guideHr}/>
-						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('InquireListPage', {title: '1:1 문의'})}>
-							<View style={styles.guideItem}>
-								<Text style={styles.guideTitle}>1:1 문의</Text>
-							</View>
-						</TouchableOpacity>
-						<View style={styles.guideHr}/>
+							<TouchableOpacity activeOpacity={0.9}
+											  onPress={() => navigation.navigate('GuideListPage', {title: '윌라소개 & 이용가이드'})}>
+								<View style={styles.guideItem}>
+									<Text style={styles.guideTitle}>윌라소개 & 이용가이드</Text>
+								</View>
+							</TouchableOpacity>
+							<View style={styles.guideHr}/>
+							<TouchableOpacity activeOpacity={0.9}
+											  onPress={() => navigation.navigate('InquireListPage', {title: '1:1 문의'})}>
+								<View style={styles.guideItem}>
+									<Text style={styles.guideTitle}>1:1 문의</Text>
+								</View>
+							</TouchableOpacity>
+							<View style={styles.guideHr}/>
 
-					</View>
+						</View>
 
-					<View style={{height: 8}}/>
+						<View style={{height: 8}}/>
+					</View>}
 
 				</ScrollView>
 			</SafeAreaView>

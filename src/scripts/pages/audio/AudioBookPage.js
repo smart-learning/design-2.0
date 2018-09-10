@@ -150,19 +150,24 @@ export default withNavigation( @observer class AudioBookPage extends React.Compo
 	render() {
 		return <SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ecf0f1'}]}>
 			<ScrollView style={{width: '100%'}}>
+				{1 === 2 &&
 				<View style={styles.toggleGroup}>
 					<View style={styles.alignJustify}>
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
-												  onPress={() => {Alert.alert('준비중입니다.')}}
+												  onPress={() => {
+													  Alert.alert('준비중입니다.')
+												  }}
 												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>인기</Text>
 								</TouchableOpacity>
 								<View style={styles.sortBar}/>
 								<TouchableOpacity activeOpacity={0.9}
-												  onPress={() => {Alert.alert('준비중입니다.')}}
+												  onPress={() => {
+													  Alert.alert('준비중입니다.')
+												  }}
 												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>신규</Text>
@@ -181,6 +186,7 @@ export default withNavigation( @observer class AudioBookPage extends React.Compo
 						</TouchableOpacity>
 					</View>
 				</View>
+				}
 
 				<PageCategory selectedCategory={ this.store.selectedCategory }
 							  data={this.store.categories} onCategorySelect={ this.onCategorySelect }/>

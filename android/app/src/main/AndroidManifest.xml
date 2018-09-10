@@ -6,6 +6,7 @@
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
 
+
   <application
     android:allowBackup="false"
     android:icon="@mipmap/ic_launcher"
@@ -17,22 +18,34 @@
       android:configChanges="orientation|keyboardHidden|screenSize"
       android:label="@string/app_name"
       android:name=".SplashActivity"
+      android:launchMode="singleTop"
       android:screenOrientation="portrait"
       android:theme="@style/SplashTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
-
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
 
     <activity
+      android:launchMode="singleTop"
       android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
       android:exported="true"
       android:label="@string/app_name"
       android:name=".MainActivity"
       android:screenOrientation="portrait"
-      android:windowSoftInputMode="adjustResize"/>
+      android:windowSoftInputMode="adjustResize">
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="welaaa" android:host="welaaa" />
+      </intent-filter>
+
+    </activity>
+
+
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
 
     <!-- sample test -->
@@ -116,6 +129,14 @@
       </intent-filter>
     </service>
     <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService"/>
+
+    <receiver android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionReceiver" android:exported="true">
+      <intent-filter>
+        <action android:name="io.invertase.firebase.notifications.BackgroundAction"/>
+      </intent-filter>
+    </receiver>
+    <service android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionsService"/>
+
   </application>
 
 </manifest>

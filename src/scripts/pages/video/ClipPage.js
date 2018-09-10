@@ -123,23 +123,29 @@ const styles = StyleSheet.create( {
 			<ScrollView style={{ width: '100%' }}>
 				<View style={styles.toggleGroup}>
 					<View style={styles.alignJustify}>
+						{1 === 2 &&
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
-												  onPress={() => { Alert.alert('준비중입니다.') }}
-												  style={[ styles.alignJustify, styles.sortButton ]}>
+												  onPress={() => {
+													  Alert.alert('준비중입니다.')
+												  }}
+												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>인기</Text>
 								</TouchableOpacity>
 								<View style={styles.sortBar}/>
 								<TouchableOpacity activeOpacity={0.9}
-												  onPress={() => { Alert.alert('준비중입니다.') }}
-												  style={[ styles.alignJustify, styles.sortButton ]}>
+												  onPress={() => {
+													  Alert.alert('준비중입니다.')
+												  }}
+												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>신규</Text>
 								</TouchableOpacity>
 							</View>
 						</View>
+						}
 						<TouchableOpacity activeOpacity={0.9}
 										  style={{ marginLeft: 'auto' }}
 										  onPress={() => {

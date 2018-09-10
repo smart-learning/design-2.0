@@ -2,7 +2,10 @@ import axios from 'axios';
 import Base64 from "Base64";
 import Localizable from 'react-native-localizable';
 import moment from 'moment';
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Platform } from "react-native";
+import VersionNumber from "react-native-version-number";
+import DeviceInfo from "react-native-device-info";
+import firebase from "react-native-firebase";
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
 let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
@@ -17,6 +20,7 @@ if (Localizable) {
 const HOST = host;
 const TYPE = 'api';
 const API_PREFIX = `${HOST}/${TYPE}/`;
+const API_PREFIX_FOR_AUTH_TOKEN = host;
 
 const clientId = 'wyk27OuFanxIcxzGRO68F13n';
 const clientSecret = 'IcQUptRiZBe3mqLbx8BIB7dqfySP52J4He6TmMXnnzupUNIj';
@@ -90,6 +94,7 @@ export default {
 				return null;
 			});
 	},
+
 	getLectureCategory(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
 		if (isRefresh) {
@@ -107,8 +112,12 @@ export default {
 			});
 	},
 
-	getAudioBookCategory() {
-		return cacheOrLoad(API_PREFIX + 'v1.0/contents/audiobooks/categories', DEFAULT_EXPIRED)
+	getAudioBookCategory(isRefresh = false) {
+		let expired = DEFAULT_EXPIRED;
+		if (isRefresh) {
+			expired = 1;
+		}
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/audiobooks/categories', expired)
 			.then(data => {
 				return data;
 			})
@@ -117,24 +126,50 @@ export default {
 			});
 	},
 
-	getClassList( ccode = null, page = 1 ) {
-		// let url = API_PREFIX + 'v1.0/contents/video-courses';
+	getClassList(ccode = null, page = 1) {
 		let url = API_PREFIX + 'v1.1/contents/video-courses';
 		const params = {};
-		if( ccode ) {
+		if (ccode) {
 			params.ccode = ccode;
 		}
-		if( page ) {
+		if (page) {
 			params.page = page;
 		}
-		url += '?' + encodeParams( params );
-		return cacheOrLoad( url, DEFAULT_EXPIRED )
-			.then( data => {
-				return data;
+		url += '?' + encodeParams(params);
+
+		// return cacheOrLoad(url, DEFAULT_EXPIRED)
+		// 	.then(data => {
+		// 		return data;
+		// 	})
+		// 	.catch(error => {
+		// 		console.log(error);
+		// 	});
+
+		return axios.get(url)
+			.then((response) => {
+				const headers = response.headers
+				const data = response.data
+				const pagination = {}
+				Object.keys(headers).forEach((key) => {
+					if (key.indexOf('pagination-') === 0) {
+						try{
+							pagination[key.replace('pagination-', '')] = eval(headers[key].toLowerCase())
+						} catch(e) {
+						}
+					}
+				})
+				return {
+					items: data.map((element) => ({
+						...element,
+						key: element.id.toString(),
+					})),
+					pagination,
+				}
 			})
 			.catch(error => {
 				console.log(error);
-			});
+			})
+
 	},
 
 	getLectureListByCategories() {
@@ -147,17 +182,16 @@ export default {
 			});
 	},
 
-	getAudioBookList( ccode = null, page = 1 ) {
-		// let url = API_PREFIX + 'v1.0/contents/audiobooks';
+	getAudioBookList(ccode = null, page = 1) {
 		let url = API_PREFIX + 'v1.1/contents/audiobooks';
 		const params = {};
-		if( ccode ) {
+		if (ccode) {
 			params.ccode = ccode;
 		}
-		if( page ) {
+		if (page) {
 			params.page = page;
 		}
-		url += '?' + encodeParams( params );
+		url += '?' + encodeParams(params);
 
 		return axios.get(url)
 			.then( (response) => {
@@ -247,11 +281,11 @@ export default {
 	getAuthToken(email, password) {
 
 		let params = encodeParams({username: email, password: password, scope: 'profile', 'grant_type': 'password'});
-		console.log('getAuthToken:', HOST + '/oauth/token', email, password);
-		console.log('encodedParams:', params);
+		// console.log('getAuthToken:', HOS + 'oauth/token', email, password);
+		// console.log('encodedParams:', params);
 
 		return new Promise((resolve, reject) => {
-			axios.post(HOST + '/oauth/token',
+			axios.post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token',
 				params,
 				{
 					headers: {
@@ -268,6 +302,9 @@ export default {
 				});
 		});
 	},
+
+
+
 
 	getMainPopup() {
 		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/popup', DEFAULT_EXPIRED)
@@ -353,7 +390,7 @@ export default {
 		}
 		return cacheOrLoad(API_PREFIX + 'v1.0/contents/audiobooks/botm', expired)
 			.then(data => {
-				return data;
+				return data.reverse();
 			})
 			.catch(error => {
 				console.log(error);
@@ -405,21 +442,35 @@ export default {
 				console.log(error);
 			});
 	},
-	
+
 	getMembershipVouchers() {
 		const expired = 1;
-		return cacheOrLoad( API_PREFIX + 'v1.0/membership/vouchers', expired )
+		return cacheOrLoad(API_PREFIX + 'v1.0/membership/vouchers', expired)
 			.then( data => {
 				return data;
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	},
+
+	getVouchersStatus() {
+		const expired = 1;
+		return cacheOrLoad(API_PREFIX + 'v1.0/membership/vouchers/status', expired)
+			.then( data => {
+				return data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	},
 
 	getMembershipCurrent() {
 		const expired = 0;
 		return cacheOrLoad( API_PREFIX + 'v1.0/membership/current', expired )
+			.then( data => {
+				return data;
+			})
 			.catch( error => {
 				console.log( error );
 			} );
@@ -427,16 +478,21 @@ export default {
 
 	getVoucherStatus(isRefresh = false) {
 		let expired = DEFAULT_EXPIRED;
-		if( isRefresh ) {
+		if (isRefresh) {
 			expired = 1;
 		}
-		return cacheOrLoad( API_PREFIX + 'v1.0/membership/vouchers/status', expired )
+		return cacheOrLoad(API_PREFIX + 'v1.0/membership/vouchers/status', expired)
 			.then( data => {
 				return data;
-			} )
-			.catch( error => {
-				console.log( error );
-			} );
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	},
+
+	async voucherExchange(audiobook_id) {
+		let params = {audiobook_id}
+		return axios.post(API_PREFIX + 'v1.0/membership/vouchers/exchange', params)
 	},
 
 	getBookReviewList(cid) {
@@ -470,8 +526,107 @@ export default {
 	},
 	registerMembership(data) {
 		return axios.post(API_PREFIX + 'v1.0/payment/import/subscriptions/issue-billing', data)
-			.catch((error) => {
-				console.error(error);
+			.then(resp => resp.data)
+	},
+	// fcm token 등록
+	async registeFcmToken(bool) {
+
+		const fcmToken = await firebase.messaging().getToken();
+
+		console.log('fcmToken:', fcmToken );
+
+		if (fcmToken) {
+			let params = encodeParams({
+				"app_name": "welaaa",
+				"app_os": (Platform.OS === 'ios' ? 0 : 1),
+				"app_os_version": Platform.Version,
+				"app_version": VersionNumber.appVersion,
+				"device_id": DeviceInfo.getDeviceId(),
+				"device_model": DeviceInfo.getModel(),
+				"fcm_token": fcmToken,
+				"push_receive": bool
 			});
+
+			return new Promise((resolve, reject) => {
+				axios.post(API_PREFIX + 'v1.0/message/fcm-tokens', {
+						app_name: "welaaa",
+						app_os: (Platform.OS === 'ios' ? 0 : 1),
+						app_os_version: Platform.Version,
+						app_version: VersionNumber.appVersion,
+						device_id: DeviceInfo.getDeviceId(),
+						device_model: DeviceInfo.getModel(),
+						fcm_token: fcmToken,
+						push_receive: true,
+				})
+				.then(response => {
+					resolve(response.data);
+				})
+				.catch((error, a, b) => {
+					reject(error);
+				});
+			});
+
+
+		} else {
+			reject('no token');
+		}
+	},
+
+	getSeriesContents(isRefresh = false) {
+		let expired = DEFAULT_EXPIRED;
+		if (isRefresh) {
+			expired = 1;
+		}
+		return cacheOrLoad(API_PREFIX + 'v1.0/contents/video-series', expired)
+			.then(data => {
+				if (data !== undefined) {
+					data.forEach(elements => {
+						elements.item.forEach(element => {
+							element.key = element.id.toString();
+						});
+					});
+				}
+			})
+	},
+
+	getDailyBookList( isRefresh = false ) {
+		let expired = DEFAULT_EXPIRED;
+		if( isRefresh ) {
+			expired = 1;
+		}
+		return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/a-book-a-day', expired)
+			.then(data => {
+				return data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	},
+
+	//회원가입
+	signUp(email, password) {
+		let params = { username: email, password: password, grant_type: 'password' };
+		params = encodeParams( params );
+
+		return axios.post( API_PREFIX + 'v1.0/signup',
+			params,
+			{
+				headers: {
+					'Authorization': 'Basic ' + authBasicCode,
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			} )
+			.then( response => {
+				return response.data;
+			} )
+			.catch( ( error ) => {
+				console.log( error );
+			} );
+	},
+
+	getContentPermission(type, id) {
+		return axios.get(`${API_PREFIX}v1.0/membership/permissions/${type}/${id}`)
+			.then(resp => resp.data)
 	}
+
 }

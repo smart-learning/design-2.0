@@ -1,6 +1,6 @@
 import React from "react";
 import {observer} from 'mobx-react';
-import {View,Text,} from "react-native";
+import {View,} from "react-native";
 // import store from "../../commons/store";
 import net from "../../commons/net";
 import CommonStyles from "../../../styles/common";
@@ -19,6 +19,11 @@ class ClassDetailPage extends React.Component {
 		slideHeight: null,
 		reviewText: '',
 		reviewStar: 0,
+		permissions: {
+			permission: false,
+			expire_at: null,
+		},
+		voucherStatus: {},
 	});
 
 	getData = async () => {
@@ -38,7 +43,7 @@ class ClassDetailPage extends React.Component {
 	render() {
 		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
 			{this.store.itemData !== null &&
-			<DetailLayout learnType={"class"} store={this.store}/>
+			<DetailLayout learnType={"class"} itemData={this.store.itemData} store={this.store}/>
 			}
 		</View>
 	}

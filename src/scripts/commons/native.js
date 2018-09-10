@@ -6,6 +6,7 @@ import globalStore from '../commons/store';
 const {RNNativePlayer, RNNativeBase} = NativeModules;
 
 import {Alert} from 'react-native'
+import * as firebase from "react-native-firebase";
 
 export default {
 	getF_TOKEN() {
@@ -43,8 +44,8 @@ export default {
 		if (Platform.OS === 'android') {
 			null;
 		} else {
-			args.cid = 'v100015_001';
-			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8';
+			args.cid = 'v100015_002';
+			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_002/master.m3u8';
 		}
 
 		console.log('native.play()', JSON.stringify(args));
@@ -152,7 +153,7 @@ export default {
 
 		switch (key) {
 			case 'alert':
-				Alert.alert('준비중입니다.');
+				this.setFirebase( bool );
 				break;
 
 			case 'email':
@@ -174,7 +175,6 @@ export default {
 
 		return 'salkdjfklsdjf;';
 
-	}
-
+	},
 
 }

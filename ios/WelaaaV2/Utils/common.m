@@ -627,6 +627,25 @@
     return deviceModel;
 }
 
++ (BOOL) hasNotch
+{
+    NSString *deviceModel = [self getModel];
+  
+    if ( [deviceModel isEqualToString : @"iPhone X"] )
+        return true;
+  
+    if ( [deviceModel isEqualToString : @"iPhone XS"] )
+        return true;
+  
+    if ( [deviceModel isEqualToString : @"iPhone X Plus"] )
+        return true;
+  
+    if ( [deviceModel isEqualToString : @"iPhone 9"] )
+        return true;
+    
+    return false;
+}
+
 + (NSString *) getHostname
 {
     char baseHostName[256];

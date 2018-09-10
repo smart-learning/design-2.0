@@ -52,21 +52,26 @@ class EmailAuthPack extends Component {
 		super();
 
 		this.state = {
-			email: null,
-			password: null,
+			email: '',
+			password: '',
+			loginButtonDisabled: false,
 		};
 	}
 
 	handleLogin = () => {
-		if (this.state.email === null) {
-			Alert.alert('이메일은 필수 입력항목입니다.');
-			return false;
-		} else if (this.state.password === null) {
-			Alert.alert('비밀번호는 필수 입력항목입니다.');
-			return false;
+		if (this.state.email === '') {
+			Alert.alert('오류', '이메일은 필수 입력항목입니다.');
+			return
+		}
+	    if (this.state.password === '') {
+			Alert.alert('오류', '비밀번호는 필수 입력항목입니다.');
+			return
 		}
 
-		this.props.onAccess( this.state.email, this.state.password );
+		this.setState({ loginButtonDisabled: true })
+		this.props.onAccess( this.state.email, this.state.password, () => {
+			this.setState({ loginButtonDisabled: false })
+		} );
 	};
 
 	render() {
@@ -95,10 +100,15 @@ class EmailAuthPack extends Component {
 			</View>
 
 			<TouchableOpacity activeOpacity={0.9}
-							  onPress={this.handleLogin}>
+							disabled={this.state.loginButtonDisabled}
+							onPress={this.handleLogin}>
 				<View borderRadius={4}
 					  style={styles.btnSubmit}>
-					<Text style={styles.textSubmit}>윌라 계정으로</Text>
+					<Text style={styles.textSubmit}>
+						{this.state.loginButtonDisabled
+							? '로그인 중'
+							: '이메일로  로그인' }
+					</Text>
 				</View>
 			</TouchableOpacity>
 
@@ -121,6 +131,5 @@ class EmailAuthPack extends Component {
 		</View>
 	}
 }
-
 
 export default EmailAuthPack;

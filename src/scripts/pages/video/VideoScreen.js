@@ -1,5 +1,11 @@
 import React from "react";
-import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_STACK_WITH_SEARCH, NAV_OPTS_DRAWER} from "../../commons/nav";
+import {
+	NAV_OPTS_COMMON,
+	NAV_OPTS_MAIN,
+	NAV_OPTS_STACK_WITH_SEARCH,
+	NAV_OPTS_DRAWER,
+	NAV_OPTS_STACK_HISTORY_BACK
+} from "../../commons/nav";
 import {createStackNavigator} from "react-navigation";
 import ClassListPage from "./ClassListPage";
 import ClassDetailPage from "./ClassDetailPage";
@@ -11,10 +17,11 @@ const VideoScreen = createStackNavigator({
 		ClassListPage: {
 			screen: ClassListPage,
 			navigationOptions: NAV_OPTS_MAIN,
+			path: 'video_list',
 		},
 		ClassDetailPage: {
 			screen: ClassDetailPage,
-			navigationOptions: NAV_OPTS_STACK_WITH_SEARCH,
+			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
 		},
 		ClipPage: {
 			screen: ClipPage,

@@ -89,6 +89,7 @@ const styles = StyleSheet.create( {
 		selectedCategory: null,
 		ccode: null,
 		pagination: {},
+		has_next: false,
 	} );
 
 	loadClassList = async ( ccode = null, page = 1 ) => {
@@ -97,6 +98,10 @@ const styles = StyleSheet.create( {
 			this.store.displayData = null;
 		}
 		const data = await net.getClassList( ccode, page );
+		let list = data;
+		if( !_.isArray( list ) ) {
+			list = [];
+		}
 		const VOs = data.items.map( element => {
 			const vo = new SummaryVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
@@ -114,20 +119,23 @@ const styles = StyleSheet.create( {
 			_.each( VOs, e => this.store.displayData.push( e ) );
 		}
 		this.store.ccode = ccode;
+		// TODO: V1.1 대응 페이지네이션 처리 추가.
 		this.store.pagination = data.pagination;
 		this.store.isLoading = false;
 	};
 
 	loadMore = () => {
-		if( this.store.pagination.has_next ) {
-			console.log( 'this.store.pagination.next_page', this.store.pagination.next_page );
-			this.loadClassList( this.store.ccode, this.store.pagination.next_page );
+		if( this.store.pagination['has-next'] ) {
+			this.loadClassList( this.store.ccode, this.store.pagination.page + 1);
 		}
 	};
 
 	async componentDidMount() {
 		await this.loadClassList();
-		const categories = await net.getLectureCategory();
+		let categories = await net.getLectureCategory();
+		if( !_.isArray( categories ) ) {
+			categories = [];
+		}
 		this.store.categories = categories.map( element => {
 			const vo = new PageCategoryItemVO();
 			_.each( element, ( value, key ) => vo[ key ] = value );
@@ -136,21 +144,22 @@ const styles = StyleSheet.create( {
 			return vo;
 		} );
 
-		// action으로 정해둔 네임에 따라 초기 행동을 결정
-		const action = this.props.navigation.getParam('action');
-		const actionData = this.props.navigation.getParam('data');
-
-		// console.log( 'navigate params:', action, actionData );
-
-		switch( action ){
-			case 'category': // from HomeVideoPage
-				this.onCategorySelect( actionData );
-				break;
-
-			// case 'item': // from ClassListPage
-			// 	// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
-			// 	break;
-		}
+		// // action으로 정해둔 네임에 따라 초기 행동을 결정
+		// const action = this.props.navigation.getParam('action');
+		// const actionData = this.props.navigation.getParam('data');
+		//
+		// // console.log( 'navigate params:', action, actionData );
+		//
+		// switch( action ){
+		// 	case 'category': // from HomeVideoPage
+		// 		this.onCategorySelect( actionData );
+		// 		break;
+		//
+		// 	// case 'item': // from ClassListPage
+		// 	// 	// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
+		// 	// 	break;
+		// }
+		this.loadClassList();
 	}
 
 	onCategorySelect = item => {
@@ -161,20 +170,25 @@ const styles = StyleSheet.create( {
 	render() {
 		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
 			<ScrollView style={{ width: '100%' }}>
+				{1 === 2 &&
 				<View style={styles.toggleGroup}>
 					<View style={styles.alignJustify}>
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
-												  onPress={() => { Alert.alert('준비중입니다.') }}
-												  style={[ styles.alignJustify, styles.sortButton ]}>
+												  onPress={() => {
+													  Alert.alert('준비중입니다.')
+												  }}
+												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>인기</Text>
 								</TouchableOpacity>
 								<View style={styles.sortBar}/>
 								<TouchableOpacity activeOpacity={0.9}
-												  onPress={() => { Alert.alert('준비중입니다.') }}
-												  style={[ styles.alignJustify, styles.sortButton ]}>
+												  onPress={() => {
+													  Alert.alert('준비중입니다.')
+												  }}
+												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
 									<Text style={styles.sortText}>신규</Text>
 								</TouchableOpacity>
@@ -192,6 +206,7 @@ const styles = StyleSheet.create( {
 						</TouchableOpacity>
 					</View>
 				</View>
+				}
 
 				<PageCategory data={this.store.categories}
 							  selectedCategory={this.store.selectedCategory}
@@ -216,7 +231,7 @@ const styles = StyleSheet.create( {
 						<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 					</View>
 					}
-					{( !this.store.isLoading && this.store.pagination.has_next ) &&
+					{( !this.store.isLoading && this.store.pagination['has-next'] ) &&
 					<TouchableOpacity activeOpacity={0.9} onPress={ this.loadMore }>
 						<View style={[ styles.linkViewAll, styles.classLinkViewAll ]} borderRadius={5}>
 							<Text style={styles.linkViewAllText}>더보기</Text>

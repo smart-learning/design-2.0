@@ -165,8 +165,8 @@ export default class TopBanner extends React.Component {
 	}
 
 	render() {
-		console.log( 'this.props.store.itemData.headline',this.props.store.itemData.headline );
 		return <ImageBackground style={styles.banner} resizeMode="cover" source={Dummy}>
+			{/*
 			<View style={styles.titleLabelContainer}>
 				<View
 					style={this.props.learnType === 'audioBook' ? [styles.titleLabel, styles.titleLabelAudioBook] : [styles.titleLabel, styles.titleLabelClass]}
@@ -175,6 +175,7 @@ export default class TopBanner extends React.Component {
 				</View>
 				<Text style={styles.titleLabelText}>종합순위 30위! 비즈니스스킬 5위!</Text>
 			</View>
+			*/}
 			{this.props.learnType === 'class' &&
 			<Text style={styles.headline}>{this.props.store.itemData.headline}</Text>
 			}
@@ -185,7 +186,7 @@ export default class TopBanner extends React.Component {
 				{this.props.store.itemData.title}
 			</Text>
 			<Text style={styles.author}>
-				{this.props.store.itemData.teacher.name}
+				{/* {this.props.store.itemData.teacher.name} */}
 			</Text>
 			<View style={[ styles.bookLabels, CommonStyles.alignJustifyFlex ]}>
 				{(!this.props.store.itemData.is_new && !this.props.store.itemData.is_exclusive && !this.props.store.itemData.is_free && !this.props.store.itemData.audiobook_type) &&
@@ -219,6 +220,7 @@ export default class TopBanner extends React.Component {
 				</View>
 				}
 			</View>
+			{/*
 			<View style={[CommonStyles.alignJustifyContentBetween, styles.itemDownload]}>
 				<Text style={styles.itemDownloadSize}>
 					전체 다운로드 {this.props.store.itemData.file_size}
@@ -229,6 +231,7 @@ export default class TopBanner extends React.Component {
 					</Text>
 				</View>
 			</View>
+			*/}
 			{this.props.learnType === 'audioBook' &&
 			<View style={styles.audioBookPlayButtonContainer}>
 				<ImageBackground source={{uri:this.props.store.itemData.images.cd}} resizeMode={"cover"} borderRadius={70} style={styles.audioBookAuthorThumbnail}>

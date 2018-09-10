@@ -1,17 +1,13 @@
 import React from "react";
-import { observer } from 'mobx-react';
-import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image, Dimensions, Alert,} from "react-native";
+import {observer} from 'mobx-react';
+import {Alert, Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 import Swiper from 'react-native-swiper';
-import CommonStyles, { TEXT_PRIMARY } from "../../../styles/common";
+import CommonStyles from "../../../styles/common";
 import IcClip from "../../../images/ic-detail-label-clip.png";
 import IcFile from "../../../images/ic-detail-label-file.png";
 import IcPrize from "../../../images/ic-detail-label-prize.png";
 import IcTime from "../../../images/ic-detail-label-time.png";
-import DummyTeacher from '../../../images/dummy-teacher.jpg';
-import Dummy1 from '../../../images/dummy-swiper-1.png';
-import Dummy2 from '../../../images/dummy-swiper-2.png';
 import Evaluation from "./Evaluation";
-import ReviewItem from "./ReviewItem";
 import moment from "moment";
 
 const styles = StyleSheet.create( {
@@ -135,25 +131,27 @@ class TabContentInfo extends React.Component {
 		const playTime = moment.duration( this.props.store.itemData.play_time );
 		return <View>
 			{/* 이미지 스와이퍼 */}
-			<View style={{ height: this.props.store.slideHeight }}>
-				{this.props.store.itemData.info_img_set.length > 0 &&
-				<Swiper style={styles.wrapper}
-						showsButtons={false}
-						height={window.width}
-						dotColor={"#888888"}
-						activeDotColor={"#ffffff"}
-						paginationStyle={{bottom: 10}}>
-					{this.props.store.itemData.info_img_set.map((item, key) => {
-						return (
-							<TouchableOpacity activeOpacity={0.9} key={key}>
-								<ImageBackground source={{uri: item}} resizeMode="cover"
-												 style={styles.thumbnail}/>
-							</TouchableOpacity>
-						);
-					})}
-				</Swiper>
-				}
-			</View>
+			{ this.props.store.itemData.info_img_set.length > 0 && (
+                <View style={{ height: this.props.store.slideHeight }}>
+                    {this.props.store.itemData.info_img_set.length > 0 &&
+                    <Swiper style={styles.wrapper}
+                            showsButtons={false}
+                            height={window.width}
+                            dotColor={"#888888"}
+                            activeDotColor={"#ffffff"}
+                            paginationStyle={{bottom: 10}}>
+                        {this.props.store.itemData.info_img_set.map((item, key) => {
+                            return (
+                                <TouchableOpacity activeOpacity={0.9} key={key}>
+                                    <ImageBackground source={{uri: item}} resizeMode="cover"
+                                                     style={styles.thumbnail}/>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </Swiper>
+                    }
+                </View>
+			)}
 			{/* /이미지 스와이퍼 */}
 
 			<View style={[ CommonStyles.contentContainer, styles.info ]}>
@@ -190,10 +188,12 @@ class TabContentInfo extends React.Component {
 					<Image style={styles.labelInfoImage} source={IcFile}/>
 					<Text style={styles.labelInfoText}>콘텐츠 용량 {this.props.store.itemData.file_size} MB</Text>
 				</View>
+				{/*
 				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
 					<Image style={styles.labelInfoImage} source={IcPrize}/>
 					<Text style={styles.labelInfoText}>학습 완료 시 수료증 제공</Text>
 				</View>
+				*/}
 			</View>
 
 			<View style={styles.author}>
@@ -215,12 +215,14 @@ class TabContentInfo extends React.Component {
 				</View>
 			</View>
 
+			{1 === 2 &&
 			<View style={styles.review}>
 				<Text style={styles.sectionTitle}>학습자 평가</Text>
 
 				<Evaluation itemData={this.props.store.itemData}/>
 
 			</View>
+			}
 
 		</View>
 	}

@@ -1,5 +1,11 @@
 import React from "react";
-import {NAV_OPTS_COMMON, NAV_OPTS_MAIN, NAV_OPTS_DRAWER, NAV_OPTS_STACK_WITH_SEARCH} from "../../commons/nav";
+import {
+	NAV_OPTS_COMMON,
+	NAV_OPTS_MAIN,
+	NAV_OPTS_DRAWER,
+	NAV_OPTS_STACK_WITH_SEARCH,
+	NAV_OPTS_STACK_HISTORY_BACK
+} from "../../commons/nav";
 import {createStackNavigator} from "react-navigation";
 import AudioBookPage from "./AudioBookPage";
 import AudioBookDetailPage from "./AudioBookDetailPage";
@@ -13,7 +19,7 @@ const AudioScreen = createStackNavigator({
 		},
 		AudioBookDetailPage: {
 			screen: AudioBookDetailPage,
-			navigationOptions: NAV_OPTS_STACK_WITH_SEARCH,
+			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
 		}
 	},
 
