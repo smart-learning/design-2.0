@@ -287,24 +287,24 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         mProgressDialog.dismiss();
       }
 
-      UiThreadUtil.runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          Activity activity = getCurrentActivity();
-
-          new AlertDialog.Builder(activity)
-              .setTitle("알림")
-              .setMessage(
-                  "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause() + " \n Exception Msg "
-                      + e
-                      .getMessage())
-              .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                }
-              }).show();
-        }
-      });
+//      UiThreadUtil.runOnUiThread(new Runnable() {
+//        @Override
+//        public void run() {
+//          Activity activity = getCurrentActivity();
+//
+//          new AlertDialog.Builder(activity)
+//              .setTitle("알림")
+//              .setMessage(
+//                  "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause() + " \n Exception Msg "
+//                      + e
+//                      .getMessage())
+//              .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface arg0, int arg1) {
+//                }
+//              }).show();
+//        }
+//      });
 
     }
 
@@ -606,24 +606,24 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
             e.printStackTrace();
 
-            UiThreadUtil.runOnUiThread(new Runnable() {
-              @Override
-              public void run() {
-                Activity activity = getCurrentActivity();
-
-                new AlertDialog.Builder(activity)
-                    .setTitle("알림")
-                    .setMessage(
-                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
-                            + " \n Exception Msg " + e
-                            .getMessage())
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                      @Override
-                      public void onClick(DialogInterface arg0, int arg1) {
-                      }
-                    }).show();
-              }
-            });
+//            UiThreadUtil.runOnUiThread(new Runnable() {
+//              @Override
+//              public void run() {
+//                Activity activity = getCurrentActivity();
+//
+//                new AlertDialog.Builder(activity)
+//                    .setTitle("알림")
+//                    .setMessage(
+//                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
+//                            + " \n Exception Msg " + e
+//                            .getMessage())
+//                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                      @Override
+//                      public void onClick(DialogInterface arg0, int arg1) {
+//                      }
+//                    }).show();
+//              }
+//            });
 
           }
 
@@ -674,6 +674,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               } else {
                 Preferences.setWelaaaPreviewPlay(getReactApplicationContext(), true);
               }
+
+              LogHelper.e(TAG , " CAN_PLAY " + Preferences.getWelaaaPreviewPlay(getReactApplicationContext()));
 
               if (mProgressDialog != null) {
                 mProgressDialog.dismiss();
@@ -733,6 +735,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   LogHelper.e(TAG, "contentType : " + contentType);
                   LogHelper.e(TAG, "contentCid : " + contentCid);
                   LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
+                  LogHelper.e(TAG, "can_play : " + can_play);
+                  LogHelper.e(TAG, "Pre can_play : " + Preferences.getWelaaaPreviewPlay(getReactApplicationContext()));
                   ContextCompat.startActivity(activity, intent, null);
                 }
 
@@ -768,6 +772,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 LogHelper.e(TAG, "contentType : " + contentType);
                 LogHelper.e(TAG, "contentCid : " + contentCid);
                 LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
+                LogHelper.e(TAG, "can_play : " + can_play);
+                LogHelper.e(TAG, "Pre can_play : " + Preferences.getWelaaaPreviewPlay(getReactApplicationContext()));
                 ContextCompat.startActivity(activity, intent, null);
               }
 
@@ -819,24 +825,24 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           mProgressDialog.dismiss();
         }
 
-        UiThreadUtil.runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            Activity activity = getCurrentActivity();
-
-            new AlertDialog.Builder(activity)
-                .setTitle("알림")
-                .setMessage(
-                    "서비스 이용에 장애가 발생하였습니다. \n Response Code " + response.code() + " \n Response Msg "
-                        + response)
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                  @Override
-                  public void onClick(DialogInterface arg0, int arg1) {
-                  }
-                }).show();
-
-          }
-        });
+//        UiThreadUtil.runOnUiThread(new Runnable() {
+//          @Override
+//          public void run() {
+//            Activity activity = getCurrentActivity();
+//
+//            new AlertDialog.Builder(activity)
+//                .setTitle("알림")
+//                .setMessage(
+//                    "서비스 이용에 장애가 발생하였습니다. \n Response Code " + response.code() + " \n Response Msg "
+//                        + response)
+//                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                  @Override
+//                  public void onClick(DialogInterface arg0, int arg1) {
+//                  }
+//                }).show();
+//
+//          }
+//        });
       }
     }
   };

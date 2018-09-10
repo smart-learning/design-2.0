@@ -10,6 +10,7 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
@@ -34,7 +35,6 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -690,26 +690,26 @@ public class PlayerActivity extends BasePlayerActivity {
 
 //      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
 
-          UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              mButton_Arrow_Layout.setVisibility(GONE);
-              mRelatedViewBtn.setVisibility(GONE);
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            mButton_Arrow_Layout.setVisibility(GONE);
+            mRelatedViewBtn.setVisibility(GONE);
 
-              RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
-              subscription_wrap.setVisibility(GONE);
+            RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
+            subscription_wrap.setVisibility(GONE);
 
-              RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
-              audioVideobtn_wrap.setVisibility(GONE);
+            RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
+            audioVideobtn_wrap.setVisibility(GONE);
 
-              audioModeBackgroundLayout.setVisibility(VISIBLE);
-              audioModeIconHeadset.setVisibility(VISIBLE);
+            audioModeBackgroundLayout.setVisibility(VISIBLE);
+            audioModeIconHeadset.setVisibility(VISIBLE);
 
-              LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
-              // Audio Book 에서 화면 항상 켜기 //
-              getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            }
-          });
+            LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
+            // Audio Book 에서 화면 항상 켜기 //
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+          }
+        });
 //      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
 
       } else {
@@ -839,7 +839,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
   @Override
   protected void onUserLeaveHint() {
-    if(Build.VERSION.SDK_INT>=VERSION_CODES.O){
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
       try {
         PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
         builder.setAspectRatio(new Rational(16, 9));
@@ -2055,7 +2055,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
             boolean isOnlyWifiDownload = Preferences.getOnlyWifiDownload(getApplicationContext());
 
-            if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
+            if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName()
+                .equals("WIFI")) {
 
               UiThreadUtil.runOnUiThread(new Runnable() {
                 @Override
@@ -2069,7 +2070,7 @@ public class PlayerActivity extends BasePlayerActivity {
               });
 
               return;
-            }else{
+            } else {
               if (CAN_PLAY) {
                 alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
               } else {
@@ -4358,7 +4359,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public void onBackPressed() {
     Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
 
-    try{
+    try {
 // 최근 재생 리스트가 있는 경우
       if (mPlaylistGroupLayout.getVisibility() == VISIBLE) {
         if (mPlaylistGroupLayout != null) {
@@ -4400,15 +4401,15 @@ public class PlayerActivity extends BasePlayerActivity {
       } else {
         // 종료 시나리오 생각 하기 ..
 
-        LogHelper.e(TAG , " backPress CONTENT_TYPE " + CONTENT_TYPE );
+        LogHelper.e(TAG, " backPress CONTENT_TYPE " + CONTENT_TYPE);
 
-        if(CONTENT_TYPE.equals("video-course")){
+        if (CONTENT_TYPE.equals("video-course")) {
           creatDialog(WELAAAPLAYER_SUGGEST_CODE);
-        }else{
+        } else {
           finish();
         }
       }
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
       finish();
     }
@@ -4777,10 +4778,10 @@ public class PlayerActivity extends BasePlayerActivity {
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
 
-        try{
+        try {
           setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
               getwebPlayerInfo().getCname()[getContentId()]);
-        }catch (Exception e){
+        } catch (Exception e) {
           e.printStackTrace();
         }
 
@@ -5419,23 +5420,23 @@ public class PlayerActivity extends BasePlayerActivity {
 
             e.printStackTrace();
 
-            UiThreadUtil.runOnUiThread(new Runnable() {
-              @Override
-              public void run() {
-
-                new AlertDialog.Builder(getApplicationContext())
-                    .setTitle("알림")
-                    .setMessage(
-                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
-                            + " \n Exception Msg " + e
-                            .getMessage())
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                      @Override
-                      public void onClick(DialogInterface arg0, int arg1) {
-                      }
-                    }).show();
-              }
-            });
+//            UiThreadUtil.runOnUiThread(new Runnable() {
+//              @Override
+//              public void run() {
+//
+//                new AlertDialog.Builder(getApplicationContext())
+//                    .setTitle("알림")
+//                    .setMessage(
+//                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
+//                            + " \n Exception Msg " + e
+//                            .getMessage())
+//                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                      @Override
+//                      public void onClick(DialogInterface arg0, int arg1) {
+//                      }
+//                    }).show();
+//              }
+//            });
 
           }
 
@@ -5471,28 +5472,43 @@ public class PlayerActivity extends BasePlayerActivity {
     for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
       if (getwebPlayerInfo().getCkey()[i].equals(pos)) {
         currentPosition = i;
+        break;
       }
     }
+
+    LogHelper.e(TAG , " playListOnClick currentPosition " + currentPosition);
+
+    setContentId(currentPosition);
 //
 //    setBackGroungLayout(true);
 
-    if (mPlaylistGroupLayout != null) {
-      mPlaylistGroupLayout.startAnimation(mAniSlideHide);
-    }
-    if (mPlaylistGroupLayout != null) {
-      mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
-    }
-    if (mButtonGroupLayout != null) {
-      mButtonGroupLayout.setVisibility(View.VISIBLE);
-    }
+    UiThreadUtil.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        if (mPlaylistGroupLayout != null) {
+          mPlaylistGroupLayout.startAnimation(mAniSlideHide);
+        }
+        if (mPlaylistGroupLayout != null) {
+          mPlaylistGroupLayout.setVisibility(View.INVISIBLE);
+        }
+        if (mButtonGroupLayout != null) {
+          mButtonGroupLayout.setVisibility(View.VISIBLE);
+        }
 
-    if (lectureListItemdapter != null) {
-      lectureListItemdapter = null;
-    }
+        if (lectureListItemdapter != null) {
+          lectureListItemdapter = null;
+        }
 
-    if (lectureAudioBookListItemdapter != null) {
-      lectureAudioBookListItemdapter = null;
-    }
+        if (lectureAudioBookListItemdapter != null) {
+          lectureAudioBookListItemdapter = null;
+        }
+      }
+    });
+
+
+
+    LogHelper.e(TAG , " playListOnClick currentPosition getContentId " + currentPosition);
+    LogHelper.e(TAG , " playListOnClick currentPosition getContentId " + getContentId());
 
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
@@ -5500,7 +5516,7 @@ public class PlayerActivity extends BasePlayerActivity {
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);
 
-    setContentId(currentPosition);
+
   }
 
   public void setBroadCatReceiver() {
