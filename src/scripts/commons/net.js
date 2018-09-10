@@ -618,20 +618,10 @@ export default {
 		}
 	},
 
-	getSeriesContents(isRefresh = false) {
-		let expired = DEFAULT_EXPIRED;
-		if (isRefresh) {
-			expired = 1;
-		}
-		return cacheOrLoad(API_PREFIX + 'v1.0/contents/video-series', expired)
-			.then(data => {
-				if (data !== undefined) {
-					data.forEach(elements => {
-						elements.item.forEach(element => {
-							element.key = element.id.toString();
-						});
-					});
-				}
+	getSeriesContents() {
+		return axios.get(API_PREFIX + 'v1.0/contents/video-series')
+			.then(resp => {
+				return resp.data
 			})
 	},
 
