@@ -41,7 +41,7 @@ class HomeSeriesPage extends React.Component {
 
 	getData = async (isRefresh = false) => {
 		this.data.isLoading = true;
-		this.data.seriesData = await net.getSeriesContents(isRefresh);
+		this.data.seriesData = await net.getSeriesContents();
 		this.data.isLoading = false;
 	};
 
@@ -55,37 +55,53 @@ class HomeSeriesPage extends React.Component {
 	}
 
 	render() {
-		return <View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
-			<SafeAreaView style={{flex: 1, width: '100%'}}>
-				<ScrollView style={{flex: 1}}>
-					<View style={[CommonStyles.contentContainer, styles.seriesContentContainer]}>
 
-						<Text style={styles.titleH2}>
-							윌라 추천 시리즈
-						</Text>
+		return (
+			<View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
+				<SafeAreaView style={{flex: 1, width: '100%'}}>
+					<ScrollView style={{flex: 1}}>
 
-						{this.data.isLoading &&
-						<View style={{ marginTop: 12 }}>
-							<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
-						</View>
-						}
-						{( !this.data.isLoading && this.data.seriesData.length > 0 ) &&
-						<View>
+						<View style={[CommonStyles.contentContainer, styles.seriesContentContainer]}>
+
+							<Text style={styles.titleH2}>
+								윌라 추천 시리즈
+							</Text>
+
 							{
-							this.data.seriesData.map((item, key) => {
-								return (<View key={key} style={styles.seriesItem}>
-									<Text style={styles.titleH3}># {item.title}</Text>
-									<View style={styles.titleHr}/>
-									<ClassList classType={"series"} itemData={item.item}/>
-								</View>)
-							})
+								this.data.isLoading ? (
+									<View style={{marginTop: 12}}>
+										<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
+									</View>
+								) : undefined
+							}
+
+							{
+								(!this.data.isLoading && this.data.seriesData && this.data.seriesData.length > 0) ? (
+									<View>
+										{
+											this.data.seriesData.map((item, key) => {
+												return (
+													<View key={key} style={styles.seriesItem}>
+														<Text style={styles.titleH3}>{item.title}</Text>
+
+														<View style={styles.titleHr}/>
+														<View>
+															{
+																<ClassList classType={"series"} itemData={item.item}/>
+															}
+														</View>
+													</View>
+												)
+											})
+										}
+									</View>
+								) : undefined
 							}
 						</View>
-						}
-					</View>
-				</ScrollView>
-			</SafeAreaView>
-		</View>
+					</ScrollView>
+				</SafeAreaView>
+			</View>
+		)
 	}
 }
 

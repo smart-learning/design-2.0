@@ -24,6 +24,7 @@ import InquireListPage from "./InquireListPage";
 import SetAppPage from "./SetAppPage";
 import GuideViewPage from "./GuideViewPage";
 import InquireFormPage from "./InquireFormPage";
+import InquireViewPage from "./InquireViewPage";
 
 
 const MyScreens = createStackNavigator(
@@ -128,6 +129,10 @@ const MyScreens = createStackNavigator(
 		},
 		InquireListPage: {
 			screen: InquireListPage,
+			navigationOptions: NAV_OPTS_STACK,
+		},
+		InquireViewPage: {
+			screen: InquireViewPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
 		InquireFormPage: {

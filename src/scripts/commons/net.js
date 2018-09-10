@@ -126,6 +126,27 @@ export default {
 			});
 	},
 
+	getInquiryData() {
+		return axios.get(API_PREFIX + 'v1.0/platform/inquiries')
+			.then(resp => {
+				return resp.data
+			})
+	},
+
+	postInqueryItem(title, content) {
+		return axios.post(API_PREFIX + 'v1.0/platform/inquiries', {title, content})
+			.then(resp => {
+				return resp.status === 200
+			})
+	},
+
+	getInquiryDetail(id) {
+		return axios.get(API_PREFIX + `v1.0/platform/inquiries/${id}`)
+			.then(resp => {
+				return resp.data
+			})
+	},
+
 	getClassList(ccode = null, page = 1) {
 		let url = API_PREFIX + 'v1.1/contents/video-courses';
 		const params = {};
@@ -303,6 +324,31 @@ export default {
 		});
 	},
 
+
+	// 2018. 9. 10 김중온
+	// f_token 갱신
+	issueAuthToken(f_token) {
+
+		let params = encodeParams({username: 'f_token', password: f_token, scope: 'profile', grant_type: 'password'});
+		console.log('encodedParams:', params);
+
+		return new Promise((resolve, reject) => {
+			axios.post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token',
+				params,
+				{
+					headers: {
+						'Authorization': 'Basic ' + authBasicCode,
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				})
+				.then(response => {
+					resolve(response.data);
+				})
+				.catch((error) => {
+					reject(error);
+				});
+		});
+	},
 
 
 
@@ -572,20 +618,10 @@ export default {
 		}
 	},
 
-	getSeriesContents(isRefresh = false) {
-		let expired = DEFAULT_EXPIRED;
-		if (isRefresh) {
-			expired = 1;
-		}
-		return cacheOrLoad(API_PREFIX + 'v1.0/contents/video-series', expired)
-			.then(data => {
-				if (data !== undefined) {
-					data.forEach(elements => {
-						elements.item.forEach(element => {
-							element.key = element.id.toString();
-						});
-					});
-				}
+	getSeriesContents() {
+		return axios.get(API_PREFIX + 'v1.0/contents/video-series')
+			.then(resp => {
+				return resp.data
 			})
 	},
 

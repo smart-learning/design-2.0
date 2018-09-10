@@ -104,6 +104,10 @@ class TabContentInfo extends React.Component {
 		this.toggleTeacherView = this.toggleTeacherView.bind( this );
 	}
 
+	state = {
+		teacherView: false
+	}
+
 
 	componentDidMount() {
 		let windowWidth = Dimensions.get( 'window' ).width;
@@ -120,15 +124,19 @@ class TabContentInfo extends React.Component {
 	}
 
 	toggleTeacherView() {
-		if ( this.props.store.teacherView === false ) {
-			this.props.store.teacherView = true;
-		} else {
-			this.props.store.teacherView = false;
-		}
+		// if ( this.props.store.teacherView === false ) {
+		// 	this.props.store.teacherView = true;
+		// } else {
+		// 	this.props.store.teacherView = false;
+		// }
+		this.setState({
+			teacherView: !this.state.teacherView
+		})
 	}
 
 	render() {
 		const playTime = moment.duration( this.props.store.itemData.play_time );
+		console.log('#######', this.props.store.itemData)
 		return <View>
 			{/* 이미지 스와이퍼 */}
 			{ this.props.store.itemData.info_img_set.length > 0 && (
@@ -188,10 +196,12 @@ class TabContentInfo extends React.Component {
 					<Image style={styles.labelInfoImage} source={IcFile}/>
 					<Text style={styles.labelInfoText}>콘텐츠 용량 {this.props.store.itemData.file_size} MB</Text>
 				</View>
+				{/*
 				<View style={[ CommonStyles.alignJustifyFlex, styles.labelInfoItem ]}>
 					<Image style={styles.labelInfoImage} source={IcPrize}/>
 					<Text style={styles.labelInfoText}>학습 완료 시 수료증 제공</Text>
 				</View>
+				*/}
 			</View>
 
 			<View style={styles.author}>
@@ -201,13 +211,13 @@ class TabContentInfo extends React.Component {
 					<Text style={styles.authorName}>
 						{this.props.store.itemData.teacher.name}
 					</Text>
-					{!!this.props.store.teacherView &&
+					{!!this.state.teacherView &&
 					<Text style={styles.authorText}>
-						{`${ this.props.itemData.teacher.memo.split( '<br>' ).join( '\n' ) }`}
+						{`${ this.props.store.itemData.teacher.memo.split( '<br>' ).join( '\n' ) }`}
 					</Text>
 					}
-					<TouchableOpacity onPress={() => {Alert.alert('준비중입니다.')}}>
-                    {/*<TouchableOpacity onPress={this.toggleTeacherView}>*/}
+					{/*<TouchableOpacity onPress={() => {Alert.alert('준비중입니다.')}}>*/}
+                    <TouchableOpacity onPress={this.toggleTeacherView}>
 						<Text style={styles.lectureMoreButton}>더보기</Text>
 					</TouchableOpacity>
 				</View>
