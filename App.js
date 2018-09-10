@@ -92,41 +92,6 @@ import nav from "./src/scripts/commons/nav";
 		globalStore.emitter.addListener('loginCompleted', () => {
 			this.getTokenFromAsyncStorage();
 		});
-
-		Native.getF_TOKEN(f_token => {
-			if (undefined === f_token || '' === f_token) {
-				return;
-			}
-
-			console.log('f_token: ' + f_token);
-
-			const resultAuthToken = net.issueAuthToken(f_token);
-
-			resultAuthToken
-				.then(data => {
-					globalStore.welaaaAuth = data;
-
-					// 로그인이 완료 되면 loginCompleted를 보내 App.js의
-					// 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
-					globalStore.emitter.emit('loginCompleted')
-					cb && cb()
-				})
-				.catch(error => {
-					// 이 부분에 서버에서 오는 다양한 코드 및 메시지를 통해
-					// 에러 메시지를 사용자에게 출력하면 됨
-					let message = ''
-					switch (error.response.data.error) {
-						case 'invalid_grant':
-							message = '아이디와 비밀번호를 다시 확인해 주세요.'
-							break
-						default:
-							message = '관리자에게 문의해 주세요.'
-							break
-					}
-					Alert.alert('로그인에 실패하였습니다.', message);
-					cb && cb()
-				});
-		});
 	}
 
 	async componentDidMount() {
@@ -183,6 +148,41 @@ import nav from "./src/scripts/commons/nav";
 				nav.parseDeepLink( url );
 			}
 		}).catch(err => console.error('An error occurred', err));
+
+		Native.getF_TOKEN(f_token => {
+			if (undefined === f_token || "" === f_token) {
+				return;
+			}
+
+			console.log("f_token: " + f_token);
+
+			const resultAuthToken = net.issueAuthToken(f_token);
+
+			resultAuthToken
+				.then(data => {
+					globalStore.welaaaAuth = data;
+
+					// 로그인이 완료 되면 loginCompleted를 보내 App.js의
+					// 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
+					globalStore.emitter.emit("loginCompleted");
+					cb && cb();
+				})
+				.catch(error => {
+					// 이 부분에 서버에서 오는 다양한 코드 및 메시지를 통해
+					// 에러 메시지를 사용자에게 출력하면 됨
+					let message = "";
+					switch (error.response.data.error) {
+						case "invalid_grant":
+							message = "아이디와 비밀번호를 다시 확인해 주세요.";
+							break;
+						default:
+							message = "관리자에게 문의해 주세요.";
+							break;
+					}
+					Alert.alert("로그인에 실패하였습니다.", message);
+					cb && cb();
+				});
+		});
 	}
 
 	componentWillUnmount() {
