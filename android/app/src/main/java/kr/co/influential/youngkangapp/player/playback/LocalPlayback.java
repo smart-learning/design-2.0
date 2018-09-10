@@ -63,7 +63,6 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.UUID;
-import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
@@ -569,23 +568,23 @@ public final class LocalPlayback implements Playback {
             String json = Preferences.getWelaaaWebPlayInfo(mContext);
             WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
 
-            boolean can_play = Preferences.getWelaaaPreviewPlay(mContext);
+            boolean previewPlay = Preferences.getWelaaaPreviewPlay(mContext);
             String content_type = mWebPlayerInfo.getCon_class();
 
             mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
 
-            if(content_type.equals("audiobook")){
-              if(can_play){
+            if (content_type.equals("audiobook")) {
+              if (previewPlay) {
 
-              }else{
+              } else {
                 // can_play false 오디오북에서는 재생이 안되야 ..
               }
 
-            }else if(content_type.equals("video-course")){
-              if(can_play){
-                //
-              }else{
+            } else if (content_type.equals("video-course")) {
+              if (previewPlay) {
                 mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
+              } else {
+
               }
             }
           }
@@ -888,8 +887,8 @@ public final class LocalPlayback implements Playback {
             mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
           }
 
-          if(currentposition >= 90000){
-            LogHelper.e(TAG , " mCanPlayTimeHandler Stop currentposition is " + currentposition );
+          if (currentposition >= 90000) {
+            LogHelper.e(TAG, " mCanPlayTimeHandler Stop currentposition is " + currentposition);
 
             if (mCanPlayTimeHandler != null) {
               // 한개만 호출될 수 있도록 확인 해봅시다
@@ -1133,18 +1132,10 @@ public final class LocalPlayback implements Playback {
             LogHelper.e(TAG, "expire_at  Body:" + expire_at);
             LogHelper.e(TAG, "is_free  Body:" + is_free);
 
-            if (BuildConfig.BUILD_TYPE.equals("debug")) {
-              if (can_play) {
-                Preferences.setWelaaaPreviewPlay(mContext, false);
-              } else {
-                Preferences.setWelaaaPreviewPlay(mContext, true);
-              }
-            }else{
-              if (can_play) {
-                Preferences.setWelaaaPreviewPlay(mContext, true);
-              } else {
-                Preferences.setWelaaaPreviewPlay(mContext, false);
-              }
+            if (can_play) {
+              Preferences.setWelaaaPreviewPlay(mContext, true);
+            } else {
+              Preferences.setWelaaaPreviewPlay(mContext, false);
             }
 
             if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
@@ -1210,7 +1201,7 @@ public final class LocalPlayback implements Playback {
                 e.printStackTrace();
               }
 
-              if(mCallback!=null){
+              if (mCallback != null) {
 
                 // stop ?
                 giveUpAudioFocus();
@@ -1225,7 +1216,7 @@ public final class LocalPlayback implements Playback {
                   mCanPlayTimeHandler.removeCallbacksAndMessages(null);
                 }
 
-                mCallback.doAutoPlay(uri , currentMedia , intent);
+                mCallback.doAutoPlay(uri, currentMedia, intent);
 
               }
 

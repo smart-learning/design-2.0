@@ -21,7 +21,7 @@ export default {
 
 		/* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
 		if (welaaaAuth === undefined || welaaaAuth.profile === undefined || welaaaAuth.profile.id === undefined) {
-			Alert.alert('비회원은 플레이할 수 없습니다.')
+			Alert.alert('로그인 후 이용할 수 있습니다.')
 
 			return true
 		}

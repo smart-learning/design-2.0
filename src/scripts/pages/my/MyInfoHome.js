@@ -266,6 +266,7 @@ export default class MyInfoHome extends React.Component {
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
+						{/*
 						<View style={styles.listItemBarContainer}>
 							<View style={styles.listItemBar}/>
 							<View style={styles.listItemBarBullet}/>
@@ -278,6 +279,7 @@ export default class MyInfoHome extends React.Component {
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
+						*/}
 						<View style={styles.listItemBarContainer}>
 							<View style={styles.listItemBar}/>
 							<View style={styles.listItemBarBullet}/>
@@ -299,6 +301,7 @@ export default class MyInfoHome extends React.Component {
 							</View>
 						</View>
 						}
+						{/*
 						<TouchableOpacity activeOpacity={0.9}
 										  onPress={() => navigation.navigate('ClipPlayListPage', {title: '최근 재생 강의클립'})}>
 							<View style={styles.listItem}>
@@ -307,6 +310,7 @@ export default class MyInfoHome extends React.Component {
 								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
 							</View>
 						</TouchableOpacity>
+						*/}
 						{/*고객사 요청으로 화면에서 감춤 처리*/}
 						{1 === 2 && <View>
 							<View style={styles.listItemBarContainer}>

@@ -48,7 +48,7 @@ import { observer } from "mobx-react";
 					{ this.store.list && this.store.list.map( ( item, key ) => {
 						return (
 							<SummaryListItem key={ key }
-											 thumbnail={ ( item.data.teacher && item.data.teacher.images ) ? item.data.teacher.images.default : null }
+											 thumbnail={ item.data.images ? item.data.images.list : null }
 											 title={ item.data.title }
 											 author={ item.data.teacher ? item.data.teacher.name : '' }
 											 likeCount={ item.data.like_count }
