@@ -1,7 +1,7 @@
 import React from "react";
-import {AsyncStorage, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import CommonStyles from "../../../styles/common";
-import Store from '../../../scripts/commons/store';
+import net from '../../commons/net'
 import {SafeAreaView} from "react-navigation";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
@@ -61,8 +61,20 @@ export default class InquireFormPage extends React.Component {
 	@observable title = null;
 	@observable content = null;
 
-	submitContent = () => {
-		alert( '[임시]등록되었습니다' );
+	submitContent = async (title, message) => {
+		if (!this.title.text || !this.content.text) {
+			Alert.alert('오류', '제목과 내용을 입력해주세요.')
+		}
+
+		let result = await net.postInqueryItem(this.title.text, this.content.text)
+
+		if (result) {
+			Alert.alert('알림', '1:1 문의가 등록되었습니다');
+			this.props.navigation.state.params.fetchInquiries()
+		} else {
+			Alert.alert('오류', '1:1 문의 등록 중 오류가 발생하였습니다');
+		}
+
 		this.props.navigation.navigate('InquireListPage');
 	};
 
@@ -92,7 +104,7 @@ export default class InquireFormPage extends React.Component {
 								value={this.content}
 							/>
 						</View>
-						<TouchableOpacity activeOpacity={0.9} onPress={ this.submitContent }>
+						<TouchableOpacity activeOpacity={0.9} onPress={this.submitContent}>
 							<View style={styles.submitButton} borderRadius={5}>
 								<Text style={styles.submitButtonText}>등록</Text>
 							</View>

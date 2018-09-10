@@ -344,30 +344,36 @@ export default class MyInfoHome extends React.Component {
 						</View>
 					</View>
 					}
-					{1 === 2 && <View>
-						<View style={{height: 8}}/>
-						<View style={styles.sectionLayout}>
-							<Text style={styles.sectionTitle}>알림 문의</Text>
+					{
+						1 === 1 ? (
+							<View>
+								<View style={{height: 8}}/>
+								<View style={styles.sectionLayout}>
+									<Text style={styles.sectionTitle}>알림 문의</Text>
 
-							<TouchableOpacity activeOpacity={0.9}
-											  onPress={() => navigation.navigate('GuideListPage', {title: '윌라소개 & 이용가이드'})}>
-								<View style={styles.guideItem}>
-									<Text style={styles.guideTitle}>윌라소개 & 이용가이드</Text>
+									{/*
+										<TouchableOpacity activeOpacity={0.9}
+														  onPress={() => navigation.navigate('GuideListPage', {title: '윌라소개 & 이용가이드'})}>
+											<View style={styles.guideItem}>
+												<Text style={styles.guideTitle}>윌라소개 & 이용가이드</Text>
+											</View>
+										</TouchableOpacity>
+									*/}
+									<View style={styles.guideHr}/>
+									<TouchableOpacity activeOpacity={0.9}
+													  onPress={() => navigation.navigate('InquireListPage', {title: '1:1 문의'})}>
+										<View style={styles.guideItem}>
+											<Text style={styles.guideTitle}>1:1 문의</Text>
+										</View>
+									</TouchableOpacity>
+									<View style={styles.guideHr}/>
+
 								</View>
-							</TouchableOpacity>
-							<View style={styles.guideHr}/>
-							<TouchableOpacity activeOpacity={0.9}
-											  onPress={() => navigation.navigate('InquireListPage', {title: '1:1 문의'})}>
-								<View style={styles.guideItem}>
-									<Text style={styles.guideTitle}>1:1 문의</Text>
-								</View>
-							</TouchableOpacity>
-							<View style={styles.guideHr}/>
 
-						</View>
-
-						<View style={{height: 8}}/>
-					</View>}
+								<View style={{height: 8}}/>
+							</View>
+						) : undefined
+					}
 
 				</ScrollView>
 			</SafeAreaView>

@@ -126,6 +126,27 @@ export default {
 			});
 	},
 
+	getInquiryData() {
+		return axios.get(API_PREFIX + 'v1.0/platform/inquiries')
+			.then(resp => {
+				return resp.data
+			})
+	},
+
+	postInqueryItem(title, content) {
+		return axios.post(API_PREFIX + 'v1.0/platform/inquiries', {title, content})
+			.then(resp => {
+				return resp.status === 200
+			})
+	},
+
+	getInquiryDetail(id) {
+		return axios.get(API_PREFIX + `v1.0/platform/inquiries/${id}`)
+			.then(resp => {
+				return resp.data
+			})
+	},
+
 	getClassList(ccode = null, page = 1) {
 		let url = API_PREFIX + 'v1.1/contents/video-courses';
 		const params = {};

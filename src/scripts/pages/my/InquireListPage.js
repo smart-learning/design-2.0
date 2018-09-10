@@ -1,32 +1,10 @@
 import React from "react";
-import {AsyncStorage, Button, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import CommonStyles from "../../../styles/common";
-import Store from '../../../scripts/commons/store';
 import {SafeAreaView} from "react-navigation";
+import net from "../../commons/net"
+import moment from "moment";
 
-const inquireData = [
-	{
-		key: '1',
-		title: 'title',
-		createdAt: '0000-00-00',
-		content: 'content',
-		isAnswer: false,
-	},
-	{
-		key: '2',
-		title: 'title',
-		createdAt: '0000-00-00',
-		content: 'content',
-		isAnswer: true,
-	},
-	{
-		key: '3',
-		title: 'title',
-		createdAt: '0000-00-00',
-		content: 'content',
-		isAnswer: true,
-	},
-];
 
 const styles = StyleSheet.create({
 	listItem: {
@@ -79,25 +57,44 @@ const styles = StyleSheet.create({
 
 export default class InquireListPage extends React.Component {
 
+	state = {
+		isLoading: true,
+		inquiryData: [],
+	}
+
+	componentDidMount() {
+		this.fetchInquiries()
+	}
+
+	async fetchInquiries() {
+		this.setState({
+			inquiryData: await net.getInquiryData()
+		})
+	}
+
 	render() {
 		return <View style={CommonStyles.container}>
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
 					<FlatList
 						style={{width: '100%'}}
-						data={inquireData}
+						data={this.state.inquiryData}
 						renderItem={
-							({item}) => <View>
+							({item}) => <View key={item.id}>
 								<TouchableOpacity
-									onPress={() => this.props.navigation.navigate('InquireViewPage', {id: item.key})}
+									onPress={() => this.props.navigation.navigate('InquireViewPage', {id: item.id, 'title': '1:1 문의 상세'})}
 									navigation={this.props.navigation}
-									itemData={item}>
+								>
 									<View style={styles.listItem}>
 										<Text style={styles.listItemTitle}>{item.title}</Text>
 										<View style={styles.listItemSub}>
-											<Text style={styles.listItemTime}>{item.createdAt}</Text>
-											{!!item.isAnswer &&
-											<Text style={styles.AnswerText}>답변완료</Text>
+											<Text
+												style={styles.listItemTime}>{moment(item.created_at).format('YYYY-MM-DD')}</Text>
+											{
+												!!item.has_reply ? (
+
+													<Text style={styles.AnswerText}>답변완료</Text>
+												) : undefined
 											}
 										</View>
 										<View style={styles.listItemHr}/>
@@ -105,9 +102,11 @@ export default class InquireListPage extends React.Component {
 								</TouchableOpacity>
 							</View>
 						}
+						keyExtractor={(item, index) => item.id}
 					/>
 					<View style={CommonStyles.contentContainer}>
-						<TouchableOpacity onPress={() => this.props.navigation.navigate('InquireFormPage')}>
+						<TouchableOpacity onPress={() => this.props.navigation.navigate('InquireFormPage',
+							{title: '1:1 문의 등록하기', fetchInquiries: () => this.fetchInquiries()})}>
 							<View style={styles.inquireButton} borderRadius={5}>
 								<Text style={styles.inquireButtonText}>문의하기</Text>
 							</View>
