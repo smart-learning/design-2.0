@@ -63,36 +63,46 @@ const landingStyles = StyleSheet.create( {
 
 class KakaoLoginButton extends React.Component {
 
-	constructor(props){
-		super();
-
-		this.state = {
-			token: null,
-		};
+	state = {
+		token: null,
+		loginButtonDisabled: false,
 	}
 
-	signInOut = async ()=>{
+	signInOut = async () =>{
 		const { RNKaKaoSignin } = NativeModules;
+		this.setState({ loginButtonDisabled: true })
 
-		let kakaoAccessToken = await RNKaKaoSignin.signIn();
+		try {
+			const kakaoAccessToken = await RNKaKaoSignin.signIn();
 
-		// alert( kakaoAccessToken );
+			console.log( kakaoAccessToken );
+			this.setState({ token: kakaoAccessToken });
+			this.props.onAccess( kakaoAccessToken, () => {
+				this.setState({ loginButtonDisabled: false })
+			} );
 
-		this.setState({ token: kakaoAccessToken });
-		this.props.onAccess( kakaoAccessToken );
+		} catch(err) {
+			console.log("Login Error!!", err );
+			this.setState({ loginButtonDisabled: false })
+		}
 	}
 
     render() {
         return <TouchableOpacity
 			activeOpacity={0.9}
 			onPress={ this.signInOut }
+			disabled={this.state.loginButtonDisabled}
 			style={ styles.kakaoButtonWrap }
 		>
 
 			{this.props.type === 'login' &&
 			<View style={ loginStyles.kakaoButton } borderRadius={4}>
 				<Image source={ icKakao } style={ loginStyles.kakaoImage }/>
-				<Text style={ loginStyles.kakaoText }>{ this.state.token?'카카오 로그아웃':'Kakaotalk 계정으로' }</Text>
+				<Text style={ loginStyles.kakaoText }>{ this.state.token?'카카오 로그아웃':
+					this.state.loginButtonDisabled
+						? '로그인중'
+						:'Kakaotalk 계정으로'
+				 }</Text>
 			</View>
 			}
 			{this.props.type === 'landing' &&
@@ -103,7 +113,11 @@ class KakaoLoginButton extends React.Component {
 				  borderRadius={4}
 			>
 				<Image source={ icKakaoLight } style={ landingStyles.kakaoImage }/>
-				<Text style={ landingStyles.kakaoText }>{ this.state.token?'카카오 로그아웃':'카카오톡 계정으로' }</Text>
+				<Text style={ landingStyles.kakaoText }>{ this.state.token?'카카오 로그아웃':
+					this.state.loginButtonDisabled
+						? '로그인중'
+						:'카카오톡 계정으로'
+				 }</Text>
 			</View>
 			}
 		</TouchableOpacity>;

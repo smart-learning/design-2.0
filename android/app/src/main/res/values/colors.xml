@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="holo_blue_bright">#00ddff</color>
+    <color name="holo_blue_dark">#0099cc</color>
+    <color name="holo_blue_light">#ff33b5e5</color>
+    <!--color name="menu_text_color">#00a4e3</color-->
+    <color name="menu_text_color">#0097FF</color>
+
+    <color name="menu_line_color">#191919</color>
+    <color name="menu_background_color">#131313</color>
+    <color name="list_item_title_color">#586367</color>
+    <color name="list_item_description_color">#8c8c8c</color>
+    <color name="list_item_line_color">#f6f6f6</color>
+
+    <!--color name="list_item_extension_color">#00a4e3</color-->
+    <color name="list_item_extension_color">#0097FF</color>
+
+    <color name="list_item_time_color">#8c8c8c</color>
+
+    <color name="video_time_color">#FFFFFF</color>
+
+    <!--color name="media_controller_title_color">#00a4e3</color-->
+    <color name="media_controller_title_color">#0097FF</color>
+
+    <color name="media_controller_background_color">#CD000000</color>
+
+
+    <color name="add_server_line_color">#f6f6f6</color>
+    <color name="add_server_title_color">#00a4e3</color>
+    <color name="add_server_list_title_color">#586367</color>
+    <color name="add_server_title_background_color">#f8f8f8</color>
+    <color name="add_server_border_color">#00a4e3</color>
+
+    <color name="video_setting_title_bar_color">#E6001219</color>
+    <color name="video_setting_content_background_color">#E6000000</color>
+
+    <!--color name="video_setting_title_color">#00a4e3</color-->
+    <color name="video_setting_title_color">#0097FF</color>
+
+    <color name="download_title_color">#586367</color>
+    <color name="download_state_color">#00a4e3</color>
+    <color name="download_progress_color">#00a4e3</color>
+    <color name="download_notify_text_color">#586367</color>
+
+    <!--color name="spinner_text_color">#00a4e3</color-->
+    <color name="spinner_text_color">#0097FF</color>
+
+    <color name="popup_background_color">#77000000</color>
+    <color name="setting_tab_select_text_color">#FFFFFF</color>
+
+    <!--color name="setting_tab_text_color">#00a4e3</color-->
+    <color name="setting_tab_text_color">#0097FF</color>
+
+
+    <color name="setting_tab_background_color">#00000000</color>
+
+    <!--color name="setting_tab_select_background_color">#00a4e3</color-->
+    <color name="setting_tab_select_background_color">#0097FF</color>
+
+    <!--color name="media_controller_icon_color">#00a4e3</color-->
+    <color name="media_controller_icon_color">#0097FF</color>f
+
+    <color name="media_controller_text_color">#FFFFFF</color>
+
+    <color name="media_controller_system_info_text_color">#0097FF</color>
+
+    <color name="media_controller_sleepmode_title">#35333e</color>
+    <color name="media_controller_sleepmode_subtitle_on">#26c281</color>
+    <color name="media_controller_sleepmode_subtitle_off">#272230</color>
+
+    <color name="media_controller_sleepmode_subtitle_line">#1Affffff</color>
+
+    <color name="last_view_list_group_title">#bba693</color>
+    <color name="last_view_list_teacher_name">#706d76</color>
+
+    <color name="last_view_list_title_color">#43404b</color>
+    <color name="last_view_list_background_color">#272230</color>
+
+    <color name="audio_view_list_title_color">#ff4f72</color>
+    <color name="movie_view_list_group_title_color">#23ac71</color>
+
+    <color name="download_bottom_bg">#2d2d2d</color>
+    <color name="player_full_font">#4D272230</color>
+
+    <color name="my_repu">#372c38</color>
+    <!--<color name="my_repu">#bba693</color>-->
+
+    <color name="colorPrimary">#47bc8f</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorControlTextEnable">#47bc8f</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="fontcolor">#000000</color>
+    <color name="gray_simple_line">#444444</color>
+    <color name="colorDownloadUnFocus">#a4a4a4</color>
+
+    <!--fragment_blank-->
+    <color name="blankBGcolor">#bf000000</color>
+    <color name="blankBGcolor2">#97d73939</color>
+    <color name="bottomControlBg">#e1282730</color>
+    <color name="mainBgColor">#000000</color>
+    <color name="playerBgColor">#8f000000</color>
+
+    <color name="cdn_video_time_color">#FFFFFF</color>
+    <color name="welean_play_list_background">#44404c</color>
+
+    <!--welean_button_group-->
+    <color name="controlWrapBg">#872f2128</color>
+    <color name="subtitleWrapBg">#d82b2430</color>
+
+    <!--<color name="smartButtonWrapBg">#de2b2430</color>-->
+    <color name="smartButtonWrapBg">#4D272230</color>
+
+
+    <color name="weleanButtonGroupBg">#6f52484f</color>
+    <color name="weleanControlTitleBg">#6f52484f</color>
+
+    <color name="playlist_text_color">#ff28b77c</color>
+    <!--welean playlist -->
+    <color name="weleanPlaylistTitleBg">#ff373340</color>
+    <color name="subtitls_font_color">#ff888888</color>
+    <color name="subtitls_emfont_color">#ff28b77c</color>
+
+    <color name="subtitls_font_color_long">#28B77C</color>
+    <color name="subtitls_font_color_long_white">#efefef</color>
+
+    <!--<color name="subtitle_long_back_ground_color">#B3272230</color>-->
+    <color name="subtitle_long_back_ground_color">#272230</color>
+
+    <color name="TitleToolBarBg">#38b275</color>
+    <!--welean playerControler-->
+    <!--welean settingFragment -->
+    <color name="settingTitleBg">#f2f2f2</color>
+    <color name="setting_font_color">#000000</color>
+    <color name="setting_subfont_color">#9b9b9b</color>
+    <color name="settingMainTitleBg">#ff28b77c</color>
+    <color name="page_background_white">#ffffff</color>
+
+    <!--welean downloadlist contents line background-->
+    <color name="download_con_tr1">#ededed</color>
+    <color name="download_con_tr2">#ffffff</color>
+    <color name="PopupNotifyBacground">#272230</color>
+    <color name="download_select_listview_press">#efefef</color>
+    <color name="download_select_listview_unpress">#FFFFFF</color>
+
+    <color name="download_listview_groupTeacherName">#999999</color>
+    <color name="download_listiew_groupName">#23ac71</color>
+
+    <color name="recent_listiew_current_title_text_color">#09b774</color>
+    <color name="audiobook_progress_bar">#ff4f72</color>
+
+</resources>

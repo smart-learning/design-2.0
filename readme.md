@@ -1,27 +1,18 @@
 # Welaaa App 2.0
 
-## Install
-
-```
-yarn
-# or
-npm i
-```
-
-## Major Package
-```
-- react-navigation:  https://reactnavigation.org/
-- react-native-video:
-
-```
-
 ## 실행 전 세팅
 
 참고: https://beomi.github.io/2016/11/15/ReactNative-Translation-01-getting-started/
 
 ```
-yarn eject # ios/android 디렉토리 없을 경우에만
-yarn link # 실행 후 제대로 연결됬는지 콘솔 메시지 확인
+$ brew install node
+$ brew install watchman
+$ npm install -g react-native-cli
+```
+
+## Major Package
+```
+- react-navigation:  https://reactnavigation.org/
 ```
 
 ## 실행
@@ -61,128 +52,40 @@ yarn ios
 3. `Remote JS Debugging` 메뉴를 선택
 4. 앱을 새로고침(`Cmd+R`) 해보면 웹 인스펙터 내에서 로그를 확인할 수 있다.
 
-### View Debugj
-
-`react-devtools`를 npm global로 설치한다
-
-```
-(sudo) npm i -g react-devtools
-```
-
-실행
-
-```
-react-devtools
-```
-
 
 
 ### Package Setting
 
-##### Before Setting...
-```
-npm run link를 한번에 쓰지 마시고, 뒤에 패키지 명을 붙여서 한 모듈씩 테스트 부탁드립니다.
-xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는것을 추천합니다.
-``` 
+#### [Android Studio]
 
-
-##### [Android Studio]
-
-###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
-```
-- gradle 업데이트하겠냐고 물어보면 무시해주세요. 
-  build.gradle( project:WelaaaV2 )에 classpath 'com.android.tools.build:gradle:2.2.3' 기준으로 작업합니다. 
-
-- https://github.com/facebook/react-native-fbsdk 의 0.29버전 이상의 세팅을 따릅니다.
-  ( 이때 AppEventsLogger 작업은 필요 업습니다. )
-  
-- strings.xml 에 
-  <string name="facebook_app_id">428306967643083</string> 
-  추가
-
-- AndroidManifest.xml 에
-  <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-  추가
-
-- build.graddle(Module:app) 세팅은
-  compileSdkVersion 26, buildToolsVersion "27.0.3"
-  minSdkVersion 16, targetSdkVersion 22 
-  가 테스트할때의 기준입니다.
-  
-- 컴파일이 무사하게 되면,
-  OS X 기준으로, 
-  keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
-
-  다음 명령을 돌려서 나온 해시키와 페이스북 로그인용 이메일 계정을 앱 관리자에게 전달합니다.( 현재는, kyejune )
-  관리자가 개발자로 등록하면, 본인 페이스북으로 알림이 가고 승인 후 로그인 가능합니다.
-```
-
-
-##### - Kakao Login
-```
-- 밑에 내용들로 해결이 안될때 하단 URL을 참고해주세요. react-native-kakao를 정식 지원하는게 아니라 에러가 발생할 수 있습니다.
-  https://github.com/sunyrora/react-native-kakao-signin
-
-- 다음에 내용들을 해당 파일에 추가합니다.
-
-- AdnroidManifest.xml
-  <meta-data android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_app_key" />
-  
-- res/values/string.xml
-  <resources>
-  	<string name="kakao_app_key">6b9977f1c9a6be61e0980e40cf7eefe5</string>
-  </resources>
-
-- build.gradle( project:WelaaaV2 )
-  allproject repositories 에
-  maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
-  추가
-
-- 컴파일시 KakaoLoginpackage.java에 override관련 에러가 나면 해당 메서드를 삭제합니다. 
-
-- 페이스북때 생성한 해시키를 개발자페이지에서 추가 합니다.( 관리자에게 요청 )
-   
-```
 
 
 #### [Xcode]
 
-###### - Facebook, Kakao 각각의 SDK를 따로 다운받아 적당한 곳에 위치해주세요.
-         Build Settings -> Search Paths -> Framework Search Paths 에 해당 SDK 경로를 추가 해줍니다.
-         ex) ~/Documents/FacebookSDK
-
-###### - Facebook Setting( https://github.com/facebook/react-native-fbsdk )
-
-##### - Facebook Login
-
-###### - https://developers.facebook.com/docs/ios/getting-started/
-
 ```
-- 상단 링크의 2단계부터 5단계까지 작업합니다.
-- api id는 428306967643083 입니다 .
-- General -> Identity -> Bundle Identifier는 org.reactjs.native.example.WelaaaV2 를 사용합니다.
-- Frameworks 폴더 내부의 frameworks 파일들이 빨간색으로 표시가 된다면 Finder를 이용하여 다운받은 SDK 파일을 끌어서 넣습니다.(상단 링크의 3단계 참고)
+$ cd welaaa2
+$ npm i
+$ cd ios
+$ make bootstrap # CocoaPods을 자동으로 세팅하여 Pods/ 을 구성합니다.
+$ open WelaaaV2.xcworkspace
 ```
 
-##### - Kakao Login
-
-###### - https://github.com/sunyrora/react-native-kakao-signin
-###### - https://developers.kakao.com/docs/ios#시작하기
+###### PallyConFPSSDK
 ```
- - 상단 첫번째 링크의 코드 주석부분만 참고해서 추가해주세요.
- - Build Settings -> Other Linker Flags 에 -all_load 을 추가합니다.
- - 상단 두번째 링크의 '프로젝트에 내 앱 설정' 을 작업합니다.
+경로 : ~/Documents/PallyCon-FairPlay-iOS-SDK/PallyConFPSSDK.framework
+# in Xcode
+General - Embedded Binaries에 '+'로 추가.
+프로젝트 TARGETS의 Build Settings 탭에 Enable Bitcode를 No로 설정
+Build Options에서 "Always Embed Swift Standard Libraries"를 YES
 ```
 
-
-#### - react-native-localizable
+##### react-native-localizable
+https://github.com/fabriciovergara/react-native-localizable
 ```
- 프로젝트별 변수를 가져오기 위해서 설치합니다.
- 설치는 공식 문서를 참고합니다만, 
- https://github.com/fabriciovergara/react-native-localizable
- 
- iOS에 추가하는 파일명은 localizable.strings 가 아니라 Localizable.strings입니다.
- 
+프로젝트별 변수를 가져오기 위해서 설치합니다.
+설치는 공식 문서를 참고합니다만, 필요한 파일은 전부 올라가 있습니다.
+- npm run link react-native-localizable 실행 필요합니다.
+- ios/WelaaaV2/Localizable.strings 파일을 xcode 프로젝트 패널(Xcode 좌측 프로젝트 네비게이터 창에서 'Add Files to' 실행)에 추가해주세요. 
 ```
 
 
@@ -191,32 +94,28 @@ xcode는 세팅에 어려움이 덜한 편이니, android를 먼저 해보시는
 ### iOS Http 허용
 ```
 info.plist NSExceptionDomains에 추가합니다.
-
-<key>ec2-contents-api.welaa.co.kr</key>
-<dict>
-	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-	<true/>
-</dict>
-<key>ec2-52-78-197-242.ap-northeast-2.compute.amazonaws.com</key>
-<dict>
-	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-	<true/>
-</dict>
-<key>welaaa.co.kr</key>
-<dict>
-	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-	<true/>
-</dict>
 ```
 
+
+### Error Case
+
+#### Development cannot be enabled while your device is locked.
+
+USB 연결을 해제한 후 다시 연결한다.  
+증상이 반복되면 아이폰 설정 > 일반 > 재설정 > 위치 및 개인정보 재설정 후 USB를 재연결한다.
+
+
+
 ## Native Environment Settings
+
 ### android
 - Gradle version >= **4.4**
 - Android plugin for Gradle version = **3.1.3**
-- compileSdkVersion = **26**
+- compileSdkVersion = **27**
 - buildToolsVersion = **"27.0.3"**
 - supportLibVersion = **"27.1.1"**
 - minSdkVersion = **19**
-- targetSdkVersion = **22**
+- targetSdkVersion = **26**
+- exoplayer2 = **2.8.2**
 
 ### iOS

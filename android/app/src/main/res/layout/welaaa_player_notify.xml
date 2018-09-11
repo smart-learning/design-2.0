@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/welean_player_nofify"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/PopupNotifyBacground"
+  android:gravity="center_vertical"
+  android:orientation="horizontal">
+
+  <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:padding="10dp">
+
+    <ImageView
+      android:id="@+id/imageView_icon"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:src="@drawable/notify_logo_player"/>
+  </RelativeLayout>
+
+  <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1">
+    <TextView
+      android:id="@+id/text_title"
+      style="@style/TextAppearance.Compat.Notification.Title"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:ellipsize="marquee"
+      android:lineSpacingExtra="7sp"
+      android:maxLines="2"
+      android:text="mini_control_title"
+      android:textColor="#efefef"
+      android:textSize="13sp"/>
+  </RelativeLayout>
+
+  <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:gravity="center_vertical|center_horizontal">
+
+    <Button
+      android:id="@+id/btn_remote_play"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:layout_weight="1"
+      android:background="@drawable/notify_ico_play"
+      android:visibility="invisible"/>
+
+    <Button
+      android:id="@+id/btn_remote_pause"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:layout_weight="1"
+      android:background="@drawable/notify_ico_pause"
+      android:visibility="visible"/>
+  </RelativeLayout>
+  <RelativeLayout
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_weight="1"
+    android:gravity="center_vertical|center_horizontal">
+
+    <Button
+      android:id="@+id/btn_remote_close"
+      android:layout_width="21dp"
+      android:layout_height="20dp"
+      android:layout_weight="1"
+      android:background="@drawable/notify_ico_close"/>
+
+  </RelativeLayout>
+</LinearLayout>

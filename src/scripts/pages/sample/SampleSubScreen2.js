@@ -15,13 +15,13 @@ export default class SampleSubScreen2 extends React.Component {
 
 	}
 
-	render() {
-		return <View style={Styles.container}>
-			<Text>샘플 서브페이지2</Text>
-			<Button
-				onPress={()=>this.props.navigation.goBack()}
-				title="뒤로"
-			/>
-		</View>
-	}
+    render() {
+        return <View style={Styles.container}>
+            <Text>샘플 서브페이지2</Text>
+            <Button
+                onPress={()=>this.props.navigation.goBack()}
+                title="뒤로"
+            />
+        </View>
+    }
 }

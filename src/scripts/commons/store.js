@@ -1,58 +1,79 @@
 import React from 'react';
-import { observable } from 'mobx';
 import {AsyncStorage} from "react-native";
 import axios from 'axios';
+import {observable} from "mobx";
 
 let socialType;
 let socialToken;
 let welaaaAuth;
+let currentMembership;
 
-class Store{
-    drawer = null;
-    lastLocation = 'HomeScreen';
+class Store {
+	emitter = null;
+	drawer = null;
+	lastLocation = 'HomeScreen';
+	prevLocations = [];
 
-    get socialType() {
+	get socialType() {
 		return socialType;
 	}
 
-	set socialType( type ) {
+	set socialType(type) {
 		socialType = type;
-		AsyncStorage.setItem('socialType', type );
+		AsyncStorage.setItem('socialType', type);
 	}
 
-	get socialToken() {
-		return socialToken;
-	}
-
-	set socialToken( token ) {
-		socialToken = token;
-		AsyncStorage.setItem('socialToken', token );
+	get accessToken() {
+		if (welaaaAuth === undefined) return '';
+		return welaaaAuth.access_token;
 	}
 
 	get welaaaAuth() {
-    	return welaaaAuth;
+		return welaaaAuth;
 	}
 
-	set welaaaAuth( auth ) {
+	set welaaaAuth(auth) {
 		welaaaAuth = auth;
-		AsyncStorage.setItem('welaaaAuth', auth );
-		axios.defaults.headers.common[ 'Authorization' ] = 'Bearer ' + auth.access_token;
+		AsyncStorage.setItem('welaaaAuth', JSON.stringify(auth));
+		axios.defaults.headers.common['authorization'] = 'Bearer ' + auth.access_token;
 	}
 
-	clearTokens=()=>{
+	get currentMembership() {
+		return currentMembership;
+	}
+
+	set currentMembership(membership) {
+		currentMembership = membership
+	}
+
+	/* 미니 플레이어 전환여부 결정 */
+	@observable miniPlayerVisible = false;
+
+	clearTokens = () => {
 		socialType = null;
 		socialToken = null;
 		welaaaAuth = null;
+		delete axios.defaults.headers.common['authorization']
 
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
 	}
 
-	@observable auth = undefined;
+	@observable currentMembership = {};
+	@observable profile = {};
 
-	@observable authToken = undefined;
+	/* 이벤트로 넘겨받은 다운로드받은 아이템 DB조회목록 */
+	@observable downloadItems = {};
+
+	/* 앱 설정 관련 정보 */
+	@observable appSettings = {
+		isAutoLogin: false,
+		isWifiPlay: false,
+		isWifiDownload: false,
+		isAlert: false,
+		isEmail: false,
+	};
+
 }
-
-console.log( '<<<<<< new Store >>>>');
 
 const store = new Store();
 export default store;

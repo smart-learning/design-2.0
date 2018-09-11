@@ -1,6 +1,5 @@
 import React from 'react';
 import {NativeModules, Share, Platform} from 'react-native';
-import RNLocalizable from 'react-native-localizable';
 
 
 export default {
@@ -19,12 +18,6 @@ export default {
 
 	},
 
-	getPlatformValue(name) {
-		let value = RNLocalizable[name] || null;
-
-		return value;
-	},
-
 	share(title, url) {
 		Share.share(
 			{
@@ -35,7 +28,7 @@ export default {
 					},
 
 					android: {
-						message: '',// message,
+						message: '',
 					}
 				}),
 

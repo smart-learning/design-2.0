@@ -1,0 +1,150 @@
+<resources>
+
+    <dimen name="slidingmenu_offset">150dp</dimen>
+    <dimen name="slidingmenu_width">220dp</dimen>
+    <dimen name="list_padding">10dp</dimen>
+    <dimen name="shadow_width">15dp</dimen>
+
+    <integer name="num_cols">1</integer>
+
+
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    <dimen name="header_footer_left_right_padding">24dp</dimen>
+    <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+
+    <!-- media_controller 폰트 사이즈 속성 -->
+    <dimen name="mc_icon_font_size">20sp</dimen>
+
+    <!-- 배속 -->
+    <dimen name="mc_playbackrate_updown_font_size">35sp</dimen>
+    <dimen name="mc_playbackrate_font_size">16sp</dimen>
+
+
+    <!-- 하단 seekbar  -->
+    <dimen name="mc_playlist_font_size">25sp</dimen>
+    <dimen name="mc_media_list_repeat_font_size">25sp</dimen>
+
+    <dimen name="mc_play_time_font_size">10sp</dimen>
+    <dimen name="mc_suffle_font_size">25sp</dimen>
+
+    <dimen name="mc_lock_ui_font_size">20sp</dimen>
+    <dimen name="mc_unlock_ui_font_size">35sp</dimen>
+
+
+    <!-- 하단 컨트롤바 -->
+    <dimen name="mc_prev_file_font_size">20sp</dimen>
+    <dimen name="mc_backward_font_size">20sp</dimen>
+    <dimen name="mc_play_font_size">30sp</dimen>
+    <dimen name="mc_forward_fons_size">20sp</dimen>
+    <dimen name="mc_next_file_font_size">20sp</dimen>
+    <dimen name="mc_toggle_font_size">20sp</dimen>
+
+    <!-- 회전 -->
+    <dimen name="mc_screen_rotation_font_size">25sp</dimen>
+
+
+    <!-- 상단 -->
+    <dimen name="mc_close_font_size">25sp</dimen>
+    <dimen name="mc_title_font_size">18sp</dimen>
+    <dimen name="mc_decoder_type_font_size">16sp</dimen>
+    <dimen name="mc_menu_font_size">26sp</dimen>
+
+    <dimen name="mc_battery_status_font_size">10sp</dimen>
+
+
+    <!-- 상단 메뉴 글자 크기-->
+    <dimen name="mc_sub_menu_font_size">16sp</dimen>
+
+    <!-- 설정 관련 팝업  -->
+    <dimen name="popup_window_title_font_size">16sp</dimen>
+    <dimen name="popup_window_back_font_size">12sp</dimen>
+
+    <!-- 메뉴 -> 화면 창 사이-->
+    <dimen name="screen_setting_width">220dp</dimen>
+    <dimen name="screen_setting_height">220dp</dimen>
+
+    <dimen name="mc_v2_sub_menu_font_size">14sp</dimen>
+    <dimen name="mc_v2_sub_menu_status_font_size">12sp</dimen>
+    <dimen name="mc_v2_battery_status_font_size">12sp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- media_controller 폰트 사이즈 속성 -->
+    <dimen name="cdn_mc_icon_font_size">20sp</dimen>
+
+    <!--버튼 사이즈 속성-->
+
+    <dimen name="welean_btn_smart_icon_size">40dp</dimen>
+    <dimen name="welean_btn_smart_icon_margin">0dp</dimen>
+    <dimen name="welean_btn_backward_width">66.67dp</dimen>
+    <dimen name="welean_btn_backward_height">66.67dp</dimen>
+    <dimen name="welean_btn_pause_width">66.67dp</dimen>
+    <dimen name="welean_btn_pause_height">66.67dp</dimen>
+    <dimen name="welean_btn_updown_width">42dp</dimen>
+    <dimen name="welean_btn_updown_height">30dp</dimen>
+    <dimen name="welean_btn_sleeper_icon_size">25dp</dimen>
+    <dimen name="welean_btn_sleeper_icon_margin">25dp</dimen>
+
+    <!-- 자막 사이즈 속석-->
+    <dimen name="subtitls_view_padding">20dp</dimen>
+    <dimen name="subtitls_shortview_height">90dp</dimen>
+    <dimen name="subtitls_longview_height">290dp</dimen>
+
+    <dimen name="arrow_height">300dp</dimen>
+    <dimen name="arrow_height_landscape">180dp</dimen>
+
+    <dimen name="subtitls_longview_full_height">700dp</dimen>
+
+    <!-- 배속 -->
+    <dimen name="cdn_mc_playbackrate_updown_font_size">35sp</dimen>
+    <dimen name="cdn_mc_playbackrate_font_size">16sp</dimen>
+
+    <!-- 하단 seekbar  -->
+    <dimen name="cdn_mc_playlist_font_size">25sp</dimen>
+    <dimen name="cdn_mc_media_list_repeat_font_size">25sp</dimen>
+
+    <dimen name="welean_time_font_size">12sp</dimen>
+    <dimen name="cdn_mc_suffle_font_size">25sp</dimen>
+
+    <dimen name="cdn_mc_lock_ui_font_size">20sp</dimen>
+    <dimen name="cdn_mc_unlock_ui_font_size">35sp</dimen>
+
+    <!-- 하단 컨트롤바 -->
+    <dimen name="cdn_mc_prev_file_font_size">20sp</dimen>
+    <dimen name="cdn_mc_backward_font_size">20sp</dimen>
+    <dimen name="cdn_mc_play_font_size">30sp</dimen>
+    <dimen name="cdn_mc_forward_fons_size">20sp</dimen>
+    <dimen name="cdn_mc_next_file_font_size">20sp</dimen>
+    <dimen name="cdn_mc_toggle_font_size">20sp</dimen>
+
+    <!-- 회전 -->
+    <dimen name="cdn_mc_screen_rotation_font_size">25sp</dimen>
+
+    <!-- 상단 -->
+    <dimen name="cdn_mc_close_font_size">25sp</dimen>
+    <dimen name="cdn_mc_title_font_size">18sp</dimen>
+    <dimen name="cdn_mc_decoder_type_font_size">16sp</dimen>
+    <dimen name="cdn_mc_menu_font_size">26sp</dimen>
+
+    <dimen name="cdn_mc_battery_status_font_size">10sp</dimen>
+
+    <dimen name="titletoolbarpadding">15dp</dimen>
+    <dimen name="titletoolbarfontsize">18sp</dimen>
+    <!-- 상단 메뉴 글자 크기-->
+    <dimen name="cdn_mc_sub_menu_font_size">16sp</dimen>
+
+    <!-- setting fragment-->
+    <dimen name="setting_title_padding">5dp</dimen>
+    <dimen name="setting_switch_padding">10dp</dimen>
+
+    <!-- LayOut -->
+    <dimen name="Top_titlabar_closebutton_size">40dp</dimen>
+
+    <!--다운로드 리스트 -->
+    <dimen name="downloadlist_lecture_title_font_size">16sp</dimen>
+
+</resources>

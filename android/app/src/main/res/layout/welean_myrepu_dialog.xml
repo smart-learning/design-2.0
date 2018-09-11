@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/TAG_UNLOCK_UI_LAYOUT"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:padding="30dp"
+        android:id="@+id/welean_myrepu_dialog">
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_modal_backgroundstyle">
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="right"-->
+                <!--&gt;-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/btn_myrepu_close"-->
+                    <!--android:layout_width="20dp"-->
+                    <!--android:layout_height="20dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:background="@drawable/btn_close"-->
+                    <!--/>-->
+            <!--</LinearLayout>-->
+
+
+            <TextView
+                android:text="알림"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/modal_title"
+                android:paddingTop="42dp"
+                android:paddingLeft="48dp"
+
+                android:textSize="14sp"
+                android:textColor="#636363"
+                android:letterSpacing="-0.05"
+
+                android:gravity="left"
+                 />
+
+            <TextView
+                android:id="@+id/modal_contnet"
+                android:text="회원님의 의견이 더 좋은 강의를/n 만드는 원동력이 됩니다!"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="49dp"
+                android:layout_marginBottom="20dp"
+
+                android:textSize="18sp"
+                android:textColor="#4a4a4a"
+                android:letterSpacing="-0.03"
+                android:lineSpacingExtra="6sp"
+
+                android:gravity="left" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+
+                <ProgressBar
+                    android:id="@+id/myrepu_progress_bar"
+                    android:layout_width="205dp"
+                    android:layout_height="7dp"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:progressDrawable="@drawable/progress_horizontal_myrepu"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="#00b970"
+                    android:letterSpacing="-0.03"
+                    android:lineSpacingExtra="11sp"
+                    android:text="나의 별점"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                >
+
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/icon_myrepu_star1"
+                    android:background="@drawable/item_myrepu_star"/>
+
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/icon_myrepu_star2"
+                    android:background="@drawable/item_myrepu_star"/>
+
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/icon_myrepu_star3"
+                    android:background="@drawable/item_myrepu_star"/>
+
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/icon_myrepu_star4"
+                    android:background="@drawable/item_myrepu_star"/>
+
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/icon_myrepu_star5"
+                    android:background="@drawable/item_myrepu_star"/>
+            </LinearLayout>
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:gravity="center"-->
+                <!--&gt;-->
+
+                <!--<CheckBox-->
+                    <!--android:id="@+id/myrepu_check_box"-->
+                    <!--style="@style/myrepu_checkbox_style" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textSize="13sp"-->
+                    <!--android:textColor="#636363"-->
+                    <!--android:letterSpacing="-0.03"-->
+                    <!--android:lineSpacingExtra="11sp"-->
+                    <!--android:text="별점 주기 자동 제시 해제"/>-->
+            <!--</LinearLayout>-->
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/modal_btn_wrap_single"
+                android:background="@color/colorPrimary"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/modal_ok"
+                    android:text="저장"
+                    android:textSize="18sp"
+
+                    android:letterSpacing="-0.03"
+                    android:lineSpacingExtra="6sp"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_alignParentLeft="true"
+                    />
+
+                <Button
+                    android:id="@+id/modal_close"
+                    android:text="닫기"
+                    android:textSize="18sp"
+
+                    android:letterSpacing="-0.03"
+                    android:lineSpacingExtra="6sp"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_alignParentRight="true"
+                    />
+
+            </RelativeLayout>
+
+            <!--<LinearLayout-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:background="@color/my_repu"-->
+                <!--android:id="@+id/modal_btn_wrap_multi">-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/modal_left"-->
+                    <!--android:text="modal_left"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@color/my_repu"-->
+                    <!--android:textColor="@color/colorWhite"-->
+                    <!--android:textSize="14sp" />-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="1dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@color/colorWhite"-->
+                    <!--android:layout_marginTop="6dp">-->
+
+                <!--</RelativeLayout>-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/modal_right"-->
+                    <!--android:text="medal_right"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@color/my_repu"-->
+                    <!--android:textColor="@color/colorWhite"-->
+                    <!--android:textSize="14sp" />-->
+            <!--</LinearLayout>-->
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/item_modal_myrepu_backgroundstyle_bottom"
+            android:layout_height="10dp">
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="85dp"
+        android:layout_height="120dp"
+        android:orientation="vertical"
+        android:id="@+id/welean_myrepu_dialog_right_progress"
+        android:layout_below="@id/welean_myrepu_dialog"
+        android:layout_alignRight="@id/welean_myrepu_dialog"
+
+        android:layout_marginRight="30dp"
+        android:gravity="right"
+
+        >
+
+        <ImageView
+
+            android:layout_width="85dp"
+            android:layout_height="120dp"
+            android:id="@+id/next_progress_rectangle"
+            android:alpha="0.77"
+
+            />
+
+        <RelativeLayout
+            android:layout_width="85dp"
+            android:layout_height="120dp"
+
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="9dp"
+                android:gravity="center|top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="#ffffff"
+                    android:gravity="center_horizontal"
+                    android:text="Next"
+                    android:visibility="invisible"
+
+                    />
+            </LinearLayout>
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginTop="50dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:gravity="center|center_horizontal"-->
+                <!--android:id="@+id/next_progress_style"-->
+
+                <!--&gt;-->
+
+                <!--<ProgressBar-->
+                    <!--style="?android:attr/progressBarStyle"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:id="@+id/progressBar" />-->
+
+            <!--</LinearLayout>-->
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

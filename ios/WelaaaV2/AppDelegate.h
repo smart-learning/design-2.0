@@ -6,9 +6,20 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#import "common.h"
+
+@import Firebase;
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate, FIRMessagingDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
+@property (strong, nonatomic) UINavigationController *navigationController;
+@property (readonly, strong) NSPersistentContainer *persistentContainer;
+@property (nonatomic, assign) BOOL readyForPushMessage;
+
+- (void) saveContext;
+- (NSManagedObjectContext *) managedObjectContext;
 
 @end

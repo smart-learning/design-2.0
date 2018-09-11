@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/TAG_UNLOCK_UI_LAYOUT"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:padding="30dp">
+
+
+        <LinearLayout
+            android:id="@+id/modal_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_modal_backgroundstyle">
+
+            <TextView
+                android:text="알림"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/modal_title"
+                android:paddingTop="20dp"
+                android:textColor="@color/bottomControlBg"
+                android:textSize="20sp"
+                android:gravity="left"
+                android:paddingLeft="20dp"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/modal_content1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#636363"
+                android:letterSpacing="-0.05"
+                android:gravity="center_horizontal"
+                android:text="아직 윌라 무료 계정을 안 만드셨네요!"
+                 />
+
+            <TextView
+                android:id="@+id/modal_content2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="#38b275"
+                android:letterSpacing="-0.05"
+                android:lineSpacingExtra="4sp"
+                android:layout_marginTop="12dp"
+                android:gravity="center_horizontal"
+                android:text="3초면 만드는 윌라 무료 계정!"
+                />
+
+            <TextView
+                android:id="@+id/modal_content3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#4a4a4a"
+                android:letterSpacing="-0.05"
+                android:layout_marginTop="19dp"
+                android:gravity="center_horizontal"
+                android:text="무료 회원 가입하면\n 많은 혜택을 받을 수 있습니다!"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="29dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/video_icon"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/audio_icon"
+                    android:layout_marginLeft="10dp"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/modal_content4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#4a4a4a"
+                android:letterSpacing="-0.05"
+                android:layout_marginTop="12dp"
+                android:gravity="center_horizontal"
+                android:text="동영상 강의 무제한 + 오디오북 1권"
+                />
+
+            <TextView
+                android:id="@+id/modal_content5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#636363"
+                android:letterSpacing="-0.05"
+                android:lineSpacingExtra="3sp"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="29dp"
+                android:text="윌라 무료 계정은 일체의 결제정보\n 입력 없이 만들 수 있습니다."
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/modal_content_imageview"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_modal_backgroundstyle"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/modal_contnet_title"
+                android:text="이어듣겠습니까?"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="40dp"
+                android:textSize="14sp"
+                android:textColor="@color/PopupNotifyBacground"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/modal_contnet_image"
+                android:layout_width="172dp"
+                android:layout_height="72dp"
+
+                android:background="@drawable/dialog_20171228"
+                 />
+
+            <TextView
+                android:id="@+id/modal_contnet_above"
+                android:text="이어듣겠습니까?"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="40dp"
+                android:textSize="14sp"
+                android:textColor="@color/PopupNotifyBacground"
+                android:gravity="center" />
+
+            <!--<Button-->
+            <!--android:id="@+id/close_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/close_player"-->
+            <!--/>-->
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="40dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/modal_btn_wrap_single">
+
+                <Button
+                    android:id="@+id/modal_ok"
+                    android:text="modal_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/colorPrimary"
+                android:id="@+id/modal_btn_wrap_multi">
+
+                <Button
+                    android:id="@+id/modal_left"
+                    android:text="확인"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14sp" />
+
+                <RelativeLayout
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorWhite"
+                    android:layout_marginTop="6dp">
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/modal_right"
+                    android:text="종료"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/item_modal_backgroundstyle_bottom"
+            android:layout_height="10dp">
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

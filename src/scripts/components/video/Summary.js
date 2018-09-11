@@ -7,7 +7,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 } from "react-native";
-import { COLOR_PRIMARY } from "../../../styles/common";
+import Style, { COLOR_PRIMARY } from "../../../styles/common";
 import IcFilm from "../../../images/icons/film.png"
 import IcComment from "../../../images/icons/commenting.png"
 import IcShare from "../../../images/ic-share-light.png";
@@ -15,6 +15,9 @@ import IcStar from "../../../images/icons/star.png";
 import IcView from "../../../images/icons/eye.png";
 import IcPlay from "../../../images/ic-play.png";
 import Device from "../../commons/device";
+import Native from "../../commons/native";
+import Dummy from "../../../images/dummy-dailybook.png"
+
 
 const styles = StyleSheet.create( {
 	itemContainer: {
@@ -28,6 +31,7 @@ const styles = StyleSheet.create( {
 		paddingBottom: '22%',
 		justifyContent: 'center',
 		alignItems: 'center',
+		backgroundColor: '#efefef',
 	},
 	thumbnailTitle: {
 		position: 'absolute',
@@ -63,6 +67,7 @@ const styles = StyleSheet.create( {
 		width: 42,
 		height: 42,
 	},
+
 	btnGroup: {
 		width: '100%',
 		height: 40,
@@ -88,17 +93,53 @@ const styles = StyleSheet.create( {
 		paddingRight: 7,
 		fontSize: 12,
 		color: '#ffffff',
-	}
+	},
+	playTimeText: {
+		position: 'absolute',
+		top: 25,
+		right: 25,
+		fontWeight: 'bold',
+		fontSize: 25,
+		color: '#ffffff'
+	},
+	playTimeTextInfo: {
+		fontWeight: 'normal',
+		fontSize: 13,
+	},
+	detailClipView: {
+		position: 'absolute',
+		left: 15,
+		bottom: 20,
+		opacity: 0.8,
+	},
+	detailClipPlay: {
+		position: 'absolute',
+		right: 15,
+		bottom: 25,
+		width: 50,
+		height: 50,
+	},
 } );
 
 export default class Summary extends React.Component {
-
+	thumbnailUri = () => {
+		if( this.props.classType === 'series' ) {
+			return this.props.images.wide;
+		}
+		else if( this.props.type === 'detailClip' ) {
+			return this.props.course.images.wide;
+		}
+		else {
+			return this.props.thumbnail;
+		}
+	}
 
 	render() {
 		return <View style={styles.itemContainer}>
 			<TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
+				{ (this.props.type !== 'detailClip') && (this.props.type !== 'dailyBook') &&
 				<ImageBackground
-					source={{ uri: this.props.thumbnail }}
+					source={{ uri: this.thumbnailUri() }}
 					resizeMode="cover"
 					style={styles.thumbnail}>
 					<Text style={styles.thumbnailTitle}>
@@ -106,31 +147,73 @@ export default class Summary extends React.Component {
 					</Text>
 					<Image source={IcFilm} style={[styles.btnSetSmall, styles.clipIcon]}/>
 					<Text style={styles.clipCount}>
-						{this.props.clipCount}
+						{this.props.clip_count}
 						개 강의
 					</Text>
-					<Image source={IcPlay} style={styles.play}/>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.play}
+									  onPress={() => Native.play(`${this.props.cid}_001`)}
+					>
+						<Image source={IcPlay} style={Style.fullImg}/>
+					</TouchableOpacity>
 				</ImageBackground>
+				}
+				{this.props.type === 'detailClip' &&
+				<ImageBackground
+					source={{uri: this.props.itemData.images.wide}}
+					resizeMode="cover"
+					style={styles.thumbnail}>
+					<Text style={styles.playTimeText}>
+						{/*00<Text style={styles.playTimeTextInfo}>분</Text> 00<Text style={styles.playTimeTextInfo}>초</Text>*/}
+						{this.props.itemData.play_time}
+					</Text>
+					<View style={[styles.alignJustify, styles.detailClipView]}>
+						<Image source={IcView} style={styles.btnSetSmall}/>
+						<Text style={styles.countText}>조회수 {this.props.itemData.hit_count}</Text>
+					</View>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.detailClipPlay}
+									  onPress={() => Native.play(this.props.itemData.cid)}
+					>
+						<Image source={IcPlay} style={Style.fullImg}/>
+					</TouchableOpacity>
+				</ImageBackground>
+				}
+				{this.props.type === 'dailyBook' &&
+				<ImageBackground
+					source={{uri: this.props.thumbnail === 'bookDummy' ? null : this.props.thumbnail}}
+					resizeMode="cover"
+					style={styles.thumbnail}>
+					<TouchableOpacity activeOpacity={0.9}
+									  style={styles.play}
+									  onPress={() => Native.play(this.props.cid)}
+					>
+						<Image source={IcPlay} style={Style.fullImg}/>
+					</TouchableOpacity>
+				</ImageBackground>
+				}
 			</TouchableOpacity>
+			{( 1 === 2 && this.props.type !== 'detailClip' ) &&
 			<View style={styles.btnGroup}>
 				<View style={styles.alignJustify}>
 					<Image source={IcView} style={styles.btnSetSmall}/>
-					<Text style={styles.countText}>조회수 {this.props.hitCount}</Text>
+					<Text style={styles.countText}>조회수 {this.props.hit_count}</Text>
 					<Image source={IcStar} style={styles.btnSetSmall}/>
-					<Text style={styles.countText}>별점 {this.props.starAvg}</Text>
+					<Text style={styles.countText}>별점 {this.props.star_avg}</Text>
 					<Image source={IcComment} style={styles.btnSetSmall}/>
-					<Text style={styles.countText}>리뷰 {this.props.reviewCount}</Text>
-					<TouchableOpacity activeOpacity={0.9}
-						onPress={ ()=>{
-							Device.share( this.props.title, this.props.url );
-						}}
-					>
-						<Image source={IcShare}
-							   style={[styles.btnSetLarge, { marginLeft: 'auto' }]}/>
-
-					</TouchableOpacity>
+					<Text style={styles.countText}>리뷰 {this.props.review_count}</Text>
+					<View style={{marginLeft: 'auto'}}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => {
+											  Device.share(this.props.title, this.props.url);
+										  }}>
+							<Image source={IcShare}
+								   style={styles.btnSetLarge}/>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</View>
+			}
 		</View>
 	}
 }

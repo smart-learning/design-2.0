@@ -1,15 +1,11 @@
 import React from "react";
-import {
-	FlatList,
-	View,
-	Text,
-	StyleSheet,
-	TouchableOpacity,
-} from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { observer } from "mobx-react";
 
 const styles = StyleSheet.create( {
 	categoryContainer: {
 		width: '100%',
+		height: 40,
 	},
 	categoryItem: {
 		alignItems: 'center',
@@ -24,36 +20,38 @@ const styles = StyleSheet.create( {
 	}
 } );
 
-export default class PageCategory extends React.Component {
-	constructor( props ) {
-		super( props );
-
-		this.state = {
-			//
-		};
-
-		this.test = this.test.bind( this );
-	}
-
-	test() {
-		alert( '!!!' );
-	}
+@observer class PageCategory extends React.Component {
+	select = item => {
+		if( this.props.onCategorySelect ) {
+			this.props.onCategorySelect( item );
+		}
+	};
 
 	render() {
+		if( !this.props.data ) {
+			return <View/>;
+		}
 		return <FlatList
 			style={styles.categoryContainer}
 			data={this.props.data}
 			horizontal={true}
 			showsHorizontalScrollIndicator={false}
+			extraData={this.props.data}
 			renderItem={
-				( { item } ) => <View style={styles.categoryItem}>
-					<TouchableOpacity activeOpacity={0.9}
-									  onPress={this.test}
-					>
-						<Text style={styles.categoryText}>{item.title}</Text>
-					</TouchableOpacity>
-				</View>
+				( { item } ) => {
+					const localStyle = {
+						color: this.props.selectedCategory === item.id ? '#444444' : '#A1A1A1'
+					};
+					return <View style={styles.categoryItem}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={ () => this.select( item ) }>
+							<Text style={[styles.categoryText, localStyle]}>{item.label}</Text>
+						</TouchableOpacity>
+					</View>
+				}
 			}
 		/>
 	}
 }
+
+export default PageCategory;
