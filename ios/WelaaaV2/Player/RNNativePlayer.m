@@ -100,6 +100,11 @@ RCT_EXPORT_METHOD( play : (NSDictionary *) argsFromReactNative )
     [self showMediaPlayer : argsFromReactNative];
 }
 
+RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
+{
+    NSLog(@"  RNNativePlayer setting for RN : %@", argsFromReactNative);
+}
+
 RCT_EXPORT_METHOD( download : (NSDictionary *) argsFromReactNative )
 {
     //[self downloadSomething : argsFromReactNative]; // test
