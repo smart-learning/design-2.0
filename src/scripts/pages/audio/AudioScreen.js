@@ -16,10 +16,12 @@ const AudioScreen = createStackNavigator({
 		AudioBookPage: {
 			screen: AudioBookPage,
 			navigationOptions: NAV_OPTS_MAIN,
+			path:'audio_list',
 		},
 		AudioBookDetailPage: {
 			screen: AudioBookDetailPage,
 			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+			path:'audio',
 		}
 	},
 

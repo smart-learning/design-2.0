@@ -1,6 +1,6 @@
 // 네비게이션 기본 속성 옵션
 import React from "react";
-import {Button, Text} from "react-native";
+import {Button, Text, Linking, Alert} from "react-native";
 import CommonStyle from "../../styles/common";
 import SearchButton from "../components/header/SearchButton";
 import {Image, View} from "react-native";
@@ -8,6 +8,7 @@ import HomeButton from "../components/header/HomeButton";
 import logo from "../../images/logo-white.png"
 import IcAngleRight from "../../images/ic-angle-right-primary.png";
 import HistoryBackButton from "../components/header/HistoryBackButton";
+import Native from "./native";
 
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
@@ -206,20 +207,15 @@ export default {
 	setNav: ( nav )=>{
 		navigation = nav._navigation;
 		console.log( 'set global nav:', navigation );
-
-
-		// setTimeout(()=>{
-		// 	navigation.navigate('SetAppPage');
-		// }, 3000 );
 	},
 	// welaaa://video_list 동영상 리스트
 	// welaaa://video_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
 	// welaaa://video/{cid} 동영상 상세
 	// welaaa://video_play/{cid} 동영상 재생
-	// welaaa://audiobook_list 오디오북 리스트
-	// welaaa://audiobook_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
-	// welaaa://audiobook/{cid} 오디오북 상세
-	// welaaa://audiobook_play/{cid} 오디오북 재생
+	// welaaa://audio_list 오디오북 리스트
+	// welaaa://audio_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
+	// welaaa://audio/{cid} 오디오북 상세
+	// welaaa://audio_play/{cid} 오디오북 재생
 	// welaaa://in_browser/{url} 인앱 브라우져로 url 이동(닫기버튼포함)
 	// welaaa://out_browser/{url}` 외부 브라우져 실행
 	// welaaa://sign_up 회원가입 이동
@@ -235,40 +231,45 @@ export default {
 
 		// 맨 앞에 내용을 action 뒤에 내용을 params으로 분리
 		const action = schemes[0];
-
 		const paramsLen = schemes.length - 1; // action을 제외한 길이
 
 		switch( action ){
 			case 'video_list':
-				navigation.navigate('ClassListPage');
+				if( paramsLen === 2 ) navigation.navigate('ClassListPage', { category:schemes[0], index:schemes[1] } );
+				else navigation.navigate('ClassListPage');
 				break;
 
 			case 'video':
-
+				navigation( 'ClassDetailPage', { id: schemes[0] } );
 				break;
 
-			case 'video_play':
-
-				break;
-
-			case 'audiobook_list':
-
+			case 'audio_list':
+				if( paramsLen === 2 ) navigation.navigate('AudioBookPage', { category:schemes[0], index:schemes[1] } );
+				else navigation.navigate('AudioBookPage');
 				break;
 
 			case 'audio':
-				navigation.navigate('AudioBookPage');
+				navigation.navigate('AudioBookDetailPage', { id: schemes[0] });
 				break;
 
-			case 'audiobook_play':
-
+			case 'video_play':
+			case 'audio_play':
+				Native.play( schemes[0] );
 				break;
 
 			case 'in_browser':
-
+				/* TODO: 웹뷰 붙이는 작업 필요 */
+				Linking.openURL(schemes[0]);
+				// const url = 'https://naver.com';// schemes[0];
+				// Linking.openURL('https://google.com');
+				// Linking.canOpenURL( schemes[0] ).then( supproted => {
+				// 	if( supproted ) Linking.openURL( url );
+				// 	else            Alert.alert('열 수 없는 URL입니다.', url );
+				// });
 				break;
 
 			case 'out_browser':
-
+				Linking.openURL(schemes[0]);
 				break;
 
 			case 'sign_up':
@@ -279,13 +280,12 @@ export default {
 				navigation.navigate('Login');
 				break;
 
-			case 'my_welaaa':
-				navigation.navigate('MyScreen');
+			case 'mywela':
+				navigation.navigate('AuthCheck', { requestScreenName:'MyScreen', title:'마이윌라' } );
 				break;
 
 			case 'app_setting':
-				// 로그인 처리 후 시도..
-				// navigation.navigate('SetAppPage');
+				navigation.navigate('AuthCheck', { requestScreenName:'SetAppPage', title:'설정' } );
 				break;
 		}
 	}

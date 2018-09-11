@@ -5,7 +5,7 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import {AsyncStorage, DeviceEventEmitter, Platform, View, Linking} from "react-native";
+import {AsyncStorage, DeviceEventEmitter, Platform, View, Linking, AppState} from "react-native";
 import EventEmitter from 'events';
 import globalStore from "./src/scripts/commons/store";
 
@@ -107,6 +107,8 @@ import nav from "./src/scripts/commons/nav";
 			globalStore.downloadItems = params.selectDownload || params.selectDatabase || 'null';
 		}));
 
+		Linking.addEventListener('url', this._handleOpenURL );
+
 
 		/* 앱 떠있는 상태에서 노티 들어올때 */
 		this.notificationListener = firebase.notifications().onNotification((notification) => {
@@ -141,13 +143,6 @@ import nav from "./src/scripts/commons/nav";
 			console.log( 'OPEN BY NOTI-C:', action, notification );
 		}
 
-
-
-		Linking.getInitialURL().then((url) => {
-			if (url) {
-				nav.parseDeepLink( url );
-			}
-		}).catch(err => console.error('An error occurred', err));
 
 		Native.getF_TOKEN(f_token => {
 			if (undefined === f_token || "" === f_token) {
@@ -191,19 +186,25 @@ import nav from "./src/scripts/commons/nav";
 		} );
 		this.subscription.length = 0;
 		globalStore.emitter.removeAllListeners();
+		Linking.removeEventListener('url', this._handleOpenURL );
 		// this.messageListener();
 		// this.notificationDisplayedListener();
 		// this.notificationListener();
 	}
 
- 	render() {
+	_handleOpenURL = ( event ) => {
+		console.log( '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', event.url );
+		nav.parseDeepLink( event.url );
+	}
+
+	render() {
 
 		return <View style={{flex: 1}}>
 			<AppDrawer
 				ref={navigatorRef => {
 					globalStore.drawer = navigatorRef
-					// 	// 플래이어 크래시 때문에 코드 추가
-					// 	nav.setNav(navigatorRef);
+						// 플래이어 크래시 때문에 코드 추가
+						nav.setNav(navigatorRef);
 				}}
 				style={{width: '80%'}}
 
@@ -258,7 +259,7 @@ const AppDrawer = createDrawerNavigator(
 
 		VideoScreen: {
 			screen: VideoScreen,
-			path: 'video_list',
+			// path: 'video_list',
 		},
 
 		AudioScreen: {

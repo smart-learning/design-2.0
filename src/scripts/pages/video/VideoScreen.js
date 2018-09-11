@@ -22,6 +22,7 @@ const VideoScreen = createStackNavigator({
 		ClassDetailPage: {
 			screen: ClassDetailPage,
 			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+			path: 'video',
 		},
 		ClipPage: {
 			screen: ClipPage,
