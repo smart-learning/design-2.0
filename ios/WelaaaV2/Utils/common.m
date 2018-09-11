@@ -465,6 +465,18 @@
         
         if ( [deviceModel isEqual: @"iPhone10,3"] || [deviceModel isEqual: @"iPhone10,6"] )
             return @"iPhone X";
+      
+        if ( [deviceModel isEqual: @"iPhone9,7"] )
+            return @"iPhone SE 2";
+      
+        if ( [deviceModel isEqual: @"iPhone11,1"] )
+            return @"iPhone XC";
+      
+        if ( [deviceModel isEqual: @"iPhone11,3"] )
+            return @"iPhone XS";
+      
+        if ( [deviceModel isEqual: @"iPhone11,5"] )
+            return @"iPhone XS Plus";
     }
     
     // iPad
@@ -637,10 +649,10 @@
     if ( [deviceModel isEqualToString : @"iPhone XS"] )
         return true;
   
-    if ( [deviceModel isEqualToString : @"iPhone X Plus"] )
+    if ( [deviceModel isEqualToString : @"iPhone XS Plus"] )
         return true;
   
-    if ( [deviceModel isEqualToString : @"iPhone 9"] )
+    if ( [deviceModel isEqualToString : @"iPhone XC"] )
         return true;
     
     return false;

@@ -9,8 +9,8 @@ import {Alert} from 'react-native'
 import * as firebase from "react-native-firebase";
 
 export default {
-	getF_TOKEN() {
-		RNNativeBase.getF_TOKEN(f_token => { /* do sutff */ });
+	getF_TOKEN(callback) {
+		RNNativeBase.getF_TOKEN(callback);
 	},
 
 	play(cid, oid = '') {
@@ -40,14 +40,7 @@ export default {
 			userId: "93",// + userId, // 825  ,
 			token: accessToken // bearer token
 		};
-
-		if (Platform.OS === 'android') {
-			null;
-		} else {
-			args.cid = 'v100015_002';
-			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_002/master.m3u8';
-		}
-
+		
 		console.log('native.play()', JSON.stringify(args));
 
 		setTimeout(() => {

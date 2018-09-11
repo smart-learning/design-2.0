@@ -120,31 +120,57 @@ export default class AudiobookPaymentStatus extends React.Component {
 
 	renderPriceOrExpire(itemData, paymentType, expire) {
 		// 3: 소장중
-		return (
-			<View>
-				{
-					paymentType === 3 ? (
-						<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+
+		if (paymentType === 3) {
+			return (
+				<View>
+					<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+						<Text style={styles.priceText}>
+							{expire}
+						</Text>
+					</View>
+				</View>
+			)
+		} else {
+			return (
+				<View>
+					<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+						<Text style={styles.priceOriginal}>
+							₩{itemData.sale_price}
+						</Text>
+						{itemData.orig_price !== itemData.sale_price ? (
+							(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&
 							<Text style={styles.priceText}>
-								{expire}
+								<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
 							</Text>
-						</View>
-					) : (
-						<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
-							<Text style={styles.priceOriginal}>
-								₩{itemData.sale_price}
-							</Text>
-							{
-								(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&
-								<Text style={styles.priceText}>
-									<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
-								</Text>
-							}
-						</View>
-					)
-				}
-			</View>
-		)
+						) : undefined
+						}
+					</View>
+				</View>
+			)
+		}
+
+		// return (
+		// 	<View>
+		// 		{
+		// 			paymentType === 3 ? (
+		// 			) : (
+		// 				<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+		// 					<Text style={styles.priceOriginal}>
+		// 						₩{itemData.sale_price}
+		// 					</Text>
+		// 						{itemData.orig_price !== itemData.sale_price ? (
+		// 							(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&
+		// 							<Text style={styles.priceText}>
+		// 								<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
+		// 							</Text>
+		// 						) : undefined
+		// 						}
+		// 				</View>
+		// 			)
+		// 		}
+		// 	</View>
+		// )
 	}
 
 	render() {
@@ -160,8 +186,8 @@ export default class AudiobookPaymentStatus extends React.Component {
 				<View style={[ CommonStyles.alignJustifyContentBetween, styles.paymentContainer ]}>
 					{ this.renderPriceOrExpire(itemData, paymentType, expire) }
 
-					{/* paymentType: 0, // 0 무료, 1 구매, 2 이용권 사용, 3 소장중 */}
-					{(paymentType === 1 || paymentType === 2)
+					{/* paymentType: 0, // 0 무료, 1 구매, 2 이용권 사용, 3 소장중, 4 미로그인 */}
+					{(paymentType === 1 || paymentType === 2 || paymentType === 4)
 						? (
 							<TouchableOpacity
 								onPress={() => this.props.purchase(paymentType)}

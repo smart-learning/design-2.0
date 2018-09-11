@@ -211,4 +211,8 @@
     <string name="notification_channel_description">media notification for welaaa</string>
     <string name="casting_to_device">Casting to %1$s</string>
     <string name="stop_casting">Stop Casting</string>
+
+    <!-- Splash Activity -->
+    <string name="notice_dialog_update_title">업데이트</string>
+    <string name="notice_dialog_update_message">새로운 버전이 있습니다.\n업데이트 하시겠습니까?</string>
 </resources>

@@ -27,8 +27,11 @@ RCT_EXPORT_MODULE();
 //
 RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) resultCallback )
 {
-    NSString *f_token = [self getWebToken];
-    resultCallback(@[[NSNull null], f_token]); // (error, someData) in js
+    NSLog(@"  getF_TOKEN has been called.");
+    NSString *f_token = @"";
+    f_token = [self getWebToken];
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"webToken"]; // F_Token을 삭제합니다.
+    resultCallback(@[f_token]); // (error, someData) in js
 }
 
 @end

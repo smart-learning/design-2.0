@@ -713,7 +713,38 @@ public class PlayerActivity extends BasePlayerActivity {
 //      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
 
       } else {
-        LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
+
+        Intent intent = getIntent();
+
+        if (intent.getStringExtra(PlaybackManager.DRM_CID) != null) {
+          if (intent.getStringExtra(PlaybackManager.DRM_CID).contains("z") ){
+
+            UiThreadUtil.runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                mButton_Arrow_Layout.setVisibility(GONE);
+                mRelatedViewBtn.setVisibility(GONE);
+
+                RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
+                subscription_wrap.setVisibility(GONE);
+
+                RelativeLayout audioVideobtn_wrap = findViewById(R.id.audiovideo_btn_wrap);
+                audioVideobtn_wrap.setVisibility(GONE);
+
+                audioModeBackgroundLayout.setVisibility(VISIBLE);
+                audioModeIconHeadset.setVisibility(VISIBLE);
+
+                LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
+                // Audio Book 에서 화면 항상 켜기 //
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+              }
+            });
+
+            LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
+          }else{
+            LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
+          }
+        }
       }
     }
 
@@ -1002,6 +1033,7 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   private String getIdleReasonString(int idleReason) {
+    LogHelper.e(TAG , " getIdleReasonString " + idleReason);
     switch (idleReason) {
       case MediaStatus.IDLE_REASON_FINISHED:    // 1
         return "Finish";
@@ -2355,6 +2387,12 @@ public class PlayerActivity extends BasePlayerActivity {
             }
 
             break;
+
+          case R.id.BTN_CLOSE: {
+            onBackPressed();
+          }
+          break;
+
           case R.id.BTN_CLOSE_LINEAR:
             finish();
             break;
@@ -4738,15 +4776,22 @@ public class PlayerActivity extends BasePlayerActivity {
     MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
     mediaController.registerCallback(callback);
 
-    if (fromMediaSession) {
-      Bundle extras = mediaController.getMetadata().getBundle();
-      Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
-      playFromUri(uri, extras);
-    } else {
-      Intent intent = getIntent();
-      Uri uri = intent.getData();
-      playFromUri(uri, intent.getExtras());
+    try {
+      if (fromMediaSession) {
+        Bundle extras = mediaController.getMetadata().getBundle();
+        Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+        playFromUri(uri, extras);
+      } else {
+        Intent intent = getIntent();
+        Uri uri = intent.getData();
+        playFromUri(uri, intent.getExtras());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      // http://crashes.to/s/557b5198098
+      finish();
     }
+
   }
 
   private void playFromUri(Uri uri, Bundle extras) {
@@ -5047,6 +5092,10 @@ public class PlayerActivity extends BasePlayerActivity {
                   } catch (ParserException e) {
                     e.printStackTrace();
                   }
+
+                  // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+                  // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+                  Preferences.setWelaaaPlayListCKey(getApplicationContext(), getwebPlayerInfo().getCkey()[getContentId()]);
 
                   Bundle extras = intent.getExtras();
 
@@ -5476,8 +5525,6 @@ public class PlayerActivity extends BasePlayerActivity {
       }
     }
 
-    LogHelper.e(TAG , " playListOnClick currentPosition " + currentPosition);
-
     setContentId(currentPosition);
 //
 //    setBackGroungLayout(true);
@@ -5504,11 +5551,6 @@ public class PlayerActivity extends BasePlayerActivity {
         }
       }
     });
-
-
-
-    LogHelper.e(TAG , " playListOnClick currentPosition getContentId " + currentPosition);
-    LogHelper.e(TAG , " playListOnClick currentPosition getContentId " + getContentId());
 
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";

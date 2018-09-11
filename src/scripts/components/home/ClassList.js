@@ -39,31 +39,34 @@ const styles = StyleSheet.create( {
 	} );
 	render() {
 		let list = _.toArray( this.props.itemData );
+
 		if( !this.store.isOpen ) {
 			list = list.slice( 0, 3 );
 		}
-		return <View style={styles.classContainer}>
-			<View style={styles.classList}>
-				<FlatList
-					style={{ width: '100%' }}
-					data={ list }
-					renderItem={
-						( { item } ) => <ClassListItem id={item.id} itemData={item} classType={this.props.classType}/>
-					}/>
-			</View>
-
-			{!this.store.isOpen &&
-			<TouchableOpacity activeOpacity={0.9} style={styles.viewMoreContainer}
-							  onPress={() => this.store.isOpen = true}>
-				<View style={[ styles.viewMore, CommonStyles.alignJustifyContentBetween ]}>
-					<Text style={styles.viewMoreText}>
-						더보기
-					</Text>
-					<Image source={IcAngleDownGrey} style={styles.viewMoreIcon}/>
+		return (
+			<View style={styles.classContainer}>
+				<View style={styles.classList}>
+					<FlatList
+						style={{width: '100%'}}
+						data={list}
+						renderItem={
+							({item}) => <ClassListItem id={item.id} itemData={item} classType={this.props.classType}/>
+						}/>
 				</View>
-			</TouchableOpacity>
-			}
-		</View>
+
+				{!this.store.isOpen &&
+				<TouchableOpacity activeOpacity={0.9} style={styles.viewMoreContainer}
+								  onPress={() => this.store.isOpen = true}>
+					<View style={[styles.viewMore, CommonStyles.alignJustifyContentBetween]}>
+						<Text style={styles.viewMoreText}>
+							더보기
+						</Text>
+						<Image source={IcAngleDownGrey} style={styles.viewMoreIcon}/>
+					</View>
+				</TouchableOpacity>
+				}
+			</View>
+		)
 	}
 }
 

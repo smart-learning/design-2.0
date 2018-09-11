@@ -204,7 +204,7 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 
 						<View style={CommonStyles.alignJustifyContentBetween}>
 							<Text style={styles.titleH3}>
-								회원들이 듣고 있는 클래스
+								회원들이 열심히 듣고 있는 클래스
 							</Text>
 							<Text style={[styles.titleParagraph, {marginLeft: 0}]}>
 								{updatedAt} 업데이트

@@ -381,12 +381,21 @@
 
 //
 // 진도 데이터를 전송합니다.
+// parameters : header auth, cid, action, start, end, 다운로드파일인지의 여부 (6개.)
 //
-+ (void) sendPlaybackProgress : (NSString *) authValue
++ (void) sendPlaybackProgressWith : (NSString *) cid
+                           action : (NSString *) action
+                      startSecond : (unsigned short) start
+                        endSecond : (unsigned short) end
+                         duration : (unsigned short) duration
+                        netStatus : (NSString *) netStatus
+                        authToken : (NSString *) authValue
 {
+    // Dealing with parameters...
+    NSLog(@"  [sendPlaybackProgressWith] loaded properly.....");
     NSString *apiProgress = @"/dev/api/v1.0/play/progress"; // dev -> ?
-    NSString *urlWithParams = [NSString stringWithFormat : @"%@%@", API_HOST, apiProgress];
-    NSURL *url = [NSURL URLWithString : urlWithParams];
+    NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiProgress];
+    NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
     NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
   
@@ -401,16 +410,26 @@
     NSError *error;
     NSURLResponse *resp = nil;
   
-    NSMutableDictionary *dictionary;
-    dictionary = [@{@"action"     : @"ING",
-                    @"cid"        : @"string",
-                    @"duration"   : @0,
-                    @"end"        : @0,
-                    @"error"      : @"string",
-                    @"net_status" : @"string",
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+    [dictionary setObject:cid                                     forKey:@"cid"];
+    [dictionary setObject:@"iphone"                               forKey:@"platform"];
+    [dictionary setObject:action                                  forKey:@"action"];
+    [dictionary setObject:[NSNumber numberWithDouble : start]     forKey:@"start"];
+    [dictionary setObject:[NSNumber numberWithDouble : end]       forKey:@"end"];
+    [dictionary setObject:[NSNumber numberWithDouble : duration]  forKey:@"duration"];
+    [dictionary setObject:netStatus                               forKey:@"net_status"];
+    [dictionary setObject:cid                                     forKey:@"error"];
+  /*
+    dictionary = [@{@"cid"        : cid,
                     @"platform"   : @"iphone",
-                    @"start"      : @0} mutableCopy];
-  
+                    @"action"     : action,     // START / ING / END / FORWARD / BACK
+                    @"start"      : [NSNumber numberWithDouble : start],         // msec
+                    @"end"        : [NSNumber numberWithDouble : end],         // msec
+                    @"duration"   : [NSNumber numberWithDouble : duration],         // end - start = msec
+                    @"net_status" : netStatus,  // "DOWNLOAD" / "Wi-Fi" / "LTE/3G"
+                    @"error"      : @"NO_ERROR"} mutableCopy];
+  */
+    NSLog(@"  [sendPlaybackProgressWith] dictionary = %@", dictionary);
     NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
                                                        options : 0
                                                          error : &error];
@@ -452,6 +471,13 @@
     NSData *data = [ApiManager sendSynchronousRequest : request
                                     returningResponse : &resp
                                                 error : &error];
+  
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) resp;
+    // 일부 영상 콘텐츠는 자막이 없습니다.
+    if ( httpResponse.statusCode == 404 )
+    {
+        return @[];
+    }
   
     NSString *jsonDataStr = [[NSString alloc] initWithData : data
                                                   encoding : NSUTF8StringEncoding];

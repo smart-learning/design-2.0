@@ -43,7 +43,9 @@ export default class ChapterListItem extends React.Component {
 	}
 
 	render() {
-		const time = moment.duration(this.props.itemData.course.play_time);
+		const time = moment.duration(this.props.itemData.play_time);
+		console.log('ChapterListItem', this.props.itemData)
+		console.log('ChapterListItem:time', time)
 
 		return <View>
 			{1 === 2 &&
@@ -62,10 +64,10 @@ export default class ChapterListItem extends React.Component {
 					<Text style={styles.itemTitleText}>{this.props.itemData.title}</Text>
 					<Text style={styles.itemTime}>
 						{time.hours() === 0 &&
-						<Text style={styles.playTime}>{time.minutes()}분</Text>
+						<Text style={styles.playTime}>{time.minutes()}분 {time.seconds()}초</Text>
 						}
 						{time.hours() > 0 &&
-						<Text style={styles.playTime}>{time.minutes()}분 {time.seconds()}초</Text>
+						<Text style={styles.playTime}>{time.hours()}시간 {time.minutes()}분</Text>
 						}
 					</Text>
 					<TouchableOpacity activeOpacity={0.9} onPress={() => Native.play(this.props.itemData.cid)}>

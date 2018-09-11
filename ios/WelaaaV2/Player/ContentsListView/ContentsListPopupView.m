@@ -102,7 +102,7 @@
 {
     UIView *itemView = [[UIView alloc] initWithFrame : frame];
     itemView.backgroundColor = UIColorFromRGB(0x43404b, 1.f);
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
     {
         _titleIconView = [[UIImageView alloc] initWithFrame : CGRectMake(5, 15, 50, 50)];
     }
@@ -114,7 +114,7 @@
     [itemView addSubview : _titleIconView];
     
     _titleButton = [UIButton buttonWithType : UIButtonTypeCustom];
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
     {
         _titleButton.frame = CGRectMake(itemView.frame.size.width-10-50, 15, 50, 50);
     }
@@ -133,7 +133,7 @@
 
     CGRect labelFrame;
     labelFrame.origin.x = CGRectGetMaxX(_titleIconView.frame);
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
     {
         labelFrame.origin.y = 15.f;
     }

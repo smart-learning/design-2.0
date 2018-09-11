@@ -161,7 +161,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     UIImageView *imageView = [[UIImageView alloc] initWithFrame : [self.window frame]];
     imageView.tag = 9999;
     // // iPhone X일 경우 다른 사이즈의 이미지파일로 교체하도록 분기처리 해야합니다.
-    if ( [[common getModel] isEqualToString : @"iPhone X"] )
+    if ( [common hasNotch] )
     {
         [imageView setImage : [UIImage imageNamed : @"iPhoneXBackgroundImage"]];
     }
