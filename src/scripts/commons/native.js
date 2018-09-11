@@ -40,14 +40,7 @@ export default {
 			userId: "93",// + userId, // 825  ,
 			token: accessToken // bearer token
 		};
-
-		if (Platform.OS === 'android') {
-			null;
-		} else {
-			args.cid = 'v100015_002';
-			args.uri = 'https://contents.welaaa.com/media/v100015/HLS_v100015_002/master.m3u8';
-		}
-
+		
 		console.log('native.play()', JSON.stringify(args));
 
 		setTimeout(() => {

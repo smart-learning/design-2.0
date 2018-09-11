@@ -11,8 +11,6 @@
 @interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate,
                                           ContentsListPopupViewDelegate, MediaPlayerScriptViewDelegate, ContentMiniPlayerViewDelegate>
 {
-    BOOL _isAudioMode;
-  
     UIView *_audioUiView;
     UIImageView *_backgroundImageView;
     UIImageView *_headphoneImageView;
@@ -42,10 +40,11 @@
 
     UISlider  *_slider;           // 재생 시간 탐색용 슬라이더.
   
+    BOOL _isAudioMode;
     BOOL _touchDragging;            // 슬라이더 프로퍼티.
     BOOL _holdTouchDragging;        // 슬라이더 프로퍼티.
     BOOL _isPlaybackContollerHidden;// 재생 컨트롤 UI 모듈 감춤 or 표시.
-    BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한. (RN에서 넘겨받는 것이 제일 best입니다. 또는 API를 통해 가져오게 됩니다.)
+    BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한.
     bool _isAudioContent;           // 콘텐트 타입. (AVPlayer API를 사용할 수도 있습니다. 추후에 '매일 책 한권' 등의 콘텐트에 대한 분류도 고민해야 할 것입니다.
   
     ContentPlayerButton *_autoPlayButton;
@@ -107,7 +106,6 @@
         _isAudioContent = NO;
         _isAudioMode = false; // 영상강의의 경우 기본적으로 오디오모드 off인 상태에서 콘텐츠 재생을 시작합니다.
     }
-    NSLog(@"  [setContentData] isAudioContent? : %@", _isAudioContent? @"TRUE" : @"FALSE");
   
     // 테스트 목적으로 강제로 set하였습니다.
     _isDownloadFile = false;
@@ -161,12 +159,18 @@
 {
     [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
   
-    NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                  andHeaderInfo : [_args objectForKey : @"token"]];
+    // RN 콘텐츠 상세페이지에서 큰 재생아이콘을 탭해서 재생할 경우 Content ID가 아닌 Content Group ID를 arguments로 받아옵니다
+    // 일단 history check 보다는 group의 제일 처음이 _001을 append시킵니다.
+    NSString *str = @"";
+    str = [_args objectForKey : @"cid"];
+    NSRange strRange;
+    strRange = [str rangeOfString : @"_"];
   
-    // 현재 콘텐트의 재생권한.
-    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
-    NSLog(@"  [setContentData] isAuthor? : %@", _isAuthor? @"TRUE" : @"FALSE");
+    if ( strRange.location == NSNotFound )
+    {
+        [_args setObject : [str stringByAppendingString : @"_001"]
+                  forKey : @"cid"];
+    }
   
     // 강좌 전체 클립 또는 오디오북 전체 챕터를 가져옵니다.
     NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
@@ -174,56 +178,84 @@
     _currentContentsInfo = [ApiManager getContentsInfoWithCgid : chunks[0]
                                                  andHeaderInfo : [_args objectForKey : @"token"]];
   
+    // 현재 콘텐트의 재생권한.
+    if ( [[_currentContentsInfo[@"permission"][@"can_play"] stringValue] isEqualToString : @"0"] )
+    {
+      _isAuthor = false;
+    }
+    else
+    {
+      _isAuthor = true;
+    }
+    NSLog(@"  권한이 %@", _isAuthor? @"있습니다." : @"없습니다.");
+  
     // 오디오북 제목 챕터로 시작되면 다음챕터로 넘깁니다.
     // 오디오북 콘텐츠만이 제목챕터를 가지고 있습니다.
     if ( _isAudioContent )
     {
-        NSArray *contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
-        NSInteger indexOfCurrentContent = 0;
-      
-        for ( int i=0; i<contentsListArray.count; i++ )
-        {
-            // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
-            if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
-            {
-                indexOfCurrentContent = i;
-            }
-        }
-      
-        _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명 세팅도 겸사겸사 합니다.
-        NSString *playSeconds = [contentsListArray[indexOfCurrentContent][@"play_seconds"] stringValue];
-      
         // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
         [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
       
-        // 현재 재생할 콘텐트의 play_seconds의 정수값이 0일 경우
-        if ( [playSeconds isEqualToString : @"0"] )
+        NSArray *contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+        NSInteger indexOfCurrentContent = 0;
+      
+        // 재생 권한이 없는 오디오북이라면 프리뷰챕터의 인덱스를 검색합니다.
+        if ( !_isAuthor )
         {
-            NSLog(@"  오디오북 제목 챕터입니다.");
-            // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
-            NSInteger i = 0;
-            for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
+            for ( int i=0; i<contentsListArray.count; i++ )
             {
-                if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                if ( [[contentsListArray[i][@"is_preview"] stringValue] isEqualToString : @"1"] )
                 {
+                    indexOfCurrentContent = i;
                     break;
                 }
             }
-          //NSLog(@"  몇번 배열? : %lu", i);
-            [_args setObject : contentsListArray[i][@"cid"]
-                      forKey : @"cid"];
-          
-            NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                          andHeaderInfo : [_args objectForKey : @"token"]];
-          
-            // 플레이할 콘텐트의 재생권한.
-            _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
-            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
-                      forKey : @"uri"];
-            _currentLectureTitle = contentsListArray[i][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명 세팅도 겸사겸사 합니다.
         }
+        // 재생 권한이 있는 오디오북에서는..
+        else if ( _isAuthor)
+        {
+            for ( int i=0; i<contentsListArray.count; i++ )
+            {
+                // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+                {
+                    // 현재 재생할 콘텐트의 play_seconds의 정수값이 0일 경우
+                    if ( [[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                    {
+                        NSLog(@"  오디오북 제목 챕터입니다.");
+                        // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
+                        for ( i = i+1; i < contentsListArray.count-1; i++ )
+                        {
+                            if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                            {
+                                break;
+                            }
+                        }
+                      
+                        indexOfCurrentContent = i;
+                        break;
+                    }
+                    // 현재 재생할 콘텐트의 play_seconds의 정수값이 0이 아닐 경우
+                    else
+                    {
+                        indexOfCurrentContent = i;
+                        break;
+                    }
+                }
+            }
+        }
+      
+        [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
+                  forKey : @"cid"];
+      
+        NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                      andHeaderInfo : [_args objectForKey : @"token"]];
+      
+        [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+                  forKey : @"uri"];
+        _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명을 세팅합니다.
     }
-    else if ( !_isAudioContent )  // 영상 콘텐츠의 경우 소챕터명만 세팅합니다.
+    else if ( !_isAudioContent )  // 영상 콘텐츠의 경우..
     {
         NSArray *contentsListArray = _currentContentsInfo[@"data"][@"clips"];
         NSInteger indexOfCurrentContent = 0;
@@ -234,19 +266,22 @@
             if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
             {
                 indexOfCurrentContent = i;
+                break;
             }
         }
       
+        [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
+                  forKey : @"cid"];
+      
+        NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                      andHeaderInfo : [_args objectForKey : @"token"]];
+      
+        [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+                  forKey : @"uri"];
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
   
-    // _args가 잘못 전달받아도 HLS 경로로 수정합니다.
     NSString *uriString = [_args objectForKey : @"uri"];
-    uriString = [uriString stringByReplacingOccurrencesOfString : @"/DASH_"
-                                                     withString : @"/HLS_"];
-    uriString = [uriString stringByReplacingOccurrencesOfString : @"/stream.mpd"
-                                                     withString : @"/master.m3u8"];
-  
     NSURL *contentUrl = [ NSURL URLWithString : uriString ]; // CONTENT_PATH
     _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
                                          options : nil       ];
@@ -290,20 +325,6 @@
   
     // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
     CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
-  
-    if ( _slider )
-    {
-        _slider.minimumValue = 0.f;
-        // 권한이 없는 상태(비 멤버십 유저)라면 90초 미리이용하기로 세팅해야 합니다.
-        if ( _isAuthor )
-        {
-            _slider.maximumValue = totalTime;
-        }
-        else
-        {
-            _slider.maximumValue = 90.f;  // 90초에 다다르면 슬라이더 메서드에서 적절한 메시지와 함께 콘텐트 재생을 종료시켜야 합니다.
-        }
-    }
   
     [self setPreparedToPlay];
     [self initScriptUi];
@@ -456,8 +477,6 @@
             NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                           andHeaderInfo : [_args objectForKey : @"token"]];
           
-            // 플레이할 콘텐트의 재생권한.
-            _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
             [_args setObject : playDataDics[@"media_urls"][@"HLS"]
                       forKey : @"uri"];
             _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
@@ -472,8 +491,6 @@
             NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                           andHeaderInfo : [_args objectForKey : @"token"]];
           
-            // 플레이할 콘텐트의 재생권한.
-            _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
             [_args setObject : playDataDics[@"media_urls"][@"HLS"]
                       forKey : @"uri"];
             _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
@@ -660,9 +677,8 @@
 
 - (void) drawPlayerControlBottom
 {
-    /*
-     * iPhone X 의 경우 슬라이더와 Anchor가 충돌하므로 기기에 따른 분기 처리가 필요합니다.
-     */
+    NSLog(@"  [drawPlayerControlBottom] 이제 플레이어 하단메뉴를 구성합니다.");
+    // iPhone X 의 경우 슬라이더와 Anchor가 충돌하므로 기기에 따른 분기 처리가 필요합니다.
     if ( [common hasNotch] )
     {
       _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-80.f, self.view.frame.size.width, 60.f)];
@@ -698,9 +714,19 @@
         _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
                                                     Minute : YES];
     }
-    else if ( !_isAuthor )  // 오디오북의 프리뷰 챕터에 대한 조건문도 추가해야 합니다!
+    else if ( !_isAuthor )
     {
-        _totalTimeLabel.text = @"01:30";
+        // 재생 권한이 없는 없는 오디오북 콘텐츠는 프리뷰 챕터만 이용 가능합니다.
+        if ( _isAudioContent )
+        {
+            _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
+                                                        Minute : YES];
+        }
+        // 재생 권한이 없는 없는 영상 콘텐츠는 90초만 이용 가능합니다.
+        else if ( !_isAudioContent )
+        {
+            _totalTimeLabel.text = @"01:30";
+        }
     }
     [_bottomView addSubview : _totalTimeLabel];
   
@@ -1038,6 +1064,7 @@
 //
 - (void) setPreparedToPlay
 {
+    NSLog(@"  [setPreparedToPlay]");
   //CGFloat currentTime = [self getCurrentPlaybackTime];
     CGFloat currentTime = 0.f;
   //CGFloat totalTime = [self getDuration]; // nan이 나오면 에러...
@@ -1048,17 +1075,23 @@
     if ( _slider )
     {
         _slider.minimumValue = 0.f;
-      
-        [self setCurrentTime : currentTime
-                 forceChange : YES];
-      
+        // 재생 권한이 모든 타입의 콘텐츠는 정상적인 duration으로 세팅합니다.
         if ( _isAuthor )
         {
             _slider.maximumValue = totalTime;
         }
         else if ( !_isAuthor )
         {
-            _slider.maximumValue = 90.f;
+            // 재생 권한이 없는 없는 오디오북 콘텐츠는 프리뷰 챕터만 이용 가능합니다.
+            if ( _isAudioContent )
+            {
+                _slider.maximumValue = totalTime;
+            }
+            // 재생 권한이 없는 없는 영상 콘텐츠는 90초만 이용 가능합니다.
+            else if ( !_isAudioContent )
+            {
+                _slider.maximumValue = 90.f;
+            }
         }
     }
   
@@ -1829,7 +1862,7 @@
       
         if ( isToast )
         {
-            [_contentView makeToast : @"미리보기에서는 이용 하실 수 없습니다."];
+            [_contentView makeToast : @"뷰에뷰는 이용 하실 수 없습니다."];
           
             return ;
         }
@@ -2189,8 +2222,6 @@
     NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                   andHeaderInfo : [_args objectForKey : @"token"]];
   
-    // 플레이할 콘텐트의 재생권한.
-    _isAuthor = playDataDics[@"permission"][@"can_play"]; // 0 or 1
     [_args setObject : playDataDics[@"media_urls"][@"HLS"]
               forKey : @"uri"];
   
@@ -2217,6 +2248,7 @@
 //
 - (void) initScriptUi
 {
+    NSLog(@"  자막 UI 구성이 시작되었습니다.");
     NSArray *scriptArray = [self readScript];
   
     _scriptView = [[MediaPlayerScriptView alloc] initWithFrame : CGRectZero];
@@ -2228,6 +2260,7 @@
   
     _scriptView.alpha = 0.f;
     _scriptView.hidden = YES;
+    NSLog(@"  자막 UI 구성이 완료되었습니다.");
 }
 - (void) setScriptViewFrameWithStatus : (NSInteger) status
 {
