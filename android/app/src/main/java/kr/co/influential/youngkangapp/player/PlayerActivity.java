@@ -2355,6 +2355,12 @@ public class PlayerActivity extends BasePlayerActivity {
             }
 
             break;
+
+          case R.id.BTN_CLOSE: {
+            onBackPressed();
+          }
+          break;
+
           case R.id.BTN_CLOSE_LINEAR:
             finish();
             break;

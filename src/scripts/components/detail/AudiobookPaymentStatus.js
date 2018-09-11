@@ -134,12 +134,13 @@ export default class AudiobookPaymentStatus extends React.Component {
 							<Text style={styles.priceOriginal}>
 								₩{itemData.sale_price}
 							</Text>
-							{
-								(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&
-								<Text style={styles.priceText}>
-									<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
-								</Text>
-							}
+								{itemData.orig_price !== itemData.sale_price ? (
+									(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&
+									<Text style={styles.priceText}>
+										<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
+									</Text>
+								) : undefined
+								}
 						</View>
 					)
 				}
