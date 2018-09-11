@@ -472,6 +472,13 @@
                                     returningResponse : &resp
                                                 error : &error];
   
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) resp;
+    // 일부 영상 콘텐츠는 자막이 없습니다.
+    if ( httpResponse.statusCode == 404 )
+    {
+        return @[];
+    }
+  
     NSString *jsonDataStr = [[NSString alloc] initWithData : data
                                                   encoding : NSUTF8StringEncoding];
   
