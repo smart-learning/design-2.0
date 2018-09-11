@@ -681,6 +681,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 mProgressDialog.dismiss();
               }
 
+              LogHelper.e(TAG , " 20180901 for callbackMethod" + callbackMethod);
+              LogHelper.e(TAG , " 20180901 for contentType" + contentType);
+
               if (contentType.equals("audiobook")) {
                 if (!can_play) {
 
@@ -707,6 +710,34 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   });
 
                 } else {
+
+                  if (mWebPlayerInfo.getCurl()[contentId].equals("0") ||
+                      mWebPlayerInfo.getCurl()[contentId].equals("0.0")) {
+
+                    LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[contentId]);
+
+                    // 처음 들어올 때 용도
+                    for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
+
+                      LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
+                      LogHelper.e(TAG , " 20180901 for contentCid" + i);
+
+                      if (!(mWebPlayerInfo.getCurl()[i].equals("0") ||
+                          mWebPlayerInfo.getCurl()[i].equals("0.0"))) {
+                        LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
+                        LogHelper.e(TAG , " 20180901 for contentCid" + i);
+
+                        contentId = i;
+                        contentCid = mWebPlayerInfo.getCkey()[i];
+
+                        doNextPlay(contentCid);
+
+                        return;
+                      }
+                    }
+                  }
+
+
                   intent.setData(Uri.parse(dashUrl));
                   intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
                       mWebPlayerInfo.getCname()[contentId]);
@@ -907,6 +938,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     MainApplication myApp = (MainApplication) activity.getApplicationContext();
     return myApp.getContentMgr();
+  }
+
+  public void doNextPlay(String contendCid){
+    LogHelper.e(TAG , " doNextPlay " + contendCid);
+    LogHelper.e(TAG , " doNextPlay sendData !! request ~  ");
+
+    callbackMethodName = "play/play-data/";
+
+    sendData(WELEARN_WEB_URL + callbackMethodName + contendCid);
   }
 
 }
