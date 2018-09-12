@@ -47,10 +47,7 @@
 		EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5D544A211936F8008F60B4 /* Images.xcassets */; };
 		EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EF671AD3213E4BA100767E01 /* libsqlite3.tbd */; };
 		EF7D07E42144DA5A00B5BCA9 /* RNNativeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */; };
-		EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F522113E6D500B71BEB /* LogManager.m */; };
 		EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7A2113E6D500B71BEB /* ApiManager.m */; };
-		EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */; };
-		EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F802113E6D600B71BEB /* AddressBookManager.m */; };
 		EF7D6F8D2113E6D600B71BEB /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F862113E6D600B71BEB /* common.m */; };
 		EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */; };
 		EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */; };
@@ -452,15 +449,9 @@
 		EF671AD3213E4BA100767E01 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		EF7D07E22144DA5A00B5BCA9 /* RNNativeBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RNNativeBase.h; path = WelaaaV2/RNNativeBase.h; sourceTree = "<group>"; };
 		EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RNNativeBase.m; path = WelaaaV2/RNNativeBase.m; sourceTree = "<group>"; };
-		EF7D6F522113E6D500B71BEB /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogManager.m; sourceTree = "<group>"; };
 		EF7D6F7A2113E6D500B71BEB /* ApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiManager.m; sourceTree = "<group>"; };
 		EF7D6F7B2113E6D500B71BEB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		EF7D6F7D2113E6D600B71BEB /* IFMessageNoticeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMessageNoticeView.h; sourceTree = "<group>"; };
-		EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddressBookInfo.m; sourceTree = "<group>"; };
-		EF7D6F802113E6D600B71BEB /* AddressBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddressBookManager.m; sourceTree = "<group>"; };
-		EF7D6F812113E6D600B71BEB /* AddressBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddressBookManager.h; sourceTree = "<group>"; };
-		EF7D6F822113E6D600B71BEB /* AddressBookInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddressBookInfo.h; sourceTree = "<group>"; };
-		EF7D6F842113E6D600B71BEB /* LogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogManager.h; sourceTree = "<group>"; };
 		EF7D6F852113E6D600B71BEB /* ApiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiManager.h; sourceTree = "<group>"; };
 		EF7D6F862113E6D600B71BEB /* common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
 		EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMessageNoticeView.m; sourceTree = "<group>"; };
@@ -804,15 +795,12 @@
 		EF13DA2A2113D95000CFED8A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				EF7D6F7E2113E6D600B71BEB /* Contact */,
 				EF7D6F852113E6D600B71BEB /* ApiManager.h */,
 				EF7D6F7A2113E6D500B71BEB /* ApiManager.m */,
 				EF7D6F7B2113E6D500B71BEB /* common.h */,
 				EF7D6F862113E6D600B71BEB /* common.m */,
 				EF7D6F7D2113E6D600B71BEB /* IFMessageNoticeView.h */,
 				EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */,
-				EF7D6F842113E6D600B71BEB /* LogManager.h */,
-				EF7D6F522113E6D500B71BEB /* LogManager.m */,
 				EFE081AA2113EB0C006D3F6C /* NSError+LocalizedError.h */,
 				EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */,
 				EFE081E42113ED84006D3F6C /* NSString+GC.h */,
@@ -853,17 +841,6 @@
 			);
 			name = UIFonts;
 			path = WelaaaV2/UIFonts;
-			sourceTree = "<group>";
-		};
-		EF7D6F7E2113E6D600B71BEB /* Contact */ = {
-			isa = PBXGroup;
-			children = (
-				EF7D6F822113E6D600B71BEB /* AddressBookInfo.h */,
-				EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */,
-				EF7D6F812113E6D600B71BEB /* AddressBookManager.h */,
-				EF7D6F802113E6D600B71BEB /* AddressBookManager.m */,
-			);
-			path = Contact;
 			sourceTree = "<group>";
 		};
 		EF9A9849211144F200EA3A8E /* Recovered References */ = {
@@ -1583,7 +1560,6 @@
 				EFAEBDC4213D33050070F10E /* ContentPlayerButton.m in Sources */,
 				EFAEBDC9213D33050070F10E /* InnerShadowView.m in Sources */,
 				EFAEBDCA213D33050070F10E /* IFCollectionView.m in Sources */,
-				EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */,
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
 				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
 				EF7D07E42144DA5A00B5BCA9 /* RNNativeBase.m in Sources */,
@@ -1591,13 +1567,11 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				EFAEBDC6213D33050070F10E /* ContentsListPopupViewCell.m in Sources */,
 				63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */,
-				EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */,
 				EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */,
 				63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */,
 				EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,
 				EFAEBDC1213D33050070F10E /* PlayerScriptItemView.m in Sources */,
-				EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */,
 				EFAEBDC2213D33050070F10E /* ContentPlayerViewController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				63A3877A2140C97A00E61CB0 /* QueryService.m in Sources */,

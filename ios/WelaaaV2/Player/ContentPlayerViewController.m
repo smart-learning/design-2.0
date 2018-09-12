@@ -1862,7 +1862,7 @@
       
         if ( isToast )
         {
-            [_contentView makeToast : @"뷰에뷰는 이용 하실 수 없습니다."];
+            [_contentView makeToast : @"프리뷰 이용 중입니다."];
           
             return ;
         }
