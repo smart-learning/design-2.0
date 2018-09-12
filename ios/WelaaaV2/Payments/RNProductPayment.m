@@ -15,7 +15,7 @@ RCT_EXPORT_MODULE();
 
 - (void) buyProduct : (NSDictionary *) args
 {
-    NSLog(@"  [IAP] Product Code : %@", [args objectForKey : @"product_id"]);
+    NSLog(@"  [buyProduct] Product Code : %@", [args objectForKey : @"product_id"]);
     NSString *productCode = [args objectForKey : @"product_id"];
     NSString *paymentMode;
 #if APPSTORE | ADHOC
@@ -23,7 +23,7 @@ RCT_EXPORT_MODULE();
 #else
     paymentMode = @"sandbox";
 #endif
-    NSLog(@"  [IAP] Current payment mode : %@", paymentMode);
+    NSLog(@"  [buyProduct] Current payment mode : %@", paymentMode);
   
     if ( nullStr(productCode) )
     {
@@ -44,9 +44,9 @@ RCT_EXPORT_MODULE();
         {
             if ( [IAPShare sharedHelper].iap.products.count == 0 )
             {
-                NSLog(@"  [IAP] No products available.");
-                NSLog(@"  [IAP] The product code isn't registered on iTunes Connect.");
-                // 인앱결제상품을 iTunes에서 조회실패하면 다음 상품결제에 영향을 끼치기때문에 PaymentQueue를 역시 초기화 함.
+                NSLog(@"  [buyProduct] No products available.");
+                NSLog(@"  [buyProduct] The product code isn't registered on AppStore Connect.");
+                // 인앱결제상품을 iTunes에서 조회실패하면 다음 상품결제에 영향을 끼치기때문에 PaymentQueue를 반드시 초기화해야 합니다.
                 [IAPShare sharedHelper].iap = nil;
 
                 return DEFAULT_ALERT(@"윌라", @"곧 출시될 상품입니다.\n감사합니다.");
@@ -54,62 +54,51 @@ RCT_EXPORT_MODULE();
 
             SKProduct *product = [[IAPShare sharedHelper].iap.products objectAtIndex : 0];
 
-            NSLog(@"  [IAP] Price : %@", [[IAPShare sharedHelper].iap getLocalePrice : product]);
-            NSLog(@"  [IAP] Title : %@", product.localizedTitle);
+            NSLog(@"  [buyProduct] Price : %@", [[IAPShare sharedHelper].iap getLocalePrice : product]);
+            NSLog(@"  [buyProduct] Title : %@", product.localizedTitle);
 
             [[IAPShare sharedHelper].iap buyProduct : product
                                        onCompletion : ^(SKPaymentTransaction *transaction)
             {
                 if ( transaction.transactionState == SKPaymentTransactionStatePurchased )
                 {
-                    //NSLog(@" [IAP] item_id: %@", transaction.payment.productIdentifier);
-                    //NSLog(@" [IAP] transaction_id: %@", transaction.originalTransaction.transactionIdentifier);
-                    NSString *webToken = [[NSUserDefaults standardUserDefaults] stringForKey : @"webToken"];
-                    if ( nil == webToken )
-                    {
-                        webToken = @"NO_F_TOKEN";
-                    }
-            
+                    NSLog(@" [SKPaymentTransactionStatePurchased] productIdentifier: %@", transaction.payment.productIdentifier);
+                    NSLog(@" [SKPaymentTransactionStatePurchased] transactionIdentifier: %@", transaction.originalTransaction.transactionIdentifier);
+                  
+                    // 구입 완료 상태이기 때문에 영수증 검증을 시작합니다. GCD를 사용해야 할 수도 있습니다.
                     [[IAPShare sharedHelper].iap checkReceipt : [NSData dataWithContentsOfURL : [[NSBundle mainBundle] appStoreReceiptURL]]
                                               AndSharedSecret : @"ShareSecret_is_in_the_server"     // from AppStoreConnect
                                                AndProductCode : productCode
                                              AndTransactionId : transaction.transactionIdentifier
                                                       AndMode : paymentMode
-                                                     AndToken : webToken
+                                                     AndToken : [args objectForKey : @"token"]
                                                  onCompletion : ^(NSString *response, NSError *error)
                     {
                         // Convert JSON String to NSDictionary
                         NSDictionary *rec = [IAPShare toJSON : response];
-                        NSLog(@"  [IAP FINAL] response from the server : %@", response);
-                        NSLog(@"  [IAP FINAL] rec from the server : %@", rec[@"status"]);
+                        NSLog(@"  [IAP checkReceipt] response from the server : %@", response);
+                        NSLog(@"  [IAP checkReceipt] rec from the server : %@", rec[@"status"]);
                
                         // status가 0이면 정상결제 처리된 것임.
                         if ( [rec[@"status"] integerValue] == 0 && nil != rec[@"status"] )
                         {
                             [[IAPShare sharedHelper].iap provideContentWithTransaction : transaction];
                  
-                            NSLog(@"  [IAP FINAL] SUCCESS IAP : %@", [IAPShare sharedHelper].iap.purchasedProducts);
-                            /*
-                            NSString *script;
-                            script = [NSString stringWithFormat: @"javascript:successIAP('%@')", productCode];
-                            [self runJavaScript: script];
-                            */
+                            NSLog(@"  [IAP checkReceipt] SUCCESS IAP : %@", [IAPShare sharedHelper].iap.purchasedProducts);
+                          
                             DEFAULT_ALERT(@"윌라", @"결제가 정상적으로 완료되었습니다.");
                         }
                         else
                         {
-                            /*
-                            NSString *script;
-                            script = [NSString stringWithFormat: @"javascript:FailIAP('%@')", productCode];
-                            [self runJavaScript: script];
-                            */
                             //DEFAULT_ALERT(@"결제확인", @"트랜잭션은 정상이었지만 영수증 확인이 제대로 이루어지지 않았습니다..");
-                            // 이 부분 처리가 가장 애매함..
-                            NSLog(@"  [IAP FINAL] Transaction was well done, but receipt validation has problem..");
+                            // 해당 상태를 NSUserDefaults로 저장하여 다음 앱 구동시에 해당 값을 읽어서 서버로 receipt verification을 한번 더 시도해야 합니다.
+                            NSLog(@"  [IAP checkReceipt] Transaction was well done, but receipt validation has problem..");
                         }
                
+                        NSLog(@"  [IAP checkReceipt] 영수증 확인 후 다음 결제를 위해 PaymentQueue를 초기화합니다..");
                         [IAPShare sharedHelper].iap = nil;
                     }];
+                    // 영수증 검증을 마쳤습니다. 위 과정은 비동기방식으로 구현되었기때문에 해당 과정을 GCD로 감싸는 것을 테스트해봐야 합니다.
                   
                     // checkReceipt는 비동기방식이라 영수증확인까지 기다리면 결제대기열을 초기화시키는데에 어려움이 있습니다.
                     // 따라서 아래와 같이 애플에서 사용자의 카드에서 결제가 성공하면 영수증확인과는 별도로 상품상세 페이지로의 이동 및 결제대기열을 초기화 시킵니다.
@@ -210,12 +199,12 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD( buy : (NSDictionary *) args )
 {
-  [self buyProduct : args];
+    [self buyProduct : args];
 }
 
 RCT_EXPORT_METHOD( checkReceipt : (NSDictionary *) args )
 {
-  [self checkProductsReceipt : args];
+    [self checkProductsReceipt : args];
 }
 
 @end
