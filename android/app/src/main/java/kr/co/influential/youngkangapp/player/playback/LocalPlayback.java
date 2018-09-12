@@ -368,10 +368,18 @@ public final class LocalPlayback implements Playback {
         // 다른건 없음
         int currentId = Preferences.getWelaaaPlayListCId(mContext);
         String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
-        LogHelper.e(TAG , "currentCkey " + currentCkey );
+
+        Gson gson = new Gson();
+        String json = Preferences.getWelaaaWebPlayInfo(mContext);
+        WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
+
+        if(mWebPlayerInfo.getCon_class().equals("audiobook")){
+          DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
+          parametersBuilder.setRendererDisabled(indexOfVideoRenderer, true);
+          trackSelector.setParameters(parametersBuilder);
+        }
 
         if(currentCkey.contains("z")){
-
           DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
           parametersBuilder.setRendererDisabled(indexOfVideoRenderer, true);
           trackSelector.setParameters(parametersBuilder);

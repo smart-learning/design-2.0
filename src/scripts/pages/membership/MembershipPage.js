@@ -8,6 +8,7 @@ import IcPremium from "../../../images/ic-m-premium.png"
 import IcAngleRight from "../../../images/ic-my-angle-right-white.png";
 import globalStore from "../../commons/store";
 import {observer} from "mobx-react";
+import moment from "moment"
 
 const styles = StyleSheet.create({
 	sectionTitle: {
@@ -248,11 +249,111 @@ export default class MembershipPage extends React.Component {
 
 	renderMembership() {
 		return (
-			<View>
-				<Text>
-				{JSON.stringify(globalStore.currentMembership, null, 2)}
-				</Text>
-			</View>
+			<SafeAreaView style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
+				<ScrollView style={{width: '100%'}}>
+					<View style={{ marginLeft: 20, marginRight: 20, marginTop: 30 }}>
+
+
+						{
+							(globalStore.currentMembership.type === 1) ? (
+
+								<View style={styles.membershipBox}>
+									<Image source={IcCampus} style={styles.membershipIcon}/>
+									<Text style={styles.membershipTitle}>윌라 캠퍼스 멤버십</Text>
+									<View style={styles.membershipParagraphBox}>
+										<Text style={styles.membershipParagraph}>1천개의 동영상강좌 무제한 이용</Text>
+									</View>
+									<View style={[CommonStyles.alignJustifyContentBetween, styles.memberShipButton, { height: 40 }]}>
+										<View>
+											<Text style={styles.memberShipButtonParagraph}>
+												가입일: {moment(globalStore.currentMembership.start_at).format('YYYY-MM-DD')}
+											</Text>
+										</View>
+									</View>
+								</View>
+
+							) : undefined
+						}
+
+						{
+							(globalStore.currentMembership.type === 2) ? (
+
+								<View style={styles.membershipBox}>
+									<Image source={IcCampus} style={styles.membershipIcon}/>
+									<Text style={styles.membershipTitle}>윌라 프리미엄 멤버십</Text>
+									<View style={styles.membershipParagraphBox}>
+										<Text style={styles.membershipParagraph}>1천개의 동영상강좌 무제한 이용</Text>
+										<View style={styles.membershipParagraphBox}>
+											<Text style={styles.membershipParagraph}>이달의 책 1권 + 인기 오디오북 1권</Text>
+											<Text style={styles.membershipParagraph}>총 2권의 오디오북 이용</Text>
+											<Text style={styles.membershipParagraph}>(원하는 오디오북이 없을 경우 이월 가능)</Text>
+										</View>
+									</View>
+									<View style={[CommonStyles.alignJustifyContentBetween, styles.memberShipButton, { height: 40 }]}>
+										<View>
+											<Text style={styles.memberShipButtonParagraph}>
+												가입일: {moment(globalStore.currentMembership.start_at).format('YYYY-MM-DD')}
+											</Text>
+										</View>
+									</View>
+								</View>
+
+							) : undefined
+						}
+
+						{
+							(globalStore.currentMembership.type === 3) ? (
+
+								<View style={styles.membershipBox}>
+									<Image source={IcCampus} style={styles.membershipIcon}/>
+									<Text style={styles.membershipTitle}>윌라 프리패스</Text>
+									<View style={styles.membershipParagraphBox}>
+										<View style={styles.membershipParagraphBox}>
+											<Text style={styles.membershipParagraph}>윌라의 모든 컨텐츠를 이용하실 수 있습니다.</Text>
+										</View>
+									</View>
+									<View style={[CommonStyles.alignJustifyContentBetween, styles.memberShipButton, { height: 40 }]}>
+										<View>
+											<Text style={styles.memberShipButtonParagraph}>
+												가입일: {moment(globalStore.currentMembership.start_at).format('YYYY-MM-DD')}
+											</Text>
+										</View>
+									</View>
+								</View>
+							) : undefined
+						}
+
+						{
+							(globalStore.currentMembership.type === 4) ? (
+
+								<View style={styles.membershipBox}>
+									<Image source={IcCampus} style={styles.membershipIcon}/>
+									<Text style={styles.membershipTitle}>윌라 오디오북클럽 멤버십</Text>
+									<View style={styles.membershipParagraphBox}>
+										<View style={styles.membershipParagraphBox}>
+											<Text style={styles.membershipParagraph}>이달의 책 1권 + 인기 오디오북 1권</Text>
+											<Text style={styles.membershipParagraph}>총 2권의 오디오북 이용</Text>
+											<Text style={styles.membershipParagraph}>(원하는 오디오북이 없을 경우 이월 가능)</Text>
+										</View>
+									</View>
+									<View style={[CommonStyles.alignJustifyContentBetween, styles.memberShipButton, { height: 40 }]}>
+										<View>
+											<Text style={styles.memberShipButtonParagraph}>
+												가입일: {moment(globalStore.currentMembership.start_at).format('YYYY-MM-DD')}
+											</Text>
+										</View>
+									</View>
+								</View>
+							) : undefined
+						}
+
+						<Text style={styles.membershipParagraph}>멤버십 비용은 매월 자동결제 됩니다.</Text>
+						<Text style={styles.membershipParagraph}>무약정으로 언제든지 해지하실 수 있습니다.</Text>
+						<Text style={styles.membershipParagraph}>해당 금액은 세금 포함 금액입니다.</Text>
+						<Text style={styles.membershipParagraph}>도움이 필요하시면 1:1 문의를 이용해 주세요.</Text>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
 		)
 	}
 
@@ -384,7 +485,6 @@ export default class MembershipPage extends React.Component {
 						</View>
 					</TouchableOpacity>
 				</View>
-				<View><Text>Membership Page</Text></View>
 			</ScrollView>
 		</SafeAreaView>
 	}
