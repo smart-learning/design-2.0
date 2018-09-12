@@ -43,9 +43,9 @@
 				<data android:scheme="welaaa" android:host="video_list" />
 				<data android:scheme="welaaa" android:host="video" />
 				<data android:scheme="welaaa" android:host="video_play" />
-				<data android:scheme="welaaa" android:host="audio_list" />
-				<data android:scheme="welaaa" android:host="audio" />
-				<data android:scheme="welaaa" android:host="audio_play" />
+				<data android:scheme="welaaa" android:host="audiobook_list" />
+				<data android:scheme="welaaa" android:host="audiobook" />
+				<data android:scheme="welaaa" android:host="audiobook_play" />
 				<data android:scheme="welaaa" android:host="in_browser" />
 				<data android:scheme="welaaa" android:host="out_browser" />
 				<data android:scheme="welaaa" android:host="sign_up" />
