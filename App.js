@@ -243,6 +243,12 @@ function getActiveRouteName(navigationState) {
 	return route.routeName;
 }
 
+class Hidden extends React.Component {
+	render() {
+		return null
+	}
+}
+
 const HOME_SCREEN = HomeScreen;
 const DEFAULT_SCREEN = VideoScreen;
 
@@ -265,9 +271,13 @@ const AppDrawer = createDrawerNavigator(
 			screen: AudioScreen,
 		},
 
-		// MembershipScreen: {
-		// 	screen: MembershipScreens,
-		// },
+		MembershipScreen: {
+			screen: MembershipScreens,
+			navigationOptions: {
+				drawerIcon: <Hidden />,
+				drawerLabel: <Hidden />
+			}
+		},
 
 		MyScreen: {
 			screen: MyScreens,
