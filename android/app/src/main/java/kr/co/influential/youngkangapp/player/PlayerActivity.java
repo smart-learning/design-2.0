@@ -669,6 +669,8 @@ public class PlayerActivity extends BasePlayerActivity {
     if (!CAN_PLAY) {
       Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
 
+      mRelatedViewBtn.setVisibility(GONE);
+
       // 윌라 기존 버전 ,
       // 1) seekbar 핸들링 못함
       // 2) duration Total Time 90 초로 고정 됨 .
@@ -2106,7 +2108,7 @@ public class PlayerActivity extends BasePlayerActivity {
               if (CAN_PLAY) {
                 alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
               } else {
-                Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+                Utils.logToast(getApplicationContext(), getString(R.string.info_no_support));
               }
             }
 
@@ -2114,19 +2116,13 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.WELAAA_ICON_LIST: {
-            boolean previewPlaymode = Preferences.getWelaaaPreviewPlay(getApplicationContext());
 
-            if (previewPlaymode) {
-              // 구현 전입니다
-              Utils.logToast(getApplicationContext(),
-                  getApplicationContext().getString(R.string.info_perview_mode));
-            } else {
-              callbackWebPlayerInfo(CONTENT_TYPE, "");
-              // 일시정지
-              if (getTransportControls() != null) {
-                getTransportControls().pause();
-              }
+            callbackWebPlayerInfo(CONTENT_TYPE, "");
+            // 일시정지
+            if (getTransportControls() != null) {
+              getTransportControls().pause();
             }
+
           }
           break;
 
@@ -2388,10 +2384,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
             break;
 
-          case R.id.BTN_CLOSE: {
-            onBackPressed();
-          }
-          break;
+          case R.id.BTN_CLOSE:
+            finish();
+            break;
 
           case R.id.BTN_CLOSE_LINEAR:
             finish();
@@ -4437,15 +4432,8 @@ public class PlayerActivity extends BasePlayerActivity {
         }
 
       } else {
-        // 종료 시나리오 생각 하기 ..
 
-        LogHelper.e(TAG, " backPress CONTENT_TYPE " + CONTENT_TYPE);
-
-        if (CONTENT_TYPE.equals("video-course")) {
-          creatDialog(WELAAAPLAYER_SUGGEST_CODE);
-        } else {
-          finish();
-        }
+        finish();
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -4509,188 +4497,6 @@ public class PlayerActivity extends BasePlayerActivity {
     }
   };
 
-  public void loadRelatedData() {
-    try {
-      InputStream is = getAssets().open("playlist_suggest56.json");
-      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-      String jsonText = readAll(rd);
-      JSONObject jsonResult = new JSONObject(jsonText);
-      JSONArray itemArray = jsonResult.getJSONArray("data");
-
-      for (int i = 0; i < itemArray.length(); i++) {
-        JSONObject objItem = itemArray.getJSONObject(i);
-
-        objItem.getString("title");
-
-        TextView same_series_title = findViewById(R.id.same_series_title);
-        TextView same_category_title = findViewById(R.id.same_category_title);
-        TextView pop_title = findViewById(R.id.pop_title);
-
-        if (i == 0) {
-          same_series_title.setText(objItem.getString("title"));
-        } else if (i == 1) {
-          same_category_title.setText(objItem.getString("title"));
-        } else if (i == 2) {
-          pop_title.setText(objItem.getString("title"));
-        }
-
-        JSONArray suggestObj = objItem.getJSONArray("data");
-
-        for (int j = 0; j < suggestObj.length(); j++) {
-          JSONObject suggestObjItem = suggestObj.getJSONObject(j);
-
-          suggestObjItem.put("suggestTitle", objItem.getString("title"));
-          suggestObjItem.put("listkey", i);
-
-//                                Logger.e(TAG + " 20170902 :: suggest " + suggestObjItem.getString("suggestTitle") +
-//                                suggestObjItem.getString("cname") + " " +i + " " + suggestObjItem.getString("ckey"));
-
-          suggestListArray1.add(i, suggestObjItem);
-        }
-      }
-
-      alName = new ArrayList<>();
-      alImage = new ArrayList<>();
-      alTeacherName = new ArrayList<>();
-      alTotalTime = new ArrayList<>();
-      alEndTime = new ArrayList<>();
-      alViewCnt = new ArrayList<>();
-      alStarCnt = new ArrayList<>();
-      alReplyCnt = new ArrayList<>();
-      alCkeyCnt = new ArrayList<>();
-
-      alName2 = new ArrayList<>();
-      alImage2 = new ArrayList<>();
-      alTeacherName2 = new ArrayList<>();
-      alTotalTime2 = new ArrayList<>();
-      alEndTime2 = new ArrayList<>();
-      alViewCnt2 = new ArrayList<>();
-      alStarCnt2 = new ArrayList<>();
-      alReplyCnt2 = new ArrayList<>();
-      alCkeyCnt2 = new ArrayList<>();
-
-      alName3 = new ArrayList<>();
-      alImage3 = new ArrayList<>();
-      alTeacherName3 = new ArrayList<>();
-      alTotalTime3 = new ArrayList<>();
-      alEndTime3 = new ArrayList<>();
-      alViewCnt3 = new ArrayList<>();
-      alStarCnt3 = new ArrayList<>();
-      alReplyCnt3 = new ArrayList<>();
-      alCkeyCnt3 = new ArrayList<>();
-
-      int k = 0;
-      int l = 0;
-      int m = 0;
-
-      try {
-        for (int j = suggestListArray1.size() - 1; j >= 0; j--) {
-
-          if (suggestListArray1.get(j).getString("listkey").equals("0")) {
-            alName.add(k, suggestListArray1.get(j).getString("cname"));
-            alImage.add(k, suggestListArray1.get(j).getString("clist_img"));
-            alTeacherName.add(k, suggestListArray1.get(j).getString("teachername"));
-            alTotalTime.add(k, suggestListArray1.get(j).getString("cplay_time"));
-            alEndTime.add(k, suggestListArray1.get(j).getString("end_time"));
-            alViewCnt.add(k, suggestListArray1.get(j).getString("chitcnt"));
-            alStarCnt.add(k, suggestListArray1.get(j).getString("cstarcnt"));
-            alReplyCnt.add(k, suggestListArray1.get(j).getString("creviewcnt"));
-            alCkeyCnt.add(k, suggestListArray1.get(j).getString("ckey"));
-            k++;
-          }
-
-          if (suggestListArray1.get(j).getString("listkey").equals("1")) {
-            alName2.add(l, suggestListArray1.get(j).getString("cname"));
-            alImage2.add(l, suggestListArray1.get(j).getString("clist_img"));
-            alTeacherName2.add(l, suggestListArray1.get(j).getString("teachername"));
-            alTotalTime2.add(l, suggestListArray1.get(j).getString("cplay_time"));
-            alEndTime2.add(l, suggestListArray1.get(j).getString("end_time"));
-            alViewCnt2.add(l, suggestListArray1.get(j).getString("chitcnt"));
-            alStarCnt2.add(l, suggestListArray1.get(j).getString("cstarcnt"));
-            alReplyCnt2.add(l, suggestListArray1.get(j).getString("creviewcnt"));
-            alCkeyCnt2.add(l, suggestListArray1.get(j).getString("ckey"));
-            l++;
-          }
-
-          if (suggestListArray1.get(j).getString("listkey").equals("2")) {
-            alName3.add(m, suggestListArray1.get(j).getString("cname"));
-            alImage3.add(m, suggestListArray1.get(j).getString("clist_img"));
-            alTeacherName3.add(m, suggestListArray1.get(j).getString("teachername"));
-            alTotalTime3.add(m, suggestListArray1.get(j).getString("cplay_time"));
-            alEndTime3.add(m, suggestListArray1.get(j).getString("end_time"));
-            alViewCnt3.add(m, suggestListArray1.get(j).getString("chitcnt"));
-            alStarCnt3.add(m, suggestListArray1.get(j).getString("cstarcnt"));
-            alReplyCnt3.add(m, suggestListArray1.get(j).getString("creviewcnt"));
-            alCkeyCnt3.add(m, suggestListArray1.get(j).getString("ckey"));
-            m++;
-          }
-
-        }
-
-        k = 0;
-        l = 0;
-        m = 0;
-
-        String ckey = "";
-        try {
-          if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-            ckey = getNewWebPlayerInfo().getCkey()[getContentId()];
-          } else {
-            ckey = getwebPlayerInfo().getCkey()[getContentId()];
-          }
-        } catch (Exception ECkey) {
-          ECkey.printStackTrace();
-        }
-
-        mRecyclerView = findViewById(R.id.related_recyclerView1);
-        mRecyclerView.setHasFixedSize(true);
-
-        // The number of Columns
-        mLayoutManager = new LinearLayoutManager(getApplicationContext(),
-            LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new HLVAdapter(getApplicationContext(), PlayerActivity.this, alName, alImage,
-            alTeacherName,
-            alTotalTime, alEndTime, alViewCnt, alStarCnt, alReplyCnt, alCkeyCnt, ckey);
-        mRecyclerView.setAdapter(mAdapter);
-
-        // Calling the RecyclerView 1
-        mRecyclerView2 = findViewById(R.id.related_recyclerView2);
-        mRecyclerView2.setHasFixedSize(true);
-
-        // The number of Columns
-        mLayoutManager2 = new LinearLayoutManager(getApplicationContext(),
-            LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView2.setLayoutManager(mLayoutManager2);
-
-        mAdapter2 = new HLVAdapter(getApplicationContext(), PlayerActivity.this, alName2, alImage2,
-            alTeacherName2,
-            alTotalTime2, alEndTime2, alViewCnt2, alStarCnt2, alReplyCnt2, alCkeyCnt2, ckey);
-        mRecyclerView2.setAdapter(mAdapter2);
-
-        // Calling the RecyclerView 1
-        mRecyclerView3 = findViewById(R.id.related_recyclerView3);
-        mRecyclerView3.setHasFixedSize(true);
-
-        // The number of Columns
-        mLayoutManager3 = new LinearLayoutManager(getApplicationContext(),
-            LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView3.setLayoutManager(mLayoutManager3);
-
-        mAdapter3 = new HLVAdapter(getApplicationContext(), PlayerActivity.this, alName3, alImage3,
-            alTeacherName3,
-            alTotalTime3, alEndTime3, alViewCnt3, alStarCnt3, alReplyCnt3, alCkeyCnt3, ckey);
-        mRecyclerView3.setAdapter(mAdapter3);
-
-      } catch (Exception e3) {
-        e3.printStackTrace();
-      }
-    } catch (Exception e) {
-      // TODO: handle exception
-      e.printStackTrace();
-    }
-  }
 
   /******************************
    * Comment   : 등록된 컨텐츠 매니져
