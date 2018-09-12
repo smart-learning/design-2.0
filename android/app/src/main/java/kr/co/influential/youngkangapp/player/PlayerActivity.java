@@ -2194,6 +2194,44 @@ public class PlayerActivity extends BasePlayerActivity {
 
           break;
 
+          case R.id.sleepCancelButton: {
+            msleep_view.setVisibility(View.INVISIBLE);
+
+            RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+            RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+            RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+            RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+            welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+            welean_blank_line = findViewById(R.id.welean_blank_line);
+            RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+            play_button_group.setVisibility(View.VISIBLE);
+            smart_button_wrap.setVisibility(View.VISIBLE);
+            welean_blank_line2.setVisibility(View.VISIBLE);
+            welean_blank_line.setVisibility(View.VISIBLE);
+
+          }
+          break;
+
+          case R.id.sleepCancelButton_land: {
+            msleep_view.setVisibility(View.INVISIBLE);
+
+            RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+            RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+            RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+            RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+            welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+            welean_blank_line = findViewById(R.id.welean_blank_line);
+            RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+
+            play_button_group.setVisibility(View.VISIBLE);
+            smart_button_wrap.setVisibility(View.VISIBLE);
+            welean_blank_line2.setVisibility(View.VISIBLE);
+            welean_blank_line.setVisibility(View.VISIBLE);
+
+          }
+          break;
+
           case R.id.sleeptext15: {
             msleep_view.setVisibility(View.INVISIBLE);
 
@@ -4201,14 +4239,16 @@ public class PlayerActivity extends BasePlayerActivity {
 //
 //          } else {
 
-          if (getwebPlayerInfo().getHistory_endtime()[i].equals("0") ||
-              getwebPlayerInfo().getHistory_endtime()[i].equals("")) {
-            playListType = "1";
-          } else if (getwebPlayerInfo().getHistory_endtime()[i].equals("9999999")) {
-            playListType = "3";
-          } else {
-            playListType = "2";
-          }
+//          if (getwebPlayerInfo().getHistory_endtime()[i].equals("0") ||
+//              getwebPlayerInfo().getHistory_endtime()[i].equals("")) {
+//            playListType = "1";
+//          } else if (getwebPlayerInfo().getHistory_endtime()[i].equals("9999999")) {
+//            playListType = "3";
+//          } else {
+//            playListType = "2";
+//          }
+
+          playListType = "1";
 
           lectureListItemdapter
               .add(getwebPlayerInfo().getCplayTime()[i], getwebPlayerInfo().getCkey()[i],
