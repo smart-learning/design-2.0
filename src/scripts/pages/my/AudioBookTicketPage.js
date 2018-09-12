@@ -52,7 +52,49 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: '#000000',
 
-	}
+	},
+	ticketItem: {
+		width: '100%',
+		marginBottom: 15,
+		backgroundColor: '#eeeeee'
+	},
+	ticketItemHr: {
+		width: '100%',
+		height: 1,
+		backgroundColor: '#b4b4b4',
+	},
+	ticketItemHrBold: {
+		width: '100%',
+		height: 2,
+		backgroundColor: '#b4b4b4',
+	},
+	ticketTitle: {
+		paddingTop: 8,
+		paddingBottom: 8,
+		backgroundColor: 'rgba(103, 58, 183, 0.05)',
+	},
+	ticketTitleText: {
+		textAlign: 'center',
+		fontSize: 16,
+		fontWeight: 'bold',
+	},
+	ticketItemRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingTop: 8,
+		paddingBottom: 8,
+	},
+	ticketItemLabel: {
+		width: 110,
+		fontSize: 16,
+		textAlign: 'center',
+		fontWeight: 'bold',
+		color: '#4a4a4a',
+	},
+	ticketItemContent: {
+		fontSize: 16,
+		color: '#4a4a4a',
+	},
 });
 
 @observer
@@ -104,41 +146,43 @@ class AudioBookTicketPage extends React.Component {
 						}
 					</View>
 
-					<View style={{alignItems: 'center'}}>
+					<View style={[CommonStyles.contentContainer, {alignItems: 'center'}]}>
 
 						{list
 							? list.map(item => (
-								<View key={item.id} style={{alignItems: 'center', justifyItems: 'center', borderWidth: 1, marginBottom: 15}}>
-									<Text style={[styles.ticketBoxText, {alignItems: 'center'}]}>
-										{item.type === "ALL" ? '전체 오디오북 이용권' : '인기 오디오북 이용권'}
-									</Text>
-
-									<View style={{alignItems: 'center', justifyItems: 'center'}}>
-
-										<View>
-											<Text>취득일:
-												{moment(item.active_at).format('YYYY.MM.DD')}
-											</Text>
-										</View>
-
-										<View>
-											<Text>취득 수단:
-												{moment(item.active_at).format('YYYY.MM.DD')}
-											</Text>
-										</View>
-
-										<View>
-											<Text>취득일:
-												윌라 회원 탈퇴시 까지
-											</Text>
-										</View>
-										<View>
-											<Text>구매 권한:
-												{item.type === "ALL" ? '모든 오디오북' : '인기 오디오북'}
-											</Text>
-										</View>
-
+								<View key={item.id} style={styles.ticketItem}>
+									<View style={styles.ticketItemHrBold}/>
+									<View style={styles.ticketTitle}>
+										<Text style={[styles.ticketBoxText, styles.ticketTitleText]}>
+											{item.type === "ALL" ? '전체 오디오북 이용권' : '인기 오디오북 이용권'}
+										</Text>
 									</View>
+									<View style={styles.ticketItemHr}/>
+
+									<View style={styles.ticketItemRow}>
+										<Text style={styles.ticketItemLabel}>취득일</Text>
+										<Text style={styles.ticketItemContent}>{moment(item.active_at).format('YYYY.MM.DD')}</Text>
+									</View>
+									<View style={styles.ticketItemHr}/>
+
+									<View style={styles.ticketItemRow}>
+										<Text style={styles.ticketItemLabel}>취득 수단</Text>
+										<Text style={styles.ticketItemContent}>{moment(item.active_at).format('YYYY.MM.DD')}</Text>
+									</View>
+									<View style={styles.ticketItemHr}/>
+
+									<View style={styles.ticketItemRow}>
+										<Text style={styles.ticketItemLabel}>유효기간</Text>
+										<Text style={styles.ticketItemContent}>윌라 회원 탈퇴시 까지</Text>
+									</View>
+									<View style={styles.ticketItemHr}/>
+
+									<View style={styles.ticketItemRow}>
+										<Text style={styles.ticketItemLabel}>구매 권한</Text>
+										<Text style={styles.ticketItemContent}>{item.type === "ALL" ? '모든 오디오북' : '인기 오디오북'}</Text>
+									</View>
+									<View style={styles.ticketItemHrBold}/>
+
 								</View>
 							))
 							: undefined}
