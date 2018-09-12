@@ -212,10 +212,10 @@ export default {
 	// welaaa://video_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
 	// welaaa://video/{cid} 동영상 상세
 	// welaaa://video_play/{cid} 동영상 재생
-	// welaaa://audio_list 오디오북 리스트
-	// welaaa://audio_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
-	// welaaa://audio/{cid} 오디오북 상세
-	// welaaa://audio_play/{cid} 오디오북 재생
+	// welaaa://audiobook_list 오디오북 리스트
+	// welaaa://audiobook_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
+	// welaaa://audiobook/{cid} 오디오북 상세
+	// welaaa://audiobook_play/{cid} 오디오북 재생
 	// welaaa://in_browser/{url} 인앱 브라우져로 url 이동(닫기버튼포함)
 	// welaaa://out_browser/{url}` 외부 브라우져 실행
 	// welaaa://sign_up 회원가입 이동
@@ -243,17 +243,17 @@ export default {
 				navigation( 'ClassDetailPage', { id: schemes[0] } );
 				break;
 
-			case 'audio_list':
+			case 'audiobook_list':
 				if( paramsLen === 2 ) navigation.navigate('AudioBookPage', { category:schemes[0], index:schemes[1] } );
 				else navigation.navigate('AudioBookPage');
 				break;
 
-			case 'audio':
+			case 'audiobook':
 				navigation.navigate('AudioBookDetailPage', { id: schemes[0] });
 				break;
 
 			case 'video_play':
-			case 'audio_play':
+			case 'audiobook_play':
 				Native.play( schemes[0] );
 				break;
 
