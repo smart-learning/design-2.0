@@ -4,6 +4,7 @@ import {ActivityIndicator, Alert, Text, View} from "react-native";
 import net from "../../commons/net";
 import CommonStyles from "../../../styles/common";
 import createStore from "../../commons/createStore";
+import globalStore from "../../commons/store"
 import DetailLayout from "../../components/detail/DetailLayout";
 import moment from "moment";
 
@@ -54,6 +55,8 @@ class AudioBookDetailPage extends React.Component {
 
 				return false
 			}
+		} else if (paymentType === 4) {
+			Alert.alert('로그인 후 이용해 주세요.')
 		}
 	}
 
@@ -80,7 +83,13 @@ class AudioBookDetailPage extends React.Component {
 	async getPermissions() {
 		let permissionLoading = true;
 
-		this.setState({permissionLoading})
+		let paymentType = 0
+		let expire = null
+		let { itemData, permissions, voucherStatus } = this.store
+
+
+		this.setState({ permissionLoading })
+
 		let { sale_price } = this.store.itemData
 
 		if (sale_price === 0) {
@@ -90,41 +99,58 @@ class AudioBookDetailPage extends React.Component {
 				expire_at: null,
 			}
 		} else {
-			this.store.permissions = await net.getContentPermission('audiobooks', this.props.navigation.state.params.id)
-			if (!this.store.permissions.permission) {
-				this.store.voucherStatus = await net.getVoucherStatus(true)
-			}
-		}
 
-		////////////////
+			// not logged in
 
-		let paymentType = 0
-		let expire = null
+			const userLoggedIn = (globalStore.welaaaAuth !== undefined)
+			console.log('============= userLoggedIn', userLoggedIn)
+			console.log('=----------------', globalStore.welaaaAuth)
 
-		let { itemData, permissions, voucherStatus } = this.store
-		if (permissions.is_free) {
-			// 무료
-			paymentType = 0
-		} else {
-			// 유료
-			if (permissions.permission) {
-				// 소장 중
-				paymentType = 3
+			if (!userLoggedIn) {
+				paymentType = 4
+				expire = null
 
-				if (permissions.expire_at) {
-					expire = `${moment(permissions.expire_at).format('YYYY-MM-DD')} 만료`
-				} else {
-					expire = '영구소장'
-				}
 			} else {
-				if ((itemData.is_botm && voucherStatus.botm > 0) ||
-					(!itemData.is_botm && voucherStatus.total > 0)) {
-					paymentType = 2
-				} else {
-					paymentType = 1
+				// logged in
+				this.store.permissions = await net.getContentPermission('audiobooks', this.props.navigation.state.params.id)
+				if (!this.store.permissions.permission) {
+					this.store.voucherStatus = await net.getVoucherStatus(true)
 				}
+
+				if (permissions.is_free) {
+					// 무료
+					paymentType = 0
+				} else {
+					// 유료
+					if (permissions.permission) {
+						// 소장 중
+						paymentType = 3
+
+						if (permissions.expire_at) {
+							expire = `${moment(permissions.expire_at).format('YYYY-MM-DD')} 만료`
+						} else {
+							expire = '영구소장'
+						}
+					} else {
+						if ((itemData.is_botm && voucherStatus.botm > 0) ||
+							(!itemData.is_botm && voucherStatus.total > 0)) {
+							paymentType = 2
+						} else {
+							paymentType = 1
+						}
+					}
+				}
+
+
 			}
+
+
+
+
 		}
+
+
+
 
 		this.store.paymentType = paymentType
 		this.store.expire = expire
