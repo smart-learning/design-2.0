@@ -57,8 +57,6 @@
 		EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9A983A211144A800EA3A8E /* RNNativePlayer.m */; };
 		EFAEBDB8213D33050070F10E /* StarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD89213D33050070F10E /* StarRatingView.m */; };
 		EFAEBDB9213D33050070F10E /* UIAlertController+Showable.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8A213D33050070F10E /* UIAlertController+Showable.m */; };
-		EFAEBDBB213D33050070F10E /* CreateContact.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8C213D33050070F10E /* CreateContact.m */; };
-		EFAEBDBD213D33050070F10E /* MediaController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8E213D33050070F10E /* MediaController.m */; };
 		EFAEBDBE213D33050070F10E /* PlayerScriptCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD91213D33050070F10E /* PlayerScriptCell.m */; };
 		EFAEBDBF213D33050070F10E /* ScriptControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD94213D33050070F10E /* ScriptControlView.m */; };
 		EFAEBDC0213D33050070F10E /* MediaPlayerScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD96213D33050070F10E /* MediaPlayerScriptView.m */; };
@@ -474,8 +472,6 @@
 		EFAEBD88213D33050070F10E /* UIAlertController+Showable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Showable.h"; sourceTree = "<group>"; };
 		EFAEBD89213D33050070F10E /* StarRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingView.m; sourceTree = "<group>"; };
 		EFAEBD8A213D33050070F10E /* UIAlertController+Showable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Showable.m"; sourceTree = "<group>"; };
-		EFAEBD8C213D33050070F10E /* CreateContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateContact.m; sourceTree = "<group>"; };
-		EFAEBD8E213D33050070F10E /* MediaController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaController.m; sourceTree = "<group>"; };
 		EFAEBD8F213D33050070F10E /* ContentMiniPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentMiniPlayerView.h; sourceTree = "<group>"; };
 		EFAEBD91213D33050070F10E /* PlayerScriptCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerScriptCell.m; sourceTree = "<group>"; };
 		EFAEBD92213D33050070F10E /* MediaPlayerScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPlayerScriptView.h; sourceTree = "<group>"; };
@@ -486,7 +482,6 @@
 		EFAEBD97213D33050070F10E /* ScriptControlView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptControlView.h; sourceTree = "<group>"; };
 		EFAEBD98213D33050070F10E /* PlayerScriptItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerScriptItemView.m; sourceTree = "<group>"; };
 		EFAEBD99213D33050070F10E /* ContentPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerViewController.m; sourceTree = "<group>"; };
-		EFAEBD9A213D33050070F10E /* CreateContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateContact.h; sourceTree = "<group>"; };
 		EFAEBD9C213D33050070F10E /* ContentPlayerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentPlayerButton.h; sourceTree = "<group>"; };
 		EFAEBD9D213D33050070F10E /* ContentPlayerTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerTouchView.m; sourceTree = "<group>"; };
 		EFAEBD9E213D33050070F10E /* ContentPlayerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerButton.m; sourceTree = "<group>"; };
@@ -495,7 +490,6 @@
 		EFAEBDA2213D33050070F10E /* ContentsListPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupView.m; sourceTree = "<group>"; };
 		EFAEBDA3213D33050070F10E /* ContentsListPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentsListPopupView.h; sourceTree = "<group>"; };
 		EFAEBDA4213D33050070F10E /* ContentsListPopupViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupViewCell.m; sourceTree = "<group>"; };
-		EFAEBDA6213D33050070F10E /* MediaController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaController.h; sourceTree = "<group>"; };
 		EFAEBDA8213D33050070F10E /* IFRecommendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRecommendViewController.m; sourceTree = "<group>"; };
 		EFAEBDA9213D33050070F10E /* IFCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCollectionView.h; sourceTree = "<group>"; };
 		EFAEBDAA213D33050070F10E /* IFRecommendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRecommendViewController.h; sourceTree = "<group>"; };
@@ -914,10 +908,6 @@
 				EFAEBD99213D33050070F10E /* ContentPlayerViewController.m */,
 				EFAEBD8F213D33050070F10E /* ContentMiniPlayerView.h */,
 				EFAEBDB1213D33050070F10E /* ContentMiniPlayerView.m */,
-				EFAEBD9A213D33050070F10E /* CreateContact.h */,
-				EFAEBD8C213D33050070F10E /* CreateContact.m */,
-				EFAEBDA6213D33050070F10E /* MediaController.h */,
-				EFAEBD8E213D33050070F10E /* MediaController.m */,
 			);
 			name = Player;
 			path = WelaaaV2/Player;
@@ -1597,10 +1587,8 @@
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
 				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
 				EF7D07E42144DA5A00B5BCA9 /* RNNativeBase.m in Sources */,
-				EFAEBDBD213D33050070F10E /* MediaController.m in Sources */,
 				EFAEBDB8213D33050070F10E /* StarRatingView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				EFAEBDBB213D33050070F10E /* CreateContact.m in Sources */,
 				EFAEBDC6213D33050070F10E /* ContentsListPopupViewCell.m in Sources */,
 				63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */,
 				EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */,
