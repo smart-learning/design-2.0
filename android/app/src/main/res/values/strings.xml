@@ -135,7 +135,8 @@
     <string name="info_lastplay">마지막 영상입니다.</string>
     <string name="info_lastplayAudio">마지막 클립입니다.</string>
     <string name="info_autoplay">다음으로 자동재생</string>
-    <string name="info_nosession">미리듣기만 가능합니다. </string>
+    <string name="info_nosession">1분 30초 미로보기로 재생됩니다. </string>
+    <string name="info_no_support">미리보기에서는 제공되지 않는 기능입니다. </string>
     <string name="info_downloadplay">다운로드 재생</string>
     <string name="info_streamplay">스트리밍 재생</string>
     <string name="info_del_title">삭제하시겠습니까?</string>
