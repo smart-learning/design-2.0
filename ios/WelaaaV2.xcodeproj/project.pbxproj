@@ -36,29 +36,17 @@
 		EF094701212662B200FD849B /* RNProductPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = EF094700212662B200FD849B /* RNProductPayment.m */; };
 		EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */; };
 		EF4F4137211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F4107211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf */; };
-		EF4F4138211ABE5C005E1CBD /* NotoSansCJKkr-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F4108211ABE5C005E1CBD /* NotoSansCJKkr-Medium.otf */; };
-		EF4F4139211ABE5C005E1CBD /* Gotham-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F4109211ABE5C005E1CBD /* Gotham-Book.otf */; };
-		EF4F413A211ABE5C005E1CBD /* Pe-icon-7-stroke.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410A211ABE5C005E1CBD /* Pe-icon-7-stroke.ttf */; };
-		EF4F413B211ABE5C005E1CBD /* outlined-iconset.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410B211ABE5C005E1CBD /* outlined-iconset.ttf */; };
-		EF4F413C211ABE5C005E1CBD /* feather-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410C211ABE5C005E1CBD /* feather-webfont.ttf */; };
-		EF4F413D211ABE5C005E1CBD /* Gotham-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410D211ABE5C005E1CBD /* Gotham-Light.otf */; };
-		EF4F413E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf */; };
-		EF4F413F211ABE5C005E1CBD /* Simple-Line-Icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F410F211ABE5C005E1CBD /* Simple-Line-Icons.ttf */; };
 		EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5D544A211936F8008F60B4 /* Images.xcassets */; };
 		EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EF671AD3213E4BA100767E01 /* libsqlite3.tbd */; };
+		EF7086182148EBAD00B202DE /* Spoqa Han Sans Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF7085EE2148EBAD00B202DE /* Spoqa Han Sans Bold.ttf */; };
+		EF70861A2148ED9600B202DE /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF7086192148ED9600B202DE /* Montserrat-Bold.ttf */; };
 		EF7D07E42144DA5A00B5BCA9 /* RNNativeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */; };
-		EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F522113E6D500B71BEB /* LogManager.m */; };
 		EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7A2113E6D500B71BEB /* ApiManager.m */; };
-		EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */; };
-		EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F802113E6D600B71BEB /* AddressBookManager.m */; };
 		EF7D6F8D2113E6D600B71BEB /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F862113E6D600B71BEB /* common.m */; };
-		EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */; };
 		EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */; };
 		EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = EF9A983A211144A800EA3A8E /* RNNativePlayer.m */; };
 		EFAEBDB8213D33050070F10E /* StarRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD89213D33050070F10E /* StarRatingView.m */; };
 		EFAEBDB9213D33050070F10E /* UIAlertController+Showable.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8A213D33050070F10E /* UIAlertController+Showable.m */; };
-		EFAEBDBB213D33050070F10E /* CreateContact.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8C213D33050070F10E /* CreateContact.m */; };
-		EFAEBDBD213D33050070F10E /* MediaController.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD8E213D33050070F10E /* MediaController.m */; };
 		EFAEBDBE213D33050070F10E /* PlayerScriptCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD91213D33050070F10E /* PlayerScriptCell.m */; };
 		EFAEBDBF213D33050070F10E /* ScriptControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD94213D33050070F10E /* ScriptControlView.m */; };
 		EFAEBDC0213D33050070F10E /* MediaPlayerScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBD96213D33050070F10E /* MediaPlayerScriptView.m */; };
@@ -442,30 +430,16 @@
 		EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		EF2EB8D3211598ED00127D35 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		EF4F4107211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Spoqa Han Sans Regular.ttf"; sourceTree = "<group>"; };
-		EF4F4108211ABE5C005E1CBD /* NotoSansCJKkr-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Medium.otf"; sourceTree = "<group>"; };
-		EF4F4109211ABE5C005E1CBD /* Gotham-Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham-Book.otf"; sourceTree = "<group>"; };
-		EF4F410A211ABE5C005E1CBD /* Pe-icon-7-stroke.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pe-icon-7-stroke.ttf"; sourceTree = "<group>"; };
-		EF4F410B211ABE5C005E1CBD /* outlined-iconset.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "outlined-iconset.ttf"; sourceTree = "<group>"; };
-		EF4F410C211ABE5C005E1CBD /* feather-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "feather-webfont.ttf"; sourceTree = "<group>"; };
-		EF4F410D211ABE5C005E1CBD /* Gotham-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham-Light.otf"; sourceTree = "<group>"; };
-		EF4F410E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansCJKkr-Regular.otf"; sourceTree = "<group>"; };
-		EF4F410F211ABE5C005E1CBD /* Simple-Line-Icons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Simple-Line-Icons.ttf"; sourceTree = "<group>"; };
 		EF5D544A211936F8008F60B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WelaaaV2/Images.xcassets; sourceTree = "<group>"; };
 		EF671AD3213E4BA100767E01 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		EF7085EE2148EBAD00B202DE /* Spoqa Han Sans Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Spoqa Han Sans Bold.ttf"; sourceTree = "<group>"; };
+		EF7086192148ED9600B202DE /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		EF7D07E22144DA5A00B5BCA9 /* RNNativeBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RNNativeBase.h; path = WelaaaV2/RNNativeBase.h; sourceTree = "<group>"; };
 		EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RNNativeBase.m; path = WelaaaV2/RNNativeBase.m; sourceTree = "<group>"; };
-		EF7D6F522113E6D500B71BEB /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogManager.m; sourceTree = "<group>"; };
 		EF7D6F7A2113E6D500B71BEB /* ApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiManager.m; sourceTree = "<group>"; };
 		EF7D6F7B2113E6D500B71BEB /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
-		EF7D6F7D2113E6D600B71BEB /* IFMessageNoticeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMessageNoticeView.h; sourceTree = "<group>"; };
-		EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddressBookInfo.m; sourceTree = "<group>"; };
-		EF7D6F802113E6D600B71BEB /* AddressBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddressBookManager.m; sourceTree = "<group>"; };
-		EF7D6F812113E6D600B71BEB /* AddressBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddressBookManager.h; sourceTree = "<group>"; };
-		EF7D6F822113E6D600B71BEB /* AddressBookInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddressBookInfo.h; sourceTree = "<group>"; };
-		EF7D6F842113E6D600B71BEB /* LogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogManager.h; sourceTree = "<group>"; };
 		EF7D6F852113E6D600B71BEB /* ApiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiManager.h; sourceTree = "<group>"; };
 		EF7D6F862113E6D600B71BEB /* common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
-		EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMessageNoticeView.m; sourceTree = "<group>"; };
 		EF8C2D20212B8EAD00140F8F /* WelaaaV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = WelaaaV2.entitlements; path = WelaaaV2/WelaaaV2.entitlements; sourceTree = "<group>"; };
 		EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "WelaaaV2/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EF9A9839211144A800EA3A8E /* RNNativePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNNativePlayer.h; sourceTree = "<group>"; };
@@ -474,8 +448,6 @@
 		EFAEBD88213D33050070F10E /* UIAlertController+Showable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Showable.h"; sourceTree = "<group>"; };
 		EFAEBD89213D33050070F10E /* StarRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingView.m; sourceTree = "<group>"; };
 		EFAEBD8A213D33050070F10E /* UIAlertController+Showable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Showable.m"; sourceTree = "<group>"; };
-		EFAEBD8C213D33050070F10E /* CreateContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateContact.m; sourceTree = "<group>"; };
-		EFAEBD8E213D33050070F10E /* MediaController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaController.m; sourceTree = "<group>"; };
 		EFAEBD8F213D33050070F10E /* ContentMiniPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentMiniPlayerView.h; sourceTree = "<group>"; };
 		EFAEBD91213D33050070F10E /* PlayerScriptCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerScriptCell.m; sourceTree = "<group>"; };
 		EFAEBD92213D33050070F10E /* MediaPlayerScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPlayerScriptView.h; sourceTree = "<group>"; };
@@ -486,7 +458,6 @@
 		EFAEBD97213D33050070F10E /* ScriptControlView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptControlView.h; sourceTree = "<group>"; };
 		EFAEBD98213D33050070F10E /* PlayerScriptItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerScriptItemView.m; sourceTree = "<group>"; };
 		EFAEBD99213D33050070F10E /* ContentPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerViewController.m; sourceTree = "<group>"; };
-		EFAEBD9A213D33050070F10E /* CreateContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateContact.h; sourceTree = "<group>"; };
 		EFAEBD9C213D33050070F10E /* ContentPlayerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentPlayerButton.h; sourceTree = "<group>"; };
 		EFAEBD9D213D33050070F10E /* ContentPlayerTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerTouchView.m; sourceTree = "<group>"; };
 		EFAEBD9E213D33050070F10E /* ContentPlayerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentPlayerButton.m; sourceTree = "<group>"; };
@@ -495,7 +466,6 @@
 		EFAEBDA2213D33050070F10E /* ContentsListPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupView.m; sourceTree = "<group>"; };
 		EFAEBDA3213D33050070F10E /* ContentsListPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentsListPopupView.h; sourceTree = "<group>"; };
 		EFAEBDA4213D33050070F10E /* ContentsListPopupViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentsListPopupViewCell.m; sourceTree = "<group>"; };
-		EFAEBDA6213D33050070F10E /* MediaController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaController.h; sourceTree = "<group>"; };
 		EFAEBDA8213D33050070F10E /* IFRecommendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRecommendViewController.m; sourceTree = "<group>"; };
 		EFAEBDA9213D33050070F10E /* IFCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCollectionView.h; sourceTree = "<group>"; };
 		EFAEBDAA213D33050070F10E /* IFRecommendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRecommendViewController.h; sourceTree = "<group>"; };
@@ -810,15 +780,10 @@
 		EF13DA2A2113D95000CFED8A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				EF7D6F7E2113E6D600B71BEB /* Contact */,
 				EF7D6F852113E6D600B71BEB /* ApiManager.h */,
 				EF7D6F7A2113E6D500B71BEB /* ApiManager.m */,
 				EF7D6F7B2113E6D500B71BEB /* common.h */,
 				EF7D6F862113E6D600B71BEB /* common.m */,
-				EF7D6F7D2113E6D600B71BEB /* IFMessageNoticeView.h */,
-				EF7D6F872113E6D600B71BEB /* IFMessageNoticeView.m */,
-				EF7D6F842113E6D600B71BEB /* LogManager.h */,
-				EF7D6F522113E6D500B71BEB /* LogManager.m */,
 				EFE081AA2113EB0C006D3F6C /* NSError+LocalizedError.h */,
 				EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */,
 				EFE081E42113ED84006D3F6C /* NSString+GC.h */,
@@ -847,29 +812,12 @@
 		EF4F4106211ABE5C005E1CBD /* UIFonts */ = {
 			isa = PBXGroup;
 			children = (
+				EF7086192148ED9600B202DE /* Montserrat-Bold.ttf */,
+				EF7085EE2148EBAD00B202DE /* Spoqa Han Sans Bold.ttf */,
 				EF4F4107211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf */,
-				EF4F4108211ABE5C005E1CBD /* NotoSansCJKkr-Medium.otf */,
-				EF4F4109211ABE5C005E1CBD /* Gotham-Book.otf */,
-				EF4F410A211ABE5C005E1CBD /* Pe-icon-7-stroke.ttf */,
-				EF4F410B211ABE5C005E1CBD /* outlined-iconset.ttf */,
-				EF4F410C211ABE5C005E1CBD /* feather-webfont.ttf */,
-				EF4F410D211ABE5C005E1CBD /* Gotham-Light.otf */,
-				EF4F410E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf */,
-				EF4F410F211ABE5C005E1CBD /* Simple-Line-Icons.ttf */,
 			);
 			name = UIFonts;
 			path = WelaaaV2/UIFonts;
-			sourceTree = "<group>";
-		};
-		EF7D6F7E2113E6D600B71BEB /* Contact */ = {
-			isa = PBXGroup;
-			children = (
-				EF7D6F822113E6D600B71BEB /* AddressBookInfo.h */,
-				EF7D6F7F2113E6D600B71BEB /* AddressBookInfo.m */,
-				EF7D6F812113E6D600B71BEB /* AddressBookManager.h */,
-				EF7D6F802113E6D600B71BEB /* AddressBookManager.m */,
-			);
-			path = Contact;
 			sourceTree = "<group>";
 		};
 		EF9A9849211144F200EA3A8E /* Recovered References */ = {
@@ -914,10 +862,6 @@
 				EFAEBD99213D33050070F10E /* ContentPlayerViewController.m */,
 				EFAEBD8F213D33050070F10E /* ContentMiniPlayerView.h */,
 				EFAEBDB1213D33050070F10E /* ContentMiniPlayerView.m */,
-				EFAEBD9A213D33050070F10E /* CreateContact.h */,
-				EFAEBD8C213D33050070F10E /* CreateContact.m */,
-				EFAEBDA6213D33050070F10E /* MediaController.h */,
-				EFAEBD8E213D33050070F10E /* MediaController.m */,
 			);
 			name = Player;
 			path = WelaaaV2/Player;
@@ -1466,19 +1410,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF4F4139211ABE5C005E1CBD /* Gotham-Book.otf in Resources */,
-				EF4F413F211ABE5C005E1CBD /* Simple-Line-Icons.ttf in Resources */,
 				EF4F4137211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */,
+				EF70861A2148ED9600B202DE /* Montserrat-Bold.ttf in Resources */,
 				63053DE2212E8479007958D8 /* Localizable.strings in Resources */,
-				EF4F413D211ABE5C005E1CBD /* Gotham-Light.otf in Resources */,
-				EF4F413C211ABE5C005E1CBD /* feather-webfont.ttf in Resources */,
-				EF4F413A211ABE5C005E1CBD /* Pe-icon-7-stroke.ttf in Resources */,
+				EF7086182148EBAD00B202DE /* Spoqa Han Sans Bold.ttf in Resources */,
 				EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */,
-				EF4F413B211ABE5C005E1CBD /* outlined-iconset.ttf in Resources */,
-				EF4F4138211ABE5C005E1CBD /* NotoSansCJKkr-Medium.otf in Resources */,
-				EF4F413E211ABE5C005E1CBD /* NotoSansCJKkr-Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1593,23 +1531,18 @@
 				EFAEBDC4213D33050070F10E /* ContentPlayerButton.m in Sources */,
 				EFAEBDC9213D33050070F10E /* InnerShadowView.m in Sources */,
 				EFAEBDCA213D33050070F10E /* IFCollectionView.m in Sources */,
-				EF7D6F882113E6D600B71BEB /* LogManager.m in Sources */,
 				EFE0821E2113F89B006D3F6C /* IFSleepTimerManager.m in Sources */,
 				EFE0835921144239006D3F6C /* IAPShare.m in Sources */,
 				EF7D07E42144DA5A00B5BCA9 /* RNNativeBase.m in Sources */,
-				EFAEBDBD213D33050070F10E /* MediaController.m in Sources */,
 				EFAEBDB8213D33050070F10E /* StarRatingView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				EFAEBDBB213D33050070F10E /* CreateContact.m in Sources */,
 				EFAEBDC6213D33050070F10E /* ContentsListPopupViewCell.m in Sources */,
 				63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */,
-				EF7D6F8C2113E6D600B71BEB /* AddressBookManager.m in Sources */,
 				EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */,
 				63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */,
 				EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,
 				EFAEBDC1213D33050070F10E /* PlayerScriptItemView.m in Sources */,
-				EF7D6F8B2113E6D600B71BEB /* AddressBookInfo.m in Sources */,
 				EFAEBDC2213D33050070F10E /* ContentPlayerViewController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				63A3877A2140C97A00E61CB0 /* QueryService.m in Sources */,
@@ -1618,7 +1551,6 @@
 				EF7D6F8D2113E6D600B71BEB /* common.m in Sources */,
 				63A387712140C8FB00E61CB0 /* Clip.m in Sources */,
 				EF094701212662B200FD849B /* RNProductPayment.m in Sources */,
-				EF7D6F8E2113E6D600B71BEB /* IFMessageNoticeView.m in Sources */,
 				EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */,
 				EFAEBDBF213D33050070F10E /* ScriptControlView.m in Sources */,
 			);

@@ -219,18 +219,18 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   @ReactMethod
   public void selectDatabase(ReadableMap content) {
     // 2018.09.06
-    try{
+    try {
       Gson gson = new Gson();
       String json = gson.toJson(ContentManager().getDatabase());
 
       WritableMap params = Arguments.createMap();
 
-      params.putString("selectDatabase" , json);
+      params.putString("selectDatabase", json);
       sendEvent("selectDatabase", params);
 
       // Log.e("DOWNLOAD:", json.toString() );
 
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -664,12 +664,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             }
 
             if (callbackMethod.equals("play")) {
-              //
-              if (contentType.equals("video-course")) {
-                Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
-              } else if (contentType.equals("audiobook")) {
-                Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
-              }
+
+              Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
+
+              // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+              // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+              Preferences.setWelaaaPlayListCKey(getReactApplicationContext(), contentCid);
 
               if (can_play) {
                 Preferences.setWelaaaPreviewPlay(getReactApplicationContext(), false);
@@ -677,14 +677,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 Preferences.setWelaaaPreviewPlay(getReactApplicationContext(), true);
               }
 
-              LogHelper.e(TAG , " CAN_PLAY " + Preferences.getWelaaaPreviewPlay(getReactApplicationContext()));
-
               if (mProgressDialog != null) {
                 mProgressDialog.dismiss();
               }
 
-              if(contentType.equals("audiobook")){
-                if(!can_play){
+              LogHelper.e(TAG , " 20180901 for callbackMethod" + callbackMethod);
+              LogHelper.e(TAG , " 20180901 for contentType" + contentType);
+
+              if (contentType.equals("audiobook")) {
+                if (!can_play) {
 
                   if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
@@ -708,7 +709,35 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     }
                   });
 
-                }else{
+                } else {
+
+                  if (mWebPlayerInfo.getCurl()[contentId].equals("0") ||
+                      mWebPlayerInfo.getCurl()[contentId].equals("0.0")) {
+
+                    LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[contentId]);
+
+                    // 처음 들어올 때 용도
+                    for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
+
+                      LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
+                      LogHelper.e(TAG , " 20180901 for contentCid" + i);
+
+                      if (!(mWebPlayerInfo.getCurl()[i].equals("0") ||
+                          mWebPlayerInfo.getCurl()[i].equals("0.0"))) {
+                        LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
+                        LogHelper.e(TAG , " 20180901 for contentCid" + i);
+
+                        contentId = i;
+                        contentCid = mWebPlayerInfo.getCkey()[i];
+
+                        doNextPlay(contentCid);
+
+                        return;
+                      }
+                    }
+                  }
+
+
                   intent.setData(Uri.parse(dashUrl));
                   intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
                       mWebPlayerInfo.getCname()[contentId]);
@@ -729,7 +758,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     intent.putExtra("expire_at", expire_at);
                     intent.putExtra("is_free", is_free);
                     intent.putExtra("webPlayerInfo", mWebPlayerInfo);
-                    intent.putExtra("history_start_seconds" , contentHistory_seconds);
+                    intent.putExtra("history_start_seconds", contentHistory_seconds);
                   }
 
                   LogHelper.e(TAG, "url : " + dashUrl);
@@ -738,13 +767,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   LogHelper.e(TAG, "contentCid : " + contentCid);
                   LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
                   LogHelper.e(TAG, "can_play : " + can_play);
-                  LogHelper.e(TAG, "Pre can_play : " + Preferences.getWelaaaPreviewPlay(getReactApplicationContext()));
+                  LogHelper.e(TAG, "Pre can_play : " + Preferences
+                      .getWelaaaPreviewPlay(getReactApplicationContext()));
                   ContextCompat.startActivity(activity, intent, null);
                 }
 
                 return;
 
-              }else{
+              } else {
 
                 intent.setData(Uri.parse(dashUrl));
                 intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
@@ -766,7 +796,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   intent.putExtra("expire_at", expire_at);
                   intent.putExtra("is_free", is_free);
                   intent.putExtra("webPlayerInfo", mWebPlayerInfo);
-                  intent.putExtra("history_start_seconds" , contentHistory_seconds);
+                  intent.putExtra("history_start_seconds", contentHistory_seconds);
                 }
 
                 LogHelper.e(TAG, "url : " + dashUrl);
@@ -775,7 +805,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 LogHelper.e(TAG, "contentCid : " + contentCid);
                 LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
                 LogHelper.e(TAG, "can_play : " + can_play);
-                LogHelper.e(TAG, "Pre can_play : " + Preferences.getWelaaaPreviewPlay(getReactApplicationContext()));
+                LogHelper.e(TAG, "Pre can_play : " + Preferences
+                    .getWelaaaPreviewPlay(getReactApplicationContext()));
                 ContextCompat.startActivity(activity, intent, null);
               }
 
@@ -907,6 +938,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     MainApplication myApp = (MainApplication) activity.getApplicationContext();
     return myApp.getContentMgr();
+  }
+
+  public void doNextPlay(String contendCid){
+    LogHelper.e(TAG , " doNextPlay " + contendCid);
+    LogHelper.e(TAG , " doNextPlay sendData !! request ~  ");
+
+    callbackMethodName = "play/play-data/";
+
+    sendData(WELEARN_WEB_URL + callbackMethodName + contendCid);
   }
 
 }

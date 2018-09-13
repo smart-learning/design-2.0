@@ -201,11 +201,13 @@ import nav from "./src/scripts/commons/nav";
 
 		return <View style={{flex: 1}}>
 			<AppDrawer
+
 				ref={navigatorRef => {
 					globalStore.drawer = navigatorRef
 						// 플래이어 크래시 때문에 코드 추가
-						nav.setNav(navigatorRef);
+						// nav.setNav(navigatorRef);
 				}}
+
 				style={{width: '80%'}}
 
 				onNavigationStateChange={(prevState, currentState) => {
@@ -244,6 +246,12 @@ function getActiveRouteName(navigationState) {
 	return route.routeName;
 }
 
+class Hidden extends React.Component {
+	render() {
+		return null
+	}
+}
+
 const HOME_SCREEN = HomeScreen;
 const DEFAULT_SCREEN = VideoScreen;
 
@@ -266,9 +274,13 @@ const AppDrawer = createDrawerNavigator(
 			screen: AudioScreen,
 		},
 
-		// MembershipScreen: {
-		// 	screen: MembershipScreens,
-		// },
+		MembershipScreen: {
+			screen: MembershipScreens,
+			navigationOptions: {
+				drawerIcon: <Hidden />,
+				drawerLabel: <Hidden />
+			}
+		},
 
 		MyScreen: {
 			screen: MyScreens,

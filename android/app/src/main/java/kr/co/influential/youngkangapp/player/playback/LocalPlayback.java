@@ -353,6 +353,41 @@ public final class LocalPlayback implements Playback {
       // Wifi lock, which prevents the Wifi radio from going to
       // sleep while the song is playing.
       mWifiLock.acquire();
+
+      // 이달의 책은 MP4 이지만 , MP3의 형태를 가지고 있습니다.
+      // cdnetworks 에서 MP3 를 지원하지 않아서 MP4 로 만들어서
+      // 서비스 했습니다.
+      try{
+        int indexOfVideoRenderer = -1;
+        for (int i = 0; i < mExoPlayer.getRendererCount(); i++) {
+          if (mExoPlayer.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+            indexOfVideoRenderer = i;
+            break;
+          }
+        }
+        // 다른건 없음
+        int currentId = Preferences.getWelaaaPlayListCId(mContext);
+        String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+
+        Gson gson = new Gson();
+        String json = Preferences.getWelaaaWebPlayInfo(mContext);
+        WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
+
+        if(mWebPlayerInfo.getCon_class().equals("audiobook")){
+          DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
+          parametersBuilder.setRendererDisabled(indexOfVideoRenderer, true);
+          trackSelector.setParameters(parametersBuilder);
+        }
+
+        if(currentCkey.contains("z")){
+          DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
+          parametersBuilder.setRendererDisabled(indexOfVideoRenderer, true);
+          trackSelector.setParameters(parametersBuilder);
+        }
+      }catch (Exception e){
+        e.printStackTrace();
+      }
+
     } else {
       int state = mExoPlayer.getPlaybackState();
       if (Player.STATE_ENDED == state) {
@@ -560,33 +595,39 @@ public final class LocalPlayback implements Playback {
         case Player.STATE_BUFFERING:
         case Player.STATE_READY:
           if (mCallback != null) {
-            mCallback.onPlaybackStatusChanged(getState());
 
-            int currentId = Preferences.getWelaaaPlayListCId(mContext);
+            try{
+              mCallback.onPlaybackStatusChanged(getState());
 
-            Gson gson = new Gson();
-            String json = Preferences.getWelaaaWebPlayInfo(mContext);
-            WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
+              int currentId = Preferences.getWelaaaPlayListCId(mContext);
 
-            boolean previewPlay = Preferences.getWelaaaPreviewPlay(mContext);
-            String content_type = mWebPlayerInfo.getCon_class();
+              Gson gson = new Gson();
+              String json = Preferences.getWelaaaWebPlayInfo(mContext);
+              WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
 
-            mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
+              boolean previewPlay = Preferences.getWelaaaPreviewPlay(mContext);
+              String content_type = mWebPlayerInfo.getCon_class();
 
-            if (content_type.equals("audiobook")) {
-              if (previewPlay) {
+              mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
 
-              } else {
-                // can_play false 오디오북에서는 재생이 안되야 ..
+              if (content_type.equals("audiobook")) {
+                if (previewPlay) {
+
+                } else {
+                  // can_play false 오디오북에서는 재생이 안되야 ..
+                }
+
+              } else if (content_type.equals("video-course")) {
+                if (previewPlay) {
+                  mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
+                } else {
+
+                }
               }
-
-            } else if (content_type.equals("video-course")) {
-              if (previewPlay) {
-                mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
-              } else {
-
-              }
+            }catch (Exception e ){
+              e.printStackTrace();
             }
+
           }
           break;
         case Player.STATE_ENDED:
@@ -1133,9 +1174,9 @@ public final class LocalPlayback implements Playback {
             LogHelper.e(TAG, "is_free  Body:" + is_free);
 
             if (can_play) {
-              Preferences.setWelaaaPreviewPlay(mContext, true);
-            } else {
               Preferences.setWelaaaPreviewPlay(mContext, false);
+            } else {
+              Preferences.setWelaaaPreviewPlay(mContext, true);
             }
 
             if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
@@ -1196,6 +1237,10 @@ public final class LocalPlayback implements Playback {
                   intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
 
                 }
+
+                // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+                // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+                Preferences.setWelaaaPlayListCKey(mContext, cId);
 
               } catch (ParserException e) {
                 e.printStackTrace();

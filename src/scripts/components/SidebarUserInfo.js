@@ -135,6 +135,8 @@ export default class SidebarUserInfo extends React.Component {
 			let expireAt = moment( expireAtData ).format('YYYY-MM-DD');
 			return (
 				<View style={styles.memberShipContainer}>
+				<TouchableOpacity activeOpacity={0.9}
+								  onPress={() => this.props.navigation.navigate('MembershipScreen')}>
 					<Text style={styles.membershipTitle}>나의멤버십</Text>
 					<View>
 						<View style={styles.membershipItem}>
@@ -175,6 +177,7 @@ export default class SidebarUserInfo extends React.Component {
 							</View>
 						</View>
 					</View>
+					</TouchableOpacity>
 				</View>
 			)
 		}

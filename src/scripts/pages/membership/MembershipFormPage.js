@@ -220,6 +220,18 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		color: '#626262',
 	},
+	ruleButton: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 50,
+		width: '100%',
+		height: 40,
+		backgroundColor: CommonStyles.COLOR_PRIMARY,
+	},
+	ruleButtonText: {
+		fontSize: 14,
+		color: '#ffffff',
+	},
 });
 
 @observer
@@ -518,12 +530,14 @@ class MembershipFormPage extends React.Component {
 						<View>
 							<TouchableOpacity onPress={this.onSubmit}
 							disabled={this.state.submitButtonDisabled}>
-								<Text>
-									{this.state.submitButtonDisabled
-										?'처리중'
-										:'등록'
-									}
-								</Text>
+								<View style={styles.ruleButton} borderRadius={5}>
+									<Text style={styles.ruleButtonText}>
+										{this.state.submitButtonDisabled
+											? '처리중'
+											: '등록'
+										}
+									</Text>
+								</View>
 							</TouchableOpacity>
 						</View>
 					</View>

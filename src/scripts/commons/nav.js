@@ -243,17 +243,20 @@ export default {
 				navigation( 'ClassDetailPage', { id: schemes[0] } );
 				break;
 
-			case 'audio_list':
+			case 'audiobook_list':
+
 				if( paramsLen === 2 ) navigation.navigate('AudioBookPage', { category:schemes[0], index:schemes[1] } );
 				else navigation.navigate('AudioBookPage');
 				break;
 
-			case 'audio':
+			case 'audiobook':
+
 				navigation.navigate('AudioBookDetailPage', { id: schemes[0] });
 				break;
 
 			case 'video_play':
-			case 'audio_play':
+
+			case 'audiobook_play':
 				Native.play( schemes[0] );
 				break;
 
