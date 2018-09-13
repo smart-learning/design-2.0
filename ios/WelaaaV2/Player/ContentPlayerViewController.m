@@ -1,4 +1,14 @@
 
+/*
+ * 추후에 지속가능한 리팩토링을 위해 다음 링크를 참조하여 클래스를 분리할 계획입니다.
+ * https://github.com/akabekobeko/Examples-iOS/tree/master/VideoPlayer/VideoPlayer
+ *
+ * 추가적으로 깔끔하고 간결한 코드유지를 위해 최대한 AVKit의 기본 API를 사용할 계획입니다.
+ * https://github.com/JaviSoto/iOS10-Runtime-Headers/blob/master/Frameworks/AVKit.framework/AVPlayerViewController.h
+ *
+ * 그리고 XIB/StoryBoard + Swift 를 최종적으로 지향하는 방향으로 잡고 있습니다.
+ */
+
 #import "ContentPlayerViewController.h"
 
 #import "AppDelegate.h"

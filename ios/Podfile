@@ -36,7 +36,7 @@ target 'WelaaaV2' do
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
 
-  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+ #pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
 end
 use_frameworks!
