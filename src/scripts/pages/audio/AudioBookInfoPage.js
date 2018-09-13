@@ -12,10 +12,11 @@ import {
 import {SafeAreaView, withNavigation} from "react-navigation";
 import CommonStyles, {COLOR_PRIMARY} from "../../../styles/common";
 import m from "moment";
-import { observer } from "mobx-react";
+import {observer} from "mobx-react";
 import {observable} from "mobx";
 import bookIcon from "../../../images/ic-book-white.png";
 import playIcon from "../../../images/ic-play-white.png";
+import Native from "../../commons/native";
 
 const styles = StyleSheet.create({
 	infoContainer: {
@@ -182,16 +183,17 @@ const styles = StyleSheet.create({
 	}
 });
 
-@observer class AudioBookInfoPage extends React.Component {
+@observer
+class AudioBookInfoPage extends React.Component {
 	@observable isMemoShow = false;
 	@observable buttonTextStatus = true;
 
 	showTeacherMemo = () => {
-		if( this.isMemoShow === false ) {
+		if (this.isMemoShow === false) {
 			this.isMemoShow = true;
 			this.buttonTextStatus = false;
 		}
-		else if( this.isMemoShow === true ) {
+		else if (this.isMemoShow === true) {
 			this.isMemoShow = false;
 			this.buttonTextStatus = true;
 		}
@@ -199,12 +201,11 @@ const styles = StyleSheet.create({
 
 	render() {
 		const itemData = this.props.navigation.state.params.itemData;
-		console.log( 'itemData', itemData );
-		const year = m( itemData.year ).format( "YYYY" );
-		const month = m( itemData.month ).format("MM");
+		const year = m(itemData.year).format("YYYY");
+		const month = m(itemData.month).format("MM");
 		return <SafeAreaView style={CommonStyles.container}>
 			<ScrollView style={{width: '100%'}}>
-				<ImageBackground source={{uri: itemData.images.header_bg}} resizeMode="cover" style={{ width: '100%' }}>
+				<ImageBackground source={{uri: itemData.images.header_bg}} resizeMode="cover" style={{width: '100%'}}>
 					<View style={styles.infoContainer}>
 						<View style={styles.headline}>
 							<View>
@@ -212,57 +213,66 @@ const styles = StyleSheet.create({
 									<Text style={styles.headlineSpan}> 이달의 책</Text>
 								</Text>
 							</View>
-							<Text style={styles.headlineMonth}>{year}.{ month}</Text>
+							<Text style={styles.headlineMonth}>{year}.{month}</Text>
 						</View>
 						<View style={styles.infoContent}>
 							<View style={styles.contentHeadline}>
 								<View>
 									<Text style={styles.headlineH2}>{itemData.headline}</Text>
 								</View>
-								{ 1 === 2 &&
-								<View style={styles.infoButtonWrap}>
-									<TouchableOpacity activeOpacity={0.9} style={styles.infoButton}>
-										<Text style={styles.infoButtonText}>추천사 듣기</Text>
-										<Image source={playIcon} style={styles.buttonSmallIcon}/>
-									</TouchableOpacity>
-								</View>
-								}
 								<View style={styles.infoButtonWrap}>
 									<TouchableOpacity activeOpacity={0.9}
-													  style={styles.infoButton}
-													  onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: itemData.audiobook.id, title: itemData.audiobook.title})}>
-										<Text style={styles.infoButtonText}>이달의 책 상세보기</Text>
-										<Image source={bookIcon} style={styles.buttonSmallIcon}/>
+													  onPress={() => Native.play(itemData.audiobook.cid)}>
+										<View style={styles.infoButton}>
+											<Text style={styles.infoButtonText}>추천사 듣기</Text>
+											<Image source={playIcon} style={styles.buttonSmallIcon}/>
+										</View>
+									</TouchableOpacity>
+								</View>
+								<View style={styles.infoButtonWrap}>
+									<TouchableOpacity activeOpacity={0.9}
+													  onPress={() => this.props.navigation.navigate('AudioBookDetailPage', {
+														  id: itemData.audiobook.id,
+														  title: itemData.audiobook.title
+													  })}>
+										<View style={styles.infoButton}>
+											<Text style={styles.infoButtonText}>이달의 책 상세보기</Text>
+											<Image source={bookIcon} style={styles.buttonSmallIcon}/>
+										</View>
 									</TouchableOpacity>
 								</View>
 							</View>
 							<View style={styles.infoBook}>
 								<TouchableOpacity activeOpacity={0.9}
-												  onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: itemData.audiobook.id, title: itemData.audiobook.title})}>
-									<ImageBackground source={{uri: itemData.audiobook.images.cover}} resizeMode={"cover"} style={styles.bookThumbnail}/>
+												  onPress={() => this.props.navigation.navigate('AudioBookDetailPage', {
+													  id: itemData.audiobook.id,
+													  title: itemData.audiobook.title
+												  })}>
+									<ImageBackground source={{uri: itemData.audiobook.images.cover}}
+													 resizeMode={"cover"} style={styles.bookThumbnail}/>
 								</TouchableOpacity>
 							</View>
 						</View>
 					</View>
 				</ImageBackground>
 				<View style={styles.teacherContainer}>
-					<View style={{ position: "relative" }}>
+					<View style={{position: "relative"}}>
 						<Image source={{uri: itemData.mentor.images.default}} style={styles.teacherThumbnail}/>
 						<View style={{width: '100%', paddingLeft: 100,}}>
-							<Text style={ styles.teacherTitle}>리딩멘토</Text>
-							<Text style={ styles.teacherHeadline}>{itemData.mentor.headline}</Text>
-							<Text style={ styles.teacherName}>{itemData.mentor.name}</Text>
+							<Text style={styles.teacherTitle}>리딩멘토</Text>
+							<Text style={styles.teacherHeadline}>{itemData.mentor.headline}</Text>
+							<Text style={styles.teacherName}>{itemData.mentor.name}</Text>
 						</View>
 					</View>
-					{ this.isMemoShow === true &&
+					{this.isMemoShow === true &&
 					<View style={styles.teacherMemo}>
 						<Text style={styles.teacherMemoText}>
 							{itemData.mentor.memo}
 						</Text>
 					</View>
 					}
-					<View style={{ width: "100%"}}>
-						<TouchableOpacity activeOpacity={0.9} onPress={ this.showTeacherMemo }>
+					<View style={{width: "100%"}}>
+						<TouchableOpacity activeOpacity={0.9} onPress={this.showTeacherMemo}>
 							{this.buttonTextStatus &&
 							<Text style={styles.showMemoButtonText}>소개보기</Text>
 							}
@@ -275,12 +285,16 @@ const styles = StyleSheet.create({
 				<View style={styles.memoContainer}>
 					<Text style={styles.memoTitle}>{itemData.title}</Text>
 					<Text style={styles.memoBody}>{itemData.body}</Text>
-					<View style={{ width: '100%' }}>
-						<TouchableOpacity style={styles.memoButton}
-										  activeOpacity={0.9}
-										  onPress={ () => this.props.navigation.navigate('AudioBookDetailPage', {id: itemData.audiobook.id, title: itemData.audiobook.title})}>
-							<Image source={bookIcon} style={styles.buttonLargeIcon}/>
-							<Text style={styles.memoButtonText}>이달의 책 상세보기</Text>
+					<View style={{width: '100%'}}>
+						<TouchableOpacity activeOpacity={0.9}
+										  onPress={() => this.props.navigation.navigate('AudioBookDetailPage', {
+											  id: itemData.audiobook.id,
+											  title: itemData.audiobook.title
+										  })}>
+							<View style={styles.memoButton}>
+								<Image source={bookIcon} style={styles.buttonLargeIcon}/>
+								<Text style={styles.memoButtonText}>이달의 책 상세보기</Text>
+							</View>
 						</TouchableOpacity>
 					</View>
 				</View>

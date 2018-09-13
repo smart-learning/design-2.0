@@ -104,6 +104,9 @@ RCT_EXPORT_MODULE();
                     // 따라서 아래와 같이 애플에서 사용자의 카드에서 결제가 성공하면 영수증확인과는 별도로 상품상세 페이지로의 이동 및 결제대기열을 초기화 시킵니다.
             
                     // 상품 구입 완료 후 RN에게 결제 결과를 전달해야 합니다.
+                    // Obj-c -> JS
+                    // https://gist.github.com/chourobin/f83f3b3a6fd2053fad29fff69524f91c#file-events-md
+                    // event emit
                     if ( [productCode hasPrefix : @"audiobook_"] )
                     {
                         ;
