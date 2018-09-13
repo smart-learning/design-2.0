@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image } from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image} from "react-native";
 import IcHeadphone from "../../../images/ic-headphones.png";
 import Dummy from "../../../images/dummy-audioBook.png";
 import Swiper from "react-native-swiper";
@@ -8,10 +8,8 @@ import {withNavigation} from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import moment from "moment";
 
-const styles = StyleSheet.create( {
-	bookMonthly: {
-
-	},
+const styles = StyleSheet.create({
+	bookMonthly: {},
 	bookMonthlyItem: {
 		justifyContent: 'center',
 		position: 'relative',
@@ -116,7 +114,7 @@ const styles = StyleSheet.create( {
 		fontSize: 13,
 		color: '#888888',
 	},
-} );
+});
 
 export default withNavigation(class BookMonthly extends React.Component {
 	constructor(props) {
@@ -142,15 +140,15 @@ export default withNavigation(class BookMonthly extends React.Component {
 						activeDotColor={CommonStyles.COLOR_PRIMARY}
 						paginationStyle={{bottom: 0}}>
 
-					{this.props.itemData.map( ( item, key ) => {
-						const MonthData = moment( item.month ).format( "M" );
+					{this.props.itemData.map((item, key) => {
+						const MonthData = moment(item.month).format("M");
 						return (
 							<View style={styles.bookMonthlyItem} key={key}>
 								<View>
-									<Text style={[ styles.mainTitleCenter, styles.titleH2 ]}>
+									<Text style={[styles.mainTitleCenter, styles.titleH2]}>
 										{MonthData}월 이달의 책
 									</Text>
-									<Text style={[ styles.mainTitleCenter, styles.titleH4 ]}>
+									<Text style={[styles.mainTitleCenter, styles.titleH4]}>
 										이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
 									</Text>
 								</View>
@@ -160,50 +158,58 @@ export default withNavigation(class BookMonthly extends React.Component {
 										<Image source={IcHeadphone} style={styles.couponIcon}/>
 										<Text style={styles.couponText}>
 											보유한 오디오북 이용권
-											<Text style={styles.couponCountText}> {this.props.voucherStatus.total}개</Text>
+											<Text
+												style={styles.couponCountText}> {this.props.voucherStatus.total}개</Text>
 										</Text>
 									</View>
 								</View>
 								}
 								<View style={styles.bookItemContainer}>
-									<View style={styles.bookItem}>
-										<View style={styles.bookThumbnailContainer}>
-											<ImageBackground source={{uri:item.book_a.audiobook.images.cover}} resizeMode={"cover"} style={styles.thumbnail}/>
-										</View>
-										<View style={{width: '48%'}}>
-											<Text style={styles.title}>{item.book_a.title}</Text>
-											<Text style={styles.author}>{item.book_a.mentor.name}</Text>
-
-											<TouchableOpacity activeOpacity={0.9}
-															  onPress={ () => this.props.navigation.navigate('HomeMonthlyReviewPage', {itemData: item.book_a, title: '이달의 책 북리뷰'})}>
+									<TouchableOpacity activeOpacity={0.9}
+													  onPress={() => this.props.navigation.navigate('HomeMonthlyReviewPage', {
+														  itemData: item.book_a,
+														  title: '이달의 책 북리뷰'
+													  })}>
+										<View style={styles.bookItem}>
+											<View style={styles.bookThumbnailContainer}>
+												<ImageBackground source={{uri: item.book_a.audiobook.images.cover}}
+																 resizeMode={"cover"} style={styles.thumbnail}/>
+											</View>
+											<View style={{width: '48%'}}>
+												<Text style={styles.title}>{item.book_a.title}</Text>
+												<Text style={styles.author}>{item.book_a.mentor.name}</Text>
 												<View style={styles.detailButton} borderRadius={13}>
 													<Text style={styles.detailButtonText}>자세히보기</Text>
 												</View>
-											</TouchableOpacity>
+											</View>
 										</View>
-									</View>
-									<View style={styles.bookItem}>
-										<View style={styles.bookThumbnailContainer}>
-											<ImageBackground source={{uri:item.book_b.audiobook.images.cover}} resizeMode={"cover"} style={styles.thumbnail}/>
-										</View>
-										<View style={{width: '48%'}}>
-											<Text style={styles.title}>{item.book_b.title}</Text>
-											<Text style={styles.author}>{item.book_b.mentor.name}</Text>
-
-											<TouchableOpacity activeOpacity={0.9}
-															  onPress={ () => this.props.navigation.navigate('HomeMonthlyReviewPage', {itemData: item.book_b, title: '이달의 책 북리뷰'})}>
+									</TouchableOpacity>
+									<TouchableOpacity activeOpacity={0.9}
+													  onPress={() => this.props.navigation.navigate('HomeMonthlyReviewPage', {
+														  itemData: item.book_b,
+														  title: '이달의 책 북리뷰'
+													  })}>
+										<View style={styles.bookItem}>
+											<View style={styles.bookThumbnailContainer}>
+												<ImageBackground source={{uri: item.book_b.audiobook.images.cover}}
+																 resizeMode={"cover"} style={styles.thumbnail}/>
+											</View>
+											<View style={{width: '48%'}}>
+												<Text style={styles.title}>{item.book_b.title}</Text>
+												<Text style={styles.author}>{item.book_b.mentor.name}</Text>
 												<View style={styles.detailButton} borderRadius={13}>
 													<Text style={styles.detailButtonText}>자세히보기</Text>
 												</View>
-											</TouchableOpacity>
+
+											</View>
 										</View>
-									</View>
+									</TouchableOpacity>
 								</View>
 							</View>
 						);
-					} )}
+					})}
 				</Swiper>
 			</View>
 		</View>
 	}
-} )
+})
