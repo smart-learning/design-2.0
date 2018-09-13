@@ -669,8 +669,6 @@ public class PlayerActivity extends BasePlayerActivity {
     if (!CAN_PLAY) {
       Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
 
-      mRelatedViewBtn.setVisibility(GONE);
-
       // 윌라 기존 버전 ,
       // 1) seekbar 핸들링 못함
       // 2) duration Total Time 90 초로 고정 됨 .
@@ -1618,6 +1616,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
     mRelatedViewBtn = findViewById(R.id.RELATED_BUTTON_GROUP);
     mRelatedViewTopCloseBtn = findViewById(R.id.BUTTON_RELATEDLIST_TOP_CLOSE);
+
+    mRelatedViewBtn.setVisibility(GONE);
 
     // 자동 재생 설정 여부에 따라 분기 처리 ..
     if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {

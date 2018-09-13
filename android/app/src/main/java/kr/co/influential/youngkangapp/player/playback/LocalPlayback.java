@@ -1174,9 +1174,9 @@ public final class LocalPlayback implements Playback {
             LogHelper.e(TAG, "is_free  Body:" + is_free);
 
             if (can_play) {
-              Preferences.setWelaaaPreviewPlay(mContext, true);
-            } else {
               Preferences.setWelaaaPreviewPlay(mContext, false);
+            } else {
+              Preferences.setWelaaaPreviewPlay(mContext, true);
             }
 
             if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
