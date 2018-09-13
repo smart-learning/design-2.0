@@ -17,6 +17,13 @@ import com.crashlytics.android.core.CrashlyticsCore;
 import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
+import com.apsl.versionnumber.RNVersionNumberPackage;
+import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
+import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
+import io.invertase.firebase.RNFirebasePackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -110,6 +117,13 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactVideoPackage(),
+            new RNVersionNumberPackage(),
+            new RNLocalizablePackage(),
+            new RNKaKaoSigninPackage(),
+            new RNFirebasePackage(),
+            new FBSDKPackage(),
+            new RNDeviceInfo(),
             new RNDeviceInfo(),
           new RNFirebasePackage(),
           new RNFirebaseMessagingPackage(),

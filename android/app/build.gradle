@@ -187,6 +187,13 @@ apply plugin: 'io.fabric'
 
 
 dependencies {
+    compile project(':react-native-video')
+    compile project(':react-native-version-number')
+    compile project(':react-native-localizable')
+    compile project(':react-native-kakao-signin')
+    compile project(':react-native-firebase')
+    compile project(':react-native-fbsdk')
+    compile project(':react-native-device-info')
     implementation project(':react-native-device-info')
     implementation project(':react-native-firebase')
     implementation project(':react-native-version-number')
