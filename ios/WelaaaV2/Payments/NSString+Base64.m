@@ -11,8 +11,8 @@ static char base64EncodingTable[64] = {
 @implementation NSString (Base64)
 
 
-+ (NSString *) base64StringFromData: (NSData *) data
-                             length: (long) length
++ (NSString *) base64StringFromData : (NSData *) data
+                             length : (long) length
 {
     unsigned long ixtext, lentext;
     long ctremaining;
@@ -26,7 +26,7 @@ static char base64EncodingTable[64] = {
     if ( lentext < 1 )
         return @"";
     
-    result = [NSMutableString stringWithCapacity: lentext];
+    result = [NSMutableString stringWithCapacity : lentext];
     raw = [data bytes];
     ixtext = 0; 
     

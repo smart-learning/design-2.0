@@ -108,7 +108,7 @@ RCT_EXPORT_MODULE();
                     {
                         ;
                     }
-                    else if ( [productCode hasPrefix: @"m_"] )
+                    else if ( [productCode hasPrefix : @"m_"] )
                     {
                         ;
                     }
@@ -188,7 +188,7 @@ RCT_EXPORT_MODULE();
     }];
 }
 
-- (void) checkProductsReceipt : (NSDictionary *) args
+- (void) restoreProduct : (NSDictionary *) args
 {
   ;
 }
@@ -202,9 +202,9 @@ RCT_EXPORT_METHOD( buy : (NSDictionary *) args )
     [self buyProduct : args];
 }
 
-RCT_EXPORT_METHOD( checkReceipt : (NSDictionary *) args )
+RCT_EXPORT_METHOD( restore : (NSDictionary *) args )
 {
-    [self checkProductsReceipt : args];
+    [self restoreProduct : args];
 }
 
 @end
