@@ -6,6 +6,7 @@
 		"babel-preset-react-native-stage-0": "^1.0.1",
 		"jest": "^23.1.0",
 		"jest-react-native": "^18.0.0",
+		"prettier": "^1.14.2",
 		"react-native-create-bridge": "^2.0.1",
 		"react-test-renderer": "16.3.1",
 		"watchman": "^1.0.0"
