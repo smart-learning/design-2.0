@@ -42,14 +42,25 @@ const styles = StyleSheet.create({
 
 	render() {
 		let list;
+		let itemLength;
 		let BookList = [];
+
+		if( this.props.itemType === 'hot' ) {
+			itemLength = 14;
+		}
+		else if ( this.props.itemType === 'new' ) {
+			itemLength = 6;
+		}
+		else {
+			itemLength = 4;
+		}
 
 		if( !this.store.isOpen ) {
 			let itemNumber = 1;
 			this.props.itemData.forEach(element => {
 				element.itemNumber = itemNumber++;
 			});
-			list = this.props.itemData.slice( 0, 4 );
+			list = this.props.itemData.slice( 0, itemLength );
 		} else {
 			list = this.props.itemData;
 		}
