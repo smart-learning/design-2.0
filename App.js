@@ -201,11 +201,6 @@ import nav from "./src/scripts/commons/nav";
 
 		return <View style={{flex: 1}}>
 			<AppDrawer
-				ref={navigatorRef => {
-					globalStore.drawer = navigatorRef
-						// 플래이어 크래시 때문에 코드 추가
-						nav.setNav(navigatorRef);
-				}}
 				style={{width: '80%'}}
 
 				onNavigationStateChange={(prevState, currentState) => {
