@@ -7,6 +7,7 @@ import _ from "underscore";
 import {withNavigation} from "react-navigation";
 import CommonStyles from "../../../styles/common";
 import moment from "moment";
+import globalStore from "../../commons/store";
 
 const styles = StyleSheet.create({
 	bookMonthly: {},
@@ -152,16 +153,21 @@ export default withNavigation(class BookMonthly extends React.Component {
 										이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
 									</Text>
 								</View>
-								{this.props.voucherStatus &&
-								<View style={styles.couponContainer}>
-									<View style={styles.coupon} borderRadius={20}>
-										<Image source={IcHeadphone} style={styles.couponIcon}/>
-										<Text style={styles.couponText}>
-											보유한 오디오북 이용권
-											<Text
-												style={styles.couponCountText}> {this.props.voucherStatus.total}개</Text>
-										</Text>
-									</View>
+								{(globalStore.currentMembership.type === 2 || globalStore.currentMembership.type === 4) &&
+								<View>
+									<TouchableOpacity activeOpacity={0.9}
+													  onPress={() => this.props.navigation.navigate('AuthCheck', { requestScreenName:'AudioBookTicketPage', title:'내 오디오북 이용권' } )}>
+										<View style={styles.couponContainer}>
+											<View style={styles.coupon} borderRadius={20}>
+												<Image source={IcHeadphone} style={styles.couponIcon}/>
+												<Text style={styles.couponText}>
+													보유한 오디오북 이용권
+													<Text
+														style={styles.couponCountText}> {this.props.voucherStatus ? this.props.voucherStatus.total : '0'}개</Text>
+												</Text>
+											</View>
+										</View>
+									</TouchableOpacity>
 								</View>
 								}
 								<View style={styles.bookItemContainer}>
