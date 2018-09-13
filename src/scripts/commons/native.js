@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import {NativeModules, Platform} from 'react-native';
+import {NativeModules, NativeEventEmitter, Platform} from 'react-native';
 import globalStore from '../commons/store';
 
 
@@ -7,6 +7,13 @@ const {RNNativePlayer, RNNativeBase} = NativeModules;
 
 import {Alert} from 'react-native'
 import * as firebase from "react-native-firebase";
+
+const receiptEventEmitter = new NativeEventEmitter(NativeModules.RNReceiptEventEmitter)
+const subscription = receiptEventEmitter.addListener('ReceiptVerification', (data) => console.log(data))
+// Don't forget to unsubscribe, typically in `componentWillUnmount`
+subscription.remove()
+
+
 
 export default {
 	getF_TOKEN(callback) {

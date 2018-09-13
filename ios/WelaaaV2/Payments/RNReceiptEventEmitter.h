@@ -4,4 +4,6 @@
 
 @interface RNReceiptEventEmitter : RCTEventEmitter <RCTBridgeModule>
 
+- (void) sendPaymentResultToReactNative;
+
 @end

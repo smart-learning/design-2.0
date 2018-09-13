@@ -109,7 +109,8 @@ RCT_EXPORT_MODULE();
                     // event emit
                     if ( [productCode hasPrefix : @"audiobook_"] )
                     {
-                        ;
+                        RNReceiptEventEmitter *notification = [RNReceiptEventEmitter allocWithZone : nil];
+                        [notification sendPaymentResultToReactNative];
                     }
                     else if ( [productCode hasPrefix : @"m_"] )
                     {

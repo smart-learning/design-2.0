@@ -3,6 +3,7 @@
 
 #import "IAPShare.h"
 #import "common.h"
+#import "RNReceiptEventEmitter.h"
 
 @interface RNProductPayment : NSObject <RCTBridgeModule>
 
