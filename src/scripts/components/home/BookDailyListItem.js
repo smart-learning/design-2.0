@@ -46,15 +46,17 @@ const styles = StyleSheet.create({
 
 class BookDailyListItem extends React.Component {
 	render() {
-		let itemData;
+		let itemData = {};
 		let month;
 		let day;
-		if( this.props.itemData !== undefined ) {
+		try {
 			itemData = this.props.itemData[0];
 
 			month = m( itemData.open_date ).format( "M" );
 			day = m( itemData.open_date ).format( "D" );
 		}
+		catch( error ) { console.log( error ) }
+
 		return <View style={styles.bookListItemContainer}>
 			<View style={styles.bookListItemHeadline}>
 				<View style={styles.dateBox}>

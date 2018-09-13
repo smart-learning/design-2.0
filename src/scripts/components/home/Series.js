@@ -1,6 +1,7 @@
 import React from "react";
 import {Text, View, StyleSheet, TouchableOpacity, ImageBackground,} from "react-native";
 import {withNavigation} from "react-navigation";
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
 	seriesItemSm: {
@@ -41,8 +42,12 @@ export default withNavigation( class Series extends React.Component {
 	}
 
 	render() {
+		let itemData = [];
+		if( _.isArray( this.props.itemData ) ) {
+			itemData = this.props.itemData;
+		}
 		return <View>
-			{this.props.itemData.map((item, key) => {
+			{itemData.map((item, key) => {
 				return (
 					<View style={styles.seriesItemLg} key={key}>
 						<TouchableOpacity activeOpacity={0.9} onPress={ () => this.props.navigation.navigate('HomeSeriesPage', { title: '윌라 추천 시리즈'})}>

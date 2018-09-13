@@ -22,6 +22,7 @@ import {withNavigation} from "react-navigation";
 import PTRView from 'react-native-pull-to-refresh';
 import moment from "moment";
 import globalStore from "../../commons/store";
+import _ from "underscore";
 
 const styles = StyleSheet.create({
 	slide: {
@@ -121,13 +122,20 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 
 	render() {
 		let updatedAt = moment().format('YYYY. MM. DD');
+		let homeBannerData = [];
+		try {
+			if( _.isArray( this.props.store.homeBannerData ) ) {
+				homeBannerData = this.props.store.homeBannerData;
+			}
+		}
+		catch( error ) { console.log( error ) }
 		return (
 			<PTRView onRefresh={() => this.props.onRefresh()}>
 				<ScrollView style={{flex: 1}}>
 					{/* 이미지 스와이퍼 */}
 
 					<View style={{height: this.props.store.slideHeight}}>
-						{this.props.store.homeBannerData.length > 0 &&
+						{homeBannerData.length > 0 &&
 						<Swiper style={styles.wrapper}
 								showsButtons={false}
 								height={window.width}
@@ -135,7 +143,7 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 								activeDotColor={"#ffffff"}
 								paginationStyle={{bottom: 10}}>
 
-							{this.props.store.homeBannerData.map((item, key) => {
+							{homeBannerData.map((item, key) => {
 								return (
 									<TouchableOpacity activeOpacity={0.9} key={key}>
 										<ImageBackground source={{uri: item.images.default}} resizeMode="cover"
@@ -145,7 +153,7 @@ export default withNavigation(class HomeVideoPage extends React.Component {
 							})}
 						</Swiper>
 						}
-						{this.props.store.homeBannerData.length === 0 &&
+						{homeBannerData.length === 0 &&
 						<View style={{marginTop: '20%'}}>
 							<ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY}/>
 						</View>

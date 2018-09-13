@@ -185,7 +185,12 @@ class HomePage extends React.Component {
 		this.store.homeBannerData = await net.getMainBanner( isRefresh );
 		this.store.audioNewData = await net.getAudioBookList( isRefresh );
 		this.store.audioMonth = await net.getHomeAudioBookMonth( isRefresh );
-		this.store.audioDaily = await net.getDailyBookList( isRefresh );
+		this.store.audioDaily = [];
+		try {
+			this.store.audioDaily = await net.getDailyBookList( isRefresh );
+		}
+		catch( error ) { console.log( error ) }
+
 		this.store.audioHotData = homeAudioBookContents.hot;
 		this.store.audioNewData = homeAudioBookContents.new;
 		this.store.audioRecommendData = homeAudioBookContents.recommend;
