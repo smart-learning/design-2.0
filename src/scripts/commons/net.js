@@ -587,7 +587,7 @@ export default {
 				"app_os": (Platform.OS === 'ios' ? 0 : 1),
 				"app_os_version": Platform.Version,
 				"app_version": VersionNumber.appVersion,
-				"device_id": DeviceInfo.getDeviceId(),
+				"device_id": DeviceInfo.getUniqueID(),
 				"device_model": DeviceInfo.getModel(),
 				"fcm_token": fcmToken,
 				"push_receive": bool

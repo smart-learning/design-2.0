@@ -237,6 +237,9 @@ export default class MembershipPage extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			membership_price_suffix: ' 결제하기 / 해지는 언제든지 쉽게!'
+		}
 	}
 
 	render() {
@@ -398,7 +401,7 @@ export default class MembershipPage extends React.Component {
 											ios: <Text>$9.89</Text>,
 											android: <Text>월 7,700원</Text>,
 										})}
-										원 결제하기 / 해지는 언제든지 쉽게!
+										{this.state.membership_price_suffix}
 									</Text>
 								</View>
 								<Image source={IcAngleRight}/>
@@ -434,7 +437,7 @@ export default class MembershipPage extends React.Component {
 											ios: <Text>$8.79</Text>,
 											android: <Text>월 6,600원</Text>,
 										})}
-										원 결제하기 / 해지는 언제든지 쉽게!
+										{this.state.membership_price_suffix}
 									</Text>
 								</View>
 								<Image source={IcAngleRight}/>
@@ -468,7 +471,7 @@ export default class MembershipPage extends React.Component {
 											ios: <Text>$18.69</Text>,
 											android: <Text>월 14,300원</Text>,
 										})}
-										원 결제하기 / 해지는 언제든지 쉽게!
+										{this.state.membership_price_suffix}
 									</Text>
 								</View>
 								<Image source={IcAngleRight}/>
