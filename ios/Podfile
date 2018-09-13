@@ -38,9 +38,5 @@ target 'WelaaaV2' do
 
  #pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
-  pod 'react-native-version-number', :path => '../node_modules/react-native-version-number'
-
-  pod 'react-native-video', :path => '../node_modules/react-native-video'
-
 end
 use_frameworks!
