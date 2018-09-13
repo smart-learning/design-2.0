@@ -17,6 +17,7 @@ import IcPlay from '../../../images/ic-play.png';
 import Device from '../../commons/device';
 import Native from '../../commons/native';
 import numeral from 'numeral';
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -132,6 +133,12 @@ export default class Summary extends React.Component {
   };
 
   render() {
+    let starAvg = parseFloat(this.props.star_avg).toFixed(1);
+
+    if (_.isNaN(starAvg)) {
+      starAvg = 0;
+    }
+
     return (
       <View style={styles.itemContainer}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
@@ -205,36 +212,35 @@ export default class Summary extends React.Component {
             </ImageBackground>
           )}
         </TouchableOpacity>
-        {this.props.type !== 'detailClip' && (
-          <View style={styles.btnGroup}>
-            <View style={styles.alignJustify}>
-              <Image source={IcView} style={styles.btnSetSmall} />
-              <Text style={styles.countText}>
-                조회수 {numeral(this.props.hit_count).format('0 a')}
-              </Text>
-              <Image source={IcStar} style={styles.btnSetSmall} />
-              <Text style={styles.countText}>
-                별점 {parseFloat(this.props.star_avg).toFixed(1)}
-              </Text>
-              <Image source={IcComment} style={styles.btnSetSmall} />
-              <Text style={styles.countText}>
-                리뷰 {this.props.review_count}
-              </Text>
-              {1 === 2 && (
-                <View style={{ marginLeft: 'auto' }}>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={() => {
-                      Device.share(this.props.title, this.props.url);
-                    }}
-                  >
-                    <Image source={IcShare} style={styles.btnSetLarge} />
-                  </TouchableOpacity>
-                </View>
-              )}
+        {this.props.type !== 'detailClip' &&
+          this.props.type !== 'dailyBook' && (
+            <View style={styles.btnGroup}>
+              <View style={styles.alignJustify}>
+                <Image source={IcView} style={styles.btnSetSmall} />
+                <Text style={styles.countText}>
+                  조회수 {numeral(this.props.hit_count).format('0 a')}
+                </Text>
+                <Image source={IcStar} style={styles.btnSetSmall} />
+                <Text style={styles.countText}>별점 {starAvg}</Text>
+                <Image source={IcComment} style={styles.btnSetSmall} />
+                <Text style={styles.countText}>
+                  리뷰 {numeral(this.props.review_count).format('0 a')}
+                </Text>
+                {1 === 2 && (
+                  <View style={{ marginLeft: 'auto' }}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() => {
+                        Device.share(this.props.title, this.props.url);
+                      }}
+                    >
+                      <Image source={IcShare} style={styles.btnSetLarge} />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             </View>
-          </View>
-        )}
+          )}
       </View>
     );
   }
