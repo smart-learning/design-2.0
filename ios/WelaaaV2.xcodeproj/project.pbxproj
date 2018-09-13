@@ -63,6 +63,7 @@
 		EFAEBDCB213D33050070F10E /* ContentMiniPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB1213D33050070F10E /* ContentMiniPlayerView.m */; };
 		EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB4213D33050070F10E /* PlayerSleepTimerView.m */; };
 		EFAEBDCD213D33050070F10E /* PlayerSleepTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB5213D33050070F10E /* PlayerSleepTimerButton.m */; };
+		EFD50319214A3D3500FA72D3 /* RNReceiptEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD50318214A3D3500FA72D3 /* RNReceiptEventEmitter.m */; };
 		EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */; };
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
 		EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081E22113ED84006D3F6C /* NSString+GC.m */; };
@@ -481,6 +482,8 @@
 		EFAEBDB6213D33050070F10E /* PlayerSleepTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerView.h; sourceTree = "<group>"; };
 		EFAEBDB7213D33050070F10E /* PlayerSleepTimerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerButton.h; sourceTree = "<group>"; };
 		EFD388172138DD4900AC5C39 /* WelaaaV2_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WelaaaV2_Prefix.pch; path = WelaaaV2/WelaaaV2_Prefix.pch; sourceTree = "<group>"; };
+		EFD50317214A3D3500FA72D3 /* RNReceiptEventEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNReceiptEventEmitter.h; sourceTree = "<group>"; };
+		EFD50318214A3D3500FA72D3 /* RNReceiptEventEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNReceiptEventEmitter.m; sourceTree = "<group>"; };
 		EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+LocalizedError.m"; sourceTree = "<group>"; };
 		EFE081AA2113EB0C006D3F6C /* NSError+LocalizedError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+LocalizedError.h"; sourceTree = "<group>"; };
 		EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Blocks.m"; sourceTree = "<group>"; };
@@ -968,6 +971,8 @@
 			children = (
 				EF0946FF212662B200FD849B /* RNProductPayment.h */,
 				EF094700212662B200FD849B /* RNProductPayment.m */,
+				EFD50317214A3D3500FA72D3 /* RNReceiptEventEmitter.h */,
+				EFD50318214A3D3500FA72D3 /* RNReceiptEventEmitter.m */,
 				EFE0832D21144239006D3F6C /* IAPHelper.h */,
 				EFE0832721144239006D3F6C /* IAPHelper.m */,
 				EFE0832A21144239006D3F6C /* IAPShare.h */,
@@ -1542,6 +1547,7 @@
 				63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */,
 				EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,
+				EFD50319214A3D3500FA72D3 /* RNReceiptEventEmitter.m in Sources */,
 				EFAEBDC1213D33050070F10E /* PlayerScriptItemView.m in Sources */,
 				EFAEBDC2213D33050070F10E /* ContentPlayerViewController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
