@@ -114,7 +114,7 @@ export default class SidebarUserInfo extends React.Component {
 			return (
 				<View style={styles.memberShipContainerNoMembership}>
 					<TouchableOpacity activeOpacity={0.9}
-									  onPress={() => this.props.navigation.navigate('SignUpPage')}>
+									  onPress={() => this.props.navigation.navigate('MembershipPage')}>
 						<View style={styles.membershipButton} borderRadius={4}>
 							<Image source={IcFree} style={styles.membershipButtonBullet}/>
 							<View>
