@@ -18,8 +18,6 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-#import "RNReceiptEventEmitter.h" // 영수증 검증 테스트 후 삭제해야 합니다.
-
 @import UserNotifications;
 
 @interface AppDelegate () <UNUserNotificationCenterDelegate>
@@ -118,12 +116,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     NSLog(@"  [DeviceInfo] Cellular Type :  %@", [common getCellularType]);
     NSLog(@"  [DeviceInfo] Device Name   :  %@", [[UIDevice currentDevice] name]);
     [common getNetInterfaceNames];
-  
-    // 영수증 결과 전송 테스트
-    RNReceiptEventEmitter *notification = [RNReceiptEventEmitter allocWithZone : nil];
-    [notification sendPaymentResultToReactNative];
-    // 영수증 결과 전송 테스트
-  
+    
     return YES;
 }
 
