@@ -350,7 +350,7 @@
     [self setPlayState : YES];
   
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
-    [self stopLogTimer];
+    [_logTimer invalidate];
   
     NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
@@ -1160,7 +1160,7 @@
     }
   
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
-    [self stopLogTimer];
+    [_logTimer invalidate];
   
     NSString *netStatus;
     if ( _isDownloadFile )
@@ -1201,7 +1201,7 @@
     _playerLayer.player = nil;
     [self invalidateTimerOnSlider];
     // 기존 타이머를 종료시키고 재시작
-    [self stopLogTimer];
+    [_logTimer invalidate];
     // 이용로그 전송 시작
     NSString *netStatus;
     if ( _isDownloadFile )
@@ -1629,7 +1629,7 @@
     [_player setRate : _playbackRate];
   
     // 기존 타이머를 종료시키고 재시작
-    [self stopLogTimer];
+    [_logTimer invalidate];
     // 이용로그 전송 시작
     NSString *netStatus;
     if ( _isDownloadFile )
@@ -1761,25 +1761,34 @@
 
 - (void) changeViewMode : (BOOL) isAudioMode
 {
-  /*
-  // 오디오모드가 가능한 상태가 아니면서 다운로드받은 파일이 아니라면..
-  //
-  if ( !self.isPossibleAudioMode && !self.isDownloadFile )
-  {
-    [_modeChangeButton setStatus: 0];
-    NSLog(@"    [changeViewMode]: %@", isAudioMode ? @"YES" : @"NO");
-    NSLog(@"    [changeViewMode] 미리보기 상태에서도 오디오모드는 허용되야 합니다!");
-    
-    return DEFAULT_ALERT(@"", @"본 동영상은 오디오모드를 제공하지 않습니다.");
-  }*/
+    /*
+    // 오디오모드가 가능한 상태가 아니면서 다운로드받은 파일이 아니라면..
+    //
+    if ( !self.isPossibleAudioMode && !self.isDownloadFile )
+    {
+      [_modeChangeButton setStatus: 0];
+      NSLog(@"    [changeViewMode]: %@", isAudioMode ? @"YES" : @"NO");
+      NSLog(@"    [changeViewMode] 미리보기 상태에서도 오디오모드는 허용되야 합니다!");
+     
+      return DEFAULT_ALERT(@"", @"본 동영상은 오디오모드를 제공하지 않습니다.");
+    }*/
   
-  _audioUiView.hidden = !isAudioMode;
-  /*
-  if ( [self.delegate respondsToSelector: @selector(playerUiView:changeToMode:)] )
-  {
-    [self.delegate playerUiView: self
-                   changeToMode: isAudioMode];
-  }*/
+    _audioUiView.hidden = !isAudioMode;
+    /*
+    if ( [self.delegate respondsToSelector: @selector(playerUiView:changeToMode:)] )
+    {
+      [self.delegate playerUiView: self
+                     changeToMode: isAudioMode];
+    }*/
+  
+    if ( isAudioMode )
+    {
+        _playerLayer.hidden = YES;
+    }
+    else if ( !isAudioMode )
+    {
+        _playerLayer.hidden = NO;
+    }
 }
 
 //
@@ -2538,16 +2547,6 @@
                                 duration : 30
                                netStatus : netStatus
                                authToken : [_args objectForKey : @"token"]];
-}
-
-//
-// 시간탐색, 플레이어 종료, 일시 중지, 등의 이벤트 시 타이머를 종료시킵니다.
-//
-- (void) stopLogTimer
-{
-    // 타이머 종료.
-    [_logTimer invalidate];
-    NSLog(@"  [__NSTimer__] 타이머가 종료되었습니다..");
 }
 
 # pragma mark - Labatory

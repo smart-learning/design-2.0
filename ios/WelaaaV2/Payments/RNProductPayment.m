@@ -98,6 +98,16 @@ RCT_EXPORT_MODULE();
                         NSLog(@"  [IAP checkReceipt] 영수증 확인 후 다음 결제를 위해 PaymentQueue를 초기화합니다..");
                         [IAPShare sharedHelper].iap = nil;
                     }];
+                    // ios dispatchqueue
+                    // https://magi82.github.io/gcd-01/
+                    // http://jdub7138.blog.me/220949191761
+                    //
+                    // dispatchqueue.main.sync objective c
+                    // https://stackoverflow.com/questions/5662360/gcd-to-perform-task-in-main-thread
+                    //
+                    // runOnMainQueueWithoutDeadlocking
+                    // http://code.i-harness.com/ko-kr/q/566698
+                    //
                     // 영수증 검증을 마쳤습니다. 위 과정은 비동기방식으로 구현되었기때문에 해당 과정을 GCD로 감싸는 것을 테스트해봐야 합니다.
                   
                     // checkReceipt는 비동기방식이라 영수증확인까지 기다리면 결제대기열을 초기화시키는데에 어려움이 있습니다.
@@ -109,7 +119,8 @@ RCT_EXPORT_MODULE();
                     // event emit
                     if ( [productCode hasPrefix : @"audiobook_"] )
                     {
-                        ;
+                        RNReceiptEventEmitter *notification = [RNReceiptEventEmitter allocWithZone : nil];
+                        [notification sendPaymentResultToReactNative];
                     }
                     else if ( [productCode hasPrefix : @"m_"] )
                     {
