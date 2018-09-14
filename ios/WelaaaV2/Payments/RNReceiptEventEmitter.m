@@ -52,7 +52,8 @@ RCT_EXPORT_MODULE();
 // JS로 보내고 싶은 이벤트를 다음과 같이 작성합니다.
 // eg. [self sendEventWithName:@"ReceiptVerification" body:@{}];
 
-// bridge is not set.
+// bridge is not set. 크래시 발생 시 아래를 참조합시다.
+//
 // https://www.jianshu.com/p/de7a5d9dd5c6
 
 
