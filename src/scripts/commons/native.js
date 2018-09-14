@@ -164,8 +164,6 @@ export default {
   },
 
   buy(args) {
-  	alert( JSON.stringify(args));
-  	return;
     try {
       return RNProductPayment.buy(args);
     } catch (error) {
