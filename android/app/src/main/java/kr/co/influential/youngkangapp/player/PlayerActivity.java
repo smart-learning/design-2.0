@@ -1906,7 +1906,7 @@ public class PlayerActivity extends BasePlayerActivity {
             Preferences.setWelaaaPlaySpeedrate(getApplicationContext(), snum);
 
             float f = (float) speedNum;
-            PlaybackParameters param = new PlaybackParameters(f, 1);
+            PlaybackParameters param = new PlaybackParameters(f);
 //            PlaybackParameters param = new PlaybackParameters(f, f);
             player.setPlaybackParameters(param);
           }
@@ -4679,6 +4679,34 @@ public class PlayerActivity extends BasePlayerActivity {
 
     if (controllerCompat != null && controllerCompat.getExtras() != null) {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
+    }
+
+    try{
+      String speedRate = Preferences.getWelaaaPlaySpeedrate(getApplicationContext());
+
+      if(speedRate.equals("1.2")){
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_12));
+      }else if(speedRate.equals("1.5")){
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_15));
+      }else if(speedRate.equals("0.8")){
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_08));
+      }else if(speedRate.equals("1.0")){
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_10));
+      }
+
+      Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
+
+      if (player != null) {
+        float f = Float.valueOf(speedRate);
+        PlaybackParameters param = new PlaybackParameters(f);
+        player.setPlaybackParameters(param);
+      }
+    }catch (Exception e){
+      e.printStackTrace();
     }
 
     switch (state.getState()) {
