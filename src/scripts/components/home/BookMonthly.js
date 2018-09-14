@@ -132,7 +132,7 @@ export default withNavigation(class BookMonthly extends React.Component {
 		// } );
 
 		let itemData = [];
-		if( _.isArray( this.props.itemData ) ) {
+		if( _.isObject( this.props.itemData ) ) {
 			itemData = this.props.itemData;
 		}
 
