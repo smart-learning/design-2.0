@@ -3,6 +3,7 @@ package kr.co.influential.youngkangapp.react.module;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -39,6 +40,7 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
   public Map<String, Object> getConstants() {
     final Map<String, Object> constants = new HashMap<>();
     constants.put("deviceId", getDeviceId());
+    constants.put("model", Build.MODEL);
     return constants;
   }
 

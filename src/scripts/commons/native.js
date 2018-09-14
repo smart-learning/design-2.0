@@ -9,10 +9,6 @@ import {Alert} from 'react-native'
 import * as firebase from "react-native-firebase";
 
 export default {
-	getDeviceId() {
-		return RNNativeBase.deviceId
-	},
-
 	getF_TOKEN(callback) {
 		RNNativeBase.getF_TOKEN(callback);
 	},
@@ -174,4 +170,11 @@ export default {
 
 	},
 
+	getDeviceId() {
+		return RNNativeBase.deviceId
+	},
+
+	getModel() {
+		return RNNativeBase.getModel
+	}
 }

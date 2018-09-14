@@ -4,7 +4,6 @@ import Localizable from 'react-native-localizable';
 import moment from 'moment';
 import { AsyncStorage, Platform } from "react-native";
 import VersionNumber from "react-native-version-number";
-import DeviceInfo from "react-native-device-info";
 import firebase from "react-native-firebase";
 import Native from "./native";
 
@@ -581,7 +580,9 @@ export default {
 		const fcmToken = await firebase.messaging().getToken();
 
 		const deviceId = Native.getDeviceId()
+		const model = Native.getModel()
 		console.log('deviceId: ' + deviceId)
+		console.log('model:' + model)
 
 		if (fcmToken) {
 			let params = ({
@@ -589,8 +590,8 @@ export default {
 				"app_os": (Platform.OS === 'ios' ? 0 : 1),
 				"app_os_version": Platform.Version,
 				"app_version": VersionNumber.appVersion,
-				"device_id": DeviceInfo.getUniqueID(),
-				"device_model": DeviceInfo.getModel(),
+				"device_id": deviceId,
+				"device_model": model,
 				"fcm_token": fcmToken,
 				"push_receive": bool
 			});

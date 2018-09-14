@@ -25,7 +25,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.soloader.SoLoader;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
 
 import java.util.Arrays;
@@ -112,7 +111,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new RNDeviceInfo(),
           new RNFirebasePackage(),
           new RNFirebaseMessagingPackage(),
           new RNFirebaseNotificationsPackage(),
