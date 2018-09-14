@@ -1906,7 +1906,8 @@ public class PlayerActivity extends BasePlayerActivity {
             Preferences.setWelaaaPlaySpeedrate(getApplicationContext(), snum);
 
             float f = (float) speedNum;
-            PlaybackParameters param = new PlaybackParameters(f, f);
+            PlaybackParameters param = new PlaybackParameters(f, 1);
+//            PlaybackParameters param = new PlaybackParameters(f, f);
             player.setPlaybackParameters(param);
           }
           break;
