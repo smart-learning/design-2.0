@@ -531,6 +531,26 @@ public class PlayerActivity extends BasePlayerActivity {
       CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
 
       initialize();
+    }else{
+      Preferences.getWelaaaWebPlayInfo(getApplicationContext());
+
+      Gson gson = new Gson();
+      String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
+      WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
+
+      mWebPlayerInfo = mWebPlayerInfoFromJson;
+      boolean preview =Preferences.getWelaaaPreviewPlay(getApplicationContext());
+
+      if(preview){
+        CAN_PLAY = false;
+      }else{
+        CAN_PLAY = true;
+      }
+
+      CONTENT_TYPE = mWebPlayerInfo.getCon_class();
+
+      initialize();
+
     }
 
     // MediaBrowser.
@@ -1927,7 +1947,7 @@ public class PlayerActivity extends BasePlayerActivity {
               simpleExoPlayerView.setControllerShowTimeoutMs(0);
               simpleExoPlayerView.setControllerHideOnTouch(false);
             } else {
-              Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+              Utils.logToast(getApplicationContext(), getString(R.string.info_no_support));
             }
 
           }

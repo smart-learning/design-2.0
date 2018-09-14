@@ -9,6 +9,7 @@ import IcPrize from "../../../images/ic-detail-label-prize.png";
 import IcTime from "../../../images/ic-detail-label-time.png";
 import Evaluation from "./Evaluation";
 import moment from "moment";
+import _ from 'underscore';
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -136,7 +137,14 @@ class TabContentInfo extends React.Component {
 
 	render() {
 		const playTime = moment.duration( this.props.store.itemData.play_time );
-		console.log('#######', this.props.store.itemData)
+		let infoImageSet = [];
+		try {
+			if( _.isArray( this.props.store.itemData.info_img_set ) ) {
+				infoImageSet = this.props.store.itemData.info_img_set;
+			}
+		}
+		catch( error ) { console.log( error ) }
+
 		return <View>
 			{/* 이미지 스와이퍼 */}
 			{ this.props.store.itemData.info_img_set.length > 0 && (
@@ -148,7 +156,7 @@ class TabContentInfo extends React.Component {
                             dotColor={"#888888"}
                             activeDotColor={"#ffffff"}
                             paginationStyle={{bottom: 10}}>
-                        {this.props.store.itemData.info_img_set.map((item, key) => {
+                        {infoImageSet.map((item, key) => {
                             return (
                                 <TouchableOpacity activeOpacity={0.9} key={key}>
                                     <ImageBackground source={{uri: item}} resizeMode="cover"

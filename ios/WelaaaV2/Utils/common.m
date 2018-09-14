@@ -465,10 +465,7 @@
         
         if ( [deviceModel isEqual: @"iPhone10,3"] || [deviceModel isEqual: @"iPhone10,6"] )
             return @"iPhone X";
-      /*
-        if ( [deviceModel isEqual: @"iPhone9,7"] )
-            return @"iPhone SE 2";
-      */
+      
         if ( [deviceModel isEqual: @"iPhone11,1"] )
             return @"iPhone XR";
       

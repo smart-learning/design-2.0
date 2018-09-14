@@ -17,7 +17,7 @@
 
 @implementation IAPHelper
 
-- (id) initWithProductIdentifiers: (NSSet *) productIdentifiers
+- (id) initWithProductIdentifiers : (NSSet *) productIdentifiers
 {
     if ( (self = [super init]) )
     {
@@ -31,9 +31,9 @@
         {
             BOOL productPurchased = NO;
             
-            NSString *password = [SFHFKeychainUtils getPasswordForUsername: productIdentifier
-                                                            andServiceName: @"IAPHelper"
-                                                                     error: nil];
+            NSString *password = [SFHFKeychainUtils getPasswordForUsername : productIdentifier
+                                                            andServiceName : @"IAPHelper"
+                                                                     error : nil];
             
             if ( [password isEqualToString: @"YES"] )
             {
@@ -66,6 +66,10 @@
     }
 }
 
+//
+// 구입한 상품인지 확인하는 메서드입니다. 키체인에 저장해서 꺼내오는 방식인데 쓰이는지는 잘 모르겠습니다. 쓰이지 않는다면 삭제되어야 합니다.
+// 윌라는 AppleID를 알수 없고 오로지 회원정보와 연동된 구매데이터를 서버에 가지고 있기 때문입니다.
+//
 - (BOOL) isPurchasedProductsIdentifier: (NSString *) productID
 {
     BOOL productPurchased = NO;
@@ -82,18 +86,20 @@
     return productPurchased;
 }
 
-- (void) requestProductsWithCompletion: (IAPProductsResponseBlock) completion
+- (void) requestProductsWithCompletion : (IAPProductsResponseBlock) completion
 {
-    self.request = [[SKProductsRequest alloc] initWithProductIdentifiers: _productIdentifiers];
+    self.request = [[SKProductsRequest alloc] initWithProductIdentifiers : _productIdentifiers];
     _request.delegate = self;
     self.requestProductsBlock = completion;
     NSLog(@"  [requestProductsWithCompletion] Requesting for 'ProductIdentifiers'...");
     [_request start];
 }
 
-// 아이템 정보 요청 결과 callback
-- (void) productsRequest: (SKProductsRequest *) request
-      didReceiveResponse: (SKProductsResponse *) response
+//
+// 아이템 정보 요청 결과 callback 메서드입니다.
+//
+- (void) productsRequest : (SKProductsRequest *) request
+      didReceiveResponse : (SKProductsResponse *) response
 {
     NSLog(@"  [productsRequest] ProductInfo request result callback -> If the inquiry is normal, make a purchase request.");
     
@@ -106,12 +112,7 @@
     }
 }
 
-- (void) recordTransaction: (SKPaymentTransaction *) transaction
-{
-    // TODO: Record the transaction on the server side...    
-}
-
-- (void) provideContentWithTransaction: (SKPaymentTransaction *) transaction
+- (void) provideContentWithTransaction : (SKPaymentTransaction *) transaction
 {
     NSString *productIdentifier = @"";
     
@@ -166,19 +167,22 @@
     [_purchasedProducts removeObject: productIdentifier];
 }
 
-- (void) completeTransaction: (SKPaymentTransaction *) transaction
+//
+// 결제가 종료되면 호출됩니다.
+//
+- (void) completeTransaction : (SKPaymentTransaction *) transaction
 {
-    NSLog(@"  [completeTransaction] completeTransaction");
     NSLog(@"  [completeTransaction] Transaction Identifier : %@", transaction.transactionIdentifier );
-    NSLog(@"  [completeTransaction] Transaction Date : %@", transaction.transactionDate);
-    ///< 구매 완료 후 아이템 인벤등 앱UI쪽 후 처리 진행
-    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];  // 결제 관련 대기열 종료시킴. 주석해제 171109 김태현
-    
-    [self recordTransaction: transaction];  // 껍대기 로직임. 수행하는 작업 없음.
-    
+    NSLog(@"  [completeTransaction] Transaction Date : %@",       transaction.transactionDate);
+    NSLog(@"  [completeTransaction] Transaction error : %@",      transaction.error);
+    NSLog(@"  [completeTransaction] Original Transaction : %@",   transaction.originalTransaction);
+  
+    // 구매 완료 후 아이템 인벤등 앱UI쪽 후 처리 진행
+    [[SKPaymentQueue defaultQueue] finishTransaction : transaction];  // 결제 관련 대기열을 종료시킵니다.
+  
     if ( [SKPaymentQueue defaultQueue] )
     {
-        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+        [[SKPaymentQueue defaultQueue] finishTransaction : transaction];
     }
     
     if ( _buyProductCompleteBlock )
@@ -188,15 +192,14 @@
     
 }
 
-- (void) restoreTransaction: (SKPaymentTransaction *) transaction
+- (void) restoreTransaction : (SKPaymentTransaction *) transaction
 {
     NSLog(@"  [restoreTransaction] JUST LOGGING PURPOSE.");
-    [self recordTransaction: transaction];
     [self provideContentWithTransaction: transaction];
     
     if ( [SKPaymentQueue defaultQueue] )
     {
-        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+        [[SKPaymentQueue defaultQueue] finishTransaction : transaction];
         
         if ( _buyProductCompleteBlock != nil )
         {
@@ -205,8 +208,10 @@
     }
 }
 
-// 거래 실패 또는 취소
-- (void) failedTransaction: (SKPaymentTransaction *) transaction
+//
+// 거래 실패 또는 취소 등과 같은 상황에 호출됩니다.
+//
+- (void) failedTransaction : (SKPaymentTransaction *) transaction
 {
     if ( transaction.error.code == SKErrorPaymentCancelled )
     {
@@ -256,7 +261,7 @@
     
     if ( [SKPaymentQueue defaultQueue] )
     {
-        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+        [[SKPaymentQueue defaultQueue] finishTransaction : transaction];
         
         if ( _buyProductCompleteBlock )
         {
@@ -266,9 +271,11 @@
     }
 }
 
-// 새로운 거래가 발생하거나 갱신될 때 호출된다.
-- (void) paymentQueue: (SKPaymentQueue *) queue
-  updatedTransactions: (NSArray *) transactions
+//
+// 새로운 거래가 발생하거나 갱신될 때 호출됩니다.
+//
+- (void) paymentQueue : (SKPaymentQueue *) queue
+  updatedTransactions : (NSArray *) transactions
 {
     for ( SKPaymentTransaction *transaction in transactions )
     {
@@ -305,19 +312,21 @@
     }
 }
 
+//
 // 구매 요청
-- (void) buyProduct: (SKProduct *) productIdentifier
-       onCompletion: (IAPbuyProductCompleteResponseBlock) completion
+//
+- (void) buyProduct : (SKProduct *) productIdentifier
+       onCompletion : (IAPbuyProductCompleteResponseBlock) completion
 {
     self.buyProductCompleteBlock = completion;
     
     self.restoreCompletedBlock = nil;
     NSLog(@"  [buyProduct] Purchase request");
-    SKPayment *payment = [SKPayment paymentWithProduct: productIdentifier];
+    SKPayment *payment = [SKPayment paymentWithProduct : productIdentifier];
 
     if ( [SKPaymentQueue defaultQueue] )
     {
-        [[SKPaymentQueue defaultQueue] addPayment: payment];
+        [[SKPaymentQueue defaultQueue] addPayment : payment];
         NSLog(@"  [buyProduct] You should now see the Apple Payments UI.");
         NSLog(@"  [buyProduct] Implement SKPaymentTransactionObserver to do the appropriate processing.");
         NSLog(@"  [buyProduct] When you log in to the iTunes Store or have already logged in, bypass the next step.");
@@ -329,7 +338,7 @@
 
 }
 
-- (void) restoreProductsWithCompletion: (resoreProductsCompleteResponseBlock) completion
+- (void) restoreProductsWithCompletion : (resoreProductsCompleteResponseBlock) completion
 {
     NSLog(@"  [restoreProductsWithCompletion] JUST LOGGING PURPOSE.");
     //clear it
@@ -347,10 +356,10 @@
     }
 }
 
-- (void)                       paymentQueue: (SKPaymentQueue *) queue
-restoreCompletedTransactionsFailedWithError: (NSError *) error
+- (void)                       paymentQueue : (SKPaymentQueue *) queue
+restoreCompletedTransactionsFailedWithError : (NSError *) error
 {
-    NSLog(@"  [IAPHelper] TRANSACTION ERROR: %@ / ERR_CODE : %ld", error.localizedDescription, (long)error.code);
+    NSLog(@"  [IAPHelper] TRANSACTION ERROR: %@ / ERR_CODE : %ld", error.localizedDescription, (long) error.code);
     
     if ( _restoreCompletedBlock )
     {
@@ -358,13 +367,14 @@ restoreCompletedTransactionsFailedWithError: (NSError *) error
     }
 }
 
-- (void) paymentQueueRestoreCompletedTransactionsFinished: (SKPaymentQueue *) queue
+- (void) paymentQueueRestoreCompletedTransactionsFinished : (SKPaymentQueue *) queue
 {
     NSLog(@"  [paymentQueueRestoreCompletedTransactionsFinished] payment queue : %@", queue);
     NSLog(@"  [paymentQueueRestoreCompletedTransactionsFinished] Restored Transactions are once again in Queue for purchasing %@", [queue transactions]);
     
-    NSMutableArray *purchasedItemIDs = [[NSMutableArray alloc] init];
-    NSLog(@"  [paymentQueueRestoreCompletedTransactionsFinished] received restored transactions: %i", queue.transactions.count);
+  //NSMutableArray *purchasedItemIDs = [[NSMutableArray alloc] init];
+  
+    NSLog(@"  [paymentQueueRestoreCompletedTransactionsFinished] received restored transactions: %lu", (unsigned long) queue.transactions.count);
     
     //결재 기록이 없을때 alert 뛰우기
     if ( queue.transactions.count == 0 )
@@ -385,7 +395,6 @@ restoreCompletedTransactionsFailedWithError: (NSError *) error
         {
             case SKPaymentTransactionStateRestored:
             {
-                [self recordTransaction: transaction];
                 [self provideContentWithTransaction: transaction];
             }
                 
@@ -400,17 +409,6 @@ restoreCompletedTransactionsFailedWithError: (NSError *) error
     }
 
 }
-
-/*
-- (void) checkReceipt: (NSData *) receiptData
-         onCompletion: (checkReceiptCompleteResponseBlock) completion
-{
-    [self checkReceipt: receiptData
-       AndSharedSecret: nil
-        AndProductCode: @"SOME_PRODUCT_CODE"
-      AndTransactionId: transactionId
-          onCompletion: completion];
-}*/
 
 - (void) checkReceipt: (NSData *) receiptData
       AndSharedSecret: (NSString *) secretKey
@@ -565,9 +563,12 @@ restoreCompletedTransactionsFailedWithError: (NSError *) error
                                                   }
                                               }];
 }
-
-- (void) connection: (NSURLConnection *) connection
-   didFailWithError: (NSError *) error
+/*
+ * 호출되지 않는 것으로 보입니다. 만약에 문제가 발생된다면 주석해제해야 합니다.
+ *
+# pragma mark - Something about receipts
+- (void) connection : (NSURLConnection *) connection
+   didFailWithError : (NSError *) error
 {
     NSLog(@"  [connection] Cannot transmit receipt data. localizedDescription : %@", [error localizedDescription]);
     
@@ -577,40 +578,44 @@ restoreCompletedTransactionsFailedWithError: (NSError *) error
     }
 }
 
-- (void) connection: (NSURLConnection *) connection
- didReceiveResponse: (NSURLResponse *) response
+- (void) connection : (NSURLConnection *) connection
+ didReceiveResponse : (NSURLResponse *) response
 {
     [self.receiptRequestData setLength: 0];
 }
 
-- (void) connection: (NSURLConnection *) connection
-     didReceiveData: (NSData *) data
+- (void) connection : (NSURLConnection *) connection
+     didReceiveData : (NSData *) data
 {
     [self.receiptRequestData appendData: data];
 }
 
-- (void) connectionDidFinishLoading: (NSURLConnection *) connection
+- (void) connectionDidFinishLoading : (NSURLConnection *) connection
 {
-    NSString *response = [[NSString alloc] initWithData: self.receiptRequestData
-                                               encoding: NSUTF8StringEncoding];
+    NSString *response = [[NSString alloc] initWithData : self.receiptRequestData
+                                               encoding : NSUTF8StringEncoding];
     
     if ( _checkReceiptCompleteBlock )
     {
         _checkReceiptCompleteBlock(response, nil);
     }
 }
+*/
 
-
-- (NSString *) getLocalePrice: (SKProduct *) product
+# pragma mark - Utils
+//
+// 각국가별 통화단위로 상품금액을 출력합니다. 현재 로그용으로만 쓰입니다.
+//
+- (NSString *) getLocalePrice : (SKProduct *) product
 {
     if ( product )
     {
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setFormatterBehavior: NSNumberFormatterBehavior10_4];
-        [formatter setNumberStyle: NSNumberFormatterCurrencyStyle];
-        [formatter setLocale: product.priceLocale];
+        [formatter setFormatterBehavior : NSNumberFormatterBehavior10_4];
+        [formatter setNumberStyle : NSNumberFormatterCurrencyStyle];
+        [formatter setLocale : product.priceLocale];
         
-        return [formatter stringFromNumber: product.price];
+        return [formatter stringFromNumber : product.price];
     }
     
     return @"";

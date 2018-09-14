@@ -579,31 +579,22 @@ export default {
 
 		const fcmToken = await firebase.messaging().getToken();
 
-		console.log('fcmToken:', fcmToken );
-
 		if (fcmToken) {
-			let params = encodeParams({
+			let params = ({
 				"app_name": "welaaa",
 				"app_os": (Platform.OS === 'ios' ? 0 : 1),
 				"app_os_version": Platform.Version,
 				"app_version": VersionNumber.appVersion,
-				"device_id": DeviceInfo.getDeviceId(),
+				"device_id": DeviceInfo.getUniqueID(),
 				"device_model": DeviceInfo.getModel(),
 				"fcm_token": fcmToken,
 				"push_receive": bool
 			});
 
+			console.log( 'registerFcmToken params', params );
+
 			return new Promise((resolve, reject) => {
-				axios.post(API_PREFIX + 'v1.0/message/fcm-tokens', {
-						app_name: "welaaa",
-						app_os: (Platform.OS === 'ios' ? 0 : 1),
-						app_os_version: Platform.Version,
-						app_version: VersionNumber.appVersion,
-						device_id: DeviceInfo.getDeviceId(),
-						device_model: DeviceInfo.getModel(),
-						fcm_token: fcmToken,
-						push_receive: true,
-				})
+				axios.post(API_PREFIX + 'v1.0/message/fcm-tokens', params)
 				.then(response => {
 					resolve(response.data);
 				})
