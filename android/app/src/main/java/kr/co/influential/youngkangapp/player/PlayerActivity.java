@@ -695,9 +695,6 @@ public class PlayerActivity extends BasePlayerActivity {
       // 차선 책으로 타이머라도 돌릴까요 ???
     }
 
-    // video-course , audiobook //
-    callbackWebPlayerInfo(CONTENT_TYPE, "");
-
     if (CONTENT_TYPE != null) {
       if (CONTENT_TYPE.equals("audiobook")) {
         RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
@@ -790,6 +787,9 @@ public class PlayerActivity extends BasePlayerActivity {
     setPlayerTitle();
     // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
     setRelatedUI();
+
+    // video-course , audiobook //
+//    callbackWebPlayerInfo(CONTENT_TYPE, "");
 
     mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
