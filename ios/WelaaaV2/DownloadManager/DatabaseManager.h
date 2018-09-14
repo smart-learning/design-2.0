@@ -16,15 +16,12 @@
 
 + (DatabaseManager *)sharedInstance;
 
-// 다운로드 받은 콘턴츠에 대한 정보를 DB 에 저장
+// 다운로드 받은 콘텐츠에 대한 정보를 DB 에 저장
 - (void)saveDownloadedContent:(NSDictionary*)downloadedContent;
 
 // DB 의 모든 목록을 조회해서 리턴(동기식, 비동기식)
 - (NSMutableArray *)searchDownloadedContentsAll;
 - (void)searchDownloadedContentsAll:(void (^)(NSMutableArray* results, NSString* errMsg))resultHandler;
-
-//- (void)searchDownloadedContents:(NSString *)cid completion:(void (^)(NSMutableArray* results, NSString* errMsg))resultHandler;
-//- (void)removeDownloadedContents:(NSString *)cid;
 
 // DB 에서 cid 로 목록을 조회해서 리턴(동기식, 비동기식)
 - (NSMutableArray *)searchDownloadedContentsId:(NSString *)cid;
