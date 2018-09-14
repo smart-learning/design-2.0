@@ -226,67 +226,72 @@ export default {
 	// welaaa://membership 나의 멤버십으로 이동
 	parseDeepLink: ( scheme )=>{
 
-		// 필요한 내용만 '/' 로 나눠서
-		const schemes = scheme.replace('welaaa://', '').split('/');
+		try {
+			// 필요한 내용만 '/' 로 나눠서
+			const schemes = scheme.replace('welaaa://', '').split('/');
 
-		// 맨 앞에 내용을 action 뒤에 내용을 params으로 분리
-		const action = schemes[0];
-		const paramsLen = schemes.length - 1; // action을 제외한 길이
+			// 맨 앞에 내용을 action 뒤에 내용을 params으로 분리
+			const action = schemes[0];
+			const paramsLen = schemes.length - 1; // action을 제외한 길이
 
-		switch( action ){
-			case 'video_list':
-				if( paramsLen === 2 ) navigation.navigate('ClassListPage', { category:schemes[0], index:schemes[1] } );
-				else navigation.navigate('ClassListPage');
-				break;
+			switch( action ){
+				case 'video_list':
+					if( paramsLen === 2 ) navigation.navigate('ClassListPage', { category:schemes[0], index:schemes[1] } );
+					else navigation.navigate('ClassListPage');
+					break;
 
-			case 'video':
-				navigation( 'ClassDetailPage', { id: schemes[0] } );
-				break;
+				case 'video':
+					navigation( 'ClassDetailPage', { id: schemes[0] } );
+					break;
 
-			case 'audiobook_list':
-				if( paramsLen === 2 ) navigation.navigate('AudioBookPage', { category:schemes[0], index:schemes[1] } );
-				else navigation.navigate('AudioBookPage');
-				break;
+				case 'audiobook_list':
+					if( paramsLen === 2 ) navigation.navigate('AudioBookPage', { category:schemes[0], index:schemes[1] } );
+					else navigation.navigate('AudioBookPage');
+					break;
 
-			case 'audiobook':
-				navigation.navigate('AudioBookDetailPage', { id: schemes[0] });
-				break;
+				case 'audiobook':
+					navigation.navigate('AudioBookDetailPage', { id: schemes[0] });
+					break;
 
-			case 'video_play':
-			case 'audiobook_play':
-				Native.play( schemes[0] );
-				break;
+				case 'video_play':
+				case 'audiobook_play':
+					Native.play( schemes[0] );
+					break;
 
-			case 'in_browser':
-				/* TODO: 웹뷰 붙이는 작업 필요 */
-				Linking.openURL(schemes[0]);
-				// const url = 'https://naver.com';// schemes[0];
-				// Linking.openURL('https://google.com');
-				// Linking.canOpenURL( schemes[0] ).then( supproted => {
-				// 	if( supproted ) Linking.openURL( url );
-				// 	else            Alert.alert('열 수 없는 URL입니다.', url );
-				// });
-				break;
+				case 'in_browser':
+					/* TODO: 웹뷰 붙이는 작업 필요 */
+					Linking.openURL(schemes[0]);
+					// const url = 'https://naver.com';// schemes[0];
+					// Linking.openURL('https://google.com');
+					// Linking.canOpenURL( schemes[0] ).then( supproted => {
+					// 	if( supproted ) Linking.openURL( url );
+					// 	else            Alert.alert('열 수 없는 URL입니다.', url );
+					// });
+					break;
 
-			case 'out_browser':
-				Linking.openURL(schemes[0]);
-				break;
+				case 'out_browser':
+					Linking.openURL(schemes[0]);
+					break;
 
-			case 'sign_up':
-				navigation.navigate('SignUpPage');
-				break;
+				case 'sign_up':
+					navigation.navigate('SignUpPage');
+					break;
 
-			case 'sign_in':
-				navigation.navigate('Login');
-				break;
+				case 'sign_in':
+					navigation.navigate('Login');
+					break;
 
-			case 'mywela':
-				navigation.navigate('AuthCheck', { requestScreenName:'MyScreen', title:'마이윌라' } );
-				break;
+				case 'mywela':
+					navigation.navigate('AuthCheck', { requestScreenName:'MyScreen', title:'마이윌라' } );
+					break;
 
-			case 'app_setting':
-				navigation.navigate('AuthCheck', { requestScreenName:'SetAppPage', title:'설정' } );
-				break;
+				case 'app_setting':
+					navigation.navigate('AuthCheck', { requestScreenName:'SetAppPage', title:'설정' } );
+					break;
+			}
+		}
+		catch( error ) {
+			console.log( error );
 		}
 	}
 }

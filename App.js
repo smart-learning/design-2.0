@@ -5,7 +5,7 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import {AsyncStorage, DeviceEventEmitter, Platform, View, Linking, AppState} from "react-native";
+import {Alert,  	AsyncStorage, DeviceEventEmitter, Platform, View, Linking, AppState} from "react-native";
 import EventEmitter from 'events';
 import globalStore from "./src/scripts/commons/store";
 
@@ -160,7 +160,7 @@ import nav from "./src/scripts/commons/nav";
 					// 로그인이 완료 되면 loginCompleted를 보내 App.js의
 					// 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
 					globalStore.emitter.emit("loginCompleted");
-					cb && cb();
+					// cb && cb();
 				})
 				.catch(error => {
 					// 이 부분에 서버에서 오는 다양한 코드 및 메시지를 통해
@@ -174,8 +174,8 @@ import nav from "./src/scripts/commons/nav";
 							message = "관리자에게 문의해 주세요.";
 							break;
 					}
-					Alert.alert("로그인에 실패하였습니다.", message);
-					cb && cb();
+					// Alert.alert("로그인에 실패하였습니다.", message);
+					// cb && cb();
 				});
 		});
 	}
@@ -201,11 +201,13 @@ import nav from "./src/scripts/commons/nav";
 
 		return <View style={{flex: 1}}>
 			<AppDrawer
+
 				ref={navigatorRef => {
 					globalStore.drawer = navigatorRef
 						// 플래이어 크래시 때문에 코드 추가
-						nav.setNav(navigatorRef);
+						// nav.setNav(navigatorRef);
 				}}
+
 				style={{width: '80%'}}
 
 				onNavigationStateChange={(prevState, currentState) => {

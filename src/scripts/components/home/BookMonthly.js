@@ -131,6 +131,11 @@ export default withNavigation(class BookMonthly extends React.Component {
 		// 	bookList.push( element.book_b );
 		// } );
 
+		let itemData = [];
+		if( _.isArray( this.props.itemData ) ) {
+			itemData = this.props.itemData;
+		}
+
 		return <View style={styles.bookMonthly}>
 
 			<View style={styles.swiper}>
@@ -141,7 +146,7 @@ export default withNavigation(class BookMonthly extends React.Component {
 						activeDotColor={CommonStyles.COLOR_PRIMARY}
 						paginationStyle={{bottom: 0}}>
 
-					{this.props.itemData.map((item, key) => {
+					{itemData.map((item, key) => {
 						const MonthData = moment(item.month).format("M");
 						return (
 							<View style={styles.bookMonthlyItem} key={key}>
