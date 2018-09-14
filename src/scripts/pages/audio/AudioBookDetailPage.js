@@ -27,8 +27,6 @@ class AudioBookDetailPage extends React.Component {
       permission: false,
       expire_at: null
     },
-    paymentType: 1,
-    expire: null,
     voucherStatus: {}
   });
 
@@ -98,10 +96,8 @@ class AudioBookDetailPage extends React.Component {
 
   async getPermissions() {
     let permissionLoading = true;
-
     let paymentType = 0;
     let expire = null;
-    let { itemData, permissions, voucherStatus } = this.data;
 
     this.setState({ permissionLoading });
 
@@ -114,11 +110,7 @@ class AudioBookDetailPage extends React.Component {
         expire_at: null
       };
     } else {
-      // not logged in
-
       const userLoggedIn = globalStore.welaaaAuth !== undefined;
-      console.log('============= userLoggedIn', userLoggedIn);
-      console.log('=----------------', globalStore.welaaaAuth);
 
       if (!userLoggedIn) {
         paymentType = 4;
@@ -130,20 +122,19 @@ class AudioBookDetailPage extends React.Component {
           this.props.navigation.state.params.id
         );
         if (!this.data.permissions.permission) {
-          this.data.voucherStatus = await net.getVoucherStatus(true);
+          this.data.voucherStatus = await net.getVouchersStatus(true);
         }
-
-        if (permissions.is_free) {
+        if (this.data.permissions.is_free) {
           // 무료
           paymentType = 0;
         } else {
           // 유료
-          if (permissions.permission) {
+          if (this.data.permissions.permission) {
             // 소장 중
             paymentType = 3;
 
-            if (permissions.expire_at) {
-              expire = `${moment(permissions.expire_at).format(
+            if (this.data.permissions.expire_at) {
+              expire = `${moment(this.data.permissions.expire_at).format(
                 'YYYY-MM-DD'
               )} 만료`;
             } else {
@@ -151,8 +142,9 @@ class AudioBookDetailPage extends React.Component {
             }
           } else {
             if (
-              (itemData.is_botm && voucherStatus.botm > 0) ||
-              (!itemData.is_botm && voucherStatus.total > 0)
+              (this.data.itemData.is_botm &&
+                this.data.voucherStatus.botm > 0) ||
+              (!this.data.itemData.is_botm && this.data.voucherStatus.total > 0)
             ) {
               paymentType = 2;
             } else {
@@ -163,14 +155,10 @@ class AudioBookDetailPage extends React.Component {
       }
     }
 
-    this.data.paymentType = paymentType;
-    this.data.expire = expire;
-    permissionLoading = false;
-
     this.setState({
       paymentType,
       expire,
-      permissionLoading
+      permissionLoading: false
     });
   }
 

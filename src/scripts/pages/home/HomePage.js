@@ -210,7 +210,7 @@ class HomePage extends React.Component {
     // this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
 
     try {
-      this.store.voucherStatus = await net.getVoucherStatus(isRefresh);
+      this.store.voucherStatus = await net.getVouchersStatus(isRefresh);
     } catch (e) {
       console.log(e);
     }
