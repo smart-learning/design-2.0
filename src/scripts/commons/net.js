@@ -6,6 +6,7 @@ import { AsyncStorage, Platform } from "react-native";
 import VersionNumber from "react-native-version-number";
 import DeviceInfo from "react-native-device-info";
 import firebase from "react-native-firebase";
+import Native from "./native";
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
 let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
@@ -578,6 +579,9 @@ export default {
 	async registeFcmToken(bool) {
 
 		const fcmToken = await firebase.messaging().getToken();
+
+		const deviceId = Native.getDeviceId()
+		console.log('deviceId: ' + deviceId)
 
 		if (fcmToken) {
 			let params = ({
