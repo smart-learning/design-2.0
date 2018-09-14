@@ -29,8 +29,7 @@ export default {
     let accessToken = globalStore.welaaaAuth.access_token;
 
     let args = {
-      uri:
-        '',
+      uri: '',
       name: '',
       drmSchemeUuid: 'widevine',
       drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',

@@ -11,7 +11,7 @@ import native from '../../commons/native';
 
 @observer
 class AudioBookDetailPage extends React.Component {
-  store = createStore({
+  data = createStore({
     isLoading: true,
     itemData: null,
     itemClipData: [],
@@ -42,10 +42,9 @@ class AudioBookDetailPage extends React.Component {
     if (paymentType === 1) {
       // 구매
       if (Platform.OS === 'ios') {
-        const audiobook_id = this.props.navigation.state.params.id;
         native.buy({
           type: 'audio_book',
-          product_id: audiobook_id,
+          product_id: this.data.itemData.pay_key_ios,
           token: globalStore.accessToken
         });
       } else {
@@ -59,7 +58,7 @@ class AudioBookDetailPage extends React.Component {
       if (res.status === 200) {
         Alert.alert('이용권을 이용한 오디오북 구매에 성공했습니다.');
 
-        this.store.permissions = await this.getPermissions();
+        this.data.permissions = await this.getPermissions();
 
         return true;
       } else {
@@ -73,7 +72,7 @@ class AudioBookDetailPage extends React.Component {
   };
 
   getData = async () => {
-    this.store.isLoading = true;
+    this.data.isLoading = true;
     const resultBookData = await net.getBookItem(
       this.props.navigation.state.params.id
     );
@@ -81,18 +80,18 @@ class AudioBookDetailPage extends React.Component {
       this.props.navigation.state.params.id
     );
 
-    this.store.itemData = resultBookData;
-    this.store.itemClipData = resultChapterData;
+    this.data.itemData = resultBookData;
+    this.data.itemClipData = resultChapterData;
     if (resultBookData && resultBookData.cid) {
       try {
         const comments = await net.getBookReviewList(resultBookData.cid);
-        this.store.itemReviewData = comments;
+        this.data.itemReviewData = comments;
       } catch (error) {
         console.log(error);
       }
     }
 
-    this.store.isLoading = false;
+    this.data.isLoading = false;
 
     await this.getPermissions();
   };
@@ -102,14 +101,14 @@ class AudioBookDetailPage extends React.Component {
 
     let paymentType = 0;
     let expire = null;
-    let { itemData, permissions, voucherStatus } = this.store;
+    let { itemData, permissions, voucherStatus } = this.data;
 
     this.setState({ permissionLoading });
 
-    let { sale_price } = this.store.itemData;
+    let { sale_price } = this.data.itemData;
 
     if (sale_price === 0) {
-      this.store.permissions = {
+      this.data.permissions = {
         is_free: true,
         permission: true,
         expire_at: null
@@ -126,12 +125,12 @@ class AudioBookDetailPage extends React.Component {
         expire = null;
       } else {
         // logged in
-        this.store.permissions = await net.getContentPermission(
+        this.data.permissions = await net.getContentPermission(
           'audiobooks',
           this.props.navigation.state.params.id
         );
-        if (!this.store.permissions.permission) {
-          this.store.voucherStatus = await net.getVoucherStatus(true);
+        if (!this.data.permissions.permission) {
+          this.data.voucherStatus = await net.getVoucherStatus(true);
         }
 
         if (permissions.is_free) {
@@ -164,8 +163,8 @@ class AudioBookDetailPage extends React.Component {
       }
     }
 
-    this.store.paymentType = paymentType;
-    this.store.expire = expire;
+    this.data.paymentType = paymentType;
+    this.data.expire = expire;
     permissionLoading = false;
 
     this.setState({
@@ -182,21 +181,21 @@ class AudioBookDetailPage extends React.Component {
   render() {
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
-        {this.store.isLoading ? (
+        {this.data.isLoading ? (
           <View style={{ marginTop: 12 }}>
             <ActivityIndicator
               size="large"
               color={CommonStyles.COLOR_PRIMARY}
             />
           </View>
-        ) : this.store.itemData !== null ? (
+        ) : this.data.itemData !== null ? (
           <DetailLayout
             purchase={this.purchase}
-            voucherStatus={this.store.voucherStatus}
-            permissions={this.store.permissions}
-            itemData={this.store.itemData}
+            voucherStatus={this.data.voucherStatus}
+            permissions={this.data.permissions}
+            itemData={this.data.itemData}
             learnType={'audioBook'}
-            store={this.store}
+            store={this.data}
             paymentType={this.state.paymentType}
             expire={this.state.expire}
             permissionLoading={this.state.permissionLoading}
