@@ -30,14 +30,14 @@ export default {
 
     let args = {
       uri:
-        'https://contents.welaaa.com/media/v200001/DASH_v200001_001/stream.mpd',
-      name: '지기지피 백전백승! 나의 발표 목적을 제일 먼저 고려하라',
+        '',
+      name: '',
       drmSchemeUuid: 'widevine',
       drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
 
       cid: cid,
       oid: oid,
-      userId: '93', // + userId, // 825  ,
+      userId: userId.toString(),
       token: accessToken // bearer token
     };
 
