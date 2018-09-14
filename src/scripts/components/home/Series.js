@@ -43,7 +43,7 @@ export default withNavigation( class Series extends React.Component {
 
 	render() {
 		let itemData = [];
-		if( _.isArray( this.props.itemData ) ) {
+		if( _.isObject( this.props.itemData ) ) {
 			itemData = this.props.itemData;
 		}
 		return <View>
