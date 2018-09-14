@@ -10,13 +10,10 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -92,13 +89,9 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.google.gson.Gson;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.ref.WeakReference;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -529,8 +522,6 @@ public class PlayerActivity extends BasePlayerActivity {
       IS_FREE = intent.getBooleanExtra("is_free", false);
       EXPIRE_AT = intent.getStringExtra("expire_at");
       CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
-
-      initialize();
     }else{
       Preferences.getWelaaaWebPlayInfo(getApplicationContext());
 
@@ -548,10 +539,9 @@ public class PlayerActivity extends BasePlayerActivity {
       }
 
       CONTENT_TYPE = mWebPlayerInfo.getCon_class();
-
-      initialize();
-
     }
+
+    initialize();
 
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
@@ -695,9 +685,6 @@ public class PlayerActivity extends BasePlayerActivity {
       // 차선 책으로 타이머라도 돌릴까요 ???
     }
 
-    // video-course , audiobook //
-    callbackWebPlayerInfo(CONTENT_TYPE, "");
-
     if (CONTENT_TYPE != null) {
       if (CONTENT_TYPE.equals("audiobook")) {
         RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
@@ -790,6 +777,9 @@ public class PlayerActivity extends BasePlayerActivity {
     setPlayerTitle();
     // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
     setRelatedUI();
+
+    // video-course , audiobook //
+    callbackWebPlayerInfo(CONTENT_TYPE, "");
 
     mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -4195,6 +4185,10 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   public void callbackWebPlayerInfo(String methodName, String params) {
+    if (methodName == null) {
+      return;
+    }
+
     try {
 
       if (methodName.equals("video-course")) {
