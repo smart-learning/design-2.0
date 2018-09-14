@@ -124,7 +124,7 @@ class HomeVideoPage extends React.Component {
     let updatedAt = moment().format('YYYY. MM. DD');
     let homeBannerData = [];
     try {
-      if (_.isArray(this.props.store.homeBannerData)) {
+      if (_.isObject(this.props.store.homeBannerData)) {
         homeBannerData = this.props.store.homeBannerData;
       }
     } catch (error) {
