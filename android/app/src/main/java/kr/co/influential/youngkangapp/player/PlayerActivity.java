@@ -779,7 +779,7 @@ public class PlayerActivity extends BasePlayerActivity {
     setRelatedUI();
 
     // video-course , audiobook //
-    callbackWebPlayerInfo(CONTENT_TYPE, "");
+//    callbackWebPlayerInfo(CONTENT_TYPE, "");
 
     mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
