@@ -349,6 +349,14 @@
                                                 object : [_player currentItem]  ];
     [self setPlayState : YES];
   
+    [[AVAudioSession sharedInstance] setCategory : AVAudioSessionCategoryPlayback
+                                           error : nil];
+  
+    [ [NSNotificationCenter defaultCenter] addObserver : self
+                                              selector : @selector(audioSessionInterrupted:)
+                                                  name : AVAudioSessionInterruptionNotification
+                                                object : nil];
+  
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
@@ -531,6 +539,25 @@
     }
   
     // 추가할 사항 : 연속재생 버튼이 'on'상태이면 플레이어를 종료합니다.
+}
+
+// 전화통화 등으로 재생에 interrupt가 걸렸을 경우..
+- (void) audioSessionInterrupted : (NSNotification *) notification
+{
+    int interruptionType = [notification.userInfo[AVAudioSessionInterruptionTypeKey] intValue];
+  
+    if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
+    {
+        NSLog(@"Pausing for audio session interruption");
+        [self pressedPauseButton];
+    }
+    else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
+    {
+        NSLog(@"Resuming after audio session interruption");
+      
+        // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
+        [self pressedPlayButton];
+    }
 }
 
 // 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
