@@ -214,7 +214,12 @@ class TabContentInfo extends React.Component {
 
 			<View style={styles.author}>
 				<View style={CommonStyles.contentContainer}>
+					{this.props.learnType === 'audioBook' &&
+					<Text style={styles.sectionTitle}>저자</Text>
+					}
+					{this.props.learnType === 'class' &&
 					<Text style={styles.sectionTitle}>강사</Text>
+					}
 					{/*<Image source={{ uri: this.props.itemData.teacher.images.profile }} borderRadius={44} style={styles.authorImage}/>*/}
 					<Text style={styles.authorName}>
 						{this.props.store.itemData.teacher.name}
