@@ -254,8 +254,11 @@ class HomePage extends React.Component {
 	}
 
 	handleBackPress = () => {
+		console.log( 'back press:' );
 		if( this.props.navigation.isFocused() ){
 			BackHandler.exitApp();
+		}else{
+			this.props.navigation.goBack();
 		}
 	};
 

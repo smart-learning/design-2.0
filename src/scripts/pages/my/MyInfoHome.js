@@ -161,6 +161,12 @@ const styles = StyleSheet.create({
 * */
 @observer
 export default class MyInfoHome extends React.Component {
+
+	componentDidMount(){
+		if( !globalStore.welaaaAuth ) this.props.navigation.navigate( 'Login' );
+	}
+
+
   render() {
     const { navigation } = this.props;
 
