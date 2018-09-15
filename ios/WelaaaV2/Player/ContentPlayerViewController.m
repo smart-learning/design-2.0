@@ -541,7 +541,9 @@
     // 추가할 사항 : 연속재생 버튼이 'on'상태이면 플레이어를 종료합니다.
 }
 
+//
 // 전화통화 등으로 재생에 interrupt가 걸렸을 경우..
+//
 - (void) audioSessionInterrupted : (NSNotification *) notification
 {
     int interruptionType = [notification.userInfo[AVAudioSessionInterruptionTypeKey] intValue];
@@ -556,7 +558,7 @@
         NSLog(@"Resuming after audio session interruption");
       
         // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
-        [self pressedPlayButton];
+        //[self pressedPlayButton];
     }
 }
 
@@ -1262,10 +1264,10 @@
 {
   //[self toastTestAlert];
   
-    [self closePlayer];
+  //[self closePlayer];
   
   //[self showToast : @"미니플레이어로 변환합니다."];
-  /*
+  
   self.isMiniPlayer = YES;
   _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
   _miniPlayerUiView.delegate = self;
@@ -1273,10 +1275,10 @@
   [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
   [self.view addSubview : _miniPlayerUiView];
   
-  _playerUiView.hidden = self.isMiniPlayer;
+//_playerUiView.hidden = self.isMiniPlayer;
   _miniPlayerUiView.hidden = !self.isMiniPlayer;
-  [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  */
+//[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
+  
 }
 
 - (void) pressedRateStarButton
