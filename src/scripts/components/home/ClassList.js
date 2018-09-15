@@ -47,9 +47,16 @@ class ClassList extends React.Component {
   });
   render() {
     let list = _.toArray(this.props.itemData);
+    let itemLength;
+
+    if (this.props.classType === 'new') {
+      itemLength = 7;
+    } else {
+      itemLength = 3;
+    }
 
     if (!this.store.isOpen) {
-      list = list.slice(0, 3);
+      list = list.slice(0, itemLength);
     }
     return (
       <View style={styles.classContainer}>
