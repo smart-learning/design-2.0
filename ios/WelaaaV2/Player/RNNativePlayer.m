@@ -42,38 +42,37 @@ RCT_EXPORT_MODULE();
 
 - (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
-    ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
-    NSMutableDictionary *args = [argsFromReactNative mutableCopy];
-    [playerViewController setContentData : args];
+  ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
+  NSMutableDictionary *args = [argsFromReactNative mutableCopy];
+  [playerViewController setContentData : args];
   
-    AppDelegate *delegate = (AppDelegate *) [ [UIApplication sharedApplication] delegate ];
-    [delegate.window.rootViewController presentViewController : playerViewController
-                                                     animated : YES
-                                                   completion : nil];
+  AppDelegate *delegate = (AppDelegate *) [ [UIApplication sharedApplication] delegate ];
+  [delegate.window.rootViewController presentViewController : playerViewController
+                                                   animated : YES
+                                                 completion : nil];
 }
 
 - (void) downloadSomething : (NSDictionary *) args
 {
-    // 다운로드 테스트
-    FPSDownloadManager *fpsDownloadManager = [[FPSDownloadManager alloc] init];
-    [fpsDownloadManager downloadSomething : args];
+  // 다운로드 테스트용
+  [[FPSDownloadManager sharedInstance] downloadSomething:args];
 }
 
 - (void) downloadContent : (NSDictionary *) args
 {
-  
+  [[FPSDownloadManager sharedInstance] startDownload:args completion:^(NSError* error, NSMutableDictionary* result){}];
 }
 
 - (void) deleteDownloadedContent : (NSDictionary *) args
 {
-  
+  [[FPSDownloadManager sharedInstance] removeDownloadedContent:args completion:^(NSError* error, NSMutableDictionary* result){}];
 }
 
 - (void) selectDownloadedContent : (NSDictionary *) args
 {
   NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
   
-  NSMutableArray* allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAllDics];
+  NSMutableArray* allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
   
   NSError *error;
   NSData *jsonData = [NSJSONSerialization dataWithJSONObject:allRecords
@@ -97,23 +96,23 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD( play : (NSDictionary *) argsFromReactNative )
 {
-    [self showMediaPlayer : argsFromReactNative];
+  [self showMediaPlayer : argsFromReactNative];
 }
 
 RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
 {
-    NSLog(@"  RNNativePlayer setting for RN : %@", argsFromReactNative);
+  NSLog(@"  RNNativePlayer setting for RN : %@", argsFromReactNative);
 }
 
 RCT_EXPORT_METHOD( download : (NSDictionary *) argsFromReactNative )
 {
-    //[self downloadSomething : argsFromReactNative]; // test
-    [self downloadContent : argsFromReactNative];
+  //[self downloadSomething : argsFromReactNative]; // 테스트용
+  [self downloadContent : argsFromReactNative];
 }
 
 RCT_EXPORT_METHOD( downloadDelete : (NSDictionary *) argsFromReactNative )
 {
-    [self deleteDownloadedContent : argsFromReactNative];
+  [self deleteDownloadedContent : argsFromReactNative];
 }
 
 RCT_EXPORT_METHOD( selectDatabase : (NSDictionary *) argsFromReactNative )
