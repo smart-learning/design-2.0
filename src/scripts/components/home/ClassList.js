@@ -51,6 +51,8 @@ class ClassList extends React.Component {
 
     if (this.props.classType === 'new') {
       itemLength = 7;
+    } else if (this.props.classType === 'hot') {
+      itemLength = 7;
     } else {
       itemLength = 3;
     }
