@@ -218,13 +218,17 @@ class App extends React.Component {
   };
 
   render() {
+
+  	console.log( 'changeInitialRoute:', globalStore.initialRoute );
+
+
     return (
       <View style={{ flex: 1 }}>
         <AppDrawer
           ref={navigatorRef => {
             globalStore.drawer = navigatorRef;
             // 플래이어 크래시 때문에 코드 추가
-            // nav.setNav(navigatorRef);
+            nav.setNav(navigatorRef);
           }}
           style={{ width: '80%' }}
           onNavigationStateChange={(prevState, currentState) => {
@@ -232,14 +236,19 @@ class App extends React.Component {
             const prevScreen = getActiveRouteName(prevState);
 
             if (prevScreen !== currentScreen) {
+
+            	console.log( 'change screen:', prevScreen, '-->', currentScreen );
+
+
               if (currentScreen !== 'AuthCheck') {
                 globalStore.lastLocation = currentScreen;
-                globalStore.prevLocations.push(prevScreen);
+                if( prevScreen !== 'AuthCheck' ) globalStore.prevLocations.push(prevScreen);
                 globalStore.prevLocations.length = Math.min(
                   globalStore.prevLocations.length,
                   10
                 );
               }
+
             }
           }}
         />

@@ -25,10 +25,14 @@ import SetAppPage from "./SetAppPage";
 import GuideViewPage from "./GuideViewPage";
 import InquireFormPage from "./InquireFormPage";
 import InquireViewPage from "./InquireViewPage";
-
+import globalStore from "../../commons/store";
 
 const MyScreens = createStackNavigator(
 	{
+		MyInfoHome: {
+			screen: MyInfoHome,
+			navigationOptions: { header: null },
+		},
 
 		Login: {
 			screen: LoginPage,
@@ -66,14 +70,6 @@ const MyScreens = createStackNavigator(
 			screen: AuthLoadingScreen
 		},
 		//------------------------ after Auth -----------------------------------
-
-
-		MyInfoHome: {
-			screen: MyInfoHome,
-			navigationOptions: { header: null },
-		},
-
-
 		SetAppPage: {
 			screen: SetAppPage,
 			navigationOptions: NAV_OPTS_STACK,
@@ -141,10 +137,7 @@ const MyScreens = createStackNavigator(
 		},
 	},
 
-	{
-		initialRouteName: 'AuthCheck',
-		gesturesEnabled: false
-	}
+	globalStore.initialRoute
 );
 
 MyScreens.navigationOptions = NAV_OPTS_DRAWER;

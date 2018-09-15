@@ -205,8 +205,10 @@ let navigation = null;
 export default {
 
 	setNav: ( nav )=>{
-		navigation = nav._navigation;
-		console.log( 'set global nav:', navigation );
+		if( nav ) {
+			navigation = nav._navigation;
+			console.log('set global nav:', navigation);
+		}
 	},
 	// welaaa://video_list 동영상 리스트
 	// welaaa://video_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
