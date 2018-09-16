@@ -238,7 +238,7 @@ class App extends React.Component {
             if (prevScreen !== currentScreen) {
 
             	console.log( 'change screen:', prevScreen, '-->', currentScreen );
-
+				// console.log( 'action :', currentState );
 
               if (currentScreen !== 'AuthCheck') {
                 globalStore.lastLocation = currentScreen;
@@ -273,6 +273,7 @@ function getActiveRouteName(navigationState) {
   if (route.routes) {
     return getActiveRouteName(route);
   }
+
   return route.routeName;
 }
 

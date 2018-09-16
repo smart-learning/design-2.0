@@ -77,7 +77,7 @@ const MyScreens = createStackNavigator(
 
 		LectureUsePage: {
 			screen: LectureUsePage,
-			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+			navigationOptions: NAV_OPTS_STACK,
 		},
 		LectureBuyPage: {
 			screen: LectureBuyPage,
@@ -89,7 +89,7 @@ const MyScreens = createStackNavigator(
 		},
 		AudioBookUsePage: {
 			screen: AudioBookUsePage,
-			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+			navigationOptions: NAV_OPTS_STACK,
 		},
 		AudioBookBuyPage: {
 			screen: AudioBookBuyPage,

@@ -9,6 +9,7 @@ import logo from "../../images/logo-white.png"
 import IcAngleRight from "../../images/ic-angle-right-primary.png";
 import HistoryBackButton from "../components/header/HistoryBackButton";
 import Native from "./native";
+import globalStore from "./store";
 
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
@@ -294,6 +295,28 @@ export default {
 		}
 		catch( error ) {
 			console.log( error );
+		}
+	},
+
+
+
+
+	commonBack:()=>{
+		console.log( 'commonBack start:', globalStore.prevLocations );
+		if (globalStore.prevLocations.length === 0)
+			navigation.goBack();
+		else{
+			const screen = globalStore.prevLocations.pop();
+			navigation.navigate( screen );
+			console.log( 'commonBack end:', globalStore.prevLocations );
+
+			//
+			setTimeout(()=>{
+				const locs = globalStore.prevLocations;
+				const locsLen = locs.length;
+				if( locsLen > 0 ) globalStore.prevLocations.pop();
+					console.log( '정리:', globalStore.prevLocations );
+				}, 0 );
 		}
 	}
 }

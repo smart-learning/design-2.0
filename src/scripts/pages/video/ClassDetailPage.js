@@ -6,6 +6,7 @@ import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
 import DetailLayout from '../../components/detail/DetailLayout';
 import Store from "../../commons/store";
+import nav from "../../commons/nav";
 
 @observer
 class ClassDetailPage extends React.Component {
@@ -52,10 +53,7 @@ class ClassDetailPage extends React.Component {
 	handleBackPress = () => {
 		console.log('cdp back button:', this.props.navigation.isFocused(), Store.prevLocations );
 		if (this.props.navigation.isFocused()) {
-			if(Store.prevLocations.length === 0)
-				this.props.location.goBack();
-			else
-				this.props.navigation.navigate( Store.prevLocations.pop() );
+			nav.commonBack();
 		}
 		return true;
 	};

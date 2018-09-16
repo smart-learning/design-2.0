@@ -15,6 +15,7 @@ import {withNavigation} from 'react-navigation';
 import CommonStyles from '../../../styles/common';
 import moment from 'moment';
 import globalStore from '../../commons/store';
+import nav from "../../commons/nav";
 
 const styles = StyleSheet.create({
 	bookMonthly: {},
@@ -140,10 +141,7 @@ class BookMonthly extends React.Component {
 	handleBackPress = () => {
 		console.log('bookmonthly detail hardware back button:', this.props.navigation.isFocused(), globalStore.prevLocations);
 		if (this.props.navigation.isFocused()) {
-			if (globalStore.prevLocations.length === 0)
-				this.props.location.goBack();
-			else
-				this.props.navigation.navigate(globalStore.prevLocations.pop());
+			nav.commonBack();
 		}
 
 		return false

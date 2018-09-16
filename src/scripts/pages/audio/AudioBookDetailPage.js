@@ -8,6 +8,7 @@ import globalStore from '../../commons/store';
 import DetailLayout from '../../components/detail/DetailLayout';
 import moment from 'moment';
 import native from '../../commons/native';
+import nav from "../../commons/nav";
 
 @observer
 class AudioBookDetailPage extends React.Component {
@@ -92,8 +93,6 @@ class AudioBookDetailPage extends React.Component {
 		this.data.isLoading = false;
 
 		await this.getPermissions();
-
-		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 	}
 
 	componentWillUnmount() {
@@ -103,10 +102,7 @@ class AudioBookDetailPage extends React.Component {
 	handleBackPress = () => {
 		console.log('audiobook detail hardware back button:', this.props.navigation.isFocused(), globalStore.prevLocations);
 		if (this.props.navigation.isFocused()) {
-			if (globalStore.prevLocations.length === 0)
-				this.props.location.goBack();
-			else
-				this.props.navigation.navigate( globalStore.prevLocations.pop() );
+			nav.commonBack();
 		}
 
 		return true
@@ -181,6 +177,7 @@ class AudioBookDetailPage extends React.Component {
 	}
 
 	async componentDidMount() {
+		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 		this.getData();
 	}
 
