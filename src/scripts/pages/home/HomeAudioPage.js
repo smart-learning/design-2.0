@@ -21,7 +21,7 @@ import BookContinueList from '../../components/home/BookCoutinueList';
 import PTRView from 'react-native-pull-to-refresh';
 import moment from 'moment';
 import ClassContinueList from '../../components/home/ClassContinueList';
-import BookDailyList from '../../components/home/BookDailyList';
+import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 
@@ -169,9 +169,8 @@ class HomeAudioPage extends React.Component {
 
           {/*매일 책 한 권*/}
           <View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
-            <BookDailyList
+            <BookDaily
               itemData={this.props.store.audioDaily}
-              store={this.props.store}
             />
           </View>
 

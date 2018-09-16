@@ -95,7 +95,6 @@ class HomePage extends React.Component {
     audioRecommendData: [],
     audioMonth: [],
     audioDaily: [],
-    dailyTabSelected: 'mon',
     classUseData: [],
     audioBuyData: [],
     audioUseData: [],
@@ -196,7 +195,7 @@ class HomePage extends React.Component {
     this.store.clipRankData = await net.getHomeClipRank(isRefresh);
     this.store.audioNewData = await net.getAudioBookList(isRefresh);
     this.store.audioMonth = await net.getHomeAudioBookMonth(isRefresh);
-    this.store.audioDaily = [];
+    this.store.audioDaily = {};
     try {
       this.store.audioDaily = await net.getDailyBookList(isRefresh);
     } catch (error) {

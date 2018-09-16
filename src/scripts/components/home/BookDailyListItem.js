@@ -1,13 +1,16 @@
 import React from 'react';
 import Summary from '../../components/video/Summary';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import m from 'moment';
+import moment from 'moment';
 import { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
+import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create({
   bookListItemContainer: {
+    marginBottom: 15,
     padding: 13,
+
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#dddddd'
@@ -41,26 +44,25 @@ const styles = StyleSheet.create({
   }
 });
 
-class BookDailyListItem extends React.Component {
+@observer
+class BookDailyList extends React.Component {
   render() {
     let itemData = {};
     let month;
     let day;
     try {
-      itemData = this.props.itemData[0];
+      itemData = this.props.itemData;
 
-      month = m(itemData.open_date).format('M');
-      day = m(itemData.open_date).format('D');
+      month = moment(itemData.open_date).format('M');
+      day = moment(itemData.open_date).format('D');
     } catch (error) {
       console.log(error);
     }
 
-    console.log( 'dayily', itemData );
-
     return (
       <TouchableOpacity
         activeOpacity={0.9}
-		onPress={() => Native.play(itemData.cid)}
+        onPress={() => Native.play(itemData.cid)}
       >
         <View style={styles.bookListItemContainer}>
           <View style={styles.bookListItemHeadline}>
@@ -77,7 +79,7 @@ class BookDailyListItem extends React.Component {
           <View>
             <Summary
               type={'dailyBook'}
-			  itemData={itemData}
+              itemData={itemData}
               thumbnail={itemData ? itemData.image : 'bookDummy'}
               cid={itemData ? itemData.cid : ''}
               hitCount={itemData ? itemData.hit_count : ''}
@@ -91,4 +93,4 @@ class BookDailyListItem extends React.Component {
   }
 }
 
-export default BookDailyListItem;
+export default BookDailyList;
