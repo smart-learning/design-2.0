@@ -225,6 +225,8 @@ class HomePage extends React.Component {
   };
 
   componentDidMount() {
+    if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
+
     let windowWidth = Dimensions.get('window').width;
     let windowHeight = Dimensions.get('window').height;
 
