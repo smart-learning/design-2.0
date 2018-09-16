@@ -76,6 +76,7 @@ class Store {
 	}
 
 	@observable currentMembership = {};
+	@observable voucherStatus = {};
 	@observable profile = {};
 
 	/* 이벤트로 넘겨받은 다운로드받은 아이템 DB조회목록 */

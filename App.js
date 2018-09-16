@@ -41,6 +41,8 @@ class App extends React.Component {
       globalStore.profile = await net.getProfile();
       // 멤버쉽 가져오기
       globalStore.currentMembership = await net.getMembershipCurrent();
+      // 이용권 가져오기
+      globalStore.voucherStatus = await net.getVouchersStatus();
     }
   };
 
