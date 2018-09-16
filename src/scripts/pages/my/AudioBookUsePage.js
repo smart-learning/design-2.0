@@ -29,7 +29,7 @@ import globalStore from "../../commons/store";
 	}
 
 	go = ( item ) => {
-		this.props.navigation.navigate( 'AudioBookDetailPage', { id: item.data.id } );
+		this.props.navigation.navigate( 'AudioBookDetailPage', { id: item.data.id, title: item.data.title } );
 	};
 
 	render() {
