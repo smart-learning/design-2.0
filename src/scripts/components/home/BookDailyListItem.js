@@ -27,13 +27,17 @@ const styles = StyleSheet.create({
     marginLeft: 'auto'
   },
   date: {
-    width: 50,
     textAlign: 'center',
     fontSize: 15,
     color: COLOR_PRIMARY
   },
   dateHr: {
     width: 50,
+    height: 1,
+    backgroundColor: COLOR_PRIMARY
+  },
+  dateHrActive: {
+    width: 90,
     height: 1,
     backgroundColor: COLOR_PRIMARY
   },
@@ -68,9 +72,16 @@ class BookDailyList extends React.Component {
           <View style={styles.bookListItemHeadline}>
             <View style={styles.dateBox}>
               <Text style={styles.date}>
-                {month} / {day}
+                {this.props.today === this.props.itemDay ? 'Today' : ''} {month}{' '}
+                / {day}
               </Text>
-              <View style={styles.dateHr} />
+              <View
+                style={
+                  this.props.today === this.props.itemDay
+                    ? styles.dateHrActive
+                    : styles.dateHr
+                }
+              />
             </View>
             <Text style={styles.listItemTitle}>
               {itemData ? itemData.title : ''}

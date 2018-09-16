@@ -61,11 +61,15 @@ class BookDailyList extends React.Component {
       <View style={styles.bookContainer}>
         <View style={styles.bookList}>
           {list.map((item, key) => {
-            return (
-              <View key={key}>
-                {item !== undefined && <BookDailyListItem itemData={item} />}
-              </View>
-            );
+            return <View key={key}>
+                {item !== undefined && (
+                  <BookDailyListItem
+                    today={this.props.today}
+                    itemDay={this.props.itemDay}
+                    itemData={item}
+                  />
+                )}
+              </View>;
           })}
         </View>
 
