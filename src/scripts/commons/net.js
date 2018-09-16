@@ -162,40 +162,34 @@ export default {
     }
     url += '?' + encodeParams(params);
 
-    // return cacheOrLoad(url, DEFAULT_EXPIRED)
-    // 	.then(data => {
-    // 		return data;
-    // 	})
-    // 	.catch(error => {
-    // 		console.log(error);
-    // 	});
-
     return axios
       .get(url)
       .then(response => {
-        const headers = response.headers;
-        const data = response.data;
-        const pagination = {};
-        Object.keys(headers).forEach(key => {
-          if (key.indexOf('pagination-') === 0) {
-            try {
-              pagination[key.replace('pagination-', '')] = eval(
-                headers[key].toLowerCase()
-              );
-            } catch (e) {}
-          }
-        });
         return {
-          items: data.map(element => ({
+          items: response.data.map(element => ({
             ...element,
             key: element.id.toString()
           })),
-          pagination
+          pagination: this.parsePaginationHeaders(response.headers)
         };
       })
       .catch(error => {
         console.log(error);
       });
+  },
+
+  parsePaginationHeaders(headers) {
+    const pagination = {};
+    Object.keys(headers).forEach(key => {
+      if (key.indexOf('pagination-') === 0) {
+        try {
+          pagination[key.replace('pagination-', '')] = eval(
+            headers[key].toLowerCase()
+          );
+        } catch (e) {}
+      }
+    });
+    return pagination;
   },
 
   getLectureListByCategories() {
@@ -225,24 +219,12 @@ export default {
     return axios
       .get(url)
       .then(response => {
-        const headers = response.headers;
-        const data = response.data;
-        const pagination = {};
-        Object.keys(response.headers).forEach(key => {
-          if (key.indexOf('pagination-') === 0) {
-            try {
-              pagination[key.replace('pagination-', '')] = eval(
-                response.headers[key].toLowerCase()
-              );
-            } catch (e) {}
-          }
-        });
         return {
-          items: data.map(element => ({
+          items: response.data.map(element => ({
             ...element,
             key: element.id.toString()
           })),
-          pagination
+          pagination: this.parsePaginationHeaders(response.headers)
         };
       })
       .catch(error => {
@@ -515,6 +497,34 @@ export default {
       });
   },
 
+  getUserHeartContent: function(contentType, page = 1) {
+    const urlMappings = {
+      audiobooks: 'audiobooks',
+      videoCourses: 'video-courses'
+    };
+
+    if (!(contentType in urlMappings)) {
+      return false;
+    }
+
+    let url = `${API_PREFIX}v1.0/users/heart/${urlMappings[contentType]}`;
+
+    return axios
+      .get(url, { params: { page } })
+      .then(resp => {
+        return {
+          items: resp.data.map(element => ({
+            ...element,
+            key: element.id.toString()
+          })),
+          pagination: this.parsePaginationHeaders(resp.headers)
+        };
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
+
   getMembershipVouchers() {
     const expired = 1;
     return cacheOrLoad(API_PREFIX + 'v1.0/membership/vouchers', expired)
@@ -525,6 +535,7 @@ export default {
         console.log(error);
       });
   },
+
 
   getMembershipCurrent() {
     const expired = 0;
