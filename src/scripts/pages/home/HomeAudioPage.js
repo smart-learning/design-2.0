@@ -115,6 +115,14 @@ const styles = StyleSheet.create({
 
 @observer
 class HomeAudioPage extends React.Component {
+  /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
+  premiumCategorySelect = data => {
+    this.props.navigation.navigate(
+      'AudioBookPage',
+      { action: 'category', data: data } // 전달할 데이터
+    );
+  };
+
   render() {
     let updatedAt = moment().format('YYYY. MM. DD');
     let homeBannerData = [];
@@ -169,9 +177,7 @@ class HomeAudioPage extends React.Component {
 
           {/*매일 책 한 권*/}
           <View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
-            <BookDaily
-              itemData={this.props.store.audioDaily}
-            />
+            <BookDaily itemData={this.props.store.audioDaily} />
           </View>
 
           <View
@@ -188,7 +194,10 @@ class HomeAudioPage extends React.Component {
 
             <View style={styles.audioCategory}>
               <View style={styles.audioCategoryHr} />
-              <PageCategory data={this.props.store.audioBookCategoryData} />
+              <PageCategory
+                data={this.props.store.audioBookCategoryData}
+                onCategorySelect={this.premiumCategorySelect}
+              />
               <View style={styles.audioCategoryHr} />
             </View>
 
