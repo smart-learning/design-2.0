@@ -5,7 +5,8 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	ImageBackground,
-	Image, BackHandler
+	Image,
+	BackHandler
 } from 'react-native';
 import IcHeadphone from '../../../images/ic-headphones.png';
 import Dummy from '../../../images/dummy-audioBook.png';
@@ -129,7 +130,6 @@ class BookMonthly extends React.Component {
 		super(props);
 	}
 
-
 	componentDidMount() {
 		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 	}
@@ -138,15 +138,14 @@ class BookMonthly extends React.Component {
 		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
 	}
 
+
 	handleBackPress = () => {
 		console.log('bookmonthly detail hardware back button:', this.props.navigation.isFocused(), globalStore.prevLocations);
 		if (this.props.navigation.isFocused()) {
 			nav.commonBack();
 		}
-
-		return false
+		return false;
 	}
-
 
 	render() {
 		// let list = this.props.itemData;
@@ -207,8 +206,8 @@ class BookMonthly extends React.Component {
 															보유한 오디오북 이용권
 															<Text style={styles.couponCountText}>
 																{' '}
-																{this.props.voucherStatus
-																	? this.props.voucherStatus.total
+																{globalStore.voucherStatus !== null
+																	? globalStore.voucherStatus.total
 																	: '0'}
 																개
 															</Text>

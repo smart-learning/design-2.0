@@ -164,10 +164,7 @@ class HomeAudioPage extends React.Component {
           {/* /이미지 스와이퍼 */}
 
           <View style={styles.monthContainer}>
-            <BookMonthly
-              itemData={this.props.store.audioMonth}
-              voucherStatus={this.props.store.voucherStatus}
-            />
+            <BookMonthly itemData={this.props.store.audioMonth} />
           </View>
 
           {/*매일 책 한 권*/}
