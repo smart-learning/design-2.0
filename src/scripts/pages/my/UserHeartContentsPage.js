@@ -173,7 +173,7 @@ class UserHeartContentsPage extends React.Component {
   };
 
   goAudiobook = item => {
-    this.props.navigation.navigate('AudiobookDetailPage', {
+    this.props.navigation.navigate('AudioBookDetailPage', {
       id: item.id,
       title: item.title
     });
@@ -185,6 +185,14 @@ class UserHeartContentsPage extends React.Component {
     } else if (pageName === 'audioBook') {
       this.tabStatus = 'audioBook';
       this.refs.pager.setPage(1);
+    }
+  };
+
+  onPageSelected = event => {
+    if (event.nativeEvent.position === 0) {
+      this.tabStatus = 'video';
+    } else if (event.nativeEvent.position === 1) {
+      this.tabStatus = 'audioBook';
     }
   };
 

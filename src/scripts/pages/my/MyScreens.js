@@ -111,7 +111,7 @@ const MyScreens = createStackNavigator(
 		},
 		UserHeartContentsPage: {
 			screen: UserHeartContentsPage,
-			navigationOptions: NAV_OPTS_STACK,
+			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
 		},
 		MyLogPage: {
 			screen: MyLogPage,
