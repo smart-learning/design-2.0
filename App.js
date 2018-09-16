@@ -230,14 +230,6 @@ class App extends React.Component {
             globalStore.drawer = navigatorRef;
             // 플래이어 크래시 때문에 코드 추가
             nav.setNav(navigatorRef);
-
-
-			  setTimeout(()=>{
-				  nav.parseDeepLink('welaaa://in_browser/http%3A%2F%2Fnaver.com');
-			  }, 3000 );
-
-
-
           }}
           style={{ width: '80%' }}
           onNavigationStateChange={(prevState, currentState) => {
