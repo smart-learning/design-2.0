@@ -4,6 +4,7 @@ import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import BookDailyList from '../../components/home/BookDailyList';
 import { observer } from 'mobx-react';
 import createStore from '../../commons/createStore';
+import moment from 'moment';
 
 const styles = StyleSheet.create({
   mainTitleCenter: {
@@ -74,7 +75,8 @@ const styles = StyleSheet.create({
 @observer
 class BookDaily extends React.Component {
   data = createStore({
-    dailyTabSelected: 'mon',
+    today: '',
+    dailyTabSelected: 'Mon',
     monday: [],
     tuesday: [],
     wednesday: [],
@@ -90,16 +92,19 @@ class BookDaily extends React.Component {
       this.data.thursday = this.props.itemData['목'];
       this.data.friday = this.props.itemData['금'];
     }
+
+    this.data.today = moment().format('ddd');
+    this.data.dailyTabSelected = moment().format('ddd');
   }
 
   componentDidUpdate() {
-	  if (this.props.itemData) {
-		  this.data.monday = this.props.itemData['월'];
-		  this.data.tuesday = this.props.itemData['화'];
-		  this.data.wednesday = this.props.itemData['수'];
-		  this.data.thursday = this.props.itemData['목'];
-		  this.data.friday = this.props.itemData['금'];
-	  }
+    if (this.props.itemData) {
+      this.data.monday = this.props.itemData['월'];
+      this.data.tuesday = this.props.itemData['화'];
+      this.data.wednesday = this.props.itemData['수'];
+      this.data.thursday = this.props.itemData['목'];
+      this.data.friday = this.props.itemData['금'];
+    }
   }
 
   render() {
@@ -124,13 +129,13 @@ class BookDaily extends React.Component {
             <View style={styles.categoryItem}>
               <TouchableOpacity
                 style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'mon')}
+                onPress={() => (this.data.dailyTabSelected = 'Mon')}
               >
                 <View>
                   <Text style={styles.categoryText}>월</Text>
                   <View
                     style={
-                      this.data.dailyTabSelected === 'mon'
+                      this.data.dailyTabSelected === 'Mon'
                         ? styles.categoryButtonHrActive
                         : styles.categoryButtonHr
                     }
@@ -141,13 +146,13 @@ class BookDaily extends React.Component {
             <View style={styles.categoryItem}>
               <TouchableOpacity
                 style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'tue')}
+                onPress={() => (this.data.dailyTabSelected = 'Tue')}
               >
                 <View>
                   <Text style={styles.categoryText}>화</Text>
                   <View
                     style={
-                      this.data.dailyTabSelected === 'tue'
+                      this.data.dailyTabSelected === 'Tue'
                         ? styles.categoryButtonHrActive
                         : styles.categoryButtonHr
                     }
@@ -158,13 +163,13 @@ class BookDaily extends React.Component {
             <View style={styles.categoryItem}>
               <TouchableOpacity
                 style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'wed')}
+                onPress={() => (this.data.dailyTabSelected = 'Wed')}
               >
                 <View>
                   <Text style={styles.categoryText}>수</Text>
                   <View
                     style={
-                      this.data.dailyTabSelected === 'wed'
+                      this.data.dailyTabSelected === 'Wed'
                         ? styles.categoryButtonHrActive
                         : styles.categoryButtonHr
                     }
@@ -175,13 +180,13 @@ class BookDaily extends React.Component {
             <View style={styles.categoryItem}>
               <TouchableOpacity
                 style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'thu')}
+                onPress={() => (this.data.dailyTabSelected = 'Thu')}
               >
                 <View>
                   <Text style={styles.categoryText}>목</Text>
                   <View
                     style={
-                      this.data.dailyTabSelected === 'thu'
+                      this.data.dailyTabSelected === 'Thu'
                         ? styles.categoryButtonHrActive
                         : styles.categoryButtonHr
                     }
@@ -192,13 +197,15 @@ class BookDaily extends React.Component {
             <View style={styles.categoryItem}>
               <TouchableOpacity
                 style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'fri')}
+                onPress={() => (this.data.dailyTabSelected = 'Fri')}
               >
                 <View>
                   <Text style={styles.categoryText}>금</Text>
                   <View
                     style={
-                      this.data.dailyTabSelected === 'fri'
+                      this.data.dailyTabSelected === 'Fri' ||
+                      this.data.dailyTabSelected === 'Sat' ||
+                      this.data.dailyTabSelected === 'Sun'
                         ? styles.categoryButtonHrActive
                         : styles.categoryButtonHr
                     }
@@ -212,49 +219,71 @@ class BookDaily extends React.Component {
 
         {/*콘텐츠*/}
         <View>
-          {this.data.dailyTabSelected === 'mon' ? (
+          {this.data.dailyTabSelected === 'Mon' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [월] 하지현의 마음을 치유하는 책
               </Text>
               <View>
-                <BookDailyList itemData={this.data.monday} />
+                <BookDailyList
+                  today={this.data.today}
+                  itemDay={'Mon'}
+                  itemData={this.data.monday}
+                />
               </View>
             </View>
-          ) : this.data.dailyTabSelected === 'tue' ? (
+          ) : this.data.dailyTabSelected === 'Tue' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [화] 권영설의 내일을 위한 책
               </Text>
               <View>
-                <BookDailyList itemData={this.data.tuesday} />
+                <BookDailyList
+                  today={this.data.today}
+                  itemDay={'Tue'}
+                  itemData={this.data.tuesday}
+                />
               </View>
             </View>
-          ) : this.data.dailyTabSelected === 'wed' ? (
+          ) : this.data.dailyTabSelected === 'Wed' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [수] 홍순철의 젠틀한 독서
               </Text>
               <View>
-                <BookDailyList itemData={this.data.wednesday} />
+                <BookDailyList
+                  today={this.data.today}
+                  itemDay={'Wed'}
+                  itemData={this.data.wednesday}
+                />
               </View>
             </View>
-          ) : this.data.dailyTabSelected === 'thu' ? (
+          ) : this.data.dailyTabSelected === 'Thu' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [목] 한미화의 인생책방
               </Text>
               <View>
-                <BookDailyList itemData={this.data.thursday} />
+                <BookDailyList
+                  today={this.data.today}
+                  itemDay={'Thu'}
+                  itemData={this.data.thursday}
+                />
               </View>
             </View>
-          ) : this.data.dailyTabSelected === 'fri' ? (
+          ) : this.data.dailyTabSelected === 'Fri' ||
+          this.data.dailyTabSelected === 'Sat' ||
+          this.data.dailyTabSelected === 'Sun' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [금] 이영미의 밤 새워 읽고 싶은 책
               </Text>
               <View>
-                <BookDailyList itemData={this.data.friday} />
+                <BookDailyList
+                  today={this.data.today}
+                  itemDay={'Fri'}
+                  itemData={this.data.friday}
+                />
               </View>
             </View>
           ) : (
