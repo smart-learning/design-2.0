@@ -206,7 +206,7 @@ let navigation = null;
 export default {
 
 	setNav: ( nav )=>{
-		if( nav ) {
+		if( nav && navigation === null ) {
 			navigation = nav._navigation;
 			console.log('set global nav:', navigation);
 		}
@@ -234,8 +234,10 @@ export default {
 			const schemes = scheme.replace('welaaa://', '').split('/');
 
 			// 맨 앞에 내용을 action 뒤에 내용을 params으로 분리
-			const action = schemes[0];
-			const paramsLen = schemes.length - 1; // action을 제외한 길이
+			const action = schemes.shift();
+			const paramsLen = schemes.length; // action을 제외한 길이
+
+			console.log( 'scheme:', action, schemes );
 
 			switch( action ){
 				case 'video_list':
@@ -262,14 +264,7 @@ export default {
 					break;
 
 				case 'in_browser':
-					/* TODO: 웹뷰 붙이는 작업 필요 */
-					Linking.openURL(schemes[0]);
-					// const url = 'https://naver.com';// schemes[0];
-					// Linking.openURL('https://google.com');
-					// Linking.canOpenURL( schemes[0] ).then( supproted => {
-					// 	if( supproted ) Linking.openURL( url );
-					// 	else            Alert.alert('열 수 없는 URL입니다.', url );
-					// });
+					navigation.navigate('WebView', { url: schemes[0] });
 					break;
 
 				case 'out_browser':
