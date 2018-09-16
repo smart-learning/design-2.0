@@ -10,13 +10,13 @@ import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import {
-  Alert,
-  AsyncStorage,
-  DeviceEventEmitter,
-  Platform,
-  View,
-  Linking,
-  AppState
+	Alert,
+	AsyncStorage,
+	DeviceEventEmitter,
+	Platform,
+	View,
+	Linking,
+	AppState
 } from 'react-native';
 import EventEmitter from 'events';
 import globalStore from './src/scripts/commons/store';
@@ -28,6 +28,7 @@ import Native from './src/scripts/commons/native';
 import { observer } from 'mobx-react';
 import firebase, { RemoteMessage } from 'react-native-firebase';
 import nav from './src/scripts/commons/nav';
+import WebViewScreen from "./src/scripts/pages/WebViewScreen";
 
 @observer
 class App extends React.Component {
@@ -229,6 +230,14 @@ class App extends React.Component {
             globalStore.drawer = navigatorRef;
             // 플래이어 크래시 때문에 코드 추가
             nav.setNav(navigatorRef);
+
+
+			  setTimeout(()=>{
+				  nav.parseDeepLink('welaaa://in_browser/http%3A%2F%2Fnaver.com');
+			  }, 3000 );
+
+
+
           }}
           style={{ width: '80%' }}
           onNavigationStateChange={(prevState, currentState) => {
@@ -315,7 +324,15 @@ const AppDrawer = createDrawerNavigator(
 
     MyScreen: {
       screen: MyScreens
-    }
+    },
+
+	WebView:{
+    	screen: WebViewScreen,
+		// navigationOptions: {
+		// 	drawerIcon: <Hidden />,
+		// 	drawerLabel: <Hidden />
+		// }
+	}
 
     // Playground: {
     // 	screen: Playground,
