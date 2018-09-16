@@ -25,6 +25,7 @@ import SetAppPage from "./SetAppPage";
 import GuideViewPage from "./GuideViewPage";
 import InquireFormPage from "./InquireFormPage";
 import InquireViewPage from "./InquireViewPage";
+import UserHeartContentsPage from './UserHeartContentsPage'
 
 
 const MyScreens = createStackNavigator(
@@ -109,6 +110,10 @@ const MyScreens = createStackNavigator(
 		},
 		ClipPlayListPage: {
 			screen: ClipPlayListPage,
+			navigationOptions: NAV_OPTS_STACK,
+		},
+		UserHeartContentsPage: {
+			screen: UserHeartContentsPage,
 			navigationOptions: NAV_OPTS_STACK,
 		},
 		MyLogPage: {

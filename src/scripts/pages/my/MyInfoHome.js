@@ -357,6 +357,32 @@ export default class MyInfoHome extends React.Component {
                 <View style={styles.listItemBar} />
                 <View style={styles.listItemBarBullet} />
               </View>
+
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  navigation.navigate('UserHeartContentsPage', {
+                    title: '좋아요한 콘텐츠'
+                  })
+                }
+              >
+                <View style={styles.listItem}>
+                  <Image source={IcMusic} style={styles.listItemIcon} />
+                  <Text style={styles.listItemTitle}>
+                    좋아요한 콘텐츠
+                  </Text>
+                  <Image
+                    source={IcAngleRight}
+                    style={[styles.listItemBullet, { marginLeft: 'auto' }]}
+                  />
+                </View>
+              </TouchableOpacity>
+
+              <View style={styles.listItemBarContainer}>
+                <View style={styles.listItemBar} />
+                <View style={styles.listItemBarBullet} />
+              </View>
+
               {/*
 						<View style={styles.listItemBarContainer}>
 							<View style={styles.listItemBar}/>
