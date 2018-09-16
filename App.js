@@ -320,10 +320,10 @@ const AppDrawer = createDrawerNavigator(
 
 	WebView:{
     	screen: WebViewScreen,
-		// navigationOptions: {
-		// 	drawerIcon: <Hidden />,
-		// 	drawerLabel: <Hidden />
-		// }
+		navigationOptions: {
+			drawerIcon: <Hidden />,
+			drawerLabel: <Hidden />
+		}
 	}
 
     // Playground: {
