@@ -10,19 +10,6 @@
 
 #define DEFAULT_NET_TIMEOUT_SEC 30  // 네트워크 타임아웃
 #define MAX_NUMBER_OF_THREADS    2  // 최대 동시 다운로드 작업 갯수(1로 설정하면 1개씩 받음).
-<<<<<<< HEAD
-=======
-                                    // 초과요청 되는 작업들은 대기큐(downloadingQueue)에 쌓임.
-
-@interface FPSDownloadManager()
-{
-  QueryService *queryService;
-}
-- (void)launchNextDownload;
-- (NSUInteger)numberOfItemsInQueue;
-@end
-
->>>>>>> d94e267ac09f9e8de47c5ab0860ee702746b3856
 
 @implementation FPSDownloadManager
 
@@ -129,23 +116,16 @@
 }
 
 
-<<<<<<< HEAD
 - (void) queueDownloadRequest : (NSDictionary *) args
                    completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
 {
     NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
-=======
-- (void)queueDownloadRequest:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler{
-  
-  NSMutableDictionary* details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
->>>>>>> d94e267ac09f9e8de47c5ab0860ee702746b3856
   
     NSString *cid = args[@"cid"];
     NSString *userId = args[@"userId"];
     NSString *name = args[@"name"];
     int cellIndex = [args[@"index"] intValue];
   
-<<<<<<< HEAD
     if ( !cid )
     {
         [details setValue : @"No cid"
@@ -178,21 +158,6 @@
                                        userInfo : details], nil);
       
         return ;
-=======
-  if(!cid) {
-    [details setValue:@"No cid" forKey:NSLocalizedDescriptionKey];
-    if (_delegateFpsMsg) {
-      [_delegateFpsMsg fpsDownloadMsg:@"콘텐츠 정보(cid)가 없습니다"];
-    }
-    resultHandler([NSError errorWithDomain:@"args" code:0 userInfo:details], nil);
-    return;
-  }
-  
-  if(!userId){
-    [details setValue:@"No userId" forKey:NSLocalizedDescriptionKey];
-    if (_delegateFpsMsg) {
-      [_delegateFpsMsg fpsDownloadMsg:@"사용자 정보(User Id)가 없습니다"];
->>>>>>> d94e267ac09f9e8de47c5ab0860ee702746b3856
     }
   
     [queryService getSearchWelaaaPlayDataResults : cid
@@ -204,7 +169,6 @@
         NSLog(@"permission : %@", dicResult[@"permission"]);
         NSLog(@"progress : %@", dicResult[@"progress"]);
     
-<<<<<<< HEAD
         // 다운로드 경로 유무 체크
         NSString *urlString = dicResult[@"media_urls"][@"HLS"];
       
@@ -225,46 +189,6 @@
           
             return ;
         }
-=======
-    // cid 가 v100015_001 인 경우의 response sample
-    /*
-       {
-       "custom_data_v2": {
-       "FairPlay": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiRmFpclBsYXkiLCAiZGF0YSI6ICI2OVRBdnpOeEpOK2J1Y0hSbkE2ajVGQnhKRXhnc3oxek1sdjRhcDZEVlVQUXE5NVdsd2YrcGZjVzBxN3pRZHVSaGMzcDNiMzZqYUxjZzd5MWs0dFJHdz09In0=",
-       "PlayReady": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiUGxheVJlYWR5IiwgImRhdGEiOiAiNjlUQXZ6TnhKTitidWNIUm5BNmo1RkJ4SkV4Z3N6MXpNbHY0YXA2RFZVUFFxOTVXbHdmK3BmY1cwcTd6UWR1UmhjM3AzYjM2amFMY2c3eTFrNHRSR3c9PSJ9",
-       "WideVine": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiV2lkZVZpbmUiLCAiZGF0YSI6ICI2OVRBdnpOeEpOK2J1Y0hSbkE2ajVGQnhKRXhnc3oxek1sdjRhcDZEVlVQUXE5NVdsd2YrcGZjVzBxN3pRZHVSaGMzcDNiMzZqYUxjZzd5MWs0dFJHdz09In0="
-       },
-       "media_urls": {
-       "DASH": "https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd",
-       "HLS": "https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8"
-       },
-       "permission": {
-       "can_play": true,
-       "expire_at": "Fri, 30 Nov 2018 14:09:56 GMT",
-       "is_free": false
-       },
-       "progress": {
-       "id": 2407,
-       "played_at": "Fri, 24 Aug 2018 10:51:04 GMT",
-       "start_seconds": 421
-       },
-       "type": 10
-       }
-     */
-    
-    // 다운로드 경로 유무 체크
-    NSString* urlString = dicResult[@"media_urls"][@"HLS"];
-    if (!urlString || [urlString length]<=0) {
-      // React 로 에러메시지 전달
-      NSLog(@"No HLS Url!");
-      [details setValue:@"다운로드 경로가 존재하지 않습니다" forKey:NSLocalizedDescriptionKey];
-      if (self->_delegateFpsMsg) {
-        [self->_delegateFpsMsg fpsDownloadMsg:@"다운로드 경로가 존재하지 않습니다"];
-      }
-      resultHandler([NSError errorWithDomain:@"args" code:0 userInfo:details], nil);
-      return;
-    }
->>>>>>> d94e267ac09f9e8de47c5ab0860ee702746b3856
     
         // 다운로드 권한 체크
         if ( !dicResult[@"permission"][@"can_play"] )
@@ -493,8 +417,8 @@
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
 {
-  NSLog(@"  fpsLicenseDidSuccessAcquiringWithContentId : %@", contentId);
-  // 라이센스 인증 성공.
+    NSLog(@"  fpsLicenseDidSuccessAcquiringWithContentId : %@", contentId);
+    // 라이센스 인증 성공.
 }
 
 
