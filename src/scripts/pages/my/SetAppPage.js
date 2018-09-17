@@ -52,6 +52,7 @@ class SetAppPage extends React.Component {
 	logout = () => {
 		globalStore.clearTokens();
 		this.props.navigation.navigate('Login');
+		Native.doThingAfterLogout()
 	};
 
 	setIsAutoLoginChange = ( value ) => {
