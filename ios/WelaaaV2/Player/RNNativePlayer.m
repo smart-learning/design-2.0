@@ -8,11 +8,6 @@
 
 #import "RNNativePlayer.h"
 
-#import "AppDelegate.h"
-#import "ContentPlayerViewController.h"
-#import "FPSDownloadManager.h"
-#import "DatabaseManager.h"
-
 @implementation RNNativePlayer
 {
   BOOL _hasListeners;
@@ -21,74 +16,89 @@
 // To export a module named FPSManager
 RCT_EXPORT_MODULE();
 
-- (NSArray<NSString *> *)supportedEvents
+- (NSArray <NSString *> *) supportedEvents
 {
-  return @[@"selectDatabase"];
+    return @[@"selectDatabase"];
 }
 
 // Will be called when this module's first listener is added.
-- (void)startObserving
+- (void) startObserving
 {
-  _hasListeners = YES;
+    _hasListeners = YES;
 }
 
 // Will be called when this module's last listener is removed, or on dealloc.
-- (void)stopObserving
+- (void) stopObserving
 {
-  _hasListeners = NO;
+    _hasListeners = NO;
 }
 
 #pragma mark - Private Methods
 
 - (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
-  ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
-  NSMutableDictionary *args = [argsFromReactNative mutableCopy];
-  [playerViewController setContentData : args];
+    ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
+    NSMutableDictionary *args = [argsFromReactNative mutableCopy];
+    [playerViewController setContentData : args];
   
-  AppDelegate *delegate = (AppDelegate *) [ [UIApplication sharedApplication] delegate ];
-  [delegate.window.rootViewController presentViewController : playerViewController
-                                                   animated : YES
-                                                 completion : nil];
+    // Exception 'accessing _cachedSystemAnimationFence requires the main thread' was thrown while invoking 에러가 발생된다면..
+    // ref : https://github.com/MOLPay/molpay-mobile-xdk-reactnative-beta/issues/7
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : playerViewController
+                                                                                   animated : YES
+                                                                                 completion : nil];
+    });
 }
 
 - (void) downloadSomething : (NSDictionary *) args
 {
-  // 다운로드 테스트용
-  [[FPSDownloadManager sharedInstance] downloadSomething:args];
+    // 다운로드 테스트용
+    [[FPSDownloadManager sharedInstance] downloadSomething : args];
 }
 
 - (void) downloadContent : (NSDictionary *) args
 {
-  [[FPSDownloadManager sharedInstance] startDownload:args completion:^(NSError* error, NSMutableDictionary* result){}];
+    [[FPSDownloadManager sharedInstance] startDownload : args
+                                            completion : ^(NSError *error, NSMutableDictionary *result)
+                                                         {}];
 }
 
 - (void) deleteDownloadedContent : (NSDictionary *) args
 {
-  [[FPSDownloadManager sharedInstance] removeDownloadedContent:args completion:^(NSError* error, NSMutableDictionary* result){}];
+    [[FPSDownloadManager sharedInstance] removeDownloadedContent : args
+                                                      completion : ^(NSError *error, NSMutableDictionary *result)
+                                                                   {}];
 }
 
 - (void) selectDownloadedContent : (NSDictionary *) args
 {
-  NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
   
-  NSMutableArray* allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+    NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
   
-  NSError *error;
-  NSData *jsonData = [NSJSONSerialization dataWithJSONObject:allRecords
-                                                     options:NSJSONWritingPrettyPrinted
-                                                       error:&error];
-  if (!jsonData) {
-    NSLog(@"Json Parse Error : %@", error);
-    [params setObject:@"" forKey:@"selectDatabase"];
-  } else {
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    [params setObject:jsonString forKey:@"selectDatabase"];
-  }
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject : allRecords
+                                                       options : NSJSONWritingPrettyPrinted
+                                                         error : &error];
+    if ( !jsonData )
+    {
+        NSLog(@"  Json Parse Error : %@", error);
+        [params setObject : @""
+                   forKey : @"selectDatabase"];
+    }
+    else
+    {
+        NSString *jsonString = [[NSString alloc] initWithData : jsonData
+                                                     encoding : NSUTF8StringEncoding];
+        [params setObject : jsonString
+                   forKey : @"selectDatabase"];
+    }
   
-  if (_hasListeners) {
-    [self sendEventWithName:@"selectDatabase" body:params];
-  }
+    if ( _hasListeners )
+    {
+        [self sendEventWithName : @"selectDatabase"
+                           body : params];
+    }
 }
 
 
@@ -96,28 +106,28 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD( play : (NSDictionary *) argsFromReactNative )
 {
-  [self showMediaPlayer : argsFromReactNative];
+    [self showMediaPlayer : argsFromReactNative];
 }
 
 RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
 {
-  NSLog(@"  RNNativePlayer setting for RN : %@", argsFromReactNative);
+    NSLog(@"  RNNativePlayer setting for RN : %@", argsFromReactNative);
 }
 
 RCT_EXPORT_METHOD( download : (NSDictionary *) argsFromReactNative )
 {
-  //[self downloadSomething : argsFromReactNative]; // 테스트용
-  [self downloadContent : argsFromReactNative];
+    //[self downloadSomething : argsFromReactNative]; // 테스트용
+    [self downloadContent : argsFromReactNative];
 }
 
 RCT_EXPORT_METHOD( downloadDelete : (NSDictionary *) argsFromReactNative )
 {
-  [self deleteDownloadedContent : argsFromReactNative];
+    [self deleteDownloadedContent : argsFromReactNative];
 }
 
 RCT_EXPORT_METHOD( selectDatabase : (NSDictionary *) argsFromReactNative )
 {
-  [self selectDownloadedContent : argsFromReactNative];
+    [self selectDownloadedContent : argsFromReactNative];
 }
 
 @end
