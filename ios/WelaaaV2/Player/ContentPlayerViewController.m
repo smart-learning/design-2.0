@@ -2627,104 +2627,125 @@
 
 
 # pragma mark - PallyCon FPS Download Delegate
-
+//
+// 다운로드가 종료되었을 때 호출됩니다.
+//
 - (void) downloadContent : (NSString * _Nonnull) contentId
   didFinishDownloadingTo : (NSURL * _Nonnull) location
 {
-  NSLog(@"  download contentId : %@, location : %@",contentId, location.absoluteString);
+    NSLog(@"  download contentId : %@, location : %@", contentId, location.absoluteString);
   
-  NSString* assetPath = location.relativePath;
-  NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
-  NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:assetPath];
-  NSLog(@"assetURL : %@", assetURL);
+    NSString *assetPath = location.relativePath;
+    NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
+    NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : assetPath];
+    NSLog(@"  assetURL : %@", assetURL);
   
-  // 공식문서(Apple) 에서는 HLS 오프라인 파일의 경우 아래의 방식으로 재생하고 있습니다. 참고바랍니다.(cache 상태 확인한 후에 재생)
-  /*
-  AVURLAsset* asset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
-  AVAssetCache* cache = asset.assetCache;
-  
-  if (cache && [cache isPlayableOffline])
-  {
-    NSLog(@"isPlayableOffline true");
+    // 공식문서(Apple) 에서는 HLS 오프라인 파일의 경우 아래의 방식으로 재생하고 있습니다. 참고바랍니다.(cache 상태 확인한 후에 재생)
+    /*
+    AVURLAsset *asset = [AVURLAsset assetWithURL : [NSURL URLWithString : assetURL]];
+    AVAssetCache *cache = asset.assetCache;
     
-    // 2. Set parameters required for FPS content playback.
-    [_fpsSDK prepareWithUrlAsset:asset userId:PALLYCON_USER_ID contentId:clip.cid optionalId:clip.oid liveKeyRotation:NO];
-    
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-    AVPlayerViewController *playerController = [AVPlayerViewController new];
-    playerController.player = player;
-    [player play];
-    [self presentViewController:playerController animated:YES completion:nil];
-  }else
-  {
-    NSLog(@"isPlayableOffline false");
-    // 재생불가
-    return;
-  }
-  */
+    if ( cache && [cache isPlayableOffline] )
+    {
+        NSLog(@"  isPlayableOffline true");
+     
+        // 2. Set parameters required for FPS content playback.
+        [_fpsSDK prepareWithUrlAsset : asset
+                              userId : PALLYCON_USER_ID
+                           contentId : clip.cid
+                          optionalId : clip.oid
+                     liveKeyRotation : NO];
+     
+        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset : asset];
+        AVPlayer *player = [AVPlayer playerWithPlayerItem : playerItem];
+        AVPlayerViewController *playerController = [AVPlayerViewController new];
+        playerController.player = player;
+        [player play];
+        [self presentViewController : playerController
+                           animated : YES
+                         completion : nil];
+    }
+    else
+    {
+        NSLog(@". isPlayableOffline false");
+        // 재생불가
+        return ;
+    }
+    */
   
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"다운로드 완료"
-                                                                 message : @"다운로드된 파일로 재생하시겠습니까?"
-                                                          preferredStyle : UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"다운로드 완료"
+                                                                   message : @"다운로드된 파일로 재생하시겠습니까?"
+                                                            preferredStyle : UIAlertControllerStyleAlert];
   
-  UIAlertAction *y = [UIAlertAction actionWithTitle : @"예"
-                                               style : UIAlertActionStyleDefault
-                                             handler : ^(UIAlertAction * action)
-                       {
-                         [alert dismissViewControllerAnimated:YES completion:nil];
-                         //[_args setObject:contentId forKey:@"cid"]; //  현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
-                         [_args setObject:assetURL forKey:@"uri"];
-                         [self playNext];
-                       }];
+    UIAlertAction *y = [UIAlertAction actionWithTitle : @"예"
+                                                style : UIAlertActionStyleDefault
+                                              handler : ^(UIAlertAction * action)
+                                                        {
+                                                            [alert dismissViewControllerAnimated : YES
+                                                                                      completion : nil];
+                                                          //[_args setObject:contentId forKey:@"cid"]; //  현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
+                                                            [_args setObject : assetURL
+                                                                      forKey : @"uri"];
+                                                            // 콘텐츠를 다시 set하고 처음부터 재생합니다.
+                                                            [self playNext];
+                                                            // 다운로드받은 콘텐츠로 이어서 재생할 수 있도록 구현해야 합니다.
+                                                            // 필요사항 : URI, 마지막 재생시간(밀리세컨드), isDownloadFile 업데이트 등등..
+                                                       }];
   
-  UIAlertAction *n = [UIAlertAction actionWithTitle : @"아니오"
-                                               style : UIAlertActionStyleDefault
-                                             handler : ^(UIAlertAction * action)
-                       {
-                         [alert dismissViewControllerAnimated:YES completion:nil];
-                       }];
+    UIAlertAction *n = [UIAlertAction actionWithTitle : @"아니오"
+                                                style : UIAlertActionStyleDefault
+                                              handler : ^(UIAlertAction * action)
+                                                        {
+                                                            [alert dismissViewControllerAnimated : YES
+                                                                                      completion : nil];
+                                                        }];
   
-  [alert addAction : y];
-  [alert addAction : n];
+    [alert addAction : y];
+    [alert addAction : n];
   
-  [self presentViewController : alert
-                     animated : YES
-                   completion : nil];
+    [self presentViewController : alert
+                       animated : YES
+                     completion : nil];
 }
 
-
+//
+// 언제 호출되는지 잘 모릅니다.
+//
 - (void) downloadContent : (NSString * _Nonnull) contentId
                  didLoad : (CMTimeRange) timeRange
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
-  ;
+    ;
 }
 
-
+//
+// 언제 호출되는지 잘 모르지만 다운로드가 막 시작되는 시점에 호출되는 것 같습니다.
+//
 - (void)  downloadContent : (NSString * _Nonnull) contentId
 didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       subtitleDisplayName : (NSString * _Nonnull) subtitleDisplayName
 {
-  ;
+    NSLog(@"  downloadContent:didStartDownloadWithAsset:subtitleDisplayName");
 }
 
 
 - (void) downloadContent : (NSString * _Nonnull) contentId
         didStopWithError : (NSError * _Nullable) error
 {
-  NSLog(@"  download contentId : %@, error code : %ld", contentId, [error code]);
-  // FPS 다운로드간 에러 발생시 여기서 처리합니다.
+    NSLog(@"  download contentId : %@, error code : %ld", contentId, [error code]);
+    // FPS 다운로드간 에러 발생시 여기서 처리합니다.
 }
 
 
 # pragma mark - FPSDownload Delegate
 
--(void)fpsDownloadMsg:(NSString *)downloadMsg{
-  if(downloadMsg){
-    [self showToast:downloadMsg]; // 다운로드 진행상황 관련 메시지
-  }
+- (void) fpsDownloadMsg : (NSString *) downloadMsg
+{
+    if ( downloadMsg )
+    {
+        [self showToast : downloadMsg]; // 다운로드 진행상황 관련 메시지
+    }
 }
 
 
