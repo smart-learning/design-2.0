@@ -15,9 +15,6 @@
 #import "IFRecommendViewController.h"
 #import "Clip.h"
 
-#define PALLYCON_SITE_ID    @"O8LD"
-#define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
-
 @interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate,
                                           ContentsListPopupViewDelegate, MediaPlayerScriptViewDelegate, ContentMiniPlayerViewDelegate>
 {
