@@ -17,7 +17,7 @@
 
 #define DEFAULT_NET_TIMEOUT_SEC 30  // 네트워크 타임아웃
 #define MAX_NUMBER_OF_THREADS    2  // 최대 동시 다운로드 작업 갯수(1로 설정하면 1개씩 받음).
-// 초과요청 되는 작업들은 대기큐(downloadingQueue)에 쌓임.
+                                    // 초과요청 되는 작업들은 대기큐(downloadingQueue)에 쌓임.
 
 @interface FPSDownloadManager()
 {
@@ -123,7 +123,7 @@
 
 - (void)queueDownloadRequest:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler{
   
-  NSMutableDictionary* details = [NSMutableDictionary dictionary];
+  NSMutableDictionary* details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
   
   NSString* cid = args[@"cid"];
   NSString* userId = args[@"userId"];
@@ -133,7 +133,7 @@
   if(!cid) {
     [details setValue:@"No cid" forKey:NSLocalizedDescriptionKey];
     if (_delegateFpsMsg) {
-      [_delegateFpsMsg fpsDownloadMsg:@"No cid!"];
+      [_delegateFpsMsg fpsDownloadMsg:@"콘텐츠 정보(cid)가 없습니다"];
     }
     resultHandler([NSError errorWithDomain:@"args" code:0 userInfo:details], nil);
     return;
@@ -142,7 +142,7 @@
   if(!userId){
     [details setValue:@"No userId" forKey:NSLocalizedDescriptionKey];
     if (_delegateFpsMsg) {
-      [_delegateFpsMsg fpsDownloadMsg:@"No userId!"];
+      [_delegateFpsMsg fpsDownloadMsg:@"사용자 정보(User Id)가 없습니다"];
     }
     resultHandler([NSError errorWithDomain:@"args" code:0 userInfo:details], nil);
     return;
@@ -158,28 +158,28 @@
     
     // cid 가 v100015_001 인 경우의 response sample
     /*
-     {
-     "custom_data_v2": {
-     "FairPlay": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiRmFpclBsYXkiLCAiZGF0YSI6ICI2OVRBdnpOeEpOK2J1Y0hSbkE2ajVGQnhKRXhnc3oxek1sdjRhcDZEVlVQUXE5NVdsd2YrcGZjVzBxN3pRZHVSaGMzcDNiMzZqYUxjZzd5MWs0dFJHdz09In0=",
-     "PlayReady": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiUGxheVJlYWR5IiwgImRhdGEiOiAiNjlUQXZ6TnhKTitidWNIUm5BNmo1RkJ4SkV4Z3N6MXpNbHY0YXA2RFZVUFFxOTVXbHdmK3BmY1cwcTd6UWR1UmhjM3AzYjM2amFMY2c3eTFrNHRSR3c9PSJ9",
-     "WideVine": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiV2lkZVZpbmUiLCAiZGF0YSI6ICI2OVRBdnpOeEpOK2J1Y0hSbkE2ajVGQnhKRXhnc3oxek1sdjRhcDZEVlVQUXE5NVdsd2YrcGZjVzBxN3pRZHVSaGMzcDNiMzZqYUxjZzd5MWs0dFJHdz09In0="
-     },
-     "media_urls": {
-     "DASH": "https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd",
-     "HLS": "https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8"
-     },
-     "permission": {
-     "can_play": true,
-     "expire_at": "Fri, 30 Nov 2018 14:09:56 GMT",
-     "is_free": false
-     },
-     "progress": {
-     "id": 2407,
-     "played_at": "Fri, 24 Aug 2018 10:51:04 GMT",
-     "start_seconds": 421
-     },
-     "type": 10
-     }
+       {
+       "custom_data_v2": {
+       "FairPlay": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiRmFpclBsYXkiLCAiZGF0YSI6ICI2OVRBdnpOeEpOK2J1Y0hSbkE2ajVGQnhKRXhnc3oxek1sdjRhcDZEVlVQUXE5NVdsd2YrcGZjVzBxN3pRZHVSaGMzcDNiMzZqYUxjZzd5MWs0dFJHdz09In0=",
+       "PlayReady": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiUGxheVJlYWR5IiwgImRhdGEiOiAiNjlUQXZ6TnhKTitidWNIUm5BNmo1RkJ4SkV4Z3N6MXpNbHY0YXA2RFZVUFFxOTVXbHdmK3BmY1cwcTd6UWR1UmhjM3AzYjM2amFMY2c3eTFrNHRSR3c9PSJ9",
+       "WideVine": "eyJzaXRlX2lkIjogIk84TEQiLCAiZHJtX3R5cGUiOiAiV2lkZVZpbmUiLCAiZGF0YSI6ICI2OVRBdnpOeEpOK2J1Y0hSbkE2ajVGQnhKRXhnc3oxek1sdjRhcDZEVlVQUXE5NVdsd2YrcGZjVzBxN3pRZHVSaGMzcDNiMzZqYUxjZzd5MWs0dFJHdz09In0="
+       },
+       "media_urls": {
+       "DASH": "https://contents.welaaa.com/media/v100015/DASH_v100015_001/stream.mpd",
+       "HLS": "https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8"
+       },
+       "permission": {
+       "can_play": true,
+       "expire_at": "Fri, 30 Nov 2018 14:09:56 GMT",
+       "is_free": false
+       },
+       "progress": {
+       "id": 2407,
+       "played_at": "Fri, 24 Aug 2018 10:51:04 GMT",
+       "start_seconds": 421
+       },
+       "type": 10
+       }
      */
     
     // 다운로드 경로 유무 체크
