@@ -27,7 +27,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
 
 @class IFRecommendViewController;
 
-@interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate,FPSDownloadDelegate>
+@interface ContentPlayerViewController : UIViewController <PallyConFPSLicenseDelegate,PallyConFPSDownloadDelegate,FPSDownloadDelegate>
 
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
 @property AVPlayerLayer *playerLayer;
