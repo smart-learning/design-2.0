@@ -761,6 +761,8 @@ public class PlayerActivity extends BasePlayerActivity {
     setSubtitlesUI();
     // 버튼 클릭 준비
     buttonInit();
+    // 재생 속도 UI 설정
+    initializePlaybackSpeed();
     // Volume Controller Init
     initControls();
     // 별점 뷰 셋팅 하기
@@ -851,6 +853,31 @@ public class PlayerActivity extends BasePlayerActivity {
         return false;
       }
     });
+  }
+
+  private void initializePlaybackSpeed() {
+    String speedRate = Preferences.getWelaaaPlaySpeedrate(PlayerActivity.this);
+    switch (speedRate) {
+      case "0.8":
+        mBtnIconBtnSpeed.setBackgroundResource(R.drawable.icon_speed_08);
+        speedIndex = 3;
+        break;
+
+      case "1.2":
+        mBtnIconBtnSpeed.setBackgroundResource(R.drawable.icon_speed_12);
+        speedIndex = 1;
+        break;
+
+      case "1.5":
+        mBtnIconBtnSpeed.setBackgroundResource(R.drawable.icon_speed_15);
+        speedIndex = 2;
+        break;
+
+      default:
+        mBtnIconBtnSpeed.setBackgroundResource(R.drawable.icon_speed_10);
+        speedIndex = 0;
+        break;
+    }
   }
 
   //// Chromecast
@@ -1886,8 +1913,7 @@ public class PlayerActivity extends BasePlayerActivity {
             ids.add(R.drawable.icon_speed_10);
 
             if (speedIndex < ids.size()) {
-              mBtnIconBtnSpeed
-                  .setBackgroundDrawable(getResources().getDrawable(ids.get(speedIndex)));
+              mBtnIconBtnSpeed.setBackgroundResource(ids.get(speedIndex));
               speedIndex++;
 
               if (speedIndex == 1) {
@@ -1907,7 +1933,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
             float f = (float) speedNum;
             PlaybackParameters param = new PlaybackParameters(f);
-//            PlaybackParameters param = new PlaybackParameters(f, f);
             player.setPlaybackParameters(param);
           }
           break;
@@ -4679,34 +4704,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
     if (controllerCompat != null && controllerCompat.getExtras() != null) {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
-    }
-
-    try {
-      String speedRate = Preferences.getWelaaaPlaySpeedrate(getApplicationContext());
-
-      if (speedRate.equals("1.2")) {
-        mBtnIconBtnSpeed
-            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_12));
-      } else if (speedRate.equals("1.5")) {
-        mBtnIconBtnSpeed
-            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_15));
-      } else if (speedRate.equals("0.8")) {
-        mBtnIconBtnSpeed
-            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_08));
-      } else if (speedRate.equals("1.0")) {
-        mBtnIconBtnSpeed
-            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_10));
-      }
-
-      Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
-
-      if (player != null) {
-        float f = Float.valueOf(speedRate);
-        PlaybackParameters param = new PlaybackParameters(f);
-        player.setPlaybackParameters(param);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
     }
 
     switch (state.getState()) {
