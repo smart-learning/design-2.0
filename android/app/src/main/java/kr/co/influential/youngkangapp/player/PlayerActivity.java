@@ -522,7 +522,7 @@ public class PlayerActivity extends BasePlayerActivity {
       IS_FREE = intent.getBooleanExtra("is_free", false);
       EXPIRE_AT = intent.getStringExtra("expire_at");
       CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
-    }else{
+    } else {
       Preferences.getWelaaaWebPlayInfo(getApplicationContext());
 
       Gson gson = new Gson();
@@ -530,11 +530,11 @@ public class PlayerActivity extends BasePlayerActivity {
       WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
 
       mWebPlayerInfo = mWebPlayerInfoFromJson;
-      boolean preview =Preferences.getWelaaaPreviewPlay(getApplicationContext());
+      boolean preview = Preferences.getWelaaaPreviewPlay(getApplicationContext());
 
-      if(preview){
+      if (preview) {
         CAN_PLAY = false;
-      }else{
+      } else {
         CAN_PLAY = true;
       }
 
@@ -724,7 +724,7 @@ public class PlayerActivity extends BasePlayerActivity {
         Intent intent = getIntent();
 
         if (intent.getStringExtra(PlaybackManager.DRM_CID) != null) {
-          if (intent.getStringExtra(PlaybackManager.DRM_CID).contains("z") ){
+          if (intent.getStringExtra(PlaybackManager.DRM_CID).contains("z")) {
 
             UiThreadUtil.runOnUiThread(new Runnable() {
               @Override
@@ -748,7 +748,7 @@ public class PlayerActivity extends BasePlayerActivity {
             });
 
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
-          }else{
+          } else {
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
           }
         }
@@ -1043,7 +1043,7 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   private String getIdleReasonString(int idleReason) {
-    LogHelper.e(TAG , " getIdleReasonString " + idleReason);
+    LogHelper.e(TAG, " getIdleReasonString " + idleReason);
     switch (idleReason) {
       case MediaStatus.IDLE_REASON_FINISHED:    // 1
         return "Finish";
@@ -4638,14 +4638,14 @@ public class PlayerActivity extends BasePlayerActivity {
     mediaController.registerCallback(callback);
 
     try {
-      if (fromMediaSession) {
-        Bundle extras = mediaController.getMetadata().getBundle();
-        Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
-        playFromUri(uri, extras);
-      } else {
+      if (!fromMediaSession) {
         Intent intent = getIntent();
         Uri uri = intent.getData();
         playFromUri(uri, intent.getExtras());
+      } else {
+        Bundle extras = mediaController.getMetadata().getBundle();
+        Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+        playFromUri(uri, extras);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -4681,19 +4681,19 @@ public class PlayerActivity extends BasePlayerActivity {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
     }
 
-    try{
+    try {
       String speedRate = Preferences.getWelaaaPlaySpeedrate(getApplicationContext());
 
-      if(speedRate.equals("1.2")){
+      if (speedRate.equals("1.2")) {
         mBtnIconBtnSpeed
             .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_12));
-      }else if(speedRate.equals("1.5")){
+      } else if (speedRate.equals("1.5")) {
         mBtnIconBtnSpeed
             .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_15));
-      }else if(speedRate.equals("0.8")){
+      } else if (speedRate.equals("0.8")) {
         mBtnIconBtnSpeed
             .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_08));
-      }else if(speedRate.equals("1.0")){
+      } else if (speedRate.equals("1.0")) {
         mBtnIconBtnSpeed
             .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_10));
       }
@@ -4705,7 +4705,7 @@ public class PlayerActivity extends BasePlayerActivity {
         PlaybackParameters param = new PlaybackParameters(f);
         player.setPlaybackParameters(param);
       }
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -4984,7 +4984,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
                   // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-                  Preferences.setWelaaaPlayListCKey(getApplicationContext(), getwebPlayerInfo().getCkey()[getContentId()]);
+                  Preferences.setWelaaaPlayListCKey(getApplicationContext(),
+                      getwebPlayerInfo().getCkey()[getContentId()]);
 
                   Bundle extras = intent.getExtras();
 
