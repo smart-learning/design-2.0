@@ -53,7 +53,6 @@
     BOOL _isPlaybackContollerHidden;// 재생 컨트롤 UI 모듈 감춤 or 표시.
     BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한.
     bool _isAudioContent;           // 콘텐트 타입. (AVPlayer API를 사용할 수도 있습니다. 추후에 '매일 책 한권' 등의 콘텐트에 대한 분류도 고민해야 할 것입니다.
-    bool _isDownloadContent;
   
     ContentPlayerButton *_autoPlayButton;
     ContentPlayerButton *_scriptButton;
@@ -190,11 +189,11 @@
     // 현재 콘텐트의 재생권한.
     if ( [[_currentContentsInfo[@"permission"][@"can_play"] stringValue] isEqualToString : @"0"] )
     {
-      _isAuthor = false;
+        _isAuthor = false;
     }
     else
     {
-      _isAuthor = true;
+        _isAuthor = true;
     }
     NSLog(@"  권한이 %@", _isAuthor? @"있습니다." : @"없습니다.");
   
@@ -221,7 +220,7 @@
             }
         }
         // 재생 권한이 있는 오디오북에서는..
-        else if ( _isAuthor)
+        else if ( _isAuthor )
         {
             for ( int i=0; i<contentsListArray.count; i++ )
             {
@@ -285,8 +284,17 @@
         NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                       andHeaderInfo : [_args objectForKey : @"token"]];
       
-        [_args setObject : playDataDics[@"media_urls"][@"HLS"]
-                  forKey : @"uri"];
+        if ( !_isAuthor )
+        {
+            [_args setObject : playDataDics[@"preview_urls"][@"HLS"]
+                      forKey : @"uri"];
+        }
+        else if ( _isAuthor )
+        {
+            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+                      forKey : @"uri"];
+        }
+      
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
   
