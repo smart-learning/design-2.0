@@ -9,7 +9,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  AsyncStorage
 } from 'react-native';
 import net from '../../commons/net';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -224,8 +225,20 @@ class HomePage extends React.Component {
     }
   };
 
-  componentDidMount() {
-    if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
+  async componentDidMount() {
+    if (!globalStore.welaaaAuth) {
+      let freshInstall = await AsyncStorage.getItem('freshInstall');
+      console.log('HomePage.componentDidMount', { freshInstall });
+		console.log('this.props.navigation', this.props.navigation)
+
+      if (freshInstall !== 'false') {
+        console.log("this.props.navigation.navigate('SignUpPage')");
+        this.props.navigation.navigate('SignUpPage');
+      } else {
+        console.log("this.props.navigation.navigate('SignUpPage')");
+        this.props.navigation.navigate('SignUpPage');
+      }
+    }
 
     let windowWidth = Dimensions.get('window').width;
     let windowHeight = Dimensions.get('window').height;

@@ -131,14 +131,16 @@ class SidebarUserInfo extends React.Component {
   }
 
   renderMembershipButton() {
+  	console.log('renderMembershipButton: store.welaaaAuth', store.welaaaAuth)
+
     if (store.welaaaAuth === undefined) {
       return (
         <View style={styles.memberShipContainerNoMembership}>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() =>
-              this.props.navigation.navigate('MembershipPage', {
-                title: '윌라 멤버쉽'
+              this.props.navigation.navigate('Login', {
+                title: '회원 가입'
               })
             }
           >

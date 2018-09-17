@@ -113,7 +113,9 @@ class App extends React.Component {
     // 로그인 이후 발생된 이벤트를 캐치하여 "프로필" 및 "현재멤버십" 가져오기
     globalStore.emitter = new EventEmitter();
     globalStore.emitter.addListener('loginCompleted', () => {
-      this.getTokenFromAsyncStorage();
+		AsyncStorage.setItem('freshInstall', 'false')
+
+    	this.getTokenFromAsyncStorage();
     });
   }
 
