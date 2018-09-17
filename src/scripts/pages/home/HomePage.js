@@ -9,8 +9,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  AsyncStorage
+  View
 } from 'react-native';
 import net from '../../commons/net';
 import { SafeAreaView, withNavigation } from 'react-navigation';

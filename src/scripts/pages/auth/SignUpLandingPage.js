@@ -133,14 +133,12 @@ class SignUpLandingPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		console.log('SignUpLandingPage.constructor')
 		this.state = {
 			slideHeight: null,
 		};
 	}
 
 	componentDidMount() {
-		console.log('SignUpLandingPage.componentDidMount')
 		let windowHeight = Dimensions.get('window').height;
 
 		this.setState({
