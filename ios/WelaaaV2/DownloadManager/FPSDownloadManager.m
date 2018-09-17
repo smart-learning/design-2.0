@@ -14,7 +14,6 @@
 
 #define PALLYCON_SITE_ID    @"O8LD"
 #define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
-#define PALLYCON_USER_ID    @"93"
 
 #define DEFAULT_NET_TIMEOUT_SEC 30  // 네트워크 타임아웃
 #define MAX_NUMBER_OF_THREADS    2  // 최대 동시 다운로드 작업 갯수(1로 설정하면 1개씩 받음).
@@ -283,82 +282,6 @@
     resultHandler(nil, nil);
   }];
 }
-
-
-// cid 를 통해 다운로드 컨텐츠 경로를 리턴받고 해당 경로가 유효할 경우 queue 에 추가.
-//  그렇지 않을 경우엔 콜백으로 컨텐츠 경로가 존재하지 않는다고 리턴.(여기선 굳이 백그라운드일 필요 없다)
-/*
- - (void)queueFPSDownloadRequest:(Clip *)clip completion:(void (^)(NSString* resultMsg))resultHandler
- {
- NSString* cid = clip.cid;
- NSString* userId = PALLYCON_USER_ID;  // TODO : 실제 Id 값으로 변경. clip 에 저장해서 가져오는 방법도 있고.
- 
- if(!cid) return;
- if(!userId) return;
- 
- [queryService getSearchWelaaaPlayDataResults:cid queryResults:^(NSDictionary* dicResult, NSString* errMsg){
- 
- NSLog(@"errMsg : %@", errMsg);
- NSLog(@"custom_data_v2 : %@", [dicResult objectForKey:@"custom_data_v2"]);
- NSLog(@"media_urls : %@", [dicResult objectForKey:@"media_urls"]);
- NSLog(@"permission : %@", [dicResult objectForKey:@"permission"]);
- NSLog(@"progress : %@", [dicResult objectForKey:@"progress"]);
- 
- // 다운로드 경로 유무 체크
- NSString* urlString = dicResult[@"media_urls"][@"HLS"];
- if (!urlString || [urlString length]<=0) {
- // React 로 에러메시지 전달
- NSLog(@"No HLS Url!");
- resultHandler(@"경로가 존재하지 않습니다.");
- return;
- }
- 
- // 다운로드 권한 체크
- if(!dicResult[@"permission"][@"can_play"]){
- // React 로 에러메시지 전달
- NSLog(@"No Permission to Play!");
- resultHandler(@"다운로드 권한이 없습니다.");
- return;
- }
- 
- __block NSUInteger indexFound = NSNotFound;
- // 다운로드 경로 중복체크 필요
- // 대기큐에 이미 있는지?
- [self->_downloadingQueue enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
- FPSDownload *r = obj;
- if ([cid isEqualToString:r.clip.cid]) {
- *stop = YES;
- indexFound = idx;
- }
- }];
- 
- if(indexFound != NSNotFound){
- NSLog(@"Already in Downloading Queue!");
- resultHandler(@"다운로드 대기중입니다.");
- return;
- }
- 
- // TODO : 현재 다운로드중 리스트에 있는지?
- if([self->_activeDownloads objectForKey:cid]){
- NSLog(@"Already in Active Downloads!");
- resultHandler(@"이미 다운로드 중입니다.");
- return;
- }
- 
- FPSDownload* fpsDownload = [[FPSDownload alloc] initWithClip:clip];
- NSDictionary* dicDownloadInfo = [[NSDictionary alloc] initWithObjectsAndKeys:urlString,@"uri",cid,@"cid",userId,@"userId",nil];
- fpsDownload.task = [self prepareFPSDownloadTask:dicDownloadInfo];
- fpsDownload.clip.contentUrl = [NSURL URLWithString:urlString];
- if (fpsDownload.task) {
- [self->_downloadingQueue addObject:fpsDownload];
- }
- 
- [self launchNextDownload];
- 
- resultHandler(@"다운로드를 시작합니다."); // 성공. 호출한 쪽에 필요한 정보들을 리턴. 예) "다운로드를 시작합니다."
- }];
- }
- */
 
 
 - (void)clearQueue
