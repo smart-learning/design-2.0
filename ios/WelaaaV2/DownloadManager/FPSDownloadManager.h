@@ -10,7 +10,11 @@
 #import <AVKit/AVKit.h>
 #import <Foundation/Foundation.h>
 #import <PallyConFPSSDK/PallyConFPSSDK-Swift.h>
+#import "FPSDownload.h"
+#import "QueryService.h"
 #import "Clip.h"
+#import "DatabaseManager.h"
+#import "common.h"
 
 @protocol FPSDownloadDelegate <NSObject>
 @optional
@@ -19,6 +23,10 @@
 
 
 @interface FPSDownloadManager : NSObject <PallyConFPSLicenseDelegate, PallyConFPSDownloadDelegate>
+{
+  // 초과요청 되는 작업들은 대기큐(downloadingQueue)에 쌓임.
+  QueryService *queryService;
+}
 
 @property (strong, nonatomic) NSMutableArray      *downloadingQueue;
 @property (strong, nonatomic) NSMutableDictionary *activeDownloads;
@@ -31,6 +39,8 @@
 - (void)startDownload:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)removeDownloadedContent:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)clearQueue;
+- (void)launchNextDownload;
+- (NSUInteger)numberOfItemsInQueue;
 
 // Pallycon 다운로드 진행 상황에 대한 정보를 다른 곳에서도 받아야 할 때 사용.(콜백 등)
 @property (weak, nonatomic) id<PallyConFPSLicenseDelegate> delegateFpsLicense;

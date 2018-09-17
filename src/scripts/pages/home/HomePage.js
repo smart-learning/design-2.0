@@ -225,20 +225,8 @@ class HomePage extends React.Component {
     }
   };
 
-  async componentDidMount() {
-    if (!globalStore.welaaaAuth) {
-      let freshInstall = await AsyncStorage.getItem('freshInstall');
-      console.log('HomePage.componentDidMount', { freshInstall });
-		console.log('this.props.navigation', this.props.navigation)
-
-      if (freshInstall !== 'false') {
-        console.log("this.props.navigation.navigate('SignUpPage')");
-        this.props.navigation.navigate('SignUpPage');
-      } else {
-        console.log("this.props.navigation.navigate('SignUpPage')");
-        this.props.navigation.navigate('SignUpPage');
-      }
-    }
+  componentDidMount() {
+    // if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
 
     let windowWidth = Dimensions.get('window').width;
     let windowHeight = Dimensions.get('window').height;

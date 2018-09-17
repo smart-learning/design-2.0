@@ -173,10 +173,6 @@ class Data {
 			return false;
 		}
 
-		// if( this.props.onAccess ) {
-		// 	this.props.onAccess(this.state.email, this.state.password);
-		// }
-
 		Net.signUp( this.data.email, this.data.password )
 			.then( data => {
 				store.welaaaAuth = data;
