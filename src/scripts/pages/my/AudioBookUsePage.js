@@ -1,11 +1,12 @@
 import React from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import {ActivityIndicator, BackHandler, ScrollView, StyleSheet, Text, View} from "react-native";
 import CommonStyles from "../../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import SummaryListItem from "../../components/my/SummaryListItem";
 import createStore from "../../commons/createStore";
 import net from "../../commons/net";
 import { observer } from "mobx-react";
+import globalStore from "../../commons/store";
 
 @observer class AudioBookUsePage extends React.Component {
 
@@ -28,7 +29,7 @@ import { observer } from "mobx-react";
 	}
 
 	go = ( item ) => {
-		this.props.navigation.navigate( 'AudioBookDetailPage', { id: item.data.id } );
+		this.props.navigation.navigate( 'AudioBookDetailPage', { id: item.data.id, title: item.data.title } );
 	};
 
 	render() {

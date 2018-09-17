@@ -9,6 +9,7 @@ import logo from "../../images/logo-white.png"
 import IcAngleRight from "../../images/ic-angle-right-primary.png";
 import HistoryBackButton from "../components/header/HistoryBackButton";
 import Native from "./native";
+import globalStore from "./store";
 
 export const NAV_OPTS_COMMON = {
 	headerStyle: {
@@ -205,8 +206,10 @@ let navigation = null;
 export default {
 
 	setNav: ( nav )=>{
-		navigation = nav._navigation;
-		console.log( 'set global nav:', navigation );
+		if( nav && navigation === null ) {
+			navigation = nav._navigation;
+			console.log('set global nav:', navigation);
+		}
 	},
 	// welaaa://video_list 동영상 리스트
 	// welaaa://video_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
@@ -231,8 +234,10 @@ export default {
 			const schemes = scheme.replace('welaaa://', '').split('/');
 
 			// 맨 앞에 내용을 action 뒤에 내용을 params으로 분리
-			const action = schemes[0];
-			const paramsLen = schemes.length - 1; // action을 제외한 길이
+			const action = schemes.shift();
+			const paramsLen = schemes.length; // action을 제외한 길이
+
+			console.log( 'scheme:', action, schemes );
 
 			switch( action ){
 				case 'video_list':
@@ -259,14 +264,7 @@ export default {
 					break;
 
 				case 'in_browser':
-					/* TODO: 웹뷰 붙이는 작업 필요 */
-					Linking.openURL(schemes[0]);
-					// const url = 'https://naver.com';// schemes[0];
-					// Linking.openURL('https://google.com');
-					// Linking.canOpenURL( schemes[0] ).then( supproted => {
-					// 	if( supproted ) Linking.openURL( url );
-					// 	else            Alert.alert('열 수 없는 URL입니다.', url );
-					// });
+					navigation.navigate('WebView', { url: schemes[0] });
 					break;
 
 				case 'out_browser':
@@ -292,6 +290,28 @@ export default {
 		}
 		catch( error ) {
 			console.log( error );
+		}
+	},
+
+
+
+
+	commonBack:()=>{
+		console.log( 'commonBack start:', globalStore.prevLocations );
+		if (globalStore.prevLocations.length === 0)
+			navigation.goBack();
+		else{
+			const screen = globalStore.prevLocations.pop();
+			navigation.navigate( screen );
+			console.log( 'commonBack end:', globalStore.prevLocations );
+
+			//
+			setTimeout(()=>{
+				const locs = globalStore.prevLocations;
+				const locsLen = locs.length;
+				if( locsLen > 0 ) globalStore.prevLocations.pop();
+					console.log( '정리:', globalStore.prevLocations );
+				}, 0 );
 		}
 	}
 }

@@ -21,7 +21,7 @@ import BookContinueList from '../../components/home/BookCoutinueList';
 import PTRView from 'react-native-pull-to-refresh';
 import moment from 'moment';
 import ClassContinueList from '../../components/home/ClassContinueList';
-import BookDailyList from '../../components/home/BookDailyList';
+import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 
@@ -115,6 +115,14 @@ const styles = StyleSheet.create({
 
 @observer
 class HomeAudioPage extends React.Component {
+  /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
+  premiumCategorySelect = data => {
+    this.props.navigation.navigate(
+      'AudioBookPage',
+      { action: 'category', data: data } // 전달할 데이터
+    );
+  };
+
   render() {
     let updatedAt = moment().format('YYYY. MM. DD');
     let homeBannerData = [];
@@ -164,18 +172,12 @@ class HomeAudioPage extends React.Component {
           {/* /이미지 스와이퍼 */}
 
           <View style={styles.monthContainer}>
-            <BookMonthly
-              itemData={this.props.store.audioMonth}
-              voucherStatus={this.props.store.voucherStatus}
-            />
+            <BookMonthly itemData={this.props.store.audioMonth} />
           </View>
 
           {/*매일 책 한 권*/}
           <View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
-            <BookDailyList
-              itemData={this.props.store.audioDaily}
-              store={this.props.store}
-            />
+            <BookDaily itemData={this.props.store.audioDaily} />
           </View>
 
           <View
@@ -192,7 +194,10 @@ class HomeAudioPage extends React.Component {
 
             <View style={styles.audioCategory}>
               <View style={styles.audioCategoryHr} />
-              <PageCategory data={this.props.store.audioBookCategoryData} />
+              <PageCategory
+                data={this.props.store.audioBookCategoryData}
+                onCategorySelect={this.premiumCategorySelect}
+              />
               <View style={styles.audioCategoryHr} />
             </View>
 

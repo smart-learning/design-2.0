@@ -10,13 +10,12 @@ import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import {
-  Alert,
+  ActivityIndicator,
   AsyncStorage,
   DeviceEventEmitter,
   Platform,
   View,
   Linking,
-  AppState
 } from 'react-native';
 import EventEmitter from 'events';
 import globalStore from './src/scripts/commons/store';
@@ -28,19 +27,34 @@ import Native from './src/scripts/commons/native';
 import { observer } from 'mobx-react';
 import firebase, { RemoteMessage } from 'react-native-firebase';
 import nav from './src/scripts/commons/nav';
+import WebViewScreen from './src/scripts/pages/WebViewScreen';
+import { observable } from 'mobx';
+import commonStyle from './src/styles/common';
+
+class Data {
+  @observable
+  welaaaAuthLoaded = false;
+}
 
 @observer
 class App extends React.Component {
+  data = new Data();
   getTokenFromAsyncStorage = async () => {
     let welaaaAuth = await AsyncStorage.getItem('welaaaAuth');
     console.log('welaaaAuth:', welaaaAuth);
     if (welaaaAuth) {
       welaaaAuth = JSON.parse(welaaaAuth);
       globalStore.welaaaAuth = welaaaAuth;
+      this.data.welaaaAuthLoaded = true;
 
       globalStore.profile = await net.getProfile();
       // 멤버쉽 가져오기
       globalStore.currentMembership = await net.getMembershipCurrent();
+      // 이용권 가져오기
+      globalStore.voucherStatus = await net.getVouchersStatus();
+    } else {
+      // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
+      this.data.welaaaAuthLoaded = true;
     }
   };
 
@@ -218,31 +232,50 @@ class App extends React.Component {
   };
 
   render() {
+    console.log('changeInitialRoute:', globalStore.initialRoute);
+
     return (
       <View style={{ flex: 1 }}>
-        <AppDrawer
-          ref={navigatorRef => {
-            globalStore.drawer = navigatorRef;
-            // 플래이어 크래시 때문에 코드 추가
-            // nav.setNav(navigatorRef);
-          }}
-          style={{ width: '80%' }}
-          onNavigationStateChange={(prevState, currentState) => {
-            const currentScreen = getActiveRouteName(currentState);
-            const prevScreen = getActiveRouteName(prevState);
+        {!!this.data.welaaaAuthLoaded && (
+          <AppDrawer
+            ref={navigatorRef => {
+              globalStore.drawer = navigatorRef;
+              // 플래이어 크래시 때문에 코드 추가
+              nav.setNav(navigatorRef);
+            }}
+            style={{ width: '80%' }}
+            onNavigationStateChange={(prevState, currentState) => {
+              const currentScreen = getActiveRouteName(currentState);
+              const prevScreen = getActiveRouteName(prevState);
 
-            if (prevScreen !== currentScreen) {
-              if (currentScreen !== 'AuthCheck') {
-                globalStore.lastLocation = currentScreen;
-                globalStore.prevLocations.push(prevScreen);
-                globalStore.prevLocations.length = Math.min(
-                  globalStore.prevLocations.length,
-                  10
-                );
+              if (prevScreen !== currentScreen) {
+                console.log('change screen:', prevScreen, '-->', currentScreen);
+                // console.log( 'action :', currentState );
+
+                if (currentScreen !== 'AuthCheck') {
+                  globalStore.lastLocation = currentScreen;
+                  if (prevScreen !== 'AuthCheck')
+                    globalStore.prevLocations.push(prevScreen);
+                  globalStore.prevLocations.length = Math.min(
+                    globalStore.prevLocations.length,
+                    10
+                  );
+                }
               }
-            }
-          }}
-        />
+            }}
+          />
+        )}
+
+        {!this.data.welaaaAuthLoaded && (
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <ActivityIndicator
+              size={'large'}
+              color={commonStyle.COLOR_PRIMARY}
+            />
+          </View>
+        )}
 
         {globalStore.miniPlayerVisible &&
           Platform.select({
@@ -264,6 +297,7 @@ function getActiveRouteName(navigationState) {
   if (route.routes) {
     return getActiveRouteName(route);
   }
+
   return route.routeName;
 }
 
@@ -295,6 +329,10 @@ const AppDrawer = createDrawerNavigator(
       screen: AudioScreen
     },
 
+    MyScreen: {
+      screen: MyScreens
+    },
+
     MembershipScreen: {
       screen: MembershipScreens,
       navigationOptions: {
@@ -303,8 +341,12 @@ const AppDrawer = createDrawerNavigator(
       }
     },
 
-    MyScreen: {
-      screen: MyScreens
+    WebView: {
+      screen: WebViewScreen,
+      navigationOptions: {
+        drawerIcon: <Hidden />,
+        drawerLabel: <Hidden />
+      }
     }
 
     // Playground: {

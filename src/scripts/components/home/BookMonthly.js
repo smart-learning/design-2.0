@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
-  Image
+  Image,
+  BackHandler
 } from 'react-native';
 import IcHeadphone from '../../../images/ic-headphones.png';
 import Dummy from '../../../images/dummy-audioBook.png';
@@ -15,6 +16,7 @@ import { withNavigation } from 'react-navigation';
 import CommonStyles from '../../../styles/common';
 import moment from 'moment';
 import globalStore from '../../commons/store';
+import nav from '../../commons/nav';
 
 const styles = StyleSheet.create({
   bookMonthly: {},
@@ -128,6 +130,26 @@ class BookMonthly extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    console.log(
+      'bookmonthly detail hardware back button:',
+      this.props.navigation.isFocused(),
+      globalStore.prevLocations
+    );
+    if (this.props.navigation.isFocused()) {
+      nav.commonBack();
+    }
+    return false;
+  };
+
   render() {
     // let list = this.props.itemData;
     // let bookList = [];
@@ -152,6 +174,7 @@ class BookMonthly extends React.Component {
             dotColor={'#9bcdba'}
             activeDotColor={CommonStyles.COLOR_PRIMARY}
             paginationStyle={{ bottom: 0 }}
+			key={itemData.length}
           >
             {itemData.map((item, key) => {
               const MonthData = moment(item.month).format('M');
@@ -187,8 +210,8 @@ class BookMonthly extends React.Component {
                               보유한 오디오북 이용권
                               <Text style={styles.couponCountText}>
                                 {' '}
-                                {this.props.voucherStatus
-                                  ? this.props.voucherStatus.total
+                                {globalStore.voucherStatus !== null
+                                  ? globalStore.voucherStatus.total
                                   : '0'}
                                 개
                               </Text>

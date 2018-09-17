@@ -12,7 +12,7 @@ import {
   View
 } from 'react-native';
 import net from '../../commons/net';
-import { SafeAreaView } from 'react-navigation';
+import { SafeAreaView, withNavigation } from 'react-navigation';
 import createStore from '../../commons/createStore';
 import HomeVideoPage from './HomeVideoPage';
 import ViewPager from 'react-native-view-pager';
@@ -21,7 +21,7 @@ import PageCategoryItemVO from '../../vo/PageCategoryItemVO';
 import SummaryVO from '../../vo/SummaryVO';
 import _ from 'underscore';
 import AdvertisingSection from '../../components/AdvertisingSection';
-import Store from '../../commons/store';
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -95,8 +95,6 @@ class HomePage extends React.Component {
     audioRecommendData: [],
     audioMonth: [],
     audioDaily: [],
-    dailyTabSelected: 'mon',
-    voucherStatus: null,
     classUseData: [],
     audioBuyData: [],
     audioUseData: [],
@@ -197,7 +195,7 @@ class HomePage extends React.Component {
     this.store.clipRankData = await net.getHomeClipRank(isRefresh);
     this.store.audioNewData = await net.getAudioBookList(isRefresh);
     this.store.audioMonth = await net.getHomeAudioBookMonth(isRefresh);
-    this.store.audioDaily = [];
+    this.store.audioDaily = {};
     try {
       this.store.audioDaily = await net.getDailyBookList(isRefresh);
     } catch (error) {
@@ -209,11 +207,6 @@ class HomePage extends React.Component {
     this.store.audioRecommendData = homeAudioBookContents.recommend;
     // this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
 
-    try {
-      this.store.voucherStatus = await net.getVoucherStatus(isRefresh);
-    } catch (e) {
-      console.log(e);
-    }
     try {
       this.store.classUseData = await net.getPlayRecentVideoCourses(isRefresh);
     } catch (error) {
@@ -232,6 +225,8 @@ class HomePage extends React.Component {
   };
 
   componentDidMount() {
+    if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
+
     let windowWidth = Dimensions.get('window').width;
     let windowHeight = Dimensions.get('window').height;
 
@@ -254,7 +249,12 @@ class HomePage extends React.Component {
   }
 
   handleBackPress = () => {
-    BackHandler.exitApp();
+    console.log('back press:');
+    if (this.props.navigation.isFocused()) {
+      BackHandler.exitApp();
+    } else {
+      this.props.navigation.goBack();
+    }
   };
 
   goPage = pageName => {
@@ -360,4 +360,4 @@ class HomePage extends React.Component {
   }
 }
 
-export default HomePage;
+export default withNavigation(HomePage);
