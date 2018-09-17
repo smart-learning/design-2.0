@@ -131,8 +131,6 @@ class SidebarUserInfo extends React.Component {
   }
 
   renderMembershipButton() {
-  	console.log('renderMembershipButton: store.welaaaAuth', store.welaaaAuth)
-
     if (store.welaaaAuth === undefined) {
       return (
         <View style={styles.memberShipContainerNoMembership}>

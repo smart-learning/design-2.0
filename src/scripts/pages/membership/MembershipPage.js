@@ -532,7 +532,7 @@ export default class MembershipPage extends React.Component {
                 >
                   <View>
                     <Text style={styles.memberShipButtonTitle}>
-                      ㄴ첫 1개월 무료
+                      첫 1개월 무료
                     </Text>
                     <Text style={styles.memberShipButtonParagraph}>
                       {this.props.membership_price_prefix}
