@@ -1,16 +1,6 @@
 import React from 'react';
 import CommonStyles from "../../../styles/common";
-import {
-	Keyboard,
-	Text,
-	Image,
-	ImageBackground,
-	StyleSheet,
-	View, KeyboardAvoidingView,
-	AsyncStorage,
-	BackHandler,
-	Alert
-} from "react-native";
+import { Alert, BackHandler, Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
 import EmailAuthPack from "../../components/auth/EmailAuthPack";
 import logo from '../../../images/logo-en-primary.png';
@@ -19,9 +9,7 @@ import FBLoginButton from "../../components/auth/FBLoginButton";
 import store from '../../../scripts/commons/store';
 import net from "../../commons/net";
 import globalStore from "../../commons/store";
-import { observable } from "mobx";
-import { observer } from "mobx-react";
-import Store from "../../commons/store";
+import _ from 'underscore';
 
 const styles = StyleSheet.create( {
 	loginContainer: {
@@ -84,7 +72,7 @@ class LoginPage extends React.Component {
 	* @params email: 이메일이나 소셜 타입
 	* @params password: 이메일비번이나 소셜 토큰
 	* */
-	login = ( email, password, cb ) => {
+	login = ( email, password, callback ) => {
 		let { navigation } = this.props;
 		const resultAuthToken = net.getAuthToken( email, password);
 
@@ -97,7 +85,10 @@ class LoginPage extends React.Component {
 				// 로그인이 완료 되면 loginCompleted를 보내 App.js의
 				// 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
 				globalStore.emitter.emit('loginCompleted')
-				// cb && cb()
+
+				if( _.isFunction( callback ) ) {
+					callback();
+				}
 			})
 			.catch(error => {
 				// 이 부분에 서버에서 오는 다양한 코드 및 메시지를 통해
@@ -112,7 +103,10 @@ class LoginPage extends React.Component {
 						break
 				}
 				Alert.alert( '로그인에 실패하였습니다.', message );
-				// cb && cb()
+
+				if( _.isFunction( callback ) ) {
+					callback();
+				}
 			});
 	}
 
