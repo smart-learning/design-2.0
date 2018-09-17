@@ -53,6 +53,7 @@
     BOOL _isPlaybackContollerHidden;// 재생 컨트롤 UI 모듈 감춤 or 표시.
     BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한.
     bool _isAudioContent;           // 콘텐트 타입. (AVPlayer API를 사용할 수도 있습니다. 추후에 '매일 책 한권' 등의 콘텐트에 대한 분류도 고민해야 할 것입니다.
+    bool _isDownloadContent;
   
     ContentPlayerButton *_autoPlayButton;
     ContentPlayerButton *_scriptButton;
@@ -331,7 +332,7 @@
     [self drawPlayerControlBottom];
   
     // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
-    CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
+    //CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
   
     [self setPreparedToPlay];
     [self initScriptUi];
