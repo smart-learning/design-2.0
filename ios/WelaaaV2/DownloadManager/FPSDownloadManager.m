@@ -124,6 +124,7 @@
     NSString *cid = args[@"cid"];
     NSString *userId = args[@"userId"];
     NSString *name = args[@"name"];
+    NSString *token = args[@"token"];
     int cellIndex = [args[@"index"] intValue];
   
     if ( !cid )
@@ -161,6 +162,7 @@
     }
   
     [queryService getSearchWelaaaPlayDataResults : cid
+                                       authToken : token
                                     queryResults : ^(NSDictionary *dicResult, NSString *errMsg)
     {
         NSLog(@"errMsg : %@", errMsg);
