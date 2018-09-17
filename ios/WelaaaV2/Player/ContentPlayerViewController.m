@@ -15,9 +15,6 @@
 #import "IFRecommendViewController.h"
 #import "Clip.h"
 
-#define PALLYCON_SITE_ID    @"O8LD"
-#define PALLYCON_SITE_KEY   @"YxIe3SrPPWWH6hHPkJdG1pUewkB1T6Y9"
-
 @interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate,
                                           ContentsListPopupViewDelegate, MediaPlayerScriptViewDelegate, ContentMiniPlayerViewDelegate>
 {
@@ -349,6 +346,14 @@
                                                 object : [_player currentItem]  ];
     [self setPlayState : YES];
   
+    [[AVAudioSession sharedInstance] setCategory : AVAudioSessionCategoryPlayback
+                                           error : nil];
+  
+    [ [NSNotificationCenter defaultCenter] addObserver : self
+                                              selector : @selector(audioSessionInterrupted:)
+                                                  name : AVAudioSessionInterruptionNotification
+                                                object : nil];
+  
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
@@ -531,6 +536,27 @@
     }
   
     // 추가할 사항 : 연속재생 버튼이 'on'상태이면 플레이어를 종료합니다.
+}
+
+//
+// 전화통화 등으로 재생에 interrupt가 걸렸을 경우..
+//
+- (void) audioSessionInterrupted : (NSNotification *) notification
+{
+    int interruptionType = [notification.userInfo[AVAudioSessionInterruptionTypeKey] intValue];
+  
+    if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
+    {
+        NSLog(@"Pausing for audio session interruption");
+        [self pressedPauseButton];
+    }
+    else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
+    {
+        NSLog(@"Resuming after audio session interruption");
+      
+        // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
+        //[self pressedPlayButton];
+    }
 }
 
 // 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
@@ -1235,10 +1261,10 @@
 {
   //[self toastTestAlert];
   
-    [self closePlayer];
+  //[self closePlayer];
   
   //[self showToast : @"미니플레이어로 변환합니다."];
-  /*
+  
   self.isMiniPlayer = YES;
   _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
   _miniPlayerUiView.delegate = self;
@@ -1246,10 +1272,10 @@
   [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
   [self.view addSubview : _miniPlayerUiView];
   
-  _playerUiView.hidden = self.isMiniPlayer;
+//_playerUiView.hidden = self.isMiniPlayer;
   _miniPlayerUiView.hidden = !self.isMiniPlayer;
-  [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  */
+//[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
+  
 }
 
 - (void) pressedRateStarButton
@@ -2000,21 +2026,27 @@
         return ;
       }
       /* 기존 사용 코드(윌라 1.0)
-      [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
-      self.isDownloading = YES;
-      [self setTouchEnable: _downloadButton
-                    isLock: YES];*/
+       [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
+       self.isDownloading = YES;
+       [self setTouchEnable: _downloadButton
+       isLock: YES];*/
+      
       // 2018.9.6 ~
-      Clip* clipToDownload = [[Clip alloc] initWithTitle:[_args objectForKey:@"name"]
-                                                    memo:@""
-                                                     cid:[_args objectForKey:@"cid"]
-                                                playTime:@""
-                                                   index:0];
-      [_fpsDownloadManager startDownload:clipToDownload completion:^(NSString* downloadMsg){
-        if(downloadMsg){
-          [self showToast:downloadMsg]; // "다운로드를 시작합니다." 등.
-        }
-      }];
+      /*
+       Clip* clipToDownload = [[Clip alloc] initWithTitle:[_args objectForKey:@"name"]
+       memo:@""
+       cid:[_args objectForKey:@"cid"]
+       playTime:@""
+       index:0];
+       [_fpsDownloadManager startDownload:clipToDownload completion:^(NSString* downloadMsg){
+       if(downloadMsg){
+       [self showToast:downloadMsg]; // "다운로드를 시작합니다." 등.
+       }
+       }];
+       */
+      
+      // 2018. 9.14 ~
+      [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result){}];
     }
 }
 

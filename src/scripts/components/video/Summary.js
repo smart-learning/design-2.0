@@ -202,6 +202,12 @@ export default class Summary extends React.Component {
               resizeMode="cover"
               style={styles.thumbnail}
             >
+              <View style={[styles.alignJustify, styles.detailClipView]}>
+                <Image source={IcView} style={styles.btnSetSmall} />
+                <Text style={styles.countText}>
+                  조회수 {this.props.itemData.hit_count}
+                </Text>
+              </View>
               <TouchableOpacity
                 activeOpacity={0.9}
                 style={styles.play}

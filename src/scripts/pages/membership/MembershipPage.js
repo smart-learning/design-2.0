@@ -254,9 +254,6 @@ const MembershipRule = Platform.select({
 export default class MembershipPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      membership_price_suffix: ' 결제하기 / 해지는 언제든지 쉽게!'
-    };
   }
 
   render() {
@@ -538,12 +535,12 @@ export default class MembershipPage extends React.Component {
                       ㄴ첫 1개월 무료
                     </Text>
                     <Text style={styles.memberShipButtonParagraph}>
-                      이후 매월
+                      {this.props.membership_price_prefix}
                       {Platform.select({
                         ios: <Text>$9.89</Text>,
-                        android: <Text>월 7,700원</Text>
+                        android: <Text>7,700원</Text>
                       })}
-                      {this.state.membership_price_suffix}
+                      {this.props.membership_price_suffix}
                     </Text>
                   </View>
                   <Image source={IcAngleRight} />
@@ -600,12 +597,12 @@ export default class MembershipPage extends React.Component {
                       첫 1개월 무료
                     </Text>
                     <Text style={styles.memberShipButtonParagraph}>
-                      이후 매월
+                      {this.props.membership_price_prefix}
                       {Platform.select({
                         ios: <Text>$8.79</Text>,
-                        android: <Text>월 6,600원</Text>
+                        android: <Text>6,600원</Text>
                       })}
-                      {this.state.membership_price_suffix}
+                      {this.props.membership_price_suffix}
                     </Text>
                   </View>
                   <Image source={IcAngleRight} />
@@ -654,12 +651,12 @@ export default class MembershipPage extends React.Component {
                       첫 1개월 무료
                     </Text>
                     <Text style={styles.memberShipButtonParagraph}>
-                      이후 매월
+                      {this.props.membership_price_prefix}
                       {Platform.select({
                         ios: <Text>$18.69</Text>,
-                        android: <Text>월 14,300원</Text>
+                        android: <Text>14,300원</Text>
                       })}
-                      {this.state.membership_price_suffix}
+                      {this.props.membership_price_suffix}
                     </Text>
                   </View>
                   <Image source={IcAngleRight} />
@@ -686,4 +683,9 @@ export default class MembershipPage extends React.Component {
       </SafeAreaView>
     );
   }
+}
+
+MembershipPage.defaultProps = {
+  membership_price_prefix: '이후 매월 ',
+  membership_price_suffix: ' 결제하기 / 해지는 언제든지 쉽게!'
 }

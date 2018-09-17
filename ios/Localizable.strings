@@ -1,9 +1,0 @@
-/* 
-  localizable.strings
-  WelaaaV2
-
-  Created by KyeJune Hong on 08/08/2018.
-  Copyright © 2018 Facebook. All rights reserved.
-*/
-"STRING_FROM_NATIVE" = "Hello from the NATIVE side, I must've called a thousand time...";
-"test_var" = "test value";

@@ -258,7 +258,7 @@ class HomeVideoPage extends React.Component {
                 </Text>
               </View>
 
-              <ClassList itemData={this.props.store.classNewData} />
+              <ClassList itemData={this.props.store.classNewData} classType="new"/>
 
               <View style={CommonStyles.alignJustifyContentBetween}>
                 <Text style={styles.titleH3}>윌라 추천 클래스</Text>

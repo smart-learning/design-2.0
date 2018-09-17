@@ -10,13 +10,10 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -92,13 +89,9 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.google.gson.Gson;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.ref.WeakReference;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -529,9 +522,7 @@ public class PlayerActivity extends BasePlayerActivity {
       IS_FREE = intent.getBooleanExtra("is_free", false);
       EXPIRE_AT = intent.getStringExtra("expire_at");
       CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
-
-      initialize();
-    }else{
+    } else {
       Preferences.getWelaaaWebPlayInfo(getApplicationContext());
 
       Gson gson = new Gson();
@@ -539,19 +530,18 @@ public class PlayerActivity extends BasePlayerActivity {
       WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
 
       mWebPlayerInfo = mWebPlayerInfoFromJson;
-      boolean preview =Preferences.getWelaaaPreviewPlay(getApplicationContext());
+      boolean preview = Preferences.getWelaaaPreviewPlay(getApplicationContext());
 
-      if(preview){
+      if (preview) {
         CAN_PLAY = false;
-      }else{
+      } else {
         CAN_PLAY = true;
       }
 
       CONTENT_TYPE = mWebPlayerInfo.getCon_class();
-
-      initialize();
-
     }
+
+    initialize();
 
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
@@ -695,9 +685,6 @@ public class PlayerActivity extends BasePlayerActivity {
       // 차선 책으로 타이머라도 돌릴까요 ???
     }
 
-    // video-course , audiobook //
-    callbackWebPlayerInfo(CONTENT_TYPE, "");
-
     if (CONTENT_TYPE != null) {
       if (CONTENT_TYPE.equals("audiobook")) {
         RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
@@ -737,7 +724,7 @@ public class PlayerActivity extends BasePlayerActivity {
         Intent intent = getIntent();
 
         if (intent.getStringExtra(PlaybackManager.DRM_CID) != null) {
-          if (intent.getStringExtra(PlaybackManager.DRM_CID).contains("z") ){
+          if (intent.getStringExtra(PlaybackManager.DRM_CID).contains("z")) {
 
             UiThreadUtil.runOnUiThread(new Runnable() {
               @Override
@@ -761,7 +748,7 @@ public class PlayerActivity extends BasePlayerActivity {
             });
 
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
-          }else{
+          } else {
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
           }
         }
@@ -790,6 +777,9 @@ public class PlayerActivity extends BasePlayerActivity {
     setPlayerTitle();
     // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
     setRelatedUI();
+
+    // video-course , audiobook //
+//    callbackWebPlayerInfo(CONTENT_TYPE, "");
 
     mButtonGroupLayout.setOnTouchListener(new View.OnTouchListener() {
 
@@ -1053,7 +1043,7 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   private String getIdleReasonString(int idleReason) {
-    LogHelper.e(TAG , " getIdleReasonString " + idleReason);
+    LogHelper.e(TAG, " getIdleReasonString " + idleReason);
     switch (idleReason) {
       case MediaStatus.IDLE_REASON_FINISHED:    // 1
         return "Finish";
@@ -1916,7 +1906,8 @@ public class PlayerActivity extends BasePlayerActivity {
             Preferences.setWelaaaPlaySpeedrate(getApplicationContext(), snum);
 
             float f = (float) speedNum;
-            PlaybackParameters param = new PlaybackParameters(f, f);
+            PlaybackParameters param = new PlaybackParameters(f);
+//            PlaybackParameters param = new PlaybackParameters(f, f);
             player.setPlaybackParameters(param);
           }
           break;
@@ -4195,6 +4186,10 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   public void callbackWebPlayerInfo(String methodName, String params) {
+    if (methodName == null) {
+      return;
+    }
+
     try {
 
       if (methodName.equals("video-course")) {
@@ -4643,14 +4638,14 @@ public class PlayerActivity extends BasePlayerActivity {
     mediaController.registerCallback(callback);
 
     try {
-      if (fromMediaSession) {
-        Bundle extras = mediaController.getMetadata().getBundle();
-        Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
-        playFromUri(uri, extras);
-      } else {
+      if (!fromMediaSession) {
         Intent intent = getIntent();
         Uri uri = intent.getData();
         playFromUri(uri, intent.getExtras());
+      } else {
+        Bundle extras = mediaController.getMetadata().getBundle();
+        Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+        playFromUri(uri, extras);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -4684,6 +4679,34 @@ public class PlayerActivity extends BasePlayerActivity {
 
     if (controllerCompat != null && controllerCompat.getExtras() != null) {
       String castName = controllerCompat.getExtras().getString(MediaService.EXTRA_CONNECTED_CAST);
+    }
+
+    try {
+      String speedRate = Preferences.getWelaaaPlaySpeedrate(getApplicationContext());
+
+      if (speedRate.equals("1.2")) {
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_12));
+      } else if (speedRate.equals("1.5")) {
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_15));
+      } else if (speedRate.equals("0.8")) {
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_08));
+      } else if (speedRate.equals("1.0")) {
+        mBtnIconBtnSpeed
+            .setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_speed_10));
+      }
+
+      Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
+
+      if (player != null) {
+        float f = Float.valueOf(speedRate);
+        PlaybackParameters param = new PlaybackParameters(f);
+        player.setPlaybackParameters(param);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
     switch (state.getState()) {
@@ -4961,7 +4984,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
                   // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-                  Preferences.setWelaaaPlayListCKey(getApplicationContext(), getwebPlayerInfo().getCkey()[getContentId()]);
+                  Preferences.setWelaaaPlayListCKey(getApplicationContext(),
+                      getwebPlayerInfo().getCkey()[getContentId()]);
 
                   Bundle extras = intent.getExtras();
 
