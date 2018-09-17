@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -134,6 +135,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     });
 
 
+  }
+
+  @ReactMethod
+  public void stop() {
+    MediaControllerCompat mediaController = MediaControllerCompat
+        .getMediaController(getCurrentActivity());
+    if (mediaController != null) {
+      mediaController.getTransportControls().stop();
+    }
   }
 
   @ReactMethod
@@ -681,8 +691,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 mProgressDialog.dismiss();
               }
 
-              LogHelper.e(TAG , " 20180901 for callbackMethod" + callbackMethod);
-              LogHelper.e(TAG , " 20180901 for contentType" + contentType);
+              LogHelper.e(TAG, " 20180901 for callbackMethod" + callbackMethod);
+              LogHelper.e(TAG, " 20180901 for contentType" + contentType);
 
               if (contentType.equals("audiobook")) {
                 if (!can_play) {
@@ -714,18 +724,20 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   if (mWebPlayerInfo.getCurl()[contentId].equals("0") ||
                       mWebPlayerInfo.getCurl()[contentId].equals("0.0")) {
 
-                    LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[contentId]);
+                    LogHelper
+                        .e(TAG, " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[contentId]);
 
                     // 처음 들어올 때 용도
                     for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
 
-                      LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
-                      LogHelper.e(TAG , " 20180901 for contentCid" + i);
+                      LogHelper.e(TAG, " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
+                      LogHelper.e(TAG, " 20180901 for contentCid" + i);
 
                       if (!(mWebPlayerInfo.getCurl()[i].equals("0") ||
                           mWebPlayerInfo.getCurl()[i].equals("0.0"))) {
-                        LogHelper.e(TAG , " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
-                        LogHelper.e(TAG , " 20180901 for contentCid" + i);
+                        LogHelper
+                            .e(TAG, " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
+                        LogHelper.e(TAG, " 20180901 for contentCid" + i);
 
                         contentId = i;
                         contentCid = mWebPlayerInfo.getCkey()[i];
@@ -736,7 +748,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                       }
                     }
                   }
-
 
                   intent.setData(Uri.parse(dashUrl));
                   intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
@@ -940,9 +951,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     return myApp.getContentMgr();
   }
 
-  public void doNextPlay(String contendCid){
-    LogHelper.e(TAG , " doNextPlay " + contendCid);
-    LogHelper.e(TAG , " doNextPlay sendData !! request ~  ");
+  public void doNextPlay(String contendCid) {
+    LogHelper.e(TAG, " doNextPlay " + contendCid);
+    LogHelper.e(TAG, " doNextPlay sendData !! request ~  ");
 
     callbackMethodName = "play/play-data/";
 

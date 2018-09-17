@@ -137,8 +137,8 @@ class SidebarUserInfo extends React.Component {
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() =>
-              this.props.navigation.navigate('MembershipPage', {
-                title: '윌라 멤버쉽'
+              this.props.navigation.navigate('Login', {
+                title: '회원 가입'
               })
             }
           >
