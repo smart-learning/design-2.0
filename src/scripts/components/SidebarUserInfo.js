@@ -17,6 +17,9 @@ import MembershipBookClub from '../../images/bullet-membership-book-club.png';
 import MembershipCampus from '../../images/bullet-membership-campus.png';
 import MembershipPremium from '../../images/bullet-membership-premium.png';
 import moment from 'moment';
+import { observer } from 'mobx-react';
+import createStore from '../commons/createStore';
+import net from '../commons/net';
 
 const styles = StyleSheet.create({
   userInfoContainer: {
@@ -113,14 +116,31 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class SidebarUserInfo extends React.Component {
+@observer
+class SidebarUserInfo extends React.Component {
+  data = createStore({
+    voucherStatus: null
+  });
+
+  getData = async () => {
+    this.data.voucherStatus = await net.getVouchersStatus();
+  };
+
+  componentDidMount() {
+    this.getData();
+  }
+
   renderMembershipButton() {
     if (store.welaaaAuth === undefined) {
       return (
         <View style={styles.memberShipContainerNoMembership}>
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={() => this.props.navigation.navigate('MembershipPage', {title: '윌라 멤버쉽'})}
+            onPress={() =>
+              this.props.navigation.navigate('MembershipPage', {
+                title: '윌라 멤버쉽'
+              })
+            }
           >
             <View style={styles.membershipButton} borderRadius={4}>
               <Image source={IcFree} style={styles.membershipButtonBullet} />
@@ -185,7 +205,14 @@ export default class SidebarUserInfo extends React.Component {
                         모든 클래스 무제한 보기,
                       </Text>
                       <Text style={styles.membershipItemText}>
-                        오디오북 이용권 2개
+                        오디오북 이용권{' '}
+                        <Text>
+                          {' '}
+                          {globalStore.voucherStatus !== null
+                            ? globalStore.voucherStatus.total
+                            : '0'}
+                        </Text>
+                        개
                       </Text>
                     </View>
                   )}
@@ -196,7 +223,14 @@ export default class SidebarUserInfo extends React.Component {
                   )}
                   {globalStore.currentMembership.type === 4 && (
                     <Text style={styles.membershipItemText}>
-                      오디오북 이용권 2개
+                      오디오북 이용권{' '}
+                      <Text>
+                        {' '}
+                        {globalStore.voucherStatus !== null
+                          ? globalStore.voucherStatus.total
+                          : ' 0 '}
+                      </Text>
+                      개
                     </Text>
                   )}
                 </View>
@@ -282,3 +316,5 @@ export default class SidebarUserInfo extends React.Component {
     );
   }
 }
+
+export default SidebarUserInfo;

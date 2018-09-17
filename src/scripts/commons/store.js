@@ -14,6 +14,15 @@ class Store {
 	lastLocation = 'HomeScreen';
 	prevLocations = [];
 
+	@observable homeTabStatus = 'video';
+	@observable initialRoute = {
+		// initialRouteName: 'AuthCheck',
+		gesturesEnabled: false
+	}
+
+	// 사용권한이 있는 페이지 정리
+	authRequiredPages = ['AudioBookUsePage'];
+
 	get socialType() {
 		return socialType;
 	}
@@ -36,6 +45,10 @@ class Store {
 		welaaaAuth = auth;
 		AsyncStorage.setItem('welaaaAuth', JSON.stringify(auth));
 		axios.defaults.headers.common['authorization'] = 'Bearer ' + auth.access_token;
+
+		this.initialRoute = {
+			gesturesEnabled: false
+		}
 	}
 
 	get currentMembership() {
@@ -56,9 +69,14 @@ class Store {
 		delete axios.defaults.headers.common['authorization']
 
 		AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
+		this.initialRoute = {
+			initialRouteName: 'AuthCheck',
+			gesturesEnabled: false
+		}
 	}
 
 	@observable currentMembership = {};
+	@observable voucherStatus = {};
 	@observable profile = {};
 
 	/* 이벤트로 넘겨받은 다운로드받은 아이템 DB조회목록 */

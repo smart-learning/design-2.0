@@ -138,9 +138,18 @@ class TabContentInfo extends React.Component {
 	render() {
 		const playTime = moment.duration( this.props.store.itemData.play_time );
 		let infoImageSet = [];
+		let teacherMemo = '';
 		try {
 			if( _.isArray( this.props.store.itemData.info_img_set ) ) {
 				infoImageSet = this.props.store.itemData.info_img_set;
+			}
+		}
+		catch( error ) { console.log( error ) }
+
+		try {
+			if( !_.isNull( this.props.store.itemData.teacher.memo ) ) {
+				teacherMemo = this.props.store.itemData.teacher.memo;
+				teacherMemo = teacherMemo.split( '<br>' ).join( '\n' );
 			}
 		}
 		catch( error ) { console.log( error ) }
@@ -214,20 +223,27 @@ class TabContentInfo extends React.Component {
 
 			<View style={styles.author}>
 				<View style={CommonStyles.contentContainer}>
+					{this.props.learnType === 'audioBook' &&
+					<Text style={styles.sectionTitle}>저자</Text>
+					}
+					{this.props.learnType === 'class' &&
 					<Text style={styles.sectionTitle}>강사</Text>
+					}
 					{/*<Image source={{ uri: this.props.itemData.teacher.images.profile }} borderRadius={44} style={styles.authorImage}/>*/}
 					<Text style={styles.authorName}>
 						{this.props.store.itemData.teacher.name}
 					</Text>
 					{!!this.state.teacherView &&
 					<Text style={styles.authorText}>
-						{`${ this.props.store.itemData.teacher.memo.split( '<br>' ).join( '\n' ) }`}
+						{ teacherMemo }
 					</Text>
 					}
 					{/*<TouchableOpacity onPress={() => {Alert.alert('준비중입니다.')}}>*/}
+					{ this.props.store.itemData.teacher.memo !== null &&
                     <TouchableOpacity onPress={this.toggleTeacherView}>
 						<Text style={styles.lectureMoreButton}>더보기</Text>
 					</TouchableOpacity>
+					}
 				</View>
 			</View>
 
