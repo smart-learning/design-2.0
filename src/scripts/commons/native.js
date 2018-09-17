@@ -9,6 +9,10 @@ export default {
     RNNativeBase.getF_TOKEN(callback);
   },
 
+  doThingAfterLogout() {
+    RNNativePlayer.stop()
+  },
+
   play(cid, oid = '') {
     const { welaaaAuth } = globalStore;
 
