@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import { COLOR_PRIMARY } from "../../../styles/common";
+import {observer} from "mobx-react";
+import createStore from "../../commons/createStore";
 
 const styles = StyleSheet.create({
 	contentContainer: {
@@ -46,31 +48,46 @@ const styles = StyleSheet.create({
 	}
 });
 
+@observer
 class EmailAuthPack extends Component {
+	data = createStore({
+		email: '',
+		password: '',
+		loginButtonDisabled: false,
+	});
 
-	constructor() {
-		super();
-
-		this.state = {
-			email: '',
-			password: '',
-			loginButtonDisabled: false,
-		};
+	componentDidMount () {
+		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
 	}
 
+	componentWillUnmount () {
+		this.keyboardDidShowListener.remove();
+		this.keyboardDidHideListener.remove();
+	}
+
+	_keyboardDidShow = () => {
+		this.data.isKeyboardOn = true;
+	};
+
+	_keyboardDidHide = () => {
+		this.data.isKeyboardOn = false;
+		this.props.onKeyboardStatus();
+	};
+
 	handleLogin = () => {
-		if (this.state.email === '') {
+		if (this.data.email === '') {
 			Alert.alert('오류', '이메일은 필수 입력항목입니다.');
 			return
 		}
-	    if (this.state.password === '') {
+	    if (this.data.password === '') {
 			Alert.alert('오류', '비밀번호는 필수 입력항목입니다.');
 			return
 		}
 
 		this.setState({ loginButtonDisabled: true })
-		this.props.onAccess( this.state.email, this.state.password, () => {
-			this.setState({ loginButtonDisabled: false })
+		this.props.onAccess( this.data.email, this.data.password, () => {
+			this.data.loginButtonDisabled= false
 		} );
 	};
 
@@ -82,8 +99,9 @@ class EmailAuthPack extends Component {
 					style={styles.input}
 					keyboardType="email-address"
 					underlineColorAndroid={'rgba(0,0,0,0)'}
-					value={this.state.email}
+					value={this.data.email}
 					autoCapitalize={'none'}
+					onSubmitEditing={Keyboard.dismiss}
 					onChangeText={text => {
 						this.setState({email: text});
 					}}/>
@@ -92,20 +110,21 @@ class EmailAuthPack extends Component {
 					style={styles.input}
 					underlineColorAndroid={'rgba(0,0,0,0)'}
 					secureTextEntry={true}
+					value={this.data.password}
 					autoCapitalize={'none'}
-					value={this.state.password}
+					onSubmitEditing={Keyboard.dismiss}
 					onChangeText={text => {
 						this.setState({password: text})
 					}}/>
 			</View>
 
 			<TouchableOpacity activeOpacity={0.9}
-							disabled={this.state.loginButtonDisabled}
+							disabled={this.data.loginButtonDisabled}
 							onPress={this.handleLogin}>
 				<View borderRadius={4}
 					  style={styles.btnSubmit}>
 					<Text style={styles.textSubmit}>
-						{this.state.loginButtonDisabled
+						{this.data.loginButtonDisabled
 							? '로그인 중'
 							: '이메일로  로그인' }
 					</Text>
@@ -127,7 +146,6 @@ class EmailAuthPack extends Component {
 				</TouchableOpacity>
 				</View>
 			</View>
-
 		</View>
 	}
 }
