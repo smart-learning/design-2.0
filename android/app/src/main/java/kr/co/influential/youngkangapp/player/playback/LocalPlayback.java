@@ -357,7 +357,7 @@ public final class LocalPlayback implements Playback {
       // 이달의 책은 MP4 이지만 , MP3의 형태를 가지고 있습니다.
       // cdnetworks 에서 MP3 를 지원하지 않아서 MP4 로 만들어서
       // 서비스 했습니다.
-      try{
+      try {
         int indexOfVideoRenderer = -1;
         for (int i = 0; i < mExoPlayer.getRendererCount(); i++) {
           if (mExoPlayer.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
@@ -373,18 +373,20 @@ public final class LocalPlayback implements Playback {
         String json = Preferences.getWelaaaWebPlayInfo(mContext);
         WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
 
-        if(mWebPlayerInfo.getCon_class().equals("audiobook")){
-          DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
+        if (mWebPlayerInfo.getCon_class().equals("audiobook")) {
+          DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector
+              .buildUponParameters();
           parametersBuilder.setRendererDisabled(indexOfVideoRenderer, true);
           trackSelector.setParameters(parametersBuilder);
         }
 
-        if(currentCkey.contains("z")){
-          DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector.buildUponParameters();
+        if (currentCkey.contains("z")) {
+          DefaultTrackSelector.ParametersBuilder parametersBuilder = trackSelector
+              .buildUponParameters();
           parametersBuilder.setRendererDisabled(indexOfVideoRenderer, true);
           trackSelector.setParameters(parametersBuilder);
         }
-      }catch (Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
       }
 
@@ -596,7 +598,7 @@ public final class LocalPlayback implements Playback {
         case Player.STATE_READY:
           if (mCallback != null) {
 
-            try{
+            try {
               mCallback.onPlaybackStatusChanged(getState());
 
               int currentId = Preferences.getWelaaaPlayListCId(mContext);
@@ -624,11 +626,13 @@ public final class LocalPlayback implements Playback {
 
                 }
               }
-            }catch (Exception e ){
+            } catch (Exception e) {
               e.printStackTrace();
             }
 
           }
+
+          restorePlaybackSpeedRate();
           break;
         case Player.STATE_ENDED:
           if (mCallback != null) {
@@ -689,6 +693,19 @@ public final class LocalPlayback implements Playback {
     @Override
     public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
       // Nothing to do.
+    }
+  }
+
+  private void restorePlaybackSpeedRate() {
+    if (mExoPlayer != null) {
+      float speedRate = 1.f;
+      try {
+        speedRate = Float.parseFloat(Preferences.getWelaaaPlaySpeedrate(mContext));
+      } catch (NumberFormatException e) {
+        e.printStackTrace();
+      }
+      PlaybackParameters parameters = new PlaybackParameters(speedRate);
+      mExoPlayer.setPlaybackParameters(parameters);
     }
   }
 

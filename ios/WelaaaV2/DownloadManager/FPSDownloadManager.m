@@ -124,6 +124,7 @@
     NSString *cid = args[@"cid"];
     NSString *userId = args[@"userId"];
     NSString *name = args[@"name"];
+    NSString *token = args[@"token"];
     int cellIndex = [args[@"index"] intValue];
   
     if ( !cid )
@@ -161,6 +162,7 @@
     }
   
     [queryService getSearchWelaaaPlayDataResults : cid
+                                       authToken : token
                                     queryResults : ^(NSDictionary *dicResult, NSString *errMsg)
     {
         NSLog(@"errMsg : %@", errMsg);
@@ -442,9 +444,9 @@
         [_delegateFpsDownload downloadContent : contentId
                        didFinishDownloadingTo : location];
     }
-    // 콜백에 먼저 처리할 수 있게 해주고 그 다음에 데이터를 갱신한다.(현재 다운로드에서 제거 등).
+    // 콜백에 먼저 처리할 수 있게 해주고 그 다음에 데이터를 갱신한다.(현재 다운로드중 목록에서 제거 등).
   
-    // 다운로드 성공시 이후의 처리(코어데이타 동기화 등)를 하고 다음 다운로드 시작
+    // 다운로드 성공시 이후의 처리(데이터베이스와 동기화 등)를 하고 다음 다운로드 시작
   
     FPSDownload *fpsDownload = nil;
     @try {
@@ -453,6 +455,7 @@
       
         // TODO
         // contentId vs fpsDownload.clip.cid 동일해야 한다.
+        // DB 칼럼에 들어갈 정보가 더 있어야 한다.
       
         NSDictionary *downloadedContent = [[NSDictionary alloc] initWithObjectsAndKeys:fpsDownload.clip.cid,@"cid" \
                                            , fpsDownload.clip.title,@"cTitle" \
@@ -524,6 +527,10 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 }
 
 @end
+
+
+
+
 
 
 
