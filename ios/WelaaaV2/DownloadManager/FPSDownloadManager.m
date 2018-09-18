@@ -465,15 +465,15 @@
                                            ,location.path,@"contentPath" \
                                            ,@"",@"groupkey"  \
                                            ,@"",@"ckey"             \
-                                           ,@"",@"userId"    \
-                                           ,@"",@"drmSchemeUuid"  \
-                                           ,@"",@"drmLicenseUrl"   \
-                                           ,@"",@"oid"   \
+                                           ,fpsDownload.clip.userId,@"userId"    \
+                                           ,fpsDownload.clip.drmSchemeUuid,@"drmSchemeUuid"  \
+                                           ,fpsDownload.clip.drmLicenseUrl,@"drmLicenseUrl"   \
+                                           ,fpsDownload.clip.oid,@"oid"   \
                                            ,@"",@"totalSize"    \
                                            ,@"",@"gTitle"    \
                                            ,@"",@"groupImg"    \
                                            ,@"",@"thumbnailImg"   \
-                                           ,@"",@"groupTeacherName"  \
+                                           ,@"",@"audioVideoType"  \
                                            ,@"",@"groupTeacherName" \
                                            ,@"",@"cPlayTime"    \
                                            ,@"",@"groupContentScnt" \
