@@ -112,7 +112,52 @@
 - (void) removeDownloadedContent : (NSDictionary *) args
                       completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
 {
-    ;
+  NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
+
+  NSString *cid = args[@"cid"];
+  
+  // cid 에 해당하는 DB 레코드가 있을시 삭제(연결된 실제 파일도 삭제)
+  
+  if ( cid == nil || cid.length <=0 ) {
+    
+    [details setValue : @"No cid"
+               forKey : NSLocalizedDescriptionKey];
+    
+    if ( _delegateFpsMsg )
+    {
+      [_delegateFpsMsg fpsDownloadMsg : @"삭제할 콘텐츠 정보(cid)가 없습니다"];
+    }
+    
+    resultHandler ([NSError errorWithDomain : @"args"
+                                       code : 0
+                                   userInfo : details], nil);
+    
+    return ;
+  }
+  
+  NSMutableArray *clips = [[DatabaseManager sharedInstance] searchDownloadedContentsId : cid];
+  
+  if ( clips && clips.count > 0 )
+  {
+    NSLog(@"  %lu Contents are in DB searched by cid : %@", (unsigned long)clips.count, cid);
+    // DB 레코드와 그 레코드에서 가리키고 있는 파일 삭제
+    for ( Clip *clip in clips )
+    {
+      [[DatabaseManager sharedInstance] removeDownloadedContentsId : clip.cid]; // TODO : DB 삭제 실패했을 때의 처리
+      
+      if( ![self removeHlsFileAtPath : clip.contentPath] )  // 파일 삭제
+      {
+        NSLog(@"  %@ -> Failed to Remove.", clip.contentPath);
+        continue;
+      }
+      
+      NSLog(@"  %@ -> Removed.",clip.contentPath);
+    }
+  }
+  else
+  {
+    NSLog(@"  No Contents in DB searched by cid : %@", cid);
+  }
 }
 
 
@@ -126,9 +171,8 @@
     NSString *name = args[@"name"];
     NSString *token = args[@"token"];
     int cellIndex = [args[@"index"] intValue];  // 추후 다운로드 아이템을 리스트에 보여줘야할때 사용하기 위한 예비정보
-  
-  
-    if ( !cid )
+
+    if ( !cid || cid.length <= 0 )
     {
         [details setValue : @"No cid"
                    forKey : NSLocalizedDescriptionKey];
@@ -145,7 +189,7 @@
         return ;
     }
   
-    if ( !userId )
+    if ( !userId || userId.length <= 0 )
     {
         [details setValue : @"No userId"
                    forKey : NSLocalizedDescriptionKey];
