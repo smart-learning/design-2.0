@@ -193,7 +193,12 @@ class TabContentInfo extends React.Component {
 				</Text>
 				}
 				<TouchableOpacity onPress={this.toggleLectureView}>
-					<Text style={styles.lectureMoreButton}>더보기</Text>
+					{!!this.props.store.lectureView &&
+					<Text style={styles.lectureMoreButton}>간략보기</Text>
+					}
+					{!this.props.store.lectureView &&
+					<Text style={styles.lectureMoreButton}>요약보기</Text>
+					}
 				</TouchableOpacity>
 			</View>
 
