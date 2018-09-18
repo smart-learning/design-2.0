@@ -213,6 +213,8 @@
     <string name="casting_to_device">Casting to %1$s</string>
     <string name="stop_casting">Stop Casting</string>
 
+    <string name="notice_dialog_finish_message">윌라 서비스에 오류가 발생했습니다.\n윌라 서비스 재구동 후 플레이를 해주십시요.</string>
+
     <!-- Splash Activity -->
     <string name="notice_dialog_update_title">업데이트</string>
     <string name="notice_dialog_update_message">새로운 버전이 있습니다.\n업데이트 하시겠습니까?</string>
