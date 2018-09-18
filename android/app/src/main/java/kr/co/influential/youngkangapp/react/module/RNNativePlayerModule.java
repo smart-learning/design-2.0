@@ -790,6 +790,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     intent.putExtra("is_free", is_free);
                     intent.putExtra("webPlayerInfo", mWebPlayerInfo);
                     intent.putExtra("history_start_seconds", contentHistory_seconds);
+                    intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE , mWebPlayerInfo.getGroupTitle());
                   }
 
                   LogHelper.e(TAG, "url : " + dashUrl);
@@ -836,6 +837,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   intent.putExtra(PlaybackManager.DRM_OID, "");
                   intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                   intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE , mWebPlayerInfo.getGroupTitle());
+
                   if (!can_play) {
                     // 미리 듣기 90초
                     intent.putExtra("duration", "00:01:30");
@@ -856,6 +859,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 LogHelper.e(TAG, "contentCid : " + contentCid);
                 LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
                 LogHelper.e(TAG, "can_play : " + can_play);
+
+                LogHelper.e(TAG, "getGroupTitle : " + mWebPlayerInfo.getGroupTitle());
+
                 LogHelper.e(TAG, "Pre can_play : " + Preferences
                     .getWelaaaPreviewPlay(getReactApplicationContext()));
                 ContextCompat.startActivity(activity, intent, null);

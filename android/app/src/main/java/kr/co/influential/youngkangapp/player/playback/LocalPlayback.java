@@ -1293,6 +1293,7 @@ public final class LocalPlayback implements Playback {
                   intent.putExtra(PlaybackManager.DRM_OID, "");
                   intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                   intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
                   intent.putExtra("play_info", playInfo);
 
                   if (!can_play) {

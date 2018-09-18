@@ -3906,34 +3906,41 @@ public class PlayerActivity extends BasePlayerActivity {
           lectureAudioBookListItemdapter = null;
         }
 
-        lectureAudioBookListItemdapter = new AudioBookPlayerListAdapter(getApplicationContext(), this);
+        lectureAudioBookListItemdapter = new AudioBookPlayerListAdapter(getApplicationContext(),
+            this);
 
         ListView lecturListView = findViewById(R.id.weleanplaylistview);
 
         for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
           if (getwebPlayerInfo().getA_depth()[i].equals("1")) {
-            if(getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i].equals("0.0")){
+            if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
+                .equals("0.0")) {
               lectureAudioBookListItemdapter.add("",
                   "", getwebPlayerInfo().getCname()[i], "", "", "", "1");
-            }else{
+            } else {
               lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "2");
+                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                  "2");
             }
           } else if (getwebPlayerInfo().getA_depth()[i].equals("2")) {
-            if(getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i].equals("0.0")){
+            if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
+                .equals("0.0")) {
               lectureAudioBookListItemdapter.add("",
                   "", getwebPlayerInfo().getCname()[i], "", "", "", "3");
-            }else{
+            } else {
               lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "4");
+                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                  "4");
             }
           } else {
-            if(getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i].equals("0.0")){
+            if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
+                .equals("0.0")) {
               lectureAudioBookListItemdapter.add("",
                   "", getwebPlayerInfo().getCname()[i], "", "", "", "5");
-            }else{
+            } else {
               lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "6");
+                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                  "6");
             }
           }
         }
@@ -3942,7 +3949,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
         int position = 0;
 
-        LogHelper.e(TAG , " 4359 getWelaaaPlayerOnClickPos is " + Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()));
+        LogHelper.e(TAG, " 4359 getWelaaaPlayerOnClickPos is " + Preferences
+            .getWelaaaPlayerOnClickPos(getApplicationContext()));
 
         if (Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()) > 0) {
           position = Preferences.getWelaaaPlayerOnClickPos(getApplicationContext());
@@ -3953,7 +3961,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
           lecturListView.setSelection(position - 1);
         }
-
 
         lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
           @Override
@@ -4289,18 +4296,18 @@ public class PlayerActivity extends BasePlayerActivity {
       Uri uri;
       boolean fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
 
-      LogHelper.e(TAG , "connectToSession fromMediaSession " + fromMediaSession);
+      LogHelper.e(TAG, "connectToSession fromMediaSession " + fromMediaSession);
       if (!fromMediaSession) {
         extras = intent.getExtras();
         uri = intent.getData();
 
-        LogHelper.e(TAG , "connectToSession !fromMediaSession " + extras);
+        LogHelper.e(TAG, "connectToSession !fromMediaSession " + extras);
 
       } else {
         extras = mediaController.getMetadata().getBundle();
         uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
 
-        LogHelper.e(TAG , "connectToSession fromMediaSession " + extras);
+        LogHelper.e(TAG, "connectToSession fromMediaSession " + extras);
       }
       setData(fromMediaSession, extras, uri);
     }
@@ -4589,7 +4596,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   if (!can_play) {
                     uri = Uri.parse(previewDashUrl);
-                    LogHelper.e(TAG, " can_play preview URI " + uri );
+                    LogHelper.e(TAG, " can_play preview URI " + uri);
                   }
 
                   intent.setData(uri);
@@ -4613,6 +4620,8 @@ public class PlayerActivity extends BasePlayerActivity {
                       intent.putExtra(PlaybackManager.DRM_OID, "");
                       intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                       intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                      intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
+                          getwebPlayerInfo().getGroupTitle());
 
                       // fromMediaSession 용도
                       Gson gson = new Gson();
@@ -4629,7 +4638,7 @@ public class PlayerActivity extends BasePlayerActivity {
                       if (!can_play) {
                         // 미리 듣기 90초
                         intent.putExtra("duration", "00:01:30");
-                      }else{
+                      } else {
                         intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
                       }
 
@@ -5100,9 +5109,10 @@ public class PlayerActivity extends BasePlayerActivity {
 
     setContentId(currentPosition);
 
-    Preferences.setWelaaaPlayerOnClickPos(getApplicationContext() , currentPosition);
+    Preferences.setWelaaaPlayerOnClickPos(getApplicationContext(), currentPosition);
 
-    LogHelper.e(TAG , " getWelaaaPlayerOnClickPos is " + currentPosition + " playListOnClick :: " + pos);
+    LogHelper
+        .e(TAG, " getWelaaaPlayerOnClickPos is " + currentPosition + " playListOnClick :: " + pos);
 
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);
