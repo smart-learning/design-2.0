@@ -88,6 +88,9 @@ import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import java.io.IOException;
 import java.io.Reader;
@@ -400,7 +403,6 @@ public class PlayerActivity extends BasePlayerActivity {
   ProgressDialog mProgressDialog;
   public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
 
-  private boolean fromMediaSession;
   private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
 
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
@@ -500,48 +502,6 @@ public class PlayerActivity extends BasePlayerActivity {
     listPopClipAdapter = new PlayerListPopClipAdapter(getApplicationContext(), this);
 
     audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
-
-    // 초기 과정 데이터 값 셋팅 동영상 강의 /강좌 베이스 getAssets contentsinfo28.json
-    // 추천 뷰 출력
-    // 초기 과정 데이터 값 셋팅 오디오북 베이스 getAssets contentsinfo62.json
-
-    Intent intent = getIntent();
-
-    fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
-
-    if (!fromMediaSession) {
-      mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
-
-      Gson gson = new Gson();
-      String json = gson.toJson(mWebPlayerInfo);
-
-      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
-
-      CONTENT_TYPE = intent.getStringExtra("type");
-      CAN_PLAY = intent.getBooleanExtra("can_play", false);
-      IS_FREE = intent.getBooleanExtra("is_free", false);
-      EXPIRE_AT = intent.getStringExtra("expire_at");
-      CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
-    } else {
-      Preferences.getWelaaaWebPlayInfo(getApplicationContext());
-
-      Gson gson = new Gson();
-      String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
-      WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
-
-      mWebPlayerInfo = mWebPlayerInfoFromJson;
-      boolean preview = Preferences.getWelaaaPreviewPlay(getApplicationContext());
-
-      if (preview) {
-        CAN_PLAY = false;
-      } else {
-        CAN_PLAY = true;
-      }
-
-      CONTENT_TYPE = mWebPlayerInfo.getCon_class();
-    }
-
-    initialize();
 
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
@@ -675,6 +635,51 @@ public class PlayerActivity extends BasePlayerActivity {
   /**
    * initialize
    */
+  private void setData(boolean fromMediaSession, Bundle extras, Uri uri) {
+    if (!fromMediaSession) {
+      mWebPlayerInfo = (WebPlayerInfo) extras.getSerializable("webPlayerInfo");
+      Gson gson = new Gson();
+      String json = gson.toJson(mWebPlayerInfo);
+      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
+
+      CONTENT_TYPE = extras.getString("type", "");
+      CAN_PLAY = extras.getBoolean("can_play", false);
+      IS_FREE = extras.getBoolean("is_free", false);
+      EXPIRE_AT = extras.getString("expire_at", "");
+      CONTENT_HISTORY_SEC = extras.getInt("history_start_seconds", 0);
+
+      JsonObject jsonObject = new JsonObject();
+      jsonObject.addProperty("type", CONTENT_TYPE);
+      jsonObject.addProperty("can_play", CAN_PLAY);
+      jsonObject.addProperty("is_free", IS_FREE);
+      jsonObject.addProperty("expire_at", EXPIRE_AT);
+      jsonObject.addProperty("history_start_seconds", CONTENT_HISTORY_SEC);
+      String playInfo = gson.toJson(jsonObject);
+      extras.putString("play_info", playInfo);
+
+      cId = extras.getString(PlaybackManager.DRM_CID, "");
+    } else {
+      String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
+      Gson gson = new Gson();
+      WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
+      mWebPlayerInfo = mWebPlayerInfoFromJson;
+
+      JsonElement jsonElement = new JsonParser().parse(extras.getString("play_info"));
+      JsonObject jsonPlayInfo = jsonElement.getAsJsonObject();
+      CONTENT_TYPE = jsonPlayInfo.get("type").getAsString();
+      CAN_PLAY = jsonPlayInfo.get("can_play").getAsBoolean();
+      IS_FREE = jsonPlayInfo.get("is_free").getAsBoolean();
+      EXPIRE_AT = jsonPlayInfo.get("expire_at").getAsString();
+      CONTENT_HISTORY_SEC = jsonPlayInfo.get("history_start_seconds").getAsInt();
+
+      cId = extras.getString(PlaybackManager.DRM_CID, "");
+    }
+
+    initialize();
+
+    playFromUri(uri, extras);
+  }
+
   private void initialize() {
     if (!CAN_PLAY) {
       Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
@@ -723,8 +728,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
         Intent intent = getIntent();
 
-        if (intent.getStringExtra(PlaybackManager.DRM_CID) != null) {
-          if (intent.getStringExtra(PlaybackManager.DRM_CID).contains("z")) {
+        if (cId != null) {
+          if (cId.startsWith("z")) {
 
             UiThreadUtil.runOnUiThread(new Runnable() {
               @Override
@@ -4662,22 +4667,20 @@ public class PlayerActivity extends BasePlayerActivity {
     MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
     mediaController.registerCallback(callback);
 
-    try {
+    Intent intent = getIntent();
+    if (intent != null) {
+      Bundle extras;
+      Uri uri;
+      boolean fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
       if (!fromMediaSession) {
-        Intent intent = getIntent();
-        Uri uri = intent.getData();
-        playFromUri(uri, intent.getExtras());
+        extras = intent.getExtras();
+        uri = intent.getData();
       } else {
-        Bundle extras = mediaController.getMetadata().getBundle();
-        Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
-        playFromUri(uri, extras);
+        extras = mediaController.getMetadata().getBundle();
+        uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-      // http://crashes.to/s/557b5198098
-      finish();
+      setData(fromMediaSession, extras, uri);
     }
-
   }
 
   private void playFromUri(Uri uri, Bundle extras) {

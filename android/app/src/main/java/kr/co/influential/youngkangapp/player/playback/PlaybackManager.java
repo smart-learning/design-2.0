@@ -202,7 +202,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
   }
 
   @Override
-  public void doAutoPlay(Uri uri , MediaMetadataCompat item , Intent intent) {
+  public void doAutoPlay(Uri uri, MediaMetadataCompat item, Intent intent) {
 
 //    handleStopRequest(null);
 
@@ -218,7 +218,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
 
       updateMetadata();
 
-    }else{
+    } else {
       LogHelper.e(TAG, " currentMedia is null ");
     }
 
@@ -433,13 +433,9 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
 
     String duration = extras.getString("duration");
-    String playerInfo = extras.getString("webPlayerInfo");
-    String type = extras.getString("type");
-    String canPlay = extras.getString("can_play");
-    String isFree = extras.getString("is_free");
-    String expiredAt = extras.getString("expire_at");
-    long contentHistorySecond = extras.getLong("history_start_seconds");
+    String playInfo = extras.getString("play_info");
 
+    // Set MediaMetadata.
     MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
     builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
     builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
@@ -459,12 +455,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
 
     // Play information.
     builder.putString("duration", duration);
-    builder.putString("webPlayerInfo", playerInfo);
-    builder.putString("type", type);
-    builder.putString("can_play", canPlay);
-    builder.putString("is_free", isFree);
-    builder.putString("expire_at", expiredAt);
-    builder.putLong("history_start_seconds", contentHistorySecond);
+    builder.putString("play_info", playInfo);
 
     currentMedia = builder.build();
   }
