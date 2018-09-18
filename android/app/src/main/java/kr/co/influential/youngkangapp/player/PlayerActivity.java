@@ -648,14 +648,18 @@ public class PlayerActivity extends BasePlayerActivity {
       EXPIRE_AT = extras.getString("expire_at", "");
       CONTENT_HISTORY_SEC = extras.getInt("history_start_seconds", 0);
 
-      JsonObject jsonObject = new JsonObject();
-      jsonObject.addProperty("type", CONTENT_TYPE);
-      jsonObject.addProperty("can_play", CAN_PLAY);
-      jsonObject.addProperty("is_free", IS_FREE);
-      jsonObject.addProperty("expire_at", EXPIRE_AT);
-      jsonObject.addProperty("history_start_seconds", CONTENT_HISTORY_SEC);
-      String playInfo = gson.toJson(jsonObject);
-      extras.putString("play_info", playInfo);
+      try {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", CONTENT_TYPE);
+        jsonObject.addProperty("can_play", CAN_PLAY);
+        jsonObject.addProperty("is_free", IS_FREE);
+        jsonObject.addProperty("expire_at", EXPIRE_AT);
+        jsonObject.addProperty("history_start_seconds", CONTENT_HISTORY_SEC);
+        String playInfo = gson.toJson(jsonObject);
+        extras.putString("play_info", playInfo);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
     } else {
@@ -664,13 +668,17 @@ public class PlayerActivity extends BasePlayerActivity {
       WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
       mWebPlayerInfo = mWebPlayerInfoFromJson;
 
-      JsonElement jsonElement = new JsonParser().parse(extras.getString("play_info"));
-      JsonObject jsonPlayInfo = jsonElement.getAsJsonObject();
-      CONTENT_TYPE = jsonPlayInfo.get("type").getAsString();
-      CAN_PLAY = jsonPlayInfo.get("can_play").getAsBoolean();
-      IS_FREE = jsonPlayInfo.get("is_free").getAsBoolean();
-      EXPIRE_AT = jsonPlayInfo.get("expire_at").getAsString();
-      CONTENT_HISTORY_SEC = jsonPlayInfo.get("history_start_seconds").getAsInt();
+      try {
+        JsonElement jsonElement = new JsonParser().parse(extras.getString("play_info"));
+        JsonObject jsonPlayInfo = jsonElement.getAsJsonObject();
+        CONTENT_TYPE = jsonPlayInfo.get("type").getAsString();
+        CAN_PLAY = jsonPlayInfo.get("can_play").getAsBoolean();
+        IS_FREE = jsonPlayInfo.get("is_free").getAsBoolean();
+        EXPIRE_AT = jsonPlayInfo.get("expire_at").getAsString();
+        CONTENT_HISTORY_SEC = jsonPlayInfo.get("history_start_seconds").getAsInt();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
     }
