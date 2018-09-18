@@ -15,7 +15,8 @@ import {
   DeviceEventEmitter,
   Platform,
   View,
-  Linking
+  Linking,
+  Keyboard
 } from 'react-native';
 import EventEmitter from 'events';
 import globalStore from './src/scripts/commons/store';
@@ -37,12 +38,21 @@ class Data {
   welaaaAuthLoaded = false;
   // FCM으로 들어온 path를 보관하는 대기열
   @observable
-	queuePath = null;
+  queuePath = null;
 }
 
 @observer
 class App extends React.Component {
   data = new Data();
+
+  // 키보드 제어 상태를 store에 기록해서 관리
+  keyboardDidShow = () => {
+    globalStore.isKeyboardOn = true;
+  };
+  keyboardDidHide = () => {
+    globalStore.isKeyboardOn = false;
+  };
+
   getTokenFromAsyncStorage = async () => {
     let welaaaAuth = await AsyncStorage.getItem('welaaaAuth');
     console.log('welaaaAuth:', welaaaAuth);
@@ -62,10 +72,10 @@ class App extends React.Component {
     }
 
     // 대기중인 path가 있다면 처리
-	  if( this.data.queuePath ) {
-	  	nav.parseDeepLink( this.data.queuePath );
-	  	this.data.queuePath = null;
-	  }
+    if (this.data.queuePath) {
+      nav.parseDeepLink(this.data.queuePath);
+      this.data.queuePath = null;
+    }
   };
 
   getAppSettings = async () => {
@@ -172,12 +182,11 @@ class App extends React.Component {
         const notification = notificationOpen.notification;
 
         try {
-        	if( this.data.welaaaAuthLoaded ) {
-				nav.parseDeepLink(notification._data.path);
-			}
-			else {
-				this.data.queuePath = notification._data.path;
-			}
+          if (this.data.welaaaAuthLoaded) {
+            nav.parseDeepLink(notification._data.path);
+          } else {
+            this.data.queuePath = notification._data.path;
+          }
         } catch (error) {
           console.log(error);
         }
@@ -194,16 +203,15 @@ class App extends React.Component {
       // Get information about the notification that was opened
       const notification = notificationOpen.notification;
 
-		try {
-			if( this.data.welaaaAuthLoaded ) {
-				nav.parseDeepLink(notification._data.path);
-			}
-			else {
-				this.data.queuePath = notification._data.path;
-			}
-		} catch (error) {
-			console.log(error);
-		}
+      try {
+        if (this.data.welaaaAuthLoaded) {
+          nav.parseDeepLink(notification._data.path);
+        } else {
+          this.data.queuePath = notification._data.path;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     Native.getF_TOKEN(f_token => {
@@ -240,6 +248,16 @@ class App extends React.Component {
           // cb && cb();
         });
     });
+
+    // 키보드 이벤트 할당
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.keyboardDidHide
+    );
   }
 
   componentWillUnmount() {
@@ -251,6 +269,9 @@ class App extends React.Component {
     Linking.removeEventListener('url', this._handleOpenURL);
     this.notificationListener();
     this.notificationOpenedListener();
+    // 키보드 이벤트 해제
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   _handleOpenURL = event => {
