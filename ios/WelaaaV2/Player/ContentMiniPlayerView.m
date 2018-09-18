@@ -5,7 +5,7 @@
 typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
 {
     ContentMiniPlayerViewMoveToPageNone,
-  ContentMiniPlayerViewMoveToPageClose
+    ContentMiniPlayerViewMoveToPageClose
 };
 
 @interface ContentMiniPlayerView () < ContentPlayerTouchViewDelegate, UIScrollViewDelegate >
@@ -39,7 +39,7 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
 {
     if ( self = [super initWithFrame : frame] )
     {
-      [self initSubviews];
+        [self initSubviews];
     }
   
     return self;
@@ -167,8 +167,8 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
 
 - (void) setControllerColorWithAudioMode : (BOOL) isAudioMode
 {
-    NSString *playImageName = isAudioMode ? @"icon_play_pink.png" : @"icon_play_green.png";
-    NSString *pauseImageName = isAudioMode ? @"icon_pause_pink.png" : @"icon_pause_green.png";
+    NSString *playImageName = isAudioMode ? @"icon_play_pink" : @"icon_play_green";
+    NSString *pauseImageName = isAudioMode ? @"icon_pause_pink" : @"icon_pause_green";
   
     [_playBtn setImage : [UIImage imageNamed : playImageName]
               forState : UIControlStateNormal];
