@@ -102,11 +102,6 @@ class LoginPage extends React.Component {
     return true;
   };
 
-  hideKeyboard = isKeyboardOn => {
-    Keyboard.dismiss();
-    this.data.isKeyboardOn = false;
-  };
-
   /*
 	* @params email: 이메일이나 소셜 타입
 	* @params password: 이메일비번이나 소셜 토큰
@@ -152,7 +147,6 @@ class LoginPage extends React.Component {
   };
 
   render() {
-    console.log('height', this.windowHeight);
     return (
       <View
         style={[
@@ -202,7 +196,6 @@ class LoginPage extends React.Component {
 
               <EmailAuthPack
                 onAccess={this.login}
-                onKeyboardStatus={this.hideKeyboard}
                 onNavigate={routerName =>
                   this.props.navigation.navigate(routerName)
                 }
