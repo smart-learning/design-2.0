@@ -125,7 +125,8 @@
     NSString *userId = args[@"userId"];
     NSString *name = args[@"name"];
     NSString *token = args[@"token"];
-    int cellIndex = [args[@"index"] intValue];
+    int cellIndex = [args[@"index"] intValue];  // 추후 다운로드 아이템을 리스트에 보여줘야할때 사용하기 위한 예비정보
+  
   
     if ( !cid )
     {
@@ -298,14 +299,16 @@
                                              cid : cid
                                         playTime : @""
                                            index : cellIndex];
-        // TODO : 추가적인 정보를 더 넣는 것 고려.
-      
+        // 콘텐츠에 대한 부가적인 정보를 더 추가.(DB 칼럼에도 추가하기 위한 정보)
+        clip.userId = args[@"userId"];
+        clip.drmSchemeUuid = args[@"drmSchemeUuid"];
+        clip.drmLicenseUrl = args[@"drmLicenseUrl"];
+        clip.oid = args[@"oid"];
         FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : clip];
         NSDictionary *downloadInfo = @{
                                           @"uri"    : urlString,
                                           @"cid"    : cid,
                                           @"userId" : userId    };
-      
         fpsDownload.task = [self prepareFPSDownloadTask : downloadInfo];
         fpsDownload.clip.contentUrl = [NSURL URLWithString : urlString];
       

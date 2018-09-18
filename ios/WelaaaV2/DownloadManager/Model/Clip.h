@@ -19,6 +19,25 @@
   BOOL downloaded;
   NSURL* contentUrl;
   NSString* contentPath;
+  // DB 에 삽입하기 위한 부가정보들에 대한 변수
+  NSString* groupkey;
+  NSString* ckey;
+  NSString* userId;
+  NSString* drmSchemeUuid;
+  NSString* drmLicenseUrl;
+  NSString* oid;
+  NSString* totalSize;
+  NSString* gTitle;
+  NSString* groupImg;
+  NSString* thumbnailImg;
+  NSString* audioVideoType;
+  NSString* groupTeacherName;
+  NSString* cPlayTime;
+  NSString* groupContentScnt;
+  NSString* groupAllPlayTime;
+  NSString* view_limitdate;
+  NSString* modified;
+  
 }
 
 @property NSString* title;
@@ -30,6 +49,24 @@
 @property BOOL downloaded;
 @property NSURL* contentUrl;
 @property NSString* contentPath;
+@property NSString* groupkey;
+@property NSString* ckey;
+@property NSString* userId;
+@property NSString* drmSchemeUuid;
+@property NSString* drmLicenseUrl;
+@property NSString* oid;
+@property NSString* totalSize;
+@property NSString* gTitle;
+@property NSString* groupImg;
+@property NSString* thumbnailImg;
+@property NSString* audioVideoType;
+@property NSString* groupTeacherName;
+@property NSString* cPlayTime;
+@property NSString* groupContentScnt;
+@property NSString* groupAllPlayTime;
+@property NSString* view_limitdate;
+@property NSString* modified;
+
 
 -(id)initWithTitle:(NSString *)title
               memo:(NSString *)memo
