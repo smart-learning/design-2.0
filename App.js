@@ -15,7 +15,7 @@ import {
   DeviceEventEmitter,
   Platform,
   View,
-  Linking,
+  Linking
 } from 'react-native';
 import EventEmitter from 'events';
 import globalStore from './src/scripts/commons/store';
@@ -30,10 +30,14 @@ import nav from './src/scripts/commons/nav';
 import WebViewScreen from './src/scripts/pages/WebViewScreen';
 import { observable } from 'mobx';
 import commonStyle from './src/styles/common';
+import { Notification, NotificationOpen } from 'react-native-firebase';
 
 class Data {
   @observable
   welaaaAuthLoaded = false;
+  // FCM으로 들어온 path를 보관하는 대기열
+  @observable
+	queuePath = null;
 }
 
 @observer
@@ -56,6 +60,12 @@ class App extends React.Component {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
     }
+
+    // 대기중인 path가 있다면 처리
+	  if( this.data.queuePath ) {
+	  	nav.parseDeepLink( this.data.queuePath );
+	  	this.data.queuePath = null;
+	  }
   };
 
   getAppSettings = async () => {
@@ -161,7 +171,16 @@ class App extends React.Component {
         // Get information about the notification that was opened
         const notification = notificationOpen.notification;
 
-        console.log('OPEN BY NOTI:', action, notification);
+        try {
+        	if( this.data.welaaaAuthLoaded ) {
+				nav.parseDeepLink(notification._data.path);
+			}
+			else {
+				this.data.queuePath = notification._data.path;
+			}
+        } catch (error) {
+          console.log(error);
+        }
       });
 
     // 앱 종료상태에서 노티등을 클릭했을때
@@ -175,7 +194,16 @@ class App extends React.Component {
       // Get information about the notification that was opened
       const notification = notificationOpen.notification;
 
-      console.log('OPEN BY NOTI-C:', action, notification);
+		try {
+			if( this.data.welaaaAuthLoaded ) {
+				nav.parseDeepLink(notification._data.path);
+			}
+			else {
+				this.data.queuePath = notification._data.path;
+			}
+		} catch (error) {
+			console.log(error);
+		}
     }
 
     Native.getF_TOKEN(f_token => {
@@ -221,9 +249,8 @@ class App extends React.Component {
     this.subscription.length = 0;
     globalStore.emitter.removeAllListeners();
     Linking.removeEventListener('url', this._handleOpenURL);
-    // this.messageListener();
-    // this.notificationDisplayedListener();
-    // this.notificationListener();
+    this.notificationListener();
+    this.notificationOpenedListener();
   }
 
   _handleOpenURL = event => {
