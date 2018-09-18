@@ -75,63 +75,41 @@ class EmailAuthPack extends Component {
 
 	render() {
 		return <View style={styles.contentContainer}>
+        <View borderRadius={4} style={styles.inputWrap}>
+          <TextInput style={styles.input} keyboardType="email-address" underlineColorAndroid={'rgba(0,0,0,0)'} value={this.data.email} autoCapitalize={'none'} onSubmitEditing={Keyboard.dismiss} onChangeText={text => {
+              this.setState({ email: text });
+            }} />
+          <View style={styles.inputBr} />
+          <TextInput style={styles.input} underlineColorAndroid={'rgba(0,0,0,0)'} secureTextEntry={true} value={this.data.password} autoCapitalize={'none'} onSubmitEditing={Keyboard.dismiss} onChangeText={text => {
+              this.setState({ password: text });
+            }} />
+        </View>
 
-			<View borderRadius={4} style={styles.inputWrap}>
-				<TextInput
-					style={styles.input}
-					keyboardType="email-address"
-					underlineColorAndroid={'rgba(0,0,0,0)'}
-					value={this.data.email}
-					autoCapitalize={'none'}
-					onSubmitEditing={Keyboard.dismiss}
-					onChangeText={text => {
-						this.setState({email: text});
-					}}/>
-				<View style={styles.inputBr}/>
-				<TextInput
-					style={styles.input}
-					underlineColorAndroid={'rgba(0,0,0,0)'}
-					secureTextEntry={true}
-					value={this.data.password}
-					autoCapitalize={'none'}
-					onSubmitEditing={Keyboard.dismiss}
-					onChangeText={text => {
-						this.setState({password: text})
-					}}/>
-			</View>
+        <TouchableOpacity activeOpacity={0.9} disabled={this.data.loginButtonDisabled} onPress={this.handleLogin}>
+          <View borderRadius={4} style={styles.btnSubmit}>
+            <Text style={styles.textSubmit}>
+              {this.data.loginButtonDisabled
+                ? '로그인 중'
+                : '이메일로  로그인'}
+            </Text>
+          </View>
+        </TouchableOpacity>
 
-			<TouchableOpacity activeOpacity={0.9}
-							disabled={this.data.loginButtonDisabled}
-							onPress={this.handleLogin}>
-				<View borderRadius={4}
-					  style={styles.btnSubmit}>
-					<Text style={styles.textSubmit}>
-						{this.data.loginButtonDisabled
-							? '로그인 중'
-							: '이메일로  로그인' }
-					</Text>
-				</View>
-			</TouchableOpacity>
+        <View style={styles.linkWrap}>
+          {/*<TouchableOpacity*/}
+          {/*activeOpacity={0.9}*/}
+          {/*onPress={() => this.props.onNavigate('FindPassword')}>*/}
+          {/*<Text style={styles.btnLinkText}>비밀번호 찾기</Text>*/}
+          {/*</TouchableOpacity>*/}
 
-			<View style={styles.linkWrap}>
-				{/*<TouchableOpacity*/}
-					{/*activeOpacity={0.9}*/}
-					{/*onPress={() => this.props.onNavigate('FindPassword')}>*/}
-					{/*<Text style={styles.btnLinkText}>비밀번호 찾기</Text>*/}
-				{/*</TouchableOpacity>*/}
-
-				<View style={{marginLeft: 'auto'}}>
-				<TouchableOpacity
-					activeOpacity={0.9}
-					onPress={() => this.props.onNavigate('SignUpPage')}>
-					<Text style={styles.btnLinkText}>무료 계정만들기</Text>
-				</TouchableOpacity>
-				</View>
-			</View>
-			{!!globalStore.isKeyboardOn && (
-				<View style={{height: 200}}/>
-			)}
-		</View>
+          <View style={{ marginLeft: 'auto' }}>
+            <TouchableOpacity activeOpacity={0.9} onPress={() => this.props.onNavigate('SignUpPage')}>
+              <Text style={styles.btnLinkText}>무료 계정만들기</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {!!globalStore.isKeyboardOn && <View style={{ height: 200 }} />}
+      </View>;
 	}
 }
 

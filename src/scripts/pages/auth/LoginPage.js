@@ -23,6 +23,7 @@ import globalStore from '../../commons/store';
 import _ from 'underscore';
 import { observer } from 'mobx-react';
 import createStore from '../../commons/createStore';
+import Swiper from 'react-native-swiper';
 
 const styles = StyleSheet.create({
   loginContainer: {
