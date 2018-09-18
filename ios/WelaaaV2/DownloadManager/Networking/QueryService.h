@@ -8,9 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+#import "Clip.h"
+#import "common.h"
+
 @interface QueryService : NSObject
 
-- (id)init;
-- (void)getSearchWelaaaPlayDataResults:(NSString*)searchCid queryResults:(void (^)(NSDictionary* dicResult, NSString* msg))completion;
+- (id) init;
+- (void) getSearchWelaaaPlayDataResults : (NSString *) searchCid
+                              authToken : (NSString *) token
+                           queryResults : (void (^) (NSDictionary *dicResult, NSString *msg)) completion;
 
 @end
