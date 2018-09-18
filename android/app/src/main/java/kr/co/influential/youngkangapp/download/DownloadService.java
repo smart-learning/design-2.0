@@ -231,13 +231,16 @@ public class DownloadService extends IntentService implements
           // view_limitdate
           // modified  (datetime('now','localtime'))
 
+          Uri LocalUri = downloadTask.getLocalUri(Uri.parse(drm_content_uri_extra) , drm_content_name_extra);
+          String localUrl = String.valueOf(LocalUri);
+
           for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
             if (mWebPlayerInfo.getCkey()[i].equals(downloadContentCid)) {
 
               try {
                 ContentManager()
                     .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], "userId",
-                        "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", "", "",
+                        "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", localUrl, "",
                         mWebPlayerInfo.getGroupTitle(), mWebPlayerInfo.getCname()[i],
                         mWebPlayerInfo.getGroupImg(), mWebPlayerInfo.getClist_img()[i],
                         mWebPlayerInfo.getCon_class(), mWebPlayerInfo.getGroupTeachername(),
@@ -247,7 +250,6 @@ public class DownloadService extends IntentService implements
 
               } catch (Exception e) {
                 e.printStackTrace();
-
               }
             }
           }
