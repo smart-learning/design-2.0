@@ -52,6 +52,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
@@ -147,6 +148,7 @@ public final class LocalPlayback implements Playback {
   private PlaybackManager mPlaybackManager;
 
   private MediaBrowserCompat mediaBrowser;
+  public int contentHistory_seconds = 0;
 
   static {
     DEFAULT_COOKIE_MANAGER = new CookieManager();
@@ -1180,6 +1182,8 @@ public final class LocalPlayback implements Playback {
             JSONObject playDatajson = new JSONObject(body);
             JSONObject media_urlsObject = playDatajson.getJSONObject("media_urls");
             JSONObject permissionObject = playDatajson.getJSONObject("permission");
+            JSONObject preview_urlsObject = null;
+            JSONObject historyObject = null;
 
             String dashUrl = media_urlsObject.getString("DASH");
             Boolean can_play = permissionObject.getBoolean("can_play");
@@ -1190,6 +1194,28 @@ public final class LocalPlayback implements Playback {
             LogHelper.e(TAG, "expire_at  Body:" + expire_at);
             LogHelper.e(TAG, "is_free  Body:" + is_free);
 
+            String previewDashUrl = "";
+
+            if (!playDatajson.isNull("preview_urls")) {
+              LogHelper.e(TAG, " preview_urls is Not null " + playDatajson.getJSONObject("preview_urls"));
+              preview_urlsObject = playDatajson.getJSONObject("preview_urls");
+
+              previewDashUrl = preview_urlsObject.getString("DASH");
+            }
+
+            if (playDatajson.isNull("history")) {
+              LogHelper.e(TAG, " history is null ");
+            } else {
+              historyObject = playDatajson.getJSONObject("history");
+
+              historyObject.getString("id");
+              historyObject.getString("played_at");
+
+              LogHelper.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
+
+              contentHistory_seconds = historyObject.getInt("start_seconds");
+            }
+
             if (can_play) {
               Preferences.setWelaaaPreviewPlay(mContext, false);
             } else {
@@ -1197,8 +1223,12 @@ public final class LocalPlayback implements Playback {
             }
 
             if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
-
               Uri uri = Uri.parse(dashUrl);
+              if (!can_play) {
+                uri = Uri.parse(previewDashUrl);
+              }else{
+                uri = Uri.parse(dashUrl);
+              }
 
               String name = mWebPlayerInfo.getCname()[currentId];
               String drmSchemeUuid = Utils.welaaaAndroidDrmSchemeUuid();
@@ -1228,6 +1258,18 @@ public final class LocalPlayback implements Playback {
               builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
               builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
 
+              // fromMediaSession 용도
+              JsonObject jsonObject = new JsonObject();
+              jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
+              jsonObject.addProperty("can_play", can_play);
+              jsonObject.addProperty("is_free", is_free);
+              jsonObject.addProperty("expire_at", expire_at);
+              jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
+              String playInfo = gson.toJson(jsonObject);
+
+              LogHelper.e(TAG , " LocalPlayBack playInfo " + playInfo);
+              builder.putString("play_info", playInfo);
+
               currentMedia = builder.build();
 
               Intent intent = new Intent(mContext, MediaService.class);
@@ -1251,7 +1293,14 @@ public final class LocalPlayback implements Playback {
                   intent.putExtra(PlaybackManager.DRM_OID, "");
                   intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                   intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                  intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
+                  intent.putExtra("play_info", playInfo);
+
+                  if (!can_play) {
+                    intent.putExtra("duration", "00:01:30");
+                  }else{
+                    intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
+                  }
 
                 }
 

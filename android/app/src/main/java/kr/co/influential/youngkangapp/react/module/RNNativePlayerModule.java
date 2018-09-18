@@ -28,6 +28,7 @@ import com.google.android.exoplayer2.ParserException;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.UUID;
+import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.download.DownloadService;
@@ -166,6 +167,11 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
     boolean isOnlyWifiDownload = Preferences.getOnlyWifiDownload(getReactApplicationContext());
+
+    if (BuildConfig.BUILD_TYPE.equals("debug")) {
+      // cid , v100XXX
+      // cid ,
+    }
 
     if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
@@ -648,6 +654,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           try {
             JSONObject json = new JSONObject(body);
             JSONObject media_urlsObject = null;
+            JSONObject preview_urlsObject = null;
 
             if (json.isNull("media_urls")) {
 
@@ -655,9 +662,22 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               media_urlsObject = json.getJSONObject("media_urls");
             }
 
+            String previewDashUrl = "";
+
+            if (!json.isNull("preview_urls")) {
+              LogHelper.e(TAG, " preview_urls is Not null " + json.getJSONObject("preview_urls"));
+              preview_urlsObject = json.getJSONObject("preview_urls");
+
+              previewDashUrl = preview_urlsObject.getString("DASH");
+
+            } else {
+              LogHelper.e(TAG, " preview_urls is null ");
+            }
+
             JSONObject permissionObject = json.getJSONObject("permission");
 
             String dashUrl = media_urlsObject.getString("DASH");
+
             Boolean can_play = permissionObject.getBoolean("can_play");
             String expire_at = permissionObject.getString("expire_at");
             Boolean is_free = permissionObject.getBoolean("is_free");
@@ -770,6 +790,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     intent.putExtra("is_free", is_free);
                     intent.putExtra("webPlayerInfo", mWebPlayerInfo);
                     intent.putExtra("history_start_seconds", contentHistory_seconds);
+                    intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE , mWebPlayerInfo.getGroupTitle());
                   }
 
                   LogHelper.e(TAG, "url : " + dashUrl);
@@ -786,6 +807,21 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 return;
 
               } else {
+                // previewDashUrl
+//                previewDashUrl = "https://contents.welaaa.com/media/v100001/DASH_v100001_001_preview/stream.mpd";
+                // 1876년 메이저 리그 원년
+//                previewDashUrl = "https://contents.welaaa.com/media/v100001/DASH_v100001_002_preview/stream.mpd";
+                // 21초 전체 구단의 총 수입
+
+                LogHelper.e(TAG, " can_play " + can_play);
+                LogHelper.e(TAG, " PreviewDashUrl " + previewDashUrl);
+
+                if (!can_play) {
+                  dashUrl = previewDashUrl;
+
+                  LogHelper.e(TAG, " can_play FALSE !  PLAY PreviewDashUrl " + previewDashUrl);
+
+                }
 
                 intent.setData(Uri.parse(dashUrl));
                 intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
@@ -801,7 +837,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   intent.putExtra(PlaybackManager.DRM_OID, "");
                   intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                   intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                  intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE , mWebPlayerInfo.getGroupTitle());
+
+                  if (!can_play) {
+                    // 미리 듣기 90초
+                    intent.putExtra("duration", "00:01:30");
+                  }else{
+                    intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
+                  }
                   intent.putExtra("type", contentType);
                   intent.putExtra("can_play", can_play);
                   intent.putExtra("expire_at", expire_at);
@@ -816,6 +859,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 LogHelper.e(TAG, "contentCid : " + contentCid);
                 LogHelper.e(TAG, "contentHistory_seconds : " + contentHistory_seconds);
                 LogHelper.e(TAG, "can_play : " + can_play);
+
+                LogHelper.e(TAG, "getGroupTitle : " + mWebPlayerInfo.getGroupTitle());
+
                 LogHelper.e(TAG, "Pre can_play : " + Preferences
                     .getWelaaaPreviewPlay(getReactApplicationContext()));
                 ContextCompat.startActivity(activity, intent, null);
@@ -844,17 +890,44 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               // view_limitdate
               // modified
 
-              Intent service = new Intent(contextWrapper, DownloadService.class);
+              // cid 클래스 강좌 전체가 들어오는 케이스
+              if (BuildConfig.BUILD_TYPE.equals("debug")) {
 
-              service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
-              service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                  mWebPlayerInfo.getCname()[contentId]);
-              service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
-              service.putExtra("contentCid", contentCid);
-              intent.putExtra("expire_at", expire_at);
-              service.putExtra("webPlayerInfo", mWebPlayerInfo);
+                // 다운로드 경로가 없는 경우 ?
+                // dashUrl 정보를 얻기 위해서는 또 반복 해야 할 것 같습니다.
+                for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
 
-              contextWrapper.startService(service);
+                  if (!(mWebPlayerInfo.getCurl()[i].equals("0") || mWebPlayerInfo.getCurl()[i]
+                      .equals("0.0"))) {
+                    Intent service = new Intent(contextWrapper, DownloadService.class);
+
+                    service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
+                    service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                        mWebPlayerInfo.getCname()[i]);
+                    service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
+                    service.putExtra("contentCid", mWebPlayerInfo.getCkey()[i]);
+                    intent.putExtra("expire_at", expire_at);
+                    service.putExtra("webPlayerInfo", mWebPlayerInfo);
+
+                    contextWrapper.startService(service);
+                  }
+                }
+
+              } else {
+                Intent service = new Intent(contextWrapper, DownloadService.class);
+
+                service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
+                service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                    mWebPlayerInfo.getCname()[contentId]);
+                service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
+                service.putExtra("contentCid", contentCid);
+                intent.putExtra("expire_at", expire_at);
+                service.putExtra("webPlayerInfo", mWebPlayerInfo);
+
+                contextWrapper.startService(service);
+              }
+
+
             } else {
               LogHelper.e(TAG, " No Action .. ");
             }
