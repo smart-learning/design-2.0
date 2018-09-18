@@ -91,6 +91,8 @@ class Store {
 		isEmail: false,
 	};
 
+	@observable isKeyboardOn = false;
+
 }
 
 const store = new Store();

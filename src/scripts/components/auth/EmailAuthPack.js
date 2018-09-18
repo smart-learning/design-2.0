@@ -3,6 +3,7 @@ import {Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View} fr
 import { COLOR_PRIMARY } from "../../../styles/common";
 import {observer} from "mobx-react";
 import createStore from "../../commons/createStore";
+import globalStore from "../../commons/store";
 
 const styles = StyleSheet.create({
 	contentContainer: {
@@ -55,25 +56,6 @@ class EmailAuthPack extends Component {
 		password: '',
 		loginButtonDisabled: false,
 	});
-
-	componentDidMount () {
-		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-	}
-
-	componentWillUnmount () {
-		this.keyboardDidShowListener.remove();
-		this.keyboardDidHideListener.remove();
-	}
-
-	_keyboardDidShow = () => {
-		this.data.isKeyboardOn = true;
-	};
-
-	_keyboardDidHide = () => {
-		this.data.isKeyboardOn = false;
-		this.props.onKeyboardStatus();
-	};
 
 	handleLogin = () => {
 		if (this.data.email === '') {
@@ -146,6 +128,9 @@ class EmailAuthPack extends Component {
 				</TouchableOpacity>
 				</View>
 			</View>
+			{!!globalStore.isKeyboardOn && (
+				<View style={{height: 200}}/>
+			)}
 		</View>
 	}
 }

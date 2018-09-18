@@ -16,6 +16,7 @@ import {
   Platform,
   View,
   Linking,
+  Keyboard
 } from 'react-native';
 import EventEmitter from 'events';
 import globalStore from './src/scripts/commons/store';
@@ -39,6 +40,15 @@ class Data {
 @observer
 class App extends React.Component {
   data = new Data();
+
+  // 키보드 제어 상태를 store에 기록해서 관리
+  keyboardDidShow = () => {
+    globalStore.isKeyboardOn = true;
+  };
+  keyboardDidHide = () => {
+    globalStore.isKeyboardOn = false;
+  };
+
   getTokenFromAsyncStorage = async () => {
     let welaaaAuth = await AsyncStorage.getItem('welaaaAuth');
     console.log('welaaaAuth:', welaaaAuth);
@@ -212,6 +222,16 @@ class App extends React.Component {
           // cb && cb();
         });
     });
+
+    // 키보드 이벤트 할당
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.keyboardDidHide
+    );
   }
 
   componentWillUnmount() {
@@ -224,6 +244,10 @@ class App extends React.Component {
     // this.messageListener();
     // this.notificationDisplayedListener();
     // this.notificationListener();
+
+    // 키보드 이벤트 해제
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   _handleOpenURL = event => {

@@ -3,13 +3,13 @@ import CommonStyles from '../../../styles/common';
 import {
   Alert,
   BackHandler,
+  Dimensions,
   Image,
   ImageBackground,
   Keyboard,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
@@ -23,22 +23,20 @@ import globalStore from '../../commons/store';
 import _ from 'underscore';
 import { observer } from 'mobx-react';
 import createStore from '../../commons/createStore';
-import { SafeAreaView } from 'react-navigation';
 
 const styles = StyleSheet.create({
   loginContainer: {
     position: 'relative'
   },
   background: {
-    width: '100%',
-    height: '100%',
-    paddingTop: 50
+    width: '100%'
   },
   logoWrap: {
     alignItems: 'center',
     height: 50,
     marginTop: 0,
-    marginBottom: 50
+    marginBottom: 50,
+    paddingTop: 50
   },
   logo: {
     width: 110,
@@ -65,14 +63,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#ffffff'
+  },
+  thumbnail: {
+    width: '100%',
+    height: '100%'
+  },
+  inputContentWrap: {
+    position: 'absolute',
+    bottom: 100,
+    width: '90%',
+    marginLeft: '5%'
   }
 });
 
 @observer
 class LoginPage extends React.Component {
   data = createStore({
-	  isKeyboardOn: false,
+    windowHeight: null
   });
+
+  constructor(props) {
+    super(props);
+
+    this.windowHeight = Dimensions.get('window').height;
+  }
+
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
@@ -86,10 +101,10 @@ class LoginPage extends React.Component {
     return true;
   };
 
-	hideKeyboard = (isKeyboardOn) => {
-		Keyboard.dismiss();
-		this.data.isKeyboardOn = false;
-	};
+  hideKeyboard = isKeyboardOn => {
+    Keyboard.dismiss();
+    this.data.isKeyboardOn = false;
+  };
 
   /*
 	* @params email: 이메일이나 소셜 타입
@@ -136,40 +151,64 @@ class LoginPage extends React.Component {
   };
 
   render() {
+    console.log('height', this.windowHeight);
     return (
-      <View style={[CommonStyles.container, styles.loginContainer]}>
-        <ImageBackground source={bgLogin} style={styles.background}>
-          <View style={styles.logoWrap}>
-            <Image source={logo} style={styles.logo} />
+      <View
+        style={[
+          CommonStyles.container,
+          styles.loginContainer,
+          { height: this.windowHeight }
+        ]}
+      >
+        <ScrollView style={{ flex: 1, width: '100%' }}>
+          <View style={{ width: '100%', height: this.windowHeight }}>
+            <Swiper
+              style={styles.wrapper}
+              showsButtons={false}
+              dotColor={'#888888'}
+              activeDotColor={'#ffffff'}
+              height={window.width}
+              paginationStyle={{ bottom: '50%' }}
+            >
+              <View style={styles.slide}>
+                <ImageBackground
+                  source={bgLogin}
+                  resizeMode="cover"
+                  style={styles.thumbnail}
+                />
+              </View>
+            </Swiper>
           </View>
-          <View style={styles.contentWrap}>
-            <Text style={styles.headline}>LOGIN</Text>
 
-            <FBLoginButton
-              onAccess={(token, cb) => this.login('facebook', token, cb)}
-              type={'login'}
-            />
+          <View style={styles.inputContentWrap}>
+            <View style={styles.logoWrap}>
+              <Image source={logo} style={styles.logo} />
+            </View>
+            <View style={styles.contentWrap}>
+              <Text style={styles.headline}>LOGIN</Text>
 
-            <KakaoLoginButton
-              onAccess={(token, cb) => this.login('kakaotalk', token, cb)}
-              type={'login'}
-            />
+              <FBLoginButton
+                onAccess={(token, cb) => this.login('facebook', token, cb)}
+                type={'login'}
+              />
 
-            <Text style={styles.bulletText}>OR</Text>
+              <KakaoLoginButton
+                onAccess={(token, cb) => this.login('kakaotalk', token, cb)}
+                type={'login'}
+              />
 
-            <EmailAuthPack
-              onAccess={this.login}
-			  onKeyboardStatus={this.hideKeyboard}
-              onNavigate={routerName =>
-                this.props.navigation.navigate(routerName)
-              }
-            />
+              <Text style={styles.bulletText}>OR</Text>
+
+              <EmailAuthPack
+                onAccess={this.login}
+                onKeyboardStatus={this.hideKeyboard}
+                onNavigate={routerName =>
+                  this.props.navigation.navigate(routerName)
+                }
+              />
+            </View>
           </View>
-        </ImageBackground>
-
-		  {!!this.data.isKeyboardOn &&
-		  <TouchableOpacity onPress={ this.hideKeyboard } style={{width: '100%', height: '100%', backgroundColor: '#f0f', opacity: 0.5, position: 'absolute', top: 0, left: 0}}/>
-		  }
+        </ScrollView>
       </View>
     );
   }
