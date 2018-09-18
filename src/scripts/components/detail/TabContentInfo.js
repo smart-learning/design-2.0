@@ -10,6 +10,7 @@ import IcTime from "../../../images/ic-detail-label-time.png";
 import Evaluation from "./Evaluation";
 import moment from "moment";
 import _ from 'underscore';
+import DummyTeacher from "../../../images/dummy-my-profile-2.png";
 
 const styles = StyleSheet.create( {
 	wrapper: {},
@@ -154,6 +155,7 @@ class TabContentInfo extends React.Component {
 		}
 		catch( error ) { console.log( error ) }
 
+		console.log( 'itemData', this.props.store.itemData );
 		return <View>
 			{/* 이미지 스와이퍼 */}
 			{ this.props.store.itemData.info_img_set.length > 0 && (
@@ -229,7 +231,7 @@ class TabContentInfo extends React.Component {
 					{this.props.learnType === 'class' &&
 					<Text style={styles.sectionTitle}>강사</Text>
 					}
-					{/*<Image source={{ uri: this.props.itemData.teacher.images.profile }} borderRadius={44} style={styles.authorImage}/>*/}
+					<Image source={{ uri: this.props.store.itemData.teacher ? this.props.store.itemData.teacher.images.default : DummyTeacher }} borderRadius={44} style={styles.authorImage}/>
 					<Text style={styles.authorName}>
 						{this.props.store.itemData.teacher.name}
 					</Text>
