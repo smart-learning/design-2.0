@@ -4296,20 +4296,22 @@ public class PlayerActivity extends BasePlayerActivity {
       Uri uri;
       boolean fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
 
-      LogHelper.e(TAG, "connectToSession fromMediaSession " + fromMediaSession);
       if (!fromMediaSession) {
         extras = intent.getExtras();
         uri = intent.getData();
-
-        LogHelper.e(TAG, "connectToSession !fromMediaSession " + extras);
-
+        setData(fromMediaSession, extras, uri);
       } else {
-        extras = mediaController.getMetadata().getBundle();
-        uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+        try {
+          extras = mediaController.getMetadata().getBundle();
+          uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
 
-        LogHelper.e(TAG, "connectToSession fromMediaSession " + extras);
+          setData(fromMediaSession, extras, uri);
+        } catch (Exception e) {
+          e.printStackTrace();
+          Utils.logToast(getApplicationContext(), getString(R.string.notice_dialog_finish_message));
+          finish();
+        }
       }
-      setData(fromMediaSession, extras, uri);
     }
   }
 
