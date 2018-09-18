@@ -458,8 +458,25 @@
         // DB 칼럼에 들어갈 정보가 더 있어야 한다.
       
         NSDictionary *downloadedContent = [[NSDictionary alloc] initWithObjectsAndKeys:fpsDownload.clip.cid,@"cid" \
-                                           , fpsDownload.clip.title,@"cTitle" \
-                                           , location.path,@"contentPath" \
+                                           ,fpsDownload.clip.title,@"cTitle" \
+                                           ,location.path,@"contentPath" \
+                                           ,@"",@"groupkey"  \
+                                           ,@"",@"ckey"             \
+                                           ,@"",@"userId"    \
+                                           ,@"",@"drmSchemeUuid"  \
+                                           ,@"",@"drmLicenseUrl"   \
+                                           ,@"",@"oid"   \
+                                           ,@"",@"totalSize"    \
+                                           ,@"",@"gTitle"    \
+                                           ,@"",@"groupImg"    \
+                                           ,@"",@"thumbnailImg"   \
+                                           ,@"",@"groupTeacherName"  \
+                                           ,@"",@"groupTeacherName" \
+                                           ,@"",@"cPlayTime"    \
+                                           ,@"",@"groupContentScnt" \
+                                           ,@"",@"groupAllPlayTime" \
+                                           ,@"",@"view_limitdate"  \
+                                           ,@"",@"modified"     \
                                            , nil];
         // TODO : 중복체크 방안
         [[DatabaseManager sharedInstance] saveDownloadedContent : downloadedContent]; // SQLite 를 통해 저장(welaaa.db)

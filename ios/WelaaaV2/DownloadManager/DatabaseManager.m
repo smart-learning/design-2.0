@@ -139,26 +139,26 @@
                            view_limitdate,    \
                            modified           \
                            ) VALUES(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")"  \
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""
+                           ,downloadedContent[@"groupkey"]
+                           ,downloadedContent[@"ckey"]
+                           ,downloadedContent[@"userId"]
+                           ,downloadedContent[@"drmSchemeUuid"]
+                           ,downloadedContent[@"drmLicenseUrl"]
                            ,downloadedContent[@"cid"]
-                           ,@""
+                           ,downloadedContent[@"oid"]
                            ,downloadedContent[@"contentPath"]
-                           ,@""
-                           ,@""
+                           ,downloadedContent[@"totalSize"]
+                           ,downloadedContent[@"gTitle"]
                            ,downloadedContent[@"cTitle"]
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""
-                           ,@""];
+                           ,downloadedContent[@"groupImg"]
+                           ,downloadedContent[@"thumbnailImg"]
+                           ,downloadedContent[@"audioVideoType"]
+                           ,downloadedContent[@"groupTeacherName"]
+                           ,downloadedContent[@"cPlayTime"]
+                           ,downloadedContent[@"groupContentScnt"]
+                           ,downloadedContent[@"groupAllPlayTime"]
+                           ,downloadedContent[@"view_limitdate"]
+                           ,downloadedContent[@"modified"]];
     
     const char *insert_stmt = [insertSQL UTF8String];
     sqlite3_prepare_v2(_downloadDB, insert_stmt, -1, &statement, NULL);
