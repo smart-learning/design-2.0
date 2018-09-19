@@ -488,6 +488,16 @@
   
     NSArray *array = [jsonResponse mutableCopy];
   
+    // documents 디렉토리의 경로를 가져옵니다.
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    // 파일 경로를 만듭니다.
+    NSString *fileName = [contentID stringByAppendingString : @"_subtitles.plist"];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent : fileName];
+  
+    BOOL status = [array writeToFile:filePath atomically:YES];
+    NSLog(@"  [+getSubtitles:] subtitles saved? : %@", status? @"Success" : @"Failed");
+  
     return array;
 }
 

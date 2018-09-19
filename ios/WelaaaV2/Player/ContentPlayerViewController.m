@@ -2256,11 +2256,32 @@
 
 # pragma mark - Script View
 //
-// API를 통해 자막데이터를 가져옵니다.
+// 로컬에 저장된 자막파일이 있는지 검색해보고 없으면 API를 통해 자막데이터를 가져옵니다.
 //
 - (NSArray *) readScript
 {
-    return [ApiManager getSubtitles : [_args objectForKey : @"cid"]];
+    // documents 디렉토리의 경로를 가져옵니다.
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    // 파일 경로를 만듭니다.
+    NSString *fileName = [[_args objectForKey : @"cid"] stringByAppendingString : @"_subtitles.plist"];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent : fileName];
+    // 파일로 부터 읽어오기
+    NSMutableArray *arrDicData = [NSMutableArray arrayWithContentsOfFile : filePath];
+
+    // 파일이 존재하지 않을 때
+    if ( arrDicData == nil )
+    {
+        NSLog(@"  [-readScript] No subtitles file stored. Get subtitles from API server.");
+      
+        return [ApiManager getSubtitles : [_args objectForKey : @"cid"]];
+    }
+    else  // 파일이 존재 할 때
+    {
+        NSLog(@"  [-readScript] Found a subtitles file stored.");
+      
+        return arrDicData;
+    }
 }
 
 //
@@ -2269,7 +2290,11 @@
 - (void) initScriptUi
 {
     NSLog(@"  자막 UI 구성이 시작되었습니다.");
-    NSArray *scriptArray = [self readScript];
+    NSArray *scriptArray;
+    if ( _isAuthor )
+      scriptArray = [self readScript];
+    else
+      scriptArray = @[];
   
     _scriptView = [[MediaPlayerScriptView alloc] initWithFrame : CGRectZero];
     _scriptView.frame = CGRectMake(0, CGRectGetMinY(_bottomView.frame), self.view.frame.size.width, 0);
