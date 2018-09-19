@@ -471,4 +471,14 @@ public class Utils {
         }
         return isUpdateExist;
     }
+
+    public static boolean checkCidAudioChapter(String cid){
+        boolean checkCidAudioChapter = false;
+
+        if(cid.contains("_")){
+            checkCidAudioChapter = true;
+        }
+
+        return checkCidAudioChapter;
+    }
 }
