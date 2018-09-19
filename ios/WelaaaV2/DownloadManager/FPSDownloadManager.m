@@ -118,7 +118,7 @@
   
   // cid 에 해당하는 DB 레코드가 있을시 삭제(연결된 실제 파일도 삭제)
   
-  if ( cid == nil || cid.length <=0 ) {
+  if ( cid == nil || cid.length <= 0 ) {
     
     [details setValue : @"No cid"
                forKey : NSLocalizedDescriptionKey];
