@@ -88,6 +88,9 @@ import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import java.io.IOException;
 import java.io.Reader;
@@ -400,7 +403,6 @@ public class PlayerActivity extends BasePlayerActivity {
   ProgressDialog mProgressDialog;
   public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
 
-  private boolean fromMediaSession;
   private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
 
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
@@ -500,48 +502,6 @@ public class PlayerActivity extends BasePlayerActivity {
     listPopClipAdapter = new PlayerListPopClipAdapter(getApplicationContext(), this);
 
     audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
-
-    // 초기 과정 데이터 값 셋팅 동영상 강의 /강좌 베이스 getAssets contentsinfo28.json
-    // 추천 뷰 출력
-    // 초기 과정 데이터 값 셋팅 오디오북 베이스 getAssets contentsinfo62.json
-
-    Intent intent = getIntent();
-
-    fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
-
-    if (!fromMediaSession) {
-      mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
-
-      Gson gson = new Gson();
-      String json = gson.toJson(mWebPlayerInfo);
-
-      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
-
-      CONTENT_TYPE = intent.getStringExtra("type");
-      CAN_PLAY = intent.getBooleanExtra("can_play", false);
-      IS_FREE = intent.getBooleanExtra("is_free", false);
-      EXPIRE_AT = intent.getStringExtra("expire_at");
-      CONTENT_HISTORY_SEC = intent.getIntExtra("history_start_seconds", 0);
-    } else {
-      Preferences.getWelaaaWebPlayInfo(getApplicationContext());
-
-      Gson gson = new Gson();
-      String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
-      WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
-
-      mWebPlayerInfo = mWebPlayerInfoFromJson;
-      boolean preview = Preferences.getWelaaaPreviewPlay(getApplicationContext());
-
-      if (preview) {
-        CAN_PLAY = false;
-      } else {
-        CAN_PLAY = true;
-      }
-
-      CONTENT_TYPE = mWebPlayerInfo.getCon_class();
-    }
-
-    initialize();
 
     // MediaBrowser.
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
@@ -675,6 +635,51 @@ public class PlayerActivity extends BasePlayerActivity {
   /**
    * initialize
    */
+  private void setData(boolean fromMediaSession, Bundle extras, Uri uri) {
+    if (!fromMediaSession) {
+      mWebPlayerInfo = (WebPlayerInfo) extras.getSerializable("webPlayerInfo");
+      Gson gson = new Gson();
+      String json = gson.toJson(mWebPlayerInfo);
+      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
+
+      CONTENT_TYPE = extras.getString("type", "");
+      CAN_PLAY = extras.getBoolean("can_play", false);
+      IS_FREE = extras.getBoolean("is_free", false);
+      EXPIRE_AT = extras.getString("expire_at", "");
+      CONTENT_HISTORY_SEC = extras.getInt("history_start_seconds", 0);
+
+      JsonObject jsonObject = new JsonObject();
+      jsonObject.addProperty("type", CONTENT_TYPE);
+      jsonObject.addProperty("can_play", CAN_PLAY);
+      jsonObject.addProperty("is_free", IS_FREE);
+      jsonObject.addProperty("expire_at", EXPIRE_AT);
+      jsonObject.addProperty("history_start_seconds", CONTENT_HISTORY_SEC);
+      String playInfo = gson.toJson(jsonObject);
+      extras.putString("play_info", playInfo);
+
+      cId = extras.getString(PlaybackManager.DRM_CID, "");
+    } else {
+      String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
+      Gson gson = new Gson();
+      WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
+      mWebPlayerInfo = mWebPlayerInfoFromJson;
+
+      JsonElement jsonElement = new JsonParser().parse(extras.getString("play_info"));
+      JsonObject jsonPlayInfo = jsonElement.getAsJsonObject();
+      CONTENT_TYPE = jsonPlayInfo.get("type").getAsString();
+      CAN_PLAY = jsonPlayInfo.get("can_play").getAsBoolean();
+      IS_FREE = jsonPlayInfo.get("is_free").getAsBoolean();
+      EXPIRE_AT = jsonPlayInfo.get("expire_at").getAsString();
+      CONTENT_HISTORY_SEC = jsonPlayInfo.get("history_start_seconds").getAsInt();
+
+      cId = extras.getString(PlaybackManager.DRM_CID, "");
+    }
+
+    initialize();
+
+    playFromUri(uri, extras);
+  }
+
   private void initialize() {
     if (!CAN_PLAY) {
       Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
@@ -686,6 +691,9 @@ public class PlayerActivity extends BasePlayerActivity {
     }
 
     if (CONTENT_TYPE != null) {
+
+      Preferences.setWelaaaPlayerOnClickPos(getApplicationContext(), 0);
+
       if (CONTENT_TYPE.equals("audiobook")) {
         RelativeLayout control_wrap = findViewById(R.id.CONTROL_WRAP_BG);
         control_wrap.setOnTouchListener(new View.OnTouchListener() {
@@ -723,8 +731,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
         Intent intent = getIntent();
 
-        if (intent.getStringExtra(PlaybackManager.DRM_CID) != null) {
-          if (intent.getStringExtra(PlaybackManager.DRM_CID).contains("z")) {
+        if (cId != null) {
+          if (cId.startsWith("z")) {
 
             UiThreadUtil.runOnUiThread(new Runnable() {
               @Override
@@ -772,7 +780,7 @@ public class PlayerActivity extends BasePlayerActivity {
     // 네트워크 상태 , 다운로드 상태 출력
     setDownloadHandlering();
     //플레이리스트UI
-    setLectureItem();
+//    setLectureItem();
     //sleep Timer
     setSleeperUI();
     //플레이어 타이틀
@@ -2155,9 +2163,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
             callbackWebPlayerInfo(CONTENT_TYPE, "");
             // 일시정지
-            if (getTransportControls() != null) {
-              getTransportControls().pause();
-            }
+            // if (getTransportControls() != null) {
+            //   getTransportControls().pause();
+            // }
 
           }
           break;
@@ -3767,422 +3775,6 @@ public class PlayerActivity extends BasePlayerActivity {
     return mNewWebPlayerInfo;
   }
 
-  public void setLectureItem() {
-
-    if (lectureAudioBookListItemdapter != null) {
-      lectureAudioBookListItemdapter = null;
-    }
-    lectureAudioBookListItemdapter = new AudioBookPlayerListAdapter(getApplicationContext(), this);
-
-    try {
-      if (CON_CLASS != null) {
-        // AudioBook 은 현재 상태 유지 합니다
-        if (CON_CLASS.equals("2")) {
-          ListView lecturListView = findViewById(R.id.weleanplaylistview);
-
-          String[] a = null;
-          String[] b = null;
-          String[] c = null;
-          String[] d = null;
-          String[] e = null;
-          String[] f = null;
-          String[] g = null;
-          String[] audioPreview = null;
-          String audioBookBuy = null;
-          String audioBookBuy_limitdate = null;
-
-          if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-            a = getNewWebPlayerInfo().getCplay_time();
-            b = getNewWebPlayerInfo().getCname();
-            c = getNewWebPlayerInfo().getCurl();
-          } else {
-            a = getwebPlayerInfo().getCplayTime();
-            b = getwebPlayerInfo().getCname();
-            c = getwebPlayerInfo().getCurl();
-
-            d = getwebPlayerInfo().getA_depth();
-            e = getwebPlayerInfo().getHistory_endtime();
-            f = getwebPlayerInfo().getFirst_play();
-            g = getwebPlayerInfo().getCkey();
-            audioPreview = getwebPlayerInfo().getAudio_preview();
-            audioBookBuy = getwebPlayerInfo().getAudiobookbuy();
-            audioBookBuy_limitdate = getwebPlayerInfo().getAudiobookbuy();
-          }
-
-          for (int i = 0; i < a.length; i++) {
-
-            try {
-              a[i] = a[i].substring(3, 8);
-            } catch (Exception ex) {
-              ex.printStackTrace();
-            }
-
-            if (d[i].equals("1")) {
-              // 1depth index
-
-              if (c[i].contains(".mp4")) {
-                if (audioBookBuy.equals("Y")) {
-                  if (e[i].equals("9999999")) {
-                    // 재생 완료 상태
-                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "7");
-                  } else if (e[i].equals("")) {
-                    // 재생 이력 없음
-                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "2");
-                  } else {
-                    // 재생 중
-                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "8");
-                  }
-                } else {
-                  if (audioPreview[i].equals("Y")) {
-                    if (e[i].equals("9999999")) {
-                      // 재생 완료 상태
-//                                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "7");
-                      lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "31");
-                    } else if (e[i].equals("")) {
-                      // 재생 이력 없음
-//                                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "2");
-                      lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "32");
-                    } else {
-                      // 재생 중
-//                                    lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "8");
-                      lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "33");
-                    }
-                  } else {
-                    lectureAudioBookListItemdapter.add("", "", b[i], "", "", "", "1");
-                  }
-                }
-              } else {
-                lectureAudioBookListItemdapter.add("", "", b[i], "", "", "", "1");
-              }
-
-            } else if (d[i].equals("2")) {
-              // 2depth index
-              if (c[i].contains(".mp4")) {
-
-                if (audioBookBuy.equals("Y")) {
-
-                  if (Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()) > 0) {
-                    if (i == Preferences.getWelaaaPlayerOnClickPos(getApplicationContext())) {
-                      // Title 강조
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "13");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "14");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "15");
-                      }
-                    } else {
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "9");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "4");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "10");
-                      }
-                    }
-                  } else {
-                    if (g[i].equals(getwebPlayerInfo().getCkey()[getContentId()])) {
-                      // Title 강조
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "13");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "14");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "15");
-                      }
-                    } else {
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "9");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "4");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "10");
-                      }
-                    }
-                  }
-
-                } else {
-                  if (audioPreview[i].equals("Y")) {
-
-                    if (g[i].equals(getwebPlayerInfo().getCkey()[getContentId()])) {
-                      // Title 강조
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "13");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "24");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "14");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "23");
-                      } else {
-                        // 재생 중
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "15");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "22");
-                      }
-                    } else {
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "9");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "21");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "4");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "20");
-                      } else {
-                        // 재생 중
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "10");
-                        //
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "19");
-                      }
-                    }
-                  } else {
-                    lectureAudioBookListItemdapter.add("", "", b[i], "", "", "", "3");
-                  }
-                }
-              } else {
-                lectureAudioBookListItemdapter.add("", "", b[i], "", "", "", "3");
-              }
-
-            } else if (d[i].equals("3") || d[i].equals("4") || d[i].equals("5")) {
-              // 3depth index
-
-              if (c[i].contains(".mp4")) {
-
-                if (audioBookBuy.equals("Y")) {
-
-                  if (Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()) > 0) {
-                    if (i == Preferences.getWelaaaPlayerOnClickPos(getApplicationContext())) {
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "16");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "17");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "18");
-                      }
-
-                    } else {
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "11");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "6");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "12");
-                      }
-                    }
-                  } else {
-                    //
-
-                    if (g[i].equals(getwebPlayerInfo().getCkey()[getContentId()])) {
-                      // Title 강조
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "16");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "17");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "18");
-                      }
-                    } else {
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "11");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "6");
-                      } else {
-                        // 재생 중
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "12");
-                      }
-                    }
-
-                  }
-
-                } else {
-
-                  if (audioPreview[i].equals("Y")) {
-                    if (g[i].equals(getwebPlayerInfo().getCkey()[getContentId()])) {
-                      // Title 강조
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "16");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "25");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "17");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "26");
-                      } else {
-                        // 재생 중
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "18");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "27");
-                      }
-                    } else {
-                      if (e[i].equals("9999999")) {
-                        // 재생 완료 상태
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "11");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "28");
-                      } else if (e[i].equals("")) {
-                        // 재생 이력 없음
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "6");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "29");
-                      } else {
-                        // 재생 중
-//                                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "" , "" , "12");
-                        lectureAudioBookListItemdapter.add(a[i], c[i], b[i], "", "", "", "30");
-                      }
-                    }
-                  } else {
-                    lectureAudioBookListItemdapter.add("", "", b[i], "", "", "", "5");
-                  }
-                }
-              } else {
-                lectureAudioBookListItemdapter.add("", "", b[i], "", "", "", "5");
-              }
-            }
-          }
-
-          lecturListView.setAdapter(lectureAudioBookListItemdapter);
-
-          int position = 0;
-
-          if (Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()) > 0) {
-            position = Preferences.getWelaaaPlayerOnClickPos(getApplicationContext());
-
-            lecturListView.setSelection(position);
-          } else {
-            position = Integer.parseInt(getwebPlayerInfo().getCalign()[getContentId()]);
-
-            lecturListView.setSelection(position - 1);
-          }
-
-          lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-              // scroll Start 1
-              // scroll Ing 2
-              // scroll Stop 0
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-              //
-              // i : 현재 포지션
-              // i1 : 뷰상에서 보여지는 포지션 전체 값
-              // i2 : listView 전체 값
-
-              audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
-              audioItemProgressBar.setVisibility(View.VISIBLE);
-
-              if (i == 0) {
-                audioItemProgressBar.setProgress(1);
-              }
-
-              if (i > 0 && i < 30) {
-//                                mlistViewProgress.sendEmptyMessageDelayed(0,200);
-
-                audioItemProgressBar.setProgress(((i) * 100 / i2));
-
-              }
-
-              if (i > 30) {
-//                                mlistViewProgress.sendEmptyMessageDelayed(0,200);
-
-                audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
-
-              }
-
-            }
-          });
-//            강좌타이틀
-          TextView list_grop_title = findViewById(R.id.list_group_title);
-          String gTitle = "";
-
-          if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-
-            gTitle = getNewWebPlayerInfo().getGroup_title()[getContentId()].replaceAll("<br>", "");
-
-          } else {
-            gTitle = getwebPlayerInfo().getGroupTitle().replaceAll("<br>", "");
-          }
-
-          list_grop_title.setText(gTitle);
-
-        }
-
-        boolean previewPlaymode = Preferences.getWelaaaPreviewPlay(getApplicationContext());
-        // 여기로 들어오면 안되는데요 ..
-        // 로그인 상태라면 ?
-        // 또는 viewContents?ckey=189 로 호출될 때 ..
-        // 또는 previewPlaymode 는 동영상 지식영상 컨텐츠의 경우만
-
-        if (previewPlaymode && CON_CLASS.equals("1")) {
-
-          if (lectureListItemdapter != null) {
-            lectureListItemdapter = null;
-          }
-          lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
-
-          ListView lecturListView = findViewById(R.id.weleanplaylistview);
-
-          String[] a = null;
-          String[] b = null;
-          String[] c = null;
-          String[] d = null;
-          String[] e = null;
-          String[] f = null;
-
-          try {
-            if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-              a = getNewWebPlayerInfo().getCplay_time();
-              b = getNewWebPlayerInfo().getCname();
-              c = getNewWebPlayerInfo().getCkey();
-              d = getNewWebPlayerInfo().getGroup_title();
-              e = getNewWebPlayerInfo().getGroup_teachername();
-              f = getNewWebPlayerInfo().getEnd_time();
-            }
-
-            for (int i = 0; i < a.length; i++) {
-
-              a[i] = a[i].substring(3, 8);
-
-              lectureListItemdapter.add(a[i], c[i], b[i], d[i], e[i], f[i], "1");
-
-            }
-
-            lecturListView.setAdapter(lectureListItemdapter);
-
-            lecturListView.setSelection(0);
-
-          } catch (Exception ex) {
-            ex.printStackTrace();
-          }
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-
   public void setSleeperUI() {
 
     mblank_sleeper_view = findViewById(R.id.blank_sleeper_view);
@@ -4297,9 +3889,9 @@ public class PlayerActivity extends BasePlayerActivity {
                   getwebPlayerInfo().getGroupTeachername(),
                   getwebPlayerInfo().getHistory_endtime()[i],
                   playListType);
-          lecturListView.setAdapter(lectureListItemdapter);
         }
 
+        lecturListView.setAdapter(lectureListItemdapter);
 //        lecturListView.setSelection(Integer.parseInt(currentPosition));
         Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
 
@@ -4310,29 +3902,65 @@ public class PlayerActivity extends BasePlayerActivity {
 
         mButtonGroupLayout.setVisibility(View.INVISIBLE);
 
+        if (lectureAudioBookListItemdapter != null) {
+          lectureAudioBookListItemdapter = null;
+        }
+
+        lectureAudioBookListItemdapter = new AudioBookPlayerListAdapter(getApplicationContext(),
+            this);
+
         ListView lecturListView = findViewById(R.id.weleanplaylistview);
 
         for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
-
           if (getwebPlayerInfo().getA_depth()[i].equals("1")) {
-
-            // Play Item Focus , 강조 구문
-            // AudioBook Buy ? , 플레이 버튼 노출을 위해서
-            lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "2");
-
+            if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
+                .equals("0.0")) {
+              lectureAudioBookListItemdapter.add("",
+                  "", getwebPlayerInfo().getCname()[i], "", "", "", "1");
+            } else {
+              lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                  "2");
+            }
           } else if (getwebPlayerInfo().getA_depth()[i].equals("2")) {
-
-            lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "4");
+            if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
+                .equals("0.0")) {
+              lectureAudioBookListItemdapter.add("",
+                  "", getwebPlayerInfo().getCname()[i], "", "", "", "3");
+            } else {
+              lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                  "4");
+            }
           } else {
-            lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "", "6");
+            if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
+                .equals("0.0")) {
+              lectureAudioBookListItemdapter.add("",
+                  "", getwebPlayerInfo().getCname()[i], "", "", "", "5");
+            } else {
+              lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                  "6");
+            }
           }
-
         }
 
         lecturListView.setAdapter(lectureAudioBookListItemdapter);
+
+        int position = 0;
+
+        LogHelper.e(TAG, " 4359 getWelaaaPlayerOnClickPos is " + Preferences
+            .getWelaaaPlayerOnClickPos(getApplicationContext()));
+
+        if (Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()) > 0) {
+          position = Preferences.getWelaaaPlayerOnClickPos(getApplicationContext());
+
+          lecturListView.setSelection(position);
+        } else {
+          position = Integer.parseInt(getwebPlayerInfo().getCalign()[getContentId()]);
+
+          lecturListView.setSelection(position - 1);
+        }
 
         lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
           @Override
@@ -4662,22 +4290,29 @@ public class PlayerActivity extends BasePlayerActivity {
     MediaControllerCompat.setMediaController(PlayerActivity.this, mediaController);
     mediaController.registerCallback(callback);
 
-    try {
-      if (!fromMediaSession) {
-        Intent intent = getIntent();
-        Uri uri = intent.getData();
-        playFromUri(uri, intent.getExtras());
-      } else {
-        Bundle extras = mediaController.getMetadata().getBundle();
-        Uri uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
-        playFromUri(uri, extras);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      // http://crashes.to/s/557b5198098
-      finish();
-    }
+    Intent intent = getIntent();
+    if (intent != null) {
+      Bundle extras;
+      Uri uri;
+      boolean fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
 
+      if (!fromMediaSession) {
+        extras = intent.getExtras();
+        uri = intent.getData();
+        setData(fromMediaSession, extras, uri);
+      } else {
+        try {
+          extras = mediaController.getMetadata().getBundle();
+          uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+
+          setData(fromMediaSession, extras, uri);
+        } catch (Exception e) {
+          e.printStackTrace();
+          Utils.logToast(getApplicationContext(), getString(R.string.notice_dialog_finish_message));
+          finish();
+        }
+      }
+    }
   }
 
   private void playFromUri(Uri uri, Bundle extras) {
@@ -4919,7 +4554,7 @@ public class PlayerActivity extends BasePlayerActivity {
       String body = response.body().string();
 
       if (response.code() == 200) {
-        LogHelper.e(TAG, "서버에서 응답한 Body:" + callbackMethodName);
+        LogHelper.e(TAG, "서버에서 응답한 Body:" + callbackMethodName + " body : " + body);
 
         if (callbackMethodName.equals("play/play-data/")) {
           // doAudoPlay 전용
@@ -4927,13 +4562,24 @@ public class PlayerActivity extends BasePlayerActivity {
             JSONObject json = new JSONObject(body);
             JSONObject media_urlsObject = json.getJSONObject("media_urls");
             JSONObject permissionObject = json.getJSONObject("permission");
+            JSONObject preview_urlsObject = null;
 
             String dashUrl = media_urlsObject.getString("DASH");
             Boolean can_play = permissionObject.getBoolean("can_play");
             String expire_at = permissionObject.getString("expire_at");
             Boolean is_free = permissionObject.getBoolean("is_free");
 
-            //추천 콘텐츠 뷰
+            String previewDashUrl = "";
+
+            if (!json.isNull("preview_urls")) {
+              LogHelper.e(TAG, " preview_urls is Not null " + json.getJSONObject("preview_urls"));
+              preview_urlsObject = json.getJSONObject("preview_urls");
+
+              previewDashUrl = preview_urlsObject.getString("DASH");
+
+            } else {
+              LogHelper.e(TAG, " preview_urls is null ");
+            }
 
             Preferences.setWelaaaPlayListCId(getApplicationContext(), contentId);
 
@@ -4949,6 +4595,11 @@ public class PlayerActivity extends BasePlayerActivity {
               if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
                 if (getTransportControls() != null) {
                   Uri uri = Uri.parse(dashUrl);
+
+                  if (!can_play) {
+                    uri = Uri.parse(previewDashUrl);
+                    LogHelper.e(TAG, " can_play preview URI " + uri);
+                  }
 
                   intent.setData(uri);
                   intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
@@ -4971,7 +4622,27 @@ public class PlayerActivity extends BasePlayerActivity {
                       intent.putExtra(PlaybackManager.DRM_OID, "");
                       intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                       intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                      intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
+                      intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
+                          getwebPlayerInfo().getGroupTitle());
+
+                      // fromMediaSession 용도
+                      Gson gson = new Gson();
+                      JsonObject jsonObject = new JsonObject();
+                      jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
+                      jsonObject.addProperty("can_play", can_play);
+                      jsonObject.addProperty("is_free", is_free);
+                      jsonObject.addProperty("expire_at", expire_at);
+                      jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
+                      String playInfo = gson.toJson(jsonObject);
+
+                      intent.putExtra("play_info", playInfo);
+
+                      if (!can_play) {
+                        // 미리 듣기 90초
+                        intent.putExtra("duration", "00:01:30");
+                      } else {
+                        intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
+                      }
 
                     }
 
@@ -5400,10 +5071,6 @@ public class PlayerActivity extends BasePlayerActivity {
    *******************************************************************/
   public void playListOnClick(String pos) {
 
-    if (getTransportControls() != null) {
-      getTransportControls().play();
-    }
-
     int currentPosition = 0;
     for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
       if (getwebPlayerInfo().getCkey()[i].equals(pos)) {
@@ -5443,6 +5110,11 @@ public class PlayerActivity extends BasePlayerActivity {
     callbackMethod = "play";
 
     setContentId(currentPosition);
+
+    Preferences.setWelaaaPlayerOnClickPos(getApplicationContext(), currentPosition);
+
+    LogHelper
+        .e(TAG, " getWelaaaPlayerOnClickPos is " + currentPosition + " playListOnClick :: " + pos);
 
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);

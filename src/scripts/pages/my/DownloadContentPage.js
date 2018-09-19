@@ -182,7 +182,7 @@ export default class DownloadContentPage extends React.Component {
 			try {
 				const json = JSON.parse(globalStore.downloadItems);
 				json.forEach((item, idx) => {
-					if (item.audioVideoType === 'video_course') vvv.push({...item, key: idx + ''});
+					if (item.audioVideoType === 'video-course') vvv.push({...item, key: idx + ''});
 					else aaa.push({...item, key: idx + ''});
 				});
 			} catch (e) {

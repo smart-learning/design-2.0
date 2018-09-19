@@ -22,8 +22,12 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getF_TOKEN(Callback resultCallback) {
-    String F_Token = Preferences.getWelaaaLoginToken(getCurrentActivity());
-    Preferences.setWelaaaLoginToken(getCurrentActivity(), "");
-    resultCallback.invoke(F_Token);
+    try{
+      String F_Token = Preferences.getWelaaaLoginToken(getCurrentActivity());
+      Preferences.setWelaaaLoginToken(getCurrentActivity(), "");
+      resultCallback.invoke(F_Token);
+    }catch (Exception e){
+      e.printStackTrace();
+    }
   }
 }
