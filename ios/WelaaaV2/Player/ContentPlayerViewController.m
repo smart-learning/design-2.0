@@ -2645,7 +2645,7 @@
     NSLog(@"  download contentId : %@, location : %@", contentId, location.absoluteString);
   
     if (![contentId isEqualToString:[_args objectForKey:@"cid"]]) {
-      // 다운로드 완료된 파일이 현재 재생중인 컨텐츠와 다를 경우에는 재생하지 않습니다.
+      // 다운로드 완료된 파일이 현재 재생중인 콘텐츠와 다를 경우(다른 영상에서 다운로드를 요청한 케이스)에는 팝업을 띄우지 않습니다.
       return;
     }
   
