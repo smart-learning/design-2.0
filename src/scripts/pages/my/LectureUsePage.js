@@ -28,7 +28,7 @@ import net from "../../commons/net";
 	}
 
 	goLecture = ( item ) => {
-		this.props.navigation.navigate( 'ClassDetailPage', { id: this.props.id, title: this.props.title } );
+		this.props.navigation.navigate( 'ClassDetailPage', { id: item.data.id, title: item.data.headline } );
 	};
 
 	render() {
@@ -47,6 +47,7 @@ import net from "../../commons/net";
 					</View>
 					}
 					{ this.store.list && this.store.list.map( ( item, key ) => {
+						console.log( 'item', item );
 						return (
 							<SummaryListItem key={ key }
 											 thumbnail={ item.data.images ? item.data.images.list : null }
