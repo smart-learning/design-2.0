@@ -164,7 +164,7 @@ class Data {
   @observable
   isAgree = false;
   @observable
-  windowHeight: null;
+  windowHeight = null;
 }
 
 @observer
@@ -174,7 +174,7 @@ class EmailSignUpForm extends Component {
   constructor(props) {
     super(props);
 
-    this.windowHeight = Dimensions.get('window').height;
+    this.data.windowHeight = Dimensions.get('window').height;
   }
 
   validityNameOnFocus = () => {
@@ -233,7 +233,7 @@ class EmailSignUpForm extends Component {
         behavior="padding"
       >
         <ScrollView style={{ flex: 1, width: '100%' }}>
-          <View style={{ width: '100%', height: this.windowHeight }}>
+          <View style={{ width: '100%', height: this.data.windowHeight }}>
             <Swiper
               style={styles.wrapper}
               showsButtons={false}
