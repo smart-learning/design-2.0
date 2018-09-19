@@ -470,10 +470,10 @@
             return @"iPhone XR";
       
         if ( [deviceModel isEqual: @"iPhone11,3"] )
-            return @"iPhone Xs";
+            return @"iPhone XS";
       
         if ( [deviceModel isEqual: @"iPhone11,5"] )
-            return @"iPhone Xs Max";
+            return @"iPhone XS Max";
     }
     
     // iPad
@@ -643,10 +643,10 @@
     if ( [deviceModel isEqualToString : @"iPhone X"] )
         return true;
   
-    if ( [deviceModel isEqualToString : @"iPhone Xs"] )
+    if ( [deviceModel isEqualToString : @"iPhone XS"] )
         return true;
   
-    if ( [deviceModel isEqualToString : @"iPhone Xs Max"] )
+    if ( [deviceModel isEqualToString : @"iPhone XS Max"] )
         return true;
   
     if ( [deviceModel isEqualToString : @"iPhone XR"] )

@@ -32,6 +32,7 @@ import WebViewScreen from './src/scripts/pages/WebViewScreen';
 import { observable } from 'mobx';
 import commonStyle from './src/styles/common';
 import { Notification, NotificationOpen } from 'react-native-firebase';
+import NotificationUI from 'react-native-in-app-notification';
 
 class Data {
   @observable
@@ -168,6 +169,20 @@ class App extends React.Component {
 
         if (Platform.OS !== 'ios') {
           notification.android.setChannelId('welaaa');
+        }
+
+        if (this.notificationUI) {
+          const params = {};
+          params.title = notification._title || 'Welaaa';
+          params.message = notification._body;
+          params.onPress = () => {
+            try {
+              nav.parseDeepLink(notification._data.path);
+            } catch (error) {
+              console.log(error);
+            }
+          };
+          this.notificationUI.show(params);
         }
       });
 
@@ -330,6 +345,12 @@ class App extends React.Component {
             android: <BottomController />,
             ios: null
           })}
+        <NotificationUI
+          style={{ zIndex: 999999 }}
+          ref={ref => {
+            this.notificationUI = ref;
+          }}
+        />
       </View>
     );
   }

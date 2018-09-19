@@ -10,7 +10,10 @@
 
 @implementation Clip
 
-@synthesize title,memo,cid,playTime,index,downloaded,contentUrl,totalSec,contentPath;
+@synthesize title,memo,cid,playTime,index,downloaded,contentUrl,totalSec,contentPath, \
+            groupkey,ckey,userId,drmSchemeUuid,drmLicenseUrl,oid,totalSize,gTitle,groupImg, \
+            thumbnailImg,audioVideoType,groupTeacherName,cPlayTime,groupContentScnt, \
+            groupAllPlayTime,view_limitdate,modified;
 
 -(id)initWithTitle:(NSString *)title
               memo:(NSString *)memo

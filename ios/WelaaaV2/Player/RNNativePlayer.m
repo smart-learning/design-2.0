@@ -50,6 +50,11 @@ RCT_EXPORT_MODULE();
     });
 }
 
+- (void) stopMediaPlayer
+{
+    ;  // playerController를 닫습니다.
+}
+
 - (void) downloadSomething : (NSDictionary *) args
 {
     // 다운로드 테스트용
@@ -107,6 +112,11 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD( play : (NSDictionary *) argsFromReactNative )
 {
     [self showMediaPlayer : argsFromReactNative];
+}
+
+RCT_EXPORT_METHOD( stop )
+{
+  [self stopMediaPlayer];
 }
 
 RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
