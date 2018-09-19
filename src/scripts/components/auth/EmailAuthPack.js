@@ -93,7 +93,7 @@ class EmailAuthPack extends Component {
             autoCapitalize={'none'}
             onSubmitEditing={Keyboard.dismiss}
             onChangeText={text => {
-              this.setState({ email: text });
+              this.data.email = text;
             }}
           />
           <View style={styles.inputBr} />
@@ -105,7 +105,7 @@ class EmailAuthPack extends Component {
             autoCapitalize={'none'}
             onSubmitEditing={Keyboard.dismiss}
             onChangeText={text => {
-              this.setState({ password: text });
+              this.data.password = text;
             }}
           />
         </View>
