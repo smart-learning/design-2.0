@@ -82,6 +82,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   private final int FLAG_PLAY_NETWORK_CHECK = 6;
   private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
 
+  private boolean checkAudioBookChapter = false;
+
   @Override
   public String getName() {
     return "RNNativePlayer";
@@ -105,6 +107,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
     Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
+
+    checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
 
     if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
@@ -591,26 +595,40 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   sb.append("&csmi=" + csmi);
                 }
 
-                if (historyId.equals("")) {
-                  if (i == 0) {
-                    // v200072  , 001 로 리턴되고 , 해당 클래식은 002 가 가장 처음이고,
-                    // 001 은 마지막에서 두개 전 .. for 문에서 신기하게 들어가는건가요 ..
-
-                    contentCid = json.getString("cid");
-                    contentName = json.getString("title");
-                    contentId = i;
-                  }
-                } else {
-
-                  if (historyId.equals(json.getString("id"))) {
+                // 오디오북 목차에서 재생이 들어오는 경우
+                if(checkAudioBookChapter){
+                  if(contentCid.equals(json.getString("id"))){
                     contentName = json.getString("title");
 
                     contentCid = json.getString("cid");
                     contentId = i;
-                  }
 
+                    return;
+                  }
+                  // 오디오북 상세 최상단 플레이 버튼을 통해서 들어올때
+                }else{
+                  if (historyId.equals("")) {
+                    if (i == 0) {
+                      contentCid = json.getString("cid");
+                      contentName = json.getString("title");
+                      contentId = i;
+
+                      return;
+                    }
+                  } else {
+
+                    if (historyId.equals(json.getString("id"))) {
+
+                      contentName = json.getString("title");
+
+                      contentCid = json.getString("cid");
+                      contentId = i;
+
+                      return;
+                    }
+
+                  }
                 }
-
               }
 
               if (mWebPlayerInfo != null) {
