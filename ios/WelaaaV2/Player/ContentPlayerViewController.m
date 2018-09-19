@@ -506,7 +506,7 @@
                       forKey : @"uri"];
             _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
           
-            [self playNext : 0];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
+            [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
         }
         else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
         {
@@ -520,7 +520,7 @@
                       forKey : @"uri"];
             _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
           
-            [self playNext : 0];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
+            [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
         }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
@@ -1109,17 +1109,8 @@
 //
 // 다음 콘텐트를 재생합니다. 재생할 _args가 미리 세팅되어 있기때문에 파라미터가 필요하지 않습니다.
 //
-- (void) playNext : (NSInteger) startSecond
+- (void) playNext
 {
-    if ( 0 == startSecond )
-    {
-        NSLog(@"  [playNext:] 새로운 콘텐츠를 재생합니다.");
-    }
-    else if ( startSecond > 0 )
-    {
-        NSLog(@"  [playNext:] 다운로드받은 콘텐츠를 이어서 재생합니다.");
-    }
-  
     [_player pause];
     [self invalidateTimerOnSlider];
   
@@ -2251,7 +2242,7 @@
         _listView = nil;
     }
   
-    [self playNext : 0];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
+    [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
 }
 
 # pragma mark - Script View
@@ -2640,9 +2631,33 @@
                                                             [alert dismissViewControllerAnimated : YES
                                                                                       completion : nil];
                                                             _isDownloadFile = YES;
-                                                            [_args setObject : assetURL
-                                                                      forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
-                                                            [self playNext : [self getCurrentPlaybackTime]];  // 콘텐츠를 다시 set하고 현재 재생시점을 이어서 재생합니다.
+                                                            NSTimeInterval cTime = [self getCurrentPlaybackTime];
+                                                            NSTimeInterval tTime = [self getDuration];
+                                                              [_args setObject : assetURL
+                                                                        forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
+                                                            //[self playNext];  // 콘텐츠를 다시 set하고 현재 재생시점을 이어서 재생합니다.
+                                                          
+                                                            NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
+                                                            _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
+                                                                                                 options : nil       ];
+                                                          
+                                                            // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+                                                            [ _fpsSDK prepareWithUrlAsset : _urlAsset
+                                                                                   userId : [_args objectForKey : @"userId"]
+                                                                                contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                                                                               optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                                                                          liveKeyRotation : NO              ];
+                                                          
+                                                            _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
+                                                            [_player replaceCurrentItemWithPlayerItem : _playerItem];
+                                                          
+                                                          
+                                                          
+                                                            CMTime newTime = CMTimeMakeWithSeconds(cTime, tTime);
+                                                            [_player seekToTime : newTime];//playImmediatelyAtRate
+                                                            [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+                                                          
+                                                            // TODO : 재생 종료 알림 등 추가.
                                                        }];
   
     UIAlertAction *n = [UIAlertAction actionWithTitle : @"아니오"
