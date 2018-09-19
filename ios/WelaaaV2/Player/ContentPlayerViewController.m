@@ -2644,6 +2644,11 @@
 {
     NSLog(@"  download contentId : %@, location : %@", contentId, location.absoluteString);
   
+    if (![contentId isEqualToString:[_args objectForKey:@"cid"]]) {
+      // 다운로드 완료된 파일이 현재 재생중인 컨텐츠와 다를 경우에는 재생하지 않습니다.
+      return;
+    }
+  
     NSString *assetPath = location.relativePath;
     NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
     NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : assetPath];
