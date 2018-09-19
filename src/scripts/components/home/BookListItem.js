@@ -159,6 +159,9 @@ class BookListItem extends React.Component {
             <View style={styles.bookRankHr} />
           </View>
         )}
+        <Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={2}>
+          {this.props.itemData.subtitle}
+        </Text>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() =>
@@ -168,69 +171,62 @@ class BookListItem extends React.Component {
             })
           }
         >
-          <Text
-            style={styles.bookTitle}
-            ellipsizeMode={'tail'}
-            numberOfLines={2}
-          >
-            {this.props.itemData.subtitle}
-          </Text>
-        </TouchableOpacity>
-        <View>
-          <ImageBackground
-            source={{ uri: this.props.itemData.images.list }}
-            resizeMode={'cover'}
-            style={styles.thumbnail}
-          >
-            <View style={styles.thumbnailDim}>
-              <Text style={styles.thumbnailTitle}>
-                {this.props.itemData.title}
-              </Text>
-              <View style={styles.bookLabelContainer}>
-                {!!this.props.itemData.is_new && (
-                  <View
-                    style={[styles.bookLabel, styles.bookLabelNew]}
-                    borderRadius={10}
-                  >
-                    <Text style={[styles.bookLabelText]}>New</Text>
-                  </View>
-                )}
-                {!!this.props.itemData.is_exclusive && (
-                  <View
-                    style={[styles.bookLabel, styles.bookLabelExclusive]}
-                    borderRadius={10}
-                  >
-                    <Text style={[styles.bookLabelText]}>독점</Text>
-                  </View>
-                )}
-                {!!this.props.itemData.is_free && (
-                  <View
-                    style={[styles.bookLabel, styles.bookLabelFree]}
-                    borderRadius={10}
-                  >
-                    <Text style={[styles.bookLabelText]}>무료</Text>
-                  </View>
-                )}
-                {this.props.itemData.audiobook_type === '완독' && (
-                  <View
-                    style={[styles.bookLabel, styles.bookLabelDefault]}
-                    borderRadius={10}
-                  >
-                    <Text style={[styles.bookLabelText]}>완독</Text>
-                  </View>
-                )}
-                {this.props.itemData.audiobook_type === '요약' && (
-                  <View
-                    style={[styles.bookLabel, styles.bookLabelDefault]}
-                    borderRadius={10}
-                  >
-                    <Text style={[styles.bookLabelText]}>요약</Text>
-                  </View>
-                )}
+          <View>
+            <ImageBackground
+              source={{ uri: this.props.itemData.images.list }}
+              resizeMode={'cover'}
+              style={styles.thumbnail}
+            >
+              <View style={styles.thumbnailDim}>
+                <Text style={styles.thumbnailTitle}>
+                  {this.props.itemData.title}
+                </Text>
+                <View style={styles.bookLabelContainer}>
+                  {!!this.props.itemData.is_new && (
+                    <View
+                      style={[styles.bookLabel, styles.bookLabelNew]}
+                      borderRadius={10}
+                    >
+                      <Text style={[styles.bookLabelText]}>New</Text>
+                    </View>
+                  )}
+                  {!!this.props.itemData.is_exclusive && (
+                    <View
+                      style={[styles.bookLabel, styles.bookLabelExclusive]}
+                      borderRadius={10}
+                    >
+                      <Text style={[styles.bookLabelText]}>독점</Text>
+                    </View>
+                  )}
+                  {!!this.props.itemData.is_free && (
+                    <View
+                      style={[styles.bookLabel, styles.bookLabelFree]}
+                      borderRadius={10}
+                    >
+                      <Text style={[styles.bookLabelText]}>무료</Text>
+                    </View>
+                  )}
+                  {this.props.itemData.audiobook_type === '완독' && (
+                    <View
+                      style={[styles.bookLabel, styles.bookLabelDefault]}
+                      borderRadius={10}
+                    >
+                      <Text style={[styles.bookLabelText]}>완독</Text>
+                    </View>
+                  )}
+                  {this.props.itemData.audiobook_type === '요약' && (
+                    <View
+                      style={[styles.bookLabel, styles.bookLabelDefault]}
+                      borderRadius={10}
+                    >
+                      <Text style={[styles.bookLabelText]}>요약</Text>
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          </ImageBackground>
-        </View>
+            </ImageBackground>
+          </View>
+        </TouchableOpacity>
         <View style={styles.alignJustify}>
           <Image source={IcView} style={styles.btnSetSmall} />
           <Text style={styles.countText}>

@@ -280,7 +280,7 @@ export default {
 					break;
 
 				case 'mywela':
-					navigation.navigate('AuthCheck', { requestScreenName:'MyScreen', title:'마이윌라' } );
+					navigation.navigate('MyScreen');
 					break;
 
 				case 'app_setting':
