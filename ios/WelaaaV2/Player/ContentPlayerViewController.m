@@ -1111,6 +1111,8 @@
 //
 - (void) playNext
 {
+    _isDownloadFile = NO; // 아직 다운로드 콘텐츠 재생에 대한 뚜렷한 플로우 정의가 없으므로 스트리밍으로 set합니다.
+  
     [_player pause];
     [self invalidateTimerOnSlider];
   
@@ -2628,14 +2630,15 @@
                                                 style : UIAlertActionStyleDefault
                                               handler : ^(UIAlertAction * action)
                                                         {
-                                                            [alert dismissViewControllerAnimated : YES
-                                                                                      completion : nil];
                                                             _isDownloadFile = YES;
                                                             NSTimeInterval cTime = [self getCurrentPlaybackTime];
                                                             NSTimeInterval tTime = [self getDuration];
-                                                              [_args setObject : assetURL
-                                                                        forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
-                                                            //[self playNext];  // 콘텐츠를 다시 set하고 현재 재생시점을 이어서 재생합니다.
+                                                          
+                                                            [alert dismissViewControllerAnimated : YES
+                                                                                      completion : nil];
+                                                          
+                                                            [_args setObject : assetURL
+                                                                      forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
                                                           
                                                             NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
                                                             _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
@@ -2651,13 +2654,14 @@
                                                             _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
                                                             [_player replaceCurrentItemWithPlayerItem : _playerItem];
                                                           
-                                                          
-                                                          
                                                             CMTime newTime = CMTimeMakeWithSeconds(cTime, tTime);
                                                             [_player seekToTime : newTime];//playImmediatelyAtRate
                                                             [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
                                                           
-                                                            // TODO : 재생 종료 알림 등 추가.
+                                                            [[NSNotificationCenter defaultCenter] addObserver : self
+                                                                                                     selector : @selector(videoPlayBackDidFinish:)
+                                                                                                         name : AVPlayerItemDidPlayToEndTimeNotification
+                                                                                                       object : [_player currentItem]];
                                                        }];
   
     UIAlertAction *n = [UIAlertAction actionWithTitle : @"아니오"
