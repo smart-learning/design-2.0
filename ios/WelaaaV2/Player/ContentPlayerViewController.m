@@ -727,11 +727,11 @@
     // iPhone X 의 경우 슬라이더와 Anchor가 충돌하므로 기기에 따른 분기 처리가 필요합니다.
     if ( [common hasNotch] )
     {
-      _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-80.f, self.view.frame.size.width, 60.f)];
+        _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-80.f, self.view.frame.size.width, 60.f)];
     }
     else
     {
-      _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-60.f, self.view.frame.size.width, 60.f)];
+        _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-60.f, self.view.frame.size.width, 60.f)];
     }
     _bottomView.backgroundColor = UIColorFromRGB(0x272230, 0.3f);
     [_contentView addSubview : _bottomView];
@@ -755,25 +755,8 @@
     _totalTimeLabel.textColor = [UIColor whiteColor];
     _totalTimeLabel.textAlignment = NSTextAlignmentCenter;
     _totalTimeLabel.text = @"00:00";
-    if ( _isAuthor )
-    {
-        _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
-                                                    Minute : YES];
-    }
-    else if ( !_isAuthor )
-    {
-        // 재생 권한이 없는 없는 오디오북 콘텐츠는 프리뷰 챕터만 이용 가능합니다.
-        if ( _isAudioContent )
-        {
-            _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
-                                                        Minute : YES];
-        }
-        // 재생 권한이 없는 없는 영상 콘텐츠는 90초만 이용 가능합니다.
-        else if ( !_isAudioContent )
-        {
-            _totalTimeLabel.text = @"01:30";
-        }
-    }
+    _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
+                                                Minute : YES];
     [_bottomView addSubview : _totalTimeLabel];
   
     _slider = [[UISlider alloc] initWithFrame : CGRectMake(margin + labelWidth + padding, _bottomView.frame.size.height-44, barWidth, 30.f)];
@@ -843,8 +826,8 @@
       
       BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
 
-      if ( !_isAuthor )
-          isAutoPlay = NO;
+    //if ( !_isAuthor )
+    //    isAutoPlay = NO;
       
       [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
       
@@ -1111,34 +1094,11 @@
 - (void) setPreparedToPlay
 {
     NSLog(@"  [setPreparedToPlay]");
-  //CGFloat currentTime = [self getCurrentPlaybackTime];
-    CGFloat currentTime = 0.f;
-  //CGFloat totalTime = [self getDuration]; // nan이 나오면 에러...
-    CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);
-  
-  //_isAudioMode = false; // 테스트를 목적으로 강제로 value를 set하였습니다. 모든 기능이 구현되면 삭제될 예정입니다.
   
     if ( _slider )
     {
         _slider.minimumValue = 0.f;
-        // 재생 권한이 모든 타입의 콘텐츠는 정상적인 duration으로 세팅합니다.
-        if ( _isAuthor )
-        {
-            _slider.maximumValue = totalTime;
-        }
-        else if ( !_isAuthor )
-        {
-            // 재생 권한이 없는 없는 오디오북 콘텐츠는 프리뷰 챕터만 이용 가능합니다.
-            if ( _isAudioContent )
-            {
-                _slider.maximumValue = totalTime;
-            }
-            // 재생 권한이 없는 없는 영상 콘텐츠는 90초만 이용 가능합니다.
-            else if ( !_isAudioContent )
-            {
-                _slider.maximumValue = 90.f;
-            }
-        }
+        _slider.maximumValue = CMTimeGetSeconds(_urlAsset.duration);
     }
   
     _playbackRate = 1.f;
@@ -1862,16 +1822,6 @@
                                                                      didChangedPlayTime : playTime];
                                                                }
                                                                */
-                                                            
-                                                                // 유저가 콘텐트에 대한 권한이 없으면서, 콘텐트가 영상이라면...
-                                                                if ( !_isAuthor && !_isAudioContent )
-                                                                {
-                                                                    if ( playTime >= 90.f )
-                                                                    {
-                                                                        [self closePlayer];
-                                                                        [self showToast : @"90 초 프리뷰"]; // Root View에서도 보여야 합니다.
-                                                                    }
-                                                                }
                                                             }];
   
     if ( _seekTimer )
