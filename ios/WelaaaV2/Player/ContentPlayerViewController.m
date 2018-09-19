@@ -11,81 +11,6 @@
 
 #import "ContentPlayerViewController.h"
 
-#import "AppDelegate.h"
-#import "IFRecommendViewController.h"
-#import "Clip.h"
-
-@interface ContentPlayerViewController() <ContentPlayerButtonDelegate, IFSleepTimerManagerDelegate, PlayerSleepTimerViewDelegate,
-                                          ContentsListPopupViewDelegate, MediaPlayerScriptViewDelegate, ContentMiniPlayerViewDelegate>
-{
-    UIView *_audioUiView;
-    UIImageView *_backgroundImageView;
-    UIImageView *_headphoneImageView;
-    UIView *_contentView;            // PlayerLayer, TopBar, BottomBar 등을 표시하는 최상단 Layer, PlayerLayer에 여러 view를 add하면 사라지기 때문.
-    UIView *_topView;                // 상단 메뉴 바.
-    UIView *_bottomView;             // 최하단 메뉴 바. 콘텐트 현재 재생 시간, 시간 탐색용 슬라이더, 전체 재생 시간 표시.
-    UIView *_menuItemView;           // _bottomView 바로 위에 위치한 메뉴바.
-    UIView *_menuItemTopLineView;
-    UIView *_menuItemBottomLineView;
-    UIView *_controlBarView;         // 재생, 정지, 뒤로 가기, 빨리 가기를 포함한 유틸뷰.
-  
-    UIButton *_closeButton;
-    UIButton *_rateStarButton;
-    UIButton *_hideAndShowButton;
-    UIButton *_playButton;      // 재생 버튼.
-    UIButton *_paueseButton;    // 일시 정지 버튼.
-    UIButton *_rwButton;        // 뒤로 가기 버튼.
-    UIButton *_ffButton;        // 빨리 가기 버튼.
-    UIButton *_speedButton;     // 재생 속도 버튼.
-    UIButton *_listButton;      // .
-  
-    UILabel *_courseTitleLabel;   // 전체 강좌명
-    UILabel *_lectureTitleLabel;  // 강좌 내 강의명
-    UILabel *_timeLabel;          // 재생중인 콘텐트의 현재 시간.
-    UILabel *_totalTimeLabel;     // 재생중인 콘텐트의 전체 시간.
-    UILabel *_networkStatusLabel;
-
-    UISlider  *_slider;           // 재생 시간 탐색용 슬라이더.
-  
-    BOOL _isAudioMode;
-    BOOL _touchDragging;            // 슬라이더 프로퍼티.
-    BOOL _holdTouchDragging;        // 슬라이더 프로퍼티.
-    BOOL _isPlaybackContollerHidden;// 재생 컨트롤 UI 모듈 감춤 or 표시.
-    BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한.
-    bool _isAudioContent;           // 콘텐트 타입. (AVPlayer API를 사용할 수도 있습니다. 추후에 '매일 책 한권' 등의 콘텐트에 대한 분류도 고민해야 할 것입니다.
-  
-    ContentPlayerButton *_autoPlayButton;
-    ContentPlayerButton *_scriptButton;
-    ContentPlayerButton *_modeChangeButton;
-    ContentPlayerButton *_downloadButton;
-    ContentPlayerButton *_sleepButton;
-    ContentPlayerButton *_lockButton;
-  
-    ContentsListPopupView *_listView;
-  
-    NSMutableDictionary *_args;
-    NSDictionary *_currentContentsInfo;
-  
-    StarRatingView *_rateView;
-    PlayerSleepTimerView *_playerSleepTimerSelectView;
-    MediaPlayerScriptView *_scriptView;
-    ContentMiniPlayerView *_miniPlayerUiView;
-  
-    NSString *_currentStar;
-    NSString *_currentLectureTitle; // 현재 재생중인 소제목명. 플레이어가 처음 구동되거나 playNext를 실행할때마다 변경해야 합니다.
-  
-    AVPlayer *_player;
-    AVPlayerItem *_playerItem;
-    AVURLAsset *_urlAsset;
-  
-    CGFloat _playbackRate;
-    CGFloat _currentPlaybackDuration;
-  
-    NSTimer *_seekTimer;
-    NSTimer *_logTimer;
-}
-@end
-
 @implementation ContentPlayerViewController
 
 // 해당 뷰컨트롤러 클래스가 생성될 때(ViewWillAppear전에 실행) 실행됩니다.
@@ -118,23 +43,21 @@
     _isDownloadFile = false;
   
     // 오디오 UI
-    {
-        _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
-        _audioUiView.backgroundColor = [UIColor blackColor];
-        [self.view addSubview : _audioUiView];
-      
-        _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
-        [_audioUiView addSubview : _backgroundImageView];
-      
-        UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
-        _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
-                                                                              ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
-                                                                              headphoneImage.size.width, headphoneImage.size.height)];
-        _headphoneImageView.image = headphoneImage;
-        [_audioUiView addSubview : _headphoneImageView];
-      
-        _audioUiView.hidden = !_isAudioMode;
-    }
+    _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
+    _audioUiView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview : _audioUiView];
+  
+    _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
+    [_audioUiView addSubview : _backgroundImageView];
+  
+    UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
+    _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
+                                                                          ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
+                                                                          headphoneImage.size.width, headphoneImage.size.height)];
+    _headphoneImageView.image = headphoneImage;
+    [_audioUiView addSubview : _headphoneImageView];
+    _audioUiView.hidden = !_isAudioMode;
+
     // contentView 구성.
     _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
     [self.view addSubview : _contentView];
@@ -147,9 +70,9 @@
     _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
     [_contentView addSubview : _hideAndShowButton];
   
-  _fpsDownloadManager = [FPSDownloadManager sharedInstance];
-  _fpsDownloadManager.delegateFpsMsg = self;
-  _fpsDownloadManager.delegateFpsDownload = self;
+    _fpsDownloadManager = [FPSDownloadManager sharedInstance];
+    _fpsDownloadManager.delegateFpsMsg = self;
+    _fpsDownloadManager.delegateFpsDownload = self;
   
     // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
   /* 일단 주석 처리
@@ -300,8 +223,7 @@
   
     NSString *uriString = [_args objectForKey : @"uri"];
     NSURL *contentUrl = [ NSURL URLWithString : uriString ]; // CONTENT_PATH
-    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                         options : nil       ];
+    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
   
     // 2. Set parameters required for FPS content playback. FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
     [ _fpsSDK prepareWithUrlAsset : _urlAsset
@@ -310,7 +232,7 @@
                        optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
                   liveKeyRotation : NO              ];
   
-    _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
+    _playerItem = [AVPlayerItem playerItemWithAsset : _urlAsset];
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
@@ -395,13 +317,10 @@
                                                userInfo : nil
                                                 repeats : YES];
   
-  
     // 영상시작후 3초간 입력이 없으면 컨트롤러를 자동으로 Hide.
-    /*
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
-     */
 }
 
 //
@@ -544,8 +463,6 @@
     {
         [self closePlayer];
     }
-  
-    // 추가할 사항 : 연속재생 버튼이 'on'상태이면 플레이어를 종료합니다.
 }
 
 //
@@ -606,20 +523,18 @@
   
     CGRect frame = CGRectZero;
     frame.origin.x = CGRectGetMaxX(_closeButton.frame) + 10.f;
+  
     if ( [common hasNotch] )
-    {
-      frame.origin.y = 30.f;
-    }
+        frame.origin.y = 30.f;
     else
-    {
-      frame.origin.y = 10.f;
-    }
+        frame.origin.y = 10.f;
+  
     frame.size.width = self.view.frame.size.width - (frame.origin.x + 10) - 70;   // 별점주기 버튼 때문에 프레임 넓이 조정.
     frame.size.height = 13.f;
   
     _courseTitleLabel = [[UILabel alloc] initWithFrame : frame];
     _courseTitleLabel.backgroundColor = [UIColor clearColor];
-    _courseTitleLabel.font = [UIFont fontWithName : @"SpoqaHanSans" size : 11];
+    _courseTitleLabel.font = [UIFont fontWithName:@"SpoqaHanSans" size:11];
     _courseTitleLabel.textColor = UIColorFromRGB(0xffffff, 0.5f);
     _courseTitleLabel.textAlignment = NSTextAlignmentLeft;
     _courseTitleLabel.numberOfLines = 1;
@@ -1240,16 +1155,16 @@
   
   //[self showToast : @"미니플레이어로 변환합니다."];
   
-  self.isMiniPlayer = YES;
-  _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
-  _miniPlayerUiView.delegate = self;
-  _miniPlayerUiView.isAuthor = _isAuthor;
-  [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
-  [self.view addSubview : _miniPlayerUiView];
+    self.isMiniPlayer = YES;
+    _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+    _miniPlayerUiView.delegate = self;
+    _miniPlayerUiView.isAuthor = _isAuthor;
+    [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
+    [self.view addSubview : _miniPlayerUiView];
   
-//_playerUiView.hidden = self.isMiniPlayer;
-  _miniPlayerUiView.hidden = !self.isMiniPlayer;
-//[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
+  //_playerUiView.hidden = self.isMiniPlayer;
+    _miniPlayerUiView.hidden = !self.isMiniPlayer;
+  //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
   
 }
 
@@ -1285,35 +1200,13 @@
                                                     else
                                                     {
                                                         NSLog(@"  [pressedRateStarButton] 최종별점 : %@", _currentStar);
-                                                        NSLog(@"  [pressedRateStarButton] ckey : %@", @"582");
-                                                        // 지식영상이 끝나면 별점을 등록하기 위해 조회를 먼저합니다.
-                                                        NSString *starUpdateUrl;
-                                                      #if APPSTORE | ADHOC
-                                                        starUpdateUrl = [NSString stringWithFormat : @"http://%@/usingapp/update_star.php", BASE_DOMAIN];
-                                                      #else
-                                                        starUpdateUrl = [NSString stringWithFormat : @"http://%@/usingapp/update_star.php", TEST_DOMAIN];
-                                                      #endif
-                                                        NSString *post = [NSString stringWithFormat : @"star=%@&ckey=%@", _currentStar, @"582"];
-                                                        NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
-                                                      
-                                                        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-                                                        [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", starUpdateUrl]]];
-                                                        [request setHTTPBody : postData];
-                                                        [request setHTTPMethod : @"POST"];
-                                                        NSError *error;
-                                                        NSURLResponse *resp = nil;
-                                                        // 비동기방식이 아닌 동기방식으로 접속합니다.
-                                                        [ApiManager sendSynchronousRequest : request
-                                                                         returningResponse : &resp
-                                                                                     error : &error];
-                                                      
                                                         NSString *myStarStr = [NSString stringWithFormat : @" %@%@", _currentStar, @".0"];
                                                       
                                                         _currentStar = @"";   // 다음 강의 평가를 위해 별점 초기화. 171207 김태현
                                                         [_rateStarButton setTitle : myStarStr
                                                                          forState : UIControlStateNormal];
                                                         _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
-                                                        //_rateStarButton.userInteractionEnabled = NO; // 탑뷰 내 별점주기버튼 비활성화
+                                                        _rateStarButton.userInteractionEnabled = NO; // 탑뷰 내 별점주기버튼 비활성화
                                                     }
                                                 }];
   
@@ -1724,7 +1617,6 @@
     _menuItemBottomLineView.alpha = hidden ? 1.f : 0.f;
     _controlBarView.hidden = NO;
     _controlBarView.alpha = hidden ? 1.f : 0.f;
-
   
     [UIView animateWithDuration : 0.3f
                           delay : 0
@@ -1947,7 +1839,7 @@
                           isLock : isLock];
       //}
     }
-    else if ( [@"timer-mode" isEqualToString : buttonId])
+    else if ( [@"timer-mode" isEqualToString : buttonId] )
     {
         if ( status == 1 )
         {
@@ -1966,10 +1858,10 @@
             [self setTimerMode : @"사용안함"];
         }
     }
-    else if ( [@"download-mode" isEqualToString: buttonId] )
+    else if ( [@"download-mode" isEqualToString : buttonId] )
     {
       
-      NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey: @"wifiDown"];
+      NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey : @"wifiDown"];
       
       if ( [@"on" isEqualToString:wifiDown] && ![[ApiManager sharedInstance] isConnectionWifi] )
       {
@@ -2510,7 +2402,7 @@
                                       _miniPlayerUiView.hidden = !self.isMiniPlayer;
                                   }];
   
-    if (isMiniPlayer)
+    if ( isMiniPlayer )
     {
       // 이용로그 전송 시작
       //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
@@ -2637,15 +2529,13 @@
                                                             NSTimeInterval cTime = [self getCurrentPlaybackTime];
                                                             NSTimeInterval tTime = [self getDuration];
                                                           
-                                                            [alert dismissViewControllerAnimated : YES
-                                                                                      completion : nil];
+                                                            [alert dismissViewControllerAnimated:YES completion:nil];
                                                           
                                                             [_args setObject : assetURL
                                                                       forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
                                                           
                                                             NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-                                                            _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                                                                                 options : nil       ];
+                                                            _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
                                                           
                                                             // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
                                                             [ _fpsSDK prepareWithUrlAsset : _urlAsset
@@ -2673,8 +2563,7 @@
                                                 style : UIAlertActionStyleDefault
                                               handler : ^(UIAlertAction * action)
                                                         {
-                                                            [alert dismissViewControllerAnimated : YES
-                                                                                      completion : nil];
+                                                            [alert dismissViewControllerAnimated:YES completion:nil];
                                                         }];
   
     [alert addAction : y];
