@@ -110,6 +110,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
 
+    LogHelper.e(TAG , " contentCid is " + contentCid );
+    LogHelper.e(TAG , " checkAudioBookChapter is " + checkAudioBookChapter );
+
     if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
       UiThreadUtil.runOnUiThread(new Runnable() {
@@ -596,37 +599,33 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 }
 
                 // 오디오북 목차에서 재생이 들어오는 경우
+                // b100001_002
                 if(checkAudioBookChapter){
-                  if(contentCid.equals(json.getString("id"))){
-                    contentName = json.getString("title");
 
+                  // json.getString id == 163 옛날 ckey 정보 ..
+                  // json.getString cid == b100001_011
+                  if(contentCid.equals(json.getString("cid"))){
+                    contentName = json.getString("title");
                     contentCid = json.getString("cid");
                     contentId = i;
 
-                    return;
+                    checkAudioBookChapter = false;
                   }
                   // 오디오북 상세 최상단 플레이 버튼을 통해서 들어올때
+                  // b100001
                 }else{
                   if (historyId.equals("")) {
                     if (i == 0) {
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");
                       contentId = i;
-
-                      return;
                     }
                   } else {
-
                     if (historyId.equals(json.getString("id"))) {
-
-                      contentName = json.getString("title");
-
                       contentCid = json.getString("cid");
+                      contentName = json.getString("title");
                       contentId = i;
-
-                      return;
                     }
-
                   }
                 }
               }
