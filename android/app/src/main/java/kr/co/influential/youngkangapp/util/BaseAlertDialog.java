@@ -86,6 +86,8 @@ public class BaseAlertDialog extends Dialog {
     public BaseAlertDialog build() {
       dialog = new BaseAlertDialog(context);
       dialog.setContentView(view);
+      dialog.setCancelable(false);
+      dialog.setCanceledOnTouchOutside(false);
       return dialog;
     }
   }
