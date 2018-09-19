@@ -16,6 +16,7 @@ import {
   Platform,
   View,
   Linking,
+  Keyboard
 } from 'react-native';
 import EventEmitter from 'events';
 import globalStore from './src/scripts/commons/store';
@@ -30,15 +31,28 @@ import nav from './src/scripts/commons/nav';
 import WebViewScreen from './src/scripts/pages/WebViewScreen';
 import { observable } from 'mobx';
 import commonStyle from './src/styles/common';
+import { Notification, NotificationOpen } from 'react-native-firebase';
 
 class Data {
   @observable
   welaaaAuthLoaded = false;
+  // FCM으로 들어온 path를 보관하는 대기열
+  @observable
+  queuePath = null;
 }
 
 @observer
 class App extends React.Component {
   data = new Data();
+
+  // 키보드 제어 상태를 store에 기록해서 관리
+  keyboardDidShow = () => {
+    globalStore.isKeyboardOn = true;
+  };
+  keyboardDidHide = () => {
+    globalStore.isKeyboardOn = false;
+  };
+
   getTokenFromAsyncStorage = async () => {
     let welaaaAuth = await AsyncStorage.getItem('welaaaAuth');
     console.log('welaaaAuth:', welaaaAuth);
@@ -55,6 +69,12 @@ class App extends React.Component {
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
+    }
+
+    // 대기중인 path가 있다면 처리
+    if (this.data.queuePath) {
+      nav.parseDeepLink(this.data.queuePath);
+      this.data.queuePath = null;
     }
   };
 
@@ -161,7 +181,15 @@ class App extends React.Component {
         // Get information about the notification that was opened
         const notification = notificationOpen.notification;
 
-        console.log('OPEN BY NOTI:', action, notification);
+        try {
+          if (this.data.welaaaAuthLoaded) {
+            nav.parseDeepLink(notification._data.path);
+          } else {
+            this.data.queuePath = notification._data.path;
+          }
+        } catch (error) {
+          console.log(error);
+        }
       });
 
     // 앱 종료상태에서 노티등을 클릭했을때
@@ -175,7 +203,15 @@ class App extends React.Component {
       // Get information about the notification that was opened
       const notification = notificationOpen.notification;
 
-      console.log('OPEN BY NOTI-C:', action, notification);
+      try {
+        if (this.data.welaaaAuthLoaded) {
+          nav.parseDeepLink(notification._data.path);
+        } else {
+          this.data.queuePath = notification._data.path;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     Native.getF_TOKEN(f_token => {
@@ -212,6 +248,16 @@ class App extends React.Component {
           // cb && cb();
         });
     });
+
+    // 키보드 이벤트 할당
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.keyboardDidHide
+    );
   }
 
   componentWillUnmount() {
@@ -221,9 +267,11 @@ class App extends React.Component {
     this.subscription.length = 0;
     globalStore.emitter.removeAllListeners();
     Linking.removeEventListener('url', this._handleOpenURL);
-    // this.messageListener();
-    // this.notificationDisplayedListener();
-    // this.notificationListener();
+    this.notificationListener();
+    this.notificationOpenedListener();
+    // 키보드 이벤트 해제
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   _handleOpenURL = event => {
