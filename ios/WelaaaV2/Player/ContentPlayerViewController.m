@@ -1164,14 +1164,17 @@
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
+        _networkStatusLabel.text = @"DOWNLOAD 재생";
     }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
     {
         netStatus = @"Wi-Fi";
+        _networkStatusLabel.text = @"Wi-Fi 재생";
     }
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
     {
         netStatus = @"LTE/3G";
+        _networkStatusLabel.text = @"LTE/3G 재생";
     }
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
@@ -2657,6 +2660,8 @@
                                                             CMTime newTime = CMTimeMakeWithSeconds(cTime, tTime);
                                                             [_player seekToTime : newTime];//playImmediatelyAtRate
                                                             [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+                                                          
+                                                            _networkStatusLabel.text = @"다운로드 재생";
                                                           
                                                             [[NSNotificationCenter defaultCenter] addObserver : self
                                                                                                      selector : @selector(videoPlayBackDidFinish:)
