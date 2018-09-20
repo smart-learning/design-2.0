@@ -246,7 +246,7 @@ export default {
 					break;
 
 				case 'video':
-					navigation( 'ClassDetailPage', { id: schemes[0] } );
+					navigation.navigate( 'ClassDetailPage', { id: schemes[0] } );
 					break;
 
 				case 'audiobook_list':
