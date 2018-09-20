@@ -103,6 +103,9 @@ public class SplashActivity extends AppCompatActivity {
 
   private void launchMain() {
     Intent intent = new Intent(this, MainActivity.class);
+    if (getIntent() != null && getIntent().getExtras() != null) {
+      intent.putExtras(getIntent().getExtras());
+    }
     ContextCompat.startActivity(this, intent, null);
     finish();
   }
