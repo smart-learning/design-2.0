@@ -24,6 +24,7 @@ import ClassContinueList from '../../components/home/ClassContinueList';
 import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
+import HomeBananner from '../../components/home/HomeBananner';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -148,14 +149,20 @@ class HomeAudioPage extends React.Component {
                 paginationStyle={{ bottom: 10 }}
               >
                 {homeBannerData.map((item, key) => {
+                  let bannerImageUrl = '';
+                  const { action_type, action_param } = item;
+                  try {
+                    bannerImageUrl = item.images.default;
+                  } catch (e) {}
+
                   return (
-                    <TouchableOpacity activeOpacity={0.9} key={key}>
-                      <ImageBackground
-                        source={{ uri: item.images.default }}
-                        resizeMode="cover"
-                        style={styles.thumbnail}
-                      />
-                    </TouchableOpacity>
+                    <HomeBananner
+                      key={key}
+                      action_type={action_type}
+                      action_param={action_param}
+                      bannerImageUrl={bannerImageUrl}
+                      navigation={this.props.navigation}
+                    />
                   );
                 })}
               </Swiper>

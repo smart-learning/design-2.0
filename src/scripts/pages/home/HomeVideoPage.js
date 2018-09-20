@@ -24,6 +24,7 @@ import PTRView from 'react-native-pull-to-refresh';
 import moment from 'moment';
 import globalStore from '../../commons/store';
 import _ from 'underscore';
+import HomeBananner from '../../components/home/HomeBananner';
 
 const styles = StyleSheet.create({
   slide: {
@@ -146,14 +147,20 @@ class HomeVideoPage extends React.Component {
                 paginationStyle={{ bottom: 10 }}
               >
                 {homeBannerData.map((item, key) => {
+                  let bannerImageUrl = '';
+                  const{action_type, action_param} = item
+                  try {
+                    bannerImageUrl = item.images.default;
+                  } catch (e) {}
+
                   return (
-                    <TouchableOpacity activeOpacity={0.9} key={key}>
-                      <ImageBackground
-                        source={{ uri: item.images.default }}
-                        resizeMode="cover"
-                        style={styles.thumbnail}
-                      />
-                    </TouchableOpacity>
+                    <HomeBananner
+                      key={key}
+					  action_type={action_type}
+					  action_param={action_param}
+                      bannerImageUrl={bannerImageUrl}
+                      navigation={this.props.navigation}
+                    />
                   );
                 })}
               </Swiper>
@@ -258,7 +265,10 @@ class HomeVideoPage extends React.Component {
                 </Text>
               </View>
 
-              <ClassList itemData={this.props.store.classNewData} classType="new"/>
+              <ClassList
+                itemData={this.props.store.classNewData}
+                classType="new"
+              />
 
               <View style={CommonStyles.alignJustifyContentBetween}>
                 <Text style={styles.titleH3}>윌라 추천 클래스</Text>
