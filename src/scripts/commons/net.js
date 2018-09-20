@@ -297,6 +297,23 @@ export default {
     });
   },
 
+  getEventList() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(API_PREFIX + 'v1.0/cms/bbs/event')
+        .then(response => {
+          response.data.forEach(element => {
+            element.key = element.id.toString();
+          });
+          resolve(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  },
+
   getAuthToken(email, password) {
     let params = encodeParams({
       username: email,

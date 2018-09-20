@@ -118,7 +118,7 @@
     {
         _isAuthor = true;
     }
-    NSLog(@"  권한이 %@", _isAuthor? @"있습니다." : @"없습니다.");
+    NSLog(@"  Permission check : %@", _isAuthor? @"YES" : @"NO");
   
     // 오디오북 제목 챕터로 시작되면 다음챕터로 넘깁니다.
     // 오디오북 콘텐츠만이 제목챕터를 가지고 있습니다.
@@ -153,7 +153,7 @@
                     // 현재 재생할 콘텐트의 play_seconds의 정수값이 0일 경우
                     if ( [[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
                     {
-                        NSLog(@"  오디오북 제목 챕터입니다.");
+                        NSLog(@"  Audiobook title chapter.");
                         // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
                         for ( i = i+1; i < contentsListArray.count-1; i++ )
                         {
@@ -255,6 +255,10 @@
 // 왜냐하면 지나치게 빨리 애니메이션을 그리거나 API에서 정보를 받아와 뷰 컨트롤러를 업데이트 할 경우 화면에 반영되지 않습니다.
 - (void) viewDidAppear : (BOOL) animated
 {
+    // 스프링보드의 제어센터에서의 이벤트를 앱내에서 받습니다.
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    [self becomeFirstResponder];
+  
     // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
     [_args setObject : _currentContentsInfo[@"data"][@"title"]
               forKey : @"name"];
@@ -285,11 +289,29 @@
                                               selector : @selector(audioSessionInterrupted:)
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
-  
+    // TEST CODE
+    {
+        Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
+      
+        if ( playingInfoCenter )
+        {
+            NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
+          
+            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage: [UIImage imageNamed:@"AlbumArt"]];
+          
+            [songInfo setObject:@"Audio Title" forKey:MPMediaItemPropertyTitle];
+            [songInfo setObject:@"Audio Author" forKey:MPMediaItemPropertyArtist];
+            [songInfo setObject:@"Audio Album" forKey:MPMediaItemPropertyAlbumTitle];
+            [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
+        }
+    }
+    // TEST CODE
+    
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
-    NSString *netStatus = @"no_network";
+    NSString *netStatus = @"no_network";  // 첫 로그를 보낼때 no_network로 그대로 찍히는 경우가 있음.. 비동기방식으로 net status를 받아와서 일까?
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
@@ -323,13 +345,22 @@
                afterDelay : 3.0f];
 }
 
+// View가 사라질 준비가 끝날을 때 호출되는 메서드
+- (void) viewWillDisappear : (BOOL) animated
+{
+    [super viewWillDisappear : animated];
+  
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+    [self resignFirstResponder];
+}
+
 //
 // RN에서 넘겨받은 arguments를 세팅합니다.
 //
 - (void) setContentData : (NSMutableDictionary *) args
 {
     _args = args;
-    NSLog(@"  arguments : %@", [_args description]);
+    NSLog(@"  Arguments : %@", [_args description]);
   
     // download 일 경우 API서버와 통신하면 안됩니다.
 }
@@ -348,7 +379,7 @@
 - (void) fpsLicenseWithContentId : (NSString * _Nonnull) contentId
                 didFailWithError : (NSError * _Nonnull) error
 {
-    NSLog(@"  [fpsLicenseWithContentId] Error Message : %@", error.localizedDescription);
+    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] : %@", error.localizedDescription);
     // 종료 메시지와 함께 뷰를 종료시킵니다.
 }
 
@@ -414,7 +445,7 @@
                     break;
                 }
             }
-            NSLog(@"  몇번 배열? : %lu", i);
+
             [_args setObject : contentsListArray[i][@"cid"]
                       forKey : @"cid"];
           
@@ -447,7 +478,6 @@
         // 영상 콘텐츠의 마지막이면 연관 콘텐츠 뷰를 로딩합니다.
         if ( !_isAudioContent )
         {
-            NSLog(@"  [player_didFinishedPlay] 이제 연관 컨텐츠 뷰를 띄워주어야 합니다!!");
             // 오디오북은 연관컨텐츠뷰를 띄우면 안됩니다.
             self.recommendViewController = [[IFRecommendViewController alloc] init];
             NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
@@ -474,13 +504,12 @@
   
     if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
     {
-        NSLog(@"Pausing for audio session interruption");
+        NSLog(@"  Pausing for audio session interruption");
         [self pressedPauseButton];
     }
     else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
     {
-        NSLog(@"Resuming after audio session interruption");
-      
+        NSLog(@"  Resuming after audio session interruption");
         // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
         //[self pressedPlayButton];
     }
@@ -502,13 +531,10 @@
     // 탑뷰 구성 시작
     //  iPhone X일 경우 notch에 타이틀과 챕터 타이틀이 가려지므로 사이즈 조정이 필요합니다.
     if ( [common hasNotch] )
-    {
-      _topView = [[UIView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 75.f)];
-    }
+        _topView = [[UIView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 75.f)];
     else
-    {
-      _topView = [[UIView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 60.f)];
-    }
+        _topView = [[UIView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 60.f)];
+  
     _topView.backgroundColor = UIColorFromRGB(0x272230, 0.3f);
   
     // 미니플레이어 전환.
@@ -550,7 +576,7 @@
   
     _lectureTitleLabel = [[UILabel alloc] initWithFrame: frame];
     _lectureTitleLabel.backgroundColor = [UIColor clearColor];
-    _lectureTitleLabel.font = [UIFont fontWithName : @"SpoqaHanSans" size : 15];
+    _lectureTitleLabel.font = [UIFont fontWithName:@"SpoqaHanSans" size:15];
     _lectureTitleLabel.textColor = UIColorFromRGB(0xffffff, 1.f);
     _lectureTitleLabel.textAlignment = NSTextAlignmentLeft;
     _lectureTitleLabel.numberOfLines = 1;
@@ -638,16 +664,12 @@
 
 - (void) drawPlayerControlBottom
 {
-    NSLog(@"  [drawPlayerControlBottom] 이제 플레이어 하단메뉴를 구성합니다.");
     // iPhone X 의 경우 슬라이더와 Anchor가 충돌하므로 기기에 따른 분기 처리가 필요합니다.
     if ( [common hasNotch] )
-    {
         _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-80.f, self.view.frame.size.width, 60.f)];
-    }
     else
-    {
         _bottomView = [[UIView alloc] initWithFrame : CGRectMake(0, self.view.frame.size.height-60.f, self.view.frame.size.width, 60.f)];
-    }
+
     _bottomView.backgroundColor = UIColorFromRGB(0x272230, 0.3f);
     [_contentView addSubview : _bottomView];
   
@@ -1237,8 +1259,6 @@
 //
 - (void) pressedHideAndShowButton
 {
-    NSLog(@"  플레이어 컨트롤러 감춤 & 표시 버튼!!");
-  
     // 현재 재생 컨트롤러 UI가 감춰진 상태라면 표시하고 _isPlaybackContollerHidden 를 NO로 업데이트 해야합니다.
     if ( _isPlaybackContollerHidden == YES )
     {
@@ -1364,8 +1384,6 @@
 
 - (void) pressedSpeedButton
 {
-    NSLog(@"  플레이어 재생속도 조절 버튼!!");
-  
     if ( _playbackRate == 1.f )
     {
         _playbackRate = 1.2f;
@@ -1394,8 +1412,6 @@
 //
 - (void) pressedListButton
 {
-    NSLog(@"  [pressedListButton] 최근 재생 리스트 - 미리보기에서는 비활성화 시켜야 함.");
-  
     if ( !_isAuthor )
     {
         [_contentView makeToast : @"프리뷰 이용중입니다."];
@@ -1464,6 +1480,7 @@
     {
         return ;
     }
+  
     if ( [self respondsToSelector : @selector(seekbarDragging:)] )
     {
         [self seekbarDragging : bar.value];
@@ -1528,15 +1545,15 @@
     NSString *netStatus;
     if ( _isDownloadFile )
     {
-      netStatus = @"DOWNLOAD";
+        netStatus = @"DOWNLOAD";
     }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
     {
-      netStatus = @"Wi-Fi";
+        netStatus = @"Wi-Fi";
     }
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
     {
-      netStatus = @"LTE/3G";
+        netStatus = @"LTE/3G";
     }
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
@@ -1559,11 +1576,8 @@
 //
 - (void) setSeekbarCurrentValue : (CGFloat) value
 {
-  //NSLog(@"  [setSeekbarCurrentValue]");
-  
     if ( _slider && !_touchDragging )
     {
-      //NSLog(@"  [setSeekbarCurrentValue] ");
         [_slider setValue : value];
     }
   
@@ -1594,13 +1608,9 @@
 - (void) setPlayerUIHidden : (BOOL) hidden
 {
     if ( hidden )
-    {
-        NSLog(@"  [setPlayerUIHidden] 이벤트가 발생하여 플레이어 컨트롤러가 사라집니다.");
-    }
+        NSLog(@"  [setPlayerUIHidden] Playback Controller : Hidden");
     else
-    {
-        NSLog(@"  [setPlayerUIHidden] 이벤트가 발생하여 플레이어 컨트롤러가 나타납니다.");
-    }
+        NSLog(@"  [setPlayerUIHidden] Playback Controller : Visable");
   
     self.view.userInteractionEnabled = NO;
     self.view.backgroundColor = hidden ? [UIColor clearColor] : UIColorFromRGB(0x000000, 0.5f);
@@ -1652,27 +1662,12 @@
                                   }];
 }
 
+//
+// 오디오모드 여부에 따라 플레이어 레이어를 감추거나 다시 보여줍니다.
+//
 - (void) changeViewMode : (BOOL) isAudioMode
 {
-    /*
-    // 오디오모드가 가능한 상태가 아니면서 다운로드받은 파일이 아니라면..
-    //
-    if ( !self.isPossibleAudioMode && !self.isDownloadFile )
-    {
-      [_modeChangeButton setStatus: 0];
-      NSLog(@"    [changeViewMode]: %@", isAudioMode ? @"YES" : @"NO");
-      NSLog(@"    [changeViewMode] 미리보기 상태에서도 오디오모드는 허용되야 합니다!");
-     
-      return DEFAULT_ALERT(@"", @"본 동영상은 오디오모드를 제공하지 않습니다.");
-    }*/
-  
     _audioUiView.hidden = !isAudioMode;
-    /*
-    if ( [self.delegate respondsToSelector: @selector(playerUiView:changeToMode:)] )
-    {
-      [self.delegate playerUiView: self
-                     changeToMode: isAudioMode];
-    }*/
   
     if ( isAudioMode )
     {
@@ -1700,7 +1695,7 @@
                                                                [self setSeekbarCurrentValue : playTime];
                                                                [self setCurrentTime : playTime
                                                                         forceChange : NO];
-                                                             //[_miniPlayerUiView setSeekbarCurrentValue: playTime];
+                                                               [_miniPlayerUiView setSeekbarCurrentValue : playTime];
                                                             
                                                               /*
                                                                * 진도체크는 추후에 구현합니다.
@@ -2463,41 +2458,6 @@
                                authToken : [_args objectForKey : @"token"]];
 }
 
-# pragma mark - Labatory
-- (void) toastTestAlert
-{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"Logout"
-                                                                   message : @"Are You Sure Want to Logout!"
-                                                            preferredStyle : UIAlertControllerStyleAlert];
-  
-    //Add Buttons
-    UIAlertAction *yesButton = [UIAlertAction actionWithTitle : @"Yes"
-                                                        style : UIAlertActionStyleDefault
-                                                      handler : ^(UIAlertAction *action)
-                                                                {
-                                                                    //Handle your yes please button action here
-                                                                    //[self clearAllData];
-                                                                  [self closePlayer];
-                                                                }];
-  
-    UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
-                                                       style : UIAlertActionStyleDefault
-                                                     handler : ^(UIAlertAction *action)
-                                                               {
-                                                                    //Handle no, thanks button
-                                                               }];
-  
-    //Add your buttons to alert controller
-  
-    [alert addAction : yesButton];
-    [alert addAction : noButton];
-  
-    [self presentViewController : alert
-                       animated : YES
-                     completion : nil];
-}
-
-
 # pragma mark - PallyCon FPS Download Delegate
 //
 // 다운로드가 종료되었을 때 호출됩니다.
@@ -2599,7 +2559,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (void) downloadContent : (NSString * _Nonnull) contentId
         didStopWithError : (NSError * _Nullable) error
 {
-    NSLog(@"  download contentId : %@, error code : %ld", contentId, [error code]);
+    NSLog(@"  download contentId : %@, error code : %d", contentId, [error code]);
     // FPS 다운로드간 에러 발생시 여기서 처리합니다.
 }
 
@@ -2614,10 +2574,171 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     }
 }
 
+# pragma mark - Event Responder
+//
+// 정의된 외부 이벤트에 의해 호출됩니다.
+//
+- (void) remoteControlReceivedWithEvent : (UIEvent *) receivedEvent
+{
+    if ( receivedEvent.type == UIEventTypeRemoteControl )
+    {
+        switch ( receivedEvent.subtype )
+        {
+            // EarPod 또는 다른 헤드폰의 이벤트를 받았을 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlTogglePlayPause:
+                if ( _playButton.hidden )  // 플레이 중인지 체크해야 합니다.
+                    [self pressedPauseButton];
+                else
+                    [self pressedPlayButton];
+            
+                break;
+            
+            // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlPlay:
+                //Insert code
+                break;
+            
+            // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlPause:
+                // Insert code
+                break;
+            
+            // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlStop:
+                //Insert code.
+                break;
+            
+            // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlPreviousTrack:
+                //Insert code.
+                break;
+            
+            // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlNextTrack:
+                //Insert code.
+                break;
+            
+            default:
+                return;
+        }
+    }
+}
+
+# pragma mark - Labatory
+- (void) toastTestAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"Logout"
+                                                                   message : @"Are You Sure Want to Logout!"
+                                                            preferredStyle : UIAlertControllerStyleAlert];
+  
+    //Add Buttons
+    UIAlertAction *yesButton = [UIAlertAction actionWithTitle : @"Yes"
+                                                        style : UIAlertActionStyleDefault
+                                                      handler : ^(UIAlertAction *action)
+                                                                {
+                                                                    //Handle your yes please button action here
+                                                                    //[self clearAllData];
+                                                                    [self closePlayer];
+                                                                }];
+  
+    UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
+                                                       style : UIAlertActionStyleDefault
+                                                     handler : ^(UIAlertAction *action)
+                                                               {
+                                                                  //Handle no, thanks button
+                                                               }];
+  
+    //Add your buttons to alert controller
+  
+    [alert addAction : yesButton];
+    [alert addAction : noButton];
+  
+    [self presentViewController : alert
+                       animated : YES
+                     completion : nil];
+}
+
+- (void) setupNowPlayingInfoCenter : (NSDictionary *) currentSong
+{
+    NSMutableDictionary *mediaInfo = [[NSMutableDictionary alloc] init];
+  
+    NSString *urlStr = @"object.mberImgPath";
+    NSURL *url = [NSURL URLWithString : urlStr];
+    UIImage *image = [UIImage imageWithData : [NSData dataWithContentsOfURL : url]];
+  
+    MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
+                                                                   requestHandler : ^UIImage * _Nonnull(CGSize size)
+                                                                                    {
+                                                                                        UIImage *lockScreenArtworkApp;
+                                                                                        lockScreenArtworkApp = [UIImage imageNamed : @"lockScreenLogo"];
+                                                                                      
+                                                                                        return [self resizeImageWithImage : lockScreenArtworkApp
+                                                                                                             scaledToSize : size];
+                                                                                    }];
+
+    [mediaInfo setValue : albumArt
+                 forKey : MPMediaItemPropertyArtwork];
+  
+    [mediaInfo setObject : @"object.title"
+                  forKey : MPMediaItemPropertyAlbumTitle];
+  
+    [mediaInfo setObject : @"object.mberNm"
+                  forKey : MPMediaItemPropertyArtist];
+  
+    [mediaInfo setObject : @(1.0)
+                  forKey : MPNowPlayingInfoPropertyPlaybackRate];
+  
+    [mediaInfo setObject : @(0.0)
+                  forKey : MPMediaItemPropertyPlaybackDuration];
+  
+    [mediaInfo setObject : @(0.0)
+                  forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : [mediaInfo mutableCopy]];
+}
+- (UIImage *) resizeImageWithImage : (UIImage *) image
+                      scaledToSize : (CGSize) newSize
+{
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect : CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+  
+    return newImage;
+}
+- (void) setupNowPlayingInfoCenter2 : (MPMediaItem *) currentSong
+{
+    MPMediaItemArtwork *artwork = [currentSong valueForProperty : MPMediaItemPropertyArtwork];
+      
+    MPNowPlayingInfoCenter *infoCenter = [MPNowPlayingInfoCenter defaultCenter];
+  
+    if ( currentSong == nil )
+    {
+        infoCenter.nowPlayingInfo = nil;
+        return ;
+    }
+  
+    infoCenter.nowPlayingInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [currentSong valueForKey:MPMediaItemPropertyTitle], MPMediaItemPropertyTitle,
+                                 [currentSong valueForKey:MPMediaItemPropertyArtist], MPMediaItemPropertyArtist,
+                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTitle], MPMediaItemPropertyAlbumTitle,
+                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackCount], MPMediaItemPropertyAlbumTrackCount,
+                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackNumber], MPMediaItemPropertyAlbumTrackNumber,
+                                 artwork, MPMediaItemPropertyArtwork,
+                                 [currentSong valueForKey:MPMediaItemPropertyComposer], MPMediaItemPropertyComposer,
+                                 [currentSong valueForKey:MPMediaItemPropertyDiscCount], MPMediaItemPropertyDiscCount,
+                                 [currentSong valueForKey:MPMediaItemPropertyDiscNumber], MPMediaItemPropertyDiscNumber,
+                                 [currentSong valueForKey:MPMediaItemPropertyGenre], MPMediaItemPropertyGenre,
+                                 [currentSong valueForKey:MPMediaItemPropertyPersistentID], MPMediaItemPropertyPersistentID,
+                                 [currentSong valueForKey:MPMediaItemPropertyPlaybackDuration], MPMediaItemPropertyPlaybackDuration,
+                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueIndex,
+                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueCount, nil];
+}
 
 @end
-
-
 
 
 
