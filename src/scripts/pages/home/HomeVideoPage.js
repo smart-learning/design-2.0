@@ -9,7 +9,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Linking
 } from 'react-native';
 import { observer } from 'mobx-react';
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
@@ -122,9 +123,7 @@ class HomeVideoPage extends React.Component {
   };  
 
   testClick = data => {
-    
-    // Alert.alert('알림', '링크이동 확인중 ..' + this.data.item.link_url)
-    console.log(data)
+    alert(data.link_url)
     // this.data.link_url
     // this.props.navigation.navigate('WebView', { url: 'http://welaaa.co.kr/event/20180702/index.php' });
     // nav.parseDeepLink('welaaa://audiobook/318')
@@ -134,8 +133,53 @@ class HomeVideoPage extends React.Component {
     // "link_url": "/video-serise-info.php?groupkey=863&ckey=16156" 클래스 상세 랜딩 
     // "link_url": "/event/20180905_renewal/index.php"  내부 이벤트 페이지 랜딩 
     // "link_url": "app://openUrl?url=http://bit.ly/moblie_main", outLink 랜딩 
-    // 이미지 .. 
+    // 마케팅 쪽에서 신규로 들어올 이벤트 페이지 
 
+    var str = data.link_url; // For example, lets search this string,
+    var term = "video-serise-info.php"; // for the term "World",
+    var index = str.indexOf(term); // and get its index.
+    if (index != -1) { // If the index is not -1 then the term was matched in the string,
+
+      var findString = 'groupkey=';
+      var findString2 = '&';
+      //using `split()`
+      var containResult4 = str.split(findString)[0];
+
+      nav.parseDeepLink('welaaa://video/' + containResult4.split(findString2)[0] ); 
+    }
+    
+    var str = data.link_url; // For example, lets search this string,
+    var term = "audiobook_recom.php"; // for the term "World",
+    var index = str.indexOf(term); // and get its index.
+    if (index != -1) { // If the index is not -1 then the term was matched in the string,
+
+      this.props.navigation.navigate(
+        'HomeMonthlyReviewPage',
+        {
+          itemData: item.book_a,
+          title: '이달의 책 북리뷰'
+        }
+      )
+      // nav.parseDeepLink('welaaa://video/' + containResult4.split(findString2)[0] ); 
+    }
+
+    var str = data.link_url; // For example, lets search this string,
+    var term = "/event/"; // for the term "World",
+    var index = str.indexOf(term); // and get its index.
+    if (index != -1) { // If the index is not -1 then the term was matched in the string,
+
+      this.props.navigation.navigate('WebView', { url: 'http://welaaa.co.kr' + str });
+    }
+
+    var str = data.link_url; // For example, lets search this string,
+    var term = "app://openUrl?url="; // for the term "World",
+    var index = str.indexOf(term); // and get its index.
+    if (index != -1) { // If the index is not -1 then the term was matched in the string,
+      var findString = 'app://openUrl?url=';
+      //using `split()`
+      var containResult4 = str.split(findString)[1];
+      Linking.openURL(containResult4);       
+    }
   }
 
   render() {
@@ -166,8 +210,7 @@ class HomeVideoPage extends React.Component {
                 {homeBannerData.map((item, key) => {
                   return (
                     <TouchableOpacity activeOpacity={0.9} key={key} 
-                      // onPress={() =>nav.parseDeepLink('welaaa://audiobook/318')} 
-                      onPress={() =>this.testClick}
+                      onPress={() =>this.testClick(item)}
                     >                                                               
                       <ImageBackground
                         source={{ uri: item.images.default }}
