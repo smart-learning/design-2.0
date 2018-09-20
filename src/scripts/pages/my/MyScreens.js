@@ -31,6 +31,7 @@ import InquireFormPage from './InquireFormPage';
 import InquireViewPage from './InquireViewPage';
 import globalStore from '../../commons/store';
 import UserHeartContentsPage from './UserHeartContentsPage';
+import EventDetailPage from './EventDetailPage'
 
 const MyScreens = createStackNavigator(
   {
@@ -142,7 +143,11 @@ const MyScreens = createStackNavigator(
     InquireFormPage: {
       screen: InquireFormPage,
       navigationOptions: NAV_OPTS_STACK
-    }
+    },
+	  EventDetailPage: {
+		  screen: EventDetailPage,
+		  navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
+	  }
   },
 
   globalStore.initialRoute
