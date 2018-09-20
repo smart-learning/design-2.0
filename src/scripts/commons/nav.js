@@ -308,6 +308,10 @@ export default {
 				case 'app_setting':
 					navigation.navigate('AuthCheck', { requestScreenName:'SetAppPage', title:'설정' } );
 					break;
+
+				case 'event':
+					navigation.navigate('EventDetailPage', { title: '공지사항 및 이벤트', id:schemes[0] } );
+					break;
 			}
 		}
 		catch( error ) {
