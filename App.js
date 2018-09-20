@@ -33,6 +33,7 @@ import { observable } from 'mobx';
 import commonStyle from './src/styles/common';
 import { Notification, NotificationOpen } from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
+import InquireListScreen from './src/scripts/pages/my/InquireListScreen'
 
 class Data {
   @observable
@@ -401,6 +402,11 @@ const AppDrawer = createDrawerNavigator(
     MyScreen: {
       screen: MyScreens
     },
+
+	  InquireListScreen: {
+		  screen: InquireListScreen
+
+	  },
 
     MembershipScreen: {
       screen: MembershipScreens,
