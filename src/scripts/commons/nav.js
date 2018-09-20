@@ -92,6 +92,11 @@ const DRAWER_LABEL = {
 	MyScreen: {
 		label: '마이윌라',
 		icon: require('../../images/chats-icon.png')
+	},
+
+	InquireListScreen: {
+		label: '1:1 문의',
+		icon: require('../../images/chats-icon.png')
 	}
 }
 
@@ -196,7 +201,24 @@ export const NAV_OPTS_DRAWER = ({navigation, navigationOptions}) => {
 			)
 		}
 	}
-
+	if (label === '1:1 문의') {
+		option = {
+			drawerLabel: () => (<View style={{
+					flex: 1,
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					position: 'relative',
+					height: 65,
+					backgroundColor: '#ffffff',
+				}}>
+					<Text style={{paddingLeft: 15, fontSize: 15, color: '#333333'}}>1:1 문의</Text>
+					<Image source={IcAngleRight} style={{width: 9, height: 14, marginRight: 15,}}/>
+					<View style={{position: 'absolute', left: 0, bottom: 0, width: '100%', height: 1, backgroundColor: '#dddddd' }}/>
+				</View>
+			)
+		}
+	}
 
 	return option;
 }
@@ -246,7 +268,7 @@ export default {
 					break;
 
 				case 'video':
-					navigation( 'ClassDetailPage', { id: schemes[0] } );
+					navigation.navigate( 'ClassDetailPage', { id: schemes[0] } );
 					break;
 
 				case 'audiobook_list':
@@ -285,6 +307,10 @@ export default {
 
 				case 'app_setting':
 					navigation.navigate('AuthCheck', { requestScreenName:'SetAppPage', title:'설정' } );
+					break;
+
+				case 'event':
+					navigation.navigate('EventDetailPage', { title: '공지사항 및 이벤트', id:schemes[0] } );
 					break;
 			}
 		}

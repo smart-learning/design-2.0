@@ -536,7 +536,6 @@ export default {
       });
   },
 
-
   getMembershipCurrent() {
     const expired = 0;
     return cacheOrLoad(API_PREFIX + 'v1.0/membership/current', expired)
@@ -683,5 +682,19 @@ export default {
     return axios
       .get(`${API_PREFIX}v1.0/membership/permissions/${type}/${id}`)
       .then(resp => resp.data);
+  },
+
+  getBotmData(month, sort) {
+    return axios
+      .get(API_PREFIX + `v1.0/contents/audiobooks/botm/${month}/${sort}`)
+      .then(resp => {
+        return resp.data;
+      });
+  },
+
+  getEventDetail(id) {
+    return axios.get(API_PREFIX + `v1.0/cms/event/${id}`).then(response => {
+      return response.data;
+    });
   }
 };
