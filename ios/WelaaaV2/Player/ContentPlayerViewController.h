@@ -1,6 +1,7 @@
 
 #import <UIKit/UIKit.h>
 #import <AVKit/AVKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import <PallyConFPSSDK/PallyConFPSSDK-Swift.h>
 #import <Toast/UIView+Toast.h>
 #import <SDWebImage/UIImageView+WebCache.h>

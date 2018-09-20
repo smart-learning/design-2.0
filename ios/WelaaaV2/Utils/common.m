@@ -466,14 +466,14 @@
         if ( [deviceModel isEqual: @"iPhone10,3"] || [deviceModel isEqual: @"iPhone10,6"] )
             return @"iPhone X";
       
-        if ( [deviceModel isEqual: @"iPhone11,1"] )
-            return @"iPhone XR";
-      
-        if ( [deviceModel isEqual: @"iPhone11,3"] )
+        if ( [deviceModel isEqual: @"iPhone11,2"] )
             return @"iPhone XS";
       
-        if ( [deviceModel isEqual: @"iPhone11,5"] )
+        if ( [deviceModel isEqual: @"iPhone11,4"] || [deviceModel isEqual: @"iPhone11,6"] )
             return @"iPhone XS Max";
+      
+        if ( [deviceModel isEqual: @"iPhone11,8"] )
+            return @"iPhone XR";
     }
     
     // iPad

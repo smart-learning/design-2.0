@@ -35,6 +35,10 @@ class ClassDetailPage extends React.Component {
 			this.props.navigation.state.params.id
 		);
 
+		this.props.navigation.setParams({
+			title: resultLectureData.title
+		})
+		
 		this.store.itemData = resultLectureData;
 		this.store.itemClipData = resultLectureClipData;
 

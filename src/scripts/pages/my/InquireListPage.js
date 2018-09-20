@@ -4,6 +4,7 @@ import CommonStyles from "../../../styles/common";
 import {SafeAreaView} from "react-navigation";
 import net from "../../commons/net"
 import moment from "moment";
+import globalStore from '../../commons/store'
 
 
 const styles = StyleSheet.create({
@@ -62,8 +63,9 @@ export default class InquireListPage extends React.Component {
 		inquiryData: [],
 	}
 
-	componentDidMount() {
-		this.fetchInquiries()
+	async componentDidMount() {
+		if( !globalStore.welaaaAuth ) this.props.navigation.navigate( 'Login' );
+		await this.fetchInquiries()
 	}
 
 	async fetchInquiries() {

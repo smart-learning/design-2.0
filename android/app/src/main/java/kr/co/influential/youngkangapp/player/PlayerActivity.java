@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -259,8 +260,6 @@ public class PlayerActivity extends BasePlayerActivity {
   private final int SHORT_SUBTITLS_SCROLL_VIEW_HEIGHT = 60 + 20;
   private final int NORMAL_SUBTITLS_SCROLL_VIEW_HEIGHT = 95 + 20;
 
-  private Handler mHandler = null;
-
   private Timer mTimer = null;
 
   private Timer showUiTimer = null;
@@ -290,6 +289,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
   private SeekBar volumeSeekbar = null;
   private AudioManager audioManager = null;
+
+  private SettingsContentObserver settingsContentObserver;
 
   private TextView mTextViewVolumeText = null;
 
@@ -443,6 +444,14 @@ public class PlayerActivity extends BasePlayerActivity {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.activity_player);
+
+    // Volume UI
+    audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+    settingsContentObserver = new SettingsContentObserver(new Handler());
+
+    getContentResolver().registerContentObserver(
+        android.provider.Settings.System.CONTENT_URI, true, settingsContentObserver);
 
     shouldAutoPlay = true;
 
@@ -613,6 +622,8 @@ public class PlayerActivity extends BasePlayerActivity {
     if (myBroadcastReceiver != null) {
       unregisterReceiver(myBroadcastReceiver);
     }
+
+    getContentResolver().unregisterContentObserver(settingsContentObserver);
 
   }
 
@@ -1594,9 +1605,6 @@ public class PlayerActivity extends BasePlayerActivity {
    * 처음생성되는 버튼들
    *******************************************************************/
   private void buttonInit() {
-
-    mHandler = new Handler();
-
     mSleeperHandler = new SleepTimeHandler(PlayerActivity.this);
     sleeptimerText = findViewById(R.id.sleeptext);
 
@@ -2054,19 +2062,7 @@ public class PlayerActivity extends BasePlayerActivity {
             welean_blank_line2.setVisibility(View.INVISIBLE);
             welean_blank_line.setVisibility(View.INVISIBLE);
 
-            audioManager = (AudioManager) getApplicationContext()
-                .getSystemService(Context.AUDIO_SERVICE);
-
-            int nMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-            int progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-            int progressInt = Math.round(100 / nMax) * progress;
-
-            if (progressInt > 89) {
-              progressInt = 100;
-
-              mTextViewVolumeText.setText(progressInt + "%");
-            }
+            updateVolumeUI();
             break;
 
           case R.id.welaaa_volume_btn_active:
@@ -2082,20 +2078,7 @@ public class PlayerActivity extends BasePlayerActivity {
             welean_blank_line2.setVisibility(View.VISIBLE);
             welean_blank_line.setVisibility(View.VISIBLE);
 
-            audioManager = (AudioManager) getApplicationContext()
-                .getSystemService(Context.AUDIO_SERVICE);
-
-            nMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-            progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-            progressInt = Math.round(100 / nMax) * progress;
-
-            if (progressInt > 89) {
-              progressInt = 100;
-            }
-
-            mTextViewVolumeText.setText(progressInt + "%");
-
+            updateVolumeUI();
             break;
 
           case R.id.myrepu_box_linear: {
@@ -3028,23 +3011,7 @@ public class PlayerActivity extends BasePlayerActivity {
   private void initControls() {
     try {
       volumeSeekbar = findViewById(R.id.VOLUME_SEEK_BAR);
-      audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-      volumeSeekbar.setMax(audioManager
-          .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-      volumeSeekbar.setProgress(audioManager
-          .getStreamVolume(AudioManager.STREAM_MUSIC));
-
-      final int nMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-      final int progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-      int progressInt = Math.round(100 / nMax) * progress;
-
-      if (progressInt > 89) {
-        progressInt = 100;
-      }
-
-      mTextViewVolumeText.setText(progressInt + "%");
-
+      updateVolumeUI();
       volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onStopTrackingTouch(SeekBar arg0) {
@@ -3056,21 +3023,30 @@ public class PlayerActivity extends BasePlayerActivity {
 
         @Override
         public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
-          audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-              progress, 0);
+          audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
 
-          int progressInt = Math.round(100 / nMax) * progress;
-
-          if (progressInt > 89) {
-            progressInt = 100;
-          }
-
-          mTextViewVolumeText.setText(progressInt + "%");
+          updateVolumeUI();
         }
       });
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void updateVolumeUI() {
+    final int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+    final int progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+    volumeSeekbar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+    volumeSeekbar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+
+    int progressInt = Math.round(100 / max) * progress;
+
+    if (progressInt > 89) {
+      progressInt = 100;
+    }
+
+    mTextViewVolumeText.setText(progressInt + "%");
   }
 
   /****************************************************************************
@@ -5225,6 +5201,29 @@ public class PlayerActivity extends BasePlayerActivity {
         mButtonGroupLayout.setVisibility(VISIBLE);
       }
       setBackGroungLayout(false);
+    }
+  }
+
+  public class SettingsContentObserver extends ContentObserver {
+
+    public SettingsContentObserver(Handler handler) {
+      super(handler);
+    }
+
+    @Override
+    public boolean deliverSelfNotifications() {
+      return super.deliverSelfNotifications();
+    }
+
+    @Override
+    public void onChange(boolean selfChange) {
+      super.onChange(selfChange);
+      updateVolumeUI();
+    }
+
+    @Override
+    public void onChange(boolean selfChange, Uri uri) {
+      super.onChange(selfChange, uri);
     }
   }
 }

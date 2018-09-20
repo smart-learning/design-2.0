@@ -1,14 +1,14 @@
 import React from 'react';
 import {
-  View,
+  Image,
+  ImageBackground,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Image,
-  ImageBackground
+  View
 } from 'react-native';
-import { SafeAreaView, withNavigation } from 'react-navigation';
+import { SafeAreaView } from 'react-navigation';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import m from 'moment';
 import { observer } from 'mobx-react';
@@ -17,6 +17,7 @@ import bookIcon from '../../../images/ic-book-white.png';
 import playIcon from '../../../images/ic-play-white.png';
 import Native from '../../commons/native';
 import Dummy from '../../../images/dummy-audiobook-info.png';
+import net from '../../commons/net';
 
 const styles = StyleSheet.create({
   infoContainer: {
@@ -190,6 +191,45 @@ class AudioBookInfoPage extends React.Component {
   @observable
   buttonTextStatus = true;
 
+  state = {
+    itemData: null,
+    month: null,
+    sort: null
+  };
+
+  constructor(props) {
+    super(props);
+
+    console.log(
+      'AudioBookInfoPage.constructor',
+      props,
+      props.navigation.state.params
+    );
+
+    // let itemData = null;
+    // let month = null
+    //   let sort = null
+
+    let { itemData, month, sort } = props.navigation.state.params;
+    // } catch (e) {
+    //    { month, sort } = props.navigation.state.params;
+    // }
+
+    this.state = { itemData: itemData, month: month, sort: sort };
+
+    this.initialize();
+  }
+
+  async initialize() {
+    if (this.state.itemData) {
+      return;
+    }
+    const { month, sort } = this.state;
+    this.setState({
+      itemData: await net.getBotmData(month, sort)
+    });
+  }
+
   showTeacherMemo = () => {
     if (this.isMemoShow === false) {
       this.isMemoShow = true;
@@ -201,18 +241,26 @@ class AudioBookInfoPage extends React.Component {
   };
 
   render() {
-    const itemData = this.props.navigation.state.params.itemData;
-    const year = m(itemData.year).format('YYYY');
+    const itemData = this.state.itemData;
+    if (!itemData) {
+    	return (
+    		<View>
+				<Text>loading...</Text>
+			</View>
+		)
+	}
+    const year = m(itemData.month).format('YYYY');
     const month = m(itemData.month).format('MM');
+    let headerBgImage = null;
+    try {
+      headerBgImage = itemData.images.header_bg;
+    } catch (e) {}
+
     return (
       <SafeAreaView style={CommonStyles.container}>
         <ScrollView style={{ width: '100%' }}>
           <ImageBackground
-            source={
-              itemData.images.header_bg
-                ? { uri: itemData.images.header_bg }
-                : Dummy
-            }
+            source={headerBgImage ? { uri: headerBgImage } : Dummy}
             resizeMode="cover"
             style={{ width: '100%', backgroundColor: '#e7e7e7' }}
           >

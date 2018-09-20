@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
-import {AsyncStorage, Button, Alert, Modal, StyleSheet, Dimensions, View, Text, TouchableOpacity} from "react-native";
+import React, { Component } from 'react';
+import { AsyncStorage, Button, Alert, Modal, StyleSheet, Dimensions, View, Text, TouchableOpacity } from "react-native";
 import Image from 'react-native-scalable-image';
-import {COLOR_PRIMARY} from "../../styles/common";
+import { COLOR_PRIMARY } from "../../styles/common";
 import moment from 'moment';
 import net from "../commons/net";
+import nav from "../commons/nav";
 
 class AdvertisingSection extends Component {
 
@@ -19,7 +20,7 @@ class AdvertisingSection extends Component {
 				backgroundColor: '#00000099',
 			},
 
-			frame:{
+			frame: {
 				width: Dimensions.get('window').width - 30,
 				borderRadius: 20,
 				overflow: 'hidden',
@@ -36,25 +37,25 @@ class AdvertisingSection extends Component {
 				backgroundColor: COLOR_PRIMARY,
 				flexDirection: 'row',
 				width: '100%',
-				alignItems:'center'
+				alignItems: 'center'
 			},
 
-			hideOption:{
+			hideOption: {
 				padding: 10,
 				alignItems: 'flex-start',
 			},
 
-			footerText:{
+			footerText: {
 				alignSelf: 'center',
 				padding: 15,
 				fontSize: 18,
-				color:'#FFFFFF'
+				color: '#FFFFFF'
 			}
 		});
 
 
 		this.state = {
-			ads:[],
+			ads: [],
 		}
 
 		this.now = moment();
@@ -62,26 +63,25 @@ class AdvertisingSection extends Component {
 
 	componentDidMount = async () => {
 		let data = await net.getMainPopup();
-		if( data.length === 0 ) return;
+		if (data.length === 0) return;
 
 
 
 		// 안보기로 한 팝업은 아닌지 날짜 확인
-		const adsIds = data.map( item => `pop-${item.id}` );
-		const adKeyDateMaps = await AsyncStorage.multiGet( adsIds );
+		const adsIds = data.map(item => `pop-${item.id}`);
+		const adKeyDateMaps = await AsyncStorage.multiGet(adsIds);
 
 
 		// 설정된적이 없거나 날짜가 남았다면 ad리스트에 추가
 		let ads = [];
-		data.forEach( ( ad, idx ) => {
+		data.forEach((ad, idx) => {
 			let expireDate = adKeyDateMaps[idx][1];
-			if( expireDate === null ){
-				ads.push( ad );
+			if (expireDate === null) {
+				ads.push(ad);
 			}
-			else
-			{
-				let fromNowDays = this.now.diff( moment( expireDate ), 'days' );
-				if( fromNowDays > 0 ) ads.push( ad );
+			else {
+				let fromNowDays = this.now.diff(moment(expireDate), 'days');
+				if (fromNowDays > 0) ads.push(ad);
 			}
 
 		});
@@ -96,7 +96,7 @@ class AdvertisingSection extends Component {
 		let closedAd = ads.shift();
 		this.setState({ ads: ads });
 
-		console.log( 'dddd', ads );
+		console.log('dddd', ads);
 
 		return closedAd;
 	}
@@ -108,10 +108,17 @@ class AdvertisingSection extends Component {
 	hide3Days = () => {
 		let closedAd = this.onConfirm();
 
-		console.log( closedAd );
+		console.log(closedAd);
 
-		const after3Days = moment().add( 3, 'd' ).format().toString();
-		AsyncStorage.setItem( `pop-${closedAd.id}`, after3Days );
+		const after3Days = moment().add(3, 'd').format().toString();
+		AsyncStorage.setItem(`pop-${closedAd.id}`, after3Days);
+	}
+
+	goEvent = (data) => {
+		// 임시용 랜딩 페이지 이동 
+		if (data.img_url === 'https://static.welaaa.co.kr/event/180920/popup.jpg') {
+			nav.parseDeepLink('welaaa://event/27');
+		}
 	}
 
 
@@ -119,43 +126,49 @@ class AdvertisingSection extends Component {
 
 		let ad = {};
 		const cnt = this.state.ads.length;
-		if( cnt > 0 ) ad = this.state.ads[cnt-1];
+		if (cnt > 0) ad = this.state.ads[cnt - 1];
 
 
 		return <Modal
-				animationType="slide"
-				transparent={true}
-				visible={ cnt > 0 }
-				onRequestClose={()=>{}}
-			>
+			animationType="slide"
+			transparent={true}
+			visible={cnt > 0}
+			onRequestClose={() => { }}
+		>
 
-			<View style={ this.style.container }>
+			<View style={this.style.container}>
 
 				<View style={this.style.frame}>
 
-					<Image source={ { uri: ad.img_url } }
-						   width={ Dimensions.get('window').width - 30 }
-						   style={ this.style.img }
-						   resizeMode={ 'cover' }
-					/>
+					<TouchableOpacity activeOpacity={0.9}
+						style={this.style.hideOption}
+						onPress={() => this.goEvent(ad)}
+					>
 
-					<TouchableOpacity activeOpacity={ 0.9 }
-									  style={ this.style.hideOption }
-									  onPress={ this.hide3Days }>
+						<Image source={{ uri: ad.img_url }}
+							width={Dimensions.get('window').width - 30}
+							style={this.style.img}
+							resizeMode={'cover'}
+						/>
+					</TouchableOpacity>
+
+					<TouchableOpacity activeOpacity={0.9}
+						style={this.style.hideOption}
+						onPress={this.hide3Days}>
 						<Text>3일동안 보지 않기</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity activeOpacity={ 0.9 }
-									  style={ this.style.footer }
-									  onPress={ this.onConfirm }>
-						<Text style={ this.style.footerText }>닫기</Text>
+					<TouchableOpacity activeOpacity={0.9}
+						style={this.style.footer}
+						onPress={this.onConfirm}>
+						<Text style={this.style.footerText}>닫기</Text>
 					</TouchableOpacity>
 
 				</View>
 
 			</View>
 
-			</Modal>
+		</Modal>
 	}
 
 }
