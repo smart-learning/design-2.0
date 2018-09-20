@@ -690,5 +690,11 @@ export default {
       .then(resp => {
         return resp.data;
       });
+  },
+
+  getEventDetail(id) {
+    return axios.get(API_PREFIX + `v1.0/cms/event/${id}`).then(response => {
+      return response.data;
+    });
   }
 };
