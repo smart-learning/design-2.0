@@ -255,6 +255,10 @@
 // 왜냐하면 지나치게 빨리 애니메이션을 그리거나 API에서 정보를 받아와 뷰 컨트롤러를 업데이트 할 경우 화면에 반영되지 않습니다.
 - (void) viewDidAppear : (BOOL) animated
 {
+    // 스프링보드의 제어센터에서의 이벤트를 앱내에서 받습니다.
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    [self becomeFirstResponder];
+  
     // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
     [_args setObject : _currentContentsInfo[@"data"][@"title"]
               forKey : @"name"];
@@ -321,6 +325,15 @@
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
+}
+
+// View가 사라질 준비가 끝날을 때 호출되는 메서드
+- (void) viewWillDisappear : (BOOL) animated
+{
+    [super viewWillDisappear : animated];
+  
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+    [self resignFirstResponder];
 }
 
 //
@@ -2528,7 +2541,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (void) downloadContent : (NSString * _Nonnull) contentId
         didStopWithError : (NSError * _Nullable) error
 {
-    NSLog(@"  download contentId : %@, error code : %ld", contentId, [error code]);
+    NSLog(@"  download contentId : %@, error code : %d", contentId, [error code]);
     // FPS 다운로드간 에러 발생시 여기서 처리합니다.
 }
 
@@ -2540,6 +2553,56 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     if ( downloadMsg )
     {
         [self showToast : downloadMsg]; // 다운로드 진행상황 관련 메시지
+    }
+}
+
+# pragma mark - Event Responder
+//
+// 정의된 외부 이벤트에 의해 호출됩니다.
+//
+- (void) remoteControlReceivedWithEvent : (UIEvent *) receivedEvent
+{
+    if ( receivedEvent.type == UIEventTypeRemoteControl )
+    {
+        switch ( receivedEvent.subtype )
+        {
+            // EarPod 또는 다른 헤드폰의 이벤트를 받았을 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlTogglePlayPause:
+                if ( _playButton.hidden )  // 플레이 중인지 체크해야 합니다.
+                    [self pressedPauseButton];
+                else
+                    [self pressedPlayButton];
+            
+                break;
+            
+            // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlPlay:
+                //Insert code
+                break;
+            
+            // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlPause:
+                // Insert code
+                break;
+            
+            // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlStop:
+                //Insert code.
+                break;
+            
+            // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlPreviousTrack:
+                //Insert code.
+                break;
+            
+            // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
+            case UIEventSubtypeRemoteControlNextTrack:
+                //Insert code.
+                break;
+            
+            default:
+                return;
+        }
     }
 }
 
@@ -2628,6 +2691,35 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
   
     return newImage;
 }
+- (void) setupNowPlayingInfoCenter2 : (MPMediaItem *) currentSong
+{
+    MPMediaItemArtwork *artwork = [currentSong valueForProperty : MPMediaItemPropertyArtwork];
+      
+    MPNowPlayingInfoCenter *infoCenter = [MPNowPlayingInfoCenter defaultCenter];
+  
+    if ( currentSong == nil )
+    {
+        infoCenter.nowPlayingInfo = nil;
+        return ;
+    }
+  
+    infoCenter.nowPlayingInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [currentSong valueForKey:MPMediaItemPropertyTitle], MPMediaItemPropertyTitle,
+                                 [currentSong valueForKey:MPMediaItemPropertyArtist], MPMediaItemPropertyArtist,
+                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTitle], MPMediaItemPropertyAlbumTitle,
+                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackCount], MPMediaItemPropertyAlbumTrackCount,
+                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackNumber], MPMediaItemPropertyAlbumTrackNumber,
+                                 artwork, MPMediaItemPropertyArtwork,
+                                 [currentSong valueForKey:MPMediaItemPropertyComposer], MPMediaItemPropertyComposer,
+                                 [currentSong valueForKey:MPMediaItemPropertyDiscCount], MPMediaItemPropertyDiscCount,
+                                 [currentSong valueForKey:MPMediaItemPropertyDiscNumber], MPMediaItemPropertyDiscNumber,
+                                 [currentSong valueForKey:MPMediaItemPropertyGenre], MPMediaItemPropertyGenre,
+                                 [currentSong valueForKey:MPMediaItemPropertyPersistentID], MPMediaItemPropertyPersistentID,
+                                 [currentSong valueForKey:MPMediaItemPropertyPlaybackDuration], MPMediaItemPropertyPlaybackDuration,
+                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueIndex,
+                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueCount, nil];
+}
+
 @end
 
 
