@@ -143,9 +143,18 @@ class HomeVideoPage extends React.Component {
       var findString = 'groupkey=';
       var findString2 = '&';
       //using `split()`
-      var containResult4 = str.split(findString)[0];
+      var containResult4 = str.split(findString)[1];
 
-      nav.parseDeepLink('welaaa://video/' + containResult4.split(findString2)[0] ); 
+      console.log(' containResult4 ' +containResult4.split(findString2)[0]);
+
+      // nav.parseDeepLink('welaaa://video/' + containResult4.split(findString2)[0] ); 
+      // nav.parseDeepLink('welaaa://video/' + '16156' ); 
+      // nav.parseDeepLink('welaaa://video/863/16156'); 
+      
+      this.props.navigation.navigate('ClassDetailPage' , {id:containResult4.split(findString2)[0] , title:data.title} );
+
+      // navigation( 'ClassDetailPage', { id: schemes[0] } );
+
     }
     
     var str = data.link_url; // For example, lets search this string,
