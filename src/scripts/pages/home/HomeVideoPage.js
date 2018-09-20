@@ -150,8 +150,8 @@ class HomeVideoPage extends React.Component {
       // nav.parseDeepLink('welaaa://video/' + containResult4.split(findString2)[0] ); 
       // nav.parseDeepLink('welaaa://video/' + '16156' ); 
       // nav.parseDeepLink('welaaa://video/863/16156'); 
-      
-      this.props.navigation.navigate('ClassDetailPage' , {id:containResult4.split(findString2)[0] , title:data.title} );
+      nav.parseDeepLink('welaaa://video/' + containResult4.split(findString2)[0])
+      // this.props.navigation.navigate('ClassDetailPage' , {id:containResult4.split(findString2)[0] , title:data.title} );
 
       // navigation( 'ClassDetailPage', { id: schemes[0] } );
 
