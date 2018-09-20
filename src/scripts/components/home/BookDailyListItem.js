@@ -8,6 +8,7 @@ import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create({
   bookListItemContainer: {
+    position: 'relative',
     marginBottom: 15,
     padding: 13,
 
@@ -45,6 +46,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333333',
     marginTop: 14
+  },
+  summaryDim: {
+    position: 'absolute',
+    bottom: 15,
+    left: 15,
+    width: '100%',
+    paddingTop: '22%',
+    paddingBottom: '22%',
+    backgroundColor: 'rgba(255,255,255,0.1)'
   }
 });
 
@@ -62,6 +72,8 @@ class BookDailyList extends React.Component {
     } catch (error) {
       console.log(error);
     }
+
+    console.log('itemData', itemData);
 
     return (
       <TouchableOpacity
@@ -98,6 +110,7 @@ class BookDailyList extends React.Component {
               reviewCount={itemData ? itemData.review_count : ''}
             />
           </View>
+          <View style={styles.summaryDim} />
         </View>
       </TouchableOpacity>
     );

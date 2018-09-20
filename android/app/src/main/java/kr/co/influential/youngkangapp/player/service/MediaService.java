@@ -25,6 +25,9 @@ import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.List;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
 import kr.co.influential.youngkangapp.player.notification.MediaNotificationManager;
@@ -36,9 +39,6 @@ import kr.co.influential.youngkangapp.player.utils.CarHelper;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.player.utils.TvHelper;
 import kr.co.influential.youngkangapp.player.utils.WearHelper;
-import java.lang.ref.WeakReference;
-import java.util.Collections;
-import java.util.List;
 
 public class MediaService extends MediaBrowserServiceCompat implements
     PlaybackManager.PlaybackServiceCallback,
@@ -165,7 +165,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
   @Override
   public void onTaskRemoved(Intent rootIntent) {
     super.onTaskRemoved(rootIntent);
-    stopSelf();
   }
 
   /**

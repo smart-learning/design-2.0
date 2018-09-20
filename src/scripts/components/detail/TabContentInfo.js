@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import CommonStyles from '../../../styles/common';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import IcClip from '../../../images/ic-detail-label-clip.png';
 import IcFile from '../../../images/ic-detail-label-file.png';
 import IcPrize from '../../../images/ic-detail-label-prize.png';
@@ -20,6 +20,7 @@ import Evaluation from './Evaluation';
 import moment from 'moment';
 import _ from 'underscore';
 import DummyTeacher from '../../../images/dummy-my-profile-2.png';
+import { observable } from 'mobx';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -79,45 +80,108 @@ const styles = StyleSheet.create({
   author: {
     paddingTop: 30,
     paddingBottom: 30,
+    paddingLeft: 15,
+    paddingRight: 15,
     backgroundColor: '#f1f1f1'
-  },
-  authorName: {
-    textAlign: 'center',
-    marginBottom: 20,
-    fontSize: 15,
-    color: CommonStyles.COLOR_PRIMARY
-  },
-  authorImage: {
-    marginBottom: 20,
-    width: 92,
-    height: 92,
-    marginRight: 'auto',
-    marginLeft: 'auto'
-  },
-  authorText: {
-    fontSize: 13,
-    color: '#555555'
   },
   review: {
     paddingTop: 30,
     paddingRight: 15,
     paddingBottom: 30,
     paddingLeft: 15
+  },
+  teacherContainer: {
+    width: '100%',
+    padding: 25,
+    backgroundColor: '#ffffff'
+  },
+  teacherThumbnail: {
+    position: 'absolute',
+    left: 0,
+    width: 72,
+    height: 72,
+    borderRadius: 35
+  },
+  teacherTitle: {
+    fontSize: 14,
+    fontWeight: '200',
+    color: '#4a4a4a',
+    marginBottom: 5
+  },
+  teacherHeadline: {
+    fontSize: 15,
+    fontWeight: 'normal',
+    color: '#333333'
+  },
+  teacherName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333'
+  },
+  teacherMemo: {
+    paddingTop: 25,
+    paddingBottom: 25
+  },
+  teacherMemoText: {
+    color: '#000000',
+    fontWeight: '200',
+    fontSize: 14
+  },
+  showMemoButtonText: {
+    textAlign: 'right',
+    fontSize: 14,
+    color: '#a1a1a1'
+  },
+  memoContainer: {
+    width: '100%',
+    padding: 25,
+    backgroundColor: '#EFEFEF'
+  },
+  memoTitle: {
+    width: '100%',
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#4a4a4a'
+  },
+  memoBody: {
+    width: '100%',
+    fontSize: 15,
+    fontWeight: '400',
+    marginBottom: 25,
+    color: '#4a4a4a'
+  },
+  memoButton: {
+    width: '100%',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+    backgroundColor: COLOR_PRIMARY,
+    borderRadius: 7
+  },
+  memoButtonText: {
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#ffffff'
   }
 });
 
+class Data {
+  @observable
+  isMemoShow = false;
+  @observable
+  buttonTextStatus = true;
+}
+
 @observer
 class TabContentInfo extends React.Component {
-  constructor(props) {
-    super(props);
+  data = new Data();
 
-    this.toggleLectureView = this.toggleLectureView.bind(this);
-    this.toggleTeacherView = this.toggleTeacherView.bind(this);
-  }
-
-  state = {
-    teacherView: false
-  };
+  // state = {
+  //   teacherView: false
+  // };
 
   componentDidMount() {
     let windowWidth = Dimensions.get('window').width;
@@ -125,15 +189,24 @@ class TabContentInfo extends React.Component {
     this.props.store.slideHeight = windowWidth * 0.833;
   }
 
-  toggleLectureView() {
+  toggleLectureView = () => {
     if (this.props.store.lectureView === false) {
       this.props.store.lectureView = true;
     } else {
       this.props.store.lectureView = false;
     }
-  }
+  };
 
-  toggleTeacherView() {
+  showTeacherMemo = () => {
+    if (this.data.isMemoShow === false) {
+      this.data.isMemoShow = true;
+      this.data.buttonTextStatus = false;
+    } else if (this.data.isMemoShow === true) {
+      this.data.isMemoShow = false;
+      this.data.buttonTextStatus = true;
+    }
+  };
+  toggleTeacherView = () => {
     // if ( this.props.store.teacherView === false ) {
     // 	this.props.store.teacherView = true;
     // } else {
@@ -142,7 +215,7 @@ class TabContentInfo extends React.Component {
     this.setState({
       teacherView: !this.state.teacherView
     });
-  }
+  };
 
   render() {
     const playTime = moment.duration(this.props.store.itemData.play_time);
@@ -165,6 +238,7 @@ class TabContentInfo extends React.Component {
       console.log(error);
     }
 
+    console.log('this.props.store.itemData', this.props.store.itemData);
     return (
       <View>
         {/* 이미지 스와이퍼 */}
@@ -249,35 +323,50 @@ class TabContentInfo extends React.Component {
         </View>
 
         <View style={styles.author}>
-          <View style={CommonStyles.contentContainer}>
-            {this.props.learnType === 'audioBook' && (
-              <Text style={styles.sectionTitle}>저자</Text>
-            )}
-            {this.props.learnType === 'class' && (
-              <Text style={styles.sectionTitle}>강사</Text>
-            )}
+          <View style={{ position: 'relative' }}>
             <Image
               source={{
                 uri: this.props.store.itemData.teacher
                   ? this.props.store.itemData.teacher.images.default
                   : DummyTeacher
               }}
-              borderRadius={44}
-              style={styles.authorImage}
+              style={styles.teacherThumbnail}
             />
-            <Text style={styles.authorName}>
-              {this.props.store.itemData.teacher.name}
-            </Text>
-            {!!this.state.teacherView && (
-              <Text style={styles.authorText}>{teacherMemo}</Text>
-            )}
-            {/*<TouchableOpacity onPress={() => {Alert.alert('준비중입니다.')}}>*/}
-            {this.props.store.itemData.teacher.memo !== null && (
-              <TouchableOpacity onPress={this.toggleTeacherView}>
-                <Text style={styles.lectureMoreButton}>더보기</Text>
-              </TouchableOpacity>
-            )}
+            <View style={{ width: '100%', paddingLeft: 100 }}>
+              {this.props.learnType === 'audioBook' && (
+                <Text style={styles.teacherTitle}>저자</Text>
+              )}
+              {this.props.learnType === 'class' && (
+                <Text style={styles.teacherTitle}>강사</Text>
+              )}
+              <Text style={styles.teacherHeadline}>
+                {this.props.store.itemData.teacher.headline}
+              </Text>
+              <Text style={styles.teacherName}>
+                {this.props.store.itemData.teacher.name}
+              </Text>
+            </View>
           </View>
+          {!!this.data.isMemoShow && (
+            <View style={styles.teacherMemo}>
+              <Text style={styles.teacherMemoText}>{teacherMemo}</Text>
+            </View>
+          )}
+          {this.props.store.itemData.teacher.memo !== null && (
+            <View style={{ width: '100%' }}>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={this.showTeacherMemo}
+              >
+                {!!this.data.buttonTextStatus && (
+                  <Text style={styles.showMemoButtonText}>요약보기</Text>
+                )}
+                {!this.data.buttonTextStatus && (
+                  <Text style={styles.showMemoButtonText}>간략보기</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         {1 === 2 && (
