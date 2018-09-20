@@ -24,6 +24,7 @@ import PTRView from 'react-native-pull-to-refresh';
 import moment from 'moment';
 import globalStore from '../../commons/store';
 import _ from 'underscore';
+import nav from "../../commons/nav";
 
 const styles = StyleSheet.create({
   slide: {
@@ -118,7 +119,24 @@ class HomeVideoPage extends React.Component {
       'ClassListPage',
       { action: 'category', data: data } // 전달할 데이터
     );
-  };
+  };  
+
+  testClick = data => {
+    
+    // Alert.alert('알림', '링크이동 확인중 ..' + this.data.item.link_url)
+    console.log(data)
+    // this.data.link_url
+    // this.props.navigation.navigate('WebView', { url: 'http://welaaa.co.kr/event/20180702/index.php' });
+    // nav.parseDeepLink('welaaa://audiobook/318')
+
+    // "link_url": "/audiobook_recom.php?date=2018-09-01&type=A"  이달의 책 랜딩 
+    // "link_url": "/audiobook_recom.php?date=2018-09-01&type=B"  이달의 책 랜딩 
+    // "link_url": "/video-serise-info.php?groupkey=863&ckey=16156" 클래스 상세 랜딩 
+    // "link_url": "/event/20180905_renewal/index.php"  내부 이벤트 페이지 랜딩 
+    // "link_url": "app://openUrl?url=http://bit.ly/moblie_main", outLink 랜딩 
+    // 이미지 .. 
+
+  }
 
   render() {
     let updatedAt = moment().format('YYYY. MM. DD');
@@ -147,12 +165,16 @@ class HomeVideoPage extends React.Component {
               >
                 {homeBannerData.map((item, key) => {
                   return (
-                    <TouchableOpacity activeOpacity={0.9} key={key}>
+                    <TouchableOpacity activeOpacity={0.9} key={key} 
+                      // onPress={() =>nav.parseDeepLink('welaaa://audiobook/318')} 
+                      onPress={() =>this.testClick}
+                    >                                                               
                       <ImageBackground
                         source={{ uri: item.images.default }}
                         resizeMode="cover"
                         style={styles.thumbnail}
                       />
+                      
                     </TouchableOpacity>
                   );
                 })}
