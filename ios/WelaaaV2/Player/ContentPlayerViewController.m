@@ -299,11 +299,15 @@
           
             MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage: [UIImage imageNamed:@"AlbumArt"]];
           
-            [songInfo setObject:@"Audio Title" forKey:MPMediaItemPropertyTitle];
-            [songInfo setObject:@"Audio Author" forKey:MPMediaItemPropertyArtist];
-            [songInfo setObject:@"Audio Album" forKey:MPMediaItemPropertyAlbumTitle];
-            [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
-            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
+            [songInfo setObject : _currentLectureTitle
+                         forKey : MPMediaItemPropertyTitle];
+            [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
+                         forKey : MPMediaItemPropertyArtist];
+            [songInfo setObject : [_args objectForKey : @"name"]
+                         forKey : MPMediaItemPropertyAlbumTitle];
+            [songInfo setObject : albumArt
+                         forKey : MPMediaItemPropertyArtwork];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
         }
     }
     // TEST CODE
@@ -2596,11 +2600,13 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPlay:
                 //Insert code
+                [self pressedPlayButton];
                 break;
             
             // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPause:
                 // Insert code
+                [self pressedPauseButton];
                 break;
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
