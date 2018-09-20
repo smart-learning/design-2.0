@@ -2427,41 +2427,6 @@
                                authToken : [_args objectForKey : @"token"]];
 }
 
-# pragma mark - Labatory
-- (void) toastTestAlert
-{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"Logout"
-                                                                   message : @"Are You Sure Want to Logout!"
-                                                            preferredStyle : UIAlertControllerStyleAlert];
-  
-    //Add Buttons
-    UIAlertAction *yesButton = [UIAlertAction actionWithTitle : @"Yes"
-                                                        style : UIAlertActionStyleDefault
-                                                      handler : ^(UIAlertAction *action)
-                                                                {
-                                                                    //Handle your yes please button action here
-                                                                    //[self clearAllData];
-                                                                  [self closePlayer];
-                                                                }];
-  
-    UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
-                                                       style : UIAlertActionStyleDefault
-                                                     handler : ^(UIAlertAction *action)
-                                                               {
-                                                                    //Handle no, thanks button
-                                                               }];
-  
-    //Add your buttons to alert controller
-  
-    [alert addAction : yesButton];
-    [alert addAction : noButton];
-  
-    [self presentViewController : alert
-                       animated : YES
-                     completion : nil];
-}
-
-
 # pragma mark - PallyCon FPS Download Delegate
 //
 // 다운로드가 종료되었을 때 호출됩니다.
@@ -2578,10 +2543,92 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     }
 }
 
+# pragma mark - Labatory
+- (void) toastTestAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"Logout"
+                                                                   message : @"Are You Sure Want to Logout!"
+                                                            preferredStyle : UIAlertControllerStyleAlert];
+  
+    //Add Buttons
+    UIAlertAction *yesButton = [UIAlertAction actionWithTitle : @"Yes"
+                                                        style : UIAlertActionStyleDefault
+                                                      handler : ^(UIAlertAction *action)
+                                                                {
+                                                                    //Handle your yes please button action here
+                                                                    //[self clearAllData];
+                                                                    [self closePlayer];
+                                                                }];
+  
+    UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
+                                                       style : UIAlertActionStyleDefault
+                                                     handler : ^(UIAlertAction *action)
+                                                               {
+                                                                  //Handle no, thanks button
+                                                               }];
+  
+    //Add your buttons to alert controller
+  
+    [alert addAction : yesButton];
+    [alert addAction : noButton];
+  
+    [self presentViewController : alert
+                       animated : YES
+                     completion : nil];
+}
 
+- (void) setupNowPlayingInfoCenter : (NSDictionary *) currentSong
+{
+    NSMutableDictionary *mediaInfo = [[NSMutableDictionary alloc] init];
+  
+    NSString *urlStr = @"object.mberImgPath";
+    NSURL *url = [NSURL URLWithString : urlStr];
+    UIImage *image = [UIImage imageWithData : [NSData dataWithContentsOfURL : url]];
+  
+    MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
+                                                                   requestHandler : ^UIImage * _Nonnull(CGSize size)
+                                                                                    {
+                                                                                        UIImage *lockScreenArtworkApp;
+                                                                                        lockScreenArtworkApp = [UIImage imageNamed : @"lockScreenLogo"];
+                                                                                      
+                                                                                        return [self resizeImageWithImage : lockScreenArtworkApp
+                                                                                                             scaledToSize : size];
+                                                                                    }];
+
+    [mediaInfo setValue : albumArt
+                 forKey : MPMediaItemPropertyArtwork];
+  
+    [mediaInfo setObject : @"object.title"
+                  forKey : MPMediaItemPropertyAlbumTitle];
+  
+    [mediaInfo setObject : @"object.mberNm"
+                  forKey : MPMediaItemPropertyArtist];
+  
+    [mediaInfo setObject : @(1.0)
+                  forKey : MPNowPlayingInfoPropertyPlaybackRate];
+  
+    [mediaInfo setObject : @(0.0)
+                  forKey : MPMediaItemPropertyPlaybackDuration];
+  
+    [mediaInfo setObject : @(0.0)
+                  forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+  
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : [mediaInfo mutableCopy]];
+}
+- (UIImage *) resizeImageWithImage : (UIImage *) image
+                      scaledToSize : (CGSize) newSize
+{
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect : CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+  
+    return newImage;
+}
 @end
-
-
 
 
 
