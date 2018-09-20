@@ -289,7 +289,25 @@
                                               selector : @selector(audioSessionInterrupted:)
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
-  
+    // TEST CODE
+    {
+        Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
+      
+        if ( playingInfoCenter )
+        {
+            NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
+          
+            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage: [UIImage imageNamed:@"AlbumArt"]];
+          
+            [songInfo setObject:@"Audio Title" forKey:MPMediaItemPropertyTitle];
+            [songInfo setObject:@"Audio Author" forKey:MPMediaItemPropertyArtist];
+            [songInfo setObject:@"Audio Album" forKey:MPMediaItemPropertyAlbumTitle];
+            [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
+        }
+    }
+    // TEST CODE
+    
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
