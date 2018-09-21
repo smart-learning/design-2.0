@@ -282,6 +282,11 @@ public final class LocalPlayback implements Playback {
   }
 
   @Override
+  public float getPlaybackSpeed() {
+    return mExoPlayer != null ? mExoPlayer.getPlaybackParameters().speed : 1.f;
+  }
+
+  @Override
   public void updateLastKnownStreamPosition() {
     // Nothing to do. Position maintained by ExoPlayer.
   }
@@ -679,7 +684,7 @@ public final class LocalPlayback implements Playback {
 
     @Override
     public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-      // Nothing to do.
+      mCallback.onPlaybackStatusChanged(getState());
     }
 
     @Override
@@ -1197,7 +1202,8 @@ public final class LocalPlayback implements Playback {
             String previewDashUrl = "";
 
             if (!playDatajson.isNull("preview_urls")) {
-              LogHelper.e(TAG, " preview_urls is Not null " + playDatajson.getJSONObject("preview_urls"));
+              LogHelper.e(TAG,
+                  " preview_urls is Not null " + playDatajson.getJSONObject("preview_urls"));
               preview_urlsObject = playDatajson.getJSONObject("preview_urls");
 
               previewDashUrl = preview_urlsObject.getString("DASH");
@@ -1226,7 +1232,7 @@ public final class LocalPlayback implements Playback {
               Uri uri = Uri.parse(dashUrl);
               if (!can_play) {
                 uri = Uri.parse(previewDashUrl);
-              }else{
+              } else {
                 uri = Uri.parse(dashUrl);
               }
 
@@ -1267,7 +1273,7 @@ public final class LocalPlayback implements Playback {
               jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
               String playInfo = gson.toJson(jsonObject);
 
-              LogHelper.e(TAG , " LocalPlayBack playInfo " + playInfo);
+              LogHelper.e(TAG, " LocalPlayBack playInfo " + playInfo);
               builder.putString("play_info", playInfo);
 
               currentMedia = builder.build();
@@ -1293,12 +1299,13 @@ public final class LocalPlayback implements Playback {
                   intent.putExtra(PlaybackManager.DRM_OID, "");
                   intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                   intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                  intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
+                  intent
+                      .putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
                   intent.putExtra("play_info", playInfo);
 
                   if (!can_play) {
                     intent.putExtra("duration", "00:01:30");
-                  }else{
+                  } else {
                     intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
                   }
 

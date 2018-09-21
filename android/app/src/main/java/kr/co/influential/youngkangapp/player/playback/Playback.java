@@ -51,6 +51,8 @@ public interface Playback {
    */
   long getCurrentStreamPosition();
 
+  float getPlaybackSpeed();
+
   /**
    * Queries the underlying stream and update the internal last known stream position.
    */
