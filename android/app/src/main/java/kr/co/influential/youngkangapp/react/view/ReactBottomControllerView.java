@@ -38,7 +38,7 @@ public class ReactBottomControllerView extends FrameLayout {
 
   public static final String TAG = LogHelper.makeLogTag(ReactBottomControllerView.class);
 
-  private static final long PROGRESS_UPDATE_INTERNAL = 1_000l;
+  private static final long PROGRESS_UPDATE_INTERNAL = 100l;
   private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
 
   private ProgressBar timeBar;
@@ -228,9 +228,11 @@ public class ReactBottomControllerView extends FrameLayout {
     pause.setOnClickListener(v -> pause());
     play.setOnClickListener(v -> play());
 
-    if (mgestureScanner == null) mgestureScanner = new GestureDetector(getContext(),mGestureListener);
+    if (mgestureScanner == null) {
+      mgestureScanner = new GestureDetector(getContext(), mGestureListener);
+    }
 
-    getRootView().setOnTouchListener(new View.OnTouchListener(){
+    getRootView().setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
         return mgestureScanner.onTouchEvent(event);
@@ -293,8 +295,10 @@ public class ReactBottomControllerView extends FrameLayout {
       currentPosition += timeDelta * lastPlaybackState.getPlaybackSpeed();
     }
     int current = (int) (currentPosition / 1_000l);
-    timeBar.setProgress(current);
-    currentTime.setText(DateUtils.formatElapsedTime(current));
+    if (timeBar.getProgress() != current) {
+      timeBar.setProgress(current);
+      currentTime.setText(DateUtils.formatElapsedTime(current));
+    }
   }
 
   GestureDetector.OnGestureListener mGestureListener = new GestureDetector.OnGestureListener() {
@@ -327,13 +331,16 @@ public class ReactBottomControllerView extends FrameLayout {
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
       float dd = e1.getX() - e2.getX();
-      LogHelper.e(TAG ,  ":Gesture onFling!! [e1왼쪽]:"+e1.getX()+" [e2오른쪽]:"+e2.getX()+"====>[MIN] "+dd);
+      LogHelper.e(TAG,
+          ":Gesture onFling!! [e1왼쪽]:" + e1.getX() + " [e2오른쪽]:" + e2.getX() + "====>[MIN] " + dd);
 
-      if(Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) return false;
+      if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
+        return false;
+      }
 
-      if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE){
+      if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE) {
         hideBottomcontrol();
-      }else if(e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE){
+      } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE) {
         hideBottomcontrol();
       }
       return true;
@@ -341,8 +348,8 @@ public class ReactBottomControllerView extends FrameLayout {
     }
   };
 
-  public void hideBottomcontrol(){
-    LogHelper.e(TAG , " hideBottomControl !! ");
+  public void hideBottomcontrol() {
+    LogHelper.e(TAG, " hideBottomControl !! ");
 
     Activity activity = Utils.getActivity(getContext());
     MediaControllerCompat mediaController = MediaControllerCompat

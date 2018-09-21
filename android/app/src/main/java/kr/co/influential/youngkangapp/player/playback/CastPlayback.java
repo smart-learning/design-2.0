@@ -94,6 +94,11 @@ public class CastPlayback implements Playback {
   }
 
   @Override
+  public float getPlaybackSpeed() {
+    return 1.f;
+  }
+
+  @Override
   public void updateLastKnownStreamPosition() {
     mCurrentPosition = getCurrentStreamPosition();
   }
