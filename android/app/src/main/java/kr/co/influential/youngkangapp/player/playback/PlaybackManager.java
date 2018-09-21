@@ -142,8 +142,12 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
       stateBuilder.setErrorMessage(500, error);
       state = PlaybackStateCompat.STATE_ERROR;
     }
+
+    // Playback speed.
+    float playbackSpeed = mPlayback.getPlaybackSpeed();
+
     //noinspection ResourceType
-    stateBuilder.setState(state, position, 1.0f, SystemClock.elapsedRealtime());
+    stateBuilder.setState(state, position, playbackSpeed, SystemClock.elapsedRealtime());
 
     mServiceCallback.onPlaybackStateUpdated(stateBuilder.build());
 
