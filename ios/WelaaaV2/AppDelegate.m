@@ -7,22 +7,6 @@
 
 #import "AppDelegate.h"
 
-#import <React/RCTBundleURLProvider.h>
-#import <React/RCTRootView.h>
-
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <KakaoOpenSDK/KakaoOpenSDK.h>
-
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-
-#import <AVFoundation/AVFoundation.h>
-
-@import UserNotifications;
-
-@interface AppDelegate () <UNUserNotificationCenterDelegate>
-@end
-
 @implementation AppDelegate
 
 NSString *const kGCMMessageIDKey = @"gcm.message_id";

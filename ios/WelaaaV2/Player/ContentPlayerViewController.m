@@ -290,6 +290,7 @@
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
     // TEST CODE
+    // https://github.com/jaysonlane/LockScreenInfo/
     {
         Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
       
@@ -297,7 +298,15 @@
         {
             NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
           
-            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage: [UIImage imageNamed:@"AlbumArt"]];
+            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
+                                                                           requestHandler : ^UIImage * _Nonnull(CGSize size)
+                                                                                            {
+                                                                                                UIImage *lockScreenArtworkApp;
+                                                                                                lockScreenArtworkApp = [UIImage imageNamed : @"AlbumArt"];
+                                                                                              
+                                                                                                return [self resizeImageWithImage : lockScreenArtworkApp
+                                                                                                                     scaledToSize : size];
+                                                                                            }];
           
             [songInfo setObject : _currentLectureTitle
                          forKey : MPMediaItemPropertyTitle];
@@ -305,6 +314,12 @@
                          forKey : MPMediaItemPropertyArtist];
             [songInfo setObject : [_args objectForKey : @"name"]
                          forKey : MPMediaItemPropertyAlbumTitle];
+            /*
+            [songInfo setObject : @(0.0)
+                         forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+            [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
+                         forKey : MPMediaItemPropertyPlaybackDuration];
+            */
             [songInfo setObject : albumArt
                          forKey : MPMediaItemPropertyArtwork];
             [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
@@ -2599,13 +2614,11 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPlay:
-                //Insert code
                 [self pressedPlayButton];
                 break;
             
             // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPause:
-                // Insert code
                 [self pressedPauseButton];
                 break;
             
@@ -2715,34 +2728,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
   
     return newImage;
 }
-- (void) setupNowPlayingInfoCenter2 : (MPMediaItem *) currentSong
-{
-    MPMediaItemArtwork *artwork = [currentSong valueForProperty : MPMediaItemPropertyArtwork];
-      
-    MPNowPlayingInfoCenter *infoCenter = [MPNowPlayingInfoCenter defaultCenter];
-  
-    if ( currentSong == nil )
-    {
-        infoCenter.nowPlayingInfo = nil;
-        return ;
-    }
-  
-    infoCenter.nowPlayingInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 [currentSong valueForKey:MPMediaItemPropertyTitle], MPMediaItemPropertyTitle,
-                                 [currentSong valueForKey:MPMediaItemPropertyArtist], MPMediaItemPropertyArtist,
-                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTitle], MPMediaItemPropertyAlbumTitle,
-                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackCount], MPMediaItemPropertyAlbumTrackCount,
-                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackNumber], MPMediaItemPropertyAlbumTrackNumber,
-                                 artwork, MPMediaItemPropertyArtwork,
-                                 [currentSong valueForKey:MPMediaItemPropertyComposer], MPMediaItemPropertyComposer,
-                                 [currentSong valueForKey:MPMediaItemPropertyDiscCount], MPMediaItemPropertyDiscCount,
-                                 [currentSong valueForKey:MPMediaItemPropertyDiscNumber], MPMediaItemPropertyDiscNumber,
-                                 [currentSong valueForKey:MPMediaItemPropertyGenre], MPMediaItemPropertyGenre,
-                                 [currentSong valueForKey:MPMediaItemPropertyPersistentID], MPMediaItemPropertyPersistentID,
-                                 [currentSong valueForKey:MPMediaItemPropertyPlaybackDuration], MPMediaItemPropertyPlaybackDuration,
-                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueIndex,
-                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueCount, nil];
-}
+
 
 @end
 

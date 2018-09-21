@@ -7,12 +7,24 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
+
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <KakaoOpenSDK/KakaoOpenSDK.h>
+
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
+#import <AVFoundation/AVFoundation.h>
 
 #import "common.h"
 
+
+@import UserNotifications;
 @import Firebase;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, FIRMessagingDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate, FIRMessagingDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 @property (strong, nonatomic) UINavigationController *navigationController;
