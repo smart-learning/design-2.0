@@ -206,16 +206,10 @@ class AudioBookInfoPage extends React.Component {
       props.navigation.state.params
     );
 
-    // let itemData = null;
-    // let month = null
-    //   let sort = null
-
-    let { itemData, month, sort } = props.navigation.state.params;
-    // } catch (e) {
-    //    { month, sort } = props.navigation.state.params;
-    // }
-
-    this.state = { itemData: itemData, month: month, sort: sort };
+    if (undefined !== props.navigation.state.params) {
+      let { itemData, month, sort } = props.navigation.state.params;
+      this.state = { itemData: itemData, month: month, sort: sort };
+    }
 
     this.initialize();
   }
@@ -242,13 +236,17 @@ class AudioBookInfoPage extends React.Component {
 
   render() {
     const itemData = this.state.itemData;
-    if (!itemData) {
-    	return (
-    		<View>
-				<Text>loading...</Text>
-			</View>
-		)
-	}
+    if (
+      !itemData ||
+      itemData.constructor !== Object ||
+      Object.keys(itemData).length === 0
+    ) {
+      return (
+        <View>
+          <Text>loading...</Text>
+        </View>
+      );
+    }
     const year = m(itemData.month).format('YYYY');
     const month = m(itemData.month).format('MM');
     let headerBgImage = null;
