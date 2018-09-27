@@ -16,26 +16,24 @@
 package kr.co.influential.youngkangapp.player;
 
 import android.text.TextUtils;
-
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.drm.UnsupportedDrmException;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
-
 import java.util.Locale;
 import java.util.UUID;
 
 /**
  * Utility methods for demo application.
  */
-/* package */ final class DemoUtil {
+/* package */ public final class DemoUtil {
 
   /**
    * Derives a DRM {@link UUID} from {@code drmScheme}.
    *
    * @param drmScheme A protection scheme UUID string; or {@code "widevine"}, {@code "playready"} or
-   *     {@code "clearkey"}.
+   * {@code "clearkey"}.
    * @return The derived {@link UUID}.
    * @throws UnsupportedDrmException If no {@link UUID} could be derived from {@code drmScheme}.
    */
@@ -113,5 +111,6 @@ import java.util.UUID;
     return format.sampleMimeType == null ? "" : format.sampleMimeType;
   }
 
-  private DemoUtil() {}
+  private DemoUtil() {
+  }
 }

@@ -4652,7 +4652,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   Bundle extras = intent.getExtras();
 
-                  getTransportControls().playFromUri(uri, extras);
+                  playFromUri(uri, extras);
                   // Meta data update 정상 .
                 }
               }
