@@ -1192,8 +1192,8 @@
 {
   //[self toastTestAlert];
   
-  //[self closePlayer];
-  
+  [self closePlayer];
+  /*
   //[self showToast : @"미니플레이어로 변환합니다."];
   
     self.isMiniPlayer = YES;
@@ -1201,12 +1201,20 @@
     _miniPlayerUiView.delegate = self;
     _miniPlayerUiView.isAuthor = _isAuthor;
     [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
+    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+    NSTimeInterval totalTime = [self getDuration];
+    NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
+    playInfo[@"currentTime"] = @(currentTime);
+    playInfo[@"totalTime"] = @(totalTime);
+    playInfo[@"isAudioContent"] = @(_isAudioContent);
+    [_miniPlayerUiView setPreparedToPlayInfo: playInfo];
+    [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
     [self.view addSubview : _miniPlayerUiView];
   
   //_playerUiView.hidden = self.isMiniPlayer;
     _miniPlayerUiView.hidden = !self.isMiniPlayer;
   //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  
+  */
 }
 
 - (void) pressedRateStarButton
@@ -2445,6 +2453,39 @@
       */
     }
 }
+- (void) miniPlayerUiView: (ContentMiniPlayerView *) view
+                 openView: (id) sender
+{
+  /*
+  if ( [self.delegate respondsToSelector: @selector(player:openView:)] )
+  {
+    [self.delegate player: self openView: nil];
+  }
+  
+  //풀스크린 플레이어로 전환 : 영상 모드로 전환
+  //미니플레이어로 전환 : 오디오 모드로 전환
+  if ( _isTransperPlayModeFromScreen )
+  {
+    _isTransperPlayModeFromScreen = NO;
+    [self changePlayType: NO];
+  }*/
+}
+
+- (void) miniPlayerUiView : (ContentMiniPlayerView *) view
+                  setPlay : (BOOL) isPlay
+{
+    if ( isPlay )
+        [self pressedPlayButton];
+    else
+        [self pressedPauseButton];
+}
+
+- (void) miniPlayerUiView : (ContentMiniPlayerView *) view
+                closeView : (id) sender
+{
+    [self closePlayer];
+}
+
 
 #pragma mark - Timer event
 //

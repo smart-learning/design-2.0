@@ -200,14 +200,12 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
   
     if ( _timeLabel )
     {
-        _timeLabel.text = [common convertTimeToString : currentTime
-                                               Minute : YES];
+        _timeLabel.text = [common convertTimeToString:currentTime Minute:YES];
     }
   
     if ( _totalTimeLabel )
     {
-        NSString *totalTimeStr = [@"/ " stringByAppendingString : [common convertTimeToString : totalTime
-                                                                                       Minute : YES]];
+        NSString *totalTimeStr = [@"/ " stringByAppendingString : [common convertTimeToString:totalTime Minute:YES]];
         _totalTimeLabel.text = totalTimeStr;
     }
   
@@ -227,8 +225,7 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
 {
     if ( _timeLabel )
     {
-        _timeLabel.text = [common convertTimeToString : time
-                                               Minute : YES];
+        _timeLabel.text = [common convertTimeToString:time Minute:YES];
     }
   
     _currentTime = time;
