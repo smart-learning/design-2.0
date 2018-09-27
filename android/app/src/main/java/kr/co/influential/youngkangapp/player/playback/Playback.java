@@ -1,7 +1,5 @@
 package kr.co.influential.youngkangapp.player.playback;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.media.MediaMetadataCompat;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import kr.co.influential.youngkangapp.player.service.MediaService;
@@ -78,6 +76,11 @@ public interface Playback {
     void onCompletion();
 
     /**
+     * Do autoplay when current media completed.
+     */
+    void doAutoPlay();
+
+    /**
      * on Playback status changed Implementations can use this callback to update playback state on
      * the media sessions.
      */
@@ -92,9 +95,6 @@ public interface Playback {
      * @param item being currently played
      */
     void setCurrentMedia(MediaMetadataCompat item);
-
-
-    void doAutoPlay(Uri uri , MediaMetadataCompat item , Intent intent);
   }
 
   void setCallback(Callback callback);
