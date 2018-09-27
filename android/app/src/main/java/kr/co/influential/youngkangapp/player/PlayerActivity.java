@@ -405,6 +405,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
 
   private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
+  public Boolean playOnClickPlayTry = false;
 
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
@@ -776,7 +777,7 @@ public class PlayerActivity extends BasePlayerActivity {
             // 오디오북  매일책한권 시리즈 .
             simpleExoPlayerView.showController();
             simpleExoPlayerView.setControllerHideOnTouch(false);
-            simpleExoPlayerView.setControllerShowTimeoutMs(1000*60*60*60);
+            simpleExoPlayerView.setControllerShowTimeoutMs(1000 * 60 * 60 * 60);
 
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
           } else {
@@ -785,7 +786,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //            simpleExoPlayerView.showController();
             simpleExoPlayerView.setUseController(true);
             simpleExoPlayerView.setControllerHideOnTouch(true);
-            simpleExoPlayerView.setControllerShowTimeoutMs(1000*10);
+            simpleExoPlayerView.setControllerShowTimeoutMs(1000 * 10);
 
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
           }
@@ -4587,7 +4588,12 @@ public class PlayerActivity extends BasePlayerActivity {
             Intent intent = getIntent();
 
             if (callbackMethod.equals("play")) {
-              if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+              // # 268 목차에서 들어가는 케이스는 무조건 재생할 수 있는 시나리오로 갈까요 ?
+
+              if (playOnClickPlayTry) {
+                // 자동 재생 여부와 관계없이 재생합니다.
+                playOnClickPlayTry = false;
+
                 if (getTransportControls() != null) {
                   Uri uri = Uri.parse(dashUrl);
 
@@ -4655,7 +4661,80 @@ public class PlayerActivity extends BasePlayerActivity {
                   playFromUri(uri, extras);
                   // Meta data update 정상 .
                 }
+
+              }else{
+                // 자동 재생 여부를 참조하여 재생합니다.
+                if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+                  if (getTransportControls() != null) {
+                    Uri uri = Uri.parse(dashUrl);
+
+                    if (!can_play) {
+                      uri = Uri.parse(previewDashUrl);
+                      LogHelper.e(TAG, " can_play preview URI " + uri);
+                    }
+
+                    intent.setData(uri);
+                    intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                        getwebPlayerInfo().getCname()[getContentId()]);
+                    intent.putExtra(PlaybackManager.THUMB_URL, "");
+                    try {
+
+                      if ((getDrmUuid("widevine").toString()) != null) {
+
+                        intent
+                            .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                                getDrmUuid("widevine").toString());
+                        intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                            "http://tokyo.pallycon.com/ri/licenseManager.do");
+                        intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                        intent.putExtra(PlaybackManager.DRM_USERID,
+                            Preferences.getWelaaaUserId(getApplicationContext()));
+                        intent.putExtra(PlaybackManager.DRM_CID,
+                            getwebPlayerInfo().getCkey()[getContentId()]);
+                        intent.putExtra(PlaybackManager.DRM_OID, "");
+                        intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                        intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                        intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
+                            getwebPlayerInfo().getGroupTitle());
+
+                        // fromMediaSession 용도
+                        Gson gson = new Gson();
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
+                        jsonObject.addProperty("can_play", can_play);
+                        jsonObject.addProperty("is_free", is_free);
+                        jsonObject.addProperty("expire_at", expire_at);
+                        jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
+                        String playInfo = gson.toJson(jsonObject);
+
+                        intent.putExtra("play_info", playInfo);
+
+                        if (!can_play) {
+                          // 미리 듣기 90초
+                          intent.putExtra("duration", "00:01:30");
+                        } else {
+                          intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
+                        }
+
+                      }
+
+                    } catch (ParserException e) {
+                      e.printStackTrace();
+                    }
+
+                    // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+                    // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+                    Preferences.setWelaaaPlayListCKey(getApplicationContext(),
+                        getwebPlayerInfo().getCkey()[getContentId()]);
+
+                    Bundle extras = intent.getExtras();
+
+                    playFromUri(uri, extras);
+                    // Meta data update 정상 .
+                  }
+                }
               }
+
             } else if (callbackMethod.equals("download")) {
               DownloadService.stopped = false;
 
@@ -5074,10 +5153,6 @@ public class PlayerActivity extends BasePlayerActivity {
       }
     }
 
-    setContentId(currentPosition);
-//
-//    setBackGroungLayout(true);
-
     UiThreadUtil.runOnUiThread(new Runnable() {
       @Override
       public void run() {
@@ -5103,13 +5178,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
     callbackMethodName = "play/play-data/";
     callbackMethod = "play";
+    playOnClickPlayTry = true;
 
     setContentId(currentPosition);
 
     Preferences.setWelaaaPlayerOnClickPos(getApplicationContext(), currentPosition);
-
-    LogHelper
-        .e(TAG, " getWelaaaPlayerOnClickPos is " + currentPosition + " playListOnClick :: " + pos);
 
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);
