@@ -131,7 +131,7 @@ export default class InquireListPage extends React.Component {
 						</TouchableOpacity>
 					</View>
 
-					<View>
+					{/* <View>
 						<Text style={styles.NoticeText}>[추석 연휴 운영 안내] 추석 연휴 기간인
 							<Text style={styles.NoticeTextBoldText}>9월 22일(토)부터 9월 26일(목)까지</Text>
 							고객센터도 휴무입니다.
@@ -154,7 +154,7 @@ export default class InquireListPage extends React.Component {
 					</View>
 					<View>
 						<Text style={styles.NoticeText}>윌라 운영팀 드림</Text>
-					</View>
+					</View> */}
 				</ScrollView>
 			</SafeAreaView>
 		</View>

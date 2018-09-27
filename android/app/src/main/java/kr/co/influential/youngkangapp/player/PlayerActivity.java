@@ -739,12 +739,14 @@ public class PlayerActivity extends BasePlayerActivity {
             audioModeBackgroundLayout.setVisibility(VISIBLE);
             audioModeIconHeadset.setVisibility(VISIBLE);
 
-            LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
-            // Audio Book 에서 화면 항상 켜기 //
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
           }
         });
 //      mSeekBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_horizontal_custom_audio));
+
+        // 오디오북
+        simpleExoPlayerView.showController();
+        simpleExoPlayerView.setControllerHideOnTouch(false);
+        simpleExoPlayerView.setControllerShowTimeoutMs(1000*60*60*60);
 
       } else {
 
@@ -768,14 +770,23 @@ public class PlayerActivity extends BasePlayerActivity {
                 audioModeBackgroundLayout.setVisibility(VISIBLE);
                 audioModeIconHeadset.setVisibility(VISIBLE);
 
-                LogHelper.e(TAG, " 20180901 FLAG_KEEP_SCREEN_ON ! ");
-                // Audio Book 에서 화면 항상 켜기 //
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
               }
             });
 
+            // 오디오북  매일책한권 시리즈 .
+            simpleExoPlayerView.showController();
+            simpleExoPlayerView.setControllerHideOnTouch(false);
+            simpleExoPlayerView.setControllerShowTimeoutMs(1000*60*60*60);
+
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
           } else {
+
+            // 클래스 동영상 강좌 / 강의 
+//            simpleExoPlayerView.showController();
+            simpleExoPlayerView.setUseController(true);
+            simpleExoPlayerView.setControllerHideOnTouch(true);
+            simpleExoPlayerView.setControllerShowTimeoutMs(1000*10);
+
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
           }
         }
@@ -4641,7 +4652,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   Bundle extras = intent.getExtras();
 
-                  getTransportControls().playFromUri(uri, extras);
+                  playFromUri(uri, extras);
                   // Meta data update 정상 .
                 }
               }
