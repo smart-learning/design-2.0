@@ -746,7 +746,7 @@ public class PlayerActivity extends BasePlayerActivity {
         // 오디오북
         simpleExoPlayerView.showController();
         simpleExoPlayerView.setControllerHideOnTouch(false);
-        simpleExoPlayerView.setControllerShowTimeoutMs(1000*60*60*60);
+        simpleExoPlayerView.setControllerShowTimeoutMs(1000 * 60 * 60 * 60);
 
       } else {
 
@@ -776,7 +776,7 @@ public class PlayerActivity extends BasePlayerActivity {
             // 오디오북  매일책한권 시리즈 .
             simpleExoPlayerView.showController();
             simpleExoPlayerView.setControllerHideOnTouch(false);
-            simpleExoPlayerView.setControllerShowTimeoutMs(1000*60*60*60);
+            simpleExoPlayerView.setControllerShowTimeoutMs(1000 * 60 * 60 * 60);
 
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
           } else {
@@ -785,7 +785,7 @@ public class PlayerActivity extends BasePlayerActivity {
 //            simpleExoPlayerView.showController();
             simpleExoPlayerView.setUseController(true);
             simpleExoPlayerView.setControllerHideOnTouch(true);
-            simpleExoPlayerView.setControllerShowTimeoutMs(1000*10);
+            simpleExoPlayerView.setControllerShowTimeoutMs(1000 * 10);
 
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(false);
           }
@@ -2129,35 +2129,39 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case R.id.BTN_DOWNLOAD: {
 
-            ConnectivityManager cmgr = (ConnectivityManager) getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+            String ckey = getwebPlayerInfo().getCkey()[getContentId()];
+            if(ContentManager().existCid(ckey)){
+              Utils.logToast(getApplicationContext(), getString(R.string.info_dial_already_download));
+            }else{
+              ConnectivityManager cmgr = (ConnectivityManager) getApplicationContext()
+                  .getSystemService(Context.CONNECTIVITY_SERVICE);
+              NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-            boolean isOnlyWifiDownload = Preferences.getOnlyWifiDownload(getApplicationContext());
+              boolean isOnlyWifiDownload = Preferences.getOnlyWifiDownload(getApplicationContext());
 
-            if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName()
-                .equals("WIFI")) {
+              if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName()
+                  .equals("WIFI")) {
 
-              UiThreadUtil.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                  alertDownloadWindow(getString(R.string.info_dial_notice),
-                      "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
-                      getString(R.string.info_dial_ok),
-                      getString(R.string.info_dial_cancel),
-                      FLAG_DOWNLOAD_NETWORK_CHECK);
-                }
-              });
+                UiThreadUtil.runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                    alertDownloadWindow(getString(R.string.info_dial_notice),
+                        "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
+                        getString(R.string.info_dial_ok),
+                        getString(R.string.info_dial_cancel),
+                        FLAG_DOWNLOAD_NETWORK_CHECK);
+                  }
+                });
 
-              return;
-            } else {
-              if (CAN_PLAY) {
-                alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
+                return;
               } else {
-                Utils.logToast(getApplicationContext(), getString(R.string.info_no_support));
+                if (CAN_PLAY) {
+                  alertDownloadWindow("알림", "다운로드를 받으시겠습니까?", "확인", "취소", 1);
+                } else {
+                  Utils.logToast(getApplicationContext(), getString(R.string.info_no_support));
+                }
               }
             }
-
           }
           break;
 
@@ -3725,24 +3729,20 @@ public class PlayerActivity extends BasePlayerActivity {
       TextView play_network_type_text = findViewById(R.id.wrap_welean_play_network_type_text);
 
       String nTitle = "";
-      String ckey = "";
+      String ckey = getwebPlayerInfo().getCkey()[getContentId()];
 
       if (Utils.isAirModeOn(getApplicationContext())) {
         nTitle = "다운로드 파일로 재생";
       } else {
-        if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-//					ckey = mWelaaaPlayer.getNewWebPlayerInfo().getCkey()[getContentId()];
+
+        if (ContentManager().existCid(ckey)) {
+          nTitle = "다운로드 파일로 재생";
+          mBtnDownload.setBackground(
+              Utils.getDrawable(getApplicationContext(), R.drawable.icon_download_done));
         } else {
-//					ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
+          mBtnDownload
+              .setBackground(Utils.getDrawable(getApplicationContext(), R.drawable.icon_download));
         }
-
-        // 다운로드 프로세스 관련 확인 .
-//				if(mWelaaaPlayer.ContentManager().existCid(ckey)){
-//					nTitle = "다운로드 파일로 재생";
-//					mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download_done));
-//				}else{
-
-        mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
 
         try {
           if (netInfo.isConnected() && netInfo.getTypeName().equals("WIFI")) {
@@ -3753,7 +3753,6 @@ public class PlayerActivity extends BasePlayerActivity {
         } catch (Exception e) {
           e.printStackTrace();
         }
-//				}
       }
 
       play_network_type_text.setText(nTitle);
@@ -4450,6 +4449,7 @@ public class PlayerActivity extends BasePlayerActivity {
         // 타이틀 동기화는 meta 데이터를 활용할 것
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
+
       } else if (CONTENT_TYPE.equals("audiobook")) {
 
       }
