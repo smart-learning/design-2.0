@@ -210,8 +210,21 @@ class AudioBookInfoPage extends React.Component {
       let { itemData, month, sort } = props.navigation.state.params;
       this.state = { itemData: itemData, month: month, sort: sort };
     }
+  }
 
+  componentWillMount() {
+    this._isMount = true;
     this.initialize();
+  }
+
+  componentDidMount() {}
+
+  componentWillUnmount() {
+    this._isMount = false;
+  }
+
+  shouldComponentUpdate() {
+    return this._isMount;
   }
 
   async initialize() {
@@ -219,9 +232,11 @@ class AudioBookInfoPage extends React.Component {
       return;
     }
     const { month, sort } = this.state;
-    this.setState({
-      itemData: await net.getBotmData(month, sort)
-    });
+    if (!month && !sort) {
+      this.setState({
+        itemData: await net.getBotmData(month, sort)
+      });
+    }
   }
 
   showTeacherMemo = () => {
