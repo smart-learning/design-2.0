@@ -385,20 +385,27 @@ export default class MyInfoHome extends React.Component {
                 <View style={styles.listItemBarBullet} />
               </View>
 
-              {/*
-						<View style={styles.listItemBarContainer}>
-							<View style={styles.listItemBar}/>
-							<View style={styles.listItemBarBullet}/>
-						</View>
-						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => navigation.navigate('DownloadContentPage', {title: '다운로드 컨텐츠'})}>
-							<View style={styles.listItem}>
-								<Image source={IcDownload} style={styles.listItemIcon}/>
-								<Text style={styles.listItemTitle}>다운로드 컨텐츠</Text>
-								<Image source={IcAngleRight} style={[styles.listItemBullet, {marginLeft: 'auto'}]}/>
-							</View>
-						</TouchableOpacity>
-						*/}
+              <View style={styles.listItemBarContainer}>
+                <View style={styles.listItemBar} />
+                <View style={styles.listItemBarBullet} />
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  navigation.navigate('DownloadContentPage', {
+                    title: '다운로드 컨텐츠'
+                  })
+                }
+              >
+                <View style={styles.listItem}>
+                  <Image source={IcDownload} style={styles.listItemIcon} />
+                  <Text style={styles.listItemTitle}>다운로드 컨텐츠</Text>
+                  <Image
+                    source={IcAngleRight}
+                    style={[styles.listItemBullet, { marginLeft: 'auto' }]}
+                  />
+                </View>
+              </TouchableOpacity>
 
               {/*고객사 요청으로 화면에서 감춤 처리*/}
               {1 === 2 && (
