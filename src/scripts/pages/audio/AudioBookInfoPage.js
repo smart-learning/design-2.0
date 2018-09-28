@@ -206,18 +206,25 @@ class AudioBookInfoPage extends React.Component {
       props.navigation.state.params
     );
 
-    // let itemData = null;
-    // let month = null
-    //   let sort = null
+    if (undefined !== props.navigation.state.params) {
+      let { itemData, month, sort } = props.navigation.state.params;
+      this.state = { itemData: itemData, month: month, sort: sort };
+    }
+  }
 
-    let { itemData, month, sort } = props.navigation.state.params;
-    // } catch (e) {
-    //    { month, sort } = props.navigation.state.params;
-    // }
-
-    this.state = { itemData: itemData, month: month, sort: sort };
-
+  componentWillMount() {
+    this._isMount = true;
     this.initialize();
+  }
+
+  componentDidMount() {}
+
+  componentWillUnmount() {
+    this._isMount = false;
+  }
+
+  shouldComponentUpdate() {
+    return this._isMount;
   }
 
   async initialize() {
@@ -225,9 +232,11 @@ class AudioBookInfoPage extends React.Component {
       return;
     }
     const { month, sort } = this.state;
-    this.setState({
-      itemData: await net.getBotmData(month, sort)
-    });
+    if (!month && !sort) {
+      this.setState({
+        itemData: await net.getBotmData(month, sort)
+      });
+    }
   }
 
   showTeacherMemo = () => {
@@ -242,13 +251,17 @@ class AudioBookInfoPage extends React.Component {
 
   render() {
     const itemData = this.state.itemData;
-    if (!itemData) {
-    	return (
-    		<View>
-				<Text>loading...</Text>
-			</View>
-		)
-	}
+    if (
+      !itemData ||
+      itemData.constructor !== Object ||
+      Object.keys(itemData).length === 0
+    ) {
+      return (
+        <View>
+          <Text>loading...</Text>
+        </View>
+      );
+    }
     const year = m(itemData.month).format('YYYY');
     const month = m(itemData.month).format('MM');
     let headerBgImage = null;
