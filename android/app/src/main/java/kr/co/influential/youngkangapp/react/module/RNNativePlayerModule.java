@@ -110,8 +110,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
 
-    LogHelper.e(TAG , " contentCid is " + contentCid );
-    LogHelper.e(TAG , " checkAudioBookChapter is " + checkAudioBookChapter );
+    LogHelper.e(TAG, " contentCid is " + contentCid);
+    LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
 
     if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
@@ -502,6 +502,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 history_start_seconds = historyObject.getString("start_seconds");
 
                 contentHistory_seconds = historyObject.getInt("start_seconds");
+
+                // CID 랑 // 히스토리 ID 값을 비교 해서 ..
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
@@ -598,26 +600,17 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   sb.append("&csmi=" + csmi);
                 }
 
-                // 오디오북 목차에서 재생이 들어오는 경우
-                // b100001_002
-                if(checkAudioBookChapter){
-
-                  // json.getString id == 163 옛날 ckey 정보 ..
-                  // json.getString cid == b100001_011
-                  if(contentCid.equals(json.getString("cid"))){
-                    contentName = json.getString("title");
+                if (historyId.equals("")) {
+                  if (i == 0) {
                     contentCid = json.getString("cid");
+                    contentName = json.getString("title");
                     contentId = i;
-
-                    checkAudioBookChapter = false;
                   }
-                  // 오디오북 상세 최상단 플레이 버튼을 통해서 들어올때
-                  // b100001
-                }else{
-                  if (historyId.equals("")) {
-                    if (i == 0) {
-                      contentCid = json.getString("cid");
+                } else {
+                  if (checkAudioBookChapter) {
+                    if (contentCid.equals(json.getString("cid"))) {
                       contentName = json.getString("title");
+                      contentCid = json.getString("cid");
                       contentId = i;
                     }
                   } else {
@@ -638,9 +631,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             }
 
           } catch (Exception e) {
-
             e.printStackTrace();
-
 //            UiThreadUtil.runOnUiThread(new Runnable() {
 //              @Override
 //              public void run() {
@@ -807,7 +798,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     intent.putExtra("is_free", is_free);
                     intent.putExtra("webPlayerInfo", mWebPlayerInfo);
                     intent.putExtra("history_start_seconds", contentHistory_seconds);
-                    intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE , mWebPlayerInfo.getGroupTitle());
+                    intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
+                        mWebPlayerInfo.getGroupTitle());
                   }
 
                   LogHelper.e(TAG, "url : " + dashUrl);
@@ -824,20 +816,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 return;
 
               } else {
-                // previewDashUrl
-//                previewDashUrl = "https://contents.welaaa.com/media/v100001/DASH_v100001_001_preview/stream.mpd";
-                // 1876년 메이저 리그 원년
-//                previewDashUrl = "https://contents.welaaa.com/media/v100001/DASH_v100001_002_preview/stream.mpd";
-                // 21초 전체 구단의 총 수입
-
-                LogHelper.e(TAG, " can_play " + can_play);
-                LogHelper.e(TAG, " PreviewDashUrl " + previewDashUrl);
 
                 if (!can_play) {
                   dashUrl = previewDashUrl;
-
-                  LogHelper.e(TAG, " can_play FALSE !  PLAY PreviewDashUrl " + previewDashUrl);
-
                 }
 
                 intent.setData(Uri.parse(dashUrl));
@@ -854,12 +835,13 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   intent.putExtra(PlaybackManager.DRM_OID, "");
                   intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                   intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                  intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE , mWebPlayerInfo.getGroupTitle());
+                  intent
+                      .putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
 
                   if (!can_play) {
                     // 미리 듣기 90초
                     intent.putExtra("duration", "00:01:30");
-                  }else{
+                  } else {
                     intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
                   }
                   intent.putExtra("type", contentType);
