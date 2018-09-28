@@ -28,7 +28,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                            error : nil];
   
     NSURL *jsCodeLocation;
-
+/*
 #ifdef DEBUG
     jsCodeLocation = [ [RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot : @"index"
                                                                      fallbackResource : nil     ];
@@ -36,6 +36,9 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     jsCodeLocation = [ [NSBundle mainBundle] URLForResource : @"main"
                                               withExtension : @"jsbundle" ];
 #endif
+*/
+    jsCodeLocation = [ [NSBundle mainBundle] URLForResource : @"main"
+                                              withExtension : @"jsbundle" ];
   
     RCTRootView *rootView = [ [RCTRootView alloc] initWithBundleURL : jsCodeLocation
                                                          moduleName : @"WelaaaV2"

@@ -15,7 +15,9 @@ RCT_EXPORT_MODULE();
 
 - (void) buyProduct : (NSDictionary *) args
 {
-    NSLog(@"  [buyProduct] Product Code : %@", [args objectForKey : @"product_id"]);
+    NSLog(@"  [-buyProduct:] Product Type : %@", [args objectForKey : @"type"]);        // 'membership' or 'audio_book'.
+    NSLog(@"  [-buyProduct:] Product Code : %@", [args objectForKey : @"product_id"]);  // AppStore Connect에 등록한 상품ID.
+    NSLog(@"  [-buyProduct:] Access Token : %@", [args objectForKey : @"token"]);       // 윌라의 엑세스 토큰.
     NSString *productCode = [args objectForKey : @"product_id"];
     NSString *paymentMode;
 #if APPSTORE | ADHOC
@@ -23,7 +25,7 @@ RCT_EXPORT_MODULE();
 #else
     paymentMode = @"sandbox";
 #endif
-    NSLog(@"  [buyProduct] Current payment mode : %@", paymentMode);
+    NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
     if ( nullStr(productCode) )
     {
@@ -65,7 +67,7 @@ RCT_EXPORT_MODULE();
                     NSLog(@" [SKPaymentTransactionStatePurchased] productIdentifier: %@", transaction.payment.productIdentifier);
                     NSLog(@" [SKPaymentTransactionStatePurchased] transactionIdentifier: %@", transaction.originalTransaction.transactionIdentifier);
                   
-                    // 구입 완료 상태이기 때문에 영수증 검증을 시작합니다. GCD를 사용해야 할 수도 있습니다.
+                    // 구입 완료 상태이기 때문에 영수증 검증을 시작합니다. GCD를 사용했지만 lldb에러가 발생하였습니다. IAPHelper에 GCD 또는 동기방식 통신을 사용해야할듯 합니다.
                     [[IAPShare sharedHelper].iap checkReceipt : [NSData dataWithContentsOfURL : [[NSBundle mainBundle] appStoreReceiptURL]]
                                               AndSharedSecret : @"ShareSecret_is_in_the_server"     // from AppStoreConnect
                                                AndProductCode : productCode
@@ -119,12 +121,13 @@ RCT_EXPORT_MODULE();
                     // event emit
                     if ( [productCode hasPrefix : @"audiobook_"] )
                     {
-                        RNReceiptEventEmitter *notification = [RNReceiptEventEmitter allocWithZone : nil];
-                        [notification sendPaymentResultToReactNative];
+                      //RNReceiptEventEmitter *notification = [RNReceiptEventEmitter allocWithZone : nil];
+                      //[notification sendPaymentResultToReactNative];
+                        NSLog(@"  [IAP checkReceipt] Done buying audiobook.");
                     }
                     else if ( [productCode hasPrefix : @"m_"] )
                     {
-                        ;
+                        NSLog(@"  [IAP checkReceipt] Done buying membership.");
                     }
             
                     [IAPShare sharedHelper].iap = nil;  // PaymentQueue를 완료시킵니다.

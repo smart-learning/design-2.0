@@ -1,5 +1,6 @@
 
 #import <Foundation/Foundation.h>
+#import "common.h"
 #import "StoreKit/StoreKit.h"
 #import "NSString+Base64.h"
 #import "SFHFKeychainUtils.h"
