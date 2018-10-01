@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -28,6 +29,7 @@ import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -45,10 +47,15 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
+import com.pallycon.widevinelibrary.NetworkConnectedException;
+import com.pallycon.widevinelibrary.PallyconDownloadException;
+import com.pallycon.widevinelibrary.PallyconDownloadTask;
 import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
@@ -61,6 +68,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.UUID;
 import kr.co.influential.youngkangapp.R;
+import kr.co.influential.youngkangapp.pallycon.DownloadCallbackImpl;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
@@ -69,7 +77,8 @@ import kr.co.influential.youngkangapp.util.Preferences;
 /**
  * A class that implements local media playback using {@link com.google.android.exoplayer2.ExoPlayer}
  */
-public final class LocalPlayback implements Playback {
+public final class LocalPlayback implements Playback,
+    PallyconDownloadTask.PallyconDownloadEventListener {
 
   private static final String TAG = LogHelper.makeLogTag(LocalPlayback.class);
 
@@ -114,6 +123,7 @@ public final class LocalPlayback implements Playback {
 
   private PallyconEventListener pallyconEventListener;
 
+  private PallyconDownloadTask downloadTask;
   private Handler eventHandler = new Handler();
 
   private PlayerErrorMessageProvider errorMessageProvider;
@@ -304,8 +314,45 @@ public final class LocalPlayback implements Playback {
         e.printStackTrace();
       }
 
+      Bundle extras = currentMedia.getBundle();
+
+      String name = extras.getString(PlaybackManager.DRM_CONTENT_NAME_EXTRA);
+      String drmSchemeUuid = extras.getString(PlaybackManager.DRM_SCHEME_UUID_EXTRA);
+      String drmLicenseUrl = extras.getString(PlaybackManager.DRM_LICENSE_URL);
+      String userId = extras.getString(PlaybackManager.DRM_USERID);
+      String cId = extras.getString(PlaybackManager.DRM_CID);
+      String oId = extras.getString(PlaybackManager.DRM_OID);
+      String token = extras.getString(PlaybackManager.DRM_TOKEN);
+      String thumbUrl = extras.getString(PlaybackManager.THUMB_URL);
+      String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
+      String title = extras.getString(PlaybackManager.DRM_CONTENT_TITLE);
+//      String history_start_seconds = extras.getString("history_start_seconds");
+
       try {
-        mediaSource = buildMediaSource(Uri.parse(source));
+        // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
+        DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(mContext);
+        downloadTask = new PallyconDownloadTask(mContext,
+            Uri.parse(source)
+            , cId, LocalPlayback.this, eventHandler, downloadCallback);
+
+      } catch (PallyconDownloadException e) {
+        e.printStackTrace();
+      }
+
+      Uri LocalUri = downloadTask.getLocalUri(Uri.parse(source), cId);
+
+      try {
+        if (downloadTask.isDownloadCompleted()) {
+          source = String.valueOf(LocalUri);
+          mediaSource = buildMediaSourceLocal(Uri.parse(source));
+        } else {
+          mediaSource = buildMediaSource(Uri.parse(source));
+        }
+
+      } catch (NetworkConnectedException e) {
+        e.printStackTrace();
+      } catch (PallyconDownloadException e) {
+        e.printStackTrace();
       } catch (IllegalArgumentException e) {
         e.printStackTrace();
       } catch (IllegalStateException e) {
@@ -554,6 +601,41 @@ public final class LocalPlayback implements Playback {
     }
   }
 
+  @Override
+  public void onPreExecute() {
+
+  }
+
+  @Override
+  public void onPostExecute() {
+
+  }
+
+  @Override
+  public void onProgressUpdate(String s, long l, long l1, int i, int i1, int i2) {
+
+  }
+
+  @Override
+  public void onProgressUpdate(String s, int i, int i1, int i2) {
+
+  }
+
+  @Override
+  public void onCancelled() {
+
+  }
+
+  @Override
+  public void onNetworkError(NetworkConnectedException e) {
+
+  }
+
+  @Override
+  public void onPallyconDownloadError(PallyconDownloadException e) {
+
+  }
+
   private final class ExoPlayerEventListener implements Player.EventListener {
 
     @Override
@@ -664,6 +746,8 @@ public final class LocalPlayback implements Playback {
 
     // Create Pallycon drmSessionManager to get into ExoPlayerFactory
     Uri uri = currentMedia.getDescription().getMediaUri();
+
+    LogHelper.e(TAG, "createDrmSessionManager " + uri);
     String name = currentMedia.getString(PlaybackManager.DRM_CONTENT_NAME_EXTRA);
     UUID drmSchemeUuid = UUID
         .fromString(currentMedia.getString(PlaybackManager.DRM_SCHEME_UUID_EXTRA));
@@ -736,7 +820,6 @@ public final class LocalPlayback implements Playback {
     if (uri == null || uri.getLastPathSegment() == null) {
       throw new IllegalArgumentException("Argument is invalid");
     }
-
     @C.ContentType int type = Util.inferContentType(uri.getLastPathSegment());
     switch (type) {
       case C.TYPE_DASH:
@@ -756,6 +839,32 @@ public final class LocalPlayback implements Playback {
         throw new IllegalStateException("Unsupported type: " + type);
       }
     }
+  }
+
+  private MediaSource buildMediaSourceLocal(Uri uri) {
+    // pallycon sample project 내용
+    int type = Util.inferContentType(uri.getLastPathSegment());
+    switch (type) {
+      case C.TYPE_DASH:
+        return new DashMediaSource(uri, buildDataSourceFactory(),
+            new DefaultDashChunkSource.Factory(buildDataSourceFactory()), eventHandler, null);
+      case C.TYPE_OTHER:
+        return new ExtractorMediaSource(uri, buildDataSourceFactory(),
+            new DefaultExtractorsFactory(), eventHandler, null);
+      case C.TYPE_HLS:
+      case C.TYPE_SS:
+      default:
+        throw new IllegalStateException("Unsupported type: " + type);
+    }
+  }
+
+  private DataSource.Factory buildDataSourceFactory() {
+    HttpDataSource.Factory httpDataSourceFactory = buildHttpDataSourceFactory();
+    return new DefaultDataSourceFactory(mContext, null, httpDataSourceFactory);
+  }
+
+  private HttpDataSource.Factory buildHttpDataSourceFactory() {
+    return new DefaultHttpDataSourceFactory(Util.getUserAgent(mContext, "influential"), null);
   }
 
   public SimpleExoPlayer getPlayer() {
