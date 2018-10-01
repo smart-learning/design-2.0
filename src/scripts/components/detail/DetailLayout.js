@@ -89,14 +89,10 @@ class DetailLayout extends React.Component {
       var params = [];
       if (itemData.type === 'video-course') {
         // video-course.
-        params.push({ cid: itemData.cid });
-        params.push({ userId: userId.toString() });
-        params.push({ token: accessToken });
+        params.push({ cid: itemData.cid, userId: userId.toString(), token: accessToken });
       } else {
         // audiobook.
-        params.push({ cid: itemData.cid });
-        params.push({ userId: userId.toString() });
-        params.push({ token: accessToken });
+        params.push({ cid: itemData.cid, userId: userId.toString(), token: accessToken });
       }
       Native.download(params);
     }
