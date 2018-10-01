@@ -65,8 +65,18 @@ class DetailLayout extends React.Component {
   }
 
   onDownload = () => {
-    var params = [{ type: 'download' }, { type: 'download' }];
-    Native.download(params);
+    const itemData = this.props.itemData;
+    if (itemData) {
+      var params = [];
+      if (itemData.type === 'video-course') {
+        // video-course.
+        params.push({ cid: itemData.cid });
+      } else {
+        // audiobook.
+        params.push({ cid: itemData.cid });
+      }
+      Native.download(params);
+    }
   };
 
   render() {

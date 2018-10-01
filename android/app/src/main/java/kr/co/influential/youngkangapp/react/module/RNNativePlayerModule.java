@@ -163,51 +163,16 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void download(ReadableArray contentArray) {
         for (int i = 0; i < contentArray.size(); i++) {
-            String type = "";
-            String uri = "";
-            String name = "";
-            String drmSchemeUuid = "";
-            String drmLicenseUrl = "";
-            String userId = "";
             String cId = "";
-            String oId = "";
-            String token = "";
-
             ReadableType readableType = contentArray.getType(i);
             if (ReadableType.Map == readableType) {
                 ReadableMap readableMap = contentArray.getMap(i);
-                if (readableMap.hasKey("type")) {
-                    type = readableMap.getString("type");
-                }
-                if (readableMap.hasKey("uri")) {
-                    uri = readableMap.getString("uri");
-                }
-                if (readableMap.hasKey("name")) {
-                    name = readableMap.getString("name");
-                }
-                if (readableMap.hasKey("drmSchemeUuid")) {
-                    drmSchemeUuid = readableMap.getString("drmSchemeUuid");
-                }
-                if (readableMap.hasKey("drmLicenseUrl")) {
-                    drmLicenseUrl = readableMap.getString("drmLicenseUrl");
-                }
-                if (readableMap.hasKey("userId")) {
-                    userId = readableMap.getString("userId");
-                }
                 if (readableMap.hasKey("cid")) {
                     cId = readableMap.getString("cid");
                 }
-                if (readableMap.hasKey("oid")) {
-                    oId = readableMap.getString("oid");
-                }
-                if (readableMap.hasKey("token")) {
-                    token = readableMap.getString("token");
-                }
             }
 
-            LogHelper.d(TAG, "type: ", type, "uri: ", uri, "name: ", name,
-                    "drmSchemeUuid: ", drmSchemeUuid, "drmLicenseUrl: ", drmLicenseUrl,
-                    "userId: ", userId, "cId: ", cId, "oId: ", oId, "token: ", token);
+            LogHelper.d(TAG, "cid: ", cId);
         }
     }
 
