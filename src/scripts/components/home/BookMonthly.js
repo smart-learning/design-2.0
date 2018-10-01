@@ -17,6 +17,7 @@ import CommonStyles from '../../../styles/common';
 import moment from 'moment';
 import globalStore from '../../commons/store';
 import nav from '../../commons/nav';
+import BookMonthlyItem from './BookMonthlyItem';
 
 const styles = StyleSheet.create({
   bookMonthly: {},
@@ -59,49 +60,6 @@ const styles = StyleSheet.create({
   bookItemContainer: {
     marginTop: 10
   },
-  bookItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 250,
-    height: 160,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginBottom: 20
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333333'
-  },
-  author: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    fontSize: 12,
-    color: '#555555'
-  },
-  detailButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 25,
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderWidth: 1,
-    borderColor: '#555555'
-  },
-  detailButtonText: {
-    textAlign: 'center',
-    fontSize: 12,
-    color: '#555555'
-  },
-  bookThumbnailContainer: {
-    width: 100,
-    marginRight: 20
-  },
-  thumbnail: {
-    width: '100%',
-    paddingTop: '80%',
-    paddingBottom: '80%'
-  },
   bullet: {
     position: 'absolute',
     zIndex: -9,
@@ -126,38 +84,7 @@ const styles = StyleSheet.create({
 });
 
 class BookMonthly extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    console.log(
-      'bookmonthly detail hardware back button:',
-      this.props.navigation.isFocused(),
-      globalStore.prevLocations
-    );
-    if (this.props.navigation.isFocused()) {
-      nav.commonBack();
-    }
-    return false;
-  };
-
   render() {
-    // let list = this.props.itemData;
-    // let bookList = [];
-    //
-    // _.each( list, element => {
-    // 	bookList.push( element.book_a );
-    // 	bookList.push( element.book_b );
-    // } );
 
     let itemData = [];
     if (_.isObject(this.props.itemData)) {
@@ -167,136 +94,94 @@ class BookMonthly extends React.Component {
     return (
       <View style={styles.bookMonthly}>
         <View style={styles.swiper}>
-          <Swiper
-            style={styles.wrapper}
-            showsButtons={false}
-            height={520}
-            dotColor={'#9bcdba'}
-            activeDotColor={CommonStyles.COLOR_PRIMARY}
-            paginationStyle={{ bottom: 0 }}
-			key={itemData.length}
-          >
-            {itemData.map((item, key) => {
-              const MonthData = moment(item.month).format('M');
-              return (
-                <View style={styles.bookMonthlyItem} key={key}>
-                  <View>
-                    <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                      {MonthData}월 이달의 책
-                    </Text>
-                    <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                      이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
-                    </Text>
-                  </View>
-                  {(globalStore.currentMembership.type === 2 ||
-                    globalStore.currentMembership.type === 4) && (
+          {this.props.itemData.length > 0 && (
+            <Swiper
+              showsButtons={false}
+              height={520}
+			  dotColor={'#9bcdba'}
+			  activeDotColor={CommonStyles.COLOR_PRIMARY}
+              paginationStyle={{ bottom: 10 }}
+            >
+              {itemData.map((item, key) => {
+                const MonthData = moment(item.month).format('M');
+                return (
+                  <View style={styles.bookMonthlyItem} key={key}>
                     <View>
+                      <Text style={[styles.mainTitleCenter, styles.titleH2]}>
+                        {MonthData}월 이달의 책
+                      </Text>
+                      <Text style={[styles.mainTitleCenter, styles.titleH4]}>
+                        이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
+                      </Text>
+                    </View>
+                    {(globalStore.currentMembership.type === 2 ||
+                      globalStore.currentMembership.type === 4) && (
+                      <View>
+                        <TouchableOpacity
+                          activeOpacity={0.9}
+                          onPress={() =>
+                            this.props.navigation.navigate('AuthCheck', {
+                              requestScreenName: 'AudioBookTicketPage',
+                              title: '내 오디오북 이용권'
+                            })
+                          }
+                        >
+                          <View style={styles.couponContainer}>
+                            <View style={styles.coupon} borderRadius={20}>
+                              <Image
+                                source={IcHeadphone}
+                                style={styles.couponIcon}
+                              />
+                              <Text style={styles.couponText}>
+                                보유한 오디오북 이용권
+                                <Text style={styles.couponCountText}>
+                                  {' '}
+                                  {globalStore.voucherStatus !== null
+                                    ? globalStore.voucherStatus.total
+                                    : '0'}
+                                  개
+                                </Text>
+                              </Text>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                    <View style={styles.bookItemContainer}>
                       <TouchableOpacity
                         activeOpacity={0.9}
                         onPress={() =>
-                          this.props.navigation.navigate('AuthCheck', {
-                            requestScreenName: 'AudioBookTicketPage',
-                            title: '내 오디오북 이용권'
-                          })
+                          this.props.navigation.navigate(
+                            'HomeMonthlyReviewPage',
+                            {
+                              itemData: item.book_a,
+                              title: '이달의 책 북리뷰'
+                            }
+                          )
                         }
                       >
-                        <View style={styles.couponContainer}>
-                          <View style={styles.coupon} borderRadius={20}>
-                            <Image
-                              source={IcHeadphone}
-                              style={styles.couponIcon}
-                            />
-                            <Text style={styles.couponText}>
-                              보유한 오디오북 이용권
-                              <Text style={styles.couponCountText}>
-                                {' '}
-                                {globalStore.voucherStatus !== null
-                                  ? globalStore.voucherStatus.total
-                                  : '0'}
-                                개
-                              </Text>
-                            </Text>
-                          </View>
-                        </View>
+                        <BookMonthlyItem itemData={item.book_a} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() =>
+                          this.props.navigation.navigate(
+                            'HomeMonthlyReviewPage',
+                            {
+                              itemData: item.book_b,
+                              title: '이달의 책 북리뷰'
+                            }
+                          )
+                        }
+                      >
+                        <BookMonthlyItem itemData={item.book_b} />
                       </TouchableOpacity>
                     </View>
-                  )}
-                  <View style={styles.bookItemContainer}>
-                    <TouchableOpacity
-                      activeOpacity={0.9}
-                      onPress={() =>
-                        this.props.navigation.navigate(
-                          'HomeMonthlyReviewPage',
-                          {
-                            itemData: item.book_a,
-                            title: '이달의 책 북리뷰'
-                          }
-                        )
-                      }
-                    >
-                      <View style={styles.bookItem}>
-                        <View style={styles.bookThumbnailContainer}>
-                          <ImageBackground
-                            source={{
-                              uri: item.book_a.audiobook.images.cover
-                            }}
-                            resizeMode={'cover'}
-                            style={styles.thumbnail}
-                          />
-                        </View>
-                        <View style={{ width: '48%' }}>
-                          <Text style={styles.title}>{item.book_a.title}</Text>
-                          <Text style={styles.author}>
-                            {item.book_a.mentor.name}
-                          </Text>
-                          <View style={styles.detailButton} borderRadius={13}>
-                            <Text style={styles.detailButtonText}>
-                              자세히보기
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      activeOpacity={0.9}
-                      onPress={() =>
-                        this.props.navigation.navigate(
-                          'HomeMonthlyReviewPage',
-                          {
-                            itemData: item.book_b,
-                            title: '이달의 책 북리뷰'
-                          }
-                        )
-                      }
-                    >
-                      <View style={styles.bookItem}>
-                        <View style={styles.bookThumbnailContainer}>
-                          <ImageBackground
-                            source={{
-                              uri: item.book_b.audiobook.images.cover
-                            }}
-                            resizeMode={'cover'}
-                            style={styles.thumbnail}
-                          />
-                        </View>
-                        <View style={{ width: '48%' }}>
-                          <Text style={styles.title}>{item.book_b.title}</Text>
-                          <Text style={styles.author}>
-                            {item.book_b.mentor.name}
-                          </Text>
-                          <View style={styles.detailButton} borderRadius={13}>
-                            <Text style={styles.detailButtonText}>
-                              자세히보기
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
                   </View>
-                </View>
-              );
-            })}
-          </Swiper>
+                );
+              })}
+            </Swiper>
+          )}
         </View>
       </View>
     );
