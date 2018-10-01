@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Image
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import TabContentInfo from './TabContentInfo';
@@ -13,6 +14,7 @@ import TopBanner from './TopBanner';
 import TabContentList from './TabContentList';
 import AudiobookPaymentStatus from './AudiobookPaymentStatus';
 import VideoPaymentStatus from './VideoPaymentStatus';
+import Native from '../../commons/native.js';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -62,6 +64,11 @@ class DetailLayout extends React.Component {
     super(props);
   }
 
+  onDownload = () => {
+    var params = [{ type: 'download' }, { type: 'download' }];
+    Native.download(params);
+  };
+
   render() {
     return (
       <View
@@ -75,7 +82,6 @@ class DetailLayout extends React.Component {
             learnType={this.props.learnType}
             store={this.props.store}
           />
-
           {this.props.learnType === 'audioBook' ? (
             <AudiobookPaymentStatus
               purchase={this.props.purchase}
@@ -101,9 +107,28 @@ class DetailLayout extends React.Component {
               permissionLoading={this.props.permissionLoading}
             />
           )}
+          {/* Download contents */}
+          <TouchableOpacity activeOpacity={0.9} onPress={this.onDownload}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 10,
+                backgroundColor: CommonStyles.COLOR_PRIMARY,
+                height: 48
+              }}
+            >
+              <Text
+                style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}
+              >
+                다운로드
+              </Text>
+            </View>
+          </TouchableOpacity>
 
           {1 === 2 && <CountView store={this.props.store} />}
-
           <View style={CommonStyles.alignJustifyContentBetween}>
             <View style={styles.tabContainer}>
               <TouchableOpacity
