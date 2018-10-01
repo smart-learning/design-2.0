@@ -420,88 +420,87 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
 {
     self.checkReceiptCompleteBlock = completion;
   
-  NSString *apiVerifyReceipt = @"/dev/api/v1.0/payment/ios/receipts";
-  NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
-  NSURL *url = [NSURL URLWithString : urlStr];
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
-  NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
+    NSString *apiVerifyReceipt = @"/dev/api/v1.0/payment/ios/receipts";
+    NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
+    NSURL *url = [NSURL URLWithString : urlStr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+    NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
   
-  [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-  [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
   
-  [request setHTTPMethod : @"POST"];
-  [request setValue:headerValue forHTTPHeaderField:@"authorization"];
+    [request setHTTPMethod : @"POST"];
+    [request setValue:headerValue forHTTPHeaderField:@"authorization"];
   
-  NSError *error;
-  NSURLResponse *resp = nil;
+    NSError *error;
+    NSURLResponse *resp = nil;
   
-  NSString *receiptBase64 = [NSString base64StringFromData : receiptData
-                                                    length : [receiptData length]];
+    NSString *receiptBase64 = [NSString base64StringFromData : receiptData
+                                                      length : [receiptData length]];
   
-  NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-  [dictionary setObject:receiptBase64 forKey:@"receipt"];
-  [dictionary setObject:productCode   forKey:@"item_id"];
-  [dictionary setObject:@"n"          forKey:@"rooting"];
-  [dictionary setObject:transactionId forKey:@"transaction_id"];
-  [dictionary setObject:paymentMode   forKey:@"mode"];
-  [dictionary setObject:authValue     forKey:@"f_token"];
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+    [dictionary setObject:receiptBase64 forKey:@"receipt"];
+    [dictionary setObject:productCode   forKey:@"item_id"];
+    [dictionary setObject:@"n"          forKey:@"rooting"];
+    [dictionary setObject:transactionId forKey:@"transaction_id"];
+    [dictionary setObject:paymentMode   forKey:@"mode"];
+    [dictionary setObject:authValue     forKey:@"token"];
   
-  NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
-                                                     options : 0
-                                                       error : &error];
-  [request setHTTPBody : postData];
+    NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
+                                                       options : 0
+                                                         error : &error];
+    [request setHTTPBody : postData];
   
-  // 비동기방식이 아닌 동기방식으로 접속합니다.
-  NSData *data = [ApiManager sendSynchronousRequest : request
-                                  returningResponse : &resp
-                                              error : &error];
+    // 비동기방식이 아닌 동기방식으로 접속합니다.
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
   
-  NSString *jsonData = [[NSString alloc] initWithData : data
-                                             encoding : NSUTF8StringEncoding];
+    NSString *jsonData = [[NSString alloc] initWithData : data
+                                               encoding : NSUTF8StringEncoding];
   
-  NSDictionary *statusDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                                 options : NSJSONReadingAllowFragments
-                                                                   error : &error];
+    NSDictionary *statusDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                                   options : NSJSONReadingAllowFragments
+                                                                     error : &error];
   
-  NSLog(@"  [checkReceipt] result : %@", statusDataDics);
-  // ... Send a response back to the device ... //
-  NSNumber *result = [statusDataDics objectForKey: @"status"];
+    NSLog(@"  [checkReceipt] result : %@", statusDataDics);
+    // ... Send a response back to the device ... //
+    NSNumber *result = [statusDataDics objectForKey : @"status"];
   
-  if ( result == nil )
-  {
-    //DEFAULT_ALERT(@"결제확인", @"결제가 정상적으로 처리되지 않았습니다.");
-  }
-  else
-  {
-    if ( [result intValue] == 0 )
+    if ( result == nil )
     {
-      NSLog(@"  [checkReceipt] Receipt Validation Success");
-      //[self provideContent: transaction.payment.productIdentifier];
-      // implement proper rewards..
+      //DEFAULT_ALERT(@"결제확인", @"결제가 정상적으로 처리되지 않았습니다.");
     }
     else
     {
-      // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
-      NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
-      
+        if ( [result intValue] == 0 )
+        {
+            NSLog(@"  [checkReceipt] Receipt Validation Success");
+            //[self provideContent: transaction.payment.productIdentifier];
+            // implement proper rewards..
+        }
+        else
+        {
+            // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
+            NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
+        }
+        // 21000 : App Store에서 사용자가 제공 한 JSON 객체를 읽을 수 없습니다.
+        // 21002 : 영수증 데이터 속성의 데이터 형식이 잘못되었습니다.
+        //         Client 측에서 Server php로 payload를 보낼 때 해당 값을 url encode를 해줬는지 확인한다.
+        // 21003 : 영수증을 인증 할 수 없습니다.
+        // 21004 : 입력 한 공유 암호가 사용자 계정의 파일에있는 공유 암호와 일치하지 않습니다.
+        // 21005 : 영수증 서버를 현재 사용할 수 없습니다.
+        // 21006 : 이 영수증은 유효하지만 구독이 만료되었습니다.
+        //         이 상태 코드가 서버로 반환되면 수신 데이터도 디코딩되어 응답의 일부로 반환됩니다.
+        // 21007 : 이 영수증은 샌드 박스 영수증이지만 확인을 위해 프로덕션 서비스로 보냈습니다.
+        //         테스트용 영수증을 실 서비스 VERIFY_URL로 보냈는지 확인한다.
+        // 21008 : 이 영수증은 실제 제품 영수증이지만 확인을 위해 샌드 박스 서비스로 전송되었습니다.
+        //         실제 서비스 영수증을 테스트 VERIFY_URL로 보냈는지 확인한다.
     }
-    // 21000 : App Store에서 사용자가 제공 한 JSON 객체를 읽을 수 없습니다.
-    // 21002 : 영수증 데이터 속성의 데이터 형식이 잘못되었습니다.
-    //         Client 측에서 Server php로 payload를 보낼 때 해당 값을 url encode를 해줬는지 확인한다.
-    // 21003 : 영수증을 인증 할 수 없습니다.
-    // 21004 : 입력 한 공유 암호가 사용자 계정의 파일에있는 공유 암호와 일치하지 않습니다.
-    // 21005 : 영수증 서버를 현재 사용할 수 없습니다.
-    // 21006 : 이 영수증은 유효하지만 구독이 만료되었습니다.
-    //         이 상태 코드가 서버로 반환되면 수신 데이터도 디코딩되어 응답의 일부로 반환됩니다.
-    // 21007 : 이 영수증은 샌드 박스 영수증이지만 확인을 위해 프로덕션 서비스로 보냈습니다.
-    //         테스트용 영수증을 실 서비스 VERIFY_URL로 보냈는지 확인한다.
-    // 21008 : 이 영수증은 실제 제품 영수증이지만 확인을 위해 샌드 박스 서비스로 전송되었습니다.
-    //         실제 서비스 영수증을 테스트 VERIFY_URL로 보냈는지 확인한다.
-  }
   
-  // 월요일에 한창표과장님과 파라미터맞추고 리턴값 확인하는 절차가 필요할 것 같습니다.
-  // RNProductPayment.m 으로 값을 리턴해줘서 순차적으로 하면 될것 같습니다.
-  return ;
+    // 월요일에 한창표과장님과 파라미터맞추고 리턴값 확인하는 절차가 필요할 것 같습니다.
+    // RNProductPayment.m 으로 값을 리턴해줘서 순차적으로 하면 될것 같습니다.
+    return ;
   
   /*
     NSError *jsonError = nil;
@@ -621,27 +620,7 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
                                                               NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
                                                               NSLog(@"  [checkReceipt] welastatus : %@", [jsonResponse objectForKey: @"welastatus"]);
                                                               NSLog(@"  [checkReceipt] welamsg : %@", [jsonResponse objectForKey: @"welamsg"]);
-                                                              
-                                                              UIAlertView *alert;
-                                                              alert = [[UIAlertView alloc] initWithTitle: @"영수증 확인"
-                                                                                                 message: [jsonResponse objectForKey: @"welamsg"]
-                                                                                                delegate: self
-                                                                                       cancelButtonTitle: nil
-                                                                                       otherButtonTitles: @"확인", nil];
-                                                              [alert show];
                                                           }
-                                                          // 21000 : App Store에서 사용자가 제공 한 JSON 객체를 읽을 수 없습니다.
-                                                          // 21002 : 영수증 데이터 속성의 데이터 형식이 잘못되었습니다.
-                                                          //         Client 측에서 Server php로 payload를 보낼 때 해당 값을 url encode를 해줬는지 확인한다.
-                                                          // 21003 : 영수증을 인증 할 수 없습니다.
-                                                          // 21004 : 입력 한 공유 암호가 사용자 계정의 파일에있는 공유 암호와 일치하지 않습니다.
-                                                          // 21005 : 영수증 서버를 현재 사용할 수 없습니다.
-                                                          // 21006 : 이 영수증은 유효하지만 구독이 만료되었습니다.
-                                                          //         이 상태 코드가 서버로 반환되면 수신 데이터도 디코딩되어 응답의 일부로 반환됩니다.
-                                                          // 21007 : 이 영수증은 샌드 박스 영수증이지만 확인을 위해 프로덕션 서비스로 보냈습니다.
-                                                          //         테스트용 영수증을 실 서비스 VERIFY_URL로 보냈는지 확인한다.
-                                                          // 21008 : 이 영수증은 실제 제품 영수증이지만 확인을 위해 샌드 박스 서비스로 전송되었습니다.
-                                                          //         실제 서비스 영수증을 테스트 VERIFY_URL로 보냈는지 확인한다.
                                                       }
                                                   }
                                               }];
