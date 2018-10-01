@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image } from "react-native";
 import CommonStyles from "../../../styles/common";
-import logo from "../../../images/logo-white.png"
+import logo from "../../../images/welaaa_logo.png"
 import HomeButton from "./HomeButton";
 
 class HeaderForWebView extends Component {

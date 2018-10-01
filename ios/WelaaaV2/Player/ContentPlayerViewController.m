@@ -290,6 +290,7 @@
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
     // TEST CODE
+    // https://github.com/jaysonlane/LockScreenInfo/
     {
         Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
       
@@ -297,13 +298,31 @@
         {
             NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
           
-            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage: [UIImage imageNamed:@"AlbumArt"]];
+            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
+                                                                           requestHandler : ^UIImage * _Nonnull(CGSize size)
+                                                                                            {
+                                                                                                UIImage *lockScreenArtworkApp;
+                                                                                                lockScreenArtworkApp = [UIImage imageNamed : @"AlbumArt"];
+                                                                                              
+                                                                                                return [self resizeImageWithImage : lockScreenArtworkApp
+                                                                                                                     scaledToSize : size];
+                                                                                            }];
           
-            [songInfo setObject:@"Audio Title" forKey:MPMediaItemPropertyTitle];
-            [songInfo setObject:@"Audio Author" forKey:MPMediaItemPropertyArtist];
-            [songInfo setObject:@"Audio Album" forKey:MPMediaItemPropertyAlbumTitle];
-            [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
-            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:songInfo];
+            [songInfo setObject : _currentLectureTitle
+                         forKey : MPMediaItemPropertyTitle];
+            [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
+                         forKey : MPMediaItemPropertyArtist];
+            [songInfo setObject : [_args objectForKey : @"name"]
+                         forKey : MPMediaItemPropertyAlbumTitle];
+            /*
+            [songInfo setObject : @(0.0)
+                         forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+            [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
+                         forKey : MPMediaItemPropertyPlaybackDuration];
+            */
+            [songInfo setObject : albumArt
+                         forKey : MPMediaItemPropertyArtwork];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
         }
     }
     // TEST CODE
@@ -1173,8 +1192,8 @@
 {
   //[self toastTestAlert];
   
-  //[self closePlayer];
-  
+  [self closePlayer];
+  /*
   //[self showToast : @"미니플레이어로 변환합니다."];
   
     self.isMiniPlayer = YES;
@@ -1182,12 +1201,20 @@
     _miniPlayerUiView.delegate = self;
     _miniPlayerUiView.isAuthor = _isAuthor;
     [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
+    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+    NSTimeInterval totalTime = [self getDuration];
+    NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
+    playInfo[@"currentTime"] = @(currentTime);
+    playInfo[@"totalTime"] = @(totalTime);
+    playInfo[@"isAudioContent"] = @(_isAudioContent);
+    [_miniPlayerUiView setPreparedToPlayInfo: playInfo];
+    [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
     [self.view addSubview : _miniPlayerUiView];
   
   //_playerUiView.hidden = self.isMiniPlayer;
     _miniPlayerUiView.hidden = !self.isMiniPlayer;
   //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  
+  */
 }
 
 - (void) pressedRateStarButton
@@ -2426,6 +2453,39 @@
       */
     }
 }
+- (void) miniPlayerUiView: (ContentMiniPlayerView *) view
+                 openView: (id) sender
+{
+  /*
+  if ( [self.delegate respondsToSelector: @selector(player:openView:)] )
+  {
+    [self.delegate player: self openView: nil];
+  }
+  
+  //풀스크린 플레이어로 전환 : 영상 모드로 전환
+  //미니플레이어로 전환 : 오디오 모드로 전환
+  if ( _isTransperPlayModeFromScreen )
+  {
+    _isTransperPlayModeFromScreen = NO;
+    [self changePlayType: NO];
+  }*/
+}
+
+- (void) miniPlayerUiView : (ContentMiniPlayerView *) view
+                  setPlay : (BOOL) isPlay
+{
+    if ( isPlay )
+        [self pressedPlayButton];
+    else
+        [self pressedPauseButton];
+}
+
+- (void) miniPlayerUiView : (ContentMiniPlayerView *) view
+                closeView : (id) sender
+{
+    [self closePlayer];
+}
+
 
 #pragma mark - Timer event
 //
@@ -2595,12 +2655,12 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPlay:
-                //Insert code
+                [self pressedPlayButton];
                 break;
             
             // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPause:
-                // Insert code
+                [self pressedPauseButton];
                 break;
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
@@ -2709,34 +2769,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
   
     return newImage;
 }
-- (void) setupNowPlayingInfoCenter2 : (MPMediaItem *) currentSong
-{
-    MPMediaItemArtwork *artwork = [currentSong valueForProperty : MPMediaItemPropertyArtwork];
-      
-    MPNowPlayingInfoCenter *infoCenter = [MPNowPlayingInfoCenter defaultCenter];
-  
-    if ( currentSong == nil )
-    {
-        infoCenter.nowPlayingInfo = nil;
-        return ;
-    }
-  
-    infoCenter.nowPlayingInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 [currentSong valueForKey:MPMediaItemPropertyTitle], MPMediaItemPropertyTitle,
-                                 [currentSong valueForKey:MPMediaItemPropertyArtist], MPMediaItemPropertyArtist,
-                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTitle], MPMediaItemPropertyAlbumTitle,
-                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackCount], MPMediaItemPropertyAlbumTrackCount,
-                                 [currentSong valueForKey:MPMediaItemPropertyAlbumTrackNumber], MPMediaItemPropertyAlbumTrackNumber,
-                                 artwork, MPMediaItemPropertyArtwork,
-                                 [currentSong valueForKey:MPMediaItemPropertyComposer], MPMediaItemPropertyComposer,
-                                 [currentSong valueForKey:MPMediaItemPropertyDiscCount], MPMediaItemPropertyDiscCount,
-                                 [currentSong valueForKey:MPMediaItemPropertyDiscNumber], MPMediaItemPropertyDiscNumber,
-                                 [currentSong valueForKey:MPMediaItemPropertyGenre], MPMediaItemPropertyGenre,
-                                 [currentSong valueForKey:MPMediaItemPropertyPersistentID], MPMediaItemPropertyPersistentID,
-                                 [currentSong valueForKey:MPMediaItemPropertyPlaybackDuration], MPMediaItemPropertyPlaybackDuration,
-                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueIndex,
-                                 [NSNumber numberWithInt:1], MPNowPlayingInfoPropertyPlaybackQueueCount, nil];
-}
+
 
 @end
 

@@ -7,22 +7,6 @@
 
 #import "AppDelegate.h"
 
-#import <React/RCTBundleURLProvider.h>
-#import <React/RCTRootView.h>
-
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <KakaoOpenSDK/KakaoOpenSDK.h>
-
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-
-#import <AVFoundation/AVFoundation.h>
-
-@import UserNotifications;
-
-@interface AppDelegate () <UNUserNotificationCenterDelegate>
-@end
-
 @implementation AppDelegate
 
 NSString *const kGCMMessageIDKey = @"gcm.message_id";
@@ -44,7 +28,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                            error : nil];
   
     NSURL *jsCodeLocation;
-
+/*
 #ifdef DEBUG
     jsCodeLocation = [ [RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot : @"index"
                                                                      fallbackResource : nil     ];
@@ -52,6 +36,9 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     jsCodeLocation = [ [NSBundle mainBundle] URLForResource : @"main"
                                               withExtension : @"jsbundle" ];
 #endif
+*/
+    jsCodeLocation = [ [NSBundle mainBundle] URLForResource : @"main"
+                                              withExtension : @"jsbundle" ];
   
     RCTRootView *rootView = [ [RCTRootView alloc] initWithBundleURL : jsCodeLocation
                                                          moduleName : @"WelaaaV2"

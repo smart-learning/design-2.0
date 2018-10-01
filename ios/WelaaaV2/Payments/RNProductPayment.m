@@ -15,7 +15,9 @@ RCT_EXPORT_MODULE();
 
 - (void) buyProduct : (NSDictionary *) args
 {
-    NSLog(@"  [buyProduct] Product Code : %@", [args objectForKey : @"product_id"]);
+    NSLog(@"  [-buyProduct:] Product Type : %@", [args objectForKey : @"type"]);        // 'membership' or 'audio_book'.
+    NSLog(@"  [-buyProduct:] Product Code : %@", [args objectForKey : @"product_id"]);  // AppStore Connect에 등록한 상품ID.
+    NSLog(@"  [-buyProduct:] Access Token : %@", [args objectForKey : @"token"]);       // 윌라의 엑세스 토큰.
     NSString *productCode = [args objectForKey : @"product_id"];
     NSString *paymentMode;
 #if APPSTORE | ADHOC
@@ -23,7 +25,7 @@ RCT_EXPORT_MODULE();
 #else
     paymentMode = @"sandbox";
 #endif
-    NSLog(@"  [buyProduct] Current payment mode : %@", paymentMode);
+    NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
     if ( nullStr(productCode) )
     {
@@ -65,7 +67,8 @@ RCT_EXPORT_MODULE();
                     NSLog(@" [SKPaymentTransactionStatePurchased] productIdentifier: %@", transaction.payment.productIdentifier);
                     NSLog(@" [SKPaymentTransactionStatePurchased] transactionIdentifier: %@", transaction.originalTransaction.transactionIdentifier);
                   
-                    // 구입 완료 상태이기 때문에 영수증 검증을 시작합니다. GCD를 사용해야 할 수도 있습니다.
+                    // 구입 완료 상태이기 때문에 영수증 검증을 시작합니다. GCD를 사용했지만 lldb에러가 발생하였습니다. IAPHelper에 GCD 또는 동기방식 통신을 사용해야할듯 합니다.
+                    // API 통신을 비동기방식이 아닌 동기방식으로 진행합니다.
                     [[IAPShare sharedHelper].iap checkReceipt : [NSData dataWithContentsOfURL : [[NSBundle mainBundle] appStoreReceiptURL]]
                                               AndSharedSecret : @"ShareSecret_is_in_the_server"     // from AppStoreConnect
                                                AndProductCode : productCode
@@ -108,23 +111,21 @@ RCT_EXPORT_MODULE();
                     // runOnMainQueueWithoutDeadlocking
                     // http://code.i-harness.com/ko-kr/q/566698
                     //
-                    // 영수증 검증을 마쳤습니다. 위 과정은 비동기방식으로 구현되었기때문에 해당 과정을 GCD로 감싸는 것을 테스트해봐야 합니다.
+                    // 영수증 검증을 마쳤습니다.
                   
-                    // checkReceipt는 비동기방식이라 영수증확인까지 기다리면 결제대기열을 초기화시키는데에 어려움이 있습니다.
-                    // 따라서 아래와 같이 애플에서 사용자의 카드에서 결제가 성공하면 영수증확인과는 별도로 상품상세 페이지로의 이동 및 결제대기열을 초기화 시킵니다.
-            
                     // 상품 구입 완료 후 RN에게 결제 결과를 전달해야 합니다.
                     // Obj-c -> JS
                     // https://gist.github.com/chourobin/f83f3b3a6fd2053fad29fff69524f91c#file-events-md
                     // event emit
                     if ( [productCode hasPrefix : @"audiobook_"] )
                     {
-                        RNReceiptEventEmitter *notification = [RNReceiptEventEmitter allocWithZone : nil];
-                        [notification sendPaymentResultToReactNative];
+                      //RNReceiptEventEmitter *notification = [RNReceiptEventEmitter allocWithZone : nil];
+                      //[notification sendPaymentResultToReactNative];
+                        NSLog(@"  [IAP checkReceipt] Done buying audiobook.");
                     }
                     else if ( [productCode hasPrefix : @"m_"] )
                     {
-                        ;
+                        NSLog(@"  [IAP checkReceipt] Done buying membership.");
                     }
             
                     [IAPShare sharedHelper].iap = nil;  // PaymentQueue를 완료시킵니다.
@@ -204,9 +205,147 @@ RCT_EXPORT_MODULE();
 
 - (void) restoreProduct : (NSDictionary *) args
 {
-  ;
+    // 구매복원 구현 시작
+    NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
+    if ( [[NSFileManager defaultManager] fileExistsAtPath : [receiptUrl path]] )
+    {
+        NSData *receiptData = [NSData dataWithContentsOfURL : receiptUrl];
+        NSString *receiptBase64 = [NSString base64StringFromData : receiptData
+                                                          length : [receiptData length]];
+        NSLog(@"  [restoreProduct] Base64 Encoded Payload : %@", receiptBase64);
+        DEFAULT_ALERT(@"구매복원", @"구매내역을 복원하여 서버로 전송 완료했습니다.");
+        [self sendReceiptToRestore : receiptBase64];
+    }
+    else
+    {
+        NSLog(@"  [restoreProduct] Receipt not found, refreshing...");
+        // 인앱결제를 한 이력이 있는 Apple유저라도 앱을 지우고 새로 설치하면 로컬에 저장된 영수증을 가져올 수 없습니다.
+        //DEFAULT_ALERT(@"구매복원", @"구매내역이 없습니다.");
+        // 영수증을 refresh.
+        SKReceiptRefreshRequest *refreshReceiptRequest = [[SKReceiptRefreshRequest alloc] initWithReceiptProperties:@{}];
+        refreshReceiptRequest.delegate = self;
+        [refreshReceiptRequest start];
+    }
+}
+// 영수증 refresh
+- (void) requestDidFinish : (SKRequest *) request
+{
+    if ( [request isKindOfClass : [SKReceiptRefreshRequest class]] )
+    {
+        //SKReceiptRefreshRequest
+        NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
+      
+        if ( [[NSFileManager defaultManager] fileExistsAtPath : [receiptUrl path]] )
+        {
+            NSData *receiptData = [NSData dataWithContentsOfURL : receiptUrl];
+          
+            if ( !receiptData )
+            {
+                /* No local receipt -- handle the error. */
+                // refresh를 했는데도 영수증이 없으면 아예 구매내역이 아예 없다고 봐야함.
+                NSLog(@"  [requestDidFinish] Receipt request done but there is no receipt");
+                DEFAULT_ALERT(@"구매복원", @"welaaa 구매내역을 찾을 수 없습니다.");
+            }
+            else
+            {
+                /* ... Send the receipt data to your server ... */
+                NSString *receiptBase64 = [NSString base64StringFromData : receiptData
+                                                                  length : [receiptData length]];
+                NSLog(@"  [requestDidFinish] Base64 Encoded Payload : %@", receiptBase64);
+                [self sendReceiptToRestore: receiptBase64];
+                DEFAULT_ALERT(@"구매복원", @"구매내역을 다시 복원하여 서버로 전송 완료했습니다.");
+            }
+        }
+        else
+        {
+            NSLog(@"  [requestDidFinish] This can happen if the user cancels the login screen for the store.");
+            NSLog(@"  [requestDidFinish] If we get here it means there is no receipt and an attempt to get it failed because the user cancelled the login.");
+            DEFAULT_ALERT(@"구매복원", @"앱스토어에 접근할 수 없으므로 구매복원을 진행할 수 없습니다.");
+        }
+    }
 }
 
+- (void) sendReceiptToRestore : (NSString *) receiptString
+{
+    NSString *paymentMode;
+#if APPSTORE | ADHOC
+    paymentMode = @"live";
+#else
+    paymentMode = @"sandbox";
+#endif
+    NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
+  
+    NSString *receiptVerificatorUrl;
+  
+    if ( [paymentMode isEqualToString: @"live"] )
+    {
+        receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify_restore.php";
+    }
+    else if ( [paymentMode isEqualToString: @"sandbox"] )
+    {
+        receiptVerificatorUrl = @"http://welearn.co.kr/usingapp/receiptverify_restore.php";
+    }
+    else
+    {
+        receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify_restore.php";
+    }
+  
+    NSString *webToken = [[NSUserDefaults standardUserDefaults] stringForKey: @"webToken"];
+    if ( nil == webToken )
+    {
+        webToken = @"NO_F_TOKEN";
+    }
+  
+    NSString *post;
+    post = [NSString stringWithFormat: @"receipt=%@&item_id=RESTORE&rooting=n&transaction_id=RESTORE&mode=%@&f_token=%@", receiptString, paymentMode, webToken];
+    NSData *postData = [post dataUsingEncoding: NSUTF8StringEncoding];
+  
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL: [NSURL URLWithString: [NSString stringWithFormat: @"%@", receiptVerificatorUrl]]];
+    [request setHTTPBody: postData];
+    [request setHTTPMethod: @"POST"];
+    NSError *error;
+    NSURLResponse *resp = nil;
+    // 비동기방식이 아닌 동기방식으로 접속한다.
+    NSData *data = [NSURLConnection sendSynchronousRequest: request
+                                         returningResponse: &resp
+                                                     error: &error];
+  
+    NSString *jsonData = [[NSString alloc] initWithData: data
+                                               encoding: NSUTF8StringEncoding];
+  
+    jsonData = [jsonData stringByReplacingOccurrencesOfString: @"'" withString: @"\""];   // ' -> " 작은 따옴표를 큰 따옴표로 변경
+    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData: [jsonData dataUsingEncoding: NSUTF8StringEncoding]
+                                                                 options: NSJSONReadingAllowFragments
+                                                                   error: &error];
+    NSLog(@"  [sendReceiptToRestore] JSON Response : %@", jsonData);
+  
+    if ( !jsonResponse )
+    { // ... Handle error ...//
+        NSLog(@"  [sendReceiptToRestore] jsonResponse parsing error..");
+    }
+    // ... Send a response back to the device ... //
+    NSNumber *result = [jsonResponse objectForKey: @"status"];
+  
+    if ( result == nil )
+    {
+        NSLog(@"  [sendReceiptToRestore] The result is NULL..");
+    }
+    else
+    {
+        if ( [result intValue] == 0 )
+        {
+            NSLog(@"  [sendReceiptToRestore] Receipt Validation Success");
+        }
+        else
+        {
+            // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
+            NSLog(@"  [sendReceiptToRestore] Receipt Validation Failed T_T");
+            NSLog(@"  [sendReceiptToRestore] welastatus : %@", [jsonResponse objectForKey: @"welastatus"]);
+            NSLog(@"  [sendReceiptToRestore] welamsg : %@", [jsonResponse objectForKey: @"welamsg"]);
+        }
+    }
+}
 
 
 #pragma mark - RCT_EXPORT

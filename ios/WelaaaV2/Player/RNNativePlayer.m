@@ -116,7 +116,7 @@ RCT_EXPORT_METHOD( play : (NSDictionary *) argsFromReactNative )
 
 RCT_EXPORT_METHOD( stop )
 {
-  [self stopMediaPlayer];
+    [self stopMediaPlayer];
 }
 
 RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )

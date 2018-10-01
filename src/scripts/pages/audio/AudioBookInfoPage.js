@@ -214,10 +214,11 @@ class AudioBookInfoPage extends React.Component {
 
   componentWillMount() {
     this._isMount = true;
-    this.initialize();
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.initialize();
+  }
 
   componentWillUnmount() {
     this._isMount = false;
@@ -232,7 +233,7 @@ class AudioBookInfoPage extends React.Component {
       return;
     }
     const { month, sort } = this.state;
-    if (!month && !sort) {
+    if (month && sort) {
       this.setState({
         itemData: await net.getBotmData(month, sort)
       });
