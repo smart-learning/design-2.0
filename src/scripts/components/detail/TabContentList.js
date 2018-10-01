@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  ScrollView
-} from 'react-native';
+import { Text, View, StyleSheet, FlatList, ScrollView } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import ClipListItem from './ClipListItem';
 import ChapterListItem from './ChapterListItem';
@@ -103,7 +97,7 @@ export default class TabContentList extends React.Component {
                   <Text style={styles.clipInfoTextImportant}>
                     {this.props.store.itemClipData.length}개
                   </Text>
-                  강의클립, 전체 재생시간
+                  챕터, 전체 재생시간
                   <Text
                     style={styles.clipInfoTextImportant}
                   >{`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
