@@ -15,6 +15,7 @@ import TabContentList from './TabContentList';
 import AudiobookPaymentStatus from './AudiobookPaymentStatus';
 import VideoPaymentStatus from './VideoPaymentStatus';
 import Native from '../../commons/native.js';
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -66,14 +67,36 @@ class DetailLayout extends React.Component {
 
   onDownload = () => {
     const itemData = this.props.itemData;
+    const { welaaaAuth } = globalStore;
+
+    console.log('welaaaAuth:', welaaaAuth);
+
+    /* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
+    if (
+      welaaaAuth === undefined ||
+      welaaaAuth.profile === undefined ||
+      welaaaAuth.profile.id === undefined
+    ) {
+      Alert.alert('로그인 후 이용할 수 있습니다.');
+
+      return true;
+    }
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let accessToken = globalStore.welaaaAuth.access_token;
+
     if (itemData) {
       var params = [];
       if (itemData.type === 'video-course') {
         // video-course.
         params.push({ cid: itemData.cid });
+        params.push({ userId: userId.toString() });
+        params.push({ token: accessToken });
       } else {
         // audiobook.
         params.push({ cid: itemData.cid });
+        params.push({ userId: userId.toString() });
+        params.push({ token: accessToken });
       }
       Native.download(params);
     }
