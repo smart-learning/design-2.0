@@ -61,11 +61,22 @@ RCT_EXPORT_MODULE();
     [[FPSDownloadManager sharedInstance] downloadSomething : args];
 }
 
+// args 가 하나의 콘텐츠(Dictionary)일 때.
 - (void) downloadContent : (NSDictionary *) args
 {
     [[FPSDownloadManager sharedInstance] startDownload : args
                                             completion : ^(NSError *error, NSMutableDictionary *result)
                                                          {}];
+}
+
+// args 가 여러개의 콘텐츠(Array)로 넘어오는걸로 적용. 2018.10.1
+- (void) downloadContents : (NSArray *) args
+{
+  for(NSDictionary* arg in args){
+    [[FPSDownloadManager sharedInstance] startDownload : arg
+                                            completion : ^(NSError *error, NSMutableDictionary *result)
+                                                         {}];
+  }
 }
 
 - (void) deleteDownloadedContent : (NSDictionary *) args
@@ -124,10 +135,10 @@ RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
     NSLog(@"  RNNativePlayer setting for RN : %@", argsFromReactNative);
 }
 
-RCT_EXPORT_METHOD( download : (NSDictionary *) argsFromReactNative )
+RCT_EXPORT_METHOD( download : (NSArray *) argsFromReactNative )
 {
-    //[self downloadSomething : argsFromReactNative]; // 테스트용
-    [self downloadContent : argsFromReactNative];
+    //[self downloadContent : argsFromReactNative]; // argsFromReactNative 가 Dictionary 일 때
+    [self downloadContents : argsFromReactNative];  // argsFromReactNative 가 Array 일 때(여러개의 Dictionary)
 }
 
 RCT_EXPORT_METHOD( downloadDelete : (NSDictionary *) argsFromReactNative )
