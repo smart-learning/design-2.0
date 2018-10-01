@@ -367,6 +367,7 @@
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
 - (void) viewWillDisappear : (BOOL) animated
 {
+    NSLog(@"  [viewWillDisappear] This view will disappear..");
     [super viewWillDisappear : animated];
   
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
@@ -1190,9 +1191,35 @@
 
 - (void) pressedCloseButton
 {
+    [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
+    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // Status Bar를 다시 보여줍니다.
+    /* View가 dismiss되고 RootView가 다시 나와도 Audio Session은 유지됩니다. */
+  
+  /*
+    [UIView animateWithDuration : 0.2 //begin animation
+                          delay : 0.1
+                        options : UIViewAnimationCurveEaseIn
+                     animations : ^{
+                                   // This subview is initialized at the top of the screen
+                                   [self.view setFrame : CGRectOffset([self.view frame], 0, -self.view.frame.size.height)];
+                                   // Do the same for Every other subview you want to animate off
+                                  }
+                     completion : nil];
+  */
+  
+  //self.view.hidden = YES;
+  //self.view.alpha =  0.f;
+  //self.view.bounds =CGRectMake(0, 0, self.view.frame.size.width, 40.f);
+  
+  //[_playerLayer removeFromSuperlayer];
+  //self.view.hidden = YES;
+  
+  //[self.view setBackgroundColor : [UIColor clearColor]];
+  //[self.view setFrame : CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+  
   //[self toastTestAlert];
   
-  [self closePlayer];
+  //[self closePlayer];
   /*
   //[self showToast : @"미니플레이어로 변환합니다."];
   
