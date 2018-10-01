@@ -11,8 +11,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
@@ -23,7 +21,6 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.ParserException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -52,7 +49,6 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
@@ -68,15 +64,7 @@ import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
-import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Preferences;
-import kr.co.influential.youngkangapp.util.Utils;
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * A class that implements local media playback using {@link com.google.android.exoplayer2.ExoPlayer}
@@ -136,19 +124,6 @@ public final class LocalPlayback implements Playback {
 
   private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
   private static final CookieManager DEFAULT_COOKIE_MANAGER;
-
-  private HttpConnection httpConn = HttpConnection.getInstance();
-  private int start_current_time;
-
-  private final String API_BASE_URL = Utils.welaaaApiBaseUrl();
-
-  private String callbackMethodName = "";
-  private String callbackMethod = "";
-
-  private PlaybackManager mPlaybackManager;
-
-  private MediaBrowserCompat mediaBrowser;
-  public int contentHistory_seconds = 0;
 
   static {
     DEFAULT_COOKIE_MANAGER = new CookieManager();
@@ -279,6 +254,11 @@ public final class LocalPlayback implements Playback {
   @Override
   public long getCurrentStreamPosition() {
     return mExoPlayer != null ? mExoPlayer.getCurrentPosition() : 0;
+  }
+
+  @Override
+  public float getPlaybackSpeed() {
+    return mExoPlayer != null ? mExoPlayer.getPlaybackParameters().speed : 1.f;
   }
 
   @Override
@@ -599,50 +579,17 @@ public final class LocalPlayback implements Playback {
         case Player.STATE_BUFFERING:
         case Player.STATE_READY:
           if (mCallback != null) {
-
-            try {
-              mCallback.onPlaybackStatusChanged(getState());
-
-              int currentId = Preferences.getWelaaaPlayListCId(mContext);
-
-              Gson gson = new Gson();
-              String json = Preferences.getWelaaaWebPlayInfo(mContext);
-              WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
-
-              boolean previewPlay = Preferences.getWelaaaPreviewPlay(mContext);
-              String content_type = mWebPlayerInfo.getCon_class();
-
-              mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
-
-              if (content_type.equals("audiobook")) {
-                if (previewPlay) {
-
-                } else {
-                  // can_play false 오디오북에서는 재생이 안되야 ..
-                }
-
-              } else if (content_type.equals("video-course")) {
-                if (previewPlay) {
-                  mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
-                } else {
-
-                }
-              }
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-
+            mCallback.onPlaybackStatusChanged(getState());
           }
 
           restorePlaybackSpeedRate();
           break;
         case Player.STATE_ENDED:
           if (mCallback != null) {
-            // PlayerActivity O
-            mCallback.onCompletion();
-
             if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
-              doAutoPlay();
+              mCallback.doAutoPlay();
+            } else {
+              mCallback.onCompletion();
             }
           }
           break;
@@ -679,7 +626,7 @@ public final class LocalPlayback implements Playback {
 
     @Override
     public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-      // Nothing to do.
+      mCallback.onPlaybackStatusChanged(getState());
     }
 
     @Override
@@ -833,7 +780,7 @@ public final class LocalPlayback implements Playback {
         @Override
         public void run() {
           playerView.setPlayer(mExoPlayer);
-          playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
+          playerView.setErrorMessageProvider(errorMessageProvider);
           playerView.requestFocus();
         }
       });
@@ -922,448 +869,5 @@ public final class LocalPlayback implements Playback {
 
     public String siteId;
     public String siteKey;
-  }
-
-
-  /**
-   * CAN_PLAY ?
-   **/
-
-  Handler mCanPlayTimeHandler = new Handler() {
-    @SuppressWarnings("unchecked")
-    @Override
-    public void handleMessage(Message msg) {
-      try {
-
-        long currentposition = 0;
-
-        if (mExoPlayer != null) {
-          currentposition = mExoPlayer.getCurrentPosition();
-
-          if (mCanPlayTimeHandler != null) {
-            // 한개만 호출될 수 있도록 확인 해봅시다
-            mCanPlayTimeHandler.removeCallbacksAndMessages(null);
-
-            mCanPlayTimeHandler.sendEmptyMessageDelayed(0, 1000);
-          }
-
-          if (currentposition >= 90000) {
-            LogHelper.e(TAG, " mCanPlayTimeHandler Stop currentposition is " + currentposition);
-
-            if (mCanPlayTimeHandler != null) {
-              // 한개만 호출될 수 있도록 확인 해봅시다
-              mCanPlayTimeHandler.removeCallbacksAndMessages(null);
-              mCallback.onCompletion();
-
-              doAutoPlay();
-
-            }
-          }
-        }
-
-
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  };
-
-  /**
-   * LocalPlayback Progress Check
-   **/
-
-  Handler mPlayTimeHandler = new Handler() {
-    @SuppressWarnings("unchecked")
-    @Override
-    public void handleMessage(Message msg) {
-      try {
-        // getState() , 3 Playing ?
-        //
-        int currentId = Preferences.getWelaaaPlayListCId(mContext);
-
-        Gson gson = new Gson();
-        String json = Preferences.getWelaaaWebPlayInfo(mContext);
-        WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
-
-        String ckey;
-        String gkey;
-        String status; // getState()
-        long currentposition = 0;
-        String nTitle = ""; // NETWORK
-
-        if (start_current_time == 0) {
-          status = "START";
-        } else {
-          status = "ING";
-        }
-
-        if (mExoPlayer != null) {
-          currentposition = mExoPlayer.getCurrentPosition();
-        }
-
-        long duration_time = currentposition - start_current_time;
-
-        String weburl = API_BASE_URL + "play/progress";
-
-        final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
-
-        JSONObject postdata = new JSONObject();
-        try {
-          postdata.put("action", status);
-          postdata.put("cid", mWebPlayerInfo.getCkey()[currentId]);
-          postdata.put("duration", currentposition);
-          postdata.put("end", currentposition);
-          postdata.put("error", "NONE");
-          postdata.put("net_status", "WIFI");
-          postdata.put("platform", "android");
-          postdata.put("start", start_current_time);
-        } catch (JSONException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-
-        RequestBody body = RequestBody.create(JSON, postdata.toString());
-
-        // playing ???
-        if (getState() == 3) {
-          new Thread() {
-            public void run() {
-              httpConn.requestWebServer(weburl, "CLIENT_ID", "CLIENT_SECRET",
-                  Preferences.getWelaaaOauthToken(mContext), body, callbackProgressRequest);
-            }
-          }.start();
-        }
-
-        start_current_time = (int) currentposition;
-
-        if (mPlayTimeHandler != null) {
-          // 한개만 호출될 수 있도록 확인 해봅시다
-          mPlayTimeHandler.removeCallbacksAndMessages(null);
-
-          mPlayTimeHandler.sendEmptyMessageDelayed(0, 30000);
-        }
-
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  };
-
-  /**
-   * 웹 서버로 데이터 전송 // Progress 전용
-   */
-  private void sendData(String sendUrl) {
-
-    String requestWebUrl = sendUrl;
-
-    LogHelper.e(TAG, " 20180901 requestWebUrl is " + requestWebUrl);
-    LogHelper.e(TAG, " 20180901 requestWebUrl is " + Preferences.getWelaaaOauthToken(mContext));
-
-    new Thread() {
-      public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
-            Preferences.getWelaaaOauthToken(mContext),
-            callbackProgressRequest);
-      }
-    }.start();
-  }
-
-  private final okhttp3.Callback callbackProgressRequest = new okhttp3.Callback() {
-    @Override
-    public void onFailure(Call call, IOException e) {
-
-      if (mPlayTimeHandler != null) {
-        mPlayTimeHandler.removeCallbacksAndMessages(null);
-      }
-    }
-
-    @Override
-    public void onResponse(Call call, Response response) throws IOException {
-      String body = response.body().string();
-
-      if (response.code() == 200) {
-
-      } else {
-
-        if (mPlayTimeHandler != null) {
-          mPlayTimeHandler.removeCallbacksAndMessages(null);
-        }
-      }
-    }
-  };
-
-
-  /********************************************************
-   * autoplay mode
-   ********************************************************/
-  public void doAutoPlay() {
-
-    int currentId = Preferences.getWelaaaPlayListCId(mContext);
-
-    Gson gson = new Gson();
-    String json = Preferences.getWelaaaWebPlayInfo(mContext);
-    WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
-
-    int currentPosition = 0;
-    for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
-      if (mWebPlayerInfo.getCkey()[i].equals(mWebPlayerInfo.getCkey()[currentId])) {
-        currentPosition = i;
-      }
-    }
-
-    if (mWebPlayerInfo.getCkey().length == currentPosition + 1) {
-      return;
-    }
-
-    int nextPosition = 0;
-
-    nextPosition = currentPosition + 1;
-    setContentId(nextPosition);
-
-    if (mWebPlayerInfo.getCon_class().equals("audiobook")) {
-      // next chapters , play_seconds 값이 0 , 0.0 이라면 다시 ++
-      if (mWebPlayerInfo.getCurl()[nextPosition].equals("0") ||
-          mWebPlayerInfo.getCurl()[nextPosition].equals("0.0")) {
-
-        doAutoPlay();
-        return;
-      }
-    }
-
-    callbackMethodName = "play/play-data/";
-    callbackMethod = "play";
-
-    sendData(API_BASE_URL + callbackMethodName + mWebPlayerInfo.getCkey()[nextPosition],
-        callbackMethodName);
-  }
-
-  /**
-   * 웹 서버로 데이터 전송 // play-data
-   */
-  private void sendData(String sendUrl, String type) {
-
-    String requestWebUrl = sendUrl;
-
-    LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
-    LogHelper.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(mContext));
-
-    new Thread() {
-      public void run() {
-        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
-            Preferences.getWelaaaOauthToken(mContext),
-            callbackRequest);
-      }
-    }.start();
-  }
-
-  private final okhttp3.Callback callbackRequest = new okhttp3.Callback() {
-    @Override
-    public void onFailure(Call call, IOException e) {
-
-    }
-
-    @Override
-    public void onResponse(Call call, Response response) throws IOException {
-      String body = response.body().string();
-
-      int currentId = Preferences.getWelaaaPlayListCId(mContext);
-
-      Gson gson = new Gson();
-      String json = Preferences.getWelaaaWebPlayInfo(mContext);
-      WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
-
-      if (response.code() == 200) {
-        LogHelper.e(TAG, "서버에서 응답한 Body:" + callbackMethodName);
-
-        if (callbackMethodName.equals("play/play-data/")) {
-          // doAudoPlay 전용
-          try {
-            JSONObject playDatajson = new JSONObject(body);
-            JSONObject media_urlsObject = playDatajson.getJSONObject("media_urls");
-            JSONObject permissionObject = playDatajson.getJSONObject("permission");
-            JSONObject preview_urlsObject = null;
-            JSONObject historyObject = null;
-
-            String dashUrl = media_urlsObject.getString("DASH");
-            Boolean can_play = permissionObject.getBoolean("can_play");
-            String expire_at = permissionObject.getString("expire_at");
-            Boolean is_free = permissionObject.getBoolean("is_free");
-
-            LogHelper.e(TAG, "can_play  Body:" + can_play);
-            LogHelper.e(TAG, "expire_at  Body:" + expire_at);
-            LogHelper.e(TAG, "is_free  Body:" + is_free);
-
-            String previewDashUrl = "";
-
-            if (!playDatajson.isNull("preview_urls")) {
-              LogHelper.e(TAG, " preview_urls is Not null " + playDatajson.getJSONObject("preview_urls"));
-              preview_urlsObject = playDatajson.getJSONObject("preview_urls");
-
-              previewDashUrl = preview_urlsObject.getString("DASH");
-            }
-
-            if (playDatajson.isNull("history")) {
-              LogHelper.e(TAG, " history is null ");
-            } else {
-              historyObject = playDatajson.getJSONObject("history");
-
-              historyObject.getString("id");
-              historyObject.getString("played_at");
-
-              LogHelper.e(TAG, "start_seconds " + historyObject.getInt("start_seconds"));
-
-              contentHistory_seconds = historyObject.getInt("start_seconds");
-            }
-
-            if (can_play) {
-              Preferences.setWelaaaPreviewPlay(mContext, false);
-            } else {
-              Preferences.setWelaaaPreviewPlay(mContext, true);
-            }
-
-            if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
-              Uri uri = Uri.parse(dashUrl);
-              if (!can_play) {
-                uri = Uri.parse(previewDashUrl);
-              }else{
-                uri = Uri.parse(dashUrl);
-              }
-
-              String name = mWebPlayerInfo.getCname()[currentId];
-              String drmSchemeUuid = Utils.welaaaAndroidDrmSchemeUuid();
-              String drmLicenseUrl = Utils.welaaaDrmLicenseUrl();
-              String userId = Preferences.getWelaaaUserId(mContext);
-              String cId = mWebPlayerInfo.getCkey()[currentId];
-              String oId = "";
-              String token = "";
-              String thumbUrl = "";
-              String customData = "";
-
-              MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
-              builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
-              builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
-              builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
-                  Utils.webTimeToSec(mWebPlayerInfo.getCplayTime()[currentId]));
-              // drm information.
-              builder.putString(PlaybackManager.DRM_CONTENT_URI_EXTRA, uri.toString());
-              builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
-              builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                  getDrmUuid(drmSchemeUuid).toString());
-              builder.putString(PlaybackManager.DRM_LICENSE_URL, drmLicenseUrl);
-              builder.putString(PlaybackManager.DRM_USERID, userId);
-              builder.putString(PlaybackManager.DRM_CID, cId);
-              builder.putString(PlaybackManager.DRM_OID, oId);
-              builder.putString(PlaybackManager.DRM_TOKEN, token);
-              builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
-              builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
-
-              // fromMediaSession 용도
-              JsonObject jsonObject = new JsonObject();
-              jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
-              jsonObject.addProperty("can_play", can_play);
-              jsonObject.addProperty("is_free", is_free);
-              jsonObject.addProperty("expire_at", expire_at);
-              jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
-              String playInfo = gson.toJson(jsonObject);
-
-              LogHelper.e(TAG , " LocalPlayBack playInfo " + playInfo);
-              builder.putString("play_info", playInfo);
-
-              currentMedia = builder.build();
-
-              Intent intent = new Intent(mContext, MediaService.class);
-
-              intent.setData(uri);
-              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                  mWebPlayerInfo.getCname()[currentId]);
-              intent.putExtra(PlaybackManager.THUMB_URL, "");
-              try {
-
-                if ((getDrmUuid("widevine").toString()) != null) {
-
-                  intent
-                      .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                          getDrmUuid("widevine").toString());
-                  intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
-                      "http://tokyo.pallycon.com/ri/licenseManager.do");
-                  intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                  intent.putExtra(PlaybackManager.DRM_USERID, userId);
-                  intent.putExtra(PlaybackManager.DRM_CID, cId);
-                  intent.putExtra(PlaybackManager.DRM_OID, "");
-                  intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-                  intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                  intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
-                  intent.putExtra("play_info", playInfo);
-
-                  if (!can_play) {
-                    intent.putExtra("duration", "00:01:30");
-                  }else{
-                    intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
-                  }
-
-                }
-
-                // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
-                // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-                Preferences.setWelaaaPlayListCKey(mContext, cId);
-
-              } catch (ParserException e) {
-                e.printStackTrace();
-              }
-
-              if (mCallback != null) {
-
-                // stop ?
-                giveUpAudioFocus();
-                unregisterAudioNoisyReceiver();
-                releaseResources(true);
-                clearStartPosition();
-                // release true .. 화면이 안나옴 .. 다음 으로 진행은 됨 . META X
-                // 화면이 정상적으로 나오고 META 데이터까지 업데이트 될 수 있어야 성공
-                // attachPlayerView(); // 적용해야 나온다고 합니다.
-
-                if (mCanPlayTimeHandler != null) {
-                  mCanPlayTimeHandler.removeCallbacksAndMessages(null);
-                }
-
-                mCallback.doAutoPlay(uri, currentMedia, intent);
-
-              }
-
-            }
-
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
-
-      } else {
-        LogHelper.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
-      }
-    }
-  };
-
-  private UUID getDrmUuid(String typeString) throws ParserException {
-    switch (typeString.toLowerCase()) {
-      case "widevine":
-        return C.WIDEVINE_UUID;
-      case "playready":
-        return C.PLAYREADY_UUID;
-      default:
-        try {
-          return UUID.fromString(typeString);
-        } catch (RuntimeException e) {
-          throw new ParserException("Unsupported drm type: " + typeString);
-        }
-    }
-  }
-
-  /**************************************************************************
-   *  컨텐츠 id값을 preferences에 set
-   **************************************************************************/
-  public void setContentId(int id) {
-
-    Preferences.setWelaaaPlayListCId(mContext, id);
   }
 }

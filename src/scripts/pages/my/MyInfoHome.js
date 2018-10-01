@@ -161,11 +161,9 @@ const styles = StyleSheet.create({
 * */
 @observer
 export default class MyInfoHome extends React.Component {
-
-	componentDidMount(){
-		if( !globalStore.welaaaAuth ) this.props.navigation.navigate( 'Login' );
-	}
-
+  componentDidMount() {
+    if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
+  }
 
   render() {
     const { navigation } = this.props;
@@ -374,9 +372,7 @@ export default class MyInfoHome extends React.Component {
               >
                 <View style={styles.listItem}>
                   <Image source={IcMusic} style={styles.listItemIcon} />
-                  <Text style={styles.listItemTitle}>
-                    좋아요한 콘텐츠
-                  </Text>
+                  <Text style={styles.listItemTitle}>좋아요한 콘텐츠</Text>
                   <Image
                     source={IcAngleRight}
                     style={[styles.listItemBullet, { marginLeft: 'auto' }]}
@@ -511,6 +507,19 @@ export default class MyInfoHome extends React.Component {
                     </View>
                   </TouchableOpacity>
                 */}
+                <View style={styles.guideHr} />
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    navigation.navigate('EventListPage', {
+                      title: '이벤트'
+                    })
+                  }
+                >
+                  <View style={styles.guideItem}>
+                    <Text style={styles.guideTitle}>이벤트</Text>
+                  </View>
+                </TouchableOpacity>
                 <View style={styles.guideHr} />
                 <TouchableOpacity
                   activeOpacity={0.9}

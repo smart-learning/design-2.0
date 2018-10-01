@@ -144,7 +144,7 @@ export default {
   updateSetting(key, bool) {
     switch (key) {
       case 'alert':
-        this.setFirebase(bool);
+        // this.setFirebase(bool);
         break;
 
       case 'email':
