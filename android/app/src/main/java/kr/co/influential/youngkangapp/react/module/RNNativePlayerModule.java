@@ -15,7 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
 
-import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -262,23 +262,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void selectDatabase(ReadableMap content) {
-        // 2018.09.06
+    public void getDownloadList(Promise promise) {
         try {
             Gson gson = new Gson();
             String json = gson.toJson(ContentManager().getDatabase());
-
-            WritableMap params = Arguments.createMap();
-
-            params.putString("selectDatabase", json);
-            sendEvent("selectDatabase", params);
-
-            // Log.e("DOWNLOAD:", json.toString() );
-
+            promise.resolve(json);
         } catch (Exception e) {
-            e.printStackTrace();
+            promise.reject(e);
         }
-
     }
 
     @Override
