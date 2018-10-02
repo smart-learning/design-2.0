@@ -1205,29 +1205,24 @@
   */
   
   /*
-   // bound를 조정하면 뒤에 있는 루트뷰를 인터렉션할 수 있습니다.
-  CGRect viewBounds = self.view.bounds;
-  viewBounds.size.height = self.view.bounds.size.height/2;
-  self.view.superview.bounds = viewBounds;
-  self.view.superview.backgroundColor = [UIColor redColor];
+    // bound를 조정하면 뒤에 있는 루트뷰를 인터렉션할 수 있습니다.
+    CGRect viewBounds = self.view.bounds;
+    viewBounds.size.height = self.view.bounds.size.height / 4;
+    self.view.superview.bounds = viewBounds;
   */
+  //self.view.superview.backgroundColor = [UIColor redColor];
   
-  //self.view.hidden = YES;
-  //self.view.alpha =  0.f;
-  //self.view.bounds =CGRectMake(0, 0, self.view.frame.size.width, 40.f);
+  
+  //self.view.hidden = YES; // hidden처리하면 rootView를 볼 수 있지만 interaction은 불가합니다.
+  //self.view.bounds = CGRectMake(0, 0, self.view.frame.size.width, 40.f);
   
   //[_playerLayer removeFromSuperlayer];
-  //self.view.hidden = YES;
-  
-  //[self.view setBackgroundColor : [UIColor clearColor]];
+
   //[self.view setFrame : CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
-  
-  //[self toastTestAlert];
   
   //[self closePlayer];
   
-  //[self showToast : @"미니플레이어로 변환합니다."];
-  
+///*
     self.isMiniPlayer = YES;
     _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
     _miniPlayerUiView.delegate = self;
@@ -1241,13 +1236,12 @@
     playInfo[@"isAudioContent"] = @(_isAudioContent);
     [_miniPlayerUiView setPreparedToPlayInfo: playInfo];
     [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
-  //[self.view addSubview : _miniPlayerUiView];
+    [self.view addSubview : _miniPlayerUiView];
   
-  //_playerUiView.hidden = self.isMiniPlayer;
-    self.view.hidden = self.isMiniPlayer;
+  //self.view.hidden = self.isMiniPlayer; // player view위에 그린 것이므로 hidden처리하면 mini player도 hidden처리됩니다.
     _miniPlayerUiView.hidden = !self.isMiniPlayer;
-    [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  
+  //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
+//*/
 }
 
 - (void) pressedRateStarButton
