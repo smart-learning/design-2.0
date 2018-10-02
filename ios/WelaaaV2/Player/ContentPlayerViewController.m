@@ -60,6 +60,7 @@
 
     // contentView 구성.
     _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
+    [_contentView setBackgroundColor : [UIColor blackColor]];
     [self.view addSubview : _contentView];
   
     _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
@@ -1191,10 +1192,6 @@
 
 - (void) pressedCloseButton
 {
-    [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // Status Bar를 다시 보여줍니다.
-    /* View가 dismiss되고 RootView가 다시 나와도 Audio Session은 유지됩니다. */
-  
   /*
     [UIView animateWithDuration : 0.2 //begin animation
                           delay : 0.1
@@ -1205,6 +1202,14 @@
                                    // Do the same for Every other subview you want to animate off
                                   }
                      completion : nil];
+  */
+  
+  /*
+   // bound를 조정하면 뒤에 있는 루트뷰를 인터렉션할 수 있습니다.
+  CGRect viewBounds = self.view.bounds;
+  viewBounds.size.height = self.view.bounds.size.height/2;
+  self.view.superview.bounds = viewBounds;
+  self.view.superview.backgroundColor = [UIColor redColor];
   */
   
   //self.view.hidden = YES;
@@ -1220,7 +1225,7 @@
   //[self toastTestAlert];
   
   //[self closePlayer];
-  /*
+  
   //[self showToast : @"미니플레이어로 변환합니다."];
   
     self.isMiniPlayer = YES;
@@ -1236,12 +1241,13 @@
     playInfo[@"isAudioContent"] = @(_isAudioContent);
     [_miniPlayerUiView setPreparedToPlayInfo: playInfo];
     [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
-    [self.view addSubview : _miniPlayerUiView];
+  //[self.view addSubview : _miniPlayerUiView];
   
   //_playerUiView.hidden = self.isMiniPlayer;
+    self.view.hidden = self.isMiniPlayer;
     _miniPlayerUiView.hidden = !self.isMiniPlayer;
-  //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  */
+    [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
+  
 }
 
 - (void) pressedRateStarButton
