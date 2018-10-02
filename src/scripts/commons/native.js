@@ -13,7 +13,7 @@ export default {
     RNNativePlayer.stop();
   },
 
-  play(cid, oid = '') {
+  play(item, oid = '') {
     const { welaaaAuth } = globalStore;
 
     console.log('welaaaAuth:', welaaaAuth);
@@ -32,19 +32,18 @@ export default {
     let userId = globalStore.welaaaAuth.profile.id;
     let accessToken = globalStore.welaaaAuth.access_token;
 
-    let args = {
-      uri: '',
-      name: '',
-      drmSchemeUuid: 'widevine',
-      drmLicenseUrl: 'http://tokyo.pallycon.com/ri/licenseManager.do',
+    var args;
+    if (String === item.constructor) {
+      args = { cid: item, oid: oid, uri: '', name: '' };
+    } else {
+      args = { ...item };
+    }
+    args['drmSchemeUuid'] = 'widevine';
+    args['drmLicenseUrl'] = 'http://tokyo.pallycon.com/ri/licenseManager.do';
+    args['userId'] = userId.toString();
+    args['token'] = accessToken;
 
-      cid: cid,
-      oid: oid,
-      userId: userId.toString(),
-      token: accessToken // bearer token
-    };
-
-    console.log('native.play()', JSON.stringify(args));
+    console.log('native.play()', args);
 
     setTimeout(() => {
       try {
@@ -52,9 +51,6 @@ export default {
       } catch (e) {
         alert(e);
       }
-      // 2018.09.04 김중온
-      // 미니 플레이어는 네이티브 상태 값으로 제어함.
-      // this.toggleMiniPlayer(true);
     }, 100);
   },
 

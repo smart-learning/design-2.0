@@ -132,12 +132,17 @@ export default class DownloadContentPage extends React.Component {
   }
 
   play(item) {
-    Native.play(item.cid);
+    item.offline = true;
+    Native.play(item);
   }
 
   makeListItem = ({ item, index }) => {
     return (
-      <TouchableOpacity activeOpacity={0.9} style={styles.downloadItem}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={styles.downloadItem}
+        onPress={() => this.play(item)}
+      >
         <Image
           source={{ uri: item.thumbnailImg }}
           style={styles.downloadItemImg}
@@ -162,7 +167,7 @@ export default class DownloadContentPage extends React.Component {
           activeOptacity={0.9}
           style={styles.downloadItemPlayButton}
           onPress={() => {
-            this.play(item);
+            // TODO. maybe delete?
           }}
         >
           <Image source={IcPlay} style={{ width: 20, height: 20 }} />

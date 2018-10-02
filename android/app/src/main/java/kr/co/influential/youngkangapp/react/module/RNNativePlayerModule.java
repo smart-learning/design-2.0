@@ -40,6 +40,7 @@ import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.download.DownloadService;
+import kr.co.influential.youngkangapp.player.OfflineContentData;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
@@ -97,58 +98,60 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void play(ReadableMap content) {
+        if (content.hasKey("offline") && content.getBoolean("offline")) {
+            OfflineContentData offlineContentData = parseOfflineContentData(content);
+            // TODO: 2018. 10. 2. Implements offline(play content that is downloaded).
+        } else {
+            ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-        ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+            boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
+            contentUrl = content.getString("uri");
+            contentName = content.getString("name");
+            contentUuid = content.getString("drmSchemeUuid");
+            contentDrmLicenseUrl = content.getString("drmLicenseUrl");
+            contentUserId = content.getString("userId");
+            contentCid = content.getString("cid");
+            contentToken = content.getString("token");
 
-        boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
-        contentUrl = content.getString("uri");
-        contentName = content.getString("name");
-        contentUuid = content.getString("drmSchemeUuid");
-        contentDrmLicenseUrl = content.getString("drmLicenseUrl");
-        contentUserId = content.getString("userId");
-        contentCid = content.getString("cid");
-        contentToken = content.getString("token");
+            Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+            Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
 
-        Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
-        Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
+            checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
 
-        checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
+            LogHelper.e(TAG, " contentCid is " + contentCid);
+            LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
 
-        LogHelper.e(TAG, " contentCid is " + contentCid);
-        LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
+            if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
-        if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
+                UiThreadUtil.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
+                                "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
+                                getReactApplicationContext().getString(R.string.info_dial_ok),
+                                getReactApplicationContext().getString(R.string.info_dial_cancel),
+                                FLAG_PLAY_NETWORK_CHECK, "");
+                    }
+                });
+
+                return;
+            } else {
+                callbackMethodName = "play/contents-info";
+                callbackMethod = "play";
+
+                sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+            }
 
             UiThreadUtil.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
-                            "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
-                            getReactApplicationContext().getString(R.string.info_dial_ok),
-                            getReactApplicationContext().getString(R.string.info_dial_cancel),
-                            FLAG_PLAY_NETWORK_CHECK, "");
+                    Activity activity = getCurrentActivity();
+                    mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
                 }
             });
-
-            return;
-        } else {
-            callbackMethodName = "play/contents-info";
-            callbackMethod = "play";
-
-            sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
         }
-
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Activity activity = getCurrentActivity();
-                mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
-            }
-        });
-
-
     }
 
     @ReactMethod
@@ -1063,4 +1066,78 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         sendData(WELEARN_WEB_URL + callbackMethodName + contendCid);
     }
 
+    private OfflineContentData parseOfflineContentData(ReadableMap content) {
+        OfflineContentData offlineContentData = new OfflineContentData();
+        if (content.hasKey("audioVideoType")) {
+            offlineContentData.setAudioVideoType(content.getString("audioVideoType"));
+        }
+        if (content.hasKey("cPlayTime")) {
+            offlineContentData.setcPlayTime(content.getString("cPlayTime"));
+        }
+        if (content.hasKey("cTitle")) {
+            offlineContentData.setcTitle(content.getString("cTitle"));
+        }
+        if (content.hasKey("cid")) {
+            offlineContentData.setCid(content.getString("cid"));
+        }
+        if (content.hasKey("ckey")) {
+            offlineContentData.setCkey(content.getString("ckey"));
+        }
+        if (content.hasKey("contentPath")) {
+            offlineContentData.setContentPath(content.getString("contentPath"));
+        }
+        if (content.hasKey("drmLicenseUrl")) {
+            offlineContentData.setDrmLicenseUrl(content.getString("drmLicenseUrl"));
+        }
+        if (content.hasKey("drmSchemeUuid")) {
+            offlineContentData.setDrmSchemeUuid(content.getString("drmSchemeUuid"));
+        }
+        if (content.hasKey("gTitle")) {
+            offlineContentData.setgTitle(content.getString("gTitle"));
+        }
+        if (content.hasKey("groupAllPlayTime")) {
+            offlineContentData.setGroupAllPlayTime(content.getString("groupAllPlayTime"));
+        }
+        if (content.hasKey("groupContentScnt")) {
+            offlineContentData.setGroupContentScnt(content.getString("groupContentScnt"));
+        }
+        if (content.hasKey("groupImg")) {
+            offlineContentData.setGroupImg(content.getString("groupImg"));
+        }
+        if (content.hasKey("groupTeacherName")) {
+            offlineContentData.setGroupTeacherName(content.getString("groupTeacherName"));
+        }
+        if (content.hasKey("groupkey")) {
+            offlineContentData.setGroupkey(content.getString("groupkey"));
+        }
+        if (content.hasKey("key")) {
+            offlineContentData.setKey(content.getString("key"));
+        }
+        if (content.hasKey("modified")) {
+            offlineContentData.setModified(content.getString("modified"));
+        }
+        if (content.hasKey("modified")) {
+            offlineContentData.setModified(content.getString("modified"));
+        }
+        if (content.hasKey("oid")) {
+            offlineContentData.setOid(content.getString("oid"));
+        }
+        if (content.hasKey("thumbnailImg")) {
+            offlineContentData.setThumbnailImg("thumbnailImg");
+        }
+        if (content.hasKey("totalSize")) {
+            offlineContentData.setTotalSize(content.getString("totalSize"));
+        }
+        if (content.hasKey("userId")) {
+            offlineContentData.setUserId(content.getString("userId"));
+        }
+        if (content.hasKey("view_limitdate")) {
+            offlineContentData.setView_limitdate(content.getString("view_limitdate"));
+        }
+        if (content.hasKey("_id")) {
+            offlineContentData.setId(content.getString("_id"));
+        }
+
+        return offlineContentData;
+    }
 }
