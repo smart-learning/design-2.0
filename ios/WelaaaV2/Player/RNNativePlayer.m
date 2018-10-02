@@ -48,11 +48,10 @@ RCT_EXPORT_MODULE();
                                                                                      animated : YES
                                                                                    completion : nil];
     });
-  
-  /** 1.0처럼 NavigationView 방식으로 플레이어뷰를 띄우면 런타임 크래시 발생함.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UINavigationController *navigationController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-    
+  /*
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        UINavigationController *navigationController;
+        navigationController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
         [navigationController pushViewController:playerViewController animated:TRUE];
     });
   */
