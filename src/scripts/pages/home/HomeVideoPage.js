@@ -25,7 +25,7 @@ import PTRView from 'react-native-pull-to-refresh';
 import moment from 'moment';
 import globalStore from '../../commons/store';
 import _ from 'underscore';
-import HomeBananner from '../../components/home/HomeBananner';
+import HomeBanner from '../../components/home/HomeBanner';
 import nav from "../../commons/nav";
 
 const styles = StyleSheet.create({
@@ -156,7 +156,7 @@ class HomeVideoPage extends React.Component {
                   } catch (e) { }
 
                   return (
-                    <HomeBananner
+                    <HomeBanner
                       key={key}
                       action_type={action_type}
                       action_param={action_param}
