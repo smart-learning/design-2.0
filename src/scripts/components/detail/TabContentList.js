@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  ScrollView
-} from 'react-native';
+import { Text, View, StyleSheet, FlatList, ScrollView } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import ClipListItem from './ClipListItem';
 import ChapterListItem from './ChapterListItem';
