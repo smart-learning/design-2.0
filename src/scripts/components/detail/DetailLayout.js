@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image
+  Platform
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import TabContentInfo from './TabContentInfo';
@@ -66,7 +66,6 @@ class DetailLayout extends React.Component {
   }
 
   onDownload = () => {
-    const itemData = this.props.itemData;
     const { welaaaAuth } = globalStore;
 
     console.log('welaaaAuth:', welaaaAuth);
@@ -85,14 +84,36 @@ class DetailLayout extends React.Component {
     let userId = globalStore.welaaaAuth.profile.id;
     let accessToken = globalStore.welaaaAuth.access_token;
 
-    if (itemData) {
-      var params = [];
-      if (itemData.type === 'video-course') {
-        // video-course.
-        params.push({ cid: itemData.cid, userId: userId.toString(), token: accessToken });
-      } else {
-        // audiobook.
-        params.push({ cid: itemData.cid, userId: userId.toString(), token: accessToken });
+    const itemData = this.props.itemData;
+    const itemClipData = this.props.store.itemClipData.toJS();
+    if (itemData && itemClipData) {
+      let params = [];
+      if ('ios' === Platform.OS) {
+        itemClipData.reduce((accumulator, item) => {
+          accumulator.push({
+            cid: item.cid,
+            userId: userId.toString(),
+            token: accessToken
+          });
+          return accumulator;
+        }, params);
+      } else if ('android' === Platform.OS) {
+        if ('video-course' === itemData.type) {
+          itemClipData.reduce((accumulator, item) => {
+            accumulator.push({
+              cid: item.cid,
+              userId: userId.toString(),
+              token: accessToken
+            });
+            return accumulator;
+          }, params);
+        } else if ('audiobook' === itemData.type) {
+          params.push({
+            cid: itemData.cid,
+            userId: userId.toString(),
+            token: accessToken
+          });
+        }
       }
       Native.download(params);
     }

@@ -186,18 +186,16 @@ export default class DownloadContentPage extends React.Component {
       const items = globalStore.downloadItems.toJS();
       items
         .filter(item => 'video-course' == item.audioVideoType)
-        .reduce(
-          (accumulator, item, index) =>
-            accumulator.push({ ...item, key: index.toString() }),
-          video
-        );
+        .reduce((accumulator, item, index) => {
+          accumulator.push({ ...item, key: index.toString() });
+          return accumulator;
+        }, video);
       items
         .filter(item => 'audiobook' == item.audioVideoType)
-        .reduce(
-          (accumulator, item, index) =>
-            accumulator.push({ ...item, key: index.toString() }),
-          audio
-        );
+        .reduce((accumulator, item, index) => {
+          accumulator.push({ ...item, key: index.toString() });
+          return accumulator;
+        }, audio);
 
       // 데이터를 가지고 리스트를 생성
       if (video.length > 0) {
