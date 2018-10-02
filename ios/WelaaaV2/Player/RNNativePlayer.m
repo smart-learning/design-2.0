@@ -44,11 +44,31 @@ RCT_EXPORT_MODULE();
     // Exception 'accessing _cachedSystemAnimationFence requires the main thread' was thrown while invoking 에러가 발생된다면..
     // ref : https://github.com/MOLPay/molpay-mobile-xdk-reactnative-beta/issues/7
     dispatch_sync(dispatch_get_main_queue(), ^{
-      [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : playerViewController
-                                                                                   animated : YES
-                                                                                 completion : nil];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : playerViewController
+                                                                                     animated : YES
+                                                                                   completion : nil];
     });
+  
+  /** 1.0처럼 NavigationView 방식으로 플레이어뷰를 띄우면 런타임 크래시 발생함.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UINavigationController *navigationController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    
+        [navigationController pushViewController:playerViewController animated:TRUE];
+    });
+  */
 }
+
+- (void) showMiniPlayer
+{
+    // player를 dismiss하고 miniPlayer를 present합니다.
+}
+
+- (void) representMediaPlayer
+{
+    // miniPlayer를 dismiss하고 player를 present합니다.
+}
+
+
 
 - (void) stopMediaPlayer
 {
