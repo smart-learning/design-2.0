@@ -145,20 +145,6 @@ class App extends React.Component {
         Native.toggleMiniPlayer(params.visible);
       })
     );
-    this.subscription.push(
-      DeviceEventEmitter.addListener('selectDatabase', params => {
-        console.log('database receiveDownloadList:', params);
-        globalStore.downloadItems =
-          params.selectDownload || params.selectDatabase || 'null';
-      })
-    );
-    this.subscription.push(
-      DeviceEventEmitter.addListener('selectDownload', params => {
-        console.log('download receiveDownloadList:', params);
-        globalStore.downloadItems =
-          params.selectDownload || params.selectDatabase || 'null';
-      })
-    );
 
     Linking.addEventListener('url', this._handleOpenURL);
 

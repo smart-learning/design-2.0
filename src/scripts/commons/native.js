@@ -63,17 +63,12 @@ export default {
     globalStore.miniPlayerVisible = bool;
   },
 
-  getDatabase() {
-    try {
-      RNNativePlayer.selectDatabase({});
-    } catch (error) {
-      console.log(error);
-    }
+  getDownloadList(success, failed) {
+    console.log('native.js::getDownloadList');
+    RNNativePlayer.getDownloadList()
+      .then(success)
+      .catch(failed);
   },
-
-  // receiveDownloadList(args) {
-  // 	console.log('naive.receiveDownloadList:', args);
-  // },
 
   download(args) {
     console.log('download:', args);

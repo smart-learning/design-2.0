@@ -1,7 +1,7 @@
 import React from 'react';
-import {AsyncStorage} from "react-native";
+import { AsyncStorage } from 'react-native';
 import axios from 'axios';
-import {observable} from "mobx";
+import { observable } from 'mobx';
 
 let socialType;
 let socialToken;
@@ -88,7 +88,7 @@ class Store {
 
   /* 이벤트로 넘겨받은 다운로드받은 아이템 DB조회목록 */
   @observable
-  downloadItems = {};
+  downloadItems = [];
 
   /* 앱 설정 관련 정보 */
   @observable

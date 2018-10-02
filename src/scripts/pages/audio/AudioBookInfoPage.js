@@ -206,7 +206,7 @@ class AudioBookInfoPage extends React.Component {
       props.navigation.state.params
     );
 
-    if (undefined !== props.navigation.state.params) {
+    if (props.navigation.state.params) {
       let { itemData, month, sort } = props.navigation.state.params;
       this.state = { itemData: itemData, month: month, sort: sort };
     }
@@ -232,7 +232,7 @@ class AudioBookInfoPage extends React.Component {
       return;
     }
     const { month, sort } = this.state;
-    if (!month && !sort) {
+    if (month && sort) {
       this.setState({
         itemData: await net.getBotmData(month, sort)
       });
@@ -251,16 +251,8 @@ class AudioBookInfoPage extends React.Component {
 
   render() {
     const itemData = this.state.itemData;
-    if (
-      !itemData ||
-      itemData.constructor !== Object ||
-      Object.keys(itemData).length === 0
-    ) {
-      return (
-        <View>
-          <Text>loading...</Text>
-        </View>
-      );
+    if (!itemData || itemData.constructor !== Object || itemData.length === 0) {
+      return <View />;
     }
     const year = m(itemData.month).format('YYYY');
     const month = m(itemData.month).format('MM');
