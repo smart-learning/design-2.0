@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class HomeBananner extends React.Component {
+export default class HomeBanner extends React.Component {
   handleAction = () => {
     const { action_type, action_param } = this.props;
 
