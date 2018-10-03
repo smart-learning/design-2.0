@@ -1242,6 +1242,10 @@
     _miniPlayerUiView.hidden = !self.isMiniPlayer;
   //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
 //*/
+  
+    CGRect viewBounds = self.view.bounds;
+    viewBounds.size.height = 40.f;
+    self.view.superview.bounds = viewBounds;
 }
 
 - (void) pressedRateStarButton
