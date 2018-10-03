@@ -159,9 +159,7 @@ class BookListItem extends React.Component {
             <View style={styles.bookRankHr} />
           </View>
         )}
-        <Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={2}>
-          {this.props.itemData.subtitle}
-        </Text>
+
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() =>
@@ -171,6 +169,11 @@ class BookListItem extends React.Component {
             })
           }
         >
+        
+        <Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={2}>
+          {this.props.itemData.subtitle}
+        </Text>
+        
           <View>
             <ImageBackground
               source={{ uri: this.props.itemData.images.list }}

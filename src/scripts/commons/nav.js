@@ -5,7 +5,7 @@ import CommonStyle from "../../styles/common";
 import SearchButton from "../components/header/SearchButton";
 import {Image, View} from "react-native";
 import HomeButton from "../components/header/HomeButton";
-import logo from "../../images/logo-white.png"
+import logo from "../../images/welaaa_logo.png"
 import IcAngleRight from "../../images/ic-angle-right-primary.png";
 import HistoryBackButton from "../components/header/HistoryBackButton";
 import Native from "./native";
@@ -60,8 +60,8 @@ export const NAV_OPTS_MY_HOME = ({navigation, navigationOptions}) => {
 			left: 0,
 			right: 0,
 			backgroundColor: 'transparent',
-			paddingLeft: 20,
-			paddingRight: 20,
+			paddingLeft: 0,
+			paddingRight: 0,
 			borderBottomWidth: 0,
 		},
 		headerLeft: <HomeButton/>,

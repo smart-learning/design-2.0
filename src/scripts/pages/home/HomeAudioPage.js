@@ -24,7 +24,7 @@ import ClassContinueList from '../../components/home/ClassContinueList';
 import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
-import HomeBananner from '../../components/home/HomeBananner';
+import HomeBanner from '../../components/home/HomeBanner';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -156,7 +156,7 @@ class HomeAudioPage extends React.Component {
                   } catch (e) {}
 
                   return (
-                    <HomeBananner
+                    <HomeBanner
                       key={key}
                       action_type={action_type}
                       action_param={action_param}

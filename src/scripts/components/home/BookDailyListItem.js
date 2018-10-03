@@ -73,8 +73,6 @@ class BookDailyList extends React.Component {
       console.log(error);
     }
 
-    console.log('itemData', itemData);
-
     return (
       <TouchableOpacity
         activeOpacity={0.9}

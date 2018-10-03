@@ -222,7 +222,7 @@ class TabContentInfo extends React.Component {
     let infoImageSet = [];
     let teacherMemo = '';
     try {
-      if (_.isArray(this.props.store.itemData.info_img_set)) {
+      if (this.props.store.itemData.info_img_set) {
         infoImageSet = this.props.store.itemData.info_img_set;
       }
     } catch (error) {
@@ -238,7 +238,6 @@ class TabContentInfo extends React.Component {
       console.log(error);
     }
 
-    console.log('this.props.store.itemData', this.props.store.itemData);
     return (
       <View>
         {/* 이미지 스와이퍼 */}
