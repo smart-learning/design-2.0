@@ -1243,9 +1243,15 @@
   //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
 //*/
   
+  /*
+    // 높이 조절이 원하는 만큼은 안되지만 rootview를 컨트롤 가능.
     CGRect viewBounds = self.view.bounds;
     viewBounds.size.height = 40.f;
     self.view.superview.bounds = viewBounds;
+  */
+  
+  // rect를 (dx,dy) 만큼 이동시킵니다.
+  [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-40.f)];
 }
 
 - (void) pressedRateStarButton
