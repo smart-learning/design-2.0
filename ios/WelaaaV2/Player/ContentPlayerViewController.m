@@ -1192,37 +1192,6 @@
 
 - (void) pressedCloseButton
 {
-  /*
-    [UIView animateWithDuration : 0.2 //begin animation
-                          delay : 0.1
-                        options : UIViewAnimationCurveEaseIn
-                     animations : ^{
-                                   // This subview is initialized at the top of the screen
-                                   [self.view setFrame : CGRectOffset([self.view frame], 0, -self.view.frame.size.height)];
-                                   // Do the same for Every other subview you want to animate off
-                                  }
-                     completion : nil];
-  */
-  
-  /*
-    // bound를 조정하면 뒤에 있는 루트뷰를 인터렉션할 수 있습니다.
-    CGRect viewBounds = self.view.bounds;
-    viewBounds.size.height = self.view.bounds.size.height / 4;
-    self.view.superview.bounds = viewBounds;
-  */
-  //self.view.superview.backgroundColor = [UIColor redColor];
-  
-  
-  //self.view.hidden = YES; // hidden처리하면 rootView를 볼 수 있지만 interaction은 불가합니다.
-  //self.view.bounds = CGRectMake(0, 0, self.view.frame.size.width, 40.f);
-  
-  //[_playerLayer removeFromSuperlayer];
-
-  //[self.view setFrame : CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
-  
-  //[self closePlayer];
-  
-///*
     self.isMiniPlayer = YES;
     _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
     _miniPlayerUiView.delegate = self;
@@ -1238,20 +1207,7 @@
     [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
     [self.view addSubview : _miniPlayerUiView];
   
-  //self.view.hidden = self.isMiniPlayer; // player view위에 그린 것이므로 hidden처리하면 mini player도 hidden처리됩니다.
-    _miniPlayerUiView.hidden = !self.isMiniPlayer;
-  //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-//*/
-  
-  /*
-    // 높이 조절이 원하는 만큼은 안되지만 rootview를 컨트롤 가능.
-    CGRect viewBounds = self.view.bounds;
-    viewBounds.size.height = 40.f;
-    self.view.superview.bounds = viewBounds;
-  */
-  
-  // rect를 (dx,dy) 만큼 이동시킵니다.
-  [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-40.f)];
+    [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
 }
 
 - (void) pressedRateStarButton
@@ -2411,21 +2367,21 @@
     {
         moveFrame.origin.x = 0.f;
         moveFrame.origin.y = CGRectGetMaxY(self.view.frame)-40.f;
-        moveFrame.size.width = self.view.frame.size.width;
-        moveFrame.size.height = 40.f;
+      //moveFrame.size.width = self.view.frame.size.width;
+      //moveFrame.size.height = 40.f;
     }
     else
     {
         moveFrame = self.view.superview.frame;
     }
   
-    [self changedPlayerMode : screenMode == ContentsPlayerScreenModeMiniPlayer];
+  //[self changedPlayerMode : screenMode == ContentsPlayerScreenModeMiniPlayer];
   
     [UIView animateWithDuration : 0.3f
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      self.view.frame = moveFrame;
+                                      self.view.superview.frame = moveFrame;
                                   }
                      completion : ^(BOOL finished)
                                   {
