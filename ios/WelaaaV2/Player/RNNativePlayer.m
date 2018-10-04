@@ -72,10 +72,27 @@ RCT_EXPORT_MODULE();
 // args 가 여러개의 콘텐츠(Array)로 넘어오는걸로 적용. 2018.10.1
 - (void) downloadContents : (NSArray *) args
 {
-  for(NSDictionary* arg in args){
-    [[FPSDownloadManager sharedInstance] startDownload : arg
-                                            completion : ^(NSError *error, NSMutableDictionary *result)
-                                                         {}];
+  // gid 를 구한다.
+  NSString* gid = nil;
+  
+  if (args && args.count > 0) {
+    NSString* cid = args[0][@"cid"];
+    if (cid && cid.length>1) {
+      gid = [cid substringToIndex:[cid indexOf:@"_"]];
+    }
+  }
+  
+  if (gid && gid.length > 0) {
+    // 강좌 그룹 전체 내용에 대한 메타정보를 먼저 구하고,
+    NSDictionary *contentsInfo = [ApiManager getContentsInfoWithCgid : gid
+                                                       andHeaderInfo : args[0][@"token"]];
+    [[FPSDownloadManager sharedInstance] setContentsInfo:contentsInfo];
+    // 다운로드 시작.
+    for(NSDictionary* arg in args){
+      [[FPSDownloadManager sharedInstance] startDownload : arg
+                                              completion : ^(NSError *error, NSMutableDictionary *result)
+       {}];
+    }
   }
   
   // 테스트로 하나만 뽑아서 다운로드할 때.

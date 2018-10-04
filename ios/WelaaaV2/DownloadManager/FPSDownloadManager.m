@@ -346,9 +346,20 @@
                                            index : cellIndex];
         // 콘텐츠에 대한 부가적인 정보를 더 추가.(DB 칼럼에도 추가하기 위한 정보)
         clip.userId = args[@"userId"];
-        clip.drmSchemeUuid = args[@"drmSchemeUuid"];
-        clip.drmLicenseUrl = args[@"drmLicenseUrl"];
-        clip.oid = args[@"oid"];
+        clip.drmSchemeUuid = @"fairplay";
+        clip.drmLicenseUrl = @"drmUrl";
+        clip.oid = @"";
+        clip.audioVideoType = _contentsInfo[@"type"];
+        clip.cPlayTime = @"";
+        clip.groupImg = @"";
+        clip.thumbnailImg = @"";
+        clip.groupkey = @"";
+        clip.groupAllPlayTime = @"";
+        clip.groupContentScnt = @"";
+        clip.view_limitdate = @"";
+        clip.ckey = cid;
+        clip.groupTeacherName = @"";
+        clip.title = @"";
         FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : clip];
         NSDictionary *downloadInfo = @{
                                           @"uri"    : urlString,
@@ -501,32 +512,28 @@
         fpsDownload = [_activeDownloads objectForKey : contentId];
         [_activeDownloads removeObjectForKey : contentId];
       
-        // TODO
         // contentId vs fpsDownload.clip.cid 동일해야 한다.
-        // DB 칼럼에 들어갈 정보가 더 있어야 한다.
       
-      
-      
-        NSDictionary *downloadedContent = [[NSDictionary alloc] initWithObjectsAndKeys:fpsDownload.clip.cid,@"cid" \
-                                           /*,fpsDownload.clip.title,@"cTitle" \ */
-                                           ,[@"test value - " stringByAppendingString:contentId],@"cTitle" \
+        Clip *aClip = fpsDownload.clip;
+        NSDictionary *downloadedContent = [[NSDictionary alloc] initWithObjectsAndKeys:aClip.cid,@"cid" \
+                                           ,aClip.title,@"cTitle" \
                                            ,location.path?location.path:@"",@"contentPath" \
-                                           ,@"",@"groupkey"  \
+                                           ,aClip.groupkey,@"groupkey"  \
                                            ,contentId,@"ckey"             \
-                                           ,fpsDownload.clip.userId,@"userId"    \
-                                           ,fpsDownload.clip.drmSchemeUuid?fpsDownload.clip.drmSchemeUuid:@"",@"drmSchemeUuid"  \
-                                           ,fpsDownload.clip.drmLicenseUrl?fpsDownload.clip.drmLicenseUrl:@"",@"drmLicenseUrl"   \
-                                           ,fpsDownload.clip.oid?fpsDownload.clip.oid:@"",@"oid"   \
-                                           ,@"",@"totalSize"    \
-                                           ,@"",@"gTitle"    \
-                                           ,@"",@"groupImg"    \
-                                           ,@"",@"thumbnailImg"   \
-                                           ,@"video-course",@"audioVideoType"  \
-                                           ,@"",@"groupTeacherName" \
-                                           ,@"",@"cPlayTime"    \
-                                           ,@"",@"groupContentScnt" \
-                                           ,@"",@"groupAllPlayTime" \
-                                           ,@"",@"view_limitdate"  \
+                                           ,aClip.userId,@"userId"    \
+                                           ,aClip.drmSchemeUuid?aClip.drmSchemeUuid:@"",@"drmSchemeUuid"  \
+                                           ,aClip.drmLicenseUrl?aClip.drmLicenseUrl:@"",@"drmLicenseUrl"   \
+                                           ,aClip.oid?aClip.oid:@"",@"oid"   \
+                                           ,aClip.totalSize,@"totalSize"    \
+                                           ,aClip.gTitle,@"gTitle"    \
+                                           ,aClip.groupImg,@"groupImg"    \
+                                           ,aClip.thumbnailImg,@"thumbnailImg"   \
+                                           ,aClip.audioVideoType,@"audioVideoType"  \
+                                           ,aClip.groupTeacherName,@"groupTeacherName" \
+                                           ,aClip.cPlayTime,@"cPlayTime"    \
+                                           ,aClip.groupContentScnt,@"groupContentScnt" \
+                                           ,aClip.groupAllPlayTime,@"groupAllPlayTime" \
+                                           ,aClip.view_limitdate,@"view_limitdate"  \
                                            , nil];
         // TODO : 중복체크 방안
         [[DatabaseManager sharedInstance] saveDownloadedContent : downloadedContent]; // SQLite 를 통해 저장(welaaa.db)

@@ -28,6 +28,7 @@
   QueryService *queryService;
 }
 
+@property (strong, nonatomic) NSDictionary        *contentsInfo;
 @property (strong, nonatomic) NSMutableArray      *downloadingQueue;
 @property (strong, nonatomic) NSMutableDictionary *activeDownloads;
 @property (strong, nonatomic) PallyConFPSSDK      *fpsSDK;
