@@ -67,6 +67,18 @@ export default {
   },
 
   download(args) {
+    const { welaaaAuth } = globalStore;
+    /* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
+    if (
+      welaaaAuth === undefined ||
+      welaaaAuth.profile === undefined ||
+      welaaaAuth.profile.id === undefined
+    ) {
+      Alert.alert('로그인 후 이용할 수 있습니다.');
+
+      return true;
+    }
+
     console.log('download:', args);
     RNNativePlayer.download(args);
   },
