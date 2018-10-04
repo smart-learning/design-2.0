@@ -28,6 +28,7 @@ import kr.co.influential.youngkangapp.player.NewWebPlayerInfo;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Logger;
+import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 import kr.co.influential.youngkangapp.util.WelaaaBroadcastReceiver;
@@ -83,9 +84,9 @@ public class DownloadService extends IntentService implements
 
         boolean result = downloadTask.isDownloadCompleted();
 
-        if(result){
-          mCallback.recvData(intent_downloadContentCid);
-        }
+//        if(result){
+//          mCallback.recvData(intent_downloadContentCid);
+//        }
       } catch (PallyconDownloadException e) {
         Toast.makeText(DownloadService.this, e.getMessage(), Toast.LENGTH_LONG).show();
       } catch (NetworkConnectedException e) {
@@ -262,12 +263,14 @@ public class DownloadService extends IntentService implements
           Uri LocalUri = downloadTask.getLocalUri(Uri.parse(drm_content_uri_extra) , downloadContentCid);
           String localUrl = String.valueOf(LocalUri);
 
+          String userId = Preferences.getWelaaaUserId(mcontext);
+
           for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
             if (mWebPlayerInfo.getCkey()[i].equals(downloadContentCid)) {
 
               try {
                 ContentManager()
-                    .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], "userId",
+                    .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], userId,
                         "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", localUrl, "",
                         mWebPlayerInfo.getGroupTitle(), mWebPlayerInfo.getCname()[i],
                         mWebPlayerInfo.getGroupImg(), mWebPlayerInfo.getClist_img()[i],
@@ -282,7 +285,7 @@ public class DownloadService extends IntentService implements
             }
           }
 
-          setDownloadServiceListener();
+//          setDownloadServiceListener();
           doStuff(intent);
         }
 
