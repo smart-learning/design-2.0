@@ -1194,6 +1194,7 @@
 {
     self.isMiniPlayer = YES;
     _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+    _miniPlayerUiView.tag = 1;
     _miniPlayerUiView.delegate = self;
     _miniPlayerUiView.isAuthor = _isAuthor;
     [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
@@ -1207,7 +1208,20 @@
     [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
     [self.view addSubview : _miniPlayerUiView];
   
-    [self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
+    [self changedPlayerMode : YES];
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-40.f)];
+                                  }
+                     completion : ^(BOOL finished)
+                                  {
+                                      self.view.frame = self.view.bounds;
+                                  }];
+  
+    _screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
 - (void) pressedRateStarButton
@@ -2359,48 +2373,16 @@
 }
 
 # pragma mark - Contents mini Player
-- (void) changedScreenMode : (ContentsPlayerScreenMode) screenMode
-{
-    CGRect moveFrame = CGRectZero;
-  
-    if ( screenMode == ContentsPlayerScreenModeMiniPlayer )
-    {
-        moveFrame.origin.x = 0.f;
-        moveFrame.origin.y = CGRectGetMaxY(self.view.frame)-40.f;
-      //moveFrame.size.width = self.view.frame.size.width;
-      //moveFrame.size.height = 40.f;
-    }
-    else
-    {
-        moveFrame = self.view.superview.frame;
-    }
-  
-  //[self changedPlayerMode : screenMode == ContentsPlayerScreenModeMiniPlayer];
-  
-    [UIView animateWithDuration : 0.3f
-                          delay : 0
-                        options : UIViewAnimationOptionAllowUserInteraction
-                     animations : ^{
-                                      self.view.superview.frame = moveFrame;
-                                  }
-                     completion : ^(BOOL finished)
-                                  {
-                                      self.view.frame = self.view.bounds;
-                                  }];
-  
-      _screenMode = screenMode;
-}
+
 // 플레이어 모드 변경 (미니<->일반 플레이어뷰)
 - (void) changedPlayerMode : (BOOL) isMiniPlayer
 {
-    //_playerUiView.hidden = NO;
-    self.view.hidden = NO;
-    _miniPlayerUiView.hidden = NO;
+  //self.view.hidden = NO;
+  //_miniPlayerUiView.hidden = NO;
   
-    //_playerUiView.alpha = isMiniPlayer ? 1.f : 0.f;
-    self.view.alpha = isMiniPlayer ? 1.f : 0.f;
-    _miniPlayerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
-  
+  //self.view.alpha = isMiniPlayer ? 1.f : 0.f;
+  //_miniPlayerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
+  /*
     [UIView animateWithDuration : 0.3f
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
@@ -2416,7 +2398,7 @@
                                       self.view.hidden = self.isMiniPlayer;
                                       _miniPlayerUiView.hidden = !self.isMiniPlayer;
                                   }];
-  
+  */
     if ( isMiniPlayer )
     {
       // 이용로그 전송 시작
@@ -2446,9 +2428,10 @@
       */
     }
 }
-- (void) miniPlayerUiView: (ContentMiniPlayerView *) view
-                 openView: (id) sender
+- (void) miniPlayerUiView : (ContentMiniPlayerView *) view
+                 openView : (id) sender
 {
+    NSLog(@"  [-miniPlayerUiView:openView:] mini Player -> Full Screen Player");
   /*
   if ( [self.delegate respondsToSelector: @selector(player:openView:)] )
   {
@@ -2462,6 +2445,24 @@
     _isTransperPlayModeFromScreen = NO;
     [self changePlayType: NO];
   }*/
+  
+    [self changedPlayerMode : NO];
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      [self.view.superview setFrame : CGRectOffset([self.view frame], 0, 0)];
+                                   }
+                     completion : ^(BOOL finished)
+                                  {
+                                      self.view.frame = self.view.bounds;
+                                      [[self.view viewWithTag:1] removeFromSuperview];
+                                  }];
+    self.isMiniPlayer = NO;
+    _miniPlayerUiView = nil;
+    [[self.view viewWithTag:1] removeFromSuperview];
+  //_screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
@@ -2658,17 +2659,17 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlStop:
-                //Insert code.
+                [self closePlayer];
                 break;
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
-                //Insert code.
+                // 결국은 PlayListArray를 만들어서 전역으로 가지고 있어야 한다는 뜻?
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
-                //Insert code.
+                // [self playNext??];
                 break;
             
             default:
