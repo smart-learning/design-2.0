@@ -290,7 +290,7 @@ export default {
 					break;
 
 				case 'out_browser':
-					Linking.openURL(schemes[0]);
+					Linking.openURL(decodeURIComponent(schemes[0]));
 					break;
 
 				case 'sign_up':
