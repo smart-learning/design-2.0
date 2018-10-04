@@ -527,7 +527,6 @@
                                            ,@"",@"groupContentScnt" \
                                            ,@"",@"groupAllPlayTime" \
                                            ,@"",@"view_limitdate"  \
-                                           ,@"",@"modified"     \
                                            , nil];
         // TODO : 중복체크 방안
         [[DatabaseManager sharedInstance] saveDownloadedContent : downloadedContent]; // SQLite 를 통해 저장(welaaa.db)

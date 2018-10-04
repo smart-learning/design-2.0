@@ -138,7 +138,7 @@
                            groupAllPlayTime,  \
                            view_limitdate,    \
                            modified           \
-                           ) VALUES(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\")"  \
+                           ) VALUES(\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",datetime(\'now\',\'localtime\'))" \
                            ,downloadedContent[@"groupkey"]
                            ,downloadedContent[@"ckey"]
                            ,downloadedContent[@"userId"]
@@ -158,7 +158,7 @@
                            ,downloadedContent[@"groupContentScnt"]
                            ,downloadedContent[@"groupAllPlayTime"]
                            ,downloadedContent[@"view_limitdate"]
-                           ,downloadedContent[@"modified"]];
+                           ];
     
     const char *insert_stmt = [insertSQL UTF8String];
     sqlite3_prepare_v2(_downloadDB, insert_stmt, -1, &statement, NULL);
@@ -183,7 +183,7 @@
   sqlite3_stmt *statement;
   
   if(sqlite3_open(dbPath, &_downloadDB) == SQLITE_OK){
-    NSString *querySQL = [NSString stringWithFormat:@"SELECT _id, cid, cTitle, contentPath, audioVideoType FROM DOWNLOAD"];
+    NSString *querySQL = [NSString stringWithFormat:@"SELECT _id, cid, cTitle, contentPath, audioVideoType, modified FROM DOWNLOAD"];
     
     const char *query_stmt = [querySQL UTF8String];
     
@@ -195,10 +195,11 @@
         NSString *cTitle = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 2)];
         NSString *contentPath = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 3)];
         NSString *audioVideoType = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 4)];
+        NSString *modified = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 5)];
         
-        NSLog(@"_id : %@, cid : %@, cTitle : %@, contentPath : %@, audioVideoType : %@",aid,cid,cTitle,contentPath,audioVideoType);
+        NSLog(@"_id : %@, cid : %@, cTitle : %@, contentPath : %@, audioVideoType : %@, modified : %@",aid,cid,cTitle,contentPath,audioVideoType,modified);
         
-        NSDictionary* dic = [[NSDictionary alloc] initWithObjectsAndKeys:cid,@"cid",cTitle,@"cTitle",contentPath,@"contentPath",audioVideoType,@"audioVideoType", nil];
+        NSDictionary* dic = [[NSDictionary alloc] initWithObjectsAndKeys:cid,@"cid",cTitle,@"cTitle",contentPath,@"contentPath",audioVideoType,@"audioVideoType",modified,@"modified", nil];
         
         [results addObject:dic];
       }
