@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, View, WebView } from 'react-native';
+import { TouchableOpacity, View, WebView, Text } from 'react-native';
 import store from '../commons/store';
+import CommonStyles from '../../styles/common';
 
 class InAppWebView extends React.Component {
   render() {
@@ -25,10 +26,19 @@ class InAppWebView extends React.Component {
           source={{ uri: url }}
         />
         <View>
-          <Button
-            title={'닫기'}
-            onPress={() => (store.inAppWebViewUrl = null)}
-          />
+          <TouchableOpacity onPress={() => (store.inAppWebViewUrl = null)}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: 40,
+                backgroundColor: CommonStyles.COLOR_PRIMARY
+              }}
+            >
+              <Text style={{ fontSize: 16, color: '#ffffff' }}>닫기</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
