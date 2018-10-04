@@ -77,6 +77,15 @@ RCT_EXPORT_MODULE();
                                             completion : ^(NSError *error, NSMutableDictionary *result)
                                                          {}];
   }
+  
+  // 테스트로 하나만 뽑아서 다운로드할 때.
+  /*
+  if (args && args.count>0) {
+    [[FPSDownloadManager sharedInstance] startDownload : args[0]
+                                            completion : ^(NSError *error, NSMutableDictionary *result)
+     {}];
+  }
+  */
 }
 
 - (void) deleteDownloadedContent : (NSDictionary *) args
@@ -117,6 +126,32 @@ RCT_EXPORT_MODULE();
     }
 }
 
+- (void) selectDownloadedList : (NSString *)option
+                     resolver : (RCTPromiseResolveBlock)resolve
+                     rejecter : (RCTPromiseRejectBlock)reject
+{
+  NSLog(@"  selectDownloadedList:resolver:rejecter:");
+  
+  NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+  
+  NSError *error;
+  NSData *jsonData = [NSJSONSerialization dataWithJSONObject : allRecords
+                                                     options : 0
+                                                       error : &error];
+  if ( !jsonData && error )
+  {
+    NSLog(@"  Json Parse Error : %@",error);
+    reject(nil,@"Json Parse Error",error);
+  }
+  else
+  {
+    NSString *jsonString = [[NSString alloc] initWithData : jsonData
+                                                 encoding : NSUTF8StringEncoding];
+    NSLog(@"  Parsed jsonString : %@",jsonString);
+    resolve(jsonString);
+  }
+}
+
 
 #pragma mark - RCT_EXPORT
 
@@ -149,6 +184,12 @@ RCT_EXPORT_METHOD( downloadDelete : (NSDictionary *) argsFromReactNative )
 RCT_EXPORT_METHOD( selectDatabase : (NSDictionary *) argsFromReactNative )
 {
     [self selectDownloadedContent : argsFromReactNative];
+}
+
+RCT_EXPORT_METHOD( getDownloadList : (RCTPromiseResolveBlock)resolve
+                          rejecter : (RCTPromiseRejectBlock)reject )
+{
+  [self selectDownloadedList:nil resolver:resolve rejecter:reject];
 }
 
 @end

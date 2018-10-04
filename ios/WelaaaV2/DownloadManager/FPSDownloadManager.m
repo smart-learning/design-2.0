@@ -35,7 +35,7 @@
         _activeDownloads = [[NSMutableDictionary alloc] init];
         _maximumNumberOfThreads = MAX_NUMBER_OF_THREADS;
         _connectionTimeout = DEFAULT_NET_TIMEOUT_SEC;
-        queryService = [[QueryService alloc] init];
+        //  queryService = [[QueryService alloc] init];
     }
   
     return self;
@@ -101,10 +101,10 @@
 }
 
 
-- (void) startDownload : (NSDictionary *) args
+- (void) startDownload : (NSDictionary *) item
             completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
 {
-    [self queueDownloadRequest : args
+    [self queueDownloadRequest : item
                     completion : resultHandler];
 }
 
@@ -206,6 +206,7 @@
         return ;
     }
   
+    queryService = [[QueryService alloc] init]; // 2018.10.4
     [queryService getSearchWelaaaPlayDataResults : cid
                                        authToken : token
                                     queryResults : ^(NSDictionary *dicResult, NSString *errMsg)
@@ -504,20 +505,23 @@
         // contentId vs fpsDownload.clip.cid 동일해야 한다.
         // DB 칼럼에 들어갈 정보가 더 있어야 한다.
       
+      
+      
         NSDictionary *downloadedContent = [[NSDictionary alloc] initWithObjectsAndKeys:fpsDownload.clip.cid,@"cid" \
-                                           ,fpsDownload.clip.title,@"cTitle" \
-                                           ,location.path,@"contentPath" \
+                                           /*,fpsDownload.clip.title,@"cTitle" \ */
+                                           ,[@"test value - " stringByAppendingString:contentId],@"cTitle" \
+                                           ,location.path?location.path:@"",@"contentPath" \
                                            ,@"",@"groupkey"  \
-                                           ,@"",@"ckey"             \
+                                           ,contentId,@"ckey"             \
                                            ,fpsDownload.clip.userId,@"userId"    \
-                                           ,fpsDownload.clip.drmSchemeUuid,@"drmSchemeUuid"  \
-                                           ,fpsDownload.clip.drmLicenseUrl,@"drmLicenseUrl"   \
-                                           ,fpsDownload.clip.oid,@"oid"   \
+                                           ,fpsDownload.clip.drmSchemeUuid?fpsDownload.clip.drmSchemeUuid:@"",@"drmSchemeUuid"  \
+                                           ,fpsDownload.clip.drmLicenseUrl?fpsDownload.clip.drmLicenseUrl:@"",@"drmLicenseUrl"   \
+                                           ,fpsDownload.clip.oid?fpsDownload.clip.oid:@"",@"oid"   \
                                            ,@"",@"totalSize"    \
                                            ,@"",@"gTitle"    \
                                            ,@"",@"groupImg"    \
                                            ,@"",@"thumbnailImg"   \
-                                           ,@"",@"audioVideoType"  \
+                                           ,@"video-course",@"audioVideoType"  \
                                            ,@"",@"groupTeacherName" \
                                            ,@"",@"cPlayTime"    \
                                            ,@"",@"groupContentScnt" \

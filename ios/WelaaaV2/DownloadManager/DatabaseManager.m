@@ -183,7 +183,7 @@
   sqlite3_stmt *statement;
   
   if(sqlite3_open(dbPath, &_downloadDB) == SQLITE_OK){
-    NSString *querySQL = [NSString stringWithFormat:@"SELECT _id, cid, cTitle, contentPath FROM DOWNLOAD"];
+    NSString *querySQL = [NSString stringWithFormat:@"SELECT _id, cid, cTitle, contentPath, audioVideoType FROM DOWNLOAD"];
     
     const char *query_stmt = [querySQL UTF8String];
     
@@ -194,10 +194,11 @@
         NSString *cid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 1)];
         NSString *cTitle = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 2)];
         NSString *contentPath = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 3)];
+        NSString *audioVideoType = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 4)];
         
-        NSLog(@"_id : %@, cid : %@, cTitle : %@, contentPath : %@",aid,cid,cTitle,contentPath);
+        NSLog(@"_id : %@, cid : %@, cTitle : %@, contentPath : %@, audioVideoType : %@",aid,cid,cTitle,contentPath,audioVideoType);
         
-        NSDictionary* dic = [[NSDictionary alloc] initWithObjectsAndKeys:cid,@"cid",cTitle,@"cTitle",contentPath,@"contentPath", nil];
+        NSDictionary* dic = [[NSDictionary alloc] initWithObjectsAndKeys:cid,@"cid",cTitle,@"cTitle",contentPath,@"contentPath",audioVideoType,@"audioVideoType", nil];
         
         [results addObject:dic];
       }
