@@ -33,7 +33,7 @@ public class WeContentManager extends SQLiteOpenHelper {
 
   private final String PROGRESS_CREATE_TABLE =
       "CREATE TABLE IF NOT EXISTS PROGRESS (_id integer primary key autoincrement, " +
-          "conClass text not null , gId text not null, cId text not null , totalTime text not null, start_date text not null ,"
+          "cId text not null , totalTime text not null, duration text not null, start_date text not null ,"
           +
           "end_date text not null , playCount text not null , reg_date text not null  )";
 
@@ -205,7 +205,7 @@ public class WeContentManager extends SQLiteOpenHelper {
       String groupImg,
       String thumbnailImg, String contentType,
       String groupTeacherName, String cPlayTime, String groupContentScnt, String groupAllPlayTime,
-      String view_limitdate ) throws Exception {
+      String view_limitdate) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
@@ -557,17 +557,16 @@ public class WeContentManager extends SQLiteOpenHelper {
     return CursorToDataTable2(c);
   }
 
-  public void insertProgress(String conClass, String gId, String cId, String totalTime,
-      String PlayCount, String reg_date) throws Exception {
+  public void insertProgress(String cId, String totalTime , String duration) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
 
     db.execSQL(String.format(
-        "INSERT INTO PROGRESS ( conClass, gId , cId , totalTime, PlayCount , start_date , end_date ,  reg_date) "
+        "INSERT INTO PROGRESS ( cId , totalTime, PlayCount , duration ,start_date , end_date ,  reg_date) "
             +
-            "values ( '%s','%s', '%s', '%s', '%s', '%s' , '%s', '%s');",
-        conClass, gId, cId, totalTime, PlayCount, reg_date, "", reg_date));
+            "values ( '%s', '%s', '%s', '%s', (datetime('now','localtime')) , '', (datetime('now','localtime')));",
+        cId, totalTime, 1 , duration));
   }
 
   public ArrayList<HashMap<String, Object>> getProgressCid(String cId) throws Exception {
@@ -576,7 +575,7 @@ public class WeContentManager extends SQLiteOpenHelper {
     }
 
     String query =
-        "SELECT conClass, gId , cId , totalTime, PlayCount , reg_date , start_date , end_date FROM PROGRESS WHERE cId='"
+        "SELECT cId , totalTime, PlayCount , duration,  reg_date , start_date , end_date FROM PROGRESS WHERE cId='"
             + cId + "'";
     Cursor c = db.rawQuery(query, null);
 
@@ -588,7 +587,7 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT conClass, gId , cId  FROM PROGRESS WHERE cId='" + cid + "'";
+    String query = "SELECT cId  FROM PROGRESS WHERE cId='" + cid + "'";
     Cursor c = db.rawQuery(query, null);
     int nCount = 0;
     nCount = c.getCount();
@@ -598,20 +597,16 @@ public class WeContentManager extends SQLiteOpenHelper {
     return nCount;
   }
 
-  public void updateProgress(String cid, String reg_date, String type) throws Exception {
+  public void updateProgress(String cid, String duration) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
 
     String sql = "";
-    if (type.equals("start")) {
-      sql =
-          "UPDATE PROGRESS SET playCount= playCount+1 , start_date='" + reg_date + "' , reg_date='"
-              + reg_date + "' WHERE cId='" + cid + "'";
-    } else {
-      // totalTime 값을 구할 수 있도록 다시 생각 해주세요 ~
-//            sql="UPDATE PROGRESS SET end_date='"+reg_date+"' , reg_date='"+reg_date+"', totalTime='"+reg_date+"'-start_time WHERE cId='"+cid+"'";
-    }
+
+    sql =
+        "UPDATE PROGRESS SET playCount= playCount+1 , duration = '"+duration+"' ,reg_date=(datetime('now','localtime')) WHERE cId='"
+            + cid + "'";
 
     db.execSQL(sql);
   }
