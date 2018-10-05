@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import kr.co.influential.youngkangapp.player.utils.LogHelper;
 
 public class MaskActivity extends Activity {
 
@@ -16,9 +15,6 @@ public class MaskActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    LogHelper.e(TAG, "onCreate: ");
-
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       registerReceiver(receiver, IdleChangeReceiver.Filter);
@@ -34,10 +30,8 @@ public class MaskActivity extends Activity {
   }
 
   private class MaskIdleReceiver extends IdleChangeReceiver {
-
     @Override
     public void onReceive(Context context, Intent intent) {
-      LogHelper.e(TAG, "Intent:" + intent);
       finish();
     }
   }

@@ -7,9 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.PowerManager;
 
-/**
- * Created by chansuk on 2016. 4. 5..
- */
 public abstract class IdleChangeReceiver extends BroadcastReceiver {
 
   public static IntentFilter Filter
