@@ -10,10 +10,9 @@
 
 @interface Clip : NSObject
 {
-  NSString* title;
+  NSString* cTitle;
   NSString* memo;
   NSString* cid;
-  NSString* playTime;
   double totalSec;
   int index;
   BOOL downloaded;
@@ -40,10 +39,9 @@
   
 }
 
-@property NSString* title;
+@property NSString* cTitle;
 @property NSString* memo;
 @property NSString* cid;
-@property NSString* playTime;
 @property double totalSec;
 @property int index;
 @property BOOL downloaded;
@@ -68,10 +66,12 @@
 @property NSString* modified;
 
 
--(id)initWithTitle:(NSString *)title
+-(id)initWithTitle:(NSString *)cTitle
               memo:(NSString *)memo
                cid:(NSString *)cid
           playTime:(NSString *)playTime
              index:(int)index;
+
+-(id)init;
 
 @end

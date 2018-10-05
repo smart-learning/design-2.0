@@ -168,9 +168,9 @@
   
     NSString *cid = args[@"cid"];
     NSString *userId = args[@"userId"];
-    NSString *name = args[@"name"];
     NSString *token = args[@"token"];
-    int cellIndex = [args[@"index"] intValue];  // 추후 다운로드 아이템을 리스트에 보여줘야할때 사용하기 위한 예비정보
+    //NSString *name = args[@"name"];
+    //int cellIndex = [args[@"index"] intValue];  // 추후 다운로드 아이템을 리스트에 보여줘야할때 사용하기 위한 예비정보
 
     if ( !cid || cid.length <= 0 )
     {
@@ -339,28 +339,7 @@
             return ;
         }
       
-        Clip *clip = [[Clip alloc] initWithTitle : name
-                                            memo : @""
-                                             cid : cid
-                                        playTime : @""
-                                           index : cellIndex];
-        // 콘텐츠에 대한 부가적인 정보를 더 추가.(DB 칼럼에도 추가하기 위한 정보)
-        clip.userId = args[@"userId"];
-        clip.drmSchemeUuid = @"fairplay";
-        clip.drmLicenseUrl = @"drmUrl";
-        clip.oid = @"";
-        clip.audioVideoType = _contentsInfo[@"type"];
-        clip.cPlayTime = @"";
-        clip.groupImg = @"";
-        clip.thumbnailImg = @"";
-        clip.groupkey = @"";
-        clip.groupAllPlayTime = @"";
-        clip.groupContentScnt = @"";
-        clip.view_limitdate = @"";
-        clip.ckey = cid;
-        clip.groupTeacherName = @"";
-        clip.title = @"";
-        FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : clip];
+        FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:args]];
         NSDictionary *downloadInfo = @{
                                           @"uri"    : urlString,
                                           @"cid"    : cid,
@@ -383,6 +362,42 @@
       
         resultHandler (nil, nil);
     }];
+}
+
+
+- (Clip *) getClipInfo:(NSDictionary *)args
+{
+  Clip *clip = [[Clip alloc] init];
+  
+  clip.gTitle = _contentsInfo[@"data"][@"title"];
+  clip.audioVideoType = _contentsInfo[@"type"];
+  clip.drmLicenseUrl = @"drmUrl";
+  clip.drmSchemeUuid = @"fairplay";
+  clip.cPlayTime = @""; // 개별 클립 정보를 통해 다시 구한다.
+  clip.groupImg = @"";
+  clip.oid = @"";
+  clip.thumbnailImg = _contentsInfo[@"data"][@"images"][@"list"];
+  clip.userId = args[@"userId"];
+  clip.groupkey = _contentsInfo[@"data"][@"cid"];
+  clip.groupAllPlayTime = _contentsInfo[@"data"][@"play_time"];
+  clip.groupContentScnt = _contentsInfo[@"data"][@"clip_count"];
+  clip.view_limitdate = _contentsInfo[@"permission"][@"expire_at"];
+  clip.ckey = args[@"cid"];
+  clip.contentPath = @""; // 다운로드 완료 후에 결정되는 로컬경로.
+  clip.totalSize = @"";
+  clip.groupTeacherName = _contentsInfo[@"data"][@"teacher"][@"name"];
+  clip.cTitle = @"";  // 개별 클립 정보를 통해 다시 구한다.
+  clip.cid = args[@"cid"];
+  
+  NSArray *clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립 정보
+  for (NSDictionary *eachClip in clipsList){
+    if([eachClip[@"cid"] isEqualToString:clip.cid]){
+      clip.cTitle = eachClip[@"title"];
+      clip.cPlayTime = eachClip[@"play_time"];
+    }
+  }
+  
+  return clip;
 }
 
 
@@ -512,18 +527,25 @@
         fpsDownload = [_activeDownloads objectForKey : contentId];
         [_activeDownloads removeObjectForKey : contentId];
       
-        // contentId vs fpsDownload.clip.cid 동일해야 한다.
+        //fpsDownload.clip.ckey = contentId;
+        if ([fpsDownload.clip.cid isEqualToString:contentId]) {
+          NSLog(@"Downloaded contentId and cid are same. Good to go.");
+        }else{
+          NSLog(@"Downloaded contentId and cid are different! Need for check.");
+        }
+      
+        fpsDownload.clip.contentPath = location.path;
       
         Clip *aClip = fpsDownload.clip;
         NSDictionary *downloadedContent = [[NSDictionary alloc] initWithObjectsAndKeys:aClip.cid,@"cid" \
-                                           ,aClip.title,@"cTitle" \
-                                           ,location.path?location.path:@"",@"contentPath" \
+                                           ,aClip.cTitle,@"cTitle" \
+                                           ,aClip.contentPath,@"contentPath" \
                                            ,aClip.groupkey,@"groupkey"  \
-                                           ,contentId,@"ckey"             \
+                                           ,aClip.ckey,@"ckey"             \
                                            ,aClip.userId,@"userId"    \
-                                           ,aClip.drmSchemeUuid?aClip.drmSchemeUuid:@"",@"drmSchemeUuid"  \
-                                           ,aClip.drmLicenseUrl?aClip.drmLicenseUrl:@"",@"drmLicenseUrl"   \
-                                           ,aClip.oid?aClip.oid:@"",@"oid"   \
+                                           ,aClip.drmSchemeUuid,@"drmSchemeUuid"  \
+                                           ,aClip.drmLicenseUrl,@"drmLicenseUrl"   \
+                                           ,aClip.oid,@"oid"   \
                                            ,aClip.totalSize,@"totalSize"    \
                                            ,aClip.gTitle,@"gTitle"    \
                                            ,aClip.groupImg,@"groupImg"    \
