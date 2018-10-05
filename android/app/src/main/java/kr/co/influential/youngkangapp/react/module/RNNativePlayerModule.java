@@ -256,7 +256,25 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
 
+  @ReactMethod
+  public void selectProgressDatabase(ReadableMap content) {
+    // 2018.10.05
+    try {
+      Gson gson = new Gson();
+      String json = gson.toJson(ContentManager().getProgressCid());
+
+      WritableMap params = Arguments.createMap();
+
+      params.putString("selectProgressDatabase", json);
+      sendEvent("selectProgressDatabase", params);
+
+       LogHelper.e("selectProgressDatabase :", json.toString() );
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override

@@ -569,6 +569,18 @@ public class WeContentManager extends SQLiteOpenHelper {
         cId, totalTime, 1 , duration));
   }
 
+  public ArrayList<HashMap<String, Object>> getProgressCid() throws Exception {
+    if (!db.isOpen()) {
+      openDb();
+    }
+
+    String query =
+        "SELECT cId , totalTime, PlayCount , duration,  reg_date , start_date , end_date FROM PROGRESS";
+    Cursor c = db.rawQuery(query, null);
+
+    return CursorToDataTable(c);
+  }
+
   public ArrayList<HashMap<String, Object>> getProgressCid(String cId) throws Exception {
     if (!db.isOpen()) {
       openDb();

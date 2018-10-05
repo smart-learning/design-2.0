@@ -71,6 +71,14 @@ export default {
     }
   },
 
+  getProgressDatabase() {
+    try {
+      RNNativePlayer.selectProgressDatabase({});
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   // receiveDownloadList(args) {
   // 	console.log('naive.receiveDownloadList:', args);
   // },
