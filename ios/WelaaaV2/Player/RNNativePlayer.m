@@ -41,14 +41,38 @@ RCT_EXPORT_MODULE();
     NSMutableDictionary *args = [argsFromReactNative mutableCopy];
     [playerViewController setContentData : args];
   
+    // View를 present할때 옵션없이 하면 지시하는 뷰를 컨텍스트에서 날리고 present하기때문에 검은화면이 맨 아래에 깔리게 됩니다.
+    // https://magi82.github.io/ios-modal-presentation-style-01/
+    playerViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+  
     // Exception 'accessing _cachedSystemAnimationFence requires the main thread' was thrown while invoking 에러가 발생된다면..
     // ref : https://github.com/MOLPay/molpay-mobile-xdk-reactnative-beta/issues/7
     dispatch_sync(dispatch_get_main_queue(), ^{
-      [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : playerViewController
-                                                                                   animated : YES
-                                                                                 completion : nil];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : playerViewController
+                                                                                     animated : YES
+                                                                                   completion : nil];
     });
+  /*
+    // NavigationView방식으로 push해야한다면 아래를 주석해제합니다.
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        UINavigationController *navigationController;
+        navigationController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+        [navigationController pushViewController:playerViewController animated:TRUE];
+    });
+  */
 }
+
+- (void) showMiniPlayer
+{
+    // player를 dismiss하고 miniPlayer를 present합니다.
+}
+
+- (void) representMediaPlayer
+{
+    // miniPlayer를 dismiss하고 player를 present합니다.
+}
+
+
 
 - (void) stopMediaPlayer
 {

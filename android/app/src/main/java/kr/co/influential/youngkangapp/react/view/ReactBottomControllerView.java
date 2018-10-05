@@ -351,11 +351,29 @@ public class ReactBottomControllerView extends FrameLayout {
   public void hideBottomcontrol() {
     LogHelper.e(TAG, " hideBottomControl !! ");
 
+//    Activity activity = Utils.getActivity(getContext());
+//    MediaControllerCompat mediaController = MediaControllerCompat
+//        .getMediaController(activity);
+//    if (mediaController != null) {
+//      mediaController.getTransportControls().stop();
+//    }
+
+    //
+
+    LogHelper.d(TAG, "onDetachedFromWindow");
+    if (mediaBrowser != null) {
+      mediaBrowser.disconnect();
+    }
     Activity activity = Utils.getActivity(getContext());
     MediaControllerCompat mediaController = MediaControllerCompat
         .getMediaController(activity);
     if (mediaController != null) {
       mediaController.getTransportControls().stop();
+      mediaController.unregisterCallback(callback);
     }
+
+    stopSeekbarUpdate();
+    executorService.shutdown();
+
   }
 }

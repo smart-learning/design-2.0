@@ -48,9 +48,18 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                                        alpha : 1   ];
   
     self.window = [ [UIWindow alloc] initWithFrame : [UIScreen mainScreen].bounds ];
+  
     UIViewController *rootViewController = [UIViewController new];
     rootViewController.view = rootView;
     self.window.rootViewController = rootViewController;
+  /*
+    // UINavigationView 방식을 다시 사용하려면 RNNativePlayer에서 pushViewController 부분을 주석해제하시기 바랍니다.
+    UIViewController *rootViewController = [UIViewController new];
+    UINavigationController *navigationController = [[UINavigationController alloc]initWithRootViewController:rootViewController];
+    navigationController.navigationBarHidden = YES;
+    rootViewController.view = rootView;
+    self.window.rootViewController = navigationController;
+  */
     [self.window makeKeyAndVisible];
   
     [ [FBSDKApplicationDelegate sharedInstance] application : application

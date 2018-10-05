@@ -60,6 +60,7 @@
 
     // contentView 구성.
     _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
+    [_contentView setBackgroundColor : [UIColor blackColor]];
     [self.view addSubview : _contentView];
   
     _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
@@ -367,6 +368,7 @@
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
 - (void) viewWillDisappear : (BOOL) animated
 {
+    NSLog(@"  [viewWillDisappear] This view will disappear..");
     [super viewWillDisappear : animated];
   
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
@@ -1190,12 +1192,37 @@
 
 - (void) pressedCloseButton
 {
-  //[self toastTestAlert];
-  
-  [self closePlayer];
   /*
-  //[self showToast : @"미니플레이어로 변환합니다."];
+    [UIView animateWithDuration : 0.2 //begin animation
+                          delay : 0.1
+                        options : UIViewAnimationCurveEaseIn
+                     animations : ^{
+                                   // This subview is initialized at the top of the screen
+                                   [self.view setFrame : CGRectOffset([self.view frame], 0, -self.view.frame.size.height)];
+                                   // Do the same for Every other subview you want to animate off
+                                  }
+                     completion : nil];
+  */
   
+  /*
+    // bound를 조정하면 뒤에 있는 루트뷰를 인터렉션할 수 있습니다.
+    CGRect viewBounds = self.view.bounds;
+    viewBounds.size.height = self.view.bounds.size.height / 4;
+    self.view.superview.bounds = viewBounds;
+  */
+  //self.view.superview.backgroundColor = [UIColor redColor];
+  
+  
+  //self.view.hidden = YES; // hidden처리하면 rootView를 볼 수 있지만 interaction은 불가합니다.
+  //self.view.bounds = CGRectMake(0, 0, self.view.frame.size.width, 40.f);
+  
+  //[_playerLayer removeFromSuperlayer];
+
+  //[self.view setFrame : CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+  
+  //[self closePlayer];
+  
+///*
     self.isMiniPlayer = YES;
     _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
     _miniPlayerUiView.delegate = self;
@@ -1211,10 +1238,14 @@
     [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
     [self.view addSubview : _miniPlayerUiView];
   
-  //_playerUiView.hidden = self.isMiniPlayer;
+  //self.view.hidden = self.isMiniPlayer; // player view위에 그린 것이므로 hidden처리하면 mini player도 hidden처리됩니다.
     _miniPlayerUiView.hidden = !self.isMiniPlayer;
   //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-  */
+//*/
+  
+    CGRect viewBounds = self.view.bounds;
+    viewBounds.size.height = 40.f;
+    self.view.superview.bounds = viewBounds;
 }
 
 - (void) pressedRateStarButton
