@@ -1165,15 +1165,15 @@
     NSString *netStatus;
     if ( _isDownloadFile )
     {
-      netStatus = @"DOWNLOAD";
+        netStatus = @"DOWNLOAD";
     }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
     {
-      netStatus = @"Wi-Fi";
+        netStatus = @"Wi-Fi";
     }
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
     {
-      netStatus = @"LTE/3G";
+        netStatus = @"LTE/3G";
     }
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
