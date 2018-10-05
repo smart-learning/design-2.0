@@ -36,9 +36,8 @@ export default class HomeBanner extends React.Component {
         title: '강좌'
       });
     } else if (action_type === 'audiobook') {
-      console.log(action_type);
-      console.log(action_param);
-      this.props.navigation.navigate('AudiobookDetailPage', {
+
+      this.props.navigation.navigate('AudioBookDetailPage', {
         id: action_param,
         title: '오디오북'
       });
