@@ -1193,7 +1193,12 @@
 - (void) pressedCloseButton
 {
     self.isMiniPlayer = YES;
-    _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+  
+    if ( [common hasNotch] )
+        _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 60.f)];
+    else
+        _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+  
     _miniPlayerUiView.tag = 1;
     _miniPlayerUiView.delegate = self;
     _miniPlayerUiView.isAuthor = _isAuthor;
@@ -1204,9 +1209,14 @@
     playInfo[@"currentTime"] = @(currentTime);
     playInfo[@"totalTime"] = @(totalTime);
     playInfo[@"isAudioContent"] = @(_isAudioContent);
-    [_miniPlayerUiView setPreparedToPlayInfo: playInfo];
-    [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
+    [_miniPlayerUiView setPreparedToPlayInfo : playInfo];
+    [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
     [self.view addSubview : _miniPlayerUiView];
+  
+    if ( _playButton.hidden )
+        [_miniPlayerUiView setPlayState : YES];
+    else if ( _paueseButton.hidden )
+        [_miniPlayerUiView setPlayState : NO];
   
     [self changedPlayerMode : YES];
   
@@ -1214,7 +1224,10 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-40.f)];
+                                      if ( [common hasNotch] )
+                                          [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-60.f)];
+                                      else
+                                          [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-40.f)];
                                   }
                      completion : ^(BOOL finished)
                                   {
@@ -2469,9 +2482,15 @@
                   setPlay : (BOOL) isPlay
 {
     if ( isPlay )
+    {
         [self pressedPlayButton];
+        [_miniPlayerUiView setPlayState : YES];
+    }
     else
+    {
         [self pressedPauseButton];
+        [_miniPlayerUiView setPlayState : NO];
+    }
 }
 
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
