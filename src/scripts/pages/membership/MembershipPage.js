@@ -94,6 +94,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: CommonStyles.COLOR_PRIMARY
   },
+  membershipCampusBox: {
+    position: 'relative',
+    paddingTop: 25,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#49ac41'
+  },
+  membershipAudioBookBox: {
+    position: 'relative',
+    paddingTop: 25,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#afca0b'
+  },
+  membershipPremiumBox: {
+    position: 'relative',
+    paddingTop: 25,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#a88050'
+  },      
   membershipIcon: {
     position: 'absolute',
     top: 18,
@@ -106,6 +127,24 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     fontSize: 20,
     color: CommonStyles.COLOR_PRIMARY
+  },
+  membershipCampusTitle: {
+    marginBottom: 20,
+    paddingLeft: 15,
+    fontSize: 20,
+    color: '#49ac41'
+  },
+  membershipAudioBookClubTitle: {
+    marginBottom: 20,
+    paddingLeft: 15,
+    fontSize: 20,
+    color: '#afca0b'
+  },
+  membershipPremiumTitle: {
+    marginBottom: 20,
+    paddingLeft: 15,
+    fontSize: 20,
+    color: '#a88050'
   },
   membershipParagraphBox: {
     marginBottom: 20,
@@ -123,6 +162,30 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     backgroundColor: CommonStyles.COLOR_PRIMARY
   },
+  memberShipCampusButton: {
+    alignItems: 'center',
+    height: 65,
+    marginTop: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: '#49ac41'
+  },
+  memberShipAudioBookButton: {
+    alignItems: 'center',
+    height: 65,
+    marginTop: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: '#afca0b'
+  },
+  memberShipPremiumButton: {
+    alignItems: 'center',
+    height: 65,
+    marginTop: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: '#a88050'
+  },      
   memberShipButtonTitle: {
     fontSize: 18,
     color: '#ffffff'
@@ -274,9 +337,9 @@ export default class MembershipPage extends React.Component {
         <ScrollView style={{ width: '100%' }}>
           <View style={{ marginLeft: 20, marginRight: 20, marginTop: 30 }}>
             {globalStore.currentMembership.type === 1 ? (
-              <View style={styles.membershipBox}>
+              <View style={styles.membershipCampusBox}>
                 <Image source={IcCampus} style={styles.membershipIcon} />
-                <Text style={styles.membershipTitle}>윌라 캠퍼스 멤버십</Text>
+                <Text style={styles.membershipCampusTitle}>윌라 캠퍼스 멤버십</Text>
                 <View style={styles.membershipParagraphBox}>
                   <Text style={styles.membershipParagraph}>
                     1천개의 동영상강좌 무제한 이용
@@ -285,7 +348,7 @@ export default class MembershipPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipButton,
+                    styles.memberShipCampusButton,
                     { height: 40 }
                   ]}
                 >
@@ -304,9 +367,9 @@ export default class MembershipPage extends React.Component {
             )}
 
             {globalStore.currentMembership.type === 2 ? (
-              <View style={styles.membershipBox}>
-                <Image source={IcCampus} style={styles.membershipIcon} />
-                <Text style={styles.membershipTitle}>윌라 프리미엄 멤버십</Text>
+              <View style={styles.membershipPremiumBox}>
+                <Image source={IcPremium} style={styles.membershipIcon} />
+                <Text style={styles.membershipPremiumTitle}>윌라 프리미엄 멤버십</Text>
                 <View style={styles.membershipParagraphBox}>
                   <Text style={styles.membershipParagraph}>
                     1천개의 동영상강좌 무제한 이용
@@ -326,7 +389,7 @@ export default class MembershipPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipButton,
+                    styles.memberShipPremiumButton,
                     { height: 40 }
                   ]}
                 >
@@ -346,7 +409,7 @@ export default class MembershipPage extends React.Component {
 
             {globalStore.currentMembership.type === 3 ? (
               <View style={styles.membershipBox}>
-                <Image source={IcCampus} style={styles.membershipIcon} />
+                <Image source={IcPremium} style={styles.membershipIcon} />
                 <Text style={styles.membershipTitle}>윌라 프리패스</Text>
                 <View style={styles.membershipParagraphBox}>
                   <View style={styles.membershipParagraphBox}>
@@ -377,9 +440,9 @@ export default class MembershipPage extends React.Component {
             )}
 
             {globalStore.currentMembership.type === 4 ? (
-              <View style={styles.membershipBox}>
-                <Image source={IcCampus} style={styles.membershipIcon} />
-                <Text style={styles.membershipTitle}>
+              <View style={styles.membershipAudioBookBox}>
+                <Image source={IcClub} style={styles.membershipIcon} />
+                <Text style={styles.membershipAudioBookClubTitle}>
                   윌라 오디오북클럽 멤버십
                 </Text>
                 <View style={styles.membershipParagraphBox}>
@@ -398,7 +461,7 @@ export default class MembershipPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipButton,
+                    styles.memberShipAudioBookButton,
                     { height: 40 }
                   ]}
                 >
@@ -494,9 +557,9 @@ export default class MembershipPage extends React.Component {
               </Text>
             </View>
 
-            <View style={styles.membershipBox}>
+            <View style={styles.membershipCampusBox}>
               <Image source={IcCampus} style={styles.membershipIcon} />
-              <Text style={styles.membershipTitle}>윌라 캠퍼스 멤버십</Text>
+              <Text style={styles.membershipCampusTitle}>윌라 캠퍼스 멤버십</Text>
               <View style={styles.membershipParagraphBox}>
                 <Text style={styles.membershipParagraph}>
                   1천개의 동영상강좌 무제한 이용
@@ -527,7 +590,7 @@ export default class MembershipPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipButton
+                    styles.memberShipCampusButton
                   ]}
                 >
                   <View>
@@ -548,9 +611,9 @@ export default class MembershipPage extends React.Component {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.membershipBox}>
+            <View style={styles.membershipAudioBookBox}>
               <Image source={IcClub} style={styles.membershipIcon} />
-              <Text style={styles.membershipTitle}>
+              <Text style={styles.membershipAudioBookClubTitle}>
                 윌라 오디오북클럽 멤버십
               </Text>
               <View style={styles.membershipParagraphBox}>
@@ -589,7 +652,7 @@ export default class MembershipPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipButton
+                    styles.memberShipAudioBookButton
                   ]}
                 >
                   <View>
@@ -610,9 +673,9 @@ export default class MembershipPage extends React.Component {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.membershipBox}>
+            <View style={styles.membershipPremiumBox}>
               <Image source={IcPremium} style={styles.membershipIcon} />
-              <Text style={styles.membershipTitle}>윌라 프리미엄 멤버십</Text>
+              <Text style={styles.membershipPremiumTitle}>윌라 프리미엄 멤버십</Text>
               <View style={styles.membershipParagraphBox}>
                 <Text style={styles.membershipParagraph}>
                   윌라 캠퍼스 멤버십 + 윌라 오디오북 멤버십
@@ -643,7 +706,7 @@ export default class MembershipPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipButton
+                    styles.memberShipPremiumButton
                   ]}
                 >
                   <View>
