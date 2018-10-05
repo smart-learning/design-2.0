@@ -66,7 +66,7 @@
 @property NSString* modified;
 
 
--(id)initWithTitle:(NSString *)cTitle
+-(id)initWithTitle:(NSString *)title
               memo:(NSString *)memo
                cid:(NSString *)cid
           playTime:(NSString *)playTime

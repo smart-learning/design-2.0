@@ -183,24 +183,81 @@
   sqlite3_stmt *statement;
   
   if(sqlite3_open(dbPath, &_downloadDB) == SQLITE_OK){
-    NSString *querySQL = [NSString stringWithFormat:@"SELECT _id, cid, cTitle, contentPath, audioVideoType, modified FROM DOWNLOAD"];
+    
+    NSString *querySQL = [NSString stringWithFormat:@"SELECT  \
+                            groupkey,  \
+                            ckey,              \
+                            userId,            \
+                            drmSchemeUuid,     \
+                            drmLicenseUrl,     \
+                            cid,               \
+                            oid,               \
+                            contentPath,       \
+                            totalSize,         \
+                            gTitle,            \
+                            cTitle,            \
+                            groupImg,          \
+                            thumbnailImg,      \
+                            audioVideoType,    \
+                            groupTeacherName,  \
+                            cPlayTime,         \
+                            groupContentScnt,  \
+                            groupAllPlayTime,  \
+                            view_limitdate,    \
+                            modified,           \
+                            _id \
+                          FROM DOWNLOAD ORDER BY cid ASC"]; // 정렬해서 조회 : cid 기준 오름차순
     
     const char *query_stmt = [querySQL UTF8String];
     
     if (sqlite3_prepare_v2(_downloadDB, query_stmt, -1, &statement, NULL) == SQLITE_OK) {
       
       while (sqlite3_step(statement) == SQLITE_ROW) {
-        NSString *aid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 0)];
-        NSString *cid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 1)];
-        NSString *cTitle = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 2)];
-        NSString *contentPath = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 3)];
-        NSString *audioVideoType = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 4)];
-        NSString *modified = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 5)];
+        NSString *groupkey = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 0)];
+        NSString *ckey = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 1)];
+        NSString *userId = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 2)];
+        NSString *drmSchemeUuid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 3)];
+        NSString *drmLicenseUrl = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 4)];
+        NSString *cid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 5)];
+        NSString *oid = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 6)];
+        NSString *contentPath = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 7)];
+        NSString *totalSize = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 8)];
+        NSString *gTitle = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 9)];
+        NSString *cTitle = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 10)];
+        NSString *groupImg = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 11)];
+        NSString *thumbnailImg = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 12)];
+        NSString *audioVideoType = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 13)];
+        NSString *groupTeacherName = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 14)];
+        NSString *cPlayTime = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 15)];
+        NSString *groupContentScnt = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 16)];
+        NSString *groupAllPlayTime = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 17)];
+        NSString *view_limitdate = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 18)];
+        NSString *modified = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 19)];
+        NSString *_id = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 20)];
         
-        NSLog(@"_id : %@, cid : %@, cTitle : %@, contentPath : %@, audioVideoType : %@, modified : %@",aid,cid,cTitle,contentPath,audioVideoType,modified);
-        
-        NSDictionary* dic = [[NSDictionary alloc] initWithObjectsAndKeys:cid,@"cid",cTitle,@"cTitle",contentPath,@"contentPath",audioVideoType,@"audioVideoType",modified,@"modified", nil];
-        
+        NSDictionary* dic = [[NSDictionary alloc] initWithObjectsAndKeys: \
+                             groupkey,@"groupkey",\
+                             ckey,@"ckey",  \
+                             userId,@"userId",  \
+                             drmSchemeUuid,@"drmSchemeUuid",  \
+                             drmLicenseUrl,@"drmLicenseUrl",  \
+                             cid,@"cid",  \
+                             oid,@"oid",  \
+                             contentPath,@"contentPath",  \
+                             totalSize,@"totalSize",  \
+                             gTitle,@"gTitle",  \
+                             cTitle,@"cTitle",  \
+                             groupImg,@"groupImg",  \
+                             thumbnailImg,@"thumbnailImg",  \
+                             audioVideoType,@"audioVideoType",  \
+                             groupTeacherName,@"groupTeacherName",  \
+                             cPlayTime,@"cPlayTime",  \
+                             groupContentScnt,@"groupContentScnt",  \
+                             groupAllPlayTime,@"groupAllPlayTime",  \
+                             view_limitdate,@"view_limitdate",  \
+                             modified,@"modified",  \
+                             _id,@"_id",  \
+                             nil];
         [results addObject:dic];
       }
       sqlite3_finalize(statement);

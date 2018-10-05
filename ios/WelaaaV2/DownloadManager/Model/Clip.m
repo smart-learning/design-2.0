@@ -15,7 +15,7 @@
             thumbnailImg,audioVideoType,groupTeacherName,cPlayTime,groupContentScnt, \
             groupAllPlayTime,view_limitdate,modified;
 
--(id)initWithTitle:(NSString *)cTitle
+-(id)initWithTitle:(NSString *)title
               memo:(NSString *)memo
                cid:(NSString *)cid
           playTime:(NSString *)playTime
@@ -23,7 +23,7 @@
 {
   self = [super init];
   if(self != nil){
-    self.cTitle = cTitle;
+    self.cTitle = title;
     self.memo = memo;
     self.cid = cid;
     self.cPlayTime = playTime;

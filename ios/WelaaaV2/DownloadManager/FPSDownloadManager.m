@@ -527,11 +527,10 @@
         fpsDownload = [_activeDownloads objectForKey : contentId];
         [_activeDownloads removeObjectForKey : contentId];
       
-        //fpsDownload.clip.ckey = contentId;
         if ([fpsDownload.clip.cid isEqualToString:contentId]) {
-          NSLog(@"Downloaded contentId and cid are same. Good to go.");
+          NSLog(@"  Downloaded contentId and cid are same. Good to go.");
         }else{
-          NSLog(@"Downloaded contentId and cid are different! Need for check.");
+          NSLog(@"  Downloaded contentId and cid are different! Need for check.");
         }
       
         fpsDownload.clip.contentPath = location.path;
