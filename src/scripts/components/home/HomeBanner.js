@@ -33,7 +33,14 @@ export default class HomeBanner extends React.Component {
     } else if (action_type === 'videocourse') {
       this.props.navigation.navigate('ClassDetailPage', {
         id: action_param,
-        title: '멤버십'
+        title: '강좌'
+      });
+    } else if (action_type === 'audiobook') {
+      console.log(action_type);
+      console.log(action_param);
+      this.props.navigation.navigate('AudiobookDetailPage', {
+        id: action_param,
+        title: '오디오북'
       });
     } else if (action_type === 'outlink') {
       Linking.openURL(action_param);
