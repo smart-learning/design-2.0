@@ -88,21 +88,18 @@ RCT_EXPORT_MODULE();
                                                        andHeaderInfo : args[0][@"token"]];
     [[FPSDownloadManager sharedInstance] setContentsInfo:contentsInfo];
     // 다운로드 시작.
+    /*
     for(NSDictionary* arg in args){
       [[FPSDownloadManager sharedInstance] startDownload : arg
                                               completion : ^(NSError *error, NSMutableDictionary *result)
        {}];
     }
+     */
+    [[FPSDownloadManager sharedInstance] startDownloadContents:args
+                                                    completion:^(NSError *error, NSMutableDictionary *result){
+                                                      
+                                                    }];
   }
-  
-  // 테스트로 하나만 뽑아서 다운로드할 때.
-  /*
-  if (args && args.count>0) {
-    [[FPSDownloadManager sharedInstance] startDownload : args[0]
-                                            completion : ^(NSError *error, NSMutableDictionary *result)
-     {}];
-  }
-  */
 }
 
 - (void) deleteDownloadedContent : (NSDictionary *) args

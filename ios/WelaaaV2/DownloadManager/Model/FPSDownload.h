@@ -14,6 +14,7 @@
 @interface FPSDownload : NSObject
 {
   Clip* clip;
+  NSURLSessionDataTask* playDataTask;
   DownloadTask* task; // by PallyConFPSSDK
   BOOL isDownloading;
   NSData* resumeData;
@@ -21,6 +22,7 @@
 }
 
 @property Clip* clip;
+@property NSURLSessionDataTask* playDataTask;
 @property DownloadTask* task;
 @property BOOL isDownloading;
 @property NSData* resumeData;

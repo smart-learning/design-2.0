@@ -38,6 +38,7 @@
 + (FPSDownloadManager *)sharedInstance;
 - (void)downloadSomething:(NSDictionary *)args;  // 테스트를 위한 메소드
 - (void)startDownload:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
+- (void)startDownloadContents:(NSArray *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)removeDownloadedContent:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)clearQueue;
 - (void)launchNextDownload;

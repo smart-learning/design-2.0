@@ -9,7 +9,7 @@
 #import "FPSDownloadManager.h"
 
 #define DEFAULT_NET_TIMEOUT_SEC 30  // 네트워크 타임아웃
-#define MAX_NUMBER_OF_THREADS    2  // 최대 동시 다운로드 작업 갯수(1로 설정하면 1개씩 받음).
+#define MAX_NUMBER_OF_THREADS    1  // 최대 동시 다운로드 작업 갯수(1로 설정하면 1개씩 받음).
 
 @implementation FPSDownloadManager
 
@@ -35,7 +35,7 @@
         _activeDownloads = [[NSMutableDictionary alloc] init];
         _maximumNumberOfThreads = MAX_NUMBER_OF_THREADS;
         _connectionTimeout = DEFAULT_NET_TIMEOUT_SEC;
-        //  queryService = [[QueryService alloc] init];
+        queryService = [[QueryService alloc] init];
     }
   
     return self;
@@ -109,6 +109,327 @@
 }
 
 
+- (void) startDownloadContents : (NSArray *) items
+                    completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
+{
+  NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
+  
+  for(NSDictionary *item in items)
+  {
+    NSString *cid = item[@"cid"];
+    NSString *userId = item[@"userId"];
+    NSString *token = item[@"token"];
+    
+    //// 데이터 유효성 체크
+    if ( !cid || cid.length <= 0 )
+    {
+      [details setValue : @"No cid"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"콘텐츠 정보(cid)가 없습니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"cid"
+                                         code : 0
+                                     userInfo : details], nil);
+      continue ;
+    }
+    
+    if ( !userId || userId.length <= 0 )
+    {
+      [details setValue : @"No userId"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"사용자 정보(User Id)가 없습니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"userId"
+                                         code : 0
+                                     userInfo : details], nil);
+      continue ;
+    }
+    
+    if ( !token || token.length <= 0 )
+    {
+      [details setValue : @"No token"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"인증 정보(token)가 없습니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"token"
+                                         code : 0
+                                     userInfo : details], nil);
+      continue ;
+    }
+    
+    //// 중복 다운로드 체크(gid 로 뽑아서 비교? - 개별다운로드, 전체다운로드 케이스)
+    
+    // 이미 기존 DB 에 동일 cid 컨텐츠가 있는 경우 날려버리고 새로 받는다.(혹은 '이미 다운로드된 항목입니다. 다시 받으시겠습니까?'->아니요의 경우 전체 다운로드 취소)
+    // DB 레코드 삭제하고 로컬에 있는 파일도 삭제(DB 에 들어있는 단계까지 갔다면 이미 파일 다운로드가 완료된 상태까지 갔다는 것이므로)
+    
+    NSMutableArray *clips = [[DatabaseManager sharedInstance] searchDownloadedContentsId : cid];
+    
+    if ( clips && clips.count > 0 )
+    {
+      NSLog(@"  %lu Contents already in DB searched by cid : %@", (unsigned long)clips.count, cid);
+      // DB 레코드와 그 레코드에서 가리키고 있는 파일 삭제
+      // ㄴ'이미 다운로드된 항목입니다. 다시 받으시겠습니까?' 등의 처리 방법도 고려.
+      for ( Clip *clip in clips )
+      {
+        [[DatabaseManager sharedInstance] removeDownloadedContentsId : clip.cid];   // TODO : DB 삭제 실패 처리
+        
+        if( ![self removeHlsFileAtPath : clip.contentPath] )
+        {
+          NSLog(@"  %@ -> Failed to Remove.", clip.contentPath);
+          continue;
+        }
+        NSLog(@"  %@ -> Removed.",clip.contentPath);
+      }
+    }
+    else
+    {
+      NSLog(@"  No Same Contents in DB searched by cid : %@", cid);
+    }
+    
+    __block NSUInteger indexFound = NSNotFound;
+    // 다운로드 경로 중복체크(대기큐에 이미 있는지)
+    [self -> _downloadingQueue enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
+     {
+       FPSDownload *r = obj;
+       
+       if ( [cid isEqualToString : r.clip.cid] )
+       {
+         *stop = YES;
+         indexFound = idx;
+         
+         return ;
+       }
+     }];
+    
+    if ( indexFound != NSNotFound )
+    {
+      NSLog(@"  Already in Downloading Queue wating for downloading!");
+      [details setValue : @"Already in Downloading Queue wating for downloading"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( self -> _delegateFpsMsg )
+      {
+        [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 대기중입니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"downloading"
+                                         code : 0
+                                     userInfo : details], nil);
+      
+      return ;
+    }
+    
+    // TODO : 현재 다운로드중 리스트에 있는지?
+    if ( [self -> _activeDownloads objectForKey : cid] )
+    {
+      NSLog(@". Already in Active Downloading!");
+      [details setValue : @"이미 다운로드 중입니다"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( self -> _delegateFpsMsg )
+      {
+        [self -> _delegateFpsMsg fpsDownloadMsg : @"이미 다운로드 중입니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"downloading"
+                                         code : 0
+                                     userInfo : details], nil);
+      
+      return ;
+    }
+    
+    FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:item]];
+    fpsDownload.playDataTask = [self preparePlayDataTask:cid authToken:token];
+    
+    [self->_downloadingQueue addObject : fpsDownload];
+  }
+  
+  [self doNextDownload];
+  
+  // Download Request Success(네트워크 요청 직전 단계까지 성공한 상태)
+  if ( self -> _delegateFpsMsg )
+  {
+    [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드를 시작합니다"];
+  }
+}
+
+
+- (NSURLSessionDataTask *) preparePlayDataTask : (NSString *) cid
+                                     authToken : (NSString *) token
+{
+  NSURLSessionDataTask *dataTask;
+  NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
+  
+  NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
+  NSURLSession *defaultSession = [NSURLSession sessionWithConfiguration : defaultConfigObject
+                                                 delegate : nil
+                                            delegateQueue : [NSOperationQueue mainQueue]];
+  
+  NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/";
+  NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, cid];
+  NSURL *url = [NSURL URLWithString : urlWithParams];
+  
+  NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
+  NSString *headerValue = [@"Bearer " stringByAppendingString : token];
+  
+  [urlRequest setHTTPMethod : @"GET"];
+  [urlRequest setValue : headerValue
+    forHTTPHeaderField : @"authorization"];
+  [urlRequest setTimeoutInterval : DEFAULT_NET_TIMEOUT_SEC]; // 초단위 지정
+  
+  dataTask = [defaultSession dataTaskWithRequest : urlRequest
+                               completionHandler : ^(NSData *data, NSURLResponse *response, NSError *error)
+              {
+                if ( error == nil )
+                {
+                  // No error
+                  NSLog(@"  data : %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                  
+                  NSError *error = nil;
+                  NSMutableDictionary* dicResult = [NSJSONSerialization JSONObjectWithData : data
+                                                                             options : kNilOptions
+                                                                               error : &error];
+                  if ( error )
+                  {
+                    NSLog(@"  JSON Parse Error : %@", error.localizedDescription);
+                    
+                    [self doNextDownload];
+                    return;
+                  }
+                  
+                  // DownloadTask 진행
+                  
+                  NSLog(@"custom_data_v2 : %@", dicResult[@"custom_data_v2"]);
+                  NSLog(@"media_urls : %@", dicResult[@"media_urls"]);
+                  NSLog(@"preview_urls : %@", dicResult[@"preview_urls"]);
+                  NSLog(@"permission : %@", dicResult[@"permission"]);
+                  NSLog(@"progress : %@", dicResult[@"progress"]);
+                  
+                  // 다운로드 경로 유무 체크
+                  NSString *urlString = dicResult[@"media_urls"][@"HLS"];
+                  
+                  if ( !urlString || [urlString length] <= 0 )
+                  {
+                    // React 로 에러메시지 전달
+                    NSLog(@"  No HLS Url!");
+                    [details setValue : @"다운로드 경로가 존재하지 않습니다"
+                               forKey : NSLocalizedDescriptionKey];
+                    if ( self -> _delegateFpsMsg )
+                    {
+                      [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 경로가 존재하지 않습니다"];
+                    }
+                    
+                    [self doNextDownload];
+                    return ;
+                  }
+                  
+                  // 다운로드 권한 체크
+                  if ( !dicResult[@"permission"][@"can_play"] )
+                  {
+                    // React 로 에러메시지 전달
+                    NSLog(@"  No Permission to Play!");
+                    [details setValue : @"다운로드 권한이 없습니다"
+                               forKey : NSLocalizedDescriptionKey];
+                    
+                    if ( self -> _delegateFpsMsg )
+                    {
+                      [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 권한이 없습니다"];
+                    }
+                    
+                    [self doNextDownload];
+                    return ;
+                  }
+                  
+                  FPSDownload *fpsDownload = _activeDownloads[cid];
+                  
+                   NSDictionary *downloadInfo = @{ @"uri"    : urlString,
+                                                   @"cid"    : cid,
+                                                   @"userId" : fpsDownload.clip.userId };
+                   fpsDownload.task = [self prepareFPSDownloadTask : downloadInfo];
+                   fpsDownload.clip.contentUrl = [NSURL URLWithString : urlString];
+                  
+                   if ( fpsDownload.task )
+                   {
+                     [fpsDownload.task resume];
+                   }
+                }
+                else
+                {
+                  if ( error.code == -1009 )  // Internet Connection Error
+                  {
+                    ;
+                  }
+                  else  // 기타 오류
+                  {
+                    
+                  }
+                  
+                  [self doNextDownload];
+                }
+                
+                //completion(self->dic, self->errorMessage);
+                /*
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                 // 메인스레드(UI Thread)에서 실행해야 할 때는 이 블럭 사용.
+                 completion(self->items, self->errorMessage);
+                 });
+                 */
+              } ];
+  
+  return dataTask;
+}
+
+
+- (void)doNextDownload{
+  NSLog(@"  doNextDownload");
+  
+  if ( _activeDownloads.count >= self.maximumNumberOfThreads )
+  {
+    NSLog(@"  동시 다운로드 작업갯수 초과. 대기.");
+    return ;
+  }
+  
+  if ( self.numberOfItemsInQueue == 0 )
+  {
+    NSLog(@"Nothing in Downloading Queue.(남아있는 작업 없음)");
+    
+    if ( _activeDownloads.count == 0 )
+    {
+      NSLog(@"  모든 다운로드 완료.");
+      // noti -> 다운로드 완료.
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"다운로드 완료"];
+      }
+    }
+    
+    return;
+  }
+  
+  NSLog(@"  큐에서 다운로드 대기중인 작업 갯수 : %lu", (unsigned long) self.numberOfItemsInQueue);
+  
+  // 새 작업 하나 시작
+  FPSDownload *fpsDownload = [self->_downloadingQueue objectAtIndex : 0];
+  [self->_downloadingQueue removeObjectAtIndex : 0];
+  [fpsDownload.playDataTask resume];
+  fpsDownload.isDownloading = true;
+  [self->_activeDownloads setObject : fpsDownload
+                             forKey : fpsDownload.clip.cid];    // 추후 contentId 로 딕셔너리를 조회.
+}
+
+
 - (void) removeDownloadedContent : (NSDictionary *) args
                       completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
 {
@@ -169,9 +490,7 @@
     NSString *cid = args[@"cid"];
     NSString *userId = args[@"userId"];
     NSString *token = args[@"token"];
-    //NSString *name = args[@"name"];
-    //int cellIndex = [args[@"index"] intValue];  // 추후 다운로드 아이템을 리스트에 보여줘야할때 사용하기 위한 예비정보
-
+  
     if ( !cid || cid.length <= 0 )
     {
         [details setValue : @"No cid"
@@ -284,7 +603,7 @@
         }
         else
         {
-            NSLog(@"  No Contents in DB searched by cid : %@", cid);
+            NSLog(@"  No Same Contents in DB searched by cid : %@", cid);
         }
       
         __block NSUInteger indexFound = NSNotFound;
@@ -389,7 +708,14 @@
   clip.cTitle = @"";  // 개별 클립 정보를 통해 다시 구한다.
   clip.cid = args[@"cid"];
   
-  NSArray *clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립 정보
+  NSArray *clipsList = nil; // 개별 클립 정보
+  
+  if ([clip.audioVideoType isEqualToString:@"video-course"]) {
+    clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립 정보
+  }else if([clip.audioVideoType isEqualToString:@"audiobook"]){
+    clipsList = _contentsInfo[@"data"][@"chapters"]; // 개별 클립 정보
+  }
+  
   for (NSDictionary *eachClip in clipsList){
     if([eachClip[@"cid"] isEqualToString:clip.cid]){
       clip.cTitle = eachClip[@"title"];
@@ -566,7 +892,8 @@
     }
     @finally {}
   
-    [self launchNextDownload];  // 다음 작업 진행.
+    //[self launchNextDownload];  // 다음 작업 진행.
+    [self doNextDownload];
 }
 
 
@@ -618,7 +945,8 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                              didStopWithError : error];
     }
   
-    [self launchNextDownload];
+    //[self launchNextDownload];
+  [self doNextDownload];
 }
 
 @end
