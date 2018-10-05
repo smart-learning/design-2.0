@@ -150,6 +150,10 @@
 		</receiver>
 		<service android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionsService"/>
 
+		<!-- decalre process atrribute to use a seperate process for a mask activity -->
+		<activity android:name=".MaskActivity"
+			android:process="kr.co.influential.youngkangapp.empty"/>
+
 	</application>
 
 </manifest>
