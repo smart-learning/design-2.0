@@ -64,11 +64,18 @@ class BookDailyList extends React.Component {
     let itemData = {};
     let month;
     let day;
+    let mm;
+    let dd;
     try {
       itemData = this.props.itemData;
 
       month = moment(itemData.open_date).format('M');
       day = moment(itemData.open_date).format('D');
+
+      var today = new Date();
+      dd = today.getDate();
+      mm = today.getMonth() + 1; //January is 0!
+
     } catch (error) {
       console.log(error);
     }
@@ -82,7 +89,7 @@ class BookDailyList extends React.Component {
           <View style={styles.bookListItemHeadline}>
             <View style={styles.dateBox}>
               <Text style={styles.date}>
-                {this.props.today === this.props.itemDay ? 'Today' : ''} {month}{' '}
+                {mm == month && dd == day ? 'Today' : ''} {month}{' '}
                 / {day}
               </Text>
               <View

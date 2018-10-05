@@ -1,39 +1,26 @@
 import React from 'react';
-import {
-  createDrawerNavigator,
-  DrawerItems,
-  SafeAreaView
-} from 'react-navigation';
+import { createDrawerNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import {
-  ActivityIndicator,
-  AsyncStorage,
-  DeviceEventEmitter,
-  Platform,
-  View,
-  Linking,
-  Keyboard
-} from 'react-native';
+import { ActivityIndicator, AsyncStorage, DeviceEventEmitter, Keyboard, Linking, Platform, View } from 'react-native';
 import EventEmitter from 'events';
-import globalStore from './src/scripts/commons/store';
+import store from './src/scripts/commons/store';
 
 import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
 import net from './src/scripts/commons/net';
 import BottomController from './src/scripts/components/BottomController';
+import InAppWebView from './src/scripts/components/InAppWebView';
 import Native from './src/scripts/commons/native';
 import { observer } from 'mobx-react';
-import firebase, { RemoteMessage } from 'react-native-firebase';
+import firebase, { Notification, NotificationOpen, RemoteMessage } from 'react-native-firebase';
 import nav from './src/scripts/commons/nav';
-import WebViewScreen from './src/scripts/pages/WebViewScreen';
 import { observable } from 'mobx';
 import commonStyle from './src/styles/common';
-import { Notification, NotificationOpen } from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
-import InquireListScreen from './src/scripts/pages/my/InquireListScreen'
+import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 
 class Data {
   @observable
@@ -49,10 +36,10 @@ class App extends React.Component {
 
   // 키보드 제어 상태를 store에 기록해서 관리
   keyboardDidShow = () => {
-    globalStore.isKeyboardOn = true;
+    store.isKeyboardOn = true;
   };
   keyboardDidHide = () => {
-    globalStore.isKeyboardOn = false;
+    store.isKeyboardOn = false;
   };
 
   getTokenFromAsyncStorage = async () => {
@@ -60,14 +47,14 @@ class App extends React.Component {
     console.log('welaaaAuth:', welaaaAuth);
     if (welaaaAuth) {
       welaaaAuth = JSON.parse(welaaaAuth);
-      globalStore.welaaaAuth = welaaaAuth;
+      store.welaaaAuth = welaaaAuth;
       this.data.welaaaAuthLoaded = true;
 
-      globalStore.profile = await net.getProfile();
+      store.profile = await net.getProfile();
       // 멤버쉽 가져오기
-      globalStore.currentMembership = await net.getMembershipCurrent();
+      store.currentMembership = await net.getMembershipCurrent();
       // 이용권 가져오기
-      globalStore.voucherStatus = await net.getVouchersStatus();
+      store.voucherStatus = await net.getVouchersStatus();
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
@@ -91,7 +78,7 @@ class App extends React.Component {
 
     settings.forEach(setting => {
       const bool = setting[1] === 'true';
-      globalStore.appSettings[setting[0].split('::').pop()] = bool;
+      store.appSettings[setting[0].split('::').pop()] = bool;
     });
 
     Native.updateSettings();
@@ -133,8 +120,8 @@ class App extends React.Component {
     this.initFCM();
 
     // 로그인 이후 발생된 이벤트를 캐치하여 "프로필" 및 "현재멤버십" 가져오기
-    globalStore.emitter = new EventEmitter();
-    globalStore.emitter.addListener('loginCompleted', () => {
+    store.emitter = new EventEmitter();
+    store.emitter.addListener('loginCompleted', () => {
       this.getTokenFromAsyncStorage();
     });
   }
@@ -148,14 +135,14 @@ class App extends React.Component {
     this.subscription.push(
       DeviceEventEmitter.addListener('selectDatabase', params => {
         console.log('database receiveDownloadList:', params);
-        globalStore.downloadItems =
+        store.downloadItems =
           params.selectDownload || params.selectDatabase || 'null';
       })
     );
     this.subscription.push(
       DeviceEventEmitter.addListener('selectDownload', params => {
         console.log('download receiveDownloadList:', params);
-        globalStore.downloadItems =
+        store.downloadItems =
           params.selectDownload || params.selectDatabase || 'null';
       })
     );
@@ -241,11 +228,11 @@ class App extends React.Component {
 
       resultAuthToken
         .then(data => {
-          globalStore.welaaaAuth = data;
+          store.welaaaAuth = data;
 
           // 로그인이 완료 되면 loginCompleted를 보내 App.js의
           // 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
-          globalStore.emitter.emit('loginCompleted');
+          store.emitter.emit('loginCompleted');
           // cb && cb();
         })
         .catch(error => {
@@ -281,7 +268,7 @@ class App extends React.Component {
       listener.remove();
     });
     this.subscription.length = 0;
-    globalStore.emitter.removeAllListeners();
+    store.emitter.removeAllListeners();
     Linking.removeEventListener('url', this._handleOpenURL);
     this.notificationListener();
     this.notificationOpenedListener();
@@ -296,14 +283,14 @@ class App extends React.Component {
   };
 
   render() {
-    console.log('changeInitialRoute:', globalStore.initialRoute);
+    console.log('changeInitialRoute:', store.initialRoute);
 
     return (
       <View style={{ flex: 1 }}>
         {!!this.data.welaaaAuthLoaded && (
           <AppDrawer
             ref={navigatorRef => {
-              globalStore.drawer = navigatorRef;
+              store.drawer = navigatorRef;
               // 플래이어 크래시 때문에 코드 추가
               nav.setNav(navigatorRef);
             }}
@@ -317,11 +304,11 @@ class App extends React.Component {
                 // console.log( 'action :', currentState );
 
                 if (currentScreen !== 'AuthCheck') {
-                  globalStore.lastLocation = currentScreen;
+                  store.lastLocation = currentScreen;
                   if (prevScreen !== 'AuthCheck')
-                    globalStore.prevLocations.push(prevScreen);
-                  globalStore.prevLocations.length = Math.min(
-                    globalStore.prevLocations.length,
+                    store.prevLocations.push(prevScreen);
+                  store.prevLocations.length = Math.min(
+                    store.prevLocations.length,
                     10
                   );
                 }
@@ -341,7 +328,7 @@ class App extends React.Component {
           </View>
         )}
 
-        {globalStore.miniPlayerVisible &&
+        {store.miniPlayerVisible &&
           Platform.select({
             android: <BottomController />,
             ios: null
@@ -352,6 +339,8 @@ class App extends React.Component {
             this.notificationUI = ref;
           }}
         />
+
+        {store.inAppWebViewUrl && <InAppWebView url={store.inAppWebViewUrl} />}
       </View>
     );
   }
@@ -403,10 +392,9 @@ const AppDrawer = createDrawerNavigator(
       screen: MyScreens
     },
 
-	  InquireListScreen: {
-		  screen: InquireListScreen
-
-	  },
+    InquireListScreen: {
+      screen: InquireListScreen
+    },
 
     MembershipScreen: {
       screen: MembershipScreens,
@@ -415,14 +403,6 @@ const AppDrawer = createDrawerNavigator(
         drawerLabel: <Hidden />
       }
     },
-
-    WebView: {
-      screen: WebViewScreen,
-      navigationOptions: {
-        drawerIcon: <Hidden />,
-        drawerLabel: <Hidden />
-      }
-    }
 
     // Playground: {
     // 	screen: Playground,
@@ -446,6 +426,7 @@ const AppDrawer = createDrawerNavigator(
       >
         <SidebarUserInfo {...props} />
         <DrawerItems {...props} />
+        {}
       </SafeAreaView>
     )
   }

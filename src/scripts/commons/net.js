@@ -371,7 +371,7 @@ export default {
   },
 
   getMainPopup() {
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/popup', DEFAULT_EXPIRED)
+    return cacheOrLoad(API_PREFIX + 'v1.0/users/popup')
       .then(data => {
         return data;
       })
@@ -436,6 +436,7 @@ export default {
     });
   },
   getMainBanner(isRefresh = false) {
+
     let expired = DEFAULT_EXPIRED;
     if (isRefresh) {
       expired = 1;
@@ -445,6 +446,7 @@ export default {
         data.forEach(element => {
           element.key = element.id.toString();
         });
+
         return data;
       })
       .catch(error => {

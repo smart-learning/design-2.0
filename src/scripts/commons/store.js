@@ -1,7 +1,7 @@
 import React from 'react';
-import {AsyncStorage} from "react-native";
+import { AsyncStorage } from 'react-native';
 import axios from 'axios';
-import {observable} from "mobx";
+import { observable } from 'mobx';
 
 let socialType;
 let socialToken;
@@ -102,6 +102,9 @@ class Store {
 
   @observable
   isKeyboardOn = false;
+
+  @observable
+  inAppWebViewUrl = null;
 }
 
 const store = new Store();
