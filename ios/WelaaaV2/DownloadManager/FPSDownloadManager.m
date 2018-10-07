@@ -114,6 +114,8 @@
 {
   NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
   
+  [self clearQueue];
+  
   for(NSDictionary *item in items)
   {
     NSString *cid = item[@"cid"];
@@ -169,10 +171,11 @@
       continue ;
     }
     
-    //// 중복 다운로드 체크(gid 로 뽑아서 비교? - 개별다운로드, 전체다운로드 케이스)
+    //// 중복 다운로드 체크에 대한 시나리오 고민 필요(gid 로 뽑아서 비교? - 개별다운로드, 전체다운로드 케이스 등)
     
-    // 이미 기존 DB 에 동일 cid 컨텐츠가 있는 경우 날려버리고 새로 받는다.(혹은 '이미 다운로드된 항목입니다. 다시 받으시겠습니까?'->아니요의 경우 전체 다운로드 취소)
-    // DB 레코드 삭제하고 로컬에 있는 파일도 삭제(DB 에 들어있는 단계까지 갔다면 이미 파일 다운로드가 완료된 상태까지 갔다는 것이므로)
+    // 기존 DB 에 동일 cid 의 콘텐츠가 이미 있는 경우 삭제하고 새로 받는다.
+    // (혹은, '이미 다운로드된 항목입니다. 다시 받으시겠습니까?'->아니요의 경우 전체 다운로드 취소 등의 시나리오 등도 고려)
+    // DB 레코드 삭제하고 로컬에 저장된 파일도 삭제한다.(DB 에 들어있는 단계까지 갔다면 이미 파일 다운로드가 완료된 상태까지 갔다는 것이므로)
     
     NSMutableArray *clips = [[DatabaseManager sharedInstance] searchDownloadedContentsId : cid];
     
@@ -213,6 +216,8 @@
        }
      }];
     
+    //  아래의 두 상황은 전달받은 args 리스트 안에 중복되는 cid 가 있지 않은 이상 발생할 일 없다(큐가 다 지워진 상태이기 때문에).
+    //  그래도 만약 그런 중복 상황이 생긴다면 무시하고 다음 item 으로 넘어간다(continue로 루프문 가장 처음으로 동).
     if ( indexFound != NSNotFound )
     {
       NSLog(@"  Already in Downloading Queue wating for downloading!");
@@ -227,14 +232,12 @@
       resultHandler ([NSError errorWithDomain : @"downloading"
                                          code : 0
                                      userInfo : details], nil);
-      
-      return ;
+      continue ;
     }
     
-    // TODO : 현재 다운로드중 리스트에 있는지?
     if ( [self -> _activeDownloads objectForKey : cid] )
     {
-      NSLog(@". Already in Active Downloading!");
+      NSLog(@"  Already in Active Downloading!");
       [details setValue : @"이미 다운로드 중입니다"
                  forKey : NSLocalizedDescriptionKey];
       
@@ -246,21 +249,25 @@
       resultHandler ([NSError errorWithDomain : @"downloading"
                                          code : 0
                                      userInfo : details], nil);
-      
-      return ;
+      continue ;
     }
     
+    // 다운로드 받을 콘텐츠에 대한 메타정보를 추출해서 미리 저장
     FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:item]];
+    
+    // 다운로드 경로를 구해오기 위한 리퀘스트를 준비
     fpsDownload.playDataTask = [self preparePlayDataTask:cid authToken:token];
     
+    // 다운로드 대기큐에 삽입
     [self->_downloadingQueue addObject : fpsDownload];
   }
   
-  [self doNextDownload];
+  [self doNextDownload];  // 다운로드 작업 시작 요청
   
   // Download Request Success(네트워크 요청 직전 단계까지 성공한 상태)
   if ( self -> _delegateFpsMsg )
   {
+    NSLog(@"  다운로드를 시작합니다");
     [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드를 시작합니다"];
   }
 }
@@ -305,6 +312,7 @@
                   {
                     NSLog(@"  JSON Parse Error : %@", error.localizedDescription);
                     
+                    [_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
                     return;
                   }
@@ -331,6 +339,7 @@
                       [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 경로가 존재하지 않습니다"];
                     }
                     
+                    [_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
                     return ;
                   }
@@ -348,6 +357,7 @@
                       [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 권한이 없습니다"];
                     }
                     
+                    [_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
                     return ;
                   }
@@ -357,12 +367,17 @@
                    NSDictionary *downloadInfo = @{ @"uri"    : urlString,
                                                    @"cid"    : cid,
                                                    @"userId" : fpsDownload.clip.userId };
-                   fpsDownload.task = [self prepareFPSDownloadTask : downloadInfo];
+                   fpsDownload.downloadTask = [self prepareFPSDownloadTask : downloadInfo];
                    fpsDownload.clip.contentUrl = [NSURL URLWithString : urlString];
                   
-                   if ( fpsDownload.task )
+                   if ( fpsDownload.downloadTask )
                    {
-                     [fpsDownload.task resume];
+                     [fpsDownload.downloadTask resume];
+                     /*
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                       [fpsDownload.downloadTask resume];
+                     });
+                      */
                    }
                 }
                 else
@@ -373,9 +388,11 @@
                   }
                   else  // 기타 오류
                   {
-                    
                   }
                   
+                  NSLog(@"NSURLSessionDataTask Error : %ld - %@",(long)error.code, error.description);
+                  
+                  [_activeDownloads removeObjectForKey : cid];
                   [self doNextDownload];
                 }
                 
@@ -392,7 +409,8 @@
 }
 
 
-- (void)doNextDownload{
+- (void) doNextDownload
+{
   NSLog(@"  doNextDownload");
   
   if ( _activeDownloads.count >= self.maximumNumberOfThreads )
@@ -401,11 +419,11 @@
     return ;
   }
   
-  if ( self.numberOfItemsInQueue == 0 )
+  if ( self.numberOfItemsInWating == 0 )
   {
     NSLog(@"Nothing in Downloading Queue.(남아있는 작업 없음)");
     
-    if ( _activeDownloads.count == 0 )
+    if ( _activeDownloads.count == 0 )  // 진행중인 다운로드도 없음.
     {
       NSLog(@"  모든 다운로드 완료.");
       // noti -> 다운로드 완료.
@@ -418,7 +436,7 @@
     return;
   }
   
-  NSLog(@"  큐에서 다운로드 대기중인 작업 갯수 : %lu", (unsigned long) self.numberOfItemsInQueue);
+  NSLog(@"  큐에서 대기중인 작업 갯수 : %lu", (unsigned long) self.numberOfItemsInWating);
   
   // 새 작업 하나 시작
   FPSDownload *fpsDownload = [self->_downloadingQueue objectAtIndex : 0];
@@ -663,10 +681,10 @@
                                           @"uri"    : urlString,
                                           @"cid"    : cid,
                                           @"userId" : userId    };
-        fpsDownload.task = [self prepareFPSDownloadTask : downloadInfo];
+        fpsDownload.downloadTask = [self prepareFPSDownloadTask : downloadInfo];
         fpsDownload.clip.contentUrl = [NSURL URLWithString : urlString];
       
-        if ( fpsDownload.task )
+        if ( fpsDownload.downloadTask )
         {
             [self -> _downloadingQueue addObject : fpsDownload];
         }
@@ -729,15 +747,46 @@
 
 - (void) clearQueue
 {
-    NSLog(@"  clearQueue");
-    [self -> _downloadingQueue removeAllObjects];
-    [self -> _activeDownloads removeAllObjects];
+  NSLog(@"  clearQueue");
+  
+  // 할당되어 있거나 진행중인 네트워크 리퀘스트가 있다면 모두 취소하고 큐에서 삭제.
+  
+  [self -> _downloadingQueue enumerateObjectsUsingBlock : ^(id _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop)
+   {
+     FPSDownload *r = obj;
+     if(r.playDataTask){
+       [r.playDataTask cancel];
+     }
+     if(r.downloadTask){
+       [r.downloadTask cancel];
+     }
+   }];
+  
+  [self -> _activeDownloads enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL * _Nonnull stop)
+   {
+     FPSDownload *r = obj;
+     if(r.playDataTask){
+       [r.playDataTask cancel];
+     }
+     if(r.downloadTask){
+       [r.downloadTask cancel];
+     }
+   }];
+  
+  [self -> _downloadingQueue removeAllObjects];
+  [self -> _activeDownloads removeAllObjects];
 }
 
 
-- (NSUInteger) numberOfItemsInQueue  // 다운로드 대기중인 작업갯수 리턴.
+- (NSUInteger) numberOfItemsInWating  // 다운로드 대기중인 작업갯수 리턴.
 {
-    return self -> _downloadingQueue.count;
+  return self->_downloadingQueue? self->_downloadingQueue.count : 0;
+}
+
+
+- (NSUInteger) numberOfItemsInActive  // 다운로드 진행중인 작업갯수 리턴.
+{
+  return self->_activeDownloads? self->_activeDownloads.count : 0;
 }
 
 
@@ -752,7 +801,7 @@
         return ;
     }
   
-    if ( self.numberOfItemsInQueue == 0 )
+    if ( self.numberOfItemsInWating == 0 )
     {
         NSLog(@"Nothing in Downloading Queue.(남아있는 작업 없음)");
       
@@ -770,12 +819,12 @@
       return;
     }
   
-    NSLog(@"  큐에서 다운로드 대기중인 작업 갯수 : %lu", (unsigned long) self.numberOfItemsInQueue);
+    NSLog(@"  큐에서 다운로드 대기중인 작업 갯수 : %lu", (unsigned long) self.numberOfItemsInWating);
   
     // 새 작업 하나 시작
     FPSDownload *fpsDownload = [self -> _downloadingQueue objectAtIndex : 0];
     [self -> _downloadingQueue removeObjectAtIndex : 0];
-    [fpsDownload.task resume];
+    [fpsDownload.downloadTask resume];
     fpsDownload.isDownloading = true;
     [self -> _activeDownloads setObject : fpsDownload
                                  forKey : fpsDownload.clip.cid];    // 다운로드후 contentId 로 컨텐츠를 조회하기 때문에.
@@ -829,6 +878,9 @@
 {
     NSLog(@"  fpsLicenseWithContentId. Error Message : %@", error.localizedDescription);
     // TODO : 라이센스 인증 실패시엔 다운로드 시작을 안하고 에러 메시지를 콜백(델리게이트 등)으로 리턴하는 방안.
+  
+    [_activeDownloads removeObjectForKey : contentId];
+    [self doNextDownload];
 }
 
 
@@ -902,18 +954,42 @@
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
-    NSLog(@"  download contentId : %@ -> timeRange.start : %f", contentId, CMTimeGetSeconds(timeRange.start));
+  // NSLog(@"  download contentId : %@ -> timeRange.start : %f", contentId, CMTimeGetSeconds(timeRange.start));
+  // 진행된 percent 로 출력하도록 수정 2018.10.7
   
-    if ( _delegateFpsDownload )
-    {
-        [_delegateFpsDownload downloadContent : contentId
-                                      didLoad : timeRange
-                        totalTimeRangesLoaded : loadedTimeRanges
-                      timeRangeExpectedToLoad : timeRangeExpectedToLoad];
-    }
+  double percentComplete = 0.0;
+  for(NSValue* value in loadedTimeRanges){
+    CMTimeRange loadedTimeRange = value.CMTimeRangeValue;
+    percentComplete += CMTimeGetSeconds(loadedTimeRange.duration) / CMTimeGetSeconds(timeRangeExpectedToLoad.duration);
+  }
   
-    // 다운로드 하는 곳의 UI 를 여기서 업데이트 해준다(프로그레스바 등). 그럴려면 프로그레스바의 UI 주소를 미리 받아둬야 한다.
-    // 델리게이트 방식 등으로.
+  FPSDownload* download = nil;
+  @try {
+    download = [_activeDownloads objectForKey:contentId];
+  }
+  @catch (NSException *exception) {
+    NSLog(@"%@", exception.reason);
+    return;
+  }
+  @finally {}
+  
+  if (download) {
+    download.progress = percentComplete;
+    NSLog(@"  activeDownload contentId : %@ ( %f )", contentId, percentComplete * 100.0);
+  }else{
+    download.progress = 0.0;
+  }
+  
+  // TODO : 다운로드 진행 상황을 보여주는 곳의 UI 를 여기서 업데이트 해준다(프로그레스바 등). 그럴려면 프로그레스바의 UI 주소를 미리 받아둬야 한다.
+  // 델리게이트 방식 등으로.
+  
+  if ( _delegateFpsDownload )
+  {
+    [_delegateFpsDownload downloadContent : contentId
+                                  didLoad : timeRange
+                    totalTimeRangesLoaded : loadedTimeRanges
+                  timeRangeExpectedToLoad : timeRangeExpectedToLoad];
+  }
 }
 
 
@@ -946,7 +1022,9 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     }
   
     //[self launchNextDownload];
-  [self doNextDownload];
+  
+    [_activeDownloads removeObjectForKey : contentId];
+    [self doNextDownload];
 }
 
 @end

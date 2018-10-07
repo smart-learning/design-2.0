@@ -15,7 +15,7 @@
 {
   Clip* clip;
   NSURLSessionDataTask* playDataTask;
-  DownloadTask* task; // by PallyConFPSSDK
+  DownloadTask* downloadTask; // by PallyConFPSSDK
   BOOL isDownloading;
   NSData* resumeData;
   float progress; // Download delegate sets this value.
@@ -23,7 +23,7 @@
 
 @property Clip* clip;
 @property NSURLSessionDataTask* playDataTask;
-@property DownloadTask* task;
+@property DownloadTask* downloadTask;
 @property BOOL isDownloading;
 @property NSData* resumeData;
 @property float progress;

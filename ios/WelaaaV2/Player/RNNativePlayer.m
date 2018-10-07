@@ -72,22 +72,54 @@ RCT_EXPORT_MODULE();
 // args 가 여러개의 콘텐츠(Array)로 넘어오는걸로 적용. 2018.10.1
 - (void) downloadContents : (NSArray *) args
 {
+  if ([[FPSDownloadManager sharedInstance] numberOfItemsInWating] > 0) {
+    // 다운로드 진행중입니다. 취소하고 다시 받으시겠습니까? -> 리액트에서 먼저 체크해서 팝업 띄우고 예,아니오에 따라 처리.
+    // 혹은,
+    // 팝업문구 후보안 1 -> 다운로드 대기중인 콘텐츠가 있습니다. 취소하고 새로 받으시겠습니까?
+    // 팝업문구 후보안 2 -> 다운로드 진행중인 콘텐츠가 있습니다. 취소하고 새로 받으시겠습니까?
+  }
+  
+  if ([[FPSDownloadManager sharedInstance] numberOfItemsInActive] > 0) {
+    // 다운로드중인 콘텐츠가 있는 상태일 경우의 처리. 아직은 처리할 케이스 없음.
+  }
+  // 지금은 한 강좌단위 다운로드만 지원. 한 강좌만해도 10개 이상(오디오의 경우 30개 이상)이 많고 그에 따른 다운로드 콘텐츠 페이지의 디테일한 시나리오도 없는 상태이기 때문.
+  // 시나리오는 보완해서 제안.
+  
+  // 여기까지 넘어오면, 다운로드 대기큐와 다운로드 진행중인 작업을 모두 취소하고 새로 시작.
+  
   // gid 를 구한다.
   NSString* gid = nil;
   
-  if (args && args.count > 0) {
+  if (args && args.count > 0)
+  {
     NSString* cid = args[0][@"cid"];
-    if (cid && cid.length>1) {
+    if (cid && cid.length>1)
+    {
       gid = [cid substringToIndex:[cid indexOf:@"_"]];
     }
+  }else
+  {
+    NSLog(@"  No args!");
+    return;
   }
   
-  if (gid && gid.length > 0) {
+  if (gid && gid.length > 0)
+  {
     // 강좌 그룹 전체 내용에 대한 메타정보를 먼저 구하고,
     NSDictionary *contentsInfo = [ApiManager getContentsInfoWithCgid : gid
                                                        andHeaderInfo : args[0][@"token"]];
+    
+    if (contentsInfo == nil)
+    {
+      // 알러트 -> 콘텐츠 정보를 불러올 수 없습니다.
+      NSLog(@"  No contentsInfo!");
+      return;
+    }
+    
     [[FPSDownloadManager sharedInstance] setContentsInfo:contentsInfo];
+    
     // 다운로드 시작.
+    
     /*
     for(NSDictionary* arg in args){
       [[FPSDownloadManager sharedInstance] startDownload : arg
@@ -95,9 +127,18 @@ RCT_EXPORT_MODULE();
        {}];
     }
      */
+    
+    // 하나만 테스트
+    /*
+    if (args) {
+      [[FPSDownloadManager sharedInstance] startDownload : args[0]
+                                              completion : ^(NSError *error, NSMutableDictionary *result)
+       {}];
+    }
+     */
+    
     [[FPSDownloadManager sharedInstance] startDownloadContents:args
                                                     completion:^(NSError *error, NSMutableDictionary *result){
-                                                      
                                                     }];
   }
 }

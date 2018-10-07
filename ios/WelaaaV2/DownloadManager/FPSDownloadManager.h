@@ -42,7 +42,8 @@
 - (void)removeDownloadedContent:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)clearQueue;
 - (void)launchNextDownload;
-- (NSUInteger)numberOfItemsInQueue;
+- (NSUInteger)numberOfItemsInWating;
+- (NSUInteger)numberOfItemsInActive;
 
 // Pallycon 다운로드 진행 상황에 대한 정보를 다른 곳에서도 받아야 할 때 사용.(콜백 등)
 @property (weak, nonatomic) id<PallyConFPSLicenseDelegate> delegateFpsLicense;

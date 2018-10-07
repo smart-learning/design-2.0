@@ -10,7 +10,7 @@
 
 @implementation FPSDownload
 
-@synthesize clip,playDataTask,task,isDownloading,resumeData,progress;
+@synthesize clip,playDataTask,downloadTask,isDownloading,resumeData,progress;
 
 -(id)initWithClip:(Clip *)clip
 {  
