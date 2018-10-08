@@ -178,7 +178,16 @@ export default class DownloadContentPage extends React.Component {
             activeOptacity={0.9}
             style={styles.downloadItemPlayButton}
             onPress={() => {
-              Native.deleteDownload([{ ...item }]);
+              Native.deleteDownload(
+                [{ ...item }],
+                result => {
+                  var removedDownloadList = globalStore.downloadItems.filter(
+                    item => item.cid !== result
+                  );
+                  globalStore.downloadItems.replace(removedDownloadList);
+                },
+                error => console.error(error)
+              );
             }}
           >
             <Image source={IcPlay} style={{ width: 35, height: 35 }} />
