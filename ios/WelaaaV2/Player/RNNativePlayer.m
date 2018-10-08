@@ -118,25 +118,7 @@ RCT_EXPORT_MODULE();
     
     [[FPSDownloadManager sharedInstance] setContentsInfo:contentsInfo];
     
-    // 다운로드 시작.
-    
-    /*
-    for(NSDictionary* arg in args){
-      [[FPSDownloadManager sharedInstance] startDownload : arg
-                                              completion : ^(NSError *error, NSMutableDictionary *result)
-       {}];
-    }
-     */
-    
-    // 하나만 테스트
-    /*
-    if (args) {
-      [[FPSDownloadManager sharedInstance] startDownload : args[0]
-                                              completion : ^(NSError *error, NSMutableDictionary *result)
-       {}];
-    }
-     */
-    
+    // 다운로드 시작
     [[FPSDownloadManager sharedInstance] startDownloadContents:args
                                                     completion:^(NSError *error, NSMutableDictionary *result){
                                                     }];
@@ -144,10 +126,28 @@ RCT_EXPORT_MODULE();
 }
 
 - (void) deleteDownloadedContent : (NSDictionary *) args
+
 {
     [[FPSDownloadManager sharedInstance] removeDownloadedContent : args
                                                       completion : ^(NSError *error, NSMutableDictionary *result)
                                                                    {}];
+}
+
+- (void) deleteDownloadedContents : (NSArray *) args
+                         resolver : (RCTPromiseResolveBlock)resolve
+                         rejecter : (RCTPromiseRejectBlock)reject
+{
+  [[FPSDownloadManager sharedInstance] removeDownloadedContents : args
+                                                     completion : ^(NSError *error, NSMutableDictionary *result)
+   {
+     // 삭제 성공시 cid 를 리턴해준다.
+     if (error == nil) {
+       NSString *cid = result ? [result objectForKey:@"cid"] : @"";
+       resolve(cid);
+     }else{
+       reject(nil,@"Delete Contents Error",error);
+     }
+   }];
 }
 
 - (void) selectDownloadedContent : (NSDictionary *) args
@@ -231,9 +231,11 @@ RCT_EXPORT_METHOD( download : (NSArray *) argsFromReactNative )
     [self downloadContents : argsFromReactNative];  // argsFromReactNative 가 Array 일 때(여러개의 Dictionary)
 }
 
-RCT_EXPORT_METHOD( downloadDelete : (NSDictionary *) argsFromReactNative )
+RCT_EXPORT_METHOD( deleteDownload : (NSArray *) argsFromReactNative
+                         resolver : (RCTPromiseResolveBlock)resolve
+                         rejecter : (RCTPromiseRejectBlock)reject )
 {
-    [self deleteDownloadedContent : argsFromReactNative];
+  [self deleteDownloadedContents:argsFromReactNative resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD( selectDatabase : (NSDictionary *) argsFromReactNative )

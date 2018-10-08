@@ -41,6 +41,8 @@
 - (void)startDownload:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)startDownloadContents:(NSArray *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)removeDownloadedContent:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
+- (void)removeDownloadedContents:(NSArray *)args completion:(void (^)(NSError *error, NSMutableDictionary *result)) resultHandler;
+
 - (void)clearQueue;
 - (void)launchNextDownload;
 - (NSUInteger)numberOfItemsInWating;
