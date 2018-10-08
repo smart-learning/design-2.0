@@ -18,11 +18,11 @@ const MembershipScreen = createStackNavigator(
     },
     MembershipFormPage: {
       screen: MembershipFormPage,
-      navigationOptions: NAV_OPTS_STACK
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     },
     MembershipDetailPage: {
       screen: MembershipDetailPage,
-      navigationOptions: NAV_OPTS_STACK
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     }
   },
 
