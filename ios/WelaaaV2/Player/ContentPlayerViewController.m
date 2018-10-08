@@ -1065,6 +1065,25 @@
 }
 
 //
+// 재생 가능한 이전 콘텐츠를 찾아 set합니다. 없으면 그냥 리턴합니다.
+//
+- (void) setPreviousContent
+{
+    NSLog(@"  [setPreviousContent] 재생 가능한 이전 콘텐츠를 찾아 set합니다.");
+  
+    return ;
+}
+//
+// 재생 가능한 다음 콘텐츠를 찾아 set합니다. 없으면 그냥 리턴합니다.
+//
+- (void) setNextContent
+{
+    NSLog(@"  [setNextContent] 재생 가능한 다음 콘텐츠를 찾아 set합니다.");
+  
+    return ;
+}
+
+//
 // 다음 콘텐트를 재생합니다. 재생할 _args가 미리 세팅되어 있기때문에 파라미터가 필요하지 않습니다.
 //
 - (void) playNext
@@ -2695,12 +2714,12 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
-                // 결국은 PlayListArray를 만들어서 전역으로 가지고 있어야 한다는 뜻?
+                [self setPreviousContent];
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
-                // [self playNext??];
+                [self setNextContent];
                 break;
             
             default:
