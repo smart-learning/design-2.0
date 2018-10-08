@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import IcPlay from '../../../images/ic-play.png';
+import IcTrash from '../../../images/ic-my-trash-xs.png';
 import globalStore from '../../../scripts/commons/store';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
@@ -181,7 +182,7 @@ export default class DownloadContentPage extends React.Component {
               Native.deleteDownload([{ ...item }]);
             }}
           >
-            <Image source={IcPlay} style={{ width: 35, height: 35 }} />
+            <Image source={IcTrash} style={{ width: 24, height: 24 }} />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
