@@ -131,6 +131,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       callbackMethodName = "play/contents-info";
       callbackMethod = "play";
 
+      Preferences.setSQLiteDuration(getReactApplicationContext() , true);
+
       sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
     }
 
@@ -256,7 +258,25 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
 
+  @ReactMethod
+  public void selectProgressDatabase(ReadableMap content) {
+    // 2018.10.05
+    try {
+      Gson gson = new Gson();
+      String json = gson.toJson(ContentManager().getProgressCid());
+
+      WritableMap params = Arguments.createMap();
+
+      params.putString("selectProgressDatabase", json);
+      sendEvent("selectProgressDatabase", params);
+
+       LogHelper.e("selectProgressDatabase :", json.toString() );
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -307,6 +327,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     @Override
     public void onFailure(Call call, IOException e) {
       LogHelper.e(TAG, "콜백오류:" + e.getMessage());
+
+      Preferences.setSQLiteDuration(getReactApplicationContext() , false);
 
       if (mProgressDialog != null) {
         mProgressDialog.dismiss();
