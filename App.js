@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   AsyncStorage,
   DeviceEventEmitter,
+  NativeEventEmitter,
   Platform,
   View,
   Linking,
@@ -140,17 +141,26 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    this.subscription.push(
-      DeviceEventEmitter.addListener('miniPlayer', params => {
-        Native.toggleMiniPlayer(params.visible);
-      })
-    );
-
-    this.subscription.push(
-      DeviceEventEmitter.addListener('downloadState', arg =>
+    if ('ios' === Platform.OS) {
+      const PlayerManagerEmitter = new NativeEventEmitter(
+        Native.RNNativePlayer
+      );
+      PlayerManagerEmitter.addListener('downloadState', arg =>
         Native.downloadState(arg)
-      )
-    );
+      );
+    } else if ('android' === Platform.OS) {
+      this.subscription.push(
+        DeviceEventEmitter.addListener('miniPlayer', params => {
+          Native.toggleMiniPlayer(params.visible);
+        })
+      );
+
+      this.subscription.push(
+        DeviceEventEmitter.addListener('downloadState', arg =>
+          Native.downloadState(arg)
+        )
+      );
+    }
 
     Linking.addEventListener('url', this._handleOpenURL);
 
