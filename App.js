@@ -142,10 +142,12 @@ class App extends React.Component {
 
   async componentDidMount() {
     if ('ios' === Platform.OS) {
-      const PlayerManagerEmitter = new NativeEventEmitter(
-        Native.RNNativePlayer
+      console.log('======', Native.getPlayerManager())
+      const playerManager = Native.getPlayerManager()
+      const playerManagerEmitter = new NativeEventEmitter(
+        playerManager
       );
-      PlayerManagerEmitter.addListener('downloadState', arg =>
+      playerManagerEmitter.addListener('downloadState', arg =>
         Native.downloadState(arg)
       );
     } else if ('android' === Platform.OS) {

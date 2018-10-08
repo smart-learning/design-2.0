@@ -4,6 +4,10 @@ import globalStore from '../commons/store';
 const { RNNativePlayer, RNNativeBase, RNProductPayment } = NativeModules;
 
 export default {
+  getPlayerManager() {
+    return RNNativePlayer
+  },
+
   getF_TOKEN(callback) {
     RNNativeBase.getF_TOKEN(callback);
   },

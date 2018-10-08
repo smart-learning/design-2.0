@@ -18,7 +18,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray <NSString *> *) supportedEvents
 {
-    return @[@"selectDatabase"];
+    return @[@"downloadState",@"selectDatabase"];
 }
 
 // Will be called when this module's first listener is added.
@@ -120,8 +120,22 @@ RCT_EXPORT_MODULE();
     
     // 다운로드 시작
     [[FPSDownloadManager sharedInstance] startDownloadContents:args
-                                                    completion:^(NSError *error, NSMutableDictionary *result){
-                                                    }];
+                                                    completion:^(NSError *error, NSMutableDictionary *result)
+    {
+      // 하나 성공할 때마다 호출되면서 화면의 다운로드 목록 갱신
+      //[result objectForKey:@"cid"]
+      
+      NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+      
+      [params setObject:[NSNumber numberWithBool:true] forKey:@"complete"];
+      [params setObject:[NSNumber numberWithInt:0] forKey:@"progress"];
+      
+      if ( _hasListeners )
+      {
+        [self sendEventWithName : @"downloadState"
+                           body : params];
+      }
+    }];
   }
 }
 

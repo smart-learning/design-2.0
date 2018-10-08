@@ -11,6 +11,14 @@
 #define DEFAULT_NET_TIMEOUT_SEC 30  // 네트워크 타임아웃
 #define MAX_NUMBER_OF_THREADS    1  // 최대 동시 다운로드 작업 갯수(1로 설정하면 1개씩 받음).
 
+
+@interface FPSDownloadManager()
+{
+}
+// 다운로드 완료를 알려주기 위한 콜백함수(파일 하나 다운로드 될때마다 호출해서 화면을 갱신)
+@property (nonatomic, copy) void(^downloadCompletion)(NSError* error, NSMutableDictionary* result);
+@end
+
 @implementation FPSDownloadManager
 
 + (FPSDownloadManager *) sharedInstance
@@ -115,6 +123,8 @@
   NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
   
   [self clearQueue];
+  
+  _downloadCompletion = resultHandler;  // 다운로드 완료될 때마다 결과를 알려주기 위해 호출(다운로드 완료 콜백이 다른곳에 있기 때문에 전역으로 따로 저장)
   
   for(NSDictionary *item in items)
   {
@@ -1005,6 +1015,8 @@
         // TODO : 중복체크 방안
         [[DatabaseManager sharedInstance] saveDownloadedContent : downloadedContent]; // SQLite 를 통해 저장(welaaa.db)
         fpsDownload.clip.downloaded = true;
+      
+        _downloadCompletion(nil, [downloadedContent mutableCopy]);
     }
     @catch (NSException *exception) {
         NSLog(@"  %@", exception.reason);
@@ -1083,7 +1095,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
     NSLog(@"  download contentId : %@, error code : %ld", contentId, error.code);
     // TODO : 다운로드 실패시엔 다운로드 시작을 안하고 에러 메시지를 콜백(델리게이트 등)으로 리턴하고 다음 다운로드 진행.
-  [self showAlertOk:@"Download Error" message:[NSString stringWithFormat:@"contentId : %@\nerror code : %ld", contentId, error.code]];
+  [self showAlertOk:@"Download Error" message:[NSString stringWithFormat:@"contentId : %@\nerror code : %d", contentId, error.code]];
   
     if ( _delegateFpsDownload )
     {
