@@ -10,6 +10,7 @@
 #import <AVKit/AVKit.h>
 #import <Foundation/Foundation.h>
 #import <PallyConFPSSDK/PallyConFPSSDK-Swift.h>
+#import <Toast/UIView+Toast.h>
 #import "FPSDownload.h"
 #import "QueryService.h"
 #import "Clip.h"
