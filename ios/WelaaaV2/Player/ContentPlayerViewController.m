@@ -1498,7 +1498,7 @@
     CGRect frame = self.view.bounds;
   
     if ( [common hasNotch] )
-        frame.size.height = frame.size.height - _bottomView.frame.size.height - 20;
+        frame.size.height = frame.size.height - _bottomView.frame.size.height - 12;
     else
         frame.size.height = frame.size.height - _bottomView.frame.size.height;
   
