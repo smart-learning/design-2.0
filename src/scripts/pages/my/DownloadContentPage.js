@@ -116,11 +116,9 @@ export default class DownloadContentPage extends React.Component {
   componentDidMount() {
     Native.getDownloadList(
       result => {
-        console.log('DownloadContentPage.js::result-', result);
         if ('null' !== result.trim()) {
           try {
             let jsonData = JSON.parse(result);
-            console.log('DownloadContentPage.js::result-', jsonData);
             globalStore.downloadItems = jsonData;
           } catch (e) {
             console.error(e);
@@ -187,20 +185,19 @@ export default class DownloadContentPage extends React.Component {
     let video = [];
     let audio = [];
     // store의 downloadItems이 변경되면..
-    if (globalStore.downloadItems.length > 0) {
-      const items = globalStore.downloadItems.toJS();
-      items
-        .filter(item => 'video-course' == item.audioVideoType)
-        .reduce((accumulator, item, index) => {
-          accumulator.push({ ...item, key: index.toString() });
+    const downloadItems = globalStore.downloadItems.toJS();
+    if (downloadItems.length > 0) {
+      downloadItems.reduce(
+        (accumulator, item, index) => {
+          if ('video-course' === item.audioVideoType) {
+            accumulator.video.push({ ...item, key: index.toString() });
+          } else if ('audiobook' === item.audioVideoType) {
+            accumulator.audio.push({ ...item, key: index.toString() });
+          }
           return accumulator;
-        }, video);
-      items
-        .filter(item => 'audiobook' == item.audioVideoType)
-        .reduce((accumulator, item, index) => {
-          accumulator.push({ ...item, key: index.toString() });
-          return accumulator;
-        }, audio);
+        },
+        { video: video, audio: audio }
+      );
 
       // 데이터를 가지고 리스트를 생성
       if (video.length > 0) {
