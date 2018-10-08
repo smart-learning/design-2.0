@@ -36,7 +36,7 @@
   NSString* groupAllPlayTime;
   NSString* view_limitdate;
   NSString* modified;
-  
+  NSNumber* cPlaySeconds;
 }
 
 @property NSString* cTitle;
@@ -64,6 +64,7 @@
 @property NSString* groupAllPlayTime;
 @property NSString* view_limitdate;
 @property NSString* modified;
+@property NSNumber* cPlaySeconds;
 
 
 -(id)initWithTitle:(NSString *)title

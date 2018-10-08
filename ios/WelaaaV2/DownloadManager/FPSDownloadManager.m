@@ -122,6 +122,14 @@
     NSString *userId = item[@"userId"];
     NSString *token = item[@"token"];
     
+    // 다운로드 받을 콘텐츠에 대한 메타정보를 추출해서 미리 저장
+    FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:item]];
+    
+    if([fpsDownload.clip.cPlaySeconds intValue] == 0){
+      // play_sconds 필드가 0 인 클립은 받지 않음(오디오북의 경우 다운로드 경로가 있다하더라도 내용없는 chapter)
+      continue;
+    }
+    
     //// 데이터 유효성 체크
     if ( !cid || cid.length <= 0 )
     {
@@ -251,9 +259,6 @@
                                      userInfo : details], nil);
       continue ;
     }
-    
-    // 다운로드 받을 콘텐츠에 대한 메타정보를 추출해서 미리 저장
-    FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:item]];
     
     // 다운로드 경로를 구해오기 위한 리퀘스트를 준비
     fpsDownload.playDataTask = [self preparePlayDataTask:cid authToken:token];
@@ -710,7 +715,8 @@
   clip.audioVideoType = _contentsInfo[@"type"];
   clip.drmLicenseUrl = @"drmUrl";
   clip.drmSchemeUuid = @"fairplay";
-  clip.cPlayTime = @""; // 개별 클립 정보를 통해 다시 구한다.
+  clip.cPlayTime = @""; // 아래에서 개별 클립 정보를 통해 다시 구한다.
+  clip.cPlaySeconds = @""; // 아래에서 개별 클립 정보를 통해 다시 구한다. -> 0 일 경우 다운로드 안받는다.
   clip.groupImg = @"";
   clip.oid = @"";
   clip.thumbnailImg = _contentsInfo[@"data"][@"images"][@"list"];
@@ -723,21 +729,22 @@
   clip.contentPath = @""; // 다운로드 완료 후에 결정되는 로컬경로.
   clip.totalSize = @"";
   clip.groupTeacherName = _contentsInfo[@"data"][@"teacher"][@"name"];
-  clip.cTitle = @"";  // 개별 클립 정보를 통해 다시 구한다.
+  clip.cTitle = @"";  // 아래에서 개별 클립 정보를 통해 다시 구한다.
   clip.cid = args[@"cid"];
   
-  NSArray *clipsList = nil; // 개별 클립 정보
+  NSArray *clipsList = nil; // 개별 클립(혹은 오디오북 챕터) 정보
   
   if ([clip.audioVideoType isEqualToString:@"video-course"]) {
-    clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립 정보
+    clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립(혹은 오디오북 챕터) 정보
   }else if([clip.audioVideoType isEqualToString:@"audiobook"]){
-    clipsList = _contentsInfo[@"data"][@"chapters"]; // 개별 클립 정보
+    clipsList = _contentsInfo[@"data"][@"chapters"]; // 개별 클립(혹은 오디오북 챕터) 정보
   }
   
   for (NSDictionary *eachClip in clipsList){
     if([eachClip[@"cid"] isEqualToString:clip.cid]){
       clip.cTitle = eachClip[@"title"];
       clip.cPlayTime = eachClip[@"play_time"];
+      clip.cPlaySeconds = eachClip[@"play_seconds"];  // -> 0 일 경우 다운로드 안받는다.
     }
   }
   
