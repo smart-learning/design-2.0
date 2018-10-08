@@ -131,6 +131,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       callbackMethodName = "play/contents-info";
       callbackMethod = "play";
 
+      Preferences.setSQLiteDuration(getReactApplicationContext() , true);
+
       sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
     }
 
@@ -325,6 +327,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     @Override
     public void onFailure(Call call, IOException e) {
       LogHelper.e(TAG, "콜백오류:" + e.getMessage());
+
+      Preferences.setSQLiteDuration(getReactApplicationContext() , false);
 
       if (mProgressDialog != null) {
         mProgressDialog.dismiss();

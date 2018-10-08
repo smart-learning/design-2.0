@@ -319,6 +319,7 @@ public final class LocalPlayback implements Playback {
           duration = String.valueOf(getobj.get("duration"));
 
           startSqlPosition = Long.parseLong(duration);
+          LogHelper.e(TAG , " CID " + currentCkey + " duration " + startSqlPosition);
         }
       } else {
         startSqlPosition = 0;
@@ -448,12 +449,15 @@ public final class LocalPlayback implements Playback {
     }
 
     attachPlayerView();
-
     configurePlayerState();
 
-    // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ? 
+    if(Preferences.getSQLiteDuration(mContext)){
 
-    mExoPlayer.seekTo(startSqlPosition);
+      // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ?
+      mExoPlayer.seekTo(startSqlPosition);
+
+      Preferences.setSQLiteDuration(mContext, false);
+    }
   }
 
   @Override
@@ -469,6 +473,25 @@ public final class LocalPlayback implements Playback {
 
   @Override
   public void completion() {
+
+    String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+
+    try {
+
+      // update duration 0 으로 셋팅합니다.
+      if (ContentManager().isProgressExist(currentCkey) > 0) {
+        ContentManager()
+            .updateProgress(currentCkey,  "0" );
+      //insert duration 0 으로 셋팅합니다.
+      } else {
+        ContentManager().insertProgress(currentCkey, String.valueOf(mExoPlayer.getDuration()),
+            "0" );
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
     releaseResources(false);
