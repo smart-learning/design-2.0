@@ -505,6 +505,65 @@
 }
 
 
+- (void) removeDownloadedContents : (NSArray *) items
+                       completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
+{
+  NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
+  
+  for(NSDictionary *item in items)
+  {
+    NSString *cid = item[@"cid"];
+    
+    // cid 에 해당하는 DB 레코드가 있을시 삭제(연결된 실제 로컬 파일도 삭제)
+    
+    if ( cid == nil || cid.length <= 0 ) {
+      
+      [details setValue : @"No cid"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"삭제할 콘텐츠 정보(cid)가 없습니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"args"
+                                         code : 0
+                                     userInfo : details], nil);
+      
+      continue ;
+    }
+    
+    NSMutableArray *clips = [[DatabaseManager sharedInstance] searchDownloadedContentsId : cid];
+    
+    if ( clips && clips.count > 0 )
+    {
+      NSLog(@"  %lu Contents are in DB searched by cid : %@", (unsigned long)clips.count, cid);
+      // DB 레코드와 그 레코드에서 가리키고 있는 파일 삭제
+      for ( Clip *clip in clips )
+      {
+        [[DatabaseManager sharedInstance] removeDownloadedContentsId : clip.cid]; // TODO : DB 삭제 실패했을 때의 처리
+        
+        if( ![self removeHlsFileAtPath : clip.contentPath] )  // 파일 삭제
+        {
+          NSLog(@"  %@ -> Failed to Remove.", clip.contentPath);
+          continue;
+        }
+        
+        NSLog(@"  %@ -> Removed.",clip.contentPath);
+        
+        // 성공 리턴
+        NSMutableDictionary *result = [[NSMutableDictionary alloc] initWithObjectsAndKeys:cid,@"cid", nil];
+        resultHandler(nil, result);
+      }
+    }
+    else
+    {
+      NSLog(@"  No Contents in DB searched by cid : %@", cid);
+    }
+  }
+}
+
+
 - (void) queueDownloadRequest : (NSDictionary *) args
                    completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
 {
