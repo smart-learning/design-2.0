@@ -1244,6 +1244,7 @@
                                       self.view.frame = self.view.bounds;
                                   }];
   
+    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     _screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
@@ -2486,6 +2487,7 @@
     _miniPlayerUiView = nil;
     [[self.view viewWithTag:1] removeFromSuperview];
   //_screenMode = ContentsPlayerScreenModeMiniPlayer;
+    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
 }
 
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
