@@ -246,7 +246,7 @@ public class WeContentManager extends SQLiteOpenHelper {
       openDb();
     }
     db.execSQL(
-        String.format("DELETE FROM DOWNLOAD WHERE cId='%s' AND NOT totalSize is NULL;", cId));
+        String.format("DELETE FROM DOWNLOAD WHERE cId='%s'; ", cId));
   }
 
   public void downLoadModify(String modify, String filePath) throws Exception {

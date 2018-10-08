@@ -164,18 +164,12 @@ public class DownloadService extends IntentService implements
   protected void onHandleIntent(@Nullable Intent intent) {
 
     String drm_content_uri_extra = intent.getStringExtra("drm_content_uri_extra");
-    String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
     boolean drm_delete = intent.getBooleanExtra("drm_delete", false);
-
     String downloadContentCid = intent.getStringExtra("contentCid");
-    String expire_at = intent.getStringExtra("expire_at");
 
     intent_drm_content_uri_extra = drm_content_uri_extra ;
-    intent_drm_content_name_extra = drm_content_name_extra ;
-    intent_drm_delete = drm_delete ;
     intent_downloadContentCid = downloadContentCid ;
-
-    mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
+    intent_drm_delete = drm_delete ;
 
     if (drm_delete) {
       // delete
@@ -209,7 +203,16 @@ public class DownloadService extends IntentService implements
 
         return;
       }
+
+      return;
+
     } else {
+
+      String expire_at = intent.getStringExtra("expire_at");
+      String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
+
+      intent_drm_content_name_extra = drm_content_name_extra ;
+      mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
 
       try {
         // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
