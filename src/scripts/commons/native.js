@@ -66,34 +66,9 @@ export default {
       .catch(failed);
   },
 
-  download(args) {
-    const { welaaaAuth } = globalStore;
-    /* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
-    if (
-      welaaaAuth === undefined ||
-      welaaaAuth.profile === undefined ||
-      welaaaAuth.profile.id === undefined
-    ) {
-      Alert.alert('로그인 후 이용할 수 있습니다.');
-
-      return true;
-    }
-
-    console.log('download:', args);
-    RNNativePlayer.download(args);
-  },
-
-  deleteDownloadItem() {
-    const args = {
-      uri: 'uri',
-      DOWNLOAD_SERVICE_TYPE: 'true'
-    };
-
-    try {
-      RNNativePlayer.downloadDelete(args);
-    } catch (e) {
-      alert('실패');
-    }
+  deleteDownload(arg) {
+    console.log('native.js::deleteDownload(arg)', arg);
+    RNNativePlayer.deleteDownload(arg);
   },
 
   /* 내정보 > 설정 메뉴에서 호출 */

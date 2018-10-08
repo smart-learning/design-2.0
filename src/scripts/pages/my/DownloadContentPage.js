@@ -178,7 +178,7 @@ export default class DownloadContentPage extends React.Component {
             activeOptacity={0.9}
             style={styles.downloadItemPlayButton}
             onPress={() => {
-              // TODO. maybe delete?
+              Native.deleteDownload([{ ...item }]);
             }}
           >
             <Image source={IcPlay} style={{ width: 35, height: 35 }} />
