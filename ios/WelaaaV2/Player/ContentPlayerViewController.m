@@ -1165,15 +1165,15 @@
     NSString *netStatus;
     if ( _isDownloadFile )
     {
-      netStatus = @"DOWNLOAD";
+        netStatus = @"DOWNLOAD";
     }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
     {
-      netStatus = @"Wi-Fi";
+        netStatus = @"Wi-Fi";
     }
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
     {
-      netStatus = @"LTE/3G";
+        netStatus = @"LTE/3G";
     }
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
@@ -1192,39 +1192,14 @@
 
 - (void) pressedCloseButton
 {
-  /*
-    [UIView animateWithDuration : 0.2 //begin animation
-                          delay : 0.1
-                        options : UIViewAnimationCurveEaseIn
-                     animations : ^{
-                                   // This subview is initialized at the top of the screen
-                                   [self.view setFrame : CGRectOffset([self.view frame], 0, -self.view.frame.size.height)];
-                                   // Do the same for Every other subview you want to animate off
-                                  }
-                     completion : nil];
-  */
-  
-  /*
-    // bound를 조정하면 뒤에 있는 루트뷰를 인터렉션할 수 있습니다.
-    CGRect viewBounds = self.view.bounds;
-    viewBounds.size.height = self.view.bounds.size.height / 4;
-    self.view.superview.bounds = viewBounds;
-  */
-  //self.view.superview.backgroundColor = [UIColor redColor];
-  
-  
-  //self.view.hidden = YES; // hidden처리하면 rootView를 볼 수 있지만 interaction은 불가합니다.
-  //self.view.bounds = CGRectMake(0, 0, self.view.frame.size.width, 40.f);
-  
-  //[_playerLayer removeFromSuperlayer];
-
-  //[self.view setFrame : CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
-  
-  //[self closePlayer];
-  
-///*
     self.isMiniPlayer = YES;
-    _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+  
+    if ( [common hasNotch] )
+        _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 60.f)];
+    else
+        _miniPlayerUiView = [[ContentMiniPlayerView alloc] initWithFrame : CGRectMake(0, 0, self.view.frame.size.width, 40.f)];
+  
+    _miniPlayerUiView.tag = 1;
     _miniPlayerUiView.delegate = self;
     _miniPlayerUiView.isAuthor = _isAuthor;
     [_miniPlayerUiView setControllerColorWithAudioMode : _isAudioContent];
@@ -1234,18 +1209,32 @@
     playInfo[@"currentTime"] = @(currentTime);
     playInfo[@"totalTime"] = @(totalTime);
     playInfo[@"isAudioContent"] = @(_isAudioContent);
-    [_miniPlayerUiView setPreparedToPlayInfo: playInfo];
-    [_miniPlayerUiView setTitleLabel01: _currentLectureTitle];
+    [_miniPlayerUiView setPreparedToPlayInfo : playInfo];
+    [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
     [self.view addSubview : _miniPlayerUiView];
   
-  //self.view.hidden = self.isMiniPlayer; // player view위에 그린 것이므로 hidden처리하면 mini player도 hidden처리됩니다.
-    _miniPlayerUiView.hidden = !self.isMiniPlayer;
-  //[self changedScreenMode : ContentsPlayerScreenModeMiniPlayer];
-//*/
+    if ( _playButton.hidden )
+        [_miniPlayerUiView setPlayState : YES];
+    else if ( _paueseButton.hidden )
+        [_miniPlayerUiView setPlayState : NO];
   
-    CGRect viewBounds = self.view.bounds;
-    viewBounds.size.height = 40.f;
-    self.view.superview.bounds = viewBounds;
+    [self changedPlayerMode : YES];
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      if ( [common hasNotch] )
+                                          [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-60.f)];
+                                      else
+                                          [self.view.superview setFrame : CGRectOffset([self.view frame], 0, self.view.frame.size.height-40.f)];
+                                  }
+                     completion : ^(BOOL finished)
+                                  {
+                                      self.view.frame = self.view.bounds;
+                                  }];
+  
+    _screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
 - (void) pressedRateStarButton
@@ -2397,48 +2386,16 @@
 }
 
 # pragma mark - Contents mini Player
-- (void) changedScreenMode : (ContentsPlayerScreenMode) screenMode
-{
-    CGRect moveFrame = CGRectZero;
-  
-    if ( screenMode == ContentsPlayerScreenModeMiniPlayer )
-    {
-        moveFrame.origin.x = 0.f;
-        moveFrame.origin.y = CGRectGetMaxY(self.view.frame)-40.f;
-        moveFrame.size.width = self.view.frame.size.width;
-        moveFrame.size.height = 40.f;
-    }
-    else
-    {
-        moveFrame = self.view.superview.frame;
-    }
-  
-    [self changedPlayerMode : screenMode == ContentsPlayerScreenModeMiniPlayer];
-  
-    [UIView animateWithDuration : 0.3f
-                          delay : 0
-                        options : UIViewAnimationOptionAllowUserInteraction
-                     animations : ^{
-                                      self.view.frame = moveFrame;
-                                  }
-                     completion : ^(BOOL finished)
-                                  {
-                                      self.view.frame = self.view.bounds;
-                                  }];
-  
-      _screenMode = screenMode;
-}
+
 // 플레이어 모드 변경 (미니<->일반 플레이어뷰)
 - (void) changedPlayerMode : (BOOL) isMiniPlayer
 {
-    //_playerUiView.hidden = NO;
-    self.view.hidden = NO;
-    _miniPlayerUiView.hidden = NO;
+  //self.view.hidden = NO;
+  //_miniPlayerUiView.hidden = NO;
   
-    //_playerUiView.alpha = isMiniPlayer ? 1.f : 0.f;
-    self.view.alpha = isMiniPlayer ? 1.f : 0.f;
-    _miniPlayerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
-  
+  //self.view.alpha = isMiniPlayer ? 1.f : 0.f;
+  //_miniPlayerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
+  /*
     [UIView animateWithDuration : 0.3f
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
@@ -2454,7 +2411,7 @@
                                       self.view.hidden = self.isMiniPlayer;
                                       _miniPlayerUiView.hidden = !self.isMiniPlayer;
                                   }];
-  
+  */
     if ( isMiniPlayer )
     {
       // 이용로그 전송 시작
@@ -2484,9 +2441,10 @@
       */
     }
 }
-- (void) miniPlayerUiView: (ContentMiniPlayerView *) view
-                 openView: (id) sender
+- (void) miniPlayerUiView : (ContentMiniPlayerView *) view
+                 openView : (id) sender
 {
+    NSLog(@"  [-miniPlayerUiView:openView:] mini Player -> Full Screen Player");
   /*
   if ( [self.delegate respondsToSelector: @selector(player:openView:)] )
   {
@@ -2500,15 +2458,39 @@
     _isTransperPlayModeFromScreen = NO;
     [self changePlayType: NO];
   }*/
+  
+    [self changedPlayerMode : NO];
+  
+    [UIView animateWithDuration : 0.3f
+                          delay : 0
+                        options : UIViewAnimationOptionAllowUserInteraction
+                     animations : ^{
+                                      [self.view.superview setFrame : CGRectOffset([self.view frame], 0, 0)];
+                                   }
+                     completion : ^(BOOL finished)
+                                  {
+                                      self.view.frame = self.view.bounds;
+                                      [[self.view viewWithTag:1] removeFromSuperview];
+                                  }];
+    self.isMiniPlayer = NO;
+    _miniPlayerUiView = nil;
+    [[self.view viewWithTag:1] removeFromSuperview];
+  //_screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
                   setPlay : (BOOL) isPlay
 {
     if ( isPlay )
+    {
         [self pressedPlayButton];
+        [_miniPlayerUiView setPlayState : YES];
+    }
     else
+    {
         [self pressedPauseButton];
+        [_miniPlayerUiView setPlayState : NO];
+    }
 }
 
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
@@ -2696,17 +2678,17 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlStop:
-                //Insert code.
+                [self closePlayer];
                 break;
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
-                //Insert code.
+                // 결국은 PlayListArray를 만들어서 전역으로 가지고 있어야 한다는 뜻?
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
-                //Insert code.
+                // [self playNext??];
                 break;
             
             default:

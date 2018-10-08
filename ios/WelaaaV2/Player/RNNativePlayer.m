@@ -37,6 +37,9 @@ RCT_EXPORT_MODULE();
 
 - (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
+    // 미니플레이어가 떠있을수 있으니 일단 종료시킵니다.
+    [self stopMediaPlayer];
+  
     ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
     NSMutableDictionary *args = [argsFromReactNative mutableCopy];
     [playerViewController setContentData : args];
@@ -62,21 +65,17 @@ RCT_EXPORT_MODULE();
   */
 }
 
-- (void) showMiniPlayer
-{
-    // player를 dismiss하고 miniPlayer를 present합니다.
-}
-
-- (void) representMediaPlayer
-{
-    // miniPlayer를 dismiss하고 player를 present합니다.
-}
-
-
-
 - (void) stopMediaPlayer
 {
-    ;  // playerController를 닫습니다.
+    // 기존 플레이어의 Audio Session을 pause합니다.
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [[AVAudioSession sharedInstance] setActive: NO error: nil];
+  
+    // 모든 뷰컨트롤러를 dismiss시킵니다.
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated : NO
+                                                                                           completion : nil];
+    });
 }
 
 - (void) downloadSomething : (NSDictionary *) args
