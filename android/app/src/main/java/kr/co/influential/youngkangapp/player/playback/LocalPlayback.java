@@ -319,7 +319,7 @@ public final class LocalPlayback implements Playback {
           duration = String.valueOf(getobj.get("duration"));
 
           startSqlPosition = Long.parseLong(duration);
-          LogHelper.e(TAG , " CID " + currentCkey + " duration " + startSqlPosition);
+          LogHelper.e(TAG, " CID " + currentCkey + " duration " + startSqlPosition);
         }
       } else {
         startSqlPosition = 0;
@@ -381,6 +381,10 @@ public final class LocalPlayback implements Playback {
       boolean haveStartPosition = !mediaHasChanged && startWindow != C.INDEX_UNSET;
       if (haveStartPosition) {
 
+        LogHelper.e(TAG,
+            " haveStartPosition ! startSqlPosition " + startSqlPosition + " startPosition "
+                + startPosition);
+
         if (startSqlPosition > startPosition) {
           mExoPlayer.seekTo(startWindow, startSqlPosition);
         } else {
@@ -438,9 +442,6 @@ public final class LocalPlayback implements Playback {
       }
 
     } else {
-      if (startSqlPosition > 0) {
-        mExoPlayer.seekTo(startSqlPosition);
-      }
 
       int state = mExoPlayer.getPlaybackState();
       if (Player.STATE_ENDED == state) {
@@ -451,8 +452,7 @@ public final class LocalPlayback implements Playback {
     attachPlayerView();
     configurePlayerState();
 
-    if(Preferences.getSQLiteDuration(mContext)){
-
+    if (Preferences.getSQLiteDuration(mContext)) {
       // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ?
       mExoPlayer.seekTo(startSqlPosition);
 
@@ -481,11 +481,11 @@ public final class LocalPlayback implements Playback {
       // update duration 0 으로 셋팅합니다.
       if (ContentManager().isProgressExist(currentCkey) > 0) {
         ContentManager()
-            .updateProgress(currentCkey,  "0" );
-      //insert duration 0 으로 셋팅합니다.
+            .updateProgress(currentCkey, "0");
+        //insert duration 0 으로 셋팅합니다.
       } else {
         ContentManager().insertProgress(currentCkey, String.valueOf(mExoPlayer.getDuration()),
-            "0" );
+            "0");
       }
 
     } catch (Exception e) {
