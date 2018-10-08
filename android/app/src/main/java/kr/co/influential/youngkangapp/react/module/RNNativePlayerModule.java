@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -29,13 +28,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.UUID;
-
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.download.DownloadService;
@@ -53,6 +47,8 @@ import kr.co.influential.youngkangapp.util.WeContentManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class RNNativePlayerModule extends ReactContextBaseJavaModule
         implements RNEventEmitter {
@@ -232,8 +228,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                     contentCid = readableMap.getString("cid");
                 }
 
+                if (readableMap.hasKey("contentPath")) {
+                    contentUrl = readableMap.getString("contentPath");
+                }
+
                 try {
-                    if (deleteDownload(contentCid)) {
+                    if (deleteDownload(contentCid , contentUrl)) {
                         promise.resolve(contentCid);
                     } else {
                         promise.reject(new Exception("Failed to delete content."));
@@ -1243,8 +1243,34 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
      * @param cid Content cid which will be deleted.
      * @return True if delete is succeeded, otherwise false.
      */
-    private boolean deleteDownload(String cid) {
+    private boolean deleteDownload(String cid , String localUrl) {
         LogHelper.d(TAG, "deleteDownload-", cid);
+
+//        String drm_content_uri_extra = intent.getStringExtra("drm_content_uri_extra");
+//        String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
+//        boolean drm_delete = intent.getBooleanExtra("drm_delete", false);
+//
+//        String downloadContentCid = intent.getStringExtra("contentCid");
+//        String expire_at = intent.getStringExtra("expire_at");
+
+//        local SQLite 정보 조회를 통해서 download Url 가져 오기
+
+        Activity activity = getCurrentActivity();
+        ContextWrapper contextWrapper = new ContextWrapper(activity);
+        Intent intent = new Intent(contextWrapper, PlayerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        Intent service = new Intent(contextWrapper, DownloadService.class);
+
+        service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, localUrl);
+//        service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+//            mWebPlayerInfo.getCname()[contentId]);
+        service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, true);
+        service.putExtra("contentCid", cid);
+//        service.putExtra("webPlayerInfo", mWebPlayerInfo);
+
+        contextWrapper.startService(service);
+
         return true;
     }
 

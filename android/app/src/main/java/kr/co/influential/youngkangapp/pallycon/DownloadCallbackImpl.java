@@ -163,14 +163,14 @@ public class DownloadCallbackImpl implements PallyconDownloadTask.PallyconDownlo
 						}
 
 
-						Handler handler = new Handler(context.getMainLooper());
-						final int updatePercent = oldPercent;
-						handler.post(new Runnable() {
-							@Override
-							public void run() {
-								showSimpleToast(context, updatePercent + " : % downloaded");
-							}
-						});
+//						Handler handler = new Handler(context.getMainLooper());
+//						final int updatePercent = oldPercent;
+//						handler.post(new Runnable() {
+//							@Override
+//							public void run() {
+//								showSimpleToast(context, updatePercent + " : % downloaded");
+//							}
+//						});
 					}
 				}
 			}

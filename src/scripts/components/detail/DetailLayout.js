@@ -6,7 +6,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import TabContentInfo from './TabContentInfo';
