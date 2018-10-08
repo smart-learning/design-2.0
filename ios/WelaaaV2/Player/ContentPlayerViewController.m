@@ -1148,6 +1148,16 @@
                                                selector : @selector(reloadLogData:)
                                                userInfo : nil
                                                 repeats : YES];
+  
+    // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
+    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+    NSTimeInterval totalTime = [self getDuration];
+    NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
+    playInfo[@"currentTime"] = @(currentTime);
+    playInfo[@"totalTime"] = @(totalTime);
+    playInfo[@"isAudioContent"] = @(_isAudioContent);
+    [_miniPlayerUiView setPreparedToPlayInfo : playInfo];
+    [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
 }
 
 //
@@ -2632,7 +2642,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (void) downloadContent : (NSString * _Nonnull) contentId
         didStopWithError : (NSError * _Nullable) error
 {
-    NSLog(@"  download contentId : %@, error code : %d", contentId, [error code]);
+    NSLog(@"  download contentId : %@, error code : %ld ", contentId, [error code]);
     // FPS 다운로드간 에러 발생시 여기서 처리합니다.
 }
 
