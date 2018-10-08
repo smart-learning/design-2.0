@@ -122,6 +122,14 @@
     NSString *userId = item[@"userId"];
     NSString *token = item[@"token"];
     
+    // 다운로드 받을 콘텐츠에 대한 메타정보를 추출해서 미리 저장
+    FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:item]];
+    
+    if([fpsDownload.clip.cPlaySeconds intValue] == 0){
+      // play_sconds 필드가 0 인 클립은 받지 않음(오디오북의 경우 다운로드 경로가 있다하더라도 내용없는 chapter)
+      continue;
+    }
+    
     //// 데이터 유효성 체크
     if ( !cid || cid.length <= 0 )
     {
@@ -184,6 +192,7 @@
       NSLog(@"  %lu Contents already in DB searched by cid : %@", (unsigned long)clips.count, cid);
       // DB 레코드와 그 레코드에서 가리키고 있는 파일 삭제
       // ㄴ'이미 다운로드된 항목입니다. 다시 받으시겠습니까?' 등의 처리 방법도 고려.
+      /*
       for ( Clip *clip in clips )
       {
         [[DatabaseManager sharedInstance] removeDownloadedContentsId : clip.cid];   // TODO : DB 삭제 실패 처리
@@ -195,6 +204,11 @@
         }
         NSLog(@"  %@ -> Removed.",clip.contentPath);
       }
+       */
+      
+      //  DB 에 이미 있는 파일의 경우 패스(다음 다운로드로 continue 처리)
+      //  어차피 삭제기능 있으므로 지우고 새로 받을 수 있는 시나리오가 있다.
+      continue;
     }
     else
     {
@@ -252,9 +266,6 @@
       continue ;
     }
     
-    // 다운로드 받을 콘텐츠에 대한 메타정보를 추출해서 미리 저장
-    FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:item]];
-    
     // 다운로드 경로를 구해오기 위한 리퀘스트를 준비
     fpsDownload.playDataTask = [self preparePlayDataTask:cid authToken:token];
     
@@ -262,14 +273,16 @@
     [self->_downloadingQueue addObject : fpsDownload];
   }
   
+  NSLog(@"다운로드 시작");
   [self doNextDownload];  // 다운로드 작업 시작 요청
   
   // Download Request Success(네트워크 요청 직전 단계까지 성공한 상태)
+  
   if ( self -> _delegateFpsMsg )
   {
-    NSLog(@"  다운로드를 시작합니다");
     [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드를 시작합니다"];
   }
+  [self showToast:@"다운로드를 시작합니다"];
 }
 
 
@@ -338,6 +351,7 @@
                     {
                       [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 경로가 존재하지 않습니다"];
                     }
+                    [self showAlertOk:nil message:@"다운로드 경로가 존재하지 않습니다"];
                     
                     [_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
@@ -356,6 +370,7 @@
                     {
                       [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 권한이 없습니다"];
                     }
+                    [self showAlertOk:nil message:@"다운로드 권한이 없습니다"];
                     
                     [_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
@@ -373,11 +388,6 @@
                    if ( fpsDownload.downloadTask )
                    {
                      [fpsDownload.downloadTask resume];
-                     /*
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                       [fpsDownload.downloadTask resume];
-                     });
-                      */
                    }
                 }
                 else
@@ -391,18 +401,11 @@
                   }
                   
                   NSLog(@"NSURLSessionDataTask Error : %ld - %@",(long)error.code, error.description);
+                  [self showAlertOk:@"Network Error" message:[NSString stringWithFormat:@"code : %ld\n%@",(long)error.code, error.description]];
                   
                   [_activeDownloads removeObjectForKey : cid];
                   [self doNextDownload];
                 }
-                
-                //completion(self->dic, self->errorMessage);
-                /*
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                 // 메인스레드(UI Thread)에서 실행해야 할 때는 이 블럭 사용.
-                 completion(self->items, self->errorMessage);
-                 });
-                 */
               } ];
   
   return dataTask;
@@ -426,7 +429,9 @@
     if ( _activeDownloads.count == 0 )  // 진행중인 다운로드도 없음.
     {
       NSLog(@"  모든 다운로드 완료.");
-      // noti -> 다운로드 완료.
+
+      [self showAlertOk:@"다운로드 완료" message:@"모든 다운로드가 완료되었습니다"];
+      
       if ( _delegateFpsMsg )
       {
         [_delegateFpsMsg fpsDownloadMsg : @"다운로드 완료"];
@@ -604,6 +609,7 @@
         if ( clips && clips.count > 0 )
         {
             NSLog(@"  %lu Contents already in DB searched by cid : %@", (unsigned long)clips.count, cid);
+          
             // DB 레코드와 그 레코드에서 가리키고 있는 파일 삭제
             // ㄴ'이미 다운로드된 항목입니다. 다시 받으시겠습니까?' 등의 처리 방법도 고려.
             for ( Clip *clip in clips )
@@ -710,7 +716,8 @@
   clip.audioVideoType = _contentsInfo[@"type"];
   clip.drmLicenseUrl = @"drmUrl";
   clip.drmSchemeUuid = @"fairplay";
-  clip.cPlayTime = @""; // 개별 클립 정보를 통해 다시 구한다.
+  clip.cPlayTime = @""; // 아래에서 개별 클립 정보를 통해 다시 구한다.
+  clip.cPlaySeconds = 0; // 아래에서 개별 클립 정보를 통해 다시 구한다. -> 0 일 경우 다운로드 안받는다.
   clip.groupImg = @"";
   clip.oid = @"";
   clip.thumbnailImg = _contentsInfo[@"data"][@"images"][@"list"];
@@ -723,21 +730,22 @@
   clip.contentPath = @""; // 다운로드 완료 후에 결정되는 로컬경로.
   clip.totalSize = @"";
   clip.groupTeacherName = _contentsInfo[@"data"][@"teacher"][@"name"];
-  clip.cTitle = @"";  // 개별 클립 정보를 통해 다시 구한다.
+  clip.cTitle = @"";  // 아래에서 개별 클립 정보를 통해 다시 구한다.
   clip.cid = args[@"cid"];
   
-  NSArray *clipsList = nil; // 개별 클립 정보
+  NSArray *clipsList = nil; // 개별 클립(혹은 오디오북 챕터) 정보
   
   if ([clip.audioVideoType isEqualToString:@"video-course"]) {
-    clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립 정보
+    clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립(혹은 오디오북 챕터) 정보
   }else if([clip.audioVideoType isEqualToString:@"audiobook"]){
-    clipsList = _contentsInfo[@"data"][@"chapters"]; // 개별 클립 정보
+    clipsList = _contentsInfo[@"data"][@"chapters"]; // 개별 클립(혹은 오디오북 챕터) 정보
   }
   
   for (NSDictionary *eachClip in clipsList){
     if([eachClip[@"cid"] isEqualToString:clip.cid]){
       clip.cTitle = eachClip[@"title"];
       clip.cPlayTime = eachClip[@"play_time"];
+      clip.cPlaySeconds = eachClip[@"play_seconds"];  // -> 0 일 경우 다운로드 안받는다.
     }
   }
   
@@ -808,7 +816,8 @@
         if ( _activeDownloads.count == 0 )
         {
             NSLog(@"  모든 다운로드 완료.");
-            // noti -> 다운로드
+          
+            [self showAlertOk:@"다운로드 완료" message:@"모든 다운로드가 완료되었습니다"];
         
             if ( _delegateFpsMsg )
             {
@@ -1013,8 +1022,10 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (void) downloadContent : (NSString * _Nonnull) contentId
         didStopWithError : (NSError * _Nullable) error
 {
-    NSLog(@"  download contentId : %@, error code : %ld", contentId, [error code]);
+    NSLog(@"  download contentId : %@, error code : %ld", contentId, error.code);
     // TODO : 다운로드 실패시엔 다운로드 시작을 안하고 에러 메시지를 콜백(델리게이트 등)으로 리턴하고 다음 다운로드 진행.
+  [self showAlertOk:@"Download Error" message:[NSString stringWithFormat:@"contentId : %@\nerror code : %ld", contentId, error.code]];
+  
     if ( _delegateFpsDownload )
     {
         [_delegateFpsDownload downloadContent : contentId
@@ -1025,6 +1036,37 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
   
     [_activeDownloads removeObjectForKey : contentId];
     [self doNextDownload];
+}
+
+
+#pragma mark - Notifications 각종 알림 관련
+- (void) showToast : (NSString *) text
+{
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    [[UIApplication sharedApplication].keyWindow makeToast:text];
+  });
+}
+
+
+- (void) showAlertOk : (NSString *) title message:(NSString *)msg
+{
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle : title
+                                                                 message : msg
+                                                          preferredStyle : UIAlertControllerStyleAlert];
+  
+  UIAlertAction *ok = [UIAlertAction actionWithTitle : @"확인"
+                                              style : UIAlertActionStyleDefault
+                                            handler : ^(UIAlertAction * action)
+                      {
+                        [alert dismissViewControllerAnimated:YES completion:nil];
+                      }];
+  
+  [alert addAction : ok];
+  
+  [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : alert
+                                                                               animated : YES
+                                                                             completion : nil];
+
 }
 
 @end
