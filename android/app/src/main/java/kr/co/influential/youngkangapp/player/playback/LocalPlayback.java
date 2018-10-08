@@ -59,12 +59,16 @@ import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
+import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Preferences;
+import kr.co.influential.youngkangapp.util.WeContentManager;
 
 /**
  * A class that implements local media playback using {@link com.google.android.exoplayer2.ExoPlayer}
@@ -109,6 +113,8 @@ public final class LocalPlayback implements Playback {
   private boolean startAutoPlay;
   private int startWindow;
   private long startPosition;
+
+  private long startSqlPosition;
 
   private PallyconWVMSDK pallyconWVMSDK;
 
@@ -208,6 +214,25 @@ public final class LocalPlayback implements Playback {
 
   @Override
   public void stop(boolean notifyListeners) {
+
+    String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+
+    try {
+
+      // update
+      if (ContentManager().isProgressExist(currentCkey) > 0) {
+        ContentManager()
+            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()));
+        //insert
+      } else {
+        ContentManager().insertProgress(currentCkey, String.valueOf(mExoPlayer.getDuration()),
+            String.valueOf(mExoPlayer.getCurrentPosition()));
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
     releaseResources(true);
@@ -279,6 +304,31 @@ public final class LocalPlayback implements Playback {
       currentMedia = item;
     }
 
+    ArrayList<HashMap<String, Object>> obj = null;
+    ArrayList<String> cid = new ArrayList<String>();
+
+    String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+    String duration = "";
+    try {
+      obj = ContentManager().getProgressCid(currentCkey);
+
+      if (obj != null) {
+        for (int i = 0; i < obj.size(); i++) {
+          HashMap<String, Object> getobj = obj.get(i);
+
+          duration = String.valueOf(getobj.get("duration"));
+
+          startSqlPosition = Long.parseLong(duration);
+          LogHelper.e(TAG , " CID " + currentCkey + " duration " + startSqlPosition);
+        }
+      } else {
+        startSqlPosition = 0;
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     if (mediaHasChanged || mExoPlayer == null) {
       releaseResources(true);
 
@@ -317,12 +367,28 @@ public final class LocalPlayback implements Playback {
       mExoPlayer.addListener(mEventListener);
       mExoPlayer.setPlayWhenReady(startAutoPlay);
 
+//      mExoPlayer.createMessage(new Target() {
+//        @Override
+//        public void handleMessage(int messageType, Object payload) throws ExoPlaybackException {
+//          // ContentManger //
+//          LogHelper.e(TAG , "ExoPlayer createMessage getCurrentPosition " + mExoPlayer.getCurrentPosition());
+//
+//        }
+//      }).setPosition(1500).setHandler(new Handler()) .send();
+
       // Prepares media to play (happens on background thread) and triggers
       // {@code onPlayerStateChanged} callback when the stream is ready to play.
       boolean haveStartPosition = !mediaHasChanged && startWindow != C.INDEX_UNSET;
       if (haveStartPosition) {
-        mExoPlayer.seekTo(startWindow, startPosition);
+
+        if (startSqlPosition > startPosition) {
+          mExoPlayer.seekTo(startWindow, startSqlPosition);
+        } else {
+          mExoPlayer.seekTo(startWindow, startPosition);
+        }
+
       }
+
       mExoPlayer.prepare(mediaSource, !haveStartPosition, false);
 
       final AudioAttributes audioAttributes = new AudioAttributes.Builder()
@@ -349,7 +415,6 @@ public final class LocalPlayback implements Playback {
         }
         // 다른건 없음
         int currentId = Preferences.getWelaaaPlayListCId(mContext);
-        String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
 
         Gson gson = new Gson();
         String json = Preferences.getWelaaaWebPlayInfo(mContext);
@@ -373,6 +438,10 @@ public final class LocalPlayback implements Playback {
       }
 
     } else {
+      if (startSqlPosition > 0) {
+        mExoPlayer.seekTo(startSqlPosition);
+      }
+
       int state = mExoPlayer.getPlaybackState();
       if (Player.STATE_ENDED == state) {
         mExoPlayer.seekTo(startPosition);
@@ -380,8 +449,15 @@ public final class LocalPlayback implements Playback {
     }
 
     attachPlayerView();
-
     configurePlayerState();
+
+    if(Preferences.getSQLiteDuration(mContext)){
+
+      // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ?
+      mExoPlayer.seekTo(startSqlPosition);
+
+      Preferences.setSQLiteDuration(mContext, false);
+    }
   }
 
   @Override
@@ -397,6 +473,25 @@ public final class LocalPlayback implements Playback {
 
   @Override
   public void completion() {
+
+    String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+
+    try {
+
+      // update duration 0 으로 셋팅합니다.
+      if (ContentManager().isProgressExist(currentCkey) > 0) {
+        ContentManager()
+            .updateProgress(currentCkey,  "0" );
+      //insert duration 0 으로 셋팅합니다.
+      } else {
+        ContentManager().insertProgress(currentCkey, String.valueOf(mExoPlayer.getDuration()),
+            "0" );
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
     releaseResources(false);
@@ -559,6 +654,9 @@ public final class LocalPlayback implements Playback {
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
       // Nothing to do.
+
+      LogHelper.e(TAG, "ExoPlayer ExoPlayerEventListener onTimelineChanged " + timeline);
+
     }
 
     @Override
@@ -869,5 +967,13 @@ public final class LocalPlayback implements Playback {
 
     public String siteId;
     public String siteKey;
+  }
+
+  /******************************
+   * Comment   : 등록된 컨텐츠 매니져
+   ******************************/
+  public WeContentManager ContentManager() {
+    MainApplication myApp = (MainApplication) mContext;
+    return myApp.getContentMgr();
   }
 }

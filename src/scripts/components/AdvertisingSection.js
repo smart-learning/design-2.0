@@ -27,6 +27,13 @@ class AdvertisingSection extends Component {
 				backgroundColor: '#FFFFFF',
 			},
 
+			popupInfo: {
+				flex:1,
+				position:'absolute',
+				alignItems:'center',
+				justifyContent:'center'
+			},
+
 			img: {
 				// borderTopRightRadius: 20,
 				// borderTopLeftRadius: 20,
@@ -96,8 +103,6 @@ class AdvertisingSection extends Component {
 		let closedAd = ads.shift();
 		this.setState({ ads: ads });
 
-		console.log('dddd', ads);
-
 		return closedAd;
 	}
 
@@ -114,19 +119,23 @@ class AdvertisingSection extends Component {
 		AsyncStorage.setItem(`pop-${closedAd.id}`, after3Days);
 	}
 
-	goEvent = (data) => {
-		// 임시용 랜딩 페이지 이동 
-		if (data.img_url === 'https://static.welaaa.co.kr/event/180920/popup.jpg') {
-			nav.parseDeepLink('welaaa://event/27');
-		}
+	goEvent = (info) => {
+
+		nav.parseDeepLink('welaaa://'+info.action_type+'/'+info.action_param);
 	}
 
 
 	render() {
 
 		let ad = {};
+		let img_ratio = 1.0;
 		const cnt = this.state.ads.length;
-		if (cnt > 0) ad = this.state.ads[cnt - 1];
+		const device_size = Dimensions.get('window');
+		
+		if (cnt > 0){
+			ad = this.state.ads[cnt - 1];
+			img_ratio = (device_size.width-50)/ad.img_width;
+		}
 
 
 		return <Modal
@@ -144,10 +153,10 @@ class AdvertisingSection extends Component {
 						style={this.style.hideOption}
 						onPress={() => this.goEvent(ad)}
 					>
-
+						<View style={[ { height: ad.img_height*img_ratio} ]} ></View>
 						<Image source={{ uri: ad.img_url }}
-							width={Dimensions.get('window').width - 30}
-							style={this.style.img}
+							width={device_size.width-30}
+							style={this.style.popupInfo}
 							resizeMode={'cover'}
 						/>
 					</TouchableOpacity>
