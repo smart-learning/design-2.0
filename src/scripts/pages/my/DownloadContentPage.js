@@ -1,7 +1,7 @@
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import React from 'react';
 import {
-  AsyncStorage,
-  Button,
   FlatList,
   Image,
   ScrollView,
@@ -10,13 +10,11 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
-import globalStore from '../../../scripts/commons/store';
 import { SafeAreaView } from 'react-navigation';
-import { observer } from 'mobx-react';
-import { observable } from 'mobx';
-import Native from '../../commons/native';
 import IcPlay from '../../../images/ic-play.png';
+import globalStore from '../../../scripts/commons/store';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -96,10 +94,16 @@ const styles = StyleSheet.create({
   },
 
   downloadItemInfo: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'stretch',
     paddingLeft: 20
   },
 
   downloadItemPlayButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     marginLeft: 'auto'
   }
 });
@@ -146,10 +150,18 @@ export default class DownloadContentPage extends React.Component {
           style={styles.downloadItemImg}
         />
         <View style={styles.downloadItemInfo}>
-          <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+          <Text
+            style={{ fontSize: 16, fontWeight: 'bold' }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {item.gTitle}
           </Text>
-          <Text style={{ fontSize: 12, color: COLOR_PRIMARY }}>
+          <Text
+            style={{ fontSize: 12, color: COLOR_PRIMARY }}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {item.cTitle}
           </Text>
           <Text style={{ fontSize: 12, color: '#A6A6A6' }}>
@@ -161,15 +173,17 @@ export default class DownloadContentPage extends React.Component {
             </Text>
           )}
         </View>
-        <TouchableOpacity
-          activeOptacity={0.9}
-          style={styles.downloadItemPlayButton}
-          onPress={() => {
-            // TODO. maybe delete?
-          }}
-        >
-          <Image source={IcPlay} style={{ width: 20, height: 20 }} />
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity
+            activeOptacity={0.9}
+            style={styles.downloadItemPlayButton}
+            onPress={() => {
+              // TODO. maybe delete?
+            }}
+          >
+            <Image source={IcPlay} style={{ width: 35, height: 35 }} />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
     );
   };
