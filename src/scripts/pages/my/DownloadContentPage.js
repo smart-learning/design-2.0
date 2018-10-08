@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, observe } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
@@ -11,7 +11,6 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import IcPlay from '../../../images/ic-play.png';
 import IcTrash from '../../../images/ic-my-trash-xs.png';
 import globalStore from '../../../scripts/commons/store';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
@@ -113,12 +112,23 @@ const styles = StyleSheet.create({
 export default class DownloadContentPage extends React.Component {
   @observable
   tabStatus = 'video';
-  @observable
-  videos = [];
-  @observable
-  audios = [];
 
   componentDidMount() {
+    this.getDownloadList();
+
+    this.disposer = observe(globalStore.downloadState, change => {
+      if ('complete' === change.name && change.newValue) {
+        this.getDownloadList();
+        globalStore.downloadState.complete = false;
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.disposer();
+  }
+
+  getDownloadList() {
     Native.getDownloadList(
       result => {
         if ('null' !== result.trim()) {

@@ -1,5 +1,4 @@
-﻿import React from 'react';
-import { Alert, NativeModules } from 'react-native';
+﻿import { Alert, NativeModules } from 'react-native';
 import globalStore from '../commons/store';
 
 const { RNNativePlayer, RNNativeBase, RNProductPayment } = NativeModules;
@@ -57,6 +56,12 @@ export default {
   toggleMiniPlayer(bool) {
     console.log('toggleMiniPlayer:', bool);
     globalStore.miniPlayerVisible = bool;
+  },
+
+  downloadState(arg) {
+    console.log('native.js::downloadState(arg)', arg);
+    globalStore.downloadState.complete = arg.complete;
+    globalStore.downloadState.progress = arg.progress;
   },
 
   getDownloadList(success, failed) {

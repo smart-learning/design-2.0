@@ -33,7 +33,7 @@ import { observable } from 'mobx';
 import commonStyle from './src/styles/common';
 import { Notification, NotificationOpen } from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
-import InquireListScreen from './src/scripts/pages/my/InquireListScreen'
+import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 
 class Data {
   @observable
@@ -144,6 +144,12 @@ class App extends React.Component {
       DeviceEventEmitter.addListener('miniPlayer', params => {
         Native.toggleMiniPlayer(params.visible);
       })
+    );
+
+    this.subscription.push(
+      DeviceEventEmitter.addListener('downloadState', arg =>
+        Native.downloadState(arg)
+      )
     );
 
     Linking.addEventListener('url', this._handleOpenURL);
@@ -389,10 +395,9 @@ const AppDrawer = createDrawerNavigator(
       screen: MyScreens
     },
 
-	  InquireListScreen: {
-		  screen: InquireListScreen
-
-	  },
+    InquireListScreen: {
+      screen: InquireListScreen
+    },
 
     MembershipScreen: {
       screen: MembershipScreens,
