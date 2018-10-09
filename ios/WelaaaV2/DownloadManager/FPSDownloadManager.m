@@ -191,31 +191,11 @@
     
     //// 중복 다운로드 체크에 대한 시나리오 고민 필요(gid 로 뽑아서 비교? - 개별다운로드, 전체다운로드 케이스 등)
     
-    // 기존 DB 에 동일 cid 의 콘텐츠가 이미 있는 경우 삭제하고 새로 받는다.
-    // (혹은, '이미 다운로드된 항목입니다. 다시 받으시겠습니까?'->아니요의 경우 전체 다운로드 취소 등의 시나리오 등도 고려)
-    // DB 레코드 삭제하고 로컬에 저장된 파일도 삭제한다.(DB 에 들어있는 단계까지 갔다면 이미 파일 다운로드가 완료된 상태까지 갔다는 것이므로)
-    
     NSMutableArray *clips = [[DatabaseManager sharedInstance] searchDownloadedContentsId : cid];
     
     if ( clips && clips.count > 0 )
     {
       NSLog(@"  %lu Contents already in DB searched by cid : %@", (unsigned long)clips.count, cid);
-      // DB 레코드와 그 레코드에서 가리키고 있는 파일 삭제
-      // ㄴ'이미 다운로드된 항목입니다. 다시 받으시겠습니까?' 등의 처리 방법도 고려.
-      /*
-      for ( Clip *clip in clips )
-      {
-        [[DatabaseManager sharedInstance] removeDownloadedContentsId : clip.cid];   // TODO : DB 삭제 실패 처리
-        
-        if( ![self removeHlsFileAtPath : clip.contentPath] )
-        {
-          NSLog(@"  %@ -> Failed to Remove.", clip.contentPath);
-          continue;
-        }
-        NSLog(@"  %@ -> Removed.",clip.contentPath);
-      }
-       */
-      
       //  DB 에 이미 있는 파일의 경우 패스(다음 다운로드로 continue 처리)
       //  어차피 삭제기능 있으므로 지우고 새로 받을 수 있는 시나리오가 있다.
       continue;
@@ -826,32 +806,19 @@
 {
   NSLog(@"  clearQueue");
   
-  // 할당되어 있거나 진행중인 네트워크 리퀘스트가 있다면 모두 취소하고 큐에서 삭제.
-  
+  // 대기중인 다운로드 작업이 있다면 취소하고 리셋(진행중인 다운로드 작업은 계속해서 진행)
   [self -> _downloadingQueue enumerateObjectsUsingBlock : ^(id _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop)
    {
      FPSDownload *r = obj;
      if(r.playDataTask){
-       [r.playDataTask cancel];
+       //[r.playDataTask cancel]; // 작업 취소가 필요한 경우
      }
      if(r.downloadTask){
-       [r.downloadTask cancel];
-     }
-   }];
-  
-  [self -> _activeDownloads enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL * _Nonnull stop)
-   {
-     FPSDownload *r = obj;
-     if(r.playDataTask){
-       [r.playDataTask cancel];
-     }
-     if(r.downloadTask){
-       [r.downloadTask cancel];
+       //[r.downloadTask cancel]; // 작업 취소가 필요한 경우
      }
    }];
   
   [self -> _downloadingQueue removeAllObjects];
-  [self -> _activeDownloads removeAllObjects];
 }
 
 
@@ -1024,7 +991,6 @@
     }
     @finally {}
   
-    //[self launchNextDownload];  // 다음 작업 진행.
     [self doNextDownload];
 }
 
@@ -1034,8 +1000,7 @@
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
-  // NSLog(@"  download contentId : %@ -> timeRange.start : %f", contentId, CMTimeGetSeconds(timeRange.start));
-  // 진행된 percent 로 출력하도록 수정 2018.10.7
+  // 다운로드 진행된 percentage 를 계산해서 출력
   
   double percentComplete = 0.0;
   for(NSValue* value in loadedTimeRanges){
@@ -1095,15 +1060,13 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
     NSLog(@"  download contentId : %@, error code : %ld", contentId, error.code);
     // TODO : 다운로드 실패시엔 다운로드 시작을 안하고 에러 메시지를 콜백(델리게이트 등)으로 리턴하고 다음 다운로드 진행.
-  [self showAlertOk:@"Download Error" message:[NSString stringWithFormat:@"contentId : %@\nerror code : %d", contentId, error.code]];
+  [self showAlertOk:@"Download Error" message:[NSString stringWithFormat:@"contentId : %@\nerror : %@", contentId, error.description]];
   
     if ( _delegateFpsDownload )
     {
         [_delegateFpsDownload downloadContent : contentId
                              didStopWithError : error];
     }
-  
-    //[self launchNextDownload];
   
     [_activeDownloads removeObjectForKey : contentId];
     [self doNextDownload];
@@ -1113,9 +1076,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 #pragma mark - Notifications 각종 알림 관련
 - (void) showToast : (NSString *) text
 {
-  dispatch_sync(dispatch_get_main_queue(), ^{
-    [[UIApplication sharedApplication].keyWindow makeToast:text];
-  });
+  [[UIApplication sharedApplication].keyWindow makeToast:text];
 }
 
 
