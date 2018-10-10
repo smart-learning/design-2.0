@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Platform,
+  Alert
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import TabContentInfo from './TabContentInfo';
@@ -13,6 +15,8 @@ import TopBanner from './TopBanner';
 import TabContentList from './TabContentList';
 import AudiobookPaymentStatus from './AudiobookPaymentStatus';
 import VideoPaymentStatus from './VideoPaymentStatus';
+import Native from '../../commons/native.js';
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -62,6 +66,60 @@ class DetailLayout extends React.Component {
     super(props);
   }
 
+  onDownload = () => {
+    const { welaaaAuth } = globalStore;
+
+    console.log('welaaaAuth:', welaaaAuth);
+
+    /* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
+    if (
+      welaaaAuth === undefined ||
+      welaaaAuth.profile === undefined ||
+      welaaaAuth.profile.id === undefined
+    ) {
+      Alert.alert('로그인 후 이용할 수 있습니다.');
+
+      return true;
+    }
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let accessToken = globalStore.welaaaAuth.access_token;
+
+    const itemData = this.props.itemData;
+    const itemClipData = this.props.store.itemClipData.toJS();
+    if (itemData && itemClipData) {
+      let params = [];
+      if ('ios' === Platform.OS) {
+        itemClipData.reduce((accumulator, item) => {
+          accumulator.push({
+            cid: item.cid,
+            userId: userId.toString(),
+            token: accessToken
+          });
+          return accumulator;
+        }, params);
+      } else if ('android' === Platform.OS) {
+        if ('video-course' === itemData.type) {
+          itemClipData.reduce((accumulator, item) => {
+            accumulator.push({
+              cid: item.cid,
+              userId: userId.toString(),
+              token: accessToken
+            });
+            return accumulator;
+          }, params);
+        } else if ('audiobook' === itemData.type) {
+          params.push({
+            cid: itemData.cid,
+            userId: userId.toString(),
+            token: accessToken
+          });
+        }
+      }
+      Native.download(params);
+    }
+  };
+
   render() {
     return (
       <View
@@ -75,7 +133,6 @@ class DetailLayout extends React.Component {
             learnType={this.props.learnType}
             store={this.props.store}
           />
-
           {this.props.learnType === 'audioBook' ? (
             <AudiobookPaymentStatus
               purchase={this.props.purchase}
@@ -101,9 +158,28 @@ class DetailLayout extends React.Component {
               permissionLoading={this.props.permissionLoading}
             />
           )}
+          {/* Download contents */}
+          <TouchableOpacity activeOpacity={0.9} onPress={this.onDownload}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 10,
+                backgroundColor: CommonStyles.COLOR_PRIMARY,
+                height: 48
+              }}
+            >
+              <Text
+                style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}
+              >
+                다운로드
+              </Text>
+            </View>
+          </TouchableOpacity>
 
           {1 === 2 && <CountView store={this.props.store} />}
-
           <View style={CommonStyles.alignJustifyContentBetween}>
             <View style={styles.tabContainer}>
               <TouchableOpacity

@@ -14,14 +14,16 @@
 @interface FPSDownload : NSObject
 {
   Clip* clip;
-  DownloadTask* task; // by PallyConFPSSDK
+  NSURLSessionDataTask* playDataTask;
+  DownloadTask* downloadTask; // by PallyConFPSSDK
   BOOL isDownloading;
   NSData* resumeData;
   float progress; // Download delegate sets this value.
 }
 
 @property Clip* clip;
-@property DownloadTask* task;
+@property NSURLSessionDataTask* playDataTask;
+@property DownloadTask* downloadTask;
 @property BOOL isDownloading;
 @property NSData* resumeData;
 @property float progress;
