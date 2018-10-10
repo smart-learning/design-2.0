@@ -5,7 +5,7 @@ const { RNNativePlayer, RNNativeBase, RNProductPayment } = NativeModules;
 
 export default {
   getPlayerManager() {
-    return RNNativePlayer
+    return RNNativePlayer;
   },
 
   getF_TOKEN(callback) {
@@ -145,25 +145,16 @@ export default {
     }
   },
 
-  /* 앱 버전 정보 가져오기 */
-  getVersionName() {
-    try {
-      return RNNativePlayer.versionInfo({
-        webtokem: ''
-      });
-    } catch (e) {
-      return '알 수 없음';
-    }
-
-    return 'salkdjfklsdjf;';
-  },
-
   getDeviceId() {
     return RNNativeBase.deviceId;
   },
 
   getModel() {
-    return RNNativeBase.getModel;
+    return RNNativeBase.model;
+  },
+
+  getVersionNumber() {
+    return RNNativeBase.versionNumber;
   },
 
   buy(args) {

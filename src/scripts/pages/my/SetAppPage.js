@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react';
 import React from 'react';
 import {
   AsyncStorage,
@@ -5,16 +6,13 @@ import {
   StyleSheet,
   Switch,
   Text,
-  View,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
-import CommonStyles from '../../../styles/common';
 import { SafeAreaView } from 'react-navigation';
-import { observer } from 'mobx-react';
-import { observable } from 'mobx';
 import globalStore from '../../../scripts/commons/store';
+import CommonStyles from '../../../styles/common';
 import Native from '../../commons/native';
-import VersionNumber from 'react-native-version-number';
 
 const styles = StyleSheet.create({
   title: {
@@ -192,7 +190,7 @@ class SetAppPage extends React.Component {
                 >
                   <View>
                     <Text style={styles.label}>
-                      현재버전 {VersionNumber.appVersion}
+                      현재버전 {Native.getVersionNumber()}
                     </Text>
                   </View>
                 </View>

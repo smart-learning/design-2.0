@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Preferences;
 
@@ -30,11 +31,11 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getF_TOKEN(Callback resultCallback) {
-    try{
+    try {
       String F_Token = Preferences.getWelaaaLoginToken(getCurrentActivity());
       Preferences.setWelaaaLoginToken(getCurrentActivity(), "");
       resultCallback.invoke(F_Token);
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
@@ -44,7 +45,8 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
   public Map<String, Object> getConstants() {
     final Map<String, Object> constants = new HashMap<>();
     constants.put("deviceId", getDeviceId());
-    constants.put("model", Build.MODEL);
+    constants.put("model", getModel());
+    constants.put("versionNumber", getVersionNumber());
     return constants;
   }
 
@@ -71,5 +73,13 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
       }
     }
     return uniqueId;
+  }
+
+  private String getModel() {
+    return Build.MODEL;
+  }
+
+  private String getVersionNumber() {
+    return BuildConfig.VERSION_NAME;
   }
 }

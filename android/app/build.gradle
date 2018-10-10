@@ -188,7 +188,6 @@ apply plugin: 'io.fabric'
 
 dependencies {
     implementation project(':react-native-firebase')
-    implementation project(':react-native-version-number')
     implementation project(':react-native-kakao-signin')
     implementation project(':react-native-fbsdk')
     implementation project(':react-native-localizable')
