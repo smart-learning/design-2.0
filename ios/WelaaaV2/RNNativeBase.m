@@ -34,4 +34,15 @@ RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) resultCallback )
     resultCallback(@[f_token]); // (error, someData) in js
 }
 
+//
+// Obj-C -> JS (Exporting Constants)
+// https://facebook.github.io/react-native/docs/native-modules-ios#exporting-constants
+//
+- (NSDictionary *) constantsToExport
+{
+    return @{ @"deviceId" : [common getUUID],
+              @"model" : [common getModel],
+              @"versionNumber" : [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"] };
+}
+
 @end

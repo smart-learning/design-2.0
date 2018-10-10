@@ -1,11 +1,26 @@
 import React from 'react';
-import { createDrawerNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
+import {
+  createDrawerNavigator,
+  DrawerItems,
+  SafeAreaView
+} from 'react-navigation';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import { ActivityIndicator, AsyncStorage, DeviceEventEmitter, Keyboard, Linking, Platform, View } from 'react-native';
+import {
+  ActivityIndicator,
+  AsyncStorage,
+  DeviceEventEmitter,
+  NativeEventEmitter,
+  Platform,
+  View,
+  Linking,
+  Keyboard,
+  NetInfo,
+  Alert
+} from 'react-native';
 import EventEmitter from 'events';
 import store from './src/scripts/commons/store';
 
@@ -15,7 +30,11 @@ import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
 import Native from './src/scripts/commons/native';
 import { observer } from 'mobx-react';
-import firebase, { Notification, NotificationOpen, RemoteMessage } from 'react-native-firebase';
+import firebase, {
+  Notification,
+  NotificationOpen,
+  RemoteMessage
+} from 'react-native-firebase';
 import nav from './src/scripts/commons/nav';
 import { observable } from 'mobx';
 import commonStyle from './src/styles/common';
@@ -126,26 +145,49 @@ class App extends React.Component {
     });
   }
 
+  // 오프라인 상태 체크
+  handleFirstConnectivityChange = connectionInfo => {
+    if (connectionInfo.type === 'none') {
+      nav.parseDeepLink('welaaa://download_page');
+    }
+  };
+
+  addNetInfoEvent = () => {
+    NetInfo.addEventListener(
+      'connectionChange',
+      this.handleFirstConnectivityChange
+    );
+  };
+
+  removeNetInfoEvent = () => {
+    NetInfo.removeEventListener(
+      'connectionChange',
+      this.handleFirstConnectivityChange
+    );
+  };
+
   async componentDidMount() {
-    this.subscription.push(
-      DeviceEventEmitter.addListener('miniPlayer', params => {
-        Native.toggleMiniPlayer(params.visible);
-      })
-    );
-    this.subscription.push(
-      DeviceEventEmitter.addListener('selectDatabase', params => {
-        console.log('database receiveDownloadList:', params);
-        store.downloadItems =
-          params.selectDownload || params.selectDatabase || 'null';
-      })
-    );
-    this.subscription.push(
-      DeviceEventEmitter.addListener('selectDownload', params => {
-        console.log('download receiveDownloadList:', params);
-        store.downloadItems =
-          params.selectDownload || params.selectDatabase || 'null';
-      })
-    );
+    this.addNetInfoEvent();
+    if ('ios' === Platform.OS) {
+      console.log('======', Native.getPlayerManager());
+      const playerManager = Native.getPlayerManager();
+      const playerManagerEmitter = new NativeEventEmitter(playerManager);
+      playerManagerEmitter.addListener('downloadState', arg =>
+        Native.downloadState(arg)
+      );
+    } else if ('android' === Platform.OS) {
+      this.subscription.push(
+        DeviceEventEmitter.addListener('miniPlayer', params => {
+          Native.toggleMiniPlayer(params.visible);
+        })
+      );
+
+      this.subscription.push(
+        DeviceEventEmitter.addListener('downloadState', arg =>
+          Native.downloadState(arg)
+        )
+      );
+    }
 
     Linking.addEventListener('url', this._handleOpenURL);
 
@@ -275,6 +317,7 @@ class App extends React.Component {
     // 키보드 이벤트 해제
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
+    this.removeNetInfoEvent();
   }
 
   _handleOpenURL = event => {
@@ -402,7 +445,7 @@ const AppDrawer = createDrawerNavigator(
         drawerIcon: <Hidden />,
         drawerLabel: <Hidden />
       }
-    },
+    }
 
     // Playground: {
     // 	screen: Playground,

@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -28,6 +29,7 @@ import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -45,10 +47,15 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
+import com.pallycon.widevinelibrary.NetworkConnectedException;
+import com.pallycon.widevinelibrary.PallyconDownloadException;
+import com.pallycon.widevinelibrary.PallyconDownloadTask;
 import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
@@ -59,17 +66,23 @@ import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
+import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
+import kr.co.influential.youngkangapp.pallycon.DownloadCallbackImpl;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Preferences;
+import kr.co.influential.youngkangapp.util.WeContentManager;
 
 /**
  * A class that implements local media playback using {@link com.google.android.exoplayer2.ExoPlayer}
  */
-public final class LocalPlayback implements Playback {
+public final class LocalPlayback implements Playback,
+    PallyconDownloadTask.PallyconDownloadEventListener {
 
   private static final String TAG = LogHelper.makeLogTag(LocalPlayback.class);
 
@@ -110,10 +123,13 @@ public final class LocalPlayback implements Playback {
   private int startWindow;
   private long startPosition;
 
+  private long startSqlPosition;
+
   private PallyconWVMSDK pallyconWVMSDK;
 
   private PallyconEventListener pallyconEventListener;
 
+  private PallyconDownloadTask downloadTask;
   private Handler eventHandler = new Handler();
 
   private PlayerErrorMessageProvider errorMessageProvider;
@@ -208,6 +224,25 @@ public final class LocalPlayback implements Playback {
 
   @Override
   public void stop(boolean notifyListeners) {
+
+    String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+
+    try {
+
+      // update
+      if (ContentManager().isProgressExist(currentCkey) > 0) {
+        ContentManager()
+            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()));
+        //insert
+      } else {
+        ContentManager().insertProgress(currentCkey,
+            String.valueOf(mExoPlayer.getCurrentPosition()));
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
     releaseResources(true);
@@ -279,6 +314,31 @@ public final class LocalPlayback implements Playback {
       currentMedia = item;
     }
 
+    ArrayList<HashMap<String, Object>> obj = null;
+    ArrayList<String> cid = new ArrayList<String>();
+
+    String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+    String duration = "";
+    try {
+      obj = ContentManager().getProgressCid(currentCkey);
+
+      if (obj != null) {
+        for (int i = 0; i < obj.size(); i++) {
+          HashMap<String, Object> getobj = obj.get(i);
+
+          duration = String.valueOf(getobj.get("duration"));
+
+          startSqlPosition = Long.parseLong(duration);
+          LogHelper.e(TAG, " CID " + currentCkey + " duration " + startSqlPosition);
+        }
+      } else {
+        startSqlPosition = 0;
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     if (mediaHasChanged || mExoPlayer == null) {
       releaseResources(true);
 
@@ -304,8 +364,45 @@ public final class LocalPlayback implements Playback {
         e.printStackTrace();
       }
 
+      Bundle extras = currentMedia.getBundle();
+
+      String name = extras.getString(PlaybackManager.DRM_CONTENT_NAME_EXTRA);
+      String drmSchemeUuid = extras.getString(PlaybackManager.DRM_SCHEME_UUID_EXTRA);
+      String drmLicenseUrl = extras.getString(PlaybackManager.DRM_LICENSE_URL);
+      String userId = extras.getString(PlaybackManager.DRM_USERID);
+      String cId = extras.getString(PlaybackManager.DRM_CID);
+      String oId = extras.getString(PlaybackManager.DRM_OID);
+      String token = extras.getString(PlaybackManager.DRM_TOKEN);
+      String thumbUrl = extras.getString(PlaybackManager.THUMB_URL);
+      String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
+      String title = extras.getString(PlaybackManager.DRM_CONTENT_TITLE);
+//      String history_start_seconds = extras.getString("history_start_seconds");
+
       try {
-        mediaSource = buildMediaSource(Uri.parse(source));
+        // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
+        DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(mContext);
+        downloadTask = new PallyconDownloadTask(mContext,
+            Uri.parse(source)
+            , cId, LocalPlayback.this, eventHandler, downloadCallback);
+
+      } catch (PallyconDownloadException e) {
+        e.printStackTrace();
+      }
+
+      Uri LocalUri = downloadTask.getLocalUri(Uri.parse(source), cId);
+
+      try {
+        if (downloadTask.isDownloadCompleted()) {
+          source = String.valueOf(LocalUri);
+          mediaSource = buildMediaSourceLocal(Uri.parse(source));
+        } else {
+          mediaSource = buildMediaSource(Uri.parse(source));
+        }
+
+      } catch (NetworkConnectedException e) {
+        e.printStackTrace();
+      } catch (PallyconDownloadException e) {
+        e.printStackTrace();
       } catch (IllegalArgumentException e) {
         e.printStackTrace();
       } catch (IllegalStateException e) {
@@ -317,12 +414,32 @@ public final class LocalPlayback implements Playback {
       mExoPlayer.addListener(mEventListener);
       mExoPlayer.setPlayWhenReady(startAutoPlay);
 
+//      mExoPlayer.createMessage(new Target() {
+//        @Override
+//        public void handleMessage(int messageType, Object payload) throws ExoPlaybackException {
+//          // ContentManger //
+//          LogHelper.e(TAG , "ExoPlayer createMessage getCurrentPosition " + mExoPlayer.getCurrentPosition());
+//
+//        }
+//      }).setPosition(1500).setHandler(new Handler()) .send();
+
       // Prepares media to play (happens on background thread) and triggers
       // {@code onPlayerStateChanged} callback when the stream is ready to play.
       boolean haveStartPosition = !mediaHasChanged && startWindow != C.INDEX_UNSET;
       if (haveStartPosition) {
-        mExoPlayer.seekTo(startWindow, startPosition);
+
+        LogHelper.e(TAG,
+            " haveStartPosition ! startSqlPosition " + startSqlPosition + " startPosition "
+                + startPosition);
+
+        if (startSqlPosition > startPosition) {
+          mExoPlayer.seekTo(startWindow, startSqlPosition);
+        } else {
+          mExoPlayer.seekTo(startWindow, startPosition);
+        }
+
       }
+
       mExoPlayer.prepare(mediaSource, !haveStartPosition, false);
 
       final AudioAttributes audioAttributes = new AudioAttributes.Builder()
@@ -349,7 +466,6 @@ public final class LocalPlayback implements Playback {
         }
         // 다른건 없음
         int currentId = Preferences.getWelaaaPlayListCId(mContext);
-        String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
 
         Gson gson = new Gson();
         String json = Preferences.getWelaaaWebPlayInfo(mContext);
@@ -373,6 +489,7 @@ public final class LocalPlayback implements Playback {
       }
 
     } else {
+
       int state = mExoPlayer.getPlaybackState();
       if (Player.STATE_ENDED == state) {
         mExoPlayer.seekTo(startPosition);
@@ -380,8 +497,14 @@ public final class LocalPlayback implements Playback {
     }
 
     attachPlayerView();
-
     configurePlayerState();
+
+    if (Preferences.getSQLiteDuration(mContext)) {
+      // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ?
+      mExoPlayer.seekTo(startSqlPosition);
+
+      Preferences.setSQLiteDuration(mContext, false);
+    }
   }
 
   @Override
@@ -397,6 +520,24 @@ public final class LocalPlayback implements Playback {
 
   @Override
   public void completion() {
+
+    String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+
+    try {
+
+      // update duration 0 으로 셋팅합니다.
+      if (ContentManager().isProgressExist(currentCkey) > 0) {
+        ContentManager()
+            .updateProgress(currentCkey, "0");
+        //insert duration 0 으로 셋팅합니다.
+      } else {
+        ContentManager().insertProgress(currentCkey, "0");
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
     releaseResources(false);
@@ -554,11 +695,49 @@ public final class LocalPlayback implements Playback {
     }
   }
 
+  @Override
+  public void onPreExecute() {
+
+  }
+
+  @Override
+  public void onPostExecute() {
+
+  }
+
+  @Override
+  public void onProgressUpdate(String s, long l, long l1, int i, int i1, int i2) {
+
+  }
+
+  @Override
+  public void onProgressUpdate(String s, int i, int i1, int i2) {
+
+  }
+
+  @Override
+  public void onCancelled() {
+
+  }
+
+  @Override
+  public void onNetworkError(NetworkConnectedException e) {
+
+  }
+
+  @Override
+  public void onPallyconDownloadError(PallyconDownloadException e) {
+
+  }
+
   private final class ExoPlayerEventListener implements Player.EventListener {
 
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
       // Nothing to do.
+
+      LogHelper.e(TAG, "ExoPlayer ExoPlayerEventListener onTimelineChanged " + timeline);
+
     }
 
     @Override
@@ -664,6 +843,8 @@ public final class LocalPlayback implements Playback {
 
     // Create Pallycon drmSessionManager to get into ExoPlayerFactory
     Uri uri = currentMedia.getDescription().getMediaUri();
+
+    LogHelper.e(TAG, "createDrmSessionManager " + uri);
     String name = currentMedia.getString(PlaybackManager.DRM_CONTENT_NAME_EXTRA);
     UUID drmSchemeUuid = UUID
         .fromString(currentMedia.getString(PlaybackManager.DRM_SCHEME_UUID_EXTRA));
@@ -736,7 +917,6 @@ public final class LocalPlayback implements Playback {
     if (uri == null || uri.getLastPathSegment() == null) {
       throw new IllegalArgumentException("Argument is invalid");
     }
-
     @C.ContentType int type = Util.inferContentType(uri.getLastPathSegment());
     switch (type) {
       case C.TYPE_DASH:
@@ -756,6 +936,32 @@ public final class LocalPlayback implements Playback {
         throw new IllegalStateException("Unsupported type: " + type);
       }
     }
+  }
+
+  private MediaSource buildMediaSourceLocal(Uri uri) {
+    // pallycon sample project 내용
+    int type = Util.inferContentType(uri.getLastPathSegment());
+    switch (type) {
+      case C.TYPE_DASH:
+        return new DashMediaSource(uri, buildDataSourceFactory(),
+            new DefaultDashChunkSource.Factory(buildDataSourceFactory()), eventHandler, null);
+      case C.TYPE_OTHER:
+        return new ExtractorMediaSource(uri, buildDataSourceFactory(),
+            new DefaultExtractorsFactory(), eventHandler, null);
+      case C.TYPE_HLS:
+      case C.TYPE_SS:
+      default:
+        throw new IllegalStateException("Unsupported type: " + type);
+    }
+  }
+
+  private DataSource.Factory buildDataSourceFactory() {
+    HttpDataSource.Factory httpDataSourceFactory = buildHttpDataSourceFactory();
+    return new DefaultDataSourceFactory(mContext, null, httpDataSourceFactory);
+  }
+
+  private HttpDataSource.Factory buildHttpDataSourceFactory() {
+    return new DefaultHttpDataSourceFactory(Util.getUserAgent(mContext, "influential"), null);
   }
 
   public SimpleExoPlayer getPlayer() {
@@ -869,5 +1075,13 @@ public final class LocalPlayback implements Playback {
 
     public String siteId;
     public String siteKey;
+  }
+
+  /******************************
+   * Comment   : 등록된 컨텐츠 매니져
+   ******************************/
+  public WeContentManager ContentManager() {
+    MainApplication myApp = (MainApplication) mContext;
+    return myApp.getContentMgr();
   }
 }

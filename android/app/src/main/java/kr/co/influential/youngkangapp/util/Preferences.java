@@ -91,6 +91,8 @@ public class Preferences {
     private static String WELAAA_PLAYER_INFO = "WELAAA_PLAYER_INFO";
     private static String WELAAA_UESR_ID = "WELAAA_UESR_ID";
 
+    private static String WELAAA_PLAY_CLICK = "WELAAA_PLAY_CLICK";
+
     /************************************************************************
      * FOR SETTING : MAIN ACTIVITY 자동로그인
      ************************************************************************/
@@ -1018,4 +1020,22 @@ public class Preferences {
     SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
     return pref.getString(WELAAA_UESR_ID, "");
   }
+
+    /************************************************************************
+     * 2018.10.08 SQLite 를 통해서 duration 가져오기
+     * RN 플레이 버튼 클릭하기
+     * 네이티브 플레이어 버튼 클릭하기
+     * 나머지 구간에서는 00:00 부터 재생하기
+     ************************************************************************/
+
+    public static Boolean getSQLiteDuration(Context context){
+        SharedPreferences pref = context.getSharedPreferences(WELAAA_PLAY_CLICK, Context.MODE_PRIVATE);
+        return pref.getBoolean(WELAAA_PLAY_CLICK, true);
+    }
+    public static void setSQLiteDuration(Context context, Boolean value){
+        SharedPreferences pref = context.getSharedPreferences(WELAAA_PLAY_CLICK, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putBoolean(WELAAA_PLAY_CLICK, value);
+        edit.commit();
+    }
 }

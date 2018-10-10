@@ -26,7 +26,9 @@ import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.pallycon.DownloadCallbackImpl;
 import kr.co.influential.youngkangapp.player.NewWebPlayerInfo;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
+import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Logger;
+import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 import kr.co.influential.youngkangapp.util.WelaaaBroadcastReceiver;
@@ -58,6 +60,11 @@ public class DownloadService extends IntentService implements
   private WebPlayerInfo mWebPlayerInfo = null;
   private NewWebPlayerInfo mNewWebPlayerInfo = null;
 
+  private String intent_drm_content_uri_extra = "";
+  private String intent_drm_content_name_extra = "";
+  private boolean intent_drm_delete = false;
+  private String intent_downloadContentCid = "";
+
   @Override
   public void onPreExecute() {
     // TODO: Configure the UI to be displayed on the screen before starting the download.
@@ -67,8 +74,25 @@ public class DownloadService extends IntentService implements
   public void onPostExecute() {
     // TODO: Release the UI after the download is complete.
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-    }
+      LogHelper.e(TAG , "Download Service onPostExecute ! ");
+      try {
+        // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
+        DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
+        downloadTask = new PallyconDownloadTask(DownloadService.this,
+            Uri.parse(intent_drm_content_uri_extra)
+            , intent_downloadContentCid, DownloadService.this, eventHandler, downloadCallback);
 
+        boolean result = downloadTask.isDownloadCompleted();
+
+//        if(result){
+//          mCallback.recvData(intent_downloadContentCid);
+//        }
+      } catch (PallyconDownloadException e) {
+        Toast.makeText(DownloadService.this, e.getMessage(), Toast.LENGTH_LONG).show();
+      } catch (NetworkConnectedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   @Override
@@ -140,13 +164,12 @@ public class DownloadService extends IntentService implements
   protected void onHandleIntent(@Nullable Intent intent) {
 
     String drm_content_uri_extra = intent.getStringExtra("drm_content_uri_extra");
-    String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
     boolean drm_delete = intent.getBooleanExtra("drm_delete", false);
-
     String downloadContentCid = intent.getStringExtra("contentCid");
-    String expire_at = intent.getStringExtra("expire_at");
 
-    mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
+    intent_drm_content_uri_extra = drm_content_uri_extra ;
+    intent_downloadContentCid = downloadContentCid ;
+    intent_drm_delete = drm_delete ;
 
     if (drm_delete) {
       // delete
@@ -154,7 +177,7 @@ public class DownloadService extends IntentService implements
       // TODO: Remove content file (mpd, video, audio).
       try {
         downloadTask = new PallyconDownloadTask(getApplicationContext(),
-            Uri.parse(drm_content_uri_extra), drm_content_name_extra, DownloadService.this,
+            Uri.parse(drm_content_uri_extra), downloadContentCid, DownloadService.this,
             eventHandler, null);
         downloadTask.removeDownloadContent();
 
@@ -180,14 +203,23 @@ public class DownloadService extends IntentService implements
 
         return;
       }
+
+      return;
+
     } else {
+
+      String expire_at = intent.getStringExtra("expire_at");
+      String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
+
+      intent_drm_content_name_extra = drm_content_name_extra ;
+      mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
 
       try {
         // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
         DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
         downloadTask = new PallyconDownloadTask(DownloadService.this,
             Uri.parse(drm_content_uri_extra)
-            , drm_content_name_extra, DownloadService.this, eventHandler, downloadCallback);
+            , downloadContentCid, DownloadService.this, eventHandler, downloadCallback);
 
       } catch (PallyconDownloadException e) {
 
@@ -231,15 +263,17 @@ public class DownloadService extends IntentService implements
           // view_limitdate
           // modified  (datetime('now','localtime'))
 
-          Uri LocalUri = downloadTask.getLocalUri(Uri.parse(drm_content_uri_extra) , drm_content_name_extra);
+          Uri LocalUri = downloadTask.getLocalUri(Uri.parse(drm_content_uri_extra) , downloadContentCid);
           String localUrl = String.valueOf(LocalUri);
+
+          String userId = Preferences.getWelaaaUserId(mcontext);
 
           for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
             if (mWebPlayerInfo.getCkey()[i].equals(downloadContentCid)) {
 
               try {
                 ContentManager()
-                    .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], "userId",
+                    .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], userId,
                         "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", localUrl, "",
                         mWebPlayerInfo.getGroupTitle(), mWebPlayerInfo.getCname()[i],
                         mWebPlayerInfo.getGroupImg(), mWebPlayerInfo.getClist_img()[i],
@@ -297,7 +331,7 @@ public class DownloadService extends IntentService implements
             stopped = true;
             stopSelf();
 
-            // Activity CallBack
+            downloadTask.terminate();
           }
 
           @Override
@@ -319,11 +353,14 @@ public class DownloadService extends IntentService implements
 
   //콜백 인터페이스 선언
   public interface ICallback {
-
     void recvData(String cid); //액티비티에서 선언한 콜백 함수.
   }
 
   private ICallback mCallback;
+
+  public void registerCallback(ICallback cb) {
+    mCallback = cb;
+  }
 
   /***********************************************
    * Comment   : 등록된 컨텐츠 매니저
@@ -348,7 +385,7 @@ public class DownloadService extends IntentService implements
           DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
           downloadTask = new PallyconDownloadTask(DownloadService.this,
               Uri.parse(drm_content_uri_extra)
-              , drm_content_name_extra, DownloadService.this, eventHandler, downloadCallback);
+              , intent_downloadContentCid, DownloadService.this, eventHandler, downloadCallback);
 
         } catch (PallyconDownloadException e) {
 

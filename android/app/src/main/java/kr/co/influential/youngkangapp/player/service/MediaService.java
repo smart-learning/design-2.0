@@ -2,15 +2,20 @@ package kr.co.influential.youngkangapp.player.service;
 
 import static kr.co.influential.youngkangapp.player.utils.MediaIDHelper.MEDIA_ID_ROOT;
 
+import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.MediaBrowserServiceCompat;
@@ -19,15 +24,20 @@ import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.media.MediaRouter;
+import android.util.Log;
 import com.google.android.gms.cast.framework.CastContext;
 import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import kr.co.influential.youngkangapp.IdleChangeReceiver;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
 import kr.co.influential.youngkangapp.player.notification.MediaNotificationManager;
@@ -75,6 +85,11 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
   private boolean mIsConnectedToCar;
   private BroadcastReceiver mCarConnectionReceiver;
+  private BroadcastReceiver receiver = new IdleReceiver();
+
+  private static final int MAX_NETWORK_TRY = 30;
+
+  private int network_try_counter = 0;
 
   /*
    * (non-Javadoc)
@@ -150,6 +165,11 @@ public class MediaService extends MediaBrowserServiceCompat implements
         // Try to handle the intent as a media button event wrapped by MediaButtonReceiver
         MediaButtonReceiver.handleIntent(mSession, startIntent);
       }
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        registerReceiver(receiver, IdleReceiver.Filter);
+      }
+
     }
     // Reset the delay handler to enqueue a message to stop the service if
     // nothing is playing.
@@ -176,6 +196,13 @@ public class MediaService extends MediaBrowserServiceCompat implements
   public void onDestroy() {
     LogHelper.d(TAG, "onDestroy");
     unregisterCarConnectionReceiver();
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      unregisterReceiver(receiver);
+    }
+
+    network_try_counter = MAX_NETWORK_TRY;
+
     // Service is being killed, so make sure we release our resources
     mPlaybackManager.handleStopRequest(null);
     mMediaNotificationManager.stopNotification();
@@ -231,7 +258,24 @@ public class MediaService extends MediaBrowserServiceCompat implements
     // The service needs to continue running even after the bound client (usually a
     // MediaController) disconnects, otherwise the media playback will stop.
     // Calling startService(Intent) will keep the service running until it is explicitly killed.
-    startService(new Intent(getApplicationContext(), MediaService.class));
+
+
+    network_try_counter = 0;
+    new Thread() {
+      @Override
+      public void run() {
+        while (network_try_counter < MAX_NETWORK_TRY) {
+          try {
+            startService(new Intent(getApplicationContext(), MediaService.class));
+          } catch (Exception e) {
+            LogHelper.e(TAG, "Fail to Exception:" + e);
+            break;
+          }
+          SystemClock.sleep(3000);
+          ++network_try_counter;
+        }
+      }
+    }.start();
   }
 
 
@@ -370,6 +414,54 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onSessionSuspended(CastSession session, int reason) {
+    }
+  }
+
+  private void testNetworkConnection() throws IOException {
+
+    URL url = new URL("http://www.google.com");
+    Log.d(TAG,"Trying to connect...");
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    conn.setConnectTimeout(5000);
+    conn.setReadTimeout(5000);
+    conn.connect();
+    Log.d(TAG,"ResponseCode:" + conn.getResponseCode());
+    conn.disconnect();
+  }
+
+  private void dumpProcessPriority() {
+    ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    List<ActivityManager.RunningAppProcessInfo> processList = am.getRunningAppProcesses();
+    for(ActivityManager.RunningAppProcessInfo info : processList) {
+      Log.d(TAG, "Process Name:" + info.processName + "["
+          + getPriorityDesc(info.importance) + "]");
+    }
+  }
+
+  private String getPriorityDesc(int priority) {
+
+    if(priority <= 100) {
+      return "IMPORTANCE_FOREGROUND";
+    } else if (priority <= 125) {
+      return "IMPORTANCE_FOREGROUND_SERVICE";
+    } else if (priority <=150) {
+      return "IMPORTANCE_TOP_SLEEPING";
+    } else if (priority <= 200) {
+      return "IMPORTANCE_VISIBLE";
+    }
+
+    return "IMPORTANCE_ETC";
+  }
+
+  public static class IdleReceiver extends IdleChangeReceiver {
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+      PowerManager pm = (PowerManager) context.getSystemService(POWER_SERVICE);
+      if (pm.isDeviceIdleMode()){
+        launchMaskActivtiy(context);
+      }
     }
   }
 }

@@ -15,11 +15,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -28,10 +31,10 @@ import com.google.android.exoplayer2.ParserException;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.UUID;
-import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.download.DownloadService;
+import kr.co.influential.youngkangapp.player.OfflineContentData;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
@@ -39,7 +42,6 @@ import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.react.RNEventEmitter;
 import kr.co.influential.youngkangapp.util.CustomDialog;
 import kr.co.influential.youngkangapp.util.HttpConnection;
-import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
@@ -91,58 +93,62 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
   @ReactMethod
   public void play(ReadableMap content) {
+    if (content.hasKey("offline") && content.getBoolean("offline")) {
+      OfflineContentData offlineContentData = parseOfflineContentData(content);
+      // TODO: 2018. 10. 2. Implements offline(play content that is downloaded).
+    } else {
+      ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+          .getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-    ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
-        .getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+      boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
+      contentUrl = content.getString("uri");
+      contentName = content.getString("name");
+      contentUuid = content.getString("drmSchemeUuid");
+      contentDrmLicenseUrl = content.getString("drmLicenseUrl");
+      contentUserId = content.getString("userId");
+      contentCid = content.getString("cid");
+      contentToken = content.getString("token");
 
-    boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
-    contentUrl = content.getString("uri");
-    contentName = content.getString("name");
-    contentUuid = content.getString("drmSchemeUuid");
-    contentDrmLicenseUrl = content.getString("drmLicenseUrl");
-    contentUserId = content.getString("userId");
-    contentCid = content.getString("cid");
-    contentToken = content.getString("token");
+      Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+      Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
 
-    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
-    Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
+      checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
 
-    checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
+      LogHelper.e(TAG, " contentCid is " + contentCid);
+      LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
 
-    LogHelper.e(TAG, " contentCid is " + contentCid);
-    LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
+      if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
-    if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
+                "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
+                getReactApplicationContext().getString(R.string.info_dial_ok),
+                getReactApplicationContext().getString(R.string.info_dial_cancel),
+                FLAG_PLAY_NETWORK_CHECK, "");
+          }
+        });
+
+        return;
+      } else {
+        callbackMethodName = "play/contents-info";
+        callbackMethod = "play";
+
+        sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+      }
+
+      Preferences.setSQLiteDuration(getReactApplicationContext(), true);
 
       UiThreadUtil.runOnUiThread(new Runnable() {
         @Override
         public void run() {
-          alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
-              "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
-              getReactApplicationContext().getString(R.string.info_dial_ok),
-              getReactApplicationContext().getString(R.string.info_dial_cancel),
-              FLAG_PLAY_NETWORK_CHECK, "");
+          Activity activity = getCurrentActivity();
+          mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
         }
       });
-
-      return;
-    } else {
-      callbackMethodName = "play/contents-info";
-      callbackMethod = "play";
-
-      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
     }
-
-    UiThreadUtil.runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        Activity activity = getCurrentActivity();
-        mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
-      }
-    });
-
-
   }
 
   @ReactMethod
@@ -155,73 +161,37 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void download(ReadableMap content) {
+  public void download(ReadableArray contentArray) {
+    String cId = "";
+    for (int i = 0; i < contentArray.size(); i++) {
+      ReadableType readableType = contentArray.getType(i);
+      if (ReadableType.Map == readableType) {
+        ReadableMap readableMap = contentArray.getMap(i);
+        if (readableMap.hasKey("cid")) {
+          cId = readableMap.getString("cid");
+        }
+        if (readableMap.hasKey("userId")) {
+          contentUserId = readableMap.getString("userId");
+        }
+        if (readableMap.hasKey("token")) {
+          contentToken = readableMap.getString("token");
+        }
+      }
+    }
 
-    // 2018.08.29
-    contentUrl = content.getString("uri");
-    contentName = content.getString("name");
-    contentUuid = content.getString("drmSchemeUuid");
-    contentDrmLicenseUrl = content.getString("drmLicenseUrl");
-    contentUserId = content.getString("userId");
-    contentCid = content.getString("cid");
-    contentToken = content.getString("token");
+    downloadCid(cId);
 
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
     Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
 
-    ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
-        .getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+    UiThreadUtil.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
+      }
+    });
 
-    boolean isOnlyWifiDownload = Preferences.getOnlyWifiDownload(getReactApplicationContext());
-
-    if (BuildConfig.BUILD_TYPE.equals("debug")) {
-      // cid , v100XXX
-      // cid ,
-    }
-
-    if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
-
-      UiThreadUtil.runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
-              "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
-              getReactApplicationContext().getString(R.string.info_dial_ok),
-              getReactApplicationContext().getString(R.string.info_dial_cancel),
-              FLAG_DOWNLOAD_NETWORK_CHECK, "");
-        }
-      });
-
-      return;
-    } else {
-      callbackMethodName = "play/contents-info";
-      callbackMethod = "download";
-
-      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
-    }
-  }
-
-  @ReactMethod
-  public void downloadDelete(ReadableMap content) {
-    ContextWrapper contextWrapper = new ContextWrapper(getReactApplicationContext());
-//        Intent intent = new Intent(contextWrapper, PallyConMainActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        contextWrapper.startActivity(intent);
-
-    // 인텐트를 통해서 전환이 되는 케이스입니다.
-
-    Intent service = new Intent(contextWrapper, DownloadService.class);
-
-    service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA,
-        "https://contents.welaaa.com/public/contents/DASH_0028_001_mp4/stream.mpd");
-    service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA, "140년 지속 성장을 이끈 MLB 사무국의 전략");
-    service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, true);
-
-    contextWrapper.startService(service);
-
-    content.getString("DOWNLOAD_SERVICE_TYPE");
-    Logger.e(TAG + " DOWNLOAD_SERVICE_TYPE " + content.getString("DOWNLOAD_SERVICE_TYPE"));
   }
 
   @ReactMethod
@@ -239,24 +209,43 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
   }
 
+
   @ReactMethod
-  public void selectDatabase(ReadableMap content) {
-    // 2018.09.06
+  public void getDownloadList(Promise promise) {
     try {
       Gson gson = new Gson();
       String json = gson.toJson(ContentManager().getDatabase());
-
-      WritableMap params = Arguments.createMap();
-
-      params.putString("selectDatabase", json);
-      sendEvent("selectDatabase", params);
-
-      // Log.e("DOWNLOAD:", json.toString() );
-
+      promise.resolve(json);
     } catch (Exception e) {
-      e.printStackTrace();
+      promise.reject(e);
     }
+  }
 
+  @ReactMethod
+  public void deleteDownload(ReadableArray contentArray, Promise promise) {
+    for (int i = 0; i < contentArray.size(); i++) {
+      ReadableType readableType = contentArray.getType(i);
+      if (ReadableType.Map == readableType) {
+        ReadableMap readableMap = contentArray.getMap(i);
+        if (readableMap.hasKey("cid")) {
+          contentCid = readableMap.getString("cid");
+        }
+
+        if (readableMap.hasKey("contentPath")) {
+          contentUrl = readableMap.getString("contentPath");
+        }
+
+        try {
+          if (deleteDownload(contentCid, contentUrl)) {
+            promise.resolve(contentCid);
+          } else {
+            promise.reject(new Exception("Failed to delete content."));
+          }
+        } catch (Exception e) {
+          promise.reject(e);
+        }
+      }
+    }
   }
 
   @Override
@@ -268,6 +257,23 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       @Nullable WritableMap params) {
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
         .emit(eventName, params);
+  }
+
+  @ReactMethod
+  public void selectProgressDatabase(ReadableMap content) {
+    // 2018.10.05
+    try {
+      Gson gson = new Gson();
+      String json = gson.toJson(ContentManager().getProgressCid());
+
+      WritableMap params = Arguments.createMap();
+
+      params.putString("selectProgressDatabase", json);
+      sendEvent("selectProgressDatabase", params);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
@@ -307,6 +313,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     @Override
     public void onFailure(Call call, IOException e) {
       LogHelper.e(TAG, "콜백오류:" + e.getMessage());
+
+      Preferences.setSQLiteDuration(getReactApplicationContext(), false);
 
       if (mProgressDialog != null) {
         mProgressDialog.dismiss();
@@ -500,10 +508,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 historyId = historyObject.getString("id");
                 historyPlayed_At = historyObject.getString("played_at");
                 history_start_seconds = historyObject.getString("start_seconds");
-
                 contentHistory_seconds = historyObject.getInt("start_seconds");
-
-                // CID 랑 // 히스토리 ID 값을 비교 해서 ..
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
@@ -632,6 +637,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
           } catch (Exception e) {
             e.printStackTrace();
+
 //            UiThreadUtil.runOnUiThread(new Runnable() {
 //              @Override
 //              public void run() {
@@ -719,9 +725,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 mProgressDialog.dismiss();
               }
 
-              LogHelper.e(TAG, " 20180901 for callbackMethod" + callbackMethod);
-              LogHelper.e(TAG, " 20180901 for contentType" + contentType);
-
               if (contentType.equals("audiobook")) {
                 if (!can_play) {
 
@@ -753,12 +756,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                       mWebPlayerInfo.getCurl()[contentId].equals("0.0")) {
 
                     LogHelper
-                        .e(TAG, " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[contentId]);
+                        .e(TAG,
+                            " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[contentId]);
 
                     // 처음 들어올 때 용도
                     for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
 
-                      LogHelper.e(TAG, " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
+                      LogHelper
+                          .e(TAG, " 20180901 for play_seconds" + mWebPlayerInfo.getCurl()[i]);
                       LogHelper.e(TAG, " 20180901 for contentCid" + i);
 
                       if (!(mWebPlayerInfo.getCurl()[i].equals("0") ||
@@ -816,9 +821,20 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 return;
 
               } else {
+                // previewDashUrl
+//                previewDashUrl = "https://contents.welaaa.com/media/v100001/DASH_v100001_001_preview/stream.mpd";
+                // 1876년 메이저 리그 원년
+//                previewDashUrl = "https://contents.welaaa.com/media/v100001/DASH_v100001_002_preview/stream.mpd";
+                // 21초 전체 구단의 총 수입
+
+                LogHelper.e(TAG, " can_play " + can_play);
+                LogHelper.e(TAG, " PreviewDashUrl " + previewDashUrl);
 
                 if (!can_play) {
                   dashUrl = previewDashUrl;
+
+                  LogHelper.e(TAG, " can_play FALSE !  PLAY PreviewDashUrl " + previewDashUrl);
+
                 }
 
                 intent.setData(Uri.parse(dashUrl));
@@ -836,7 +852,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
                   intent.putExtra(PlaybackManager.DRM_TOKEN, "");
                   intent
-                      .putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
+                      .putExtra(PlaybackManager.DRM_CONTENT_TITLE,
+                          mWebPlayerInfo.getGroupTitle());
 
                   if (!can_play) {
                     // 미리 듣기 90초
@@ -889,44 +906,52 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               // view_limitdate
               // modified
 
-              // cid 클래스 강좌 전체가 들어오는 케이스
-              if (BuildConfig.BUILD_TYPE.equals("debug")) {
+              Intent service = new Intent(contextWrapper, DownloadService.class);
 
-                // 다운로드 경로가 없는 경우 ?
-                // dashUrl 정보를 얻기 위해서는 또 반복 해야 할 것 같습니다.
-                for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
+              service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
+              service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                  mWebPlayerInfo.getCname()[contentId]);
+              service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
+              service.putExtra("contentCid", contentCid);
+              intent.putExtra("expire_at", expire_at);
+              service.putExtra("webPlayerInfo", mWebPlayerInfo);
 
-                  if (!(mWebPlayerInfo.getCurl()[i].equals("0") || mWebPlayerInfo.getCurl()[i]
-                      .equals("0.0"))) {
-                    Intent service = new Intent(contextWrapper, DownloadService.class);
+              contextWrapper.startService(service);
 
-                    service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
-                    service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                        mWebPlayerInfo.getCname()[i]);
-                    service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
-                    service.putExtra("contentCid", mWebPlayerInfo.getCkey()[i]);
-                    intent.putExtra("expire_at", expire_at);
-                    service.putExtra("webPlayerInfo", mWebPlayerInfo);
+            } else if (callbackMethod.equals("downloadGroup")) {
+              for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
+                if (!(mWebPlayerInfo.getCurl()[i].equals("0") || mWebPlayerInfo.getCurl()[i]
+                    .equals("0.0"))) {
 
-                    contextWrapper.startService(service);
-                  }
+                  // 다운로드가 가능한 콘텐츠 목록을 다시 만들어봅니다.
+                  // dash url 정보를 다시 가져올 수 있도록 합니다.
+//                        Intent service = new Intent(contextWrapper, DownloadService.class);
+//
+//                        service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
+//                        service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+//                            mWebPlayerInfo.getCname()[i]);
+//                        service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
+//                        service.putExtra("contentCid", mWebPlayerInfo.getCkey()[i]);
+//                        intent.putExtra("expire_at", expire_at);
+//                        service.putExtra("webPlayerInfo", mWebPlayerInfo);
+//
+//                        contextWrapper.startService(service);
+
+                  LogHelper.e(TAG, "play/play-data/" + mWebPlayerInfo.getCkey()[i]);
+
+                  callbackMethodName = "play/play-data/download";
+                  sendDataDownload(
+                      WELEARN_WEB_URL + "play/play-data/" + mWebPlayerInfo.getCkey()[i],
+                      mWebPlayerInfo.getCkey()[i]);
+
+//                  v100008_001
+//                  v100008_002
+//                  v100008_003
+//                  v100008_004
+//                  v100008_005
+
                 }
-
-              } else {
-                Intent service = new Intent(contextWrapper, DownloadService.class);
-
-                service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
-                service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                    mWebPlayerInfo.getCname()[contentId]);
-                service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
-                service.putExtra("contentCid", contentCid);
-                intent.putExtra("expire_at", expire_at);
-                service.putExtra("webPlayerInfo", mWebPlayerInfo);
-
-                contextWrapper.startService(service);
               }
-
-
             } else {
               LogHelper.e(TAG, " No Action .. ");
             }
@@ -934,6 +959,56 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           } catch (Exception e) {
             e.printStackTrace();
           }
+        } else if (callbackMethodName.equals("play/play-data/download")) {
+
+          try {
+            JSONObject json = new JSONObject(body);
+            JSONObject media_urlsObject = null;
+            JSONObject preview_urlsObject = null;
+
+            if (json.isNull("media_urls")) {
+
+            } else {
+              media_urlsObject = json.getJSONObject("media_urls");
+            }
+
+            String previewDashUrl = "";
+
+            if (!json.isNull("preview_urls")) {
+              LogHelper
+                  .e(TAG, " preview_urls is Not null " + json.getJSONObject("preview_urls"));
+              preview_urlsObject = json.getJSONObject("preview_urls");
+
+              previewDashUrl = preview_urlsObject.getString("DASH");
+
+            } else {
+              LogHelper.e(TAG, " preview_urls is null ");
+            }
+
+            JSONObject permissionObject = json.getJSONObject("permission");
+
+            String dashUrl = media_urlsObject.getString("DASH");
+            Boolean can_play = permissionObject.getBoolean("can_play");
+            String expire_at = permissionObject.getString("expire_at");
+            Boolean is_free = permissionObject.getBoolean("is_free");
+
+            Intent service = new Intent(contextWrapper, DownloadService.class);
+
+            service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
+            service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                mWebPlayerInfo.getCname()[contentId]);
+            service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
+            service.putExtra("contentCid", contentCid);
+            intent.putExtra("expire_at", expire_at);
+            service.putExtra("webPlayerInfo", mWebPlayerInfo);
+
+            contextWrapper.startService(service);
+
+
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+
         }
       } else {
 
@@ -1032,4 +1107,260 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     sendData(WELEARN_WEB_URL + callbackMethodName + contendCid);
   }
 
+  public void downloadCid(String cid) {
+
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+    Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
+
+    ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+        .getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+
+    boolean isOnlyWifiDownload = Preferences.getOnlyWifiDownload(getReactApplicationContext());
+
+    if (isOnlyWifiDownload && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
+              "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
+              getReactApplicationContext().getString(R.string.info_dial_ok),
+              getReactApplicationContext().getString(R.string.info_dial_cancel),
+              FLAG_DOWNLOAD_NETWORK_CHECK, "");
+        }
+      });
+
+      return;
+    } else {
+
+      callbackMethodName = "play/contents-info";
+
+      String[] cidMaster = cid.split("_");
+
+      cid = cidMaster[0];
+
+      if (Utils.checkCidAudioChapter(cid)) {
+        // 하나만 다운로드
+        callbackMethod = "download";
+      } else {
+        // 모두 다운로드
+        callbackMethod = "downloadGroup";
+      }
+      sendData(WELEARN_WEB_URL + "play/contents-info/" + cid);
+    }
+  }
+
+  /**
+   * 웹 서버로 데이터 전송
+   */
+  private void sendDataDownload(String sendUrl, String cid) {
+
+    String requestWebUrl = sendUrl;
+    contentCid = cid;
+
+    LogHelper.e(TAG, " sendDataDownload requestWebUrl is " + requestWebUrl);
+    LogHelper.e(TAG, " sendDataDownload requestWebUrl is " + cid);
+    LogHelper.e(TAG, " sendDataDownload requestWebUrl is " + Preferences
+        .getWelaaaOauthToken(getCurrentActivity()));
+
+    new Thread() {
+      public void run() {
+        httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
+            Preferences.getWelaaaOauthToken(getCurrentActivity()), callbackDownload);
+      }
+    }.start();
+  }
+
+  private final Callback callbackDownload = new Callback() {
+    @Override
+    public void onFailure(Call call, IOException e) {
+      LogHelper.e(TAG, "콜백오류:" + e.getMessage());
+
+      if (mProgressDialog != null) {
+        mProgressDialog.dismiss();
+      }
+
+    }
+
+    @Override
+    public void onResponse(Call call, Response response) throws IOException {
+      String body = response.body().string();
+
+      Activity activity = getCurrentActivity();
+      ContextWrapper contextWrapper = new ContextWrapper(activity);
+      Intent intent = new Intent(contextWrapper, PlayerActivity.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+      if (mProgressDialog != null) {
+        mProgressDialog.dismiss();
+      }
+
+      try {
+        JSONObject json = new JSONObject(body);
+        JSONObject media_urlsObject = null;
+        JSONObject preview_urlsObject = null;
+
+        if (json.isNull("media_urls")) {
+
+        } else {
+          media_urlsObject = json.getJSONObject("media_urls");
+        }
+
+        String previewDashUrl = "";
+
+        if (!json.isNull("preview_urls")) {
+          LogHelper
+              .e(TAG, " preview_urls is Not null " + json.getJSONObject("preview_urls"));
+          preview_urlsObject = json.getJSONObject("preview_urls");
+
+          previewDashUrl = preview_urlsObject.getString("DASH");
+
+        } else {
+          LogHelper.e(TAG, " preview_urls is null ");
+        }
+
+        JSONObject permissionObject = json.getJSONObject("permission");
+
+        String dashUrl = media_urlsObject.getString("DASH");
+
+        LogHelper.e(TAG, " DASH URL IS " + dashUrl);
+
+        Boolean can_play = permissionObject.getBoolean("can_play");
+        String expire_at = permissionObject.getString("expire_at");
+        Boolean is_free = permissionObject.getBoolean("is_free");
+
+        String dashUrlSplit[] = dashUrl.split("DASH_");
+        String urlSplit[] = dashUrlSplit[1].split("/");
+
+        contentCid = urlSplit[0];
+
+        Intent service = new Intent(contextWrapper, DownloadService.class);
+
+        service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, dashUrl);
+        service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+            mWebPlayerInfo.getCname()[contentId]);
+        service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, false);
+        service.putExtra("contentCid", contentCid);
+        intent.putExtra("expire_at", expire_at);
+        service.putExtra("webPlayerInfo", mWebPlayerInfo);
+
+        contextWrapper.startService(service);
+
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  };
+
+  /**
+   * @param cid Content cid which will be deleted.
+   * @return True if delete is succeeded, otherwise false.
+   */
+  private boolean deleteDownload(String cid, String localUrl) {
+    LogHelper.d(TAG, "deleteDownload-", cid);
+
+//        String drm_content_uri_extra = intent.getStringExtra("drm_content_uri_extra");
+//        String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
+//        boolean drm_delete = intent.getBooleanExtra("drm_delete", false);
+//
+//        String downloadContentCid = intent.getStringExtra("contentCid");
+//        String expire_at = intent.getStringExtra("expire_at");
+
+//        local SQLite 정보 조회를 통해서 download Url 가져 오기
+
+    Activity activity = getCurrentActivity();
+    ContextWrapper contextWrapper = new ContextWrapper(activity);
+    Intent intent = new Intent(contextWrapper, PlayerActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+    Intent service = new Intent(contextWrapper, DownloadService.class);
+
+    service.putExtra(PlaybackManager.DRM_CONTENT_URI_EXTRA, localUrl);
+//        service.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+//            mWebPlayerInfo.getCname()[contentId]);
+    service.putExtra(PlayerActivity.DOWNLOAD_SERVICE_TYPE, true);
+    service.putExtra("contentCid", cid);
+//        service.putExtra("webPlayerInfo", mWebPlayerInfo);
+
+    contextWrapper.startService(service);
+
+    return true;
+  }
+
+  private OfflineContentData parseOfflineContentData(ReadableMap content) {
+    OfflineContentData offlineContentData = new OfflineContentData();
+    if (content.hasKey("audioVideoType")) {
+      offlineContentData.setAudioVideoType(content.getString("audioVideoType"));
+    }
+    if (content.hasKey("cPlayTime")) {
+      offlineContentData.setcPlayTime(content.getString("cPlayTime"));
+    }
+    if (content.hasKey("cTitle")) {
+      offlineContentData.setcTitle(content.getString("cTitle"));
+    }
+    if (content.hasKey("cid")) {
+      offlineContentData.setCid(content.getString("cid"));
+    }
+    if (content.hasKey("ckey")) {
+      offlineContentData.setCkey(content.getString("ckey"));
+    }
+    if (content.hasKey("contentPath")) {
+      offlineContentData.setContentPath(content.getString("contentPath"));
+    }
+    if (content.hasKey("drmLicenseUrl")) {
+      offlineContentData.setDrmLicenseUrl(content.getString("drmLicenseUrl"));
+    }
+    if (content.hasKey("drmSchemeUuid")) {
+      offlineContentData.setDrmSchemeUuid(content.getString("drmSchemeUuid"));
+    }
+    if (content.hasKey("gTitle")) {
+      offlineContentData.setgTitle(content.getString("gTitle"));
+    }
+    if (content.hasKey("groupAllPlayTime")) {
+      offlineContentData.setGroupAllPlayTime(content.getString("groupAllPlayTime"));
+    }
+    if (content.hasKey("groupContentScnt")) {
+      offlineContentData.setGroupContentScnt(content.getString("groupContentScnt"));
+    }
+    if (content.hasKey("groupImg")) {
+      offlineContentData.setGroupImg(content.getString("groupImg"));
+    }
+    if (content.hasKey("groupTeacherName")) {
+      offlineContentData.setGroupTeacherName(content.getString("groupTeacherName"));
+    }
+    if (content.hasKey("groupkey")) {
+      offlineContentData.setGroupkey(content.getString("groupkey"));
+    }
+    if (content.hasKey("key")) {
+      offlineContentData.setKey(content.getString("key"));
+    }
+    if (content.hasKey("modified")) {
+      offlineContentData.setModified(content.getString("modified"));
+    }
+    if (content.hasKey("modified")) {
+      offlineContentData.setModified(content.getString("modified"));
+    }
+    if (content.hasKey("oid")) {
+      offlineContentData.setOid(content.getString("oid"));
+    }
+    if (content.hasKey("thumbnailImg")) {
+      offlineContentData.setThumbnailImg("thumbnailImg");
+    }
+    if (content.hasKey("totalSize")) {
+      offlineContentData.setTotalSize(content.getString("totalSize"));
+    }
+    if (content.hasKey("userId")) {
+      offlineContentData.setUserId(content.getString("userId"));
+    }
+    if (content.hasKey("view_limitdate")) {
+      offlineContentData.setView_limitdate(content.getString("view_limitdate"));
+    }
+    if (content.hasKey("_id")) {
+      offlineContentData.setId(content.getString("_id"));
+    }
+    return offlineContentData;
+  }
 }
+

@@ -88,7 +88,10 @@ class Store {
 
   /* 이벤트로 넘겨받은 다운로드받은 아이템 DB조회목록 */
   @observable
-  downloadItems = {};
+  downloadItems = [];
+
+  @observable
+  downloadState = { complete: false, progress: 50 };
 
   /* 앱 설정 관련 정보 */
   @observable
