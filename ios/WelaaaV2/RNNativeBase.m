@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE();
     return webToken;
 }
 
+- (NSString *) getDeviceId
+{
+    return [common getUUID];
+}
+
 #pragma mark - RCT_EXPORT
 //
 // JS -> Obj-C -> JS callback method
@@ -32,6 +37,15 @@ RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) resultCallback )
     f_token = [self getWebToken];
     [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"webToken"]; // F_Token을 삭제합니다.
     resultCallback(@[f_token]); // (error, someData) in js
+}
+
+//
+// Obj-C -> JS (Exporting Constants)
+// https://facebook.github.io/react-native/docs/native-modules-ios#exporting-constants
+//
+- (NSDictionary *) constantsToExport
+{
+    return @{ @"deviceId" : [self getDeviceId] };
 }
 
 @end
