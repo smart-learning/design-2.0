@@ -1,10 +1,13 @@
-﻿import React from 'react';
-import { Alert, NativeModules } from 'react-native';
+﻿import { Alert, NativeModules } from 'react-native';
 import globalStore from '../commons/store';
 
 const { RNNativePlayer, RNNativeBase, RNProductPayment } = NativeModules;
 
 export default {
+  getPlayerManager() {
+    return RNNativePlayer
+  },
+
   getF_TOKEN(callback) {
     RNNativeBase.getF_TOKEN(callback);
   },
@@ -59,6 +62,12 @@ export default {
     globalStore.miniPlayerVisible = bool;
   },
 
+  downloadState(arg) {
+    console.log('native.js::downloadState(arg)', arg);
+    globalStore.downloadState.complete = arg.complete;
+    globalStore.downloadState.progress = arg.progress;
+  },
+
   getDownloadList(success, failed) {
     console.log('native.js::getDownloadList');
     RNNativePlayer.getDownloadList()
@@ -95,9 +104,11 @@ export default {
     RNNativePlayer.download(args);
   },
 
-  deleteDownload(arg) {
+  deleteDownload(arg, success, failed) {
     console.log('native.js::deleteDownload(arg)', arg);
-    RNNativePlayer.deleteDownload(arg);
+    RNNativePlayer.deleteDownload(arg)
+      .then(success)
+      .catch(failed);
   },
 
   /* 내정보 > 설정 메뉴에서 호출 */
@@ -145,6 +156,14 @@ export default {
     }
 
     return 'salkdjfklsdjf;';
+  },
+
+  getDeviceId() {
+    return RNNativeBase.deviceId;
+  },
+
+  getModel() {
+    return RNNativeBase.getModel;
   },
 
   buy(args) {

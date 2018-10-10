@@ -1,11 +1,11 @@
 import axios from 'axios';
 import Base64 from 'Base64';
-import Localizable from 'react-native-localizable';
 import moment from 'moment';
 import { AsyncStorage, Platform } from 'react-native';
-import VersionNumber from 'react-native-version-number';
-import DeviceInfo from 'react-native-device-info';
 import firebase from 'react-native-firebase';
+import Localizable from 'react-native-localizable';
+import VersionNumber from 'react-native-version-number';
+import Native from './native';
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
 let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
@@ -436,7 +436,6 @@ export default {
     });
   },
   getMainBanner(isRefresh = false) {
-
     let expired = DEFAULT_EXPIRED;
     if (isRefresh) {
       expired = 1;
@@ -624,14 +623,19 @@ export default {
   async registeFcmToken(bool) {
     const fcmToken = await firebase.messaging().getToken();
 
+    const deviceId = Native.getDeviceId();
+    const model = Native.getModel();
+    console.log('deviceId: ' + deviceId);
+    console.log('model:' + model);
+
     if (fcmToken) {
       let params = {
         app_name: 'welaaa',
         app_os: Platform.OS === 'ios' ? 0 : 1,
         app_os_version: Platform.Version,
         app_version: VersionNumber.appVersion,
-        device_id: DeviceInfo.getUniqueID(),
-        device_model: DeviceInfo.getModel(),
+        device_id: deviceId,
+        device_model: model,
         fcm_token: fcmToken,
         push_receive: bool
       };

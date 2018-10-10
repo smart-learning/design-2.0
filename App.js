@@ -5,7 +5,16 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import { ActivityIndicator, AsyncStorage, DeviceEventEmitter, Keyboard, Linking, Platform, View } from 'react-native';
+import {
+  ActivityIndicator,
+  AsyncStorage,
+  DeviceEventEmitter,
+  NativeEventEmitter,
+  Platform,
+  View,
+  Linking,
+  Keyboard
+} from 'react-native';
 import EventEmitter from 'events';
 import store from './src/scripts/commons/store';
 
@@ -127,25 +136,28 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    this.subscription.push(
-      DeviceEventEmitter.addListener('miniPlayer', params => {
-        Native.toggleMiniPlayer(params.visible);
-      })
-    );
-    this.subscription.push(
-      DeviceEventEmitter.addListener('selectDatabase', params => {
-        console.log('database receiveDownloadList:', params);
-        store.downloadItems =
-          params.selectDownload || params.selectDatabase || 'null';
-      })
-    );
-    this.subscription.push(
-      DeviceEventEmitter.addListener('selectDownload', params => {
-        console.log('download receiveDownloadList:', params);
-        store.downloadItems =
-          params.selectDownload || params.selectDatabase || 'null';
-      })
-    );
+    if ('ios' === Platform.OS) {
+      console.log('======', Native.getPlayerManager())
+      const playerManager = Native.getPlayerManager()
+      const playerManagerEmitter = new NativeEventEmitter(
+        playerManager
+      );
+      playerManagerEmitter.addListener('downloadState', arg =>
+        Native.downloadState(arg)
+      );
+    } else if ('android' === Platform.OS) {
+      this.subscription.push(
+        DeviceEventEmitter.addListener('miniPlayer', params => {
+          Native.toggleMiniPlayer(params.visible);
+        })
+      );
+
+      this.subscription.push(
+        DeviceEventEmitter.addListener('downloadState', arg =>
+          Native.downloadState(arg)
+        )
+      );
+    }
 
     Linking.addEventListener('url', this._handleOpenURL);
 
