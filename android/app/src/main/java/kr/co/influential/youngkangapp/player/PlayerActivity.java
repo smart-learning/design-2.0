@@ -50,7 +50,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.CookieManager;
@@ -648,6 +647,11 @@ public class PlayerActivity extends BasePlayerActivity {
    * initialize
    */
   private void setData(boolean fromMediaSession, Bundle extras, Uri uri) {
+    if (uri == null || Uri.EMPTY.equals(uri) || extras == null) {
+      finish();
+      return;
+    }
+
     if (!fromMediaSession) {
       mWebPlayerInfo = (WebPlayerInfo) extras.getSerializable("webPlayerInfo");
       Gson gson = new Gson();
@@ -2131,9 +2135,10 @@ public class PlayerActivity extends BasePlayerActivity {
           case R.id.BTN_DOWNLOAD: {
 
             String ckey = getwebPlayerInfo().getCkey()[getContentId()];
-            if(ContentManager().existCid(ckey)){
-              Utils.logToast(getApplicationContext(), getString(R.string.info_dial_already_download));
-            }else{
+            if (ContentManager().existCid(ckey)) {
+              Utils.logToast(getApplicationContext(),
+                  getString(R.string.info_dial_already_download));
+            } else {
               ConnectivityManager cmgr = (ConnectivityManager) getApplicationContext()
                   .getSystemService(Context.CONNECTIVITY_SERVICE);
               NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
@@ -4662,7 +4667,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   // Meta data update 정상 .
                 }
 
-              }else{
+              } else {
                 // 자동 재생 여부를 참조하여 재생합니다.
                 if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
                   if (getTransportControls() != null) {
