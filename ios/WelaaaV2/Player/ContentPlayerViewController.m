@@ -1065,6 +1065,25 @@
 }
 
 //
+// 재생 가능한 이전 콘텐츠를 찾아 set합니다. 없으면 그냥 리턴합니다.
+//
+- (void) setPreviousContent
+{
+    NSLog(@"  [setPreviousContent] 재생 가능한 이전 콘텐츠를 찾아 set합니다.");
+  
+    return ;
+}
+//
+// 재생 가능한 다음 콘텐츠를 찾아 set합니다. 없으면 그냥 리턴합니다.
+//
+- (void) setNextContent
+{
+    NSLog(@"  [setNextContent] 재생 가능한 다음 콘텐츠를 찾아 set합니다.");
+  
+    return ;
+}
+
+//
 // 다음 콘텐트를 재생합니다. 재생할 _args가 미리 세팅되어 있기때문에 파라미터가 필요하지 않습니다.
 //
 - (void) playNext
@@ -1148,6 +1167,16 @@
                                                selector : @selector(reloadLogData:)
                                                userInfo : nil
                                                 repeats : YES];
+  
+    // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
+    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+    NSTimeInterval totalTime = [self getDuration];
+    NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
+    playInfo[@"currentTime"] = @(currentTime);
+    playInfo[@"totalTime"] = @(totalTime);
+    playInfo[@"isAudioContent"] = @(_isAudioContent);
+    [_miniPlayerUiView setPreparedToPlayInfo : playInfo];
+    [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
 }
 
 //
@@ -1234,6 +1263,7 @@
                                       self.view.frame = self.view.bounds;
                                   }];
   
+    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
     _screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
@@ -1487,7 +1517,7 @@
     CGRect frame = self.view.bounds;
   
     if ( [common hasNotch] )
-        frame.size.height = frame.size.height - _bottomView.frame.size.height - 20;
+        frame.size.height = frame.size.height - _bottomView.frame.size.height - 12;
     else
         frame.size.height = frame.size.height - _bottomView.frame.size.height;
   
@@ -2476,6 +2506,7 @@
     _miniPlayerUiView = nil;
     [[self.view viewWithTag:1] removeFromSuperview];
   //_screenMode = ContentsPlayerScreenModeMiniPlayer;
+    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
 }
 
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
@@ -2632,7 +2663,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (void) downloadContent : (NSString * _Nonnull) contentId
         didStopWithError : (NSError * _Nullable) error
 {
-    NSLog(@"  download contentId : %@, error code : %d", contentId, [error code]);
+    NSLog(@"  download contentId : %@, error code : %ld ", contentId, [error code]);
     // FPS 다운로드간 에러 발생시 여기서 처리합니다.
 }
 
@@ -2683,12 +2714,12 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
-                // 결국은 PlayListArray를 만들어서 전역으로 가지고 있어야 한다는 뜻?
+                [self setPreviousContent];
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
-                // [self playNext??];
+                [self setNextContent];
                 break;
             
             default:

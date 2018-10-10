@@ -90,6 +90,9 @@ class Store {
   @observable
   downloadItems = [];
 
+  @observable
+  downloadState = { complete: false, progress: 50 };
+
   /* 앱 설정 관련 정보 */
   @observable
   appSettings = {

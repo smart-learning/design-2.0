@@ -59,8 +59,6 @@
 
 + (NSString *) getDocumentsFolderPath;
 
-+ (BOOL) checkAquaSdkLicense;
-
 + (NSString *) getUUID;
 
 + (NSString *) udidUsingCFUUID;
