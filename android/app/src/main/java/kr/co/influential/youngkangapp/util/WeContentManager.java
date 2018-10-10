@@ -587,7 +587,7 @@ public class WeContentManager extends SQLiteOpenHelper {
 
     String sql =
         "UPDATE PROGRESS SET playCount= playCount+1 , duration = '" + duration
-            + "' reg_date='(datetime('now','localtime'))' WHERE cid='" + cid + "'";
+            + "' , reg_date= datetime('now','localtime') WHERE cid='" + cid + "'";
 
     db.execSQL(sql);
   }
