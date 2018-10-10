@@ -20,11 +20,6 @@ RCT_EXPORT_MODULE();
     return webToken;
 }
 
-- (NSString *) getDeviceId
-{
-    return [common getUUID];
-}
-
 #pragma mark - RCT_EXPORT
 //
 // JS -> Obj-C -> JS callback method
@@ -45,7 +40,9 @@ RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) resultCallback )
 //
 - (NSDictionary *) constantsToExport
 {
-    return @{ @"deviceId" : [self getDeviceId] };
+    return @{ @"deviceId" : [common getUUID],
+              @"model" : [common getModel],
+              @"versionNumber" : [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"] };
 }
 
 @end
