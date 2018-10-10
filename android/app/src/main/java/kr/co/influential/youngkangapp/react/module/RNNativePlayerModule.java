@@ -140,7 +140,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       }
 
       Preferences.setSQLiteDuration(getReactApplicationContext(), true);
-      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
 
       UiThreadUtil.runOnUiThread(new Runnable() {
         @Override
