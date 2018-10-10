@@ -3338,7 +3338,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case 1:
             if (Util.SDK_INT >= 19) {
-              contentDownload();
               mCustomDialog.dismiss();
             }
             break;
@@ -3358,7 +3357,7 @@ public class PlayerActivity extends BasePlayerActivity {
         switch (alertWindowId) {
 
           case 1:
-            if (Util.SDK_INT >= 26) {
+            if (Util.SDK_INT >= 19) {
               contentDownload();
               mCustomDialog.dismiss();
             }
