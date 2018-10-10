@@ -37,6 +37,8 @@ public class WeContentManager extends SQLiteOpenHelper {
 
   private final String DOWNLOAD_DROP_TABLE = "DROP TABLE IF EXISTS DOWNLOAD";
 
+  private final String PROGRESS_DROP_TABLE = "DROP TABLE IF EXISTS PROGRESS";
+
   private SQLiteDatabase db;
 
   public WeContentManager(Context context, String database) {
@@ -533,7 +535,7 @@ public class WeContentManager extends SQLiteOpenHelper {
 
         "INSERT INTO PROGRESS ( cid, duration , playCount , progress , reg_date , server_sync_flag)"
             +
-            "values ( '%s', '%s' , '1' , '', sysdate() , 'N');",
+            "values ( '%s', '%s' , '1' , '', (datetime('now','localtime')) , 'N');",
         cid, duration));
   }
 
@@ -585,7 +587,7 @@ public class WeContentManager extends SQLiteOpenHelper {
 
     String sql =
         "UPDATE PROGRESS SET playCount= playCount+1 , duration = '" + duration
-            + "' reg_date='sysdate()' WHERE cid='" + cid + "'";
+            + "' reg_date='(datetime('now','localtime'))' WHERE cid='" + cid + "'";
 
     db.execSQL(sql);
   }

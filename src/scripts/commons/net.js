@@ -4,7 +4,6 @@ import moment from 'moment';
 import { AsyncStorage, Platform } from 'react-native';
 import firebase from 'react-native-firebase';
 import Localizable from 'react-native-localizable';
-import VersionNumber from 'react-native-version-number';
 import Native from './native';
 
 // 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
@@ -623,8 +622,10 @@ export default {
   async registeFcmToken(bool) {
     const fcmToken = await firebase.messaging().getToken();
 
+    const versionNumber = Native.getVersionNumber();
     const deviceId = Native.getDeviceId();
     const model = Native.getModel();
+    console.log('versionNumber: ', versionNumber);
     console.log('deviceId: ' + deviceId);
     console.log('model:' + model);
 
@@ -633,7 +634,7 @@ export default {
         app_name: 'welaaa',
         app_os: Platform.OS === 'ios' ? 0 : 1,
         app_os_version: Platform.Version,
-        app_version: VersionNumber.appVersion,
+        app_version: versionNumber,
         device_id: deviceId,
         device_model: model,
         fcm_token: fcmToken,
