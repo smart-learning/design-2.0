@@ -1,5 +1,4 @@
-﻿import React from 'react';
-import { Alert, NativeModules } from 'react-native';
+﻿import { Alert, NativeModules } from 'react-native';
 import globalStore from '../commons/store';
 
 const { RNNativePlayer, RNNativeBase, RNProductPayment } = NativeModules;
@@ -145,6 +144,14 @@ export default {
     }
 
     return 'salkdjfklsdjf;';
+  },
+
+  getDeviceId() {
+    return RNNativeBase.deviceId;
+  },
+
+  getModel() {
+    return RNNativeBase.getModel;
   },
 
   buy(args) {
