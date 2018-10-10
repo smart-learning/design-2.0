@@ -115,6 +115,9 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
 
+      LogHelper.e(TAG, " contentCid is " + contentCid);
+      LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
+
       if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
         UiThreadUtil.runOnUiThread(new Runnable() {
@@ -297,8 +300,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     String requestWebUrl = sendUrl;
 
     LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
-    LogHelper
-        .e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
+    LogHelper.e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getCurrentActivity()));
 
     new Thread() {
       public void run() {
