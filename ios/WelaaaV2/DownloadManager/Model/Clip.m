@@ -10,10 +10,10 @@
 
 @implementation Clip
 
-@synthesize title,memo,cid,playTime,index,downloaded,contentUrl,totalSec,contentPath, \
+@synthesize cTitle,memo,cid,index,downloaded,contentUrl,totalSec,contentPath, \
             groupkey,ckey,userId,drmSchemeUuid,drmLicenseUrl,oid,totalSize,gTitle,groupImg, \
             thumbnailImg,audioVideoType,groupTeacherName,cPlayTime,groupContentScnt, \
-            groupAllPlayTime,view_limitdate,modified;
+            groupAllPlayTime,view_limitdate,modified,cPlaySeconds;
 
 -(id)initWithTitle:(NSString *)title
               memo:(NSString *)memo
@@ -23,10 +23,10 @@
 {
   self = [super init];
   if(self != nil){
-    self.title = title;
+    self.cTitle = title;
     self.memo = memo;
     self.cid = cid;
-    self.playTime = playTime;
+    self.cPlayTime = playTime;
     
     // 00:00:00 에서 초(sec)로 변환해서 전체 재생시간을 저장
     NSArray *timeUnits= [playTime componentsSeparatedByString: @":"];
@@ -46,6 +46,17 @@
     self.downloaded = false;
     self.contentUrl = nil;
     self.index = index;
+  }
+  
+  return self;
+}
+
+-(id)init
+{
+  self = [super init];
+  if(self != nil){
+    self.downloaded = false;
+    self.contentUrl = nil;
   }
   
   return self;

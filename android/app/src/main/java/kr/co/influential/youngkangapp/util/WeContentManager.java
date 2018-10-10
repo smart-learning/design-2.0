@@ -33,9 +33,7 @@ public class WeContentManager extends SQLiteOpenHelper {
 
   private final String PROGRESS_CREATE_TABLE =
       "CREATE TABLE IF NOT EXISTS PROGRESS (_id integer primary key autoincrement, " +
-          "cId text not null , totalTime text not null, duration text not null, start_date text not null ,"
-          +
-          "end_date text not null , playCount text not null , reg_date text not null  )";
+          "cid text not null , duration text not null, playCount text not null , progress text not null , reg_date text not null , server_sync_flag text not null)";
 
   private final String DOWNLOAD_DROP_TABLE = "DROP TABLE IF EXISTS DOWNLOAD";
 
@@ -248,7 +246,7 @@ public class WeContentManager extends SQLiteOpenHelper {
       openDb();
     }
     db.execSQL(
-        String.format("DELETE FROM DOWNLOAD WHERE cId='%s' AND NOT totalSize is NULL;", cId));
+        String.format("DELETE FROM DOWNLOAD WHERE cId='%s'; ", cId));
   }
 
   public void downLoadModify(String modify, String filePath) throws Exception {
@@ -525,48 +523,18 @@ public class WeContentManager extends SQLiteOpenHelper {
     return dt;
   }
 
-  //get PlayingBlock
-  public ArrayList<HashMap<String, Long>> CursorToDataTable2(Cursor c) {
-    if (c == null) {
-      return null;
-    }
-
-    String[] names = c.getColumnNames();
-    ArrayList<HashMap<String, Long>> dt = new ArrayList<HashMap<String, Long>>();
-    while (c.moveToNext()) {
-      HashMap<String, Long> dr = new HashMap<String, Long>();
-      for (int j = 0; j < names.length; j++) {
-        dr.put(names[j], Long.parseLong(c.getString(j)));
-      }
-      dt.add(dr);
-    }
-
-    c.close();
-    return dt;
-  }
-
-  public ArrayList<HashMap<String, Long>> getPlayingBlock(String cid, String customerid) {
-    if (!db.isOpen()) {
-      openDb();
-    }
-    String query =
-        "SELECT StartTime, EndTime FROM MEGALMS_PlAYING_BLOCK WHERE customerid='" + customerid
-            + "' AND cid='" + cid + "'";
-    Cursor c = db.rawQuery(query, null);
-
-    return CursorToDataTable2(c);
-  }
-
-  public void insertProgress(String cId, String totalTime , String duration) throws Exception {
+  public void insertProgress(String cid, String duration
+  ) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
 
     db.execSQL(String.format(
-        "INSERT INTO PROGRESS ( cId , totalTime, PlayCount , duration ,start_date , end_date ,  reg_date) "
+
+        "INSERT INTO PROGRESS ( cid, duration , playCount , progress , reg_date , server_sync_flag)"
             +
-            "values ( '%s', '%s', '%s', '%s', (datetime('now','localtime')) , '', (datetime('now','localtime')));",
-        cId, totalTime, 1 , duration));
+            "values ( '%s', '%s' , '1' , '', sysdate() , 'N');",
+        cid, duration));
   }
 
   public ArrayList<HashMap<String, Object>> getProgressCid() throws Exception {
@@ -575,20 +543,19 @@ public class WeContentManager extends SQLiteOpenHelper {
     }
 
     String query =
-        "SELECT cId , totalTime, PlayCount , duration,  reg_date , start_date , end_date FROM PROGRESS";
+        "SELECT cid , duration , PlayCount , progress , reg_date , server_sync_flag FROM PROGRESS";
     Cursor c = db.rawQuery(query, null);
 
     return CursorToDataTable(c);
   }
 
-  public ArrayList<HashMap<String, Object>> getProgressCid(String cId) throws Exception {
+  public ArrayList<HashMap<String, Object>> getProgressCid(String cid) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
 
     String query =
-        "SELECT cId , totalTime, PlayCount , duration,  reg_date , start_date , end_date FROM PROGRESS WHERE cId='"
-            + cId + "'";
+        "SELECT cid , duration , PlayCount , progress , reg_date , server_sync_flag FROM PROGRESS WHERE cid = '"+cid+"'";
     Cursor c = db.rawQuery(query, null);
 
     return CursorToDataTable(c);
@@ -599,7 +566,9 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT cId  FROM PROGRESS WHERE cId='" + cid + "'";
+
+    String query = "SELECT cId FROM PROGRESS WHERE cid ='" + cid + "'";
+
     Cursor c = db.rawQuery(query, null);
     int nCount = 0;
     nCount = c.getCount();
@@ -614,11 +583,9 @@ public class WeContentManager extends SQLiteOpenHelper {
       openDb();
     }
 
-    String sql = "";
-
-    sql =
-        "UPDATE PROGRESS SET playCount= playCount+1 , duration = '"+duration+"' ,reg_date=(datetime('now','localtime')) WHERE cId='"
-            + cid + "'";
+    String sql =
+        "UPDATE PROGRESS SET playCount= playCount+1 , duration = '" + duration
+            + "' reg_date='sysdate()' WHERE cid='" + cid + "'";
 
     db.execSQL(sql);
   }
@@ -628,7 +595,7 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-    String sql = "DELETE FROM PROGRESS WHERE cId='" + cid + "'";
+    String sql = "DELETE FROM PROGRESS WHERE cid='" + cid + "'";
     db.execSQL(sql);
   }
 
