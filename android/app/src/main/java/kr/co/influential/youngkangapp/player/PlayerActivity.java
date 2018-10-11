@@ -50,7 +50,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.CookieManager;
@@ -101,6 +100,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import kr.co.influential.youngkangapp.BasePlayerActivity;
 import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
@@ -648,6 +648,11 @@ public class PlayerActivity extends BasePlayerActivity {
    * initialize
    */
   private void setData(boolean fromMediaSession, Bundle extras, Uri uri) {
+    if (uri == null || Uri.EMPTY.equals(uri) || extras == null) {
+      finish();
+      return;
+    }
+
     if (!fromMediaSession) {
       mWebPlayerInfo = (WebPlayerInfo) extras.getSerializable("webPlayerInfo");
       Gson gson = new Gson();
@@ -2131,9 +2136,10 @@ public class PlayerActivity extends BasePlayerActivity {
           case R.id.BTN_DOWNLOAD: {
 
             String ckey = getwebPlayerInfo().getCkey()[getContentId()];
-            if(ContentManager().existCid(ckey)){
-              Utils.logToast(getApplicationContext(), getString(R.string.info_dial_already_download));
-            }else{
+            if (ContentManager().existCid(ckey)) {
+              Utils.logToast(getApplicationContext(),
+                  getString(R.string.info_dial_already_download));
+            } else {
               ConnectivityManager cmgr = (ConnectivityManager) getApplicationContext()
                   .getSystemService(Context.CONNECTIVITY_SERVICE);
               NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
@@ -2661,24 +2667,22 @@ public class PlayerActivity extends BasePlayerActivity {
    *******************************************************************/
   public void setShortText() {
 
-    LinearLayout shortTextView = findViewById(R.id.shortTextView);
-    LinearLayout shortTextTimeView = findViewById(R.id.shortTextTimeView);
-
-    if (shortTextView != null) {
-      shortTextView.removeAllViews();
-    }
-    if (shortTextTimeView != null) {
-      shortTextTimeView.removeAllViews();
-    }
-
     int fontcolor = 0;
-    try {
-      fontcolor = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
 
     try {
+
+      LinearLayout shortTextView = findViewById(R.id.shortTextView);
+      LinearLayout shortTextTimeView = findViewById(R.id.shortTextTimeView);
+
+      if (shortTextView != null) {
+        shortTextView.removeAllViews();
+      }
+      if (shortTextTimeView != null) {
+        shortTextTimeView.removeAllViews();
+      }
+
+      fontcolor = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color);
+
       subTitlsLineNum = new int[mSubtitlsmemo.length - 1];
 
       //TODO 자막파일에 마지막 빈파일은 삭제하고 -2를 -1로 바꾸세요.
@@ -3053,16 +3057,21 @@ public class PlayerActivity extends BasePlayerActivity {
     final int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
     final int progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-    volumeSeekbar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-    volumeSeekbar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+    if (volumeSeekbar != null) {
 
-    int progressInt = Math.round(100 / max) * progress;
-
-    if (progressInt > 89) {
-      progressInt = 100;
+      volumeSeekbar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+      volumeSeekbar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
     }
 
-    mTextViewVolumeText.setText(progressInt + "%");
+    if (mTextViewVolumeText != null) {
+      int progressInt = Math.round(100 / max) * progress;
+
+      if (progressInt > 89) {
+        progressInt = 100;
+      }
+
+      mTextViewVolumeText.setText(progressInt + "%");
+    }
   }
 
   /****************************************************************************
@@ -4293,6 +4302,28 @@ public class PlayerActivity extends BasePlayerActivity {
       if (!fromMediaSession) {
         extras = intent.getExtras();
         uri = intent.getData();
+
+        try {
+          // player foreground 상태에서
+          // 전화 통화 후 종료 , Power OFF 후 다시 Player 상태로 돌아오는 경우 .
+          if (mediaController.getMetadata().getBundle() != null) {
+
+            if(Preferences.getSQLiteDuration(getApplicationContext())){
+              // RN play 를 통해서 들어오는 경우는 그대로 재생 시도
+              // 이 값은 LocalPlayBack 에서 다시 초기화 됩니다.
+            }else{
+              if (LocalPlayback.getInstance(this).isPlaying()) {
+                extras = mediaController.getMetadata().getBundle();
+                uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+
+                fromMediaSession = true;
+              }
+            }
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
         setData(fromMediaSession, extras, uri);
       } else {
         try {
@@ -4661,7 +4692,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   // Meta data update 정상 .
                 }
 
-              }else{
+              } else {
                 // 자동 재생 여부를 참조하여 재생합니다.
                 if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
                   if (getTransportControls() != null) {

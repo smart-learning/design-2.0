@@ -2576,6 +2576,11 @@
       return;
     }
   
+    if ( self.isMiniPlayer )
+    {
+        [self miniPlayerUiView:_miniPlayerUiView openView:self];
+    }
+  
     NSString *assetPath = location.relativePath;
     NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
     NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : assetPath];

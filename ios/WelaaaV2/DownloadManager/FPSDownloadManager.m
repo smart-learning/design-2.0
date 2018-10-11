@@ -109,14 +109,207 @@
 }
 
 
+//  개별 다운로드(플레이어뷰 화면에 있는 다운로드 버튼)
 - (void) startDownload : (NSDictionary *) item
             completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
 {
+    /*
     [self queueDownloadRequest : item
                     completion : resultHandler];
+     */
+  // 아래와 같이 수정 2018.10.10
+  NSMutableDictionary *details = [NSMutableDictionary dictionary];  // 에러에 대한 상세내용을 저장
+  
+  NSString* gid = nil;
+  
+  if (item)
+  {
+    NSString* cid = item[@"cid"];
+    if (cid && cid.length>1)
+    {
+      gid = [cid substringToIndex:[cid indexOf:@"_"]];
+    }
+  }else
+  {
+    NSLog(@"  No item!");
+    return;
+  }
+  
+  if (gid && gid.length > 0)
+  {
+    // 강좌 그룹 전체 내용에 대한 메타정보를 먼저 구하고,
+    NSDictionary *contentsInfo = [ApiManager getContentsInfoWithCgid : gid
+                                                       andHeaderInfo : item[@"token"]];
+    if (contentsInfo == nil)
+    {
+      NSLog(@"  No contentsInfo!");
+      [self showAlertOk:@"알림" message:@"콘텐츠 정보를 불러올 수 없습니다"];
+      return;
+    }
+    
+    // 다운로드 시작
+    NSString *cid = item[@"cid"];
+    NSString *userId = item[@"userId"];
+    NSString *token = item[@"token"];
+    
+    // 다운로드 받을 콘텐츠에 대한 메타정보를 추출해서 미리 저장
+    FPSDownload *fpsDownload = [[FPSDownload alloc] initWithClip : [self getClipInfo:item fromContentsInfo:contentsInfo]];
+    
+    if([fpsDownload.clip.cPlaySeconds intValue] == 0){
+      // play_sconds 필드가 0 인 클립은 받지 않음(오디오북의 경우 다운로드 경로가 있다하더라도 내용없는 chapter)
+      NSLog(@"  play_seconds 0 contents");
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"다운로드 받을 수 없는 콘텐츠 입니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"contents"
+                                         code : 0
+                                     userInfo : details], nil);
+      return;
+    }
+    
+    //// 데이터 유효성 체크
+    if ( !cid || cid.length <= 0 )
+    {
+      [details setValue : @"No cid"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"콘텐츠 정보(cid)가 없습니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"cid"
+                                         code : 0
+                                     userInfo : details], nil);
+      return ;
+    }
+    
+    if ( !userId || userId.length <= 0 )
+    {
+      [details setValue : @"No userId"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"사용자 정보(User Id)가 없습니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"userId"
+                                         code : 0
+                                     userInfo : details], nil);
+      return ;
+    }
+    
+    if ( !token || token.length <= 0 )
+    {
+      [details setValue : @"No token"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"인증 정보(token)가 없습니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"token"
+                                         code : 0
+                                     userInfo : details], nil);
+      return ;
+    }
+    
+    //// 중복 다운로드 체크에 대한 시나리오 고민 필요(gid 로 뽑아서 비교? - 개별다운로드, 전체다운로드 케이스 등)
+    
+    NSMutableArray *clips = [[DatabaseManager sharedInstance] searchDownloadedContentsId : cid];
+    
+    if ( clips && clips.count > 0 )
+    {
+      NSLog(@"  %lu Contents already in DB searched by cid : %@", (unsigned long)clips.count, cid);
+      //  DB 에 이미 있는 파일의 경우 패스 -> 이미 다운로드된 파일
+      if ( _delegateFpsMsg )
+      {
+        [_delegateFpsMsg fpsDownloadMsg : @"이미 다운로드된 파일입니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"download"
+                                         code : 0
+                                     userInfo : details], nil);
+      return;
+    }
+    else
+    {
+      NSLog(@"  No Same Contents in DB searched by cid : %@", cid);
+    }
+    
+    __block NSUInteger indexFound = NSNotFound;
+    // 다운로드 경로 중복체크(대기큐에 이미 있는지)
+    [self -> _downloadingQueue enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
+     {
+       FPSDownload *r = obj;
+       
+       if ( [cid isEqualToString : r.clip.cid] )
+       {
+         *stop = YES;
+         indexFound = idx;
+         
+         return ;
+       }
+     }];
+    
+    //  아래의 두 상황은 전달받은 args 리스트 안에 중복되는 cid 가 있지 않은 이상 발생할 일 없다(큐가 다 지워진 상태이기 때문에).
+    //  그래도 만약 그런 중복 상황이 생긴다면 무시하고 다음 item 으로 넘어간다(continue로 루프문 가장 처음으로 동).
+    if ( indexFound != NSNotFound )
+    {
+      NSLog(@"  Already in Downloading Queue wating for downloading!");
+      [details setValue : @"Already in Downloading Queue wating for downloading"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( self -> _delegateFpsMsg )
+      {
+        [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드 대기중입니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"downloading"
+                                         code : 0
+                                     userInfo : details], nil);
+      return ;
+    }
+    
+    if ( [self -> _activeDownloads objectForKey : cid] )
+    {
+      NSLog(@"  Already in Active Downloading!");
+      [details setValue : @"Already in Active Downloading"
+                 forKey : NSLocalizedDescriptionKey];
+      
+      if ( self -> _delegateFpsMsg )
+      {
+        [self -> _delegateFpsMsg fpsDownloadMsg : @"이미 다운로드 중입니다"];
+      }
+      
+      resultHandler ([NSError errorWithDomain : @"downloading"
+                                         code : 0
+                                     userInfo : details], nil);
+      return ;
+    }
+    
+    // 다운로드 경로를 구해오기 위한 리퀘스트를 준비
+    fpsDownload.playDataTask = [self preparePlayDataTask:cid authToken:token];
+    
+    // 다운로드 대기큐에 삽입
+    [self->_downloadingQueue addObject : fpsDownload];
+    
+    [self doNextDownload];  // 다운로드 작업 시작 요청
+    
+    if ( self -> _delegateFpsMsg )
+    {
+      [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드를 시작합니다"];
+    }
+    [self showToast:@"다운로드를 시작합니다"];
+  }
 }
 
 
+//  여러파일 다운로드(강좌단위,오디오북단위)
 - (void) startDownloadContents : (NSArray *) items
                     completion : (void (^) (NSError *error, NSMutableDictionary *result)) resultHandler
 {
@@ -759,35 +952,41 @@
 
 - (Clip *) getClipInfo:(NSDictionary *)args
 {
+  return [self getClipInfo:args fromContentsInfo:_contentsInfo];
+}
+
+
+- (Clip *) getClipInfo:(NSDictionary *)args fromContentsInfo:(NSDictionary *)contentsInfo
+{
   Clip *clip = [[Clip alloc] init];
   
-  clip.gTitle = _contentsInfo[@"data"][@"title"];
-  clip.audioVideoType = _contentsInfo[@"type"];
+  clip.gTitle = contentsInfo[@"data"][@"title"];
+  clip.audioVideoType = contentsInfo[@"type"];
   clip.drmLicenseUrl = @"drmUrl";
   clip.drmSchemeUuid = @"fairplay";
   clip.cPlayTime = @""; // 아래에서 개별 클립 정보를 통해 다시 구한다.
   clip.cPlaySeconds = 0; // 아래에서 개별 클립 정보를 통해 다시 구한다. -> 0 일 경우 다운로드 안받는다.
   clip.groupImg = @"";
   clip.oid = @"";
-  clip.thumbnailImg = _contentsInfo[@"data"][@"images"][@"list"];
+  clip.thumbnailImg = contentsInfo[@"data"][@"images"][@"list"];
   clip.userId = args[@"userId"];
-  clip.groupkey = _contentsInfo[@"data"][@"cid"];
-  clip.groupAllPlayTime = _contentsInfo[@"data"][@"play_time"];
-  clip.groupContentScnt = _contentsInfo[@"data"][@"clip_count"];
-  clip.view_limitdate = _contentsInfo[@"permission"][@"expire_at"];
+  clip.groupkey = contentsInfo[@"data"][@"cid"];
+  clip.groupAllPlayTime = contentsInfo[@"data"][@"play_time"];
+  clip.groupContentScnt = contentsInfo[@"data"][@"clip_count"];
+  clip.view_limitdate = contentsInfo[@"permission"][@"expire_at"];
   clip.ckey = args[@"cid"];
   clip.contentPath = @""; // 다운로드 완료 후에 결정되는 로컬경로.
   clip.totalSize = @"";
-  clip.groupTeacherName = _contentsInfo[@"data"][@"teacher"][@"name"];
+  clip.groupTeacherName = contentsInfo[@"data"][@"teacher"][@"name"];
   clip.cTitle = @"";  // 아래에서 개별 클립 정보를 통해 다시 구한다.
   clip.cid = args[@"cid"];
   
   NSArray *clipsList = nil; // 개별 클립(혹은 오디오북 챕터) 정보
   
   if ([clip.audioVideoType isEqualToString:@"video-course"]) {
-    clipsList = _contentsInfo[@"data"][@"clips"]; // 개별 클립(혹은 오디오북 챕터) 정보
+    clipsList = contentsInfo[@"data"][@"clips"]; // 개별 클립(혹은 오디오북 챕터) 정보
   }else if([clip.audioVideoType isEqualToString:@"audiobook"]){
-    clipsList = _contentsInfo[@"data"][@"chapters"]; // 개별 클립(혹은 오디오북 챕터) 정보
+    clipsList = contentsInfo[@"data"][@"chapters"]; // 개별 클립(혹은 오디오북 챕터) 정보
   }
   
   for (NSDictionary *eachClip in clipsList){
@@ -983,7 +1182,9 @@
         [[DatabaseManager sharedInstance] saveDownloadedContent : downloadedContent]; // SQLite 를 통해 저장(welaaa.db)
         fpsDownload.clip.downloaded = true;
       
+      if (_downloadCompletion) {
         _downloadCompletion(nil, [downloadedContent mutableCopy]);
+      }
     }
     @catch (NSException *exception) {
         NSLog(@"  %@", exception.reason);

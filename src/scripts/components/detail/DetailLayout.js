@@ -1,22 +1,22 @@
-import React from 'react';
 import { observer } from 'mobx-react';
+import React from 'react';
 import {
+  Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Platform,
-  Alert
+  View
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
-import TabContentInfo from './TabContentInfo';
-import TopBanner from './TopBanner';
-import TabContentList from './TabContentList';
-import AudiobookPaymentStatus from './AudiobookPaymentStatus';
-import VideoPaymentStatus from './VideoPaymentStatus';
 import Native from '../../commons/native.js';
 import globalStore from '../../commons/store';
+import AudiobookPaymentStatus from './AudiobookPaymentStatus';
+import TabContentInfo from './TabContentInfo';
+import TabContentList from './TabContentList';
+import TopBanner from './TopBanner';
+import VideoPaymentStatus from './VideoPaymentStatus';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -64,6 +64,60 @@ class DetailLayout extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log('DetailLayout.js::props', props);
+  }
+
+  downloadContentsView() {
+    var renderView = false;
+
+    if ('class' === this.props.learnType) {
+      if (globalStore && globalStore.currentMembership) {
+        const { type } = globalStore.currentMembership;
+        if (1 === type || 2 === type || 3 === type) {
+          // 무제한 소장중(1, 2: type) 또는 프리패스(3) 경우.
+          renderView = true;
+        } else if (0 === this.props.itemData.orig_price) {
+          // 무료(0: itemData.orig_price)일 경우.
+          renderView = true;
+        }
+      }
+    } else if ('audioBook' === this.props.learnType) {
+      const { paymentType } = this.props;
+      if (0 === paymentType || 3 === paymentType) {
+        // 무료(0) 이거나 소장중(3)일 경우.
+        renderView = true;
+      } else if (globalStore && globalStore.currentMembership) {
+        const { type } = globalStore.currentMembership;
+        if (3 === type) {
+          // 프리패스일 경우.
+          renderView = true;
+        }
+      }
+    }
+
+    if (renderView) {
+      return (
+        <TouchableOpacity activeOpacity={0.9} onPress={this.onDownload}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 10,
+              backgroundColor: CommonStyles.COLOR_PRIMARY,
+              height: 48
+            }}
+          >
+            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
+              다운로드
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return <View />;
+    }
   }
 
   onDownload = () => {
@@ -159,25 +213,7 @@ class DetailLayout extends React.Component {
             />
           )}
           {/* Download contents */}
-          <TouchableOpacity activeOpacity={0.9} onPress={this.onDownload}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 10,
-                backgroundColor: CommonStyles.COLOR_PRIMARY,
-                height: 48
-              }}
-            >
-              <Text
-                style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}
-              >
-                다운로드
-              </Text>
-            </View>
-          </TouchableOpacity>
+          {this.downloadContentsView()}
 
           {1 === 2 && <CountView store={this.props.store} />}
           <View style={CommonStyles.alignJustifyContentBetween}>
