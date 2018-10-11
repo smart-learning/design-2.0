@@ -100,6 +100,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import kr.co.influential.youngkangapp.BasePlayerActivity;
 import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
@@ -4298,6 +4299,22 @@ public class PlayerActivity extends BasePlayerActivity {
       if (!fromMediaSession) {
         extras = intent.getExtras();
         uri = intent.getData();
+
+        try{
+          // player foreground 상태에서
+          // 전화 통화 후 종료 , Power OFF 후 다시 Player 상태로 돌아오는 경우 .
+          if(mediaController.getMetadata().getBundle()!=null){
+            if(LocalPlayback.getInstance(this).isPlaying()){
+              extras = mediaController.getMetadata().getBundle();
+              uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
+
+              fromMediaSession = true;
+            }
+          }
+        }catch (Exception e){
+          e.printStackTrace();
+        }
+
         setData(fromMediaSession, extras, uri);
       } else {
         try {
