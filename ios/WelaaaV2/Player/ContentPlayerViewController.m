@@ -39,8 +39,10 @@
         _isAudioMode = false; // 영상강의의 경우 기본적으로 오디오모드 off인 상태에서 콘텐츠 재생을 시작합니다.
     }
   
-    // 테스트 목적으로 강제로 set하였습니다.
-    _isDownloadFile = false;
+    if ( [[_args objectForKey : @"contentPath"] hasPrefix : @"/private/var/mobile/"] )
+        _isDownloadFile = true;
+    else
+        _isDownloadFile = false;
   
     // 오디오 UI
     _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
@@ -1088,10 +1090,18 @@
 //
 - (void) playNext
 {
-    _isDownloadFile = NO; // 아직 다운로드 콘텐츠 재생에 대한 뚜렷한 플로우 정의가 없으므로 스트리밍으로 set합니다.
-  
     [_player pause];
     [self invalidateTimerOnSlider];
+  
+    // 다운로드받은 콘텐츠의 재생을 마치면 일단 처음으로 돌리고 정지시킵니다.
+    if ( _isDownloadFile )
+    {
+        [_player seekToTime : CMTimeMakeWithSeconds(0.f, [self getDuration])];
+        [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+        [self setPlayState : false];
+      
+        return ;
+    }
   
     NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
     _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
