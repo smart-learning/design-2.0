@@ -98,7 +98,11 @@ public class ReactBottomControllerView extends FrameLayout {
 
   @Override
   protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
+    try {
+      super.onDetachedFromWindow();
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+    }
     LogHelper.d(TAG, "onDetachedFromWindow");
     if (mediaBrowser != null) {
       mediaBrowser.disconnect();
