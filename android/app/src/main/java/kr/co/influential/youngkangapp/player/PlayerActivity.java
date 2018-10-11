@@ -3058,16 +3058,21 @@ public class PlayerActivity extends BasePlayerActivity {
     final int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
     final int progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-    volumeSeekbar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-    volumeSeekbar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+    if (volumeSeekbar != null) {
 
-    int progressInt = Math.round(100 / max) * progress;
-
-    if (progressInt > 89) {
-      progressInt = 100;
+      volumeSeekbar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+      volumeSeekbar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
     }
 
-    mTextViewVolumeText.setText(progressInt + "%");
+    if (mTextViewVolumeText != null) {
+      int progressInt = Math.round(100 / max) * progress;
+
+      if (progressInt > 89) {
+        progressInt = 100;
+      }
+
+      mTextViewVolumeText.setText(progressInt + "%");
+    }
   }
 
   /****************************************************************************
