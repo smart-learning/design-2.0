@@ -18,7 +18,7 @@ class HomeButton extends Component {
 				nav.commonBack();
 			}}
 		>
-			<Image source={logo} style={[CommonStyles.headerLogo, {alignItems: 'center'} ]} />
+			<Image source={logo} style={[CommonStyles.headerLogo]} />
 		</TouchableOpacity>
 	}
 }

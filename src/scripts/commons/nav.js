@@ -6,6 +6,7 @@ import SearchButton from '../components/header/SearchButton';
 import { Image, View } from 'react-native';
 import HomeButton from '../components/header/HomeButton';
 import logo from '../../images/welaaa_logo.png';
+import HomeWelaaaButton from '../components/header/HomeWelaaaButton';
 import IcAngleRight from '../../images/ic-angle-right-primary.png';
 import HistoryBackButton from '../components/header/HistoryBackButton';
 import Native from './native';
@@ -24,7 +25,7 @@ export const NAV_OPTS_COMMON = {
 
 export const NAV_OPTS_MAIN = ({ navigation, navigationOptions }) => ({
   headerLeft: <HomeButton />,
-  headerTitle: <Image source={logo} style={CommonStyle.headerLogo} />,
+  headerTitle: <HomeWelaaaButton />,
   headerRight: <SearchButton />
 });
 
@@ -76,7 +77,7 @@ export const NAV_OPTS_MY_HOME = ({ navigation, navigationOptions }) => {
       borderBottomWidth: 0
     },
     headerLeft: <HomeButton />,
-    headerTitle: <Image source={logo} style={CommonStyle.headerLogo} />,
+    headerTitle: <HomeWelaaaButton/>,
     headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')} />,
     gesturesEnabled: false
   };
