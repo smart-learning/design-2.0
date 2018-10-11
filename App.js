@@ -1,45 +1,39 @@
+import EventEmitter from 'events';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import React from 'react';
+import {
+  ActivityIndicator,
+  AsyncStorage,
+  DeviceEventEmitter,
+  Keyboard,
+  Linking,
+  NativeEventEmitter,
+  NetInfo,
+  Platform,
+  View
+} from 'react-native';
+import firebase from 'react-native-firebase';
+import NotificationUI from 'react-native-in-app-notification';
 import {
   createDrawerNavigator,
   DrawerItems,
   SafeAreaView
 } from 'react-navigation';
-import HomeScreen from './src/scripts/pages/home/HomeScreen';
-import VideoScreen from './src/scripts/pages/video/VideoScreen';
-import AudioScreen from './src/scripts/pages/audio/AudioScreen';
-import MyScreens from './src/scripts/pages/my/MyScreens';
-import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
-import {
-  ActivityIndicator,
-  AsyncStorage,
-  DeviceEventEmitter,
-  NativeEventEmitter,
-  Platform,
-  View,
-  Linking,
-  Keyboard,
-  NetInfo,
-  Alert
-} from 'react-native';
-import EventEmitter from 'events';
-import store from './src/scripts/commons/store';
-
-import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
+import Native from './src/scripts/commons/native';
+import nav from './src/scripts/commons/nav';
 import net from './src/scripts/commons/net';
+import store from './src/scripts/commons/store';
 import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
-import Native from './src/scripts/commons/native';
-import { observer } from 'mobx-react';
-import firebase, {
-  Notification,
-  NotificationOpen,
-  RemoteMessage
-} from 'react-native-firebase';
-import nav from './src/scripts/commons/nav';
-import { observable } from 'mobx';
-import commonStyle from './src/styles/common';
-import NotificationUI from 'react-native-in-app-notification';
+import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
+import AudioScreen from './src/scripts/pages/audio/AudioScreen';
+import HomeScreen from './src/scripts/pages/home/HomeScreen';
+import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
+import MyScreens from './src/scripts/pages/my/MyScreens';
+import VideoScreen from './src/scripts/pages/video/VideoScreen';
+import commonStyle from './src/styles/common';
 
 class Data {
   @observable
@@ -310,7 +304,9 @@ class App extends React.Component {
       listener.remove();
     });
     this.subscription.length = 0;
-    store.emitter.removeAllListeners();
+    if (store.emitter) {
+      store.emitter.removeAllListeners();
+    }
     Linking.removeEventListener('url', this._handleOpenURL);
     this.notificationListener();
     this.notificationOpenedListener();
