@@ -98,7 +98,11 @@ public class ReactBottomControllerView extends FrameLayout {
 
   @Override
   protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
+    try {
+      super.onDetachedFromWindow();
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+    }
     LogHelper.d(TAG, "onDetachedFromWindow");
     if (mediaBrowser != null) {
       mediaBrowser.disconnect();
@@ -349,32 +353,11 @@ public class ReactBottomControllerView extends FrameLayout {
   };
 
   public void hideBottomcontrol() {
-
-//    Activity activity = Utils.getActivity(getContext());
-//    MediaControllerCompat mediaController = MediaControllerCompat
-//        .getMediaController(activity);
-//    if (mediaController != null) {
-//      mediaController.getTransportControls().stop();
-//    }
-
-    try{
-      if (mediaBrowser != null) {
-        mediaBrowser.disconnect();
-      }
-
-      Activity activity = Utils.getActivity(getContext());
-      MediaControllerCompat mediaController = MediaControllerCompat
-          .getMediaController(activity);
-      if (mediaController != null) {
-        mediaController.getTransportControls().stop();
-        mediaController.unregisterCallback(callback);
-      }
-
-      stopSeekbarUpdate();
-      executorService.shutdown();
-    }catch (Exception e){
-      e.printStackTrace();
-      LogHelper.e(TAG , " hideBottomContorl " + e.toString());
+    Activity activity = Utils.getActivity(getContext());
+    MediaControllerCompat mediaController = MediaControllerCompat
+        .getMediaController(activity);
+    if (mediaController != null) {
+      mediaController.getTransportControls().stop();
     }
   }
 }
