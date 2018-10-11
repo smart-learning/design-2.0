@@ -2728,7 +2728,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                                                                                                                  scaledToSize : size];
                                                                                         }];
       
-        [songInfo setObject : _currentLectureTitle
+        [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
                      forKey : MPMediaItemPropertyTitle];
         [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
                      forKey : MPMediaItemPropertyArtist];
@@ -2736,11 +2736,10 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*
          [songInfo setObject : @(0.0)
-         forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+                      forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+         [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
+                      forKey : MPMediaItemPropertyPlaybackDuration];
          */
-        [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
-                     forKey : MPMediaItemPropertyPlaybackDuration];
-      
         [songInfo setObject : albumArt
                      forKey : MPMediaItemPropertyArtwork];
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
