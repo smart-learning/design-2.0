@@ -521,6 +521,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
 
               String group_img = dataObject.getJSONObject("images").getString("background");
+              String download_img = dataObject.getJSONObject("images").getString("list");
+
               String group_previewcontent = "";
 
               String allplay_time = "";  //  다운로드 데이터에서도 필요 요청 할 것
@@ -591,7 +593,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 sb.append("&cplay_time=" + cplay_time);
                 sb.append("&cpay=" + cpay);
                 sb.append("&cpay_money=" + cpay_money);
-                sb.append("&clist_img=" + clist_img);
+                sb.append("&clist_img=" + download_img);
                 sb.append("&chitcnt=" + chitcnt);
                 sb.append("&history_endtime=" + history_endtime);
                 sb.append("&a_depth=" + a_depth);
