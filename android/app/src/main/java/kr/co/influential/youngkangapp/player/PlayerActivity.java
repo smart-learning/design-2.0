@@ -4308,7 +4308,7 @@ public class PlayerActivity extends BasePlayerActivity {
           // 전화 통화 후 종료 , Power OFF 후 다시 Player 상태로 돌아오는 경우 .
           if (mediaController.getMetadata().getBundle() != null) {
 
-            if(Preferences.getSQLiteDuration(getApplicationContext())){
+            if (Preferences.getSQLiteDuration(getApplicationContext())) {
               // RN play 를 통해서 들어오는 경우는 그대로 재생 시도
               // 이 값은 LocalPlayBack 에서 다시 초기화 됩니다.
               // 이전에 재생 됐던 콘텐츠의 프로그래스 저장 합니다.
@@ -4330,7 +4330,7 @@ public class PlayerActivity extends BasePlayerActivity {
                 e.printStackTrace();
               }
 
-            }else{
+            } else {
               if (LocalPlayback.getInstance(this).isPlaying()) {
                 extras = mediaController.getMetadata().getBundle();
                 uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
@@ -4457,6 +4457,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
       setContentId(++id);
 
+      // 자동 재생 여부와 관계 없이 재생할 수 있도록
+      playOnClickPlayTry = true;
+
       if (CONTENT_TYPE.equals("video-course")) {
 //        if (getTransportControls() != null) {
 //          getTransportControls().pause();
@@ -4472,9 +4475,8 @@ public class PlayerActivity extends BasePlayerActivity {
         // 타이틀 동기화는 meta 데이터를 활용할 것
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
-      } else if (CONTENT_TYPE.equals("audiobook")) {
-
       }
+
     } else {
       int id = getContentId();
       if (getContentId() == 0) {
@@ -4482,6 +4484,8 @@ public class PlayerActivity extends BasePlayerActivity {
         return;
       } else {
         setContentId(--id);
+        // 자동 재생 여부와 관계 없이 재생할 수 있도록
+        playOnClickPlayTry = true;
       }
 
       if (CONTENT_TYPE.equals("video-course")) {
@@ -4500,13 +4504,8 @@ public class PlayerActivity extends BasePlayerActivity {
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
 
-      } else if (CONTENT_TYPE.equals("audiobook")) {
-
       }
-
     }
-
-
   }
 
   /********************************************************
