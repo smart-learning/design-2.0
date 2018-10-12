@@ -469,7 +469,7 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT cId FROM DOWNLOAD WHERE cId='" + cId + "'AND NOT totalSize is NULL";
+    String query = "SELECT cId FROM DOWNLOAD WHERE cId='" + cId + "'";
 
     Cursor c = db.rawQuery(query, null);
     int nCount = 0;

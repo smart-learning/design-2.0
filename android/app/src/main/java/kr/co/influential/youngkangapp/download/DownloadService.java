@@ -74,7 +74,7 @@ public class DownloadService extends IntentService implements
   public void onPostExecute() {
     // TODO: Release the UI after the download is complete.
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      LogHelper.e(TAG , "Download Service onPostExecute ! ");
+      LogHelper.e(TAG, "Download Service onPostExecute ! ");
       try {
         // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
         DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
@@ -167,9 +167,9 @@ public class DownloadService extends IntentService implements
     boolean drm_delete = intent.getBooleanExtra("drm_delete", false);
     String downloadContentCid = intent.getStringExtra("contentCid");
 
-    intent_drm_content_uri_extra = drm_content_uri_extra ;
-    intent_downloadContentCid = downloadContentCid ;
-    intent_drm_delete = drm_delete ;
+    intent_drm_content_uri_extra = drm_content_uri_extra;
+    intent_downloadContentCid = downloadContentCid;
+    intent_drm_delete = drm_delete;
 
     if (drm_delete) {
       // delete
@@ -211,7 +211,7 @@ public class DownloadService extends IntentService implements
       String expire_at = intent.getStringExtra("expire_at");
       String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
 
-      intent_drm_content_name_extra = drm_content_name_extra ;
+      intent_drm_content_name_extra = drm_content_name_extra;
       mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
 
       try {
@@ -263,7 +263,8 @@ public class DownloadService extends IntentService implements
           // view_limitdate
           // modified  (datetime('now','localtime'))
 
-          Uri LocalUri = downloadTask.getLocalUri(Uri.parse(drm_content_uri_extra) , downloadContentCid);
+          Uri LocalUri = downloadTask
+              .getLocalUri(Uri.parse(drm_content_uri_extra), downloadContentCid);
           String localUrl = String.valueOf(LocalUri);
 
           String userId = Preferences.getWelaaaUserId(mcontext);
@@ -272,16 +273,19 @@ public class DownloadService extends IntentService implements
             if (mWebPlayerInfo.getCkey()[i].equals(downloadContentCid)) {
 
               try {
-                ContentManager()
-                    .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], userId,
-                        "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", localUrl, "",
-                        mWebPlayerInfo.getGroupTitle(), mWebPlayerInfo.getCname()[i],
-                        mWebPlayerInfo.getGroupImg(), mWebPlayerInfo.getClist_img()[i],
-                        mWebPlayerInfo.getCon_class(), mWebPlayerInfo.getGroupTeachername(),
-                        mWebPlayerInfo.getCplayTime()[i], mWebPlayerInfo.getContentScnt(),
-                        mWebPlayerInfo.getAllplayTime(), expire_at
-                    );
-
+                if (ContentManager().existCid(mWebPlayerInfo.getCkey()[i])) {
+                  // exist File !!
+                } else {
+                  ContentManager()
+                      .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], userId,
+                          "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", localUrl, "",
+                          mWebPlayerInfo.getGroupTitle(), mWebPlayerInfo.getCname()[i],
+                          mWebPlayerInfo.getGroupImg(), mWebPlayerInfo.getClist_img()[i],
+                          mWebPlayerInfo.getCon_class(), mWebPlayerInfo.getGroupTeachername(),
+                          mWebPlayerInfo.getCplayTime()[i], mWebPlayerInfo.getContentScnt(),
+                          mWebPlayerInfo.getAllplayTime(), expire_at
+                      );
+                }
               } catch (Exception e) {
                 e.printStackTrace();
               }
@@ -353,6 +357,7 @@ public class DownloadService extends IntentService implements
 
   //콜백 인터페이스 선언
   public interface ICallback {
+
     void recvData(String cid); //액티비티에서 선언한 콜백 함수.
   }
 
