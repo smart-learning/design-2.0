@@ -446,5 +446,17 @@ export default {
         console.log('정리:', globalStore.prevLocations);
       }, 0);
     }
+  },
+
+  commonMainHomeBack: () => {
+    console.log('commonBack start:', globalStore.prevLocations);
+
+    globalStore.prevLocations = ['HomeScreen'];
+    // 실행하는데 시간이 필요한 것일까 .. 동일한 현상이 왜 또 안나오는기야 . 
+    console.log('commonBack start: length ', globalStore.prevLocations.length);
+
+    const screen = globalStore.prevLocations.pop();
+    navigation.navigate(screen);
+
   }
 };

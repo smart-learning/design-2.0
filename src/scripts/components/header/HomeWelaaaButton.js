@@ -11,9 +11,7 @@ import globalStore from '../../commons/store';
 class HomeWelaaaButton extends Component {
 
 	onBackPress = () => {
-		navigation = nav._navigation;
-		globalStore.prevLocations.pop();
-		nav.commonBack();
+		nav.commonMainHomeBack();
 	}
 
 	render() {
