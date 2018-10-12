@@ -1,14 +1,12 @@
 // 네비게이션 기본 속성 옵션
 import React from 'react';
-import { Button, Text, Linking, Alert } from 'react-native';
-import CommonStyle from '../../styles/common';
-import SearchButton from '../components/header/SearchButton';
-import { Image, View } from 'react-native';
-import HomeButton from '../components/header/HomeButton';
-import logo from '../../images/welaaa_logo.png';
-import HomeWelaaaButton from '../components/header/HomeWelaaaButton';
+import { Button, Image, Linking, Text, View } from 'react-native';
 import IcAngleRight from '../../images/ic-angle-right-primary.png';
+import CommonStyle from '../../styles/common';
 import HistoryBackButton from '../components/header/HistoryBackButton';
+import HomeButton from '../components/header/HomeButton';
+import HomeWelaaaButton from '../components/header/HomeWelaaaButton';
+import SearchButton from '../components/header/SearchButton';
 import Native from './native';
 import globalStore from './store';
 
@@ -26,7 +24,7 @@ export const NAV_OPTS_COMMON = {
 export const NAV_OPTS_MAIN = ({ navigation, navigationOptions }) => ({
   headerLeft: <HomeButton />,
   headerTitle: <HomeWelaaaButton />,
-  headerRight: <SearchButton />
+  headerRight: <SearchButton navigation={navigation} />
 });
 
 export const NAV_OPTS_STACK = ({ navigation, navigationOptions }) => {
@@ -46,7 +44,7 @@ export const NAV_OPTS_STACK_WITH_SEARCH = ({
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    headerRight: <SearchButton />,
+    headerRight: <SearchButton navigation={navigation} />,
     headerLeft: <HomeButton />
   };
 };
@@ -60,7 +58,7 @@ export const NAV_OPTS_STACK_HISTORY_BACK = ({
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    headerRight: <SearchButton />,
+    headerRight: <SearchButton navigation={navigation} />,
     headerLeft: <HistoryBackButton />
   };
 };
@@ -77,7 +75,7 @@ export const NAV_OPTS_MY_HOME = ({ navigation, navigationOptions }) => {
       borderBottomWidth: 0
     },
     headerLeft: <HomeButton />,
-    headerTitle: <HomeWelaaaButton/>,
+    headerTitle: <HomeWelaaaButton />,
     headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')} />,
     gesturesEnabled: false
   };
