@@ -4311,6 +4311,25 @@ public class PlayerActivity extends BasePlayerActivity {
             if(Preferences.getSQLiteDuration(getApplicationContext())){
               // RN play 를 통해서 들어오는 경우는 그대로 재생 시도
               // 이 값은 LocalPlayBack 에서 다시 초기화 됩니다.
+              // 이전에 재생 됐던 콘텐츠의 프로그래스 저장 합니다.
+              String currentCkey = Preferences.getWelaaaPlayListCkey(getApplicationContext());
+
+              Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
+              try {
+                // update
+                if (ContentManager().isProgressExist(currentCkey) > 0) {
+                  ContentManager()
+                      .updateProgress(currentCkey, String.valueOf(player.getCurrentPosition()));
+                  //insert
+                } else {
+                  ContentManager().insertProgress(currentCkey,
+                      String.valueOf(player.getCurrentPosition()));
+                }
+
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+
             }else{
               if (LocalPlayback.getInstance(this).isPlaying()) {
                 extras = mediaController.getMetadata().getBundle();
