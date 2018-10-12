@@ -255,7 +255,7 @@
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
   
-    [self setupNowPlayingInfoCenter];
+    [self setupNowPlayingInfoCenter]; // 시간값을 파라미터로 받아서 Pause또는Play시에 시간값을 반영하도록 만듭시다!
     
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
@@ -711,7 +711,11 @@
   
     [_bottomView addSubview : _slider];
   
-    _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-50.f, self.view.frame.size.width, 50.f)];
+    if ( [common hasNotch] )
+        _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-41.f, self.view.frame.size.width, 50.f)];
+    else
+        _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-50.f, self.view.frame.size.width, 50.f)];
+  
     _menuItemView.backgroundColor = UIColorFromRGB(0x272230, 0.5f);
     [_contentView addSubview : _menuItemView];
   
@@ -729,30 +733,27 @@
     CGFloat buttonOffsetY = 0;
   
     {
-      _autoPlayButton = [[ContentPlayerButton alloc] initWithId : @"autoplay-mode"
-                                                    normalImage : @"icon_autoplay_off"
-                                               highlightedImage : @"icon_autoplay"
-                                                 maxActiveCount : 2];
-      _autoPlayButton.frame = CGRectMake(buttonOffsetX, buttonOffsetY, buttonWidth, buttonWidth);
-      _autoPlayButton.delegate = self;
-      [_menuItemView addSubview : _autoPlayButton];
+        _autoPlayButton = [[ContentPlayerButton alloc] initWithId : @"autoplay-mode"
+                                                      normalImage : @"icon_autoplay_off"
+                                                 highlightedImage : @"icon_autoplay"
+                                                   maxActiveCount : 2];
+        _autoPlayButton.frame = CGRectMake(buttonOffsetX, buttonOffsetY, buttonWidth, buttonWidth);
+        _autoPlayButton.delegate = self;
+        [_menuItemView addSubview : _autoPlayButton];
       
-      NSString *autoPlaySetup = [common getUserSettingValueWithKey : @"autoplay_enable"];
+        NSString *autoPlaySetup = [common getUserSettingValueWithKey : @"autoplay_enable"];
       
-      if ( nullStr(autoPlaySetup) )
-      {
-          [common setUserSettingValueWithKey : @"autoplay_enable" value : @"Y"];
-          autoPlaySetup = @"Y";
-      }
+        if ( nullStr(autoPlaySetup) )
+        {
+            [common setUserSettingValueWithKey : @"autoplay_enable" value : @"Y"];
+            autoPlaySetup = @"Y";
+        }
       
-      BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
-
-    //if ( !_isAuthor )
-    //    isAutoPlay = NO;
+        BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
       
-      [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
+        [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
       
-      buttonOffsetX = buttonOffsetX + buttonWidth;
+        buttonOffsetX = buttonOffsetX + buttonWidth;
     }
   
     if ( !_isAudioContent )
