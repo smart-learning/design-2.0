@@ -1979,12 +1979,23 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.CDN_TAG_BTN_BACKWARD: {
-            player.seekTo(player.getCurrentPosition() - 10000);
+
+            if(player.getCurrentPosition() - 10000 < 0){
+              //
+            }else{
+              player.seekTo(player.getCurrentPosition() - 10000);
+            }
+
           }
           break;
 
           case R.id.CDN_TAG_BTN_FORWARD: {
-            player.seekTo(player.getCurrentPosition() + 10000);
+            if(player.getCurrentPosition() + 10000 > player.getDuration()){
+              //
+            }else{
+              player.seekTo(player.getCurrentPosition() + 10000);
+            }
+
           }
           break;
 
