@@ -1980,9 +1980,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case R.id.CDN_TAG_BTN_BACKWARD: {
 
-            if(player.getCurrentPosition() - 10000 < 0){
+            if (player.getCurrentPosition() - 10000 < 0) {
               //
-            }else{
+            } else {
               player.seekTo(player.getCurrentPosition() - 10000);
             }
 
@@ -1990,9 +1990,9 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.CDN_TAG_BTN_FORWARD: {
-            if(player.getCurrentPosition() + 10000 > player.getDuration()){
+            if (player.getCurrentPosition() + 10000 > player.getDuration()) {
               //
-            }else{
+            } else {
               player.seekTo(player.getCurrentPosition() + 10000);
             }
 
@@ -4307,6 +4307,7 @@ public class PlayerActivity extends BasePlayerActivity {
     Intent intent = getIntent();
     if (intent != null) {
       Bundle extras;
+      Bundle BeforeExtras;
       Uri uri;
       boolean fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
 
@@ -4323,20 +4324,22 @@ public class PlayerActivity extends BasePlayerActivity {
               // RN play 를 통해서 들어오는 경우는 그대로 재생 시도
               // 이 값은 LocalPlayBack 에서 다시 초기화 됩니다.
               // 이전에 재생 됐던 콘텐츠의 프로그래스 저장 합니다.
-              String currentCkey = Preferences.getWelaaaPlayListCkey(getApplicationContext());
-
               Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
               try {
-                // update
-                if (ContentManager().isProgressExist(currentCkey) > 0) {
-                  ContentManager()
-                      .updateProgress(currentCkey, String.valueOf(player.getCurrentPosition()));
-                  //insert
-                } else {
-                  ContentManager().insertProgress(currentCkey,
-                      String.valueOf(player.getCurrentPosition()));
-                }
+                if (LocalPlayback.getInstance(this).isPlaying()) {
+                  BeforeExtras = mediaController.getMetadata().getBundle();
+                  String beforeCid = BeforeExtras.getString("drm_cid");
 
+                  //  update
+                  if (ContentManager().isProgressExist(beforeCid) > 0) {
+                    ContentManager()
+                        .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()));
+                  //insert
+                  } else {
+                    ContentManager().insertProgress(beforeCid,
+                        String.valueOf(player.getCurrentPosition()));
+                  }
+                }
               } catch (Exception e) {
                 e.printStackTrace();
               }
@@ -4353,6 +4356,10 @@ public class PlayerActivity extends BasePlayerActivity {
         } catch (Exception e) {
           e.printStackTrace();
         }
+
+        LogHelper.e(TAG, "ConnectToSession currentCkey is " + extras);
+        LogHelper.e(TAG,
+            "ConnectToSession currentCkey is " + uri + " fromMediaSession " + fromMediaSession);
 
         setData(fromMediaSession, extras, uri);
       } else {
