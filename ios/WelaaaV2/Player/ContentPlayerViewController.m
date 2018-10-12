@@ -195,16 +195,7 @@
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
   
-    NSString *uriString = [_args objectForKey : @"uri"];
-    NSURL *contentUrl = [ NSURL URLWithString : uriString ]; // CONTENT_PATH
-    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-  
-    // 2. Set parameters required for FPS content playback. FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                           userId : [_args objectForKey : @"userId"]
-                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                  liveKeyRotation : NO              ];
+    [self fpsSetUrlAsset];
   
     _playerItem = [AVPlayerItem playerItemWithAsset : _urlAsset];
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
@@ -317,6 +308,19 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) fpsSetUrlAsset
+{
+    NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
+    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
+  
+    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+    [_fpsSDK prepareWithUrlAsset : _urlAsset
+                          userId : [_args objectForKey : @"userId"]
+                       contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                      optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                 liveKeyRotation : NO];
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -1060,16 +1064,7 @@
         return ;
     }
   
-    NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                         options : nil       ];
-  
-    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                           userId : [_args objectForKey : @"userId"]
-                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                  liveKeyRotation : NO              ];
+    [self fpsSetUrlAsset];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
@@ -2572,15 +2567,7 @@
                                                             [_args setObject : assetURL
                                                                       forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
                                                           
-                                                            NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-                                                            _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-                                                          
-                                                            // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-                                                            [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                                                                                   userId : [_args objectForKey : @"userId"]
-                                                                                contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                                                                               optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                                                                          liveKeyRotation : NO              ];
+                                                            [self fpsSetUrlAsset];
                                                           
                                                             _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
                                                             [_player replaceCurrentItemWithPlayerItem : _playerItem];
