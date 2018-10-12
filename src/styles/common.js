@@ -18,9 +18,8 @@ const commonStyle = StyleSheet.create({
 
   headerLogo: {    
     width: 98,
-    height: 24,    
-    alignItems: 'center',
-    marginLeft: '45%',
+    height: 24,
+    marginLeft: 'auto',
     marginRight: 'auto'
   },
 
