@@ -1,17 +1,18 @@
 
-/*
- * 추후에 지속가능한 리팩토링을 위해 다음 링크를 참조하여 클래스를 분리할 계획입니다.
- * https://github.com/akabekobeko/Examples-iOS/tree/master/VideoPlayer/VideoPlayer
- *
- * 추가적으로 깔끔하고 간결한 코드유지를 위해 최대한 AVKit의 기본 API를 사용할 계획입니다.
- * https://github.com/JaviSoto/iOS10-Runtime-Headers/blob/master/Frameworks/AVKit.framework/AVPlayerViewController.h
- *
- * 그리고 XIB/StoryBoard + Swift 를 최종적으로 지향하는 방향으로 잡고 있습니다.
- */
-
 #import "ContentPlayerViewController.h"
 
 @implementation ContentPlayerViewController
+
+//
+// RN에서 넘겨받은 arguments를 세팅합니다.
+//
+- (void) setContentData : (NSMutableDictionary *) args
+{
+    _args = args;
+    NSLog(@"  Arguments : %@", [_args description]);
+  
+    // download 일 경우 API서버와 통신하면 안됩니다.
+}
 
 // 해당 뷰컨트롤러 클래스가 생성될 때(ViewWillAppear전에 실행) 실행됩니다.
 // Low memory와같은 특별한 경우가 아니라면 딱 한번만 실행되기 때문에 초기화 할 때 사용 할 수 있습니다.
@@ -44,41 +45,13 @@
     else
         _isDownloadFile = false;
   
-    // 오디오 UI
-    _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
-    _audioUiView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview : _audioUiView];
-  
-    _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
-    [_audioUiView addSubview : _backgroundImageView];
-  
-    UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
-    _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
-                                                                          ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
-                                                                          headphoneImage.size.width, headphoneImage.size.height)];
-    _headphoneImageView.image = headphoneImage;
-    [_audioUiView addSubview : _headphoneImageView];
-    _audioUiView.hidden = !_isAudioMode;
-
-    // contentView 구성.
-    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
-    [_contentView setBackgroundColor : [UIColor blackColor]];
-    [self.view addSubview : _contentView];
-  
-    _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
-    _hideAndShowButton.frame = _contentView.bounds;
-    [_hideAndShowButton addTarget : self
-                           action : @selector(pressedHideAndShowButton)
-                 forControlEvents : UIControlEventTouchUpInside];
-    _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
-    [_contentView addSubview : _hideAndShowButton];
+    [self drawContentView];
   
     _fpsDownloadManager = [FPSDownloadManager sharedInstance];
     _fpsDownloadManager.delegateFpsMsg = self;
     _fpsDownloadManager.delegateFpsDownload = self;
   
     // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
-    // 다음 콘텐츠를 재생할때에도 해당 노티를 넘겨주어야 합니다.
     [[NSNotificationCenter defaultCenter] addObserver : self
                                              selector : @selector(applicationDidEnterBackground:)
                                                  name : UIApplicationDidEnterBackgroundNotification
@@ -340,17 +313,6 @@
     [self resignFirstResponder];
 }
 
-//
-// RN에서 넘겨받은 arguments를 세팅합니다.
-//
-- (void) setContentData : (NSMutableDictionary *) args
-{
-    _args = args;
-    NSLog(@"  Arguments : %@", [_args description]);
-  
-    // download 일 경우 API서버와 통신하면 안됩니다.
-}
-
 - (void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -511,6 +473,38 @@
 }
 
 #pragma mark - Drawing Player UI components
+
+- (void) drawContentView
+{
+    // 오디오 UI
+    _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
+    _audioUiView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview : _audioUiView];
+  
+    _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
+    [_audioUiView addSubview : _backgroundImageView];
+  
+    UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
+    _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
+                                                                          ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
+                                                                          headphoneImage.size.width, headphoneImage.size.height)];
+    _headphoneImageView.image = headphoneImage;
+    [_audioUiView addSubview : _headphoneImageView];
+    _audioUiView.hidden = !_isAudioMode;
+  
+    // contentView 구성.
+    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
+    [_contentView setBackgroundColor : [UIColor blackColor]];
+    [self.view addSubview : _contentView];
+  
+    _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
+    _hideAndShowButton.frame = _contentView.bounds;
+    [_hideAndShowButton addTarget : self
+                           action : @selector(pressedHideAndShowButton)
+                 forControlEvents : UIControlEventTouchUpInside];
+    _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
+    [_contentView addSubview : _hideAndShowButton];
+}
 
 - (void) drawPlayerControlHeader
 {
@@ -2735,11 +2729,11 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*
-         [songInfo setObject : @(0.0)
-                      forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
-         [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
-                      forKey : MPMediaItemPropertyPlaybackDuration];
-         */
+        [songInfo setObject : @(0.0)
+                     forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];*/
+        [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
+                     forKey : MPMediaItemPropertyPlaybackDuration];
+         
         [songInfo setObject : albumArt
                      forKey : MPMediaItemPropertyArtwork];
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
