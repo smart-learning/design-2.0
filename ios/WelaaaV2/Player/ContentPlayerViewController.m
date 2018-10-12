@@ -39,8 +39,10 @@
         _isAudioMode = false; // 영상강의의 경우 기본적으로 오디오모드 off인 상태에서 콘텐츠 재생을 시작합니다.
     }
   
-    // 테스트 목적으로 강제로 set하였습니다.
-    _isDownloadFile = false;
+    if ( [[_args objectForKey : @"contentPath"] hasPrefix : @"/private/var/mobile/"] )
+        _isDownloadFile = true;
+    else
+        _isDownloadFile = false;
   
     // 오디오 UI
     _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
@@ -76,13 +78,11 @@
     _fpsDownloadManager.delegateFpsDownload = self;
   
     // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
-  /* 일단 주석 처리
-   *
+    // 다음 콘텐츠를 재생할때에도 해당 노티를 넘겨주어야 합니다.
     [[NSNotificationCenter defaultCenter] addObserver : self
                                              selector : @selector(applicationDidEnterBackground:)
                                                  name : UIApplicationDidEnterBackgroundNotification
                                                object : nil];
-  */
 }
 
 // 뷰 컨트롤러가 화면에 나타나기 직전에 실행됩니다.
@@ -290,43 +290,8 @@
                                               selector : @selector(audioSessionInterrupted:)
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
-    // TEST CODE
-    // https://github.com/jaysonlane/LockScreenInfo/
-    {
-        Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
-      
-        if ( playingInfoCenter )
-        {
-            NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
-          
-            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
-                                                                           requestHandler : ^UIImage * _Nonnull(CGSize size)
-                                                                                            {
-                                                                                                UIImage *lockScreenArtworkApp;
-                                                                                                lockScreenArtworkApp = [UIImage imageNamed : @"AlbumArt"];
-                                                                                              
-                                                                                                return [self resizeImageWithImage : lockScreenArtworkApp
-                                                                                                                     scaledToSize : size];
-                                                                                            }];
-          
-            [songInfo setObject : _currentLectureTitle
-                         forKey : MPMediaItemPropertyTitle];
-            [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
-                         forKey : MPMediaItemPropertyArtist];
-            [songInfo setObject : [_args objectForKey : @"name"]
-                         forKey : MPMediaItemPropertyAlbumTitle];
-            /*
-            [songInfo setObject : @(0.0)
-                         forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
-            [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
-                         forKey : MPMediaItemPropertyPlaybackDuration];
-            */
-            [songInfo setObject : albumArt
-                         forKey : MPMediaItemPropertyArtwork];
-            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
-        }
-    }
-    // TEST CODE
+  
+    [self setupNowPlayingInfoCenter];
     
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
@@ -1088,10 +1053,18 @@
 //
 - (void) playNext
 {
-    _isDownloadFile = NO; // 아직 다운로드 콘텐츠 재생에 대한 뚜렷한 플로우 정의가 없으므로 스트리밍으로 set합니다.
-  
     [_player pause];
     [self invalidateTimerOnSlider];
+  
+    // 다운로드받은 콘텐츠의 재생을 마치면 일단 처음으로 돌리고 정지시킵니다.
+    if ( _isDownloadFile )
+    {
+        [_player seekToTime : CMTimeMakeWithSeconds(0.f, [self getDuration])];
+        [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+        [self setPlayState : false];
+      
+        return ;
+    }
   
     NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
     _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
@@ -1133,6 +1106,8 @@
         // 해당 경로는 오디오북만 해당됩니다.
         [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
     }
+  
+    [self setupNowPlayingInfoCenter];
   
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
@@ -2733,6 +2708,57 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     }
 }
 
+# pragma mark - Media Center
+
+- (void) setupNowPlayingInfoCenter
+{
+    Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
+  
+    if ( playingInfoCenter )
+    {
+        NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
+      
+        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
+                                                                       requestHandler : ^UIImage * _Nonnull(CGSize size)
+                                                                                        {
+                                                                                            UIImage *lockScreenArtworkApp;
+                                                                                            lockScreenArtworkApp = [UIImage imageNamed : @"AlbumArt"];
+                                                                                          
+                                                                                            return [self resizeImageWithImage : lockScreenArtworkApp
+                                                                                                                 scaledToSize : size];
+                                                                                        }];
+      
+        [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
+                     forKey : MPMediaItemPropertyTitle];
+        [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
+                     forKey : MPMediaItemPropertyArtist];
+        [songInfo setObject : [_args objectForKey : @"name"]
+                     forKey : MPMediaItemPropertyAlbumTitle];
+        /*
+         [songInfo setObject : @(0.0)
+                      forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+         [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
+                      forKey : MPMediaItemPropertyPlaybackDuration];
+         */
+        [songInfo setObject : albumArt
+                     forKey : MPMediaItemPropertyArtwork];
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
+    }
+}
+- (UIImage *) resizeImageWithImage : (UIImage *) image
+                      scaledToSize : (CGSize) newSize
+{
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect : CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+  
+    return newImage;
+}
+
 # pragma mark - Labatory
 - (void) toastTestAlert
 {
@@ -2766,59 +2792,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                        animated : YES
                      completion : nil];
 }
-
-- (void) setupNowPlayingInfoCenter : (NSDictionary *) currentSong
-{
-    NSMutableDictionary *mediaInfo = [[NSMutableDictionary alloc] init];
-  
-    NSString *urlStr = @"object.mberImgPath";
-    NSURL *url = [NSURL URLWithString : urlStr];
-    UIImage *image = [UIImage imageWithData : [NSData dataWithContentsOfURL : url]];
-  
-    MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
-                                                                   requestHandler : ^UIImage * _Nonnull(CGSize size)
-                                                                                    {
-                                                                                        UIImage *lockScreenArtworkApp;
-                                                                                        lockScreenArtworkApp = [UIImage imageNamed : @"lockScreenLogo"];
-                                                                                      
-                                                                                        return [self resizeImageWithImage : lockScreenArtworkApp
-                                                                                                             scaledToSize : size];
-                                                                                    }];
-
-    [mediaInfo setValue : albumArt
-                 forKey : MPMediaItemPropertyArtwork];
-  
-    [mediaInfo setObject : @"object.title"
-                  forKey : MPMediaItemPropertyAlbumTitle];
-  
-    [mediaInfo setObject : @"object.mberNm"
-                  forKey : MPMediaItemPropertyArtist];
-  
-    [mediaInfo setObject : @(1.0)
-                  forKey : MPNowPlayingInfoPropertyPlaybackRate];
-  
-    [mediaInfo setObject : @(0.0)
-                  forKey : MPMediaItemPropertyPlaybackDuration];
-  
-    [mediaInfo setObject : @(0.0)
-                  forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
-  
-    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : [mediaInfo mutableCopy]];
-}
-- (UIImage *) resizeImageWithImage : (UIImage *) image
-                      scaledToSize : (CGSize) newSize
-{
-    //UIGraphicsBeginImageContext(newSize);
-    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-    // Pass 1.0 to force exact pixel size.
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
-    [image drawInRect : CGRectMake(0, 0, newSize.width, newSize.height)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-  
-    return newImage;
-}
-
 
 @end
 
