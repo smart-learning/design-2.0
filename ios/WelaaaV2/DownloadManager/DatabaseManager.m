@@ -506,11 +506,9 @@
     if(sqlite3_step(statement) == SQLITE_DONE){
       // 성공
       NSLog(@"Success DELETE from DOWNLOAD table");
-      //self.phone.text = @"";
     }else{
       // 실패
       NSLog(@"Failed DELETE from DOWNLOAD table");
-      //self.status.text = @"Failed to add contact";
     }
     sqlite3_finalize(statement);
     sqlite3_close(_downloadDB);
@@ -534,11 +532,9 @@
     if(sqlite3_step(statement) == SQLITE_DONE){
       // 성공
       NSLog(@"Success DELETE from DOWNLOAD table");
-      //self.phone.text = @"";
     }else{
       // 실패
       NSLog(@"Failed DELETE from DOWNLOAD table");
-      //self.status.text = @"Failed to add contact";
     }
     sqlite3_finalize(statement);
     sqlite3_close(_downloadDB);

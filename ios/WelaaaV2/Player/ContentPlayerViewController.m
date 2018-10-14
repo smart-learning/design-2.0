@@ -1919,25 +1919,6 @@
         
         return ;
       }
-      /* 기존 사용 코드(윌라 1.0)
-       [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
-       self.isDownloading = YES;
-       [self setTouchEnable: _downloadButton
-       isLock: YES];*/
-      
-      // 2018.9.6 ~
-      /*
-       Clip* clipToDownload = [[Clip alloc] initWithTitle:[_args objectForKey:@"name"]
-       memo:@""
-       cid:[_args objectForKey:@"cid"]
-       playTime:@""
-       index:0];
-       [_fpsDownloadManager startDownload:clipToDownload completion:^(NSString* downloadMsg){
-       if(downloadMsg){
-       [self showToast:downloadMsg]; // "다운로드를 시작합니다." 등.
-       }
-       }];
-       */
       
       // 2018. 9.14 ~
       [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result){}];
