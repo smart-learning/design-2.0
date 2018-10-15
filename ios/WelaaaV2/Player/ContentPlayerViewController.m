@@ -1,17 +1,18 @@
 
-/*
- * 추후에 지속가능한 리팩토링을 위해 다음 링크를 참조하여 클래스를 분리할 계획입니다.
- * https://github.com/akabekobeko/Examples-iOS/tree/master/VideoPlayer/VideoPlayer
- *
- * 추가적으로 깔끔하고 간결한 코드유지를 위해 최대한 AVKit의 기본 API를 사용할 계획입니다.
- * https://github.com/JaviSoto/iOS10-Runtime-Headers/blob/master/Frameworks/AVKit.framework/AVPlayerViewController.h
- *
- * 그리고 XIB/StoryBoard + Swift 를 최종적으로 지향하는 방향으로 잡고 있습니다.
- */
-
 #import "ContentPlayerViewController.h"
 
 @implementation ContentPlayerViewController
+
+//
+// RN에서 넘겨받은 arguments를 세팅합니다.
+//
+- (void) setContentData : (NSMutableDictionary *) args
+{
+    _args = args;
+    NSLog(@"  Arguments : %@", [_args description]);
+  
+    // download 일 경우 API서버와 통신하면 안됩니다.
+}
 
 // 해당 뷰컨트롤러 클래스가 생성될 때(ViewWillAppear전에 실행) 실행됩니다.
 // Low memory와같은 특별한 경우가 아니라면 딱 한번만 실행되기 때문에 초기화 할 때 사용 할 수 있습니다.
@@ -44,41 +45,13 @@
     else
         _isDownloadFile = false;
   
-    // 오디오 UI
-    _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
-    _audioUiView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview : _audioUiView];
-  
-    _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
-    [_audioUiView addSubview : _backgroundImageView];
-  
-    UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
-    _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
-                                                                          ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
-                                                                          headphoneImage.size.width, headphoneImage.size.height)];
-    _headphoneImageView.image = headphoneImage;
-    [_audioUiView addSubview : _headphoneImageView];
-    _audioUiView.hidden = !_isAudioMode;
-
-    // contentView 구성.
-    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
-    [_contentView setBackgroundColor : [UIColor blackColor]];
-    [self.view addSubview : _contentView];
-  
-    _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
-    _hideAndShowButton.frame = _contentView.bounds;
-    [_hideAndShowButton addTarget : self
-                           action : @selector(pressedHideAndShowButton)
-                 forControlEvents : UIControlEventTouchUpInside];
-    _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
-    [_contentView addSubview : _hideAndShowButton];
+    [self drawContentView];
   
     _fpsDownloadManager = [FPSDownloadManager sharedInstance];
     _fpsDownloadManager.delegateFpsMsg = self;
     _fpsDownloadManager.delegateFpsDownload = self;
   
     // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
-    // 다음 콘텐츠를 재생할때에도 해당 노티를 넘겨주어야 합니다.
     [[NSNotificationCenter defaultCenter] addObserver : self
                                              selector : @selector(applicationDidEnterBackground:)
                                                  name : UIApplicationDidEnterBackgroundNotification
@@ -222,16 +195,7 @@
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
   
-    NSString *uriString = [_args objectForKey : @"uri"];
-    NSURL *contentUrl = [ NSURL URLWithString : uriString ]; // CONTENT_PATH
-    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-  
-    // 2. Set parameters required for FPS content playback. FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                           userId : [_args objectForKey : @"userId"]
-                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                  liveKeyRotation : NO              ];
+    [self fpsSetUrlAsset];
   
     _playerItem = [AVPlayerItem playerItemWithAsset : _urlAsset];
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
@@ -291,7 +255,7 @@
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
   
-    [self setupNowPlayingInfoCenter];
+    [self setupNowPlayingInfoCenter]; // 시간값을 파라미터로 받아서 Pause또는Play시에 시간값을 반영하도록 만듭시다!
     
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
@@ -340,21 +304,23 @@
     [self resignFirstResponder];
 }
 
-//
-// RN에서 넘겨받은 arguments를 세팅합니다.
-//
-- (void) setContentData : (NSMutableDictionary *) args
-{
-    _args = args;
-    NSLog(@"  Arguments : %@", [_args description]);
-  
-    // download 일 경우 API서버와 통신하면 안됩니다.
-}
-
 - (void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) fpsSetUrlAsset
+{
+    NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
+    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
+  
+    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+    [_fpsSDK prepareWithUrlAsset : _urlAsset
+                          userId : [_args objectForKey : @"userId"]
+                       contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                      optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                 liveKeyRotation : NO];
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -511,6 +477,38 @@
 }
 
 #pragma mark - Drawing Player UI components
+
+- (void) drawContentView
+{
+    // 오디오 UI
+    _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
+    _audioUiView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview : _audioUiView];
+  
+    _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
+    [_audioUiView addSubview : _backgroundImageView];
+  
+    UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
+    _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
+                                                                          ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
+                                                                          headphoneImage.size.width, headphoneImage.size.height)];
+    _headphoneImageView.image = headphoneImage;
+    [_audioUiView addSubview : _headphoneImageView];
+    _audioUiView.hidden = !_isAudioMode;
+  
+    // contentView 구성.
+    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
+    [_contentView setBackgroundColor : [UIColor blackColor]];
+    [self.view addSubview : _contentView];
+  
+    _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
+    _hideAndShowButton.frame = _contentView.bounds;
+    [_hideAndShowButton addTarget : self
+                           action : @selector(pressedHideAndShowButton)
+                 forControlEvents : UIControlEventTouchUpInside];
+    _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
+    [_contentView addSubview : _hideAndShowButton];
+}
 
 - (void) drawPlayerControlHeader
 {
@@ -713,7 +711,11 @@
   
     [_bottomView addSubview : _slider];
   
-    _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-50.f, self.view.frame.size.width, 50.f)];
+    if ( [common hasNotch] )
+        _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-41.f, self.view.frame.size.width, 50.f)];
+    else
+        _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-50.f, self.view.frame.size.width, 50.f)];
+  
     _menuItemView.backgroundColor = UIColorFromRGB(0x272230, 0.5f);
     [_contentView addSubview : _menuItemView];
   
@@ -731,30 +733,27 @@
     CGFloat buttonOffsetY = 0;
   
     {
-      _autoPlayButton = [[ContentPlayerButton alloc] initWithId : @"autoplay-mode"
-                                                    normalImage : @"icon_autoplay_off"
-                                               highlightedImage : @"icon_autoplay"
-                                                 maxActiveCount : 2];
-      _autoPlayButton.frame = CGRectMake(buttonOffsetX, buttonOffsetY, buttonWidth, buttonWidth);
-      _autoPlayButton.delegate = self;
-      [_menuItemView addSubview : _autoPlayButton];
+        _autoPlayButton = [[ContentPlayerButton alloc] initWithId : @"autoplay-mode"
+                                                      normalImage : @"icon_autoplay_off"
+                                                 highlightedImage : @"icon_autoplay"
+                                                   maxActiveCount : 2];
+        _autoPlayButton.frame = CGRectMake(buttonOffsetX, buttonOffsetY, buttonWidth, buttonWidth);
+        _autoPlayButton.delegate = self;
+        [_menuItemView addSubview : _autoPlayButton];
       
-      NSString *autoPlaySetup = [common getUserSettingValueWithKey : @"autoplay_enable"];
+        NSString *autoPlaySetup = [common getUserSettingValueWithKey : @"autoplay_enable"];
       
-      if ( nullStr(autoPlaySetup) )
-      {
-          [common setUserSettingValueWithKey : @"autoplay_enable" value : @"Y"];
-          autoPlaySetup = @"Y";
-      }
+        if ( nullStr(autoPlaySetup) )
+        {
+            [common setUserSettingValueWithKey : @"autoplay_enable" value : @"Y"];
+            autoPlaySetup = @"Y";
+        }
       
-      BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
-
-    //if ( !_isAuthor )
-    //    isAutoPlay = NO;
+        BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
       
-      [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
+        [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
       
-      buttonOffsetX = buttonOffsetX + buttonWidth;
+        buttonOffsetX = buttonOffsetX + buttonWidth;
     }
   
     if ( !_isAudioContent )
@@ -1066,16 +1065,7 @@
         return ;
     }
   
-    NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                         options : nil       ];
-  
-    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                           userId : [_args objectForKey : @"userId"]
-                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                  liveKeyRotation : NO              ];
+    [self fpsSetUrlAsset];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
@@ -2578,15 +2568,7 @@
                                                             [_args setObject : assetURL
                                                                       forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
                                                           
-                                                            NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-                                                            _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-                                                          
-                                                            // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-                                                            [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                                                                                   userId : [_args objectForKey : @"userId"]
-                                                                                contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                                                                               optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                                                                          liveKeyRotation : NO              ];
+                                                            [self fpsSetUrlAsset];
                                                           
                                                             _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
                                                             [_player replaceCurrentItemWithPlayerItem : _playerItem];
@@ -2735,11 +2717,11 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*
-         [songInfo setObject : @(0.0)
-                      forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
-         [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
-                      forKey : MPMediaItemPropertyPlaybackDuration];
-         */
+        [songInfo setObject : @(0.0)
+                     forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];*/
+        [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
+                     forKey : MPMediaItemPropertyPlaybackDuration];
+         
         [songInfo setObject : albumArt
                      forKey : MPMediaItemPropertyArtwork];
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];
