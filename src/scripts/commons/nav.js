@@ -58,7 +58,7 @@ export const NAV_OPTS_STACK_HISTORY_BACK = ({
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    headerRight: <SearchButton navigation={navigation} />,
+    // headerRight: <SearchButton navigation={navigation} />,
     headerLeft: <HistoryBackButton />
   };
 };

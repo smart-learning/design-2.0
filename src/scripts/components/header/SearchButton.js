@@ -3,7 +3,7 @@ import { Image, TextInput, TouchableOpacity, View } from 'react-native';
 import IcSearch from '../../../images/ic-search.png';
 import Styles from '../../../styles/common';
 
-export default class SearchButton extends Component {
+class SearchButton extends Component {
   constructor(props) {
     super(props);
     this.state = { isExpanded: false, queryString: '' };
@@ -108,3 +108,5 @@ export default class SearchButton extends Component {
     );
   }
 }
+
+export default SearchButton;

@@ -11,10 +11,8 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import IcTrash from '../../../images/ic-my-trash-xs.png';
-import globalStore from '../../../scripts/commons/store';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
-import Native from '../../commons/native';
+import net from '../../commons/net';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -78,7 +76,7 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
 
-  downloadItem: {
+  searchResultItem: {
     flex: 1,
     flexDirection: 'row',
     paddingTop: 10,
@@ -88,23 +86,16 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F3F3F3'
   },
 
-  downloadItemImg: {
+  searchResultItemImg: {
     width: 60,
     height: 60
   },
 
-  downloadItemInfo: {
+  searchResultItemInfo: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingLeft: 20
-  },
-
-  downloadItemPlayButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 'auto'
   }
 });
 
@@ -112,6 +103,9 @@ const styles = StyleSheet.create({
 export default class SearchResultPage extends React.Component {
   @observable
   tabStatus = 'video';
+
+  @observable
+  searchResult = [];
 
   constructor(props) {
     super(props);
@@ -121,72 +115,57 @@ export default class SearchResultPage extends React.Component {
   }
 
   componentDidMount() {
-    this.searchQuery();
+    this.searchQuery(this.props.navigation.state.params.queryString);
   }
 
   componentWillUnmount() {
     this._isMount = false;
   }
 
-  searchQuery() {}
-  makeListItem = ({ item, _ }) => {
+  searchQuery = async query => {
+    result = await net.searchQuery(query);
+    this.searchResult = result.items;
+    console.log('SearchResultPage.js::', this.searchResult);
+  };
+
+  makeListItem = ({ item }) => {
     return (
       <TouchableOpacity
         activeOpacity={0.9}
-        style={styles.downloadItem}
-        onPress={() => this.play(item)}
+        style={styles.searchResultItem}
+        onPress={() => this.goDetailPage(item)}
       >
         <Image
-          source={{ uri: item.thumbnailImg }}
-          style={styles.downloadItemImg}
+          source={{ uri: item.images.list }}
+          style={styles.searchResultItemImg}
         />
-        <View style={styles.downloadItemInfo}>
+        <View style={styles.searchResultItemInfo}>
           <Text
             style={{ fontSize: 16, fontWeight: 'bold' }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {item.gTitle}
+            {item.headline}
           </Text>
           <Text
             style={{ fontSize: 12, color: COLOR_PRIMARY }}
             numberOfLines={2}
             ellipsizeMode="tail"
           >
-            {item.cTitle}
+            {item.title}
           </Text>
           <Text style={{ fontSize: 12, color: '#A6A6A6' }}>
-            {item.groupTeacherName} | {item.cPlayTime}
+            {item.teacher.name} | {item.play_time}
           </Text>
-          {item.view_limitdate !== 'null' && (
-            <Text style={{ fontSize: 12, color: '#E10D38' }}>
-              {item.view_limitdate}
-            </Text>
-          )}
         </View>
-        <View>
-          <TouchableOpacity
-            activeOptacity={0.9}
-            style={styles.downloadItemPlayButton}
-            onPress={() => {
-              Native.deleteDownload(
-                [{ ...item }],
-                result => {
-                  var removedDownloadList = globalStore.downloadItems.filter(
-                    item => item.cid !== result
-                  );
-                  globalStore.downloadItems.replace(removedDownloadList);
-                },
-                error => console.error(error)
-              );
-            }}
-          >
-            <Image source={IcTrash} style={{ width: 24, height: 24 }} />
-          </TouchableOpacity>
-        </View>
+        <View />
       </TouchableOpacity>
     );
   };
+
+  goDetailPage() {
+    console.log('SearchResultPage.js::goDetailPage');
+  }
 
   render() {
     let vcontent = <Text style={styles.noContent}>{this.props.no_result}</Text>;
@@ -194,20 +173,20 @@ export default class SearchResultPage extends React.Component {
 
     let video = [];
     let audio = [];
-    // store의 downloadItems이 변경되면..
-    const downloadItems = globalStore.downloadItems.toJS();
-    if (downloadItems.length > 0) {
-      downloadItems.reduce(
-        (accumulator, item, index) => {
-          if ('video-course' === item.audioVideoType) {
-            accumulator.video.push({ ...item, key: index.toString() });
-          } else if ('audiobook' === item.audioVideoType) {
-            accumulator.audio.push({ ...item, key: index.toString() });
-          }
-          return accumulator;
-        },
-        { video: video, audio: audio }
-      );
+    const items = this.searchResult.toJS();
+    if (items.length > 0) {
+      // items.reduce(
+      //   (accumulator, item, index) => {
+      //     if ('video-course' === item.audioVideoType) {
+      //       accumulator.video.push({ ...item, key: index.toString() });
+      //     } else if ('audiobook' === item.audioVideoType) {
+      //       accumulator.audio.push({ ...item, key: index.toString() });
+      //     }
+      //     return accumulator;
+      //   },
+      //   { video: video, audio: audio }
+      // );
+      video = items;
 
       // 데이터를 가지고 리스트를 생성
       if (video.length > 0) {
