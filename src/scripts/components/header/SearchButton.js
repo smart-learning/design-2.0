@@ -23,15 +23,12 @@ export default class SearchButton extends Component {
 
   onSearch = () => {
     if (this.state.isExpanded) {
-      this.props.navigation.navigate('SearchResultPage', {
-        title: '검색 결과',
-        queryString: this.state.queryString
-      });
-      // /api/v1.0/contents/contents/search
-      // 1:1 문의 게시판 처럼 , 뷰를 만들고 . 키워드를 입력 , 리절트를 표현한다.
-      //
-      // 클래스 클릭시 클래스 상세 페이지 , 랜딩
-      // 오디오북 클릭시 오디오북 상세 페이지 , 랜딩
+      if (this.state.queryString) {
+        this.props.navigation.navigate('SearchResultPage', {
+          title: '검색 결과',
+          queryString: this.state.queryString
+        });
+      }
     }
     this.setState(previousState => {
       return { isExpanded: !previousState.isExpanded, queryString: '' };
@@ -81,11 +78,18 @@ export default class SearchButton extends Component {
           borderWidth: 6,
           marginRight: 15
         }}
+        underlineColorAndroid={'rgba(0,0,0,0)'}
+        autoCapitalize={'none'}
+        onSubmitEditing={this.onSearch}
         multiline={false}
         numberOfLines={1}
         onChangeText={this.onChangeText}
         value={this.state.queryString}
-        placeholder="Search"
+        placeholder="검색"
+        autoFocus={true}
+        ref={ref => {
+          this.queryTextInputRef = ref;
+        }}
       />
     );
   }

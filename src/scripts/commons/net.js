@@ -720,5 +720,25 @@ export default {
     return axios.get(API_PREFIX + `v1.0/cms/event/${id}`).then(response => {
       return response.data;
     });
+  },
+
+  searchQuery(query) {
+    let url = API_PREFIX + 'v1.0/contents/contents/search';
+    const params = { search: query };
+    url += '?' + encodeParams(params);
+    console.log('==========', url);
+    return axios
+      .get(url)
+      .then(response => {
+        return {
+          items: response.data.map(element => ({
+            ...element,
+            key: element.id.toString()
+          }))
+        };
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 };
