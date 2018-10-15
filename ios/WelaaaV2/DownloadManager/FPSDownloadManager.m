@@ -1108,6 +1108,68 @@
 }
 
 
+// 로컬에 저장된 콘텐츠 파일(동영상 파일 경로)과 연결된 DB 레코드가 있는지 확인해보고 없으면 삭제(트랙킹이 안되는 파일이므로).
+// Asset 폴더 경로부터 비교. 예) com.apple.UserManagedAssets.jtB6U2/v100015_005_2796BB4F50ADAA4C.movpkg
+- (void)synchronizeLocalFilesWithDB
+{
+  NSLog(@"  synchronizeLocalFilesByDB");
+  
+  NSError* error = nil;
+  NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+  NSArray* hlsContentsPaths = [self loadLibraryContentsAs:@"com.apple.UserManagedAssets."];
+  
+  for(NSString* hlsDirName in hlsContentsPaths){
+    NSLog(@"  hlsDirName : %@",hlsDirName);   // com.apple.UserManagedAssets.jtB6U2
+    NSString* hlsPath = [libraryPath stringByAppendingPathComponent:hlsDirName];
+    NSArray *hlsFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:hlsPath error:&error];
+    for(NSString* fileName in hlsFiles){
+      NSString* contentFullPath = [NSString stringWithFormat:@"%@/%@",hlsPath,fileName];
+      NSLog(@"  HLS contentFullPath : %@", contentFullPath);
+      
+      // 경로를 줄여서 저장 -> Library/ 부터.
+      NSString* hlsUniqFolderName = [[contentFullPath stringByDeletingLastPathComponent] lastPathComponent];
+      NSString* libraryFolderName = [[[contentFullPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] lastPathComponent];
+      NSString* contentPath = [NSString stringWithFormat:@"%@/%@/%@",libraryFolderName,hlsUniqFolderName,fileName];
+      NSLog(@"  HLS contentPath : %@", contentPath);
+      
+      NSMutableArray* searchResults = [[DatabaseManager sharedInstance] searchDownloadedContentsPath:contentPath];
+      if(searchResults!=nil && searchResults.count>0){
+        // DB 와 연결되어 있는 파일
+        Clip* searchedClip = searchResults[0];
+        NSLog(@"  This File(%@) is connected with cid %@", contentPath, searchedClip.cid);
+      }else{
+        // DB 에 기록이 없는 파일 -> 삭제
+        NSLog(@"  No DB Record -> remove this file : %@", contentPath);
+        [self removeHlsFileAtPath:contentPath];
+      }
+    }
+  }
+}
+
+
+// 라이브러리 폴더 안에 특정 문자열 패턴이 포함된 이름의 디렉토리나 파일이 있으면 리턴해준다(동영상 저장 경로를 찾기 위해 사용).
+- (NSArray*)loadLibraryContentsAs:(NSString *)folderPrefixPattern{
+  
+  NSMutableArray* filteredContents = [[NSMutableArray alloc] init];
+  
+  NSError* error = nil;
+  NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+  NSArray *libraryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:libraryPath error:&error];
+  if(error){
+    NSLog(@"  error.description : %@",error.description);
+    return nil;
+  }
+  for (NSString *strFileName in libraryContents) {
+    NSLog(@"  file(or dir) name --> %@", strFileName);
+    if([strFileName hasPrefix:folderPrefixPattern]){
+      [filteredContents addObject:strFileName];
+    }
+  }
+  
+  return filteredContents;
+}
+
+
 #pragma mark - FPS License implementaions
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId

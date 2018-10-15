@@ -41,6 +41,7 @@
 - (void)startDownloadContents:(NSArray *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)removeDownloadedContent:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)removeDownloadedContents:(NSArray *)args completion:(void (^)(NSError *error, NSMutableDictionary *result))resultHandler;
+- (void)synchronizeLocalFilesWithDB;  //  DB와 로컬파일간 동기화하는 함수(트랙킹 안되는 파일들 삭제)
 
 - (void)clearQueue;
 - (void)launchNextDownload;
