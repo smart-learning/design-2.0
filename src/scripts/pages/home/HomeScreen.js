@@ -12,6 +12,10 @@ import {
 import HomeSeriesPage from './HomeSeriesPage';
 import AudioBookInfoPage from '../audio/AudioBookInfoPage';
 import SignUpLandingPage from '../auth/SignUpLandingPage';
+import EmailSignUpForm from '../auth/EmailSignUpForm';
+import Policy from '../auth/PolicyPage';
+import Privacy from '../auth/PrivacyPage';
+import LoginPage from '../auth/LoginPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -36,8 +40,29 @@ const HomeScreen = createStackNavigator(
     },
 
     SignUpPage: {
-      screen: SignUpLandingPage,
-      navigationOptions: NAV_OPTS_MAIN
+      screen: SignUpLandingPage
+    },
+
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
+    },
+    
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false
+      }
+    },
+
+    PrivacyPage: {
+      screen: Privacy
+      // navigationOptions: NAV_OPTS_STACK,
+    },
+
+    PolicyPage: {
+      screen: Policy
+      // navigationOptions: NAV_OPTS_STACK,
     }
     
   },
