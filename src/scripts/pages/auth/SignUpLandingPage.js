@@ -6,6 +6,7 @@ import {
 	Dimensions,
 	ImageBackground,
 	TouchableOpacity,
+	BackHandler,
 	Image, Alert,
 } from "react-native";
 import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
@@ -144,12 +145,26 @@ class SignUpLandingPage extends React.Component {
 		this.setState({
 			slideHeight: windowHeight,
 		});
+
+		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
 	}
 
+	componentWillUnmount() {
+		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+	}
+
+	handleBackPress = () => {
+		console.log('back press:' + store.isAppFirstLoad);
+		if (!store.isAppFirstLoad) {
+			BackHandler.exitApp();
+		} else {
+			this.props.navigation.goBack();
+		}
+	};
 
 	onAccessToken(type, token) {
 
-		let {navigation} = this.props;
+		let { navigation } = this.props;
 		const resultAuthToken = net.getAuthToken(type, token);
 		resultAuthToken
 			.then(data => {
@@ -172,24 +187,24 @@ class SignUpLandingPage extends React.Component {
 		return <View style={[CommonStyles.container, styles.landingContainer]}>
 
 			{/* 이미지 스와이퍼 */}
-			<View style={{width: '100%', height: this.state.slideHeight}}>
+			<View style={{ width: '100%', height: this.state.slideHeight }}>
 				<Swiper style={styles.wrapper}
-						showsButtons={false}
-						dotColor={"#888888"}
-						activeDotColor={"#ffffff"}
-						height={window.width}
-						paginationStyle={{bottom: '50%'}}>
+					showsButtons={false}
+					dotColor={"#888888"}
+					activeDotColor={"#ffffff"}
+					height={window.width}
+					paginationStyle={{ bottom: '50%' }}>
 					<View style={styles.slide}>
-						<ImageBackground source={Slide1} resizeMode="cover" style={styles.thumbnail}/>
+						<ImageBackground source={Slide1} resizeMode="cover" style={styles.thumbnail} />
 					</View>
 					<View style={styles.slide}>
-						<ImageBackground source={Slide2} resizeMode="cover" style={styles.thumbnail}/>
+						<ImageBackground source={Slide2} resizeMode="cover" style={styles.thumbnail} />
 					</View>
 					<View style={styles.slide}>
-						<ImageBackground source={Slide3} resizeMode="cover" style={styles.thumbnail}/>
+						<ImageBackground source={Slide3} resizeMode="cover" style={styles.thumbnail} />
 					</View>
 					<View style={styles.slide}>
-						<ImageBackground source={Slide4} resizeMode="cover" style={styles.thumbnail}/>
+						<ImageBackground source={Slide4} resizeMode="cover" style={styles.thumbnail} />
 					</View>
 				</Swiper>
 			</View>
@@ -199,27 +214,27 @@ class SignUpLandingPage extends React.Component {
 				<View style={[styles.alignJustify, styles.loginWrap]}>
 					<Text style={styles.loginLabel}>이미 윌라 계정이 있으신가요?</Text>
 					<TouchableOpacity style={styles.loginButton} activeOpacity={0.9}
-									  onPress={() => this.props.navigation.navigate('Login')}>
-						<Image source={icLogin} style={styles.loginImage}/>
+						onPress={() => this.props.navigation.navigate('Login')}>
+						<Image source={icLogin} style={styles.loginImage} />
 						<Text style={styles.loginText}>로그인</Text>
 					</TouchableOpacity>
 				</View>
 
 				<FBLoginButton
 					onAccess={token => this.onAccessToken('facebook', token)}
-					type={'landing'}/>
+					type={'landing'} />
 
 				<KakaoLoginButton
 					onAccess={token => this.onAccessToken('kakaotalk', token)}
-					type={'landing'}/>
+					type={'landing'} />
 
 				<TouchableOpacity activeOpacity={0.9} onPress={() => this.props.navigation.navigate('EmailSignUpForm')}>
 					<View style={styles.emailButton}
-						  borderWidth={1}
-						  borderStyle={'solid'}
-						  borderColor={'#ffffff'}
-						  borderRadius={4}>
-						<Image source={icEmail} style={styles.emailImage}/>
+						borderWidth={1}
+						borderStyle={'solid'}
+						borderColor={'#ffffff'}
+						borderRadius={4}>
+						<Image source={icEmail} style={styles.emailImage} />
 						<Text style={styles.emailText}>이메일 간편 가입</Text>
 					</View>
 				</TouchableOpacity>
@@ -228,7 +243,7 @@ class SignUpLandingPage extends React.Component {
 					<View style={styles.ruleTextContainer}>
 						<Text style={styles.ruleText}>무료 계정을 생성하시면 월라</Text>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => this.props.navigation.navigate('PolicyPage')}>
+							onPress={() => this.props.navigation.navigate('PolicyPage')}>
 							<Text style={styles.ruleButton} textDecorationLine={'underline'}>
 								이용약관
 							</Text>
@@ -237,7 +252,7 @@ class SignUpLandingPage extends React.Component {
 					</View>
 					<View style={styles.ruleTextContainer}>
 						<TouchableOpacity activeOpacity={0.9}
-										  onPress={() => this.props.navigation.navigate('PrivacyPage')}>
+							onPress={() => this.props.navigation.navigate('PrivacyPage')}>
 							<Text style={styles.ruleButton} textDecorationLine={'underline'}>
 								개인정보보호정책
 							</Text>

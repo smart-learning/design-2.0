@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  AsyncStorage,
   View
 } from 'react-native';
 import globalStore from '../../../scripts/commons/store';
@@ -163,7 +164,11 @@ const styles = StyleSheet.create({
 export default class MyInfoHome extends React.Component {
   componentDidMount() {
     if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
-  }
+
+    if(globalStore.welaaaAuth){
+      AsyncStorage.setItem('isAppFirstLoad' , 'false');
+    }
+  }  
 
   render() {
     const { navigation } = this.props;

@@ -11,6 +11,7 @@ import {
 } from '../../commons/nav';
 import HomeSeriesPage from './HomeSeriesPage';
 import AudioBookInfoPage from '../audio/AudioBookInfoPage';
+import SignUpLandingPage from '../auth/SignUpLandingPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -32,7 +33,13 @@ const HomeScreen = createStackNavigator(
     HomeScreen2: {
       screen: SampleSubScreen2,
       navigationOptions: NAV_OPTS_MAIN // 로고없이 서브타이틀과 검색버튼을 가질 페이지용 헤더 설정
+    },
+
+    SignUpPage: {
+      screen: SignUpLandingPage,
+      navigationOptions: NAV_OPTS_MAIN
     }
+    
   },
 
   { navigationOptions: NAV_OPTS_COMMON } // 공통 적용입니다.
