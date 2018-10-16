@@ -11,6 +11,11 @@ import {
 } from '../../commons/nav';
 import HomeSeriesPage from './HomeSeriesPage';
 import AudioBookInfoPage from '../audio/AudioBookInfoPage';
+import SignUpLandingPage from '../auth/SignUpLandingPage';
+import EmailSignUpForm from '../auth/EmailSignUpForm';
+import Policy from '../auth/PolicyPage';
+import Privacy from '../auth/PrivacyPage';
+import LoginPage from '../auth/LoginPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -32,7 +37,34 @@ const HomeScreen = createStackNavigator(
     HomeScreen2: {
       screen: SampleSubScreen2,
       navigationOptions: NAV_OPTS_MAIN // 로고없이 서브타이틀과 검색버튼을 가질 페이지용 헤더 설정
+    },
+
+    SignUpPage: {
+      screen: SignUpLandingPage
+    },
+
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
+    },
+    
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false
+      }
+    },
+
+    PrivacyPage: {
+      screen: Privacy
+      // navigationOptions: NAV_OPTS_STACK,
+    },
+
+    PolicyPage: {
+      screen: Policy
+      // navigationOptions: NAV_OPTS_STACK,
     }
+    
   },
 
   { navigationOptions: NAV_OPTS_COMMON } // 공통 적용입니다.
