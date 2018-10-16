@@ -722,11 +722,11 @@ export default {
     });
   },
 
-  searchQuery(query) {
-    let url = API_PREFIX + 'v1.0/contents/contents/search';
+  searchQuery(type, query) {
+    // type: {video-course, audiobook}
+    let url = API_PREFIX + 'v1.0/contents/contents/search/' + type;
     const params = { search: query };
     url += '?' + encodeParams(params);
-    console.log('==========', url);
     return axios
       .get(url)
       .then(response => {

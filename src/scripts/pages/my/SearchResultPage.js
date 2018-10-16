@@ -105,7 +105,7 @@ export default class SearchResultPage extends React.Component {
   tabStatus = 'video';
 
   @observable
-  searchResult = [];
+  searchResult = { video: [], audio: [] };
 
   constructor(props) {
     super(props);
@@ -123,9 +123,14 @@ export default class SearchResultPage extends React.Component {
   }
 
   searchQuery = async query => {
-    result = await net.searchQuery(query);
-    this.searchResult = result.items;
-    console.log('SearchResultPage.js::', this.searchResult);
+    videoResult = await net.searchQuery('video-course', query);
+    if (videoResult) {
+      this.searchResult.video = videoResult.items;
+    }
+    audioResult = await net.searchQuery('audiobook', query);
+    if (audioResult) {
+      this.searchResult.audio = audioResult.items;
+    }
   };
 
   makeListItem = ({ item }) => {
@@ -136,7 +141,7 @@ export default class SearchResultPage extends React.Component {
         onPress={() => this.goDetailPage(item)}
       >
         <Image
-          source={{ uri: item.images.list }}
+          source={{ uri: item.img_set.list }}
           style={styles.searchResultItemImg}
         />
         <View style={styles.searchResultItemInfo}>
@@ -163,42 +168,39 @@ export default class SearchResultPage extends React.Component {
     );
   };
 
-  goDetailPage() {
+  goDetailPage(item) {
     console.log('SearchResultPage.js::goDetailPage');
+    const { navigation } = this.props;
+    if ('video-course' === item.type) {
+      navigation.navigate('ClassDetailPage', {
+        title: item.title,
+        id: item.id
+      });
+    } else if ('audiobook' === item.type) {
+      navigation.navigate('AudioBookDetailPage', {
+        title: item.title,
+        id: item.id
+      });
+    }
   }
 
   render() {
     let vcontent = <Text style={styles.noContent}>{this.props.no_result}</Text>;
     let acontent = <Text style={styles.noContent}>{this.props.no_result}</Text>;
 
-    let video = [];
-    let audio = [];
-    const items = this.searchResult.toJS();
-    if (items.length > 0) {
-      // items.reduce(
-      //   (accumulator, item, index) => {
-      //     if ('video-course' === item.audioVideoType) {
-      //       accumulator.video.push({ ...item, key: index.toString() });
-      //     } else if ('audiobook' === item.audioVideoType) {
-      //       accumulator.audio.push({ ...item, key: index.toString() });
-      //     }
-      //     return accumulator;
-      //   },
-      //   { video: video, audio: audio }
-      // );
-      video = items;
+    let video = this.searchResult.video.toJS();
+    let audio = this.searchResult.audio.toJS();
+    if (video.length > 0) {
+      vcontent = (
+        <FlatList
+          style={styles.flatList}
+          data={video}
+          renderItem={this.makeListItem}
+        />
+      );
+    }
 
-      // 데이터를 가지고 리스트를 생성
-      if (video.length > 0) {
-        vcontent = (
-          <FlatList
-            style={styles.flatList}
-            data={video}
-            renderItem={this.makeListItem}
-          />
-        );
-      }
-
+    if (audio.length > 0) {
       if (audio.length > 0) {
         acontent = (
           <FlatList

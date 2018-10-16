@@ -71,8 +71,11 @@ class SearchButton extends Component {
       <TextInput
         style={{
           width: 300,
-          padding: 10,
-          fontSize: 20,
+          paddingStart: 20,
+          paddingEnd: 20,
+          paddingTop: 10,
+          paddingBottom: 10,
+          fontSize: 16,
           backgroundColor: '#ffffff',
           borderColor: Styles.COLOR_PRIMARY,
           borderWidth: 6,
