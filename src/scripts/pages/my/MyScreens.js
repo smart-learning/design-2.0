@@ -29,7 +29,6 @@ import LectureBuyPage from './LectureBuyPage';
 import LectureUsePage from './LectureUsePage';
 import MyInfoHome from './MyInfoHome';
 import MyLogPage from './MyLogPage';
-import SearchResultPage from './SearchResultPage';
 import SetAppPage from './SetAppPage';
 import SetTagPage from './SetTagPage';
 import UserHeartContentsPage from './UserHeartContentsPage';
@@ -151,10 +150,6 @@ const MyScreens = createStackNavigator(
     },
     EventDetailPage: {
       screen: EventDetailPage,
-      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
-    },
-    SearchResultPage: {
-      screen: SearchResultPage,
       navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     }
   },

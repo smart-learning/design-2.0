@@ -122,6 +122,10 @@ export default class SearchResultPage extends React.Component {
     this._isMount = false;
   }
 
+  shouldComponentUpdate() {
+    return this._isMount;
+  }
+
   searchQuery = async query => {
     videoResult = await net.searchQuery('video-course', query);
     if (videoResult) {
