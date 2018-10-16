@@ -17,7 +17,9 @@
 		"start": "react-native start",
 		"android": "react-native run-android --appIdSuffix debug --main-activity SplashActivity",
 		"ios": "react-native run-ios",
-		"test": "jest"
+		"test": "jest",
+		"reload": "adb shell input text 'RR'",
+		"dev-menu": "adb shell input keyevent 82"
 	},
 	"main": "node_modules/expo/AppEntry.js",
 	"jest": {
