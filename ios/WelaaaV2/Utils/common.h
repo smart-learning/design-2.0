@@ -26,8 +26,9 @@
 #define STATUSBAR_OFFSETY      20
 
 #define UIColorFromRGB(rgbValue,a) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:a]
+/*
 #define DEFAULT_ALERT(TITLE,MSG)                    [[[UIAlertView alloc] initWithTitle:(TITLE) message:(MSG) delegate:nil cancelButtonTitle:@"확인" otherButtonTitles:nil] show]
-
+*/
 #define GET_STRING_SIZE(source, font, width) [source boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:font} context:nil]
 
 #define GET_STRING_SIZE_N(source, font, width, numberOfLines) \
@@ -107,6 +108,8 @@
 
 + (void) getNetInterfaceNames;
 
++ (void) presentAlertWithTitle : (NSString *) title
+                    andMessage : (NSString *) message;
 @end
 
 

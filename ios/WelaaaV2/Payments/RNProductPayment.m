@@ -51,7 +51,8 @@ RCT_EXPORT_MODULE();
                 // 인앱결제상품을 iTunes에서 조회실패하면 다음 상품결제에 영향을 끼치기때문에 PaymentQueue를 반드시 초기화해야 합니다.
                 [IAPShare sharedHelper].iap = nil;
 
-                return DEFAULT_ALERT(@"윌라", @"곧 출시될 상품입니다.\n감사합니다.");
+              //return DEFAULT_ALERT(@"윌라", @"곧 출시될 상품입니다.\n감사합니다.");
+                return [common presentAlertWithTitle:@"윌라" andMessage:@"곧 출시될 상품입니다.\n감사합니다."];
             }
 
             SKProduct *product = [[IAPShare sharedHelper].iap.products objectAtIndex : 0];
@@ -89,7 +90,8 @@ RCT_EXPORT_MODULE();
                  
                             NSLog(@"  [IAP checkReceipt] SUCCESS IAP : %@", [IAPShare sharedHelper].iap.purchasedProducts);
                           
-                            DEFAULT_ALERT(@"윌라", @"결제가 정상적으로 완료되었습니다.");
+                          //DEFAULT_ALERT(@"윌라", @"결제가 정상적으로 완료되었습니다.");
+                            [common presentAlertWithTitle:@"윌라" andMessage:@"결제가 정상적으로 완료되었습니다."];
                         }
                         else
                         {
@@ -134,61 +136,72 @@ RCT_EXPORT_MODULE();
                 {
                     [IAPShare sharedHelper].iap = nil;
             
-                    return DEFAULT_ALERT(@"윌라", @"결제가 취소되었습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"결제가 취소되었습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"결제가 취소되었습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorClientInvalid )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"현재 고객님의 결제를 수행할 수 었습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"현재 고객님의 결제를 수행할 수 었습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"현재 고객님의 결제를 수행할 수 었습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorPaymentInvalid )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"고객님의 지불수단이 App Store에서 인식되지 않았습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"고객님의 지불수단이 App Store에서 인식되지 않았습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"고객님의 지불수단이 App Store에서 인식되지 않았습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorPaymentNotAllowed )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"고객님의 결제는 승인되지 않았습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"고객님의 결제는 승인되지 않았습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"고객님의 결제는 승인되지 않았습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorStoreProductNotAvailable )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"요청하신 상품을 현재 App Store에서 사용할 수 없습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"요청하신 상품을 현재 App Store에서 사용할 수 없습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"요청하신 상품을 현재 App Store에서 사용할 수 없습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorCloudServicePermissionDenied )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"고객님께서 클라우드 서비스 정보에 대한 접근을 허용하지 않았습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"고객님께서 클라우드 서비스 정보에 대한 접근을 허용하지 않았습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"고객님께서 클라우드 서비스 정보에 대한 접근을 허용하지 않았습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorCloudServiceNetworkConnectionFailed )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"네트워크에 연결할 수 없습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"네트워크에 연결할 수 없습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"네트워크에 연결할 수 없습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorCloudServiceRevoked )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"고객님께서 클라우드 서비스 사용 권한을 취소했습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"고객님께서 클라우드 서비스 사용 권한을 취소했습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"고객님께서 클라우드 서비스 사용 권한을 취소했습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.error.code == SKErrorUnknown )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"예기치 않은 오류가 발생했습니다.\n다음에 다시 이용해 주십시오.");
+                  //return DEFAULT_ALERT(@"윌라", @"예기치 않은 오류가 발생했습니다.\n다음에 다시 이용해 주십시오.");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"예기치 않은 오류가 발생했습니다.\n다음에 다시 이용해 주십시오."];
                 }
                 else if ( transaction.transactionState == SKPaymentTransactionStateFailed )
                 {
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"iTunes Store에 접속할 수 없어 결제가 정상적으로 처리되지 않았습니다.\nSKPaymentTransactionStateFailed.");
+                  //return DEFAULT_ALERT(@"윌라", @"iTunes Store에 접속할 수 없어 결제가 정상적으로 처리되지 않았습니다.\nSKPaymentTransactionStateFailed.");
+                    return [common presentAlertWithTitle : @"윌라"
+                                              andMessage : @"App Store에 접속할 수 없어 결제가 정상적으로 처리되지 않았습니다.\nSKPaymentTransactionStateFailed."];
                 }
                 else if ( transaction.transactionState == SKPaymentTransactionStateRestored )
                 {
@@ -196,7 +209,8 @@ RCT_EXPORT_MODULE();
                   
                     [IAPShare sharedHelper].iap = nil;
                   
-                    return DEFAULT_ALERT(@"윌라", @"멤버십 구매복원을 처리 중입니다.........");
+                  //return DEFAULT_ALERT(@"윌라", @"멤버십 구매복원을 처리 중입니다.........");
+                    return [common presentAlertWithTitle:@"윌라" andMessage:@"멤버십 구매복원을 처리 중입니다........."];
                 }
             }]; // end of buying a product
         }
@@ -213,7 +227,8 @@ RCT_EXPORT_MODULE();
         NSString *receiptBase64 = [NSString base64StringFromData : receiptData
                                                           length : [receiptData length]];
         NSLog(@"  [restoreProduct] Base64 Encoded Payload : %@", receiptBase64);
-        DEFAULT_ALERT(@"구매복원", @"구매내역을 복원하여 서버로 전송 완료했습니다.");
+      //DEFAULT_ALERT(@"구매복원", @"구매내역을 복원하여 서버로 전송 완료했습니다.");
+        [common presentAlertWithTitle:@"구매복원" andMessage:@"구매내역을 복원하여 서버로 전송 완료했습니다."];
         [self sendReceiptToRestore : receiptBase64];
     }
     else
@@ -244,7 +259,8 @@ RCT_EXPORT_MODULE();
                 /* No local receipt -- handle the error. */
                 // refresh를 했는데도 영수증이 없으면 아예 구매내역이 아예 없다고 봐야함.
                 NSLog(@"  [requestDidFinish] Receipt request done but there is no receipt");
-                DEFAULT_ALERT(@"구매복원", @"welaaa 구매내역을 찾을 수 없습니다.");
+              //DEFAULT_ALERT(@"구매복원", @"welaaa 구매내역을 찾을 수 없습니다.");
+                [common presentAlertWithTitle:@"구매복원" andMessage:@"welaaa 구매내역을 찾을 수 없습니다."];
             }
             else
             {
@@ -253,14 +269,16 @@ RCT_EXPORT_MODULE();
                                                                   length : [receiptData length]];
                 NSLog(@"  [requestDidFinish] Base64 Encoded Payload : %@", receiptBase64);
                 [self sendReceiptToRestore: receiptBase64];
-                DEFAULT_ALERT(@"구매복원", @"구매내역을 다시 복원하여 서버로 전송 완료했습니다.");
+              //DEFAULT_ALERT(@"구매복원", @"구매내역을 다시 복원하여 서버로 전송 완료했습니다.");
+                [common presentAlertWithTitle:@"구매복원" andMessage:@"구매내역을 다시 복원하여 서버로 전송 완료했습니다."];
             }
         }
         else
         {
             NSLog(@"  [requestDidFinish] This can happen if the user cancels the login screen for the store.");
             NSLog(@"  [requestDidFinish] If we get here it means there is no receipt and an attempt to get it failed because the user cancelled the login.");
-            DEFAULT_ALERT(@"구매복원", @"앱스토어에 접근할 수 없으므로 구매복원을 진행할 수 없습니다.");
+          //DEFAULT_ALERT(@"구매복원", @"앱스토어에 접근할 수 없으므로 구매복원을 진행할 수 없습니다.");
+            [common presentAlertWithTitle:@"구매복원" andMessage:@"앱스토어에 접근할 수 없으므로 구매복원을 진행할 수 없습니다."];
         }
     }
 }
