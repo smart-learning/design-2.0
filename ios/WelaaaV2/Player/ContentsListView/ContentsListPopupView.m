@@ -179,7 +179,7 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      contentView.frame = moveFrame;
+                                      self->contentView.frame = moveFrame;
                                   }
                      completion : completion];
 }
@@ -193,7 +193,7 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      contentView.frame = moveFrame;
+                                      self->contentView.frame = moveFrame;
                                   }
                      completion : completion];
 }

@@ -332,7 +332,7 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      _selectionView.alpha = 0.f;
+                                      self->_selectionView.alpha = 0.f;
                                   }
                      completion : ^(BOOL isComplete)
                                   {
@@ -357,7 +357,7 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      _selectionView.alpha = 0.f;
+                                      self->_selectionView.alpha = 0.f;
                                   }
                      completion : ^(BOOL isComplete)
                                   { }];

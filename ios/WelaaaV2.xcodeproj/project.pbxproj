@@ -34,7 +34,6 @@
 		EF056AB921267EFD00F3178B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF056AB821267EFD00F3178B /* StoreKit.framework */; };
 		EF094701212662B200FD849B /* RNProductPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = EF094700212662B200FD849B /* RNProductPayment.m */; };
 		EF23D7532175A1A40023DE2D /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */; };
 		EF4F4137211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F4107211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf */; };
 		EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5D544A211936F8008F60B4 /* Images.xcassets */; };
 		EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EF671AD3213E4BA100767E01 /* libsqlite3.tbd */; };
@@ -428,8 +427,6 @@
 		EF056AB821267EFD00F3178B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EF0946FF212662B200FD849B /* RNProductPayment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNProductPayment.h; sourceTree = "<group>"; };
 		EF094700212662B200FD849B /* RNProductPayment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNProductPayment.m; sourceTree = "<group>"; };
-		EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
-		EF2EB8D3211598ED00127D35 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
 		EF4F4107211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Spoqa Han Sans Regular.ttf"; sourceTree = "<group>"; };
 		EF5D544A211936F8008F60B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WelaaaV2/Images.xcassets; sourceTree = "<group>"; };
 		EF671AD3213E4BA100767E01 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -796,8 +793,6 @@
 				EFE0821C2113F89B006D3F6C /* IFSleepTimerManager.m */,
 				EFE08264211419EF006D3F6C /* UIImage+TintColor.h */,
 				EFE08263211419EF006D3F6C /* UIImage+TintColor.m */,
-				EF2EB8D3211598ED00127D35 /* UIActionSheet+Blocks.h */,
-				EF2EB8AB211598ED00127D35 /* UIActionSheet+Blocks.m */,
 			);
 			name = Utils;
 			path = WelaaaV2/Utils;
@@ -1531,7 +1526,6 @@
 				EFE0835621144239006D3F6C /* IAPHelper.m in Sources */,
 				EFAEBDC5213D33050070F10E /* ContentsListPopupView.m in Sources */,
 				EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */,
-				EF2EB8D4211598ED00127D35 /* UIActionSheet+Blocks.m in Sources */,
 				EFAEBDC0213D33050070F10E /* MediaPlayerScriptView.m in Sources */,
 				EFAEBDC4213D33050070F10E /* ContentPlayerButton.m in Sources */,
 				EFAEBDC9213D33050070F10E /* InnerShadowView.m in Sources */,

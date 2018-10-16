@@ -247,7 +247,7 @@ RCT_EXPORT_MODULE();
        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
        [params setObject:[NSNumber numberWithBool:true] forKey:@"complete"];
        [params setObject:[NSNumber numberWithInt:0] forKey:@"progress"];
-       if ( _hasListeners )
+       if ( self->_hasListeners )
        {
          [self sendEventWithName : @"downloadState"
                             body : params];

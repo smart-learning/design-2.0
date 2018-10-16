@@ -508,7 +508,7 @@
                   {
                     NSLog(@"  JSON Parse Error : %@", error.localizedDescription);
                     
-                    [_activeDownloads removeObjectForKey : cid];
+                    [self->_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
                     return;
                   }
@@ -536,7 +536,7 @@
                     }
                     [self showAlertOk:nil message:@"다운로드 경로가 존재하지 않습니다"];
                     
-                    [_activeDownloads removeObjectForKey : cid];
+                    [self->_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
                     return ;
                   }
@@ -555,12 +555,12 @@
                     }
                     [self showAlertOk:nil message:@"다운로드 권한이 없습니다"];
                     
-                    [_activeDownloads removeObjectForKey : cid];
+                    [self->_activeDownloads removeObjectForKey : cid];
                     [self doNextDownload];
                     return ;
                   }
                   
-                  FPSDownload *fpsDownload = _activeDownloads[cid];
+                  FPSDownload *fpsDownload = self->_activeDownloads[cid];
                   
                    NSDictionary *downloadInfo = @{ @"uri"    : urlString,
                                                    @"cid"    : cid,
@@ -586,7 +586,7 @@
                   NSLog(@"NSURLSessionDataTask Error : %ld - %@",(long)error.code, error.description);
                   [self showAlertOk:@"Network Error" message:[NSString stringWithFormat:@"code : %ld\n%@",(long)error.code, error.description]];
                   
-                  [_activeDownloads removeObjectForKey : cid];
+                  [self->_activeDownloads removeObjectForKey : cid];
                   [self doNextDownload];
                 }
               } ];
