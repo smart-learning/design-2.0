@@ -351,7 +351,7 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
     {
         [UIView animateWithDuration : 0.3f
                          animations : ^{
-                                          _playerView.frame = frame;
+                                          self->_playerView.frame = frame;
                                       }
                          completion : ^(BOOL finished)
                                       {

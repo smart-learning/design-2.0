@@ -7,6 +7,11 @@ import {
   NAV_OPTS_STACK_HISTORY_BACK
 } from '../../commons/nav';
 import AudioBookInfoPage from '../audio/AudioBookInfoPage';
+import EmailSignUpForm from '../auth/EmailSignUpForm';
+import LoginPage from '../auth/LoginPage';
+import Policy from '../auth/PolicyPage';
+import Privacy from '../auth/PrivacyPage';
+import SignUpLandingPage from '../auth/SignUpLandingPage';
 import SampleSubScreen2 from '../sample/SampleSubScreen2';
 import HomePage from './HomePage';
 import HomeSeriesPage from './HomeSeriesPage';
@@ -37,6 +42,32 @@ const HomeScreen = createStackNavigator(
     SearchResultPage: {
       screen: SearchResultPage,
       navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
+    },
+
+    SignUpPage: {
+      screen: SignUpLandingPage
+    },
+
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
+    },
+
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false
+      }
+    },
+
+    PrivacyPage: {
+      screen: Privacy
+      // navigationOptions: NAV_OPTS_STACK,
+    },
+
+    PolicyPage: {
+      screen: Policy
+      // navigationOptions: NAV_OPTS_STACK,
     }
   },
 

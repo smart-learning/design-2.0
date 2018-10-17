@@ -299,7 +299,7 @@
 {
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock: ^(AFNetworkReachabilityStatus status)
     {
-        _networkStatus = status;
+        self->_networkStatus = status;
         
         if ( block )
         {

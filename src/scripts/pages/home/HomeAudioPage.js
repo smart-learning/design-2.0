@@ -153,7 +153,7 @@ class HomeAudioPage extends React.Component {
                   const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) {}
+                  } catch (e) { }
 
                   return (
                     <HomeBanner
@@ -214,28 +214,32 @@ class HomeAudioPage extends React.Component {
                 {updatedAt} 업데이트
               </Text>
             </View>
-
-            <BookList
-              itemType="hot"
-              itemData={
-                this.props.store.audioHotData.items
-                  ? this.props.store.audioHotData.items
-                  : this.props.store.audioHotData
-              }
-            />
+            {(this.props.store.audioHotData.items !== undefined) && (
+              <BookList
+                itemType="hot"
+                itemData={
+                  this.props.store.audioHotData.items
+                    ? this.props.store.audioHotData.items
+                    : this.props.store.audioHotData
+                }
+              />
+            )}
 
             <View style={CommonStyles.alignJustifyContentBetween}>
               <Text style={styles.titleH3}>새로 나온 오디오북</Text>
             </View>
 
-            <BookList
-              itemType={'new'}
-              itemData={
-                this.props.store.audioNewData.items
-                  ? this.props.store.audioNewData.items
-                  : this.props.store.audioNewData
-              }
-            />
+            {(this.props.store.audioNewData.items !== undefined) && (
+              <BookList
+                itemType={'new'}
+                itemData={
+                  this.props.store.audioNewData.items
+                    ? this.props.store.audioNewData.items
+                    : this.props.store.audioNewData
+                }
+              />
+            )}
+
 
             {1 === 2 && (
               <View>

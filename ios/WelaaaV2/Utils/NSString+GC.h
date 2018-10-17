@@ -8,12 +8,12 @@
 - (NSString *) trim;
 - (NSString *) stringByInsertingComma;
 
-- (long) indexOf: (NSString *) text;
-- (long) indexOfBackwardSearch: (NSString *) text;
-- (BOOL) compareToken: (NSString *) token;
+- (long) indexOf : (NSString *) text;
+- (long) indexOfBackwardSearch : (NSString *) text;
+- (BOOL) compareToken : (NSString *) token;
 - (NSMutableDictionary *) queryString;
-- (NSString *) cutString: (NSString *) str
-               delimiter: (NSString *) delimiter;
+- (NSString *) cutString : (NSString *) str
+               delimiter : (NSString *) delimiter;
 - (NSString *) makeHttpProtocol;
 - (NSString *) removeHtmlTag;
 - (NSString *) escape;
@@ -24,13 +24,13 @@
 
 @interface NSMutableAttributedString (color)
 
-- (void) setColorForText: (NSString *) textToFind
-               withColor: (UIColor *) color
-                withFont: (UIFont *) font;
+- (void) setColorForText : (NSString *) textToFind
+               withColor : (UIColor *) color
+                withFont : (UIFont *) font;
 
-- (void) setColorForText: (NSString *) textToFind
-               withColor: (UIColor *) color
-                withFont: (UIFont *) font
-          compareOptions: (NSStringCompareOptions) compareOption;
+- (void) setColorForText : (NSString *) textToFind
+               withColor : (UIColor *) color
+                withFont : (UIFont *) font
+          compareOptions : (NSStringCompareOptions) compareOption;
 
 @end
