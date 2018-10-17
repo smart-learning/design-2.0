@@ -379,14 +379,7 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
     //결재 기록이 없을때 alert 뛰우기
     if ( queue.transactions.count == 0 )
     {
-        NSString *failMessage = @"구매 기록이 없습니다.";
-        
-        UIAlertView *resultView = [[UIAlertView alloc] initWithTitle: @"Failed"
-                                                             message: failMessage
-                                                            delegate: self
-                                                   cancelButtonTitle: nil
-                                                   otherButtonTitles: @"OK", nil];
-        [resultView show];
+        [common presentAlertWithTitle:@"Failed" andMessage:@"구매 기록이 없습니다."];
     }
     
     for ( SKPaymentTransaction *transaction in queue.transactions )

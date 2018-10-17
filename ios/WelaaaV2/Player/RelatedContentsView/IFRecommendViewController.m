@@ -269,8 +269,8 @@ NSMutableArray *_dataArray;
 - (void) customedCollectionView : (IFCollectionView *) collectionView
        didSelectItemAtIndexPath : (NSIndexPath *) indexPath
 {
-    NSString *ckey;
-    NSString *gkey;
+  //NSString *ckey;
+  //NSString *gkey;
     
     if ( indexPath.section == 0 )
     {
@@ -288,7 +288,7 @@ NSMutableArray *_dataArray;
         //gkey = [[[slaveDataArray2 objectAtIndex: indexPath.row] valueForKey: @"groupkey"] stringValue];
     }
     
-    AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+  //AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     /*
     HomeViewController *controller = [app getHomeViewController];
     

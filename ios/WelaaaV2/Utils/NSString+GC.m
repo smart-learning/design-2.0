@@ -5,79 +5,79 @@
 
 - (NSString *) stringByInsertingComma
 {
-	if ( self.length > 3 )
-	{
-		NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-		
-		[numberFormatter setNumberStyle: NSNumberFormatterDecimalStyle];
-		
-		NSString *numberAsString = [numberFormatter stringFromNumber: [NSNumber numberWithInteger: self.integerValue]];
-		
-		return numberAsString;
-	}
+    if ( self.length > 3 )
+    {
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+      
+        [numberFormatter setNumberStyle : NSNumberFormatterDecimalStyle];
+      
+        NSString *numberAsString = [numberFormatter stringFromNumber : [NSNumber numberWithInteger : self.integerValue]];
+      
+        return numberAsString;
+    }
 	
-	return [NSString stringWithFormat: @"%@", self];
+    return [NSString stringWithFormat : @"%@", self];
 }
 
 - (NSString *) trim
 {
-	return [self stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return [self stringByTrimmingCharactersInSet : [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-- (long) indexOf: (NSString *) text
+- (long) indexOf : (NSString *) text
 {
-	NSRange range = [self rangeOfString: text];
+    NSRange range = [self rangeOfString : text];
 
-	if ( range.length > 0 )
+    if ( range.length > 0 )
         return range.location;
 
-	return -1;
+    return -1;
 }
 
-- (long) indexOfBackwardSearch: (NSString *) text
+- (long) indexOfBackwardSearch : (NSString *) text
 {
-	NSRange range = [self rangeOfString: text options: NSBackwardsSearch];
-	
-	if ( range.length > 0 )
+    NSRange range = [self rangeOfString:text options:NSBackwardsSearch];
+  
+    if ( range.length > 0 )
         return range.location;
-	
-	return -1;
+  
+    return -1;
 }
 
 //문자열 비교
-- (BOOL) compareToken: (NSString *) token
+- (BOOL) compareToken : (NSString *) token
 {
-	NSRange pRange = [self rangeOfString: token];
-	
+    NSRange pRange = [self rangeOfString : token];
+  
     if ( pRange.location != NSNotFound )
         return YES;
-	
-	return NO;
+  
+    return NO;
 }
 
 - (NSMutableDictionary *) queryString
 {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    NSArray *components = [self componentsSeparatedByString: @"&"];
+    NSArray *components = [self componentsSeparatedByString : @"&"];
     
-    for (NSString *component in components)
+    for ( NSString *component in components )
     {
-        NSArray *subcomponents = [component componentsSeparatedByString: @"="];
-        [parameters setObject: [[subcomponents objectAtIndex: 1] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]
-                       forKey: [[subcomponents objectAtIndex: 0] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+        NSArray *subcomponents = [component componentsSeparatedByString : @"="];
+        [parameters setObject : [[subcomponents objectAtIndex : 1] stringByRemovingPercentEncoding]
+                       forKey : [[subcomponents objectAtIndex : 0] stringByRemovingPercentEncoding]];
     }
     
     return parameters;
 }
 
-- (NSString *) cutString: (NSString *) str
-               delimiter: (NSString *) delimiter
+- (NSString *) cutString : (NSString *) str
+               delimiter : (NSString *) delimiter
 {
-    int nToken = (int)[str indexOf: delimiter];
+    int nToken = (int) [str indexOf : delimiter];
     
     if ( nToken != -1 )
     {
-        return [str substringWithRange: NSMakeRange(0, nToken)];
+        return [str substringWithRange : NSMakeRange(0, nToken)];
     }
     
     return @"errorCutString";
@@ -93,9 +93,9 @@
     
     if ( [self length] > [token length] )
     {
-        NSString *compareStr = [self substringWithRange: NSMakeRange(0, [token length])];
+        NSString *compareStr = [self substringWithRange : NSMakeRange(0, [token length])];
         
-        if ( [[compareStr lowercaseString] isEqualToString: token] )
+        if ( [[compareStr lowercaseString] isEqualToString : token] )
         {
             isHttp = YES;
         }
@@ -107,9 +107,9 @@
     
     if ( [self length] > [token length] )
     {
-        NSString *compareStr = [self substringWithRange: NSMakeRange(0, [token length])];
+        NSString *compareStr = [self substringWithRange : NSMakeRange(0, [token length])];
         
-        if ( [[compareStr lowercaseString] isEqualToString:token] )
+        if ( [[compareStr lowercaseString] isEqualToString : token] )
         {
             isHttps = YES;
         }
@@ -118,17 +118,17 @@
     if ( isHttp || isHttps )
         return self;
 
-    return [NSString stringWithFormat: @"http://%@", self];
+    return [NSString stringWithFormat : @"http://%@", self];
 }
 
 - (NSString *) removeHtmlTag
 {
-    NSString *temp = [NSString stringWithString: self];
+    NSString *temp = [NSString stringWithString : self];
     
-    while (1)
+    while ( 1 )
     {
-        long firstToken = [temp indexOf: @"<"];
-        long lastToken = [temp indexOf: @">"];
+        long firstToken = [temp indexOf : @"<"];
+        long lastToken = [temp indexOf : @">"];
         
         //둘중 하나의 태그라도 없으면 브레이크.
         if ( firstToken == -1 || lastToken == -1 )
@@ -137,17 +137,17 @@
         }
         
         //firstToken의 숫자가 크면 데이터가 꺠져있다는 소리.
-        if (firstToken > lastToken)
+        if ( firstToken > lastToken )
         {
             break;
         }
         
         //토큰 범위를 삭제한다.
-        temp = [temp stringByReplacingCharactersInRange: NSMakeRange(firstToken, (lastToken+1)-firstToken)
-                                             withString: @""];
+        temp = [temp stringByReplacingCharactersInRange : NSMakeRange(firstToken, (lastToken+1)-firstToken)
+                                             withString : @""];
     }
     
-    temp = [temp stringByReplacingOccurrencesOfString: @"&nbsp;" withString: @""];
+    temp = [temp stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@""];
     
     return temp;
 }
@@ -164,7 +164,8 @@
 
 - (NSString *) decode
 {
-    NSString *decodeUrl = [self stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+    NSString *decodeUrl = [self stringByRemovingPercentEncoding];
+  
     return decodeUrl;
 }
 
@@ -181,7 +182,7 @@
     CC_MD5(value, (unsigned int)strlen(value), outputBuffer);
     
     for ( NSInteger count = 0; count < CC_MD5_DIGEST_LENGTH; count++ )
-        [outputString appendFormat:@"%02x", outputBuffer[count]];
+        [outputString appendFormat : @"%02x", outputBuffer[count]];
     
     return outputString;
 }
@@ -191,42 +192,40 @@
 
 @implementation NSMutableAttributedString (color)
 
-- (void) setColorForText: (NSString *) textToFind
-               withColor: (UIColor *) color
-                withFont: (UIFont *) font
+- (void) setColorForText : (NSString *) textToFind
+               withColor : (UIColor *) color
+                withFont : (UIFont *) font
 {
-    NSRange range = [self.mutableString rangeOfString: textToFind
-                                              options: NSCaseInsensitiveSearch];
+    NSRange range = [self.mutableString rangeOfString:textToFind options:NSCaseInsensitiveSearch];
     
     if ( range.location != NSNotFound )
     {
-        [self addAttribute: NSForegroundColorAttributeName
-                     value: color
-                     range: range];
+        [self addAttribute : NSForegroundColorAttributeName
+                     value : color
+                     range : range];
         
-        [self addAttribute: NSFontAttributeName
-                     value: font
-                     range: range];
+        [self addAttribute : NSFontAttributeName
+                     value : font
+                     range : range];
     }
 }
 
-- (void) setColorForText: (NSString *) textToFind
-               withColor: (UIColor *) color
-                withFont: (UIFont *) font
-          compareOptions: (NSStringCompareOptions) compareOption
+- (void) setColorForText : (NSString *) textToFind
+               withColor : (UIColor *) color
+                withFont : (UIFont *) font
+          compareOptions : (NSStringCompareOptions) compareOption
 {
-    NSRange range = [self.mutableString rangeOfString: textToFind
-                                              options: compareOption];
+    NSRange range = [self.mutableString rangeOfString:textToFind options:compareOption];
     
-    if (range.location != NSNotFound)
+    if ( range.location != NSNotFound )
     {
-        [self addAttribute: NSForegroundColorAttributeName
-                     value: color
-                     range: range];
+        [self addAttribute : NSForegroundColorAttributeName
+                     value : color
+                     range : range];
         
-        [self addAttribute: NSFontAttributeName
-                     value: font
-                     range: range];
+        [self addAttribute : NSFontAttributeName
+                     value : font
+                     range : range];
     }
 }
 

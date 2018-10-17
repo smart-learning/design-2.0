@@ -267,7 +267,7 @@ forSectionBackgroundViewWithReuseIdentifier : (NSString *) identifier
                                   }
                      completion : ^(BOOL finished)
                                   {
-                                     AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+                                   //AppDelegate *app = (AppDelegate *) [[UIApplication sharedApplication] delegate];
                                    /*
                                      HomeViewController *homeViewController = [app getHomeViewController];
                                      

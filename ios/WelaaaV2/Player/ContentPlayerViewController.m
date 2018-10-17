@@ -915,21 +915,21 @@
                                                                     {
                                                                         if ( self.isDownloadFile )
                                                                         {
-                                                                            _networkStatusLabel.text = @"다운로드 재생";
+                                                                            self->_networkStatusLabel.text = @"다운로드 재생";
                                                                         }
                                                                         else
                                                                         {
                                                                             if ( status == 0 )
                                                                             {
-                                                                                _networkStatusLabel.text = @"인터넷 연결안됨";
+                                                                                self->_networkStatusLabel.text = @"인터넷 연결안됨";
                                                                             }
                                                                             else if ( status == 1 )
                                                                             {
-                                                                                _networkStatusLabel.text = @"LTE/3G 재생";
+                                                                                self->_networkStatusLabel.text = @"LTE/3G 재생";
                                                                             }
                                                                             else if ( status == 2 )
                                                                             {
-                                                                                _networkStatusLabel.text = @"Wi-Fi 재생";
+                                                                                self->_networkStatusLabel.text = @"Wi-Fi 재생";
                                                                             }
                                                                         }
                                                                     }];
@@ -970,15 +970,15 @@
         [_backgroundImageView sd_setImageWithURL : [NSURL URLWithString: url]
                                        completed : ^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL)
                                                    {
-                                                       if ( self.view.frame.size.width > self.view.frame.size.height && _backgroundImageView.image )
+                                                       if ( self.view.frame.size.width > self.view.frame.size.height && self->_backgroundImageView.image )
                                                        {
-                                                           CGFloat width = [common getRatioWidth : _backgroundImageView.image.size
+                                                           CGFloat width = [common getRatioWidth : self->_backgroundImageView.image.size
                                                                                     screenHeight : self.view.frame.size.height];
                                                          
-                                                           CGFloat height = [common getRatioHeight : _backgroundImageView.image.size
+                                                           CGFloat height = [common getRatioHeight : self->_backgroundImageView.image.size
                                                                                        screenWidth : width];
                                                          
-                                                           _backgroundImageView.frame = CGRectMake((self.view.frame.size.width - width)/2.f, 0, width, height);
+                                                           self->_backgroundImageView.frame = CGRectMake((self.view.frame.size.width - width)/2.f, 0, width, height);
                                                        }
                                                    }];
     }
@@ -1257,20 +1257,20 @@
                                       handler : ^(UIAlertAction *action)
                                                 {
                                                     // 별점주기 팝업을 띄운 후 별점을 주지 않으면 별점만 초기화하고 그냥 닫습니다.
-                                                    if ( nil == _currentStar || [_currentStar isEqualToString : @"0"] || [_currentStar isEqualToString : @""] )
+                                                    if ( nil == self->_currentStar || [self->_currentStar isEqualToString : @"0"] || [self->_currentStar isEqualToString : @""] )
                                                     {
-                                                        _currentStar = @"";
+                                                        self->_currentStar = @"";
                                                     }
                                                     else
                                                     {
-                                                        NSLog(@"  [pressedRateStarButton] 최종별점 : %@", _currentStar);
-                                                        NSString *myStarStr = [NSString stringWithFormat : @" %@%@", _currentStar, @".0"];
+                                                        NSLog(@"  [pressedRateStarButton] 최종별점 : %@", self->_currentStar);
+                                                        NSString *myStarStr = [NSString stringWithFormat : @" %@%@", self->_currentStar, @".0"];
                                                       
-                                                        _currentStar = @"";   // 다음 강의 평가를 위해 별점 초기화. 171207 김태현
-                                                        [_rateStarButton setTitle : myStarStr
+                                                        self->_currentStar = @"";   // 다음 강의 평가를 위해 별점 초기화. 171207 김태현
+                                                        [self->_rateStarButton setTitle : myStarStr
                                                                          forState : UIControlStateNormal];
-                                                        _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
-                                                        _rateStarButton.userInteractionEnabled = NO; // 탑뷰 내 별점주기버튼 비활성화
+                                                        self->_rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
+                                                        self->_rateStarButton.userInteractionEnabled = NO; // 탑뷰 내 별점주기버튼 비활성화
                                                     }
                                                 }];
   
@@ -1674,12 +1674,12 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      _topView.alpha = hidden ? 0.f : 1.f;
-                                      _bottomView.alpha = hidden ? 0.f : 1.f;
-                                      _menuItemView.alpha = hidden ? 0.f : 1.f;
-                                      _menuItemTopLineView.alpha = hidden ? 0.f : 1.f;
-                                      _menuItemBottomLineView.alpha = hidden ? 0.f : 1.f;
-                                      _controlBarView.alpha = hidden ? 0.f : 1.f;
+                                      self->_topView.alpha = hidden ? 0.f : 1.f;
+                                      self->_bottomView.alpha = hidden ? 0.f : 1.f;
+                                      self->_menuItemView.alpha = hidden ? 0.f : 1.f;
+                                      self->_menuItemTopLineView.alpha = hidden ? 0.f : 1.f;
+                                      self->_menuItemBottomLineView.alpha = hidden ? 0.f : 1.f;
+                                      self->_controlBarView.alpha = hidden ? 0.f : 1.f;
                        
                                       if ( !hidden )
                                       {
@@ -1688,12 +1688,12 @@
                                   }
                      completion : ^(BOOL finished)
                                   {
-                                      _topView.hidden = hidden;
-                                      _bottomView.hidden = hidden;
-                                      _menuItemView.hidden = hidden;
-                                      _menuItemTopLineView.hidden = hidden;
-                                      _menuItemBottomLineView.hidden = hidden;
-                                      _controlBarView.hidden = hidden;
+                                      self->_topView.hidden = hidden;
+                                      self->_bottomView.hidden = hidden;
+                                      self->_menuItemView.hidden = hidden;
+                                      self->_menuItemTopLineView.hidden = hidden;
+                                      self->_menuItemBottomLineView.hidden = hidden;
+                                      self->_controlBarView.hidden = hidden;
                                     
                                       self.view.userInteractionEnabled = YES;
        
@@ -1737,7 +1737,7 @@
                                                                [self setSeekbarCurrentValue : playTime];
                                                                [self setCurrentTime : playTime
                                                                         forceChange : NO];
-                                                               [_miniPlayerUiView setSeekbarCurrentValue : playTime];
+                                                               [self->_miniPlayerUiView setSeekbarCurrentValue : playTime];
                                                             
                                                               /*
                                                                * 진도체크는 추후에 구현합니다.
@@ -1919,25 +1919,6 @@
         
         return ;
       }
-      /* 기존 사용 코드(윌라 1.0)
-       [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
-       self.isDownloading = YES;
-       [self setTouchEnable: _downloadButton
-       isLock: YES];*/
-      
-      // 2018.9.6 ~
-      /*
-       Clip* clipToDownload = [[Clip alloc] initWithTitle:[_args objectForKey:@"name"]
-       memo:@""
-       cid:[_args objectForKey:@"cid"]
-       playTime:@""
-       index:0];
-       [_fpsDownloadManager startDownload:clipToDownload completion:^(NSString* downloadMsg){
-       if(downloadMsg){
-       [self showToast:downloadMsg]; // "다운로드를 시작합니다." 등.
-       }
-       }];
-       */
       
       // 2018. 9.14 ~
       [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result){}];
@@ -2330,24 +2311,24 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      _topView.alpha = topViewAlpha;
-                                      _topView.frame = topViewFrame;
+                                      self->_topView.alpha = topViewAlpha;
+                                      self->_topView.frame = topViewFrame;
                        
-                                      _scriptView.alpha = scriptViewAlpha;
-                                      _scriptView.frame = scriptViewFrame;
+                                      self->_scriptView.alpha = scriptViewAlpha;
+                                      self->_scriptView.frame = scriptViewFrame;
                        
-                                      _menuItemView.alpha = menuViewAlpha;
-                                      _menuItemView.frame = menuViewFrame;
+                                      self->_menuItemView.alpha = menuViewAlpha;
+                                      self->_menuItemView.frame = menuViewFrame;
                        
-                                      _controlBarView.alpha = controlViewAlpha;
-                                      _controlBarView.frame = controlViewFrame;
+                                      self->_controlBarView.alpha = controlViewAlpha;
+                                      self->_controlBarView.frame = controlViewFrame;
                                   }
                      completion : ^(BOOL finished)
                                   {
-                                      _topView.hidden = (topViewAlpha == 0.f);
-                                      _scriptView.hidden = (scriptViewAlpha == 0.f);
-                                      _menuItemView.hidden = (menuViewAlpha == 0.f);
-                                      _controlBarView.hidden = (controlViewAlpha == 0.f);
+                                      self->_topView.hidden = (topViewAlpha == 0.f);
+                                      self->_scriptView.hidden = (scriptViewAlpha == 0.f);
+                                      self->_menuItemView.hidden = (menuViewAlpha == 0.f);
+                                      self->_controlBarView.hidden = (controlViewAlpha == 0.f);
                                   }];
 }
 - (void) setPositionScriptToHideView : (BOOL) hidden
@@ -2363,7 +2344,7 @@
                                   delay : 0
                                 options : UIViewAnimationOptionAllowUserInteraction
                              animations : ^{
-                                              _scriptView.frame = frame;
+                                              self->_scriptView.frame = frame;
                                           }
                              completion : ^(BOOL finished) {} ];
         }
@@ -2559,30 +2540,30 @@
                                                 style : UIAlertActionStyleDefault
                                               handler : ^(UIAlertAction * action)
                                                         {
-                                                            _isDownloadFile = YES;
+                                                            self->_isDownloadFile = YES;
                                                             NSTimeInterval cTime = [self getCurrentPlaybackTime];
                                                             NSTimeInterval tTime = [self getDuration];
                                                           
                                                             [alert dismissViewControllerAnimated:YES completion:nil];
                                                           
-                                                            [_args setObject : assetURL
+                                                            [self->_args setObject : assetURL
                                                                       forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
                                                           
                                                             [self fpsSetUrlAsset];
                                                           
-                                                            _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
-                                                            [_player replaceCurrentItemWithPlayerItem : _playerItem];
+                                                            self->_playerItem = [ AVPlayerItem playerItemWithAsset : self->_urlAsset ];
+                                                            [self->_player replaceCurrentItemWithPlayerItem : self->_playerItem];
                                                           
                                                             CMTime newTime = CMTimeMakeWithSeconds(cTime, tTime);
-                                                            [_player seekToTime : newTime];//playImmediatelyAtRate
+                                                            [self->_player seekToTime : newTime];//playImmediatelyAtRate
                                                             [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
                                                           
-                                                            _networkStatusLabel.text = @"다운로드 재생";
+                                                            self->_networkStatusLabel.text = @"다운로드 재생";
                                                           
                                                             [[NSNotificationCenter defaultCenter] addObserver : self
                                                                                                      selector : @selector(videoPlayBackDidFinish:)
                                                                                                          name : AVPlayerItemDidPlayToEndTimeNotification
-                                                                                                       object : [_player currentItem]];
+                                                                                                       object : [self->_player currentItem]];
                                                        }];
   
     UIAlertAction *n = [UIAlertAction actionWithTitle : @"아니오"
