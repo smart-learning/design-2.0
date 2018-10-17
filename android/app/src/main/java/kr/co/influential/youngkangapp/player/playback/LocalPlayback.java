@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
@@ -232,7 +233,7 @@ public final class LocalPlayback implements Playback,
       // update
       if (ContentManager().isProgressExist(currentCkey) > 0) {
         ContentManager()
-            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()));
+            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()) , "UPDATE");
         //insert
       } else {
         ContentManager().insertProgress(currentCkey,
@@ -505,6 +506,9 @@ public final class LocalPlayback implements Playback,
 
       Preferences.setSQLiteDuration(mContext, false);
     }
+
+    // udpate Progress SQLite
+    mPlayTimeUpdateSQLiteHandler.sendEmptyMessageDelayed(0, 5000);
   }
 
   @Override
@@ -528,7 +532,7 @@ public final class LocalPlayback implements Playback,
       // update duration 0 으로 셋팅합니다.
       if (ContentManager().isProgressExist(currentCkey) > 0) {
         ContentManager()
-            .updateProgress(currentCkey, "0");
+            .updateProgress(currentCkey, "0" , "UPDATE");
         //insert duration 0 으로 셋팅합니다.
       } else {
         ContentManager().insertProgress(currentCkey, "0");
@@ -675,6 +679,8 @@ public final class LocalPlayback implements Playback,
       mExoPlayerNullIsStopped = true;
       mPlayOnFocusGain = false;
     }
+
+    mPlayTimeUpdateSQLiteHandler.removeCallbacksAndMessages(null);
 
     if (mWifiLock.isHeld()) {
       mWifiLock.release();
@@ -1084,4 +1090,35 @@ public final class LocalPlayback implements Playback,
     MainApplication myApp = (MainApplication) mContext;
     return myApp.getContentMgr();
   }
+
+  Handler mPlayTimeUpdateSQLiteHandler = new Handler() {
+    @SuppressWarnings("unchecked")
+    @Override
+    public void handleMessage(Message msg) {
+
+      String currentCkey = Preferences.getWelaaaPlayListCkey(mContext);
+
+      try {
+        // update
+        if (ContentManager().isProgressExist(currentCkey) > 0) {
+          ContentManager()
+              .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()) , "UPDATE");
+          //insert
+        } else {
+          ContentManager().insertProgress(currentCkey,
+              String.valueOf(mExoPlayer.getCurrentPosition()));
+        }
+
+        if (mPlayTimeUpdateSQLiteHandler != null) {
+          // 한개만 호출될 수 있도록 확인 해봅시다
+          mPlayTimeUpdateSQLiteHandler.removeCallbacksAndMessages(null);
+
+          mPlayTimeUpdateSQLiteHandler.sendEmptyMessageDelayed(0, 5000);
+        }
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  };
 }
