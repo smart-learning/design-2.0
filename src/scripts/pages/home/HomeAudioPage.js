@@ -214,7 +214,7 @@ class HomeAudioPage extends React.Component {
                 {updatedAt} 업데이트
               </Text>
             </View>
-            {(this.props.store.audioHotData.items !== undefined) && (
+            {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
               <BookList
                 itemType="hot"
                 itemData={
@@ -223,13 +223,13 @@ class HomeAudioPage extends React.Component {
                     : this.props.store.audioHotData
                 }
               />
-            )}
+            {/* )} */}
 
             <View style={CommonStyles.alignJustifyContentBetween}>
               <Text style={styles.titleH3}>새로 나온 오디오북</Text>
             </View>
 
-            {(this.props.store.audioNewData.items !== undefined) && (
+            {/* {(this.props.store.audioNewData.items !== undefined) && ( */}
               <BookList
                 itemType={'new'}
                 itemData={
@@ -238,7 +238,7 @@ class HomeAudioPage extends React.Component {
                     : this.props.store.audioNewData
                 }
               />
-            )}
+            {/* )} */}
 
 
             {1 === 2 && (
