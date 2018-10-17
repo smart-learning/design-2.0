@@ -729,10 +729,10 @@
         if( ![self removeHlsFileAtPath : clip.contentPath] )  // 파일 삭제
         {
           NSLog(@"  %@ -> Failed to Remove.", clip.contentPath);
-          continue;
+          //continue; // File 이 없어서 삭제가 안된 경우도 성공 리턴은 해주도록 처리(그래야 화면을 갱신할 수가 있으므로).
+        }else{
+          NSLog(@"  %@ -> Removed.",clip.contentPath);
         }
-        
-        NSLog(@"  %@ -> Removed.",clip.contentPath);
         
         // 성공 리턴
         NSMutableDictionary *result = [[NSMutableDictionary alloc] initWithObjectsAndKeys:cid,@"cid", nil];
@@ -1112,7 +1112,7 @@
 // Asset 폴더 경로부터 비교. 예) com.apple.UserManagedAssets.jtB6U2/v100015_005_2796BB4F50ADAA4C.movpkg
 - (void)synchronizeLocalFilesWithDB
 {
-  NSLog(@"  synchronizeLocalFilesByDB");
+  NSLog(@"  synchronizeLocalFilesWithDB");
   
   NSError* error = nil;
   NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -1144,6 +1144,28 @@
       }
     }
   }
+  
+  // DB 레코드에 있는 로컬파일이 실제로 존재하지 않거나 재생불가능한 파일일 경우 해당 DB 레코드 삭제
+  NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+  
+  for(NSDictionary *record in allRecords){
+    NSString *localFilePath = record[@"contentPath"];
+    NSString *cid = record[@"cid"];
+    
+    if (cid == nil) {
+      continue;
+    }
+    
+    if (localFilePath && localFilePath.length>0) {
+      if ([self playOfflineAsset:localFilePath]) {
+        // 재생가능 파일
+      }else{    // 재생불가능(파일없음 혹은 파일오류 등)
+        [[DatabaseManager sharedInstance] removeDownloadedContentsId:cid];
+      }
+    }else{
+      [[DatabaseManager sharedInstance] removeDownloadedContentsId:cid];
+    }
+  }
 }
 
 
@@ -1167,6 +1189,35 @@
   }
   
   return filteredContents;
+}
+
+
+// 재생가능한 로컬파일인지 확인
+- (BOOL)playOfflineAsset:(NSString *)contentFullPath
+{
+  NSLog(@"  HLS contentFullPath : %@", contentFullPath);
+  
+  // 경로를 줄여서 저장 -> Library/ 부터.
+  NSString* fileName = [contentFullPath lastPathComponent];
+  NSString* hlsUniqFolderName = [[contentFullPath stringByDeletingLastPathComponent] lastPathComponent];
+  NSString* libraryFolderName = [[[contentFullPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] lastPathComponent];
+  NSString* assetPath = [NSString stringWithFormat:@"%@/%@/%@",libraryFolderName,hlsUniqFolderName,fileName];
+  NSLog(@"  HLS assetPath : %@", assetPath);
+  
+  NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
+  NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:assetPath];
+  NSLog(@"  assetURL absoluteString : %@", assetURL);
+  
+  AVURLAsset* asset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
+  AVAssetCache* cache = asset.assetCache;
+  
+  if (cache && [cache isPlayableOffline]) {
+    NSLog(@"  isPlayableOffline true");
+    return YES;
+  }else{
+    NSLog(@"  isPlayableOffline false");
+    return NO;
+  }
 }
 
 
