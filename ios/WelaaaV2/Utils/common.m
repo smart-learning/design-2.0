@@ -165,23 +165,6 @@
     return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject;
 }
 
-/*
-+ (BOOL) checkAquaSdkLicense
-{
-    //license check
-    NSString *licenseFile = [NSBundle.mainBundle pathForResource: @"license_velocita_ios" ofType: @"ini"];
-    
-    if ( ![AquaSDK checkLicenseKeyWithFile:licenseFile isDebugMode:YES] )
-    {
-        NSLog(@"  Aqua SDK license check failed.");
-        
-        return NO;
-    }
-    
-    return YES;
-}
-*/
-
 + (NSString *) getUUID
 {
     return [self udidUsingCFUUID];
