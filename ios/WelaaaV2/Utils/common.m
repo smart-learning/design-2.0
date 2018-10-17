@@ -916,13 +916,15 @@
                                                                                        completion : ^{ }];
     });
 }
+
++ (void) hideStatusBar
+{
+    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+}
+
++ (void) showStatusBar
+{
+    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+}
+
 @end
-
-
-
-
-
-
-
-
-

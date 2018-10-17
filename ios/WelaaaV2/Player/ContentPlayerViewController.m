@@ -62,7 +62,7 @@
 // 뷰 컨트롤러가 나타나기 직전에 항상 실행되기 때문에 해당 뷰 컨트롤러가 나타나기 직전마다 일어나는 작업들을 여기에 배치 시킬 수 있습니다.
 - (void) viewWillAppear : (BOOL) animated
 {
-    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+    [common hideStatusBar];
   
     // RN 콘텐츠 상세페이지에서 큰 재생아이콘을 탭해서 재생할 경우 Content ID가 아닌 Content Group ID를 arguments로 받아옵니다
     // 일단 history check 보다는 group의 제일 처음이 _001을 append시킵니다.
@@ -1179,7 +1179,7 @@
                                authToken : [_args objectForKey : @"token"]];
   
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
-    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES]; // Status Bar를 다시 보여줍니다.
+    [common showStatusBar];
 }
 
 #pragma mark - Selectors
@@ -1228,7 +1228,7 @@
                                       self.view.frame = self.view.bounds;
                                   }];
   
-    [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+    [common showStatusBar];
     _screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
@@ -1897,31 +1897,30 @@
     }
     else if ( [@"download-mode" isEqualToString : buttonId] )
     {
+        NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey : @"wifiDown"];
       
-      NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey : @"wifiDown"];
+        if ( [@"on" isEqualToString:wifiDown] && ![[ApiManager sharedInstance] isConnectionWifi] )
+        {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"확인"
+                                                                           message : @"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-fi에서만 다운로드가 가능합니다."
+                                                                    preferredStyle : UIAlertControllerStyleAlert];
+          
+            UIAlertAction *ok = [UIAlertAction actionWithTitle : @"닫 기"
+                                                         style : UIAlertActionStyleDefault
+                                                       handler : ^(UIAlertAction * action)
+                                                                 {
+                                                                     [alert dismissViewControllerAnimated:YES completion:nil];
+                                                                   //[[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+                                                                 }];
+            [alert addAction : ok];
+          
+            //[_contentView presentViewController:alert animated:YES completion:nil];
+          
+            return ;
+        }
       
-      if ( [@"on" isEqualToString:wifiDown] && ![[ApiManager sharedInstance] isConnectionWifi] )
-      {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"확인"
-                                                                       message : @"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-fi에서만 다운로드가 가능합니다."
-                                                                preferredStyle : UIAlertControllerStyleAlert];
-        
-        UIAlertAction *ok = [UIAlertAction actionWithTitle : @"닫 기"
-                                                     style : UIAlertActionStyleDefault
-                                                   handler : ^(UIAlertAction * action)
-                             {
-                               [alert dismissViewControllerAnimated:YES completion:nil];
-                                [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
-                             }];
-        [alert addAction : ok];
-        
-        //[_contentView presentViewController:alert animated:YES completion:nil];
-        
-        return ;
-      }
-      
-      // 2018. 9.14 ~
-      [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result){}];
+        // 2018. 9.14 ~
+        [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result){}];
     }
 }
 
@@ -2452,7 +2451,7 @@
     _miniPlayerUiView = nil;
     [[self.view viewWithTag:1] removeFromSuperview];
   //_screenMode = ContentsPlayerScreenModeMiniPlayer;
-    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:YES];
+    [common hideStatusBar];
 }
 
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view

@@ -110,6 +110,11 @@
 
 + (void) presentAlertWithTitle : (NSString *) title
                     andMessage : (NSString *) message;
+
++ (void) hideStatusBar;
+
++ (void) showStatusBar;
+
 @end
 
 
