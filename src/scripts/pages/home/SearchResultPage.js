@@ -122,6 +122,10 @@ export default class SearchResultPage extends React.Component {
     this._isMount = false;
   }
 
+  shouldComponentUpdate() {
+    return this._isMount;
+  }
+
   searchQuery = async query => {
     videoResult = await net.searchQuery('video-course', query);
     if (videoResult) {
@@ -160,7 +164,7 @@ export default class SearchResultPage extends React.Component {
             {item.title}
           </Text>
           <Text style={{ fontSize: 12, color: '#A6A6A6' }}>
-            {item.teacher.name} | {item.play_time}
+            {item.teacher ? item.teacher.name : '미상'} | {item.play_time}
           </Text>
         </View>
         <View />
