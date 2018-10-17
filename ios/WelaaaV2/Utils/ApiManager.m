@@ -17,10 +17,10 @@
     static ApiManager *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-#if APPSTORE | ADHOC
-        NSURL *baseURL = [NSURL URLWithString: BASE_DOMAIN];
-#else
+#if DEBUG
         NSURL *baseURL = [NSURL URLWithString: TEST_DOMAIN];
+#else
+        NSURL *baseURL = [NSURL URLWithString: BASE_DOMAIN];
 #endif
         sharedInstance = [[ApiManager alloc] initWithBaseURL: baseURL];
     });
@@ -134,10 +134,10 @@
 {
     if ( ![url.lowercaseString hasPrefix : @"http://"] && ![url.lowercaseString hasPrefix : @"https://"] )
     {
-#if APPSTORE | ADHOC
-        url = [NSString stringWithFormat : @"http://%@%@", BASE_DOMAIN, url];
-#else
+#if DEBUG
         url = [NSString stringWithFormat : @"http://%@%@", TEST_DOMAIN, url];
+#else
+        url = [NSString stringWithFormat : @"http://%@%@", BASE_DOMAIN, url];
 #endif
     }
     

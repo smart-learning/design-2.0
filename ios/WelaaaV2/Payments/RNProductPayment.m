@@ -20,10 +20,10 @@ RCT_EXPORT_MODULE();
     NSLog(@"  [-buyProduct:] Access Token : %@", [args objectForKey : @"token"]);       // 윌라의 엑세스 토큰.
     NSString *productCode = [args objectForKey : @"product_id"];
     NSString *paymentMode;
-#if APPSTORE | ADHOC
-    paymentMode = @"live";
-#else
+#if DEBUG
     paymentMode = @"sandbox";
+#else
+    paymentMode = @"live";
 #endif
     NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
@@ -286,10 +286,10 @@ RCT_EXPORT_MODULE();
 - (void) sendReceiptToRestore : (NSString *) receiptString
 {
     NSString *paymentMode;
-#if APPSTORE | ADHOC
-    paymentMode = @"live";
-#else
+#if DEBUG
     paymentMode = @"sandbox";
+#else
+    paymentMode = @"live";
 #endif
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   

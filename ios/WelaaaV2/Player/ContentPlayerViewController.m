@@ -574,11 +574,8 @@
     if ( !_isAudioContent )
     {
         NSString *starQueryUrl;
-  #if APPSTORE | ADHOC
-        starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", BASE_DOMAIN];
-  #else
+
         starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", TEST_DOMAIN];
-  #endif
         NSString *post = [NSString stringWithFormat : @"ckey=582"];
         NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
       
