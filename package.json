@@ -45,6 +45,7 @@
 		"react-native-fbsdk": "^0.7.0",
 		"react-native-firebase": "^4.3.8",
 		"react-native-fix-xcode-10": "rhdeck/react-native-fix-xcode-10",
+		"react-native-iamport": "^0.4.0",
 		"react-native-in-app-notification": "^2.2.0",
 		"react-native-kakao-signin": "git+https://github.com/kyejune/react-native-kakao-signin.git",
 		"react-native-localizable": "^1.0.1",

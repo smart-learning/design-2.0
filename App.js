@@ -34,6 +34,8 @@ import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
+import Playground from './src/scripts/pages/Playground';
+import PurchaseView from './src/scripts/components/PurchaseView';
 
 class Data {
   @observable
@@ -413,9 +415,13 @@ const AppDrawer = createDrawerNavigator(
     // 	screen: SampleScreen,
     // },
 
-    HomeScreen: {
-      screen: HOME_SCREEN
-    },
+	Playground: {
+	  screen: Playground,
+	},
+
+	HomeScreen: {
+	  screen: HOME_SCREEN
+	},
 
     VideoScreen: {
       screen: VideoScreen
