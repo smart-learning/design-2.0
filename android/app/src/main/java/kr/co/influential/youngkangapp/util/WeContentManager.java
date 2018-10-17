@@ -580,14 +580,23 @@ public class WeContentManager extends SQLiteOpenHelper {
     return nCount;
   }
 
-  public void updateProgress(String cid, String duration) throws Exception {
+  public void updateProgress(String cid, String duration , String type) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
 
-    String sql =
-        "UPDATE PROGRESS SET playCount= playCount+1 , duration = '" + duration
-            + "' , reg_date= datetime('now','localtime') WHERE cid='" + cid + "'";
+    String sql = "";
+
+    if(type.equals("UPDATE")){
+      sql =
+          "UPDATE PROGRESS SET duration = '" + duration
+              + "' , reg_date= datetime('now','localtime') WHERE cid='" + cid + "'";
+    }else{
+      //INSERT
+      sql =
+          "UPDATE PROGRESS SET playCount= playCount+1 , duration = '" + duration
+              + "' , reg_date= datetime('now','localtime') WHERE cid='" + cid + "'";
+    }
 
     db.execSQL(sql);
   }

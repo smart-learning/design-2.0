@@ -1,38 +1,37 @@
-import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import AuthLoadingScreen from '../auth/AuthLoadingScreen';
 import {
   NAV_OPTS_DRAWER,
   NAV_OPTS_STACK,
   NAV_OPTS_STACK_HISTORY_BACK
 } from '../../commons/nav';
-import MyInfoHome from './MyInfoHome';
-import LoginPage from '../auth/LoginPage';
-import FindPasswordPage from '../auth/FindPasswordPage';
-import SignUpLandingPage from '../auth/SignUpLandingPage';
+import globalStore from '../../commons/store';
+import AuthLoadingScreen from '../auth/AuthLoadingScreen';
 import EmailSignUpForm from '../auth/EmailSignUpForm';
+import FindPasswordPage from '../auth/FindPasswordPage';
+import LoginPage from '../auth/LoginPage';
 import Policy from '../auth/PolicyPage';
 import Privacy from '../auth/PrivacyPage';
-import LectureUsePage from './LectureUsePage';
-import LectureBuyPage from './LectureBuyPage';
+import SignUpLandingPage from '../auth/SignUpLandingPage';
+import AudioBookBuyPage from './AudioBookBuyPage';
 import AudioBookTicketPage from './AudioBookTicketPage';
 import AudioBookUsePage from './AudioBookUsePage';
-import AudioBookBuyPage from './AudioBookBuyPage';
-import DownloadContentPage from './DownloadContentPage';
-import MyLogPage from './MyLogPage';
-import SetTagPage from './SetTagPage';
 import ClipPlayListPage from './ClipPlayListPage';
-import FriendPage from './FriendPage';
-import GuideListPage from './GuideListPage';
-import InquireListPage from './InquireListPage';
-import SetAppPage from './SetAppPage';
-import GuideViewPage from './GuideViewPage';
-import InquireFormPage from './InquireFormPage';
-import InquireViewPage from './InquireViewPage';
-import globalStore from '../../commons/store';
-import UserHeartContentsPage from './UserHeartContentsPage';
+import DownloadContentPage from './DownloadContentPage';
 import EventDetailPage from './EventDetailPage';
 import EventListPage from './EventListPage';
+import FriendPage from './FriendPage';
+import GuideListPage from './GuideListPage';
+import GuideViewPage from './GuideViewPage';
+import InquireFormPage from './InquireFormPage';
+import InquireListPage from './InquireListPage';
+import InquireViewPage from './InquireViewPage';
+import LectureBuyPage from './LectureBuyPage';
+import LectureUsePage from './LectureUsePage';
+import MyInfoHome from './MyInfoHome';
+import MyLogPage from './MyLogPage';
+import SetAppPage from './SetAppPage';
+import SetTagPage from './SetTagPage';
+import UserHeartContentsPage from './UserHeartContentsPage';
 
 const MyScreens = createStackNavigator(
   {

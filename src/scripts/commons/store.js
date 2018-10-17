@@ -36,6 +36,8 @@ class Store {
 
   get accessToken() {
     if (welaaaAuth === undefined) return '';
+    
+    if (welaaaAuth === null) return '';
     return welaaaAuth.access_token;
   }
 

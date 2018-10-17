@@ -247,7 +247,7 @@ RCT_EXPORT_MODULE();
        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
        [params setObject:[NSNumber numberWithBool:true] forKey:@"complete"];
        [params setObject:[NSNumber numberWithInt:0] forKey:@"progress"];
-       if ( _hasListeners )
+       if ( self->_hasListeners )
        {
          [self sendEventWithName : @"downloadState"
                             body : params];
@@ -319,6 +319,9 @@ RCT_EXPORT_MODULE();
 {
   NSLog(@"  selectDownloadedList:resolver:rejecter:");
   
+  // 다운로드 목록 띄울 때마다 파일과 DB 간 동기화를 수행하기 위해 추가(트랙킹 안되는 파일 삭제).
+  [[FPSDownloadManager sharedInstance] synchronizeLocalFilesWithDB];
+  
   NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
   
   NSError *error;
@@ -362,8 +365,6 @@ RCT_EXPORT_MODULE();
                                                                              completion : nil];
   
 }
-
-
 
 
 #pragma mark - RCT_EXPORT

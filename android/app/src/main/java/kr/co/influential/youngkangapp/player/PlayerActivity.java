@@ -4333,7 +4333,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   //  update
                   if (ContentManager().isProgressExist(beforeCid) > 0) {
                     ContentManager()
-                        .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()));
+                        .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()) , "UPDATE");
                   //insert
                   } else {
                     ContentManager().insertProgress(beforeCid,

@@ -1,17 +1,18 @@
 
-/*
- * 추후에 지속가능한 리팩토링을 위해 다음 링크를 참조하여 클래스를 분리할 계획입니다.
- * https://github.com/akabekobeko/Examples-iOS/tree/master/VideoPlayer/VideoPlayer
- *
- * 추가적으로 깔끔하고 간결한 코드유지를 위해 최대한 AVKit의 기본 API를 사용할 계획입니다.
- * https://github.com/JaviSoto/iOS10-Runtime-Headers/blob/master/Frameworks/AVKit.framework/AVPlayerViewController.h
- *
- * 그리고 XIB/StoryBoard + Swift 를 최종적으로 지향하는 방향으로 잡고 있습니다.
- */
-
 #import "ContentPlayerViewController.h"
 
 @implementation ContentPlayerViewController
+
+//
+// RN에서 넘겨받은 arguments를 세팅합니다.
+//
+- (void) setContentData : (NSMutableDictionary *) args
+{
+    _args = args;
+    NSLog(@"  Arguments : %@", [_args description]);
+  
+    // download 일 경우 API서버와 통신하면 안됩니다.
+}
 
 // 해당 뷰컨트롤러 클래스가 생성될 때(ViewWillAppear전에 실행) 실행됩니다.
 // Low memory와같은 특별한 경우가 아니라면 딱 한번만 실행되기 때문에 초기화 할 때 사용 할 수 있습니다.
@@ -44,41 +45,13 @@
     else
         _isDownloadFile = false;
   
-    // 오디오 UI
-    _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
-    _audioUiView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview : _audioUiView];
-  
-    _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
-    [_audioUiView addSubview : _backgroundImageView];
-  
-    UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
-    _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
-                                                                          ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
-                                                                          headphoneImage.size.width, headphoneImage.size.height)];
-    _headphoneImageView.image = headphoneImage;
-    [_audioUiView addSubview : _headphoneImageView];
-    _audioUiView.hidden = !_isAudioMode;
-
-    // contentView 구성.
-    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
-    [_contentView setBackgroundColor : [UIColor blackColor]];
-    [self.view addSubview : _contentView];
-  
-    _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
-    _hideAndShowButton.frame = _contentView.bounds;
-    [_hideAndShowButton addTarget : self
-                           action : @selector(pressedHideAndShowButton)
-                 forControlEvents : UIControlEventTouchUpInside];
-    _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
-    [_contentView addSubview : _hideAndShowButton];
+    [self drawContentView];
   
     _fpsDownloadManager = [FPSDownloadManager sharedInstance];
     _fpsDownloadManager.delegateFpsMsg = self;
     _fpsDownloadManager.delegateFpsDownload = self;
   
     // 어플리케이션이 백그라운드로 들어갔을 때 재생을 멈추지 않게 하기 위한 처리. 2018.8.21
-    // 다음 콘텐츠를 재생할때에도 해당 노티를 넘겨주어야 합니다.
     [[NSNotificationCenter defaultCenter] addObserver : self
                                              selector : @selector(applicationDidEnterBackground:)
                                                  name : UIApplicationDidEnterBackgroundNotification
@@ -222,16 +195,7 @@
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
     }
   
-    NSString *uriString = [_args objectForKey : @"uri"];
-    NSURL *contentUrl = [ NSURL URLWithString : uriString ]; // CONTENT_PATH
-    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-  
-    // 2. Set parameters required for FPS content playback. FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                           userId : [_args objectForKey : @"userId"]
-                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                  liveKeyRotation : NO              ];
+    [self fpsSetUrlAsset];
   
     _playerItem = [AVPlayerItem playerItemWithAsset : _urlAsset];
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
@@ -291,7 +255,7 @@
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
   
-    [self setupNowPlayingInfoCenter];
+    [self setupNowPlayingInfoCenter]; // 시간값을 파라미터로 받아서 Pause또는Play시에 시간값을 반영하도록 만듭시다!
     
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
@@ -340,21 +304,23 @@
     [self resignFirstResponder];
 }
 
-//
-// RN에서 넘겨받은 arguments를 세팅합니다.
-//
-- (void) setContentData : (NSMutableDictionary *) args
-{
-    _args = args;
-    NSLog(@"  Arguments : %@", [_args description]);
-  
-    // download 일 경우 API서버와 통신하면 안됩니다.
-}
-
 - (void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) fpsSetUrlAsset
+{
+    NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
+    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
+  
+    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+    [_fpsSDK prepareWithUrlAsset : _urlAsset
+                          userId : [_args objectForKey : @"userId"]
+                       contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                      optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                 liveKeyRotation : NO];
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -511,6 +477,38 @@
 }
 
 #pragma mark - Drawing Player UI components
+
+- (void) drawContentView
+{
+    // 오디오 UI
+    _audioUiView = [[UIView alloc] initWithFrame : self.view.bounds];
+    _audioUiView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview : _audioUiView];
+  
+    _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
+    [_audioUiView addSubview : _backgroundImageView];
+  
+    UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
+    _headphoneImageView = [[UIImageView alloc] initWithFrame : CGRectMake((_audioUiView.frame.size.width - headphoneImage.size.width) / 2.f,
+                                                                          ((_audioUiView.frame.size.height - headphoneImage.size.height) / 2.f) - 50.f,
+                                                                          headphoneImage.size.width, headphoneImage.size.height)];
+    _headphoneImageView.image = headphoneImage;
+    [_audioUiView addSubview : _headphoneImageView];
+    _audioUiView.hidden = !_isAudioMode;
+  
+    // contentView 구성.
+    _contentView = [[UIView alloc] initWithFrame : self.view.bounds];
+    [_contentView setBackgroundColor : [UIColor blackColor]];
+    [self.view addSubview : _contentView];
+  
+    _hideAndShowButton = [UIButton buttonWithType : UIButtonTypeCustom];
+    _hideAndShowButton.frame = _contentView.bounds;
+    [_hideAndShowButton addTarget : self
+                           action : @selector(pressedHideAndShowButton)
+                 forControlEvents : UIControlEventTouchUpInside];
+    _isPlaybackContollerHidden = NO;  // 플레이어 시작과 동시에 모든 재생 컨트롤러 UI는 표시 상태입니다.
+    [_contentView addSubview : _hideAndShowButton];
+}
 
 - (void) drawPlayerControlHeader
 {
@@ -713,7 +711,11 @@
   
     [_bottomView addSubview : _slider];
   
-    _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-50.f, self.view.frame.size.width, 50.f)];
+    if ( [common hasNotch] )
+        _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-41.f, self.view.frame.size.width, 50.f)];
+    else
+        _menuItemView = [[UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMinY(_bottomView.frame)-50.f, self.view.frame.size.width, 50.f)];
+  
     _menuItemView.backgroundColor = UIColorFromRGB(0x272230, 0.5f);
     [_contentView addSubview : _menuItemView];
   
@@ -731,30 +733,27 @@
     CGFloat buttonOffsetY = 0;
   
     {
-      _autoPlayButton = [[ContentPlayerButton alloc] initWithId : @"autoplay-mode"
-                                                    normalImage : @"icon_autoplay_off"
-                                               highlightedImage : @"icon_autoplay"
-                                                 maxActiveCount : 2];
-      _autoPlayButton.frame = CGRectMake(buttonOffsetX, buttonOffsetY, buttonWidth, buttonWidth);
-      _autoPlayButton.delegate = self;
-      [_menuItemView addSubview : _autoPlayButton];
+        _autoPlayButton = [[ContentPlayerButton alloc] initWithId : @"autoplay-mode"
+                                                      normalImage : @"icon_autoplay_off"
+                                                 highlightedImage : @"icon_autoplay"
+                                                   maxActiveCount : 2];
+        _autoPlayButton.frame = CGRectMake(buttonOffsetX, buttonOffsetY, buttonWidth, buttonWidth);
+        _autoPlayButton.delegate = self;
+        [_menuItemView addSubview : _autoPlayButton];
       
-      NSString *autoPlaySetup = [common getUserSettingValueWithKey : @"autoplay_enable"];
+        NSString *autoPlaySetup = [common getUserSettingValueWithKey : @"autoplay_enable"];
       
-      if ( nullStr(autoPlaySetup) )
-      {
-          [common setUserSettingValueWithKey : @"autoplay_enable" value : @"Y"];
-          autoPlaySetup = @"Y";
-      }
+        if ( nullStr(autoPlaySetup) )
+        {
+            [common setUserSettingValueWithKey : @"autoplay_enable" value : @"Y"];
+            autoPlaySetup = @"Y";
+        }
       
-      BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
-
-    //if ( !_isAuthor )
-    //    isAutoPlay = NO;
+        BOOL isAutoPlay = [@"Y" isEqualToString : autoPlaySetup];
       
-      [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
+        [_autoPlayButton setStatus : isAutoPlay ? 1 : 0];
       
-      buttonOffsetX = buttonOffsetX + buttonWidth;
+        buttonOffsetX = buttonOffsetX + buttonWidth;
     }
   
     if ( !_isAudioContent )
@@ -916,21 +915,21 @@
                                                                     {
                                                                         if ( self.isDownloadFile )
                                                                         {
-                                                                            _networkStatusLabel.text = @"다운로드 재생";
+                                                                            self->_networkStatusLabel.text = @"다운로드 재생";
                                                                         }
                                                                         else
                                                                         {
                                                                             if ( status == 0 )
                                                                             {
-                                                                                _networkStatusLabel.text = @"인터넷 연결안됨";
+                                                                                self->_networkStatusLabel.text = @"인터넷 연결안됨";
                                                                             }
                                                                             else if ( status == 1 )
                                                                             {
-                                                                                _networkStatusLabel.text = @"LTE/3G 재생";
+                                                                                self->_networkStatusLabel.text = @"LTE/3G 재생";
                                                                             }
                                                                             else if ( status == 2 )
                                                                             {
-                                                                                _networkStatusLabel.text = @"Wi-Fi 재생";
+                                                                                self->_networkStatusLabel.text = @"Wi-Fi 재생";
                                                                             }
                                                                         }
                                                                     }];
@@ -971,15 +970,15 @@
         [_backgroundImageView sd_setImageWithURL : [NSURL URLWithString: url]
                                        completed : ^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL)
                                                    {
-                                                       if ( self.view.frame.size.width > self.view.frame.size.height && _backgroundImageView.image )
+                                                       if ( self.view.frame.size.width > self.view.frame.size.height && self->_backgroundImageView.image )
                                                        {
-                                                           CGFloat width = [common getRatioWidth : _backgroundImageView.image.size
+                                                           CGFloat width = [common getRatioWidth : self->_backgroundImageView.image.size
                                                                                     screenHeight : self.view.frame.size.height];
                                                          
-                                                           CGFloat height = [common getRatioHeight : _backgroundImageView.image.size
+                                                           CGFloat height = [common getRatioHeight : self->_backgroundImageView.image.size
                                                                                        screenWidth : width];
                                                          
-                                                           _backgroundImageView.frame = CGRectMake((self.view.frame.size.width - width)/2.f, 0, width, height);
+                                                           self->_backgroundImageView.frame = CGRectMake((self.view.frame.size.width - width)/2.f, 0, width, height);
                                                        }
                                                    }];
     }
@@ -1066,16 +1065,7 @@
         return ;
     }
   
-    NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-    _urlAsset = [ [AVURLAsset alloc] initWithURL : contentUrl
-                                         options : nil       ];
-  
-    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                           userId : [_args objectForKey : @"userId"]
-                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                  liveKeyRotation : NO              ];
+    [self fpsSetUrlAsset];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
@@ -1267,20 +1257,20 @@
                                       handler : ^(UIAlertAction *action)
                                                 {
                                                     // 별점주기 팝업을 띄운 후 별점을 주지 않으면 별점만 초기화하고 그냥 닫습니다.
-                                                    if ( nil == _currentStar || [_currentStar isEqualToString : @"0"] || [_currentStar isEqualToString : @""] )
+                                                    if ( nil == self->_currentStar || [self->_currentStar isEqualToString : @"0"] || [self->_currentStar isEqualToString : @""] )
                                                     {
-                                                        _currentStar = @"";
+                                                        self->_currentStar = @"";
                                                     }
                                                     else
                                                     {
-                                                        NSLog(@"  [pressedRateStarButton] 최종별점 : %@", _currentStar);
-                                                        NSString *myStarStr = [NSString stringWithFormat : @" %@%@", _currentStar, @".0"];
+                                                        NSLog(@"  [pressedRateStarButton] 최종별점 : %@", self->_currentStar);
+                                                        NSString *myStarStr = [NSString stringWithFormat : @" %@%@", self->_currentStar, @".0"];
                                                       
-                                                        _currentStar = @"";   // 다음 강의 평가를 위해 별점 초기화. 171207 김태현
-                                                        [_rateStarButton setTitle : myStarStr
+                                                        self->_currentStar = @"";   // 다음 강의 평가를 위해 별점 초기화. 171207 김태현
+                                                        [self->_rateStarButton setTitle : myStarStr
                                                                          forState : UIControlStateNormal];
-                                                        _rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
-                                                        _rateStarButton.userInteractionEnabled = NO; // 탑뷰 내 별점주기버튼 비활성화
+                                                        self->_rateStarButton.layer.borderColor = [UIColor clearColor].CGColor;
+                                                        self->_rateStarButton.userInteractionEnabled = NO; // 탑뷰 내 별점주기버튼 비활성화
                                                     }
                                                 }];
   
@@ -1684,12 +1674,12 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      _topView.alpha = hidden ? 0.f : 1.f;
-                                      _bottomView.alpha = hidden ? 0.f : 1.f;
-                                      _menuItemView.alpha = hidden ? 0.f : 1.f;
-                                      _menuItemTopLineView.alpha = hidden ? 0.f : 1.f;
-                                      _menuItemBottomLineView.alpha = hidden ? 0.f : 1.f;
-                                      _controlBarView.alpha = hidden ? 0.f : 1.f;
+                                      self->_topView.alpha = hidden ? 0.f : 1.f;
+                                      self->_bottomView.alpha = hidden ? 0.f : 1.f;
+                                      self->_menuItemView.alpha = hidden ? 0.f : 1.f;
+                                      self->_menuItemTopLineView.alpha = hidden ? 0.f : 1.f;
+                                      self->_menuItemBottomLineView.alpha = hidden ? 0.f : 1.f;
+                                      self->_controlBarView.alpha = hidden ? 0.f : 1.f;
                        
                                       if ( !hidden )
                                       {
@@ -1698,12 +1688,12 @@
                                   }
                      completion : ^(BOOL finished)
                                   {
-                                      _topView.hidden = hidden;
-                                      _bottomView.hidden = hidden;
-                                      _menuItemView.hidden = hidden;
-                                      _menuItemTopLineView.hidden = hidden;
-                                      _menuItemBottomLineView.hidden = hidden;
-                                      _controlBarView.hidden = hidden;
+                                      self->_topView.hidden = hidden;
+                                      self->_bottomView.hidden = hidden;
+                                      self->_menuItemView.hidden = hidden;
+                                      self->_menuItemTopLineView.hidden = hidden;
+                                      self->_menuItemBottomLineView.hidden = hidden;
+                                      self->_controlBarView.hidden = hidden;
                                     
                                       self.view.userInteractionEnabled = YES;
        
@@ -1747,7 +1737,7 @@
                                                                [self setSeekbarCurrentValue : playTime];
                                                                [self setCurrentTime : playTime
                                                                         forceChange : NO];
-                                                               [_miniPlayerUiView setSeekbarCurrentValue : playTime];
+                                                               [self->_miniPlayerUiView setSeekbarCurrentValue : playTime];
                                                             
                                                               /*
                                                                * 진도체크는 추후에 구현합니다.
@@ -1929,25 +1919,6 @@
         
         return ;
       }
-      /* 기존 사용 코드(윌라 1.0)
-       [[DownloadManager sharedInstance] insertDownloadWithContentKey: self.ckey];
-       self.isDownloading = YES;
-       [self setTouchEnable: _downloadButton
-       isLock: YES];*/
-      
-      // 2018.9.6 ~
-      /*
-       Clip* clipToDownload = [[Clip alloc] initWithTitle:[_args objectForKey:@"name"]
-       memo:@""
-       cid:[_args objectForKey:@"cid"]
-       playTime:@""
-       index:0];
-       [_fpsDownloadManager startDownload:clipToDownload completion:^(NSString* downloadMsg){
-       if(downloadMsg){
-       [self showToast:downloadMsg]; // "다운로드를 시작합니다." 등.
-       }
-       }];
-       */
       
       // 2018. 9.14 ~
       [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result){}];
@@ -2340,24 +2311,24 @@
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
                      animations : ^{
-                                      _topView.alpha = topViewAlpha;
-                                      _topView.frame = topViewFrame;
+                                      self->_topView.alpha = topViewAlpha;
+                                      self->_topView.frame = topViewFrame;
                        
-                                      _scriptView.alpha = scriptViewAlpha;
-                                      _scriptView.frame = scriptViewFrame;
+                                      self->_scriptView.alpha = scriptViewAlpha;
+                                      self->_scriptView.frame = scriptViewFrame;
                        
-                                      _menuItemView.alpha = menuViewAlpha;
-                                      _menuItemView.frame = menuViewFrame;
+                                      self->_menuItemView.alpha = menuViewAlpha;
+                                      self->_menuItemView.frame = menuViewFrame;
                        
-                                      _controlBarView.alpha = controlViewAlpha;
-                                      _controlBarView.frame = controlViewFrame;
+                                      self->_controlBarView.alpha = controlViewAlpha;
+                                      self->_controlBarView.frame = controlViewFrame;
                                   }
                      completion : ^(BOOL finished)
                                   {
-                                      _topView.hidden = (topViewAlpha == 0.f);
-                                      _scriptView.hidden = (scriptViewAlpha == 0.f);
-                                      _menuItemView.hidden = (menuViewAlpha == 0.f);
-                                      _controlBarView.hidden = (controlViewAlpha == 0.f);
+                                      self->_topView.hidden = (topViewAlpha == 0.f);
+                                      self->_scriptView.hidden = (scriptViewAlpha == 0.f);
+                                      self->_menuItemView.hidden = (menuViewAlpha == 0.f);
+                                      self->_controlBarView.hidden = (controlViewAlpha == 0.f);
                                   }];
 }
 - (void) setPositionScriptToHideView : (BOOL) hidden
@@ -2373,7 +2344,7 @@
                                   delay : 0
                                 options : UIViewAnimationOptionAllowUserInteraction
                              animations : ^{
-                                              _scriptView.frame = frame;
+                                              self->_scriptView.frame = frame;
                                           }
                              completion : ^(BOOL finished) {} ];
         }
@@ -2569,38 +2540,30 @@
                                                 style : UIAlertActionStyleDefault
                                               handler : ^(UIAlertAction * action)
                                                         {
-                                                            _isDownloadFile = YES;
+                                                            self->_isDownloadFile = YES;
                                                             NSTimeInterval cTime = [self getCurrentPlaybackTime];
                                                             NSTimeInterval tTime = [self getDuration];
                                                           
                                                             [alert dismissViewControllerAnimated:YES completion:nil];
                                                           
-                                                            [_args setObject : assetURL
+                                                            [self->_args setObject : assetURL
                                                                       forKey : @"uri"];   // 현재 스트리밍하고 있는 콘텐츠와 cid가 같으므로 생략해도 됩니다.
                                                           
-                                                            NSURL *contentUrl = [ NSURL URLWithString : [_args objectForKey : @"uri"] ];
-                                                            _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
+                                                            [self fpsSetUrlAsset];
                                                           
-                                                            // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-                                                            [ _fpsSDK prepareWithUrlAsset : _urlAsset
-                                                                                   userId : [_args objectForKey : @"userId"]
-                                                                                contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                                                                               optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                                                                          liveKeyRotation : NO              ];
-                                                          
-                                                            _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
-                                                            [_player replaceCurrentItemWithPlayerItem : _playerItem];
+                                                            self->_playerItem = [ AVPlayerItem playerItemWithAsset : self->_urlAsset ];
+                                                            [self->_player replaceCurrentItemWithPlayerItem : self->_playerItem];
                                                           
                                                             CMTime newTime = CMTimeMakeWithSeconds(cTime, tTime);
-                                                            [_player seekToTime : newTime];//playImmediatelyAtRate
+                                                            [self->_player seekToTime : newTime];//playImmediatelyAtRate
                                                             [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
                                                           
-                                                            _networkStatusLabel.text = @"다운로드 재생";
+                                                            self->_networkStatusLabel.text = @"다운로드 재생";
                                                           
                                                             [[NSNotificationCenter defaultCenter] addObserver : self
                                                                                                      selector : @selector(videoPlayBackDidFinish:)
                                                                                                          name : AVPlayerItemDidPlayToEndTimeNotification
-                                                                                                       object : [_player currentItem]];
+                                                                                                       object : [self->_player currentItem]];
                                                        }];
   
     UIAlertAction *n = [UIAlertAction actionWithTitle : @"아니오"
@@ -2735,11 +2698,11 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*
-         [songInfo setObject : @(0.0)
-                      forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
-         [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
-                      forKey : MPMediaItemPropertyPlaybackDuration];
-         */
+        [songInfo setObject : @(0.0)
+                     forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];*/
+        [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
+                     forKey : MPMediaItemPropertyPlaybackDuration];
+         
         [songInfo setObject : albumArt
                      forKey : MPMediaItemPropertyArtwork];
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo : songInfo];

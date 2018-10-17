@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  AsyncStorage,
   View
 } from 'react-native';
 import net from '../../commons/net';
@@ -224,23 +225,59 @@ class HomePage extends React.Component {
     }
   };
 
-  componentDidMount() {
-    // if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
+  componentDidMount = async () =>{
 
-    let windowWidth = Dimensions.get('window').width;
-    let windowHeight = Dimensions.get('window').height;
+    if(this.props.navigation.isFocused()){
+      console.log('componentDidMount ', 'navigation isFocused')
+      let windowWidth = Dimensions.get('window').width;
+      let windowHeight = Dimensions.get('window').height;
 
-    this.store.windowWidth = windowWidth;
-    this.store.windowHeight = windowHeight;
-    this.store.slideHeight = windowWidth * 0.347;
-    this.store.clipRankContentSize = windowWidth - 85;
+      this.store.windowWidth = windowWidth;
+      this.store.windowHeight = windowHeight;
+      this.store.slideHeight = windowWidth * 0.347;
+      this.store.clipRankContentSize = windowWidth - 85;
 
-    try {
-      this.getData();
-    } catch (error) {
-      console.log(error);
+      try {
+        this.getData();
+      } catch (error) {
+        console.log(error);
+      }
     }
+    
+    
+    if(globalStore.welaaaAuth){      
+      let windowWidth = Dimensions.get('window').width;
+      let windowHeight = Dimensions.get('window').height;
 
+      this.store.windowWidth = windowWidth;
+      this.store.windowHeight = windowHeight;
+      this.store.slideHeight = windowWidth * 0.347;
+      this.store.clipRankContentSize = windowWidth - 85;
+
+      try {
+        this.getData();
+      } catch (error) {
+        console.log(error);
+      }
+
+    }else{
+      let value = await AsyncStorage.getItem('isAppFirstLoad');
+      
+      if(value===null){
+        value = true;
+      }      
+
+      if(value === true){      
+        // Login 은 되고 .
+        // SignUpPage 는 안되고 . 
+        // 'change screen:', 'HomeScreen', '-->', 'SignUpPage'
+        // 'change screen:', 'SignUpPage', '-->', 'Login'        
+        this.props.navigation.navigate('SignUpPage');   
+             
+      }else{        
+        this.props.navigation.navigate('Login');
+      }
+    }
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -353,7 +390,10 @@ class HomePage extends React.Component {
             </View>
           </View>
 
-          <AdvertisingSection />
+          {globalStore.welaaaAuth && (
+            <AdvertisingSection />
+          )}          
+          
         </SafeAreaView>
       </View>
     );

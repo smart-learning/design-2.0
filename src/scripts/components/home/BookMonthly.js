@@ -98,8 +98,8 @@ class BookMonthly extends React.Component {
             <Swiper
               showsButtons={false}
               height={520}
-			  dotColor={'#9bcdba'}
-			  activeDotColor={CommonStyles.COLOR_PRIMARY}
+              dotColor={'#9bcdba'}
+              activeDotColor={CommonStyles.COLOR_PRIMARY}
               paginationStyle={{ bottom: 10 }}
             >
               {itemData.map((item, key) => {
@@ -114,39 +114,45 @@ class BookMonthly extends React.Component {
                         이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
                       </Text>
                     </View>
-                    {(globalStore.currentMembership.type === 2 ||
-                      globalStore.currentMembership.type === 4) && (
-                      <View>
-                        <TouchableOpacity
-                          activeOpacity={0.9}
-                          onPress={() =>
-                            this.props.navigation.navigate('AuthCheck', {
-                              requestScreenName: 'AudioBookTicketPage',
-                              title: '내 오디오북 이용권'
-                            })
-                          }
-                        >
-                          <View style={styles.couponContainer}>
-                            <View style={styles.coupon} borderRadius={20}>
-                              <Image
-                                source={IcHeadphone}
-                                style={styles.couponIcon}
-                              />
-                              <Text style={styles.couponText}>
-                                보유한 오디오북 이용권
-                                <Text style={styles.couponCountText}>
-                                  {' '}
-                                  {globalStore.voucherStatus !== null
-                                    ? globalStore.voucherStatus.total
-                                    : '0'}
-                                  개
+
+                    {(globalStore.currentMembership !== undefined) && (
+
+                      (globalStore.currentMembership.type === 2 ||
+                        globalStore.currentMembership.type === 4) && (
+                        <View>
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              this.props.navigation.navigate('AuthCheck', {
+                                requestScreenName: 'AudioBookTicketPage',
+                                title: '내 오디오북 이용권'
+                              })
+                            }
+                          >
+                            <View style={styles.couponContainer}>
+                              <View style={styles.coupon} borderRadius={20}>
+                                <Image
+                                  source={IcHeadphone}
+                                  style={styles.couponIcon}
+                                />
+                                <Text style={styles.couponText}>
+                                  보유한 오디오북 이용권
+            <Text style={styles.couponCountText}>
+                                    {' '}
+                                    {globalStore.voucherStatus !== null
+                                      ? globalStore.voucherStatus.total
+                                      : '0'}
+                                    개
+            </Text>
                                 </Text>
-                              </Text>
+                              </View>
                             </View>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
+                          </TouchableOpacity>
+                        </View>
+                      )
                     )}
+
+                    {}
                     <View style={styles.bookItemContainer}>
                       <TouchableOpacity
                         activeOpacity={0.9}

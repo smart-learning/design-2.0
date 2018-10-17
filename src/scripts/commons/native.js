@@ -29,6 +29,16 @@ export default {
     ) {
       Alert.alert('로그인 후 이용할 수 있습니다.');
 
+      // Works on both iOS and Android
+      // Alert.alert(
+      //   '로그인 후 이용할 수 있습니다.'
+      //   [        
+      //     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+      //     { text: 'OK', onPress: () => console.log('OK Pressed') }
+      //   ],
+      //   { cancelable: false }
+      // )
+
       return true;
     }
 

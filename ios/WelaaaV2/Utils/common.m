@@ -165,23 +165,6 @@
     return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject;
 }
 
-/*
-+ (BOOL) checkAquaSdkLicense
-{
-    //license check
-    NSString *licenseFile = [NSBundle.mainBundle pathForResource: @"license_velocita_ios" ofType: @"ini"];
-    
-    if ( ![AquaSDK checkLicenseKeyWithFile:licenseFile isDebugMode:YES] )
-    {
-        NSLog(@"  Aqua SDK license check failed.");
-        
-        return NO;
-    }
-    
-    return YES;
-}
-*/
-
 + (NSString *) getUUID
 {
     return [self udidUsingCFUUID];
@@ -912,6 +895,27 @@
     // ipsec0 : 10.8.0.61 (VPN)
 }
 
++ (void) presentAlertWithTitle : (NSString *) title
+                    andMessage : (NSString *) message
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController *alertController;
+        alertController = [UIAlertController alertControllerWithTitle : title
+                                                              message : message
+                                                       preferredStyle : UIAlertControllerStyleAlert];
+      
+        [alertController addAction : [UIAlertAction actionWithTitle : @"확인"
+                                                              style : UIAlertActionStyleDefault
+                                                            handler : ^(UIAlertAction * _Nonnull action)
+                                                                      {
+                                                                        //
+                                                                      }]];
+      
+        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController : alertController
+                                                                                         animated : YES
+                                                                                       completion : ^{ }];
+    });
+}
 @end
 
 

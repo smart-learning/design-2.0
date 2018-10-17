@@ -1,16 +1,21 @@
-import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import HomePage from './HomePage';
-import SampleSubScreen2 from '../sample/SampleSubScreen2';
 import {
-  NAV_OPTS_MAIN,
-  NAV_OPTS_DRAWER,
   NAV_OPTS_COMMON,
-  NAV_OPTS_STACK_HISTORY_BACK,
-  NAV_OPTS_STACK
+  NAV_OPTS_DRAWER,
+  NAV_OPTS_MAIN,
+  NAV_OPTS_STACK,
+  NAV_OPTS_STACK_HISTORY_BACK
 } from '../../commons/nav';
-import HomeSeriesPage from './HomeSeriesPage';
 import AudioBookInfoPage from '../audio/AudioBookInfoPage';
+import EmailSignUpForm from '../auth/EmailSignUpForm';
+import LoginPage from '../auth/LoginPage';
+import Policy from '../auth/PolicyPage';
+import Privacy from '../auth/PrivacyPage';
+import SignUpLandingPage from '../auth/SignUpLandingPage';
+import SampleSubScreen2 from '../sample/SampleSubScreen2';
+import HomePage from './HomePage';
+import HomeSeriesPage from './HomeSeriesPage';
+import SearchResultPage from './SearchResultPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -32,6 +37,37 @@ const HomeScreen = createStackNavigator(
     HomeScreen2: {
       screen: SampleSubScreen2,
       navigationOptions: NAV_OPTS_MAIN // 로고없이 서브타이틀과 검색버튼을 가질 페이지용 헤더 설정
+    },
+
+    SearchResultPage: {
+      screen: SearchResultPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
+    },
+
+    SignUpPage: {
+      screen: SignUpLandingPage
+    },
+
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
+    },
+
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false
+      }
+    },
+
+    PrivacyPage: {
+      screen: Privacy
+      // navigationOptions: NAV_OPTS_STACK,
+    },
+
+    PolicyPage: {
+      screen: Policy
+      // navigationOptions: NAV_OPTS_STACK,
     }
   },
 

@@ -114,6 +114,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 }
 
 #pragma mark - Open URL
+/*
 - (BOOL) application : (UIApplication *) application
              openURL : (NSURL *) url
    sourceApplication : (NSString *) sourceApplication
@@ -126,7 +127,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
   
     return YES;
 }
-
+*/
 - (BOOL) application : (UIApplication *) application
              openURL : (NSURL *) url
              options : (NSDictionary<UIApplicationOpenURLOptionsKey, id> *) options
@@ -198,6 +199,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 //
 // Start receive message
 //
+/*
 - (void)         application : (UIApplication *) application
 didReceiveRemoteNotification : (NSDictionary *) userInfo
 {
@@ -216,7 +218,7 @@ didReceiveRemoteNotification : (NSDictionary *) userInfo
   
     // Print full message.
     NSLog(@"  %@", userInfo);
-}
+}*/
 - (void)         application : (UIApplication *) application
 didReceiveRemoteNotification : (NSDictionary *) userInfo
       fetchCompletionHandler : (void (^) (UIBackgroundFetchResult)) completionHandler
