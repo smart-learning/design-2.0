@@ -321,8 +321,7 @@ class App extends React.Component {
     nav.parseDeepLink(event.url);
   };
 
-  render() {
-    console.log('changeInitialRoute:', store.initialRoute);
+  render() {    
 
     return (
       <View style={{ flex: 1 }}>
