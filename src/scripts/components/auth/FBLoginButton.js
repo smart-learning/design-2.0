@@ -7,17 +7,18 @@ import {
 	Image,
 	Alert,
 } from "react-native";
-import {AccessToken, LoginManager} from "react-native-fbsdk";
+import { AccessToken, LoginManager } from "react-native-fbsdk";
 import icFb from '../../../images/ic-fb.png';
 import icFbBox from '../../../images/ic-fb-box.png';
+import {AppEventsLogger} from 'react-native-fbsdk';
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	FbButtonWrap: {
 		width: '100%',
 	},
-} );
+});
 
-const loginStyles = StyleSheet.create( {
+const loginStyles = StyleSheet.create({
 	FbButton: {
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -38,9 +39,9 @@ const loginStyles = StyleSheet.create( {
 		fontWeight: 'bold',
 		color: '#ffffff',
 	}
-} );
+});
 
-const landingStyles = StyleSheet.create( {
+const landingStyles = StyleSheet.create({
 	FbButton: {
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -60,73 +61,75 @@ const landingStyles = StyleSheet.create( {
 		fontWeight: 'bold',
 		color: '#ffffff',
 	}
-} );
+});
 class FBLoginButton extends Component {
 
 	state = {
 		loginButtonDisabled: false,
 	}
 
-	handleFacebookLogin = ()=> {
+	handleFacebookLogin = () => {
 		this.setState({ loginButtonDisabled: true })
 		LoginManager.logOut()
 		LoginManager.logInWithReadPermissions([''])
-			.then( result=>{
-				console.log( result );
+			.then(result => {
+				console.log(result);
 				if (result.isCancelled) {
 					Alert.alert('알림', '로그인이 취소 되었습니다.')
 				} else {
-					console.log( 'Login Passsed form Facebook');
+					console.log('Login Passsed form Facebook');
 					AccessToken.getCurrentAccessToken().then(
-						( data ) => {
+						(data) => {
 							//alert( data.accessToken.toString() )
-							this.props.onAccess( data.accessToken.toString(), () => {
+							// 페이스북 가입 완료된 상태 
+							AppEventsLogger.logEvent('WELAAARN_FACEBOOK_SIGN_UP');
+							this.props.onAccess(data.accessToken.toString(), () => {
 								this.setState({ loginButtonDisabled: false })
-							} );
+							});
 						}
 					)
 				}
 			})
-			.catch( error =>{
+			.catch(error => {
 				this.setState({ loginButtonDisabled: false })
-				alert( error );
+				alert(error);
 			});
 	}
 
-    render() {
-        return <TouchableOpacity
+	render() {
+		return <TouchableOpacity
 			activeOpacity={0.9}
-			onPress={ this.handleFacebookLogin }
+			onPress={this.handleFacebookLogin}
 			disabled={this.state.loginButtonDisabled}
-			style={ styles.FbButtonWrap }
+			style={styles.FbButtonWrap}
 		>
 			{this.props.type === 'login' &&
-			<View style={ loginStyles.FbButton } borderRadius={4}>
-				<Image source={ icFb } style={ loginStyles.FbImage }/>
-				<Text style={ loginStyles.FbText }>
-					{this.state.loginButtonDisabled
-						? '로그인 중'
-						: 'Facebook 계정으로' }
-				</Text>
-			</View>
+				<View style={loginStyles.FbButton} borderRadius={4}>
+					<Image source={icFb} style={loginStyles.FbImage} />
+					<Text style={loginStyles.FbText}>
+						{this.state.loginButtonDisabled
+							? '로그인 중'
+							: 'Facebook 계정으로'}
+					</Text>
+				</View>
 			}
 			{this.props.type === 'landing' &&
-			<View style={ landingStyles.FbButton }
-				  borderWidth={1}
-				  borderStyle={'solid'}
-				  borderColor={'#ffffff'}
-				  borderRadius={4}
-				  >
-				<Image source={ icFbBox } style={ landingStyles.FbImage }/>
-				<Text style={ landingStyles.FbText }>
-					{this.state.loginButtonDisabled
-						? '로그인 중'
-						: '페이스북 계정으로' }
-				</Text>
-			</View>
+				<View style={landingStyles.FbButton}
+					borderWidth={1}
+					borderStyle={'solid'}
+					borderColor={'#ffffff'}
+					borderRadius={4}
+				>
+					<Image source={icFbBox} style={landingStyles.FbImage} />
+					<Text style={landingStyles.FbText}>
+						{this.state.loginButtonDisabled
+							? '로그인 중'
+							: '페이스북 계정으로'}
+					</Text>
+				</View>
 			}
-            </TouchableOpacity>;
-    }
+		</TouchableOpacity>;
+	}
 }
 
 
