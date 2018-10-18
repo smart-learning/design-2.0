@@ -18,7 +18,7 @@ import {observable} from "mobx";
 import BulletBoxCheck from "../../../images/ic-checkbox.png"
 import BulletBoxChecked from "../../../images/ic-checkbox-checked.png"
 import globalStore from "../../commons/store";
-
+import {AppEventsLogger} from 'react-native-fbsdk';
 
 const productItem = {
 	campus: {
@@ -304,6 +304,8 @@ class MembershipFormPage extends React.Component {
 			if (data && data.membership)
 				globalStore.currentMembership = data.membership
 			this.setState({ submitButtonDisabled: false })
+			// 카카오톡 회원 가입이 완료된 상태 
+			AppEventsLogger.logEvent('WELAAARN_MEMBERSHIP_REGISTER_'+globalStore.currentMembership); 
 			this.props.navigation.popToTop()
 			this.props.navigation.navigate('MembershipScreen')
 		} catch(e) {

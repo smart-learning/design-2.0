@@ -141,7 +141,7 @@ class LoginPage extends React.Component {
         store.socialType = email;
         store.welaaaAuth = data;
         navigation.navigate(
-          navigation.getParam('requestScreenName', 'MyInfoHome')
+          navigation.getParam('requestScreenName', 'HomeScreen')
         );
 
         // 로그인이 완료 되면 loginCompleted를 보내 App.js의
