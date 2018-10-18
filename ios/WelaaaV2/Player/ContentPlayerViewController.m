@@ -66,6 +66,7 @@
   
     // RN 콘텐츠 상세페이지에서 큰 재생아이콘을 탭해서 재생할 경우 Content ID가 아닌 Content Group ID를 arguments로 받아옵니다
     // 일단 history check 보다는 group의 제일 처음이 _001을 append시킵니다.
+    // Netflix나 다른 동영상 서비스처럼 재생 이력을 JSON에서 읽어와서 최근 재생시간부터 재생합니다.
     NSString *str = @"";
     str = [_args objectForKey : @"cid"];
     NSRange strRange;
@@ -292,6 +293,20 @@
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
+  
+    // player is playing
+  /*
+    if ( _player.rate != 0 && _player.error == nil )
+    {
+        AVAssetTrack *track = [[_player.currentItem.asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
+        CMTime currentTime = _player.currentItem.currentTime;
+        CVPixelBufferRef buffer = [_videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:nil];
+      
+        NSInteger width = CVPixelBufferGetWidth(buffer);
+        NSInteger height = CVPixelBufferGetHeight(buffer);
+        NSLog(@"Resolution : %ld x %ld", width, height);
+    }
+  */
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
