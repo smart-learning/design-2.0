@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import icKakao from '../../../images/ic-kakao.png';
 import icKakaoLight from '../../../images/ic-kakao-light.png';
+import {AppEventsLogger} from 'react-native-fbsdk';
 
 const styles = StyleSheet.create( {
 	kakaoButtonWrap: {
@@ -76,6 +77,9 @@ class KakaoLoginButton extends React.Component {
 			const kakaoAccessToken = await RNKaKaoSignin.signIn();
 
 			console.log( kakaoAccessToken );
+
+			// 카카오톡 회원 가입이 완료된 상태 
+			AppEventsLogger.logEvent('WELAAARN_KAKAO_SIGN_UP');  
 			this.setState({ token: kakaoAccessToken });
 			this.props.onAccess( kakaoAccessToken, () => {
 				this.setState({ loginButtonDisabled: false })
