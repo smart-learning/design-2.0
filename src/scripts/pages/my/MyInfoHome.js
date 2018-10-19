@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   AsyncStorage,
+  BackHandler,
   View
 } from 'react-native';
 import globalStore from '../../../scripts/commons/store';
@@ -23,6 +24,7 @@ import IcCog from '../../../images/ic-my-cog.png';
 import DummyProfile from '../../../images/dummy-my-profile.png';
 import { SafeAreaView } from 'react-navigation';
 import HomeButton from '../../components/header/HomeButton';
+import nav from "../../commons/nav";
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -165,10 +167,28 @@ export default class MyInfoHome extends React.Component {
   componentDidMount() {
     if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
 
-    if(globalStore.welaaaAuth){
-      AsyncStorage.setItem('isAppFirstLoad' , 'false');
+    if (globalStore.welaaaAuth) {
+      AsyncStorage.setItem('isAppFirstLoad', 'false');
     }
-  }  
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    // console.log(
+    //   'MyInfoHome',
+    //   this.props.navigation.isFocused(),
+    //   globalStore.prevLocations
+    // );
+    // if (this.props.navigation.isFocused()) {
+      nav.commonBack();
+    // }
+    return true;
+  };
 
   render() {
     const { navigation } = this.props;
@@ -219,11 +239,11 @@ export default class MyInfoHome extends React.Component {
                     {1 === 2 && (
                       <View>
                         {globalStore.currentMembership &&
-                        globalStore.currentMembership.type_text ? (
-                          <Text>{globalStore.currentMembership.type_text}</Text>
-                        ) : (
-                          undefined
-                        )}
+                          globalStore.currentMembership.type_text ? (
+                            <Text>{globalStore.currentMembership.type_text}</Text>
+                          ) : (
+                            undefined
+                          )}
                       </View>
                     )}
                   </View>

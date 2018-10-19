@@ -24,6 +24,7 @@ import store from '../../commons/store';
 import Swiper from 'react-native-swiper';
 import bgLogin from '../../../images/bg-signup.jpg';
 import createStore from '../../commons/createStore';
+import {AppEventsLogger} from 'react-native-fbsdk';
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -214,6 +215,8 @@ class EmailSignUpForm extends Component {
 
     Net.signUp(this.data.email, this.data.password)
       .then(data => {
+        // 이메일 회원 가입이 완료된 상태 
+        AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');  
         store.welaaaAuth = data;
         this.props.navigation.navigate('HomeScreen');
       })

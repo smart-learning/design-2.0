@@ -23,6 +23,7 @@ import SummaryVO from '../../vo/SummaryVO';
 import _ from 'underscore';
 import AdvertisingSection from '../../components/AdvertisingSection';
 import globalStore from '../../commons/store';
+import {AppEventsLogger} from 'react-native-fbsdk';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -109,6 +110,10 @@ class HomePage extends React.Component {
   });
 
   getData = async (isRefresh = false) => {
+
+    // Facebook AppEventLogger Test 
+    // AppEventsLogger.logEvent('welaaaRN_Main_getData');    
+
     // 시리즈는 제일 먼저 읽어온다
     this.store.homeSeriesData = await net.getHomeSeries();
 
