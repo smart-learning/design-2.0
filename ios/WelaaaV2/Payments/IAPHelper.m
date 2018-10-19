@@ -438,6 +438,10 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
     [dictionary setObject:transactionId forKey:@"transaction_id"];
     [dictionary setObject:paymentMode   forKey:@"mode"];
     [dictionary setObject:authValue     forKey:@"token"];
+    NSLog(@"  item_id : %@", dictionary[@"item_id"]);
+    NSLog(@"  transaction_id : %@", dictionary[@"transaction_id"]);
+    NSLog(@"  mode : %@", dictionary[@"mode"]);
+    NSLog(@"  token : %@", dictionary[@"token"]);
   
     NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
                                                        options : 0

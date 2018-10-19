@@ -56,9 +56,9 @@ class ClassDetailPage extends React.Component {
 
 	handleBackPress = () => {
 		console.log('cdp back button:', this.props.navigation.isFocused(), Store.prevLocations );
-		if (this.props.navigation.isFocused()) {
+		// if (this.props.navigation.isFocused()) {
 			nav.commonBack();
-		}
+		// }
 		return true;
 	};
 

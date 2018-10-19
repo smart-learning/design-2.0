@@ -184,8 +184,19 @@
       
         if ( !_isAuthor )
         {
-            [_args setObject : playDataDics[@"preview_urls"][@"HLS"]
-                      forKey : @"uri"];
+            NSLog(@"  playDataDics : %@", playDataDics);
+            NSLog(@"  playDataDics.preview_urls : %@", playDataDics[@"preview_urls"]);
+            if ( [playDataDics[@"preview_urls"] isKindOfClass : [NSDictionary class]] )
+            {
+                [_args setObject : playDataDics[@"preview_urls"][@"HLS"]
+                          forKey : @"uri"];
+            }
+            else
+            {
+                NSLog(@"  preview_urls.HLS == nil");
+                [self closePlayer];
+            }
+            
         }
         else if ( _isAuthor )
         {
@@ -1180,6 +1191,10 @@
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
     {
         netStatus = @"LTE/3G";
+    }
+    else
+    {
+        netStatus = @"unknown_netStatus";
     }
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
