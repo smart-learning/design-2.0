@@ -25,6 +25,7 @@ import DummyProfile from '../../../images/dummy-my-profile.png';
 import { SafeAreaView } from 'react-navigation';
 import HomeButton from '../../components/header/HomeButton';
 import nav from "../../commons/nav";
+import native from '../../commons/native';
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -593,9 +594,14 @@ export default class MyInfoHome extends React.Component {
                 }
               }>
                 <View style={{ height: 8 }} />
-
                 <TouchableOpacity
-                  onPress={}
+                  onPress={() => {
+                    try {
+                      native.restore({});
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  }}
                 >
                   <View
                     style={[
@@ -609,14 +615,11 @@ export default class MyInfoHome extends React.Component {
                     </Text>
                   </View>
                 </TouchableOpacity>
-
                 <View style={{ height: 16 }} />
-
               </View>
             } else {
               /* 아이폰 이외의 플랫폼 */
             }
-
           </ScrollView>
         </SafeAreaView>
       </View>
