@@ -1108,18 +1108,22 @@
 }
 
 
-// 로컬에 저장된 콘텐츠 파일(동영상 파일 경로)과 연결된 DB 레코드가 있는지 확인해보고 없으면 삭제(트랙킹이 안되는 파일이므로).
-// Asset 폴더 경로부터 비교. 예) com.apple.UserManagedAssets.jtB6U2/v100015_005_2796BB4F50ADAA4C.movpkg
+// 다운로드 콘텐츠 DB 와 실제 파일간의 동기화.
+// 로컬에 저장된 파일과 DB 를 비교해서 유효하지 않은 파일 및 DB 레코드 삭제.
+// 다운로드 콘텐츠 페이지 진입시 호출.
+// 화면이 resume 될 때에도 리액트 네이티브 단에서 호출하는것 고려.
 - (void)synchronizeLocalFilesWithDB
 {
   NSLog(@"  synchronizeLocalFilesWithDB");
   
+  // 로컬에 저장된 콘텐츠 파일(동영상 파일 경로)과 연결된 DB 레코드가 있는지 확인해보고 없으면 삭제(트랙킹이 안되는 파일이므로).
+  // Asset 폴더 경로부터 비교. 예) com.apple.UserManagedAssets.jtB6U2/v100015_005_2796BB4F50ADAA4C.movpkg
   NSError* error = nil;
   NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
   NSArray* hlsContentsPaths = [self loadLibraryContentsAs:@"com.apple.UserManagedAssets."];
   
   for(NSString* hlsDirName in hlsContentsPaths){
-    NSLog(@"  hlsDirName : %@",hlsDirName);   // com.apple.UserManagedAssets.jtB6U2
+    NSLog(@"  hlsDirName : %@",hlsDirName);   // ex) com.apple.UserManagedAssets.jtB6U2
     NSString* hlsPath = [libraryPath stringByAppendingPathComponent:hlsDirName];
     NSArray *hlsFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:hlsPath error:&error];
     for(NSString* fileName in hlsFiles){
@@ -1127,9 +1131,7 @@
       NSLog(@"  HLS contentFullPath : %@", contentFullPath);
       
       // 경로를 줄여서 저장 -> Library/ 부터.
-      NSString* hlsUniqFolderName = [[contentFullPath stringByDeletingLastPathComponent] lastPathComponent];
-      NSString* libraryFolderName = [[[contentFullPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] lastPathComponent];
-      NSString* contentPath = [NSString stringWithFormat:@"%@/%@/%@",libraryFolderName,hlsUniqFolderName,fileName];
+      NSString* contentPath = [self getPathFromLibraryDir:contentFullPath];
       NSLog(@"  HLS contentPath : %@", contentPath);
       
       NSMutableArray* searchResults = [[DatabaseManager sharedInstance] searchDownloadedContentsPath:contentPath];
@@ -1157,9 +1159,10 @@
     }
     
     if (localFilePath && localFilePath.length>0) {
-      if ([self playOfflineAsset:localFilePath]) {
-        // 재생가능 파일
-      }else{    // 재생불가능(파일없음 혹은 파일오류 등)
+      if ([self isPlayableOfflineAsset:localFilePath]) {
+        // 재생가능한 파일
+      }else{
+        // 재생불가능 파일(파일없음 혹은 파일오류 등)
         [[DatabaseManager sharedInstance] removeDownloadedContentsId:cid];
       }
     }else{
@@ -1192,16 +1195,12 @@
 }
 
 
-// 재생가능한 로컬파일인지 확인
-- (BOOL)playOfflineAsset:(NSString *)contentFullPath
+// 재생가능한 파일인지 확인.
+- (BOOL)isPlayableOfflineAsset:(NSString *)contentFullPath
 {
   NSLog(@"  HLS contentFullPath : %@", contentFullPath);
   
-  // 경로를 줄여서 저장 -> Library/ 부터.
-  NSString* fileName = [contentFullPath lastPathComponent];
-  NSString* hlsUniqFolderName = [[contentFullPath stringByDeletingLastPathComponent] lastPathComponent];
-  NSString* libraryFolderName = [[[contentFullPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] lastPathComponent];
-  NSString* assetPath = [NSString stringWithFormat:@"%@/%@/%@",libraryFolderName,hlsUniqFolderName,fileName];
+  NSString* assetPath = [self getPathFromLibraryDir:contentFullPath];
   NSLog(@"  HLS assetPath : %@", assetPath);
   
   NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
@@ -1212,12 +1211,27 @@
   AVAssetCache* cache = asset.assetCache;
   
   if (cache && [cache isPlayableOffline]) {
-    NSLog(@"  isPlayableOffline true");
+    NSLog(@"  isPlayableOfflineAsset true");
     return YES;
   }else{
-    NSLog(@"  isPlayableOffline false");
+    NSLog(@"  isPlayableOfflineAsset false");
     return NO;
   }
+}
+
+
+// 전체 경로에서 Library 부터 파일이름까지만 잘라서 리턴.
+- (NSString *)getPathFromLibraryDir:(NSString *)contentFullPath
+{
+  NSString* resultPath = @"";
+  
+  NSString* fileName = [contentFullPath lastPathComponent];
+  NSString* hlsUniqFolderName = [[contentFullPath stringByDeletingLastPathComponent] lastPathComponent];
+  NSString* libraryFolderName = [[[contentFullPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] lastPathComponent];
+  resultPath = [NSString stringWithFormat:@"%@/%@/%@",libraryFolderName,hlsUniqFolderName,fileName];
+  NSLog(@"  getPathFromLibraryDir -> resultPath : %@", resultPath);
+  
+  return resultPath;
 }
 
 
