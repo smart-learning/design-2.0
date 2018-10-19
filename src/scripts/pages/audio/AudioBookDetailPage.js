@@ -116,9 +116,9 @@ class AudioBookDetailPage extends React.Component {
       this.props.navigation.isFocused(),
       globalStore.prevLocations
     );
-    if (this.props.navigation.isFocused()) {
+    // if (this.props.navigation.isFocused()) {
       nav.commonBack();
-    }
+    // }
 
     return true;
   };
