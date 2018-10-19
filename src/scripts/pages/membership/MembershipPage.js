@@ -572,7 +572,7 @@ export default class MembershipPage extends React.Component {
               </View>
               <View style={styles.priceBox}>
                 {Platform.select({
-                  ios: <Text style={styles.membershipPrice}>$9.89</Text>,
+                  ios: <Text style={styles.membershipPrice}>월 11,000원</Text>,
                   android: (
                     <View>
                       <Text style={styles.membershipSalePrice}>
@@ -605,7 +605,7 @@ export default class MembershipPage extends React.Component {
                     <Text style={styles.memberShipButtonParagraph}>
                       {this.props.membership_price_prefix}
                       {Platform.select({
-                        ios: <Text>$9.89</Text>,
+                        ios: <Text>11,000원</Text>,
                         android: <Text>7,700원</Text>
                       })}
                       {this.props.membership_price_suffix}
@@ -634,7 +634,7 @@ export default class MembershipPage extends React.Component {
               </View>
               <View style={styles.priceBox}>
                 {Platform.select({
-                  ios: <Text style={styles.membershipPrice}>$8.79</Text>,
+                  ios: <Text style={styles.membershipPrice}>월 9,500원</Text>,
                   android: (
                     <View>
                       <Text style={styles.membershipSalePrice}>
@@ -667,7 +667,7 @@ export default class MembershipPage extends React.Component {
                     <Text style={styles.memberShipButtonParagraph}>
                       {this.props.membership_price_prefix}
                       {Platform.select({
-                        ios: <Text>$8.79</Text>,
+                        ios: <Text>9,500원</Text>,
                         android: <Text>6,600원</Text>
                       })}
                       {this.props.membership_price_suffix}
@@ -688,7 +688,7 @@ export default class MembershipPage extends React.Component {
               </View>
               <View style={styles.priceBox}>
                 {Platform.select({
-                  ios: <Text style={styles.membershipPrice}>$18.69</Text>,
+                  ios: <Text style={styles.membershipPrice}>월 20,500원</Text>,
                   android: (
                     <View>
                       <Text style={styles.membershipSalePrice}>
@@ -721,7 +721,7 @@ export default class MembershipPage extends React.Component {
                     <Text style={styles.memberShipButtonParagraph}>
                       {this.props.membership_price_prefix}
                       {Platform.select({
-                        ios: <Text>$18.69</Text>,
+                        ios: <Text>20,500원</Text>,
                         android: <Text>14,300원</Text>
                       })}
                       {this.props.membership_price_suffix}
