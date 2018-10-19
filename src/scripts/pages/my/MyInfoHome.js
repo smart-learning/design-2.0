@@ -179,14 +179,14 @@ export default class MyInfoHome extends React.Component {
   }
 
   handleBackPress = () => {
-    console.log(
-      'MyInfoHome',
-      this.props.navigation.isFocused(),
-      globalStore.prevLocations
-    );
-    if (this.props.navigation.isFocused()) {
+    // console.log(
+    //   'MyInfoHome',
+    //   this.props.navigation.isFocused(),
+    //   globalStore.prevLocations
+    // );
+    // if (this.props.navigation.isFocused()) {
       nav.commonBack();
-    }
+    // }
     return true;
   };
 
