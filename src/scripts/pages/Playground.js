@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ScrollView, Text } from 'react-native';
+import { BackHandler, Button, ScrollView, Text } from 'react-native';
 import CommonStyles from '../../styles/common';
 import { SafeAreaView } from 'react-navigation';
 import PurchaseView from '../components/PurchaseView';
@@ -14,6 +14,25 @@ class Playground extends Component {
     };
   }
 
+  hardwareBackPressHandler = () => {
+  	this.props.navigation.navigate('HomeScreen');
+  	return true;
+  };
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.hardwareBackPressHandler
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.hardwareBackPressHandler
+    );
+  }
+
   onPurchaseSuccess = response => {
     // 결제 성공시
     console.log(response);
@@ -22,7 +41,7 @@ class Playground extends Component {
   onPurchaseError = response => {
     // 결제 실패/취소시
     console.log(response);
-    alert( JSON.stringify(response));
+    alert(JSON.stringify(response));
   };
 
   render() {
