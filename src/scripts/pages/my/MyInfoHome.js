@@ -431,13 +431,13 @@ export default class MyInfoHome extends React.Component {
                 activeOpacity={0.9}
                 onPress={() =>
                   navigation.navigate('DownloadContentPage', {
-                    title: '다운로드 컨텐츠'
+                    title: '다운로드 콘텐츠'
                   })
                 }
               >
                 <View style={styles.listItem}>
                   <Image source={IcDownload} style={styles.listItemIcon} />
-                  <Text style={styles.listItemTitle}>다운로드 컨텐츠</Text>
+                  <Text style={styles.listItemTitle}>다운로드 콘텐츠</Text>
                   <Image
                     source={IcAngleRight}
                     style={[styles.listItemBullet, { marginLeft: 'auto' }]}

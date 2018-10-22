@@ -419,7 +419,7 @@ export default {
 
         case 'download_page':
           navigation.navigate('DownloadContentPage', {
-            title: '다운로드 컨텐츠'
+            title: '다운로드 콘텐츠'
           });
           break;
       }

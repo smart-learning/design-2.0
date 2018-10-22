@@ -5,12 +5,14 @@ import {
   Text,
   Image,
   View,
+  BackHandler,
   Dimensions
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import net from '../../commons/net';
 import { SafeAreaView } from 'react-navigation';
 import moment from 'moment';
+import nav from '../../commons/nav';
 
 const styles = StyleSheet.create({
   title: {
@@ -76,6 +78,23 @@ export default class EventDetailPage extends React.Component {
       });
     }
   }
+
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);  
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    
+    // if (this.props.navigation.isFocused()) {
+      nav.commonBack();
+    // }
+
+    return true;
+  };
 
   render() {
     const { eventDetail } = this.state;
