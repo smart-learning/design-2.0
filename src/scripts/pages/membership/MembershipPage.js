@@ -419,7 +419,7 @@ export default class MembershipPage extends React.Component {
                 <View style={styles.membershipParagraphBox}>
                   <View style={styles.membershipParagraphBox}>
                     <Text style={styles.membershipParagraph}>
-                      윌라의 모든 컨텐츠를 이용하실 수 있습니다.
+                      윌라의 모든 콘텐츠를 이용하실 수 있습니다.
                     </Text>
                   </View>
                 </View>
