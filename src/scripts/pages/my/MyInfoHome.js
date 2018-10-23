@@ -25,6 +25,7 @@ import DummyProfile from '../../../images/dummy-my-profile.png';
 import { SafeAreaView } from 'react-navigation';
 import HomeButton from '../../components/header/HomeButton';
 import nav from "../../commons/nav";
+import native from '../../commons/native';
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -157,6 +158,18 @@ const styles = StyleSheet.create({
   myInfoEmail: {
     fontSize: 12,
     color: '#9A9A9A'
+  },
+  buttonRestore: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    height: 40,
+    backgroundColor: '#4a4a4a'
+  },
+  buttonRestoreText: {
+    fontSize: 15,
+    fontWeight: 'normal',
+    color: '#ffffff'
   }
 });
 /*
@@ -185,7 +198,7 @@ export default class MyInfoHome extends React.Component {
     //   globalStore.prevLocations
     // );
     // if (this.props.navigation.isFocused()) {
-      nav.commonBack();
+    nav.commonBack();
     // }
     return true;
   };
@@ -570,6 +583,43 @@ export default class MyInfoHome extends React.Component {
 
               <View style={{ height: 8 }} />
             </View>
+
+            /* 아이폰 구매내역 복원 */
+            if (Platform.OS === 'ios') {
+              <View style={
+                {
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  flex: 1
+                }
+              }>
+                <View style={{ height: 8 }} />
+                <TouchableOpacity
+                  onPress={() => {
+                    try {
+                      native.restore({});
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  }}
+                >
+                  <View
+                    style={[
+                      styles.buttonRestore,
+                      { width: 200 }
+                    ]}
+                    borderRadius={5}
+                  >
+                    <Text style={styles.buttonRestoreText}>
+                      {'아이폰 구매내역 복원'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <View style={{ height: 16 }} />
+              </View>
+            } else {
+              /* 아이폰 이외의 플랫폼 */
+            }
           </ScrollView>
         </SafeAreaView>
       </View>
