@@ -196,17 +196,22 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
   @ReactMethod
   public void setting(ReadableMap content) {
-    // 2018.09.03
-    boolean cellularDataUsePlay = content.getBoolean("cellularDataUsePlay");
-    boolean cellularDataUseDownload = content.getBoolean("cellularDataUseDownload");
-    String token = content.getString("token");
 
-    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+    // NoSuchKeyException token http://crashes.to/s/63dafa1dc65 
+    try{
+      boolean cellularDataUsePlay = content.getBoolean("cellularDataUsePlay");
+      boolean cellularDataUseDownload = content.getBoolean("cellularDataUseDownload");
+      String token = content.getString("token");
 
-    Preferences.setOnlyWifiView(getReactApplicationContext(), cellularDataUsePlay);
-    Preferences.setOnlyWifiDownload(getReactApplicationContext(), cellularDataUseDownload);
+      Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
 
-    Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
+      Preferences.setOnlyWifiView(getReactApplicationContext(), cellularDataUsePlay);
+      Preferences.setOnlyWifiDownload(getReactApplicationContext(), cellularDataUseDownload);
+
+      Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
+    }catch (Exception e){
+      e.printStackTrace();
+    }
   }
 
 
