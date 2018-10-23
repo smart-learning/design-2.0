@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   bookMemoBest: {
     width: '60%',
-    height: 60,
+    height: '100%',
     fontSize: 13,
     color: '#5A5A5A',
     lineHeight: 20
