@@ -2513,9 +2513,10 @@
 {
     NSLog(@"  download contentId : %@, location : %@", contentId, location.absoluteString);
   
-    if (![contentId isEqualToString:[_args objectForKey:@"cid"]]) {
-      // 다운로드 완료된 파일이 현재 재생중인 콘텐츠와 다를 경우(다른 영상에서 다운로드를 요청한 케이스)에는 팝업을 띄우지 않습니다.
-      return;
+    if ( ![contentId isEqualToString:[_args objectForKey:@"cid"]] )
+    {
+        // 다운로드 완료된 파일이 현재 재생중인 콘텐츠와 다를 경우(다른 영상에서 다운로드를 요청한 케이스)에는 팝업을 띄우지 않습니다.
+        return ;
     }
   
     if ( self.isMiniPlayer )
@@ -2676,7 +2677,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     if ( playingInfoCenter )
     {
         NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
-      
         MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
                                                                        requestHandler : ^UIImage * _Nonnull(CGSize size)
                                                                                         {
@@ -2707,9 +2707,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (UIImage *) resizeImageWithImage : (UIImage *) image
                       scaledToSize : (CGSize) newSize
 {
-    //UIGraphicsBeginImageContext(newSize);
-    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-    // Pass 1.0 to force exact pixel size.
     UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
     [image drawInRect : CGRectMake(0, 0, newSize.width, newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -2718,56 +2715,4 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     return newImage;
 }
 
-# pragma mark - Labatory
-- (void) toastTestAlert
-{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"Logout"
-                                                                   message : @"Are You Sure Want to Logout!"
-                                                            preferredStyle : UIAlertControllerStyleAlert];
-  
-    //Add Buttons
-    UIAlertAction *yesButton = [UIAlertAction actionWithTitle : @"Yes"
-                                                        style : UIAlertActionStyleDefault
-                                                      handler : ^(UIAlertAction *action)
-                                                                {
-                                                                    //Handle your yes please button action here
-                                                                    //[self clearAllData];
-                                                                    [self closePlayer];
-                                                                }];
-  
-    UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
-                                                       style : UIAlertActionStyleDefault
-                                                     handler : ^(UIAlertAction *action)
-                                                               {
-                                                                  //Handle no, thanks button
-                                                               }];
-  
-    //Add your buttons to alert controller
-  
-    [alert addAction : yesButton];
-    [alert addAction : noButton];
-  
-    [self presentViewController : alert
-                       animated : YES
-                     completion : nil];
-}
-
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
