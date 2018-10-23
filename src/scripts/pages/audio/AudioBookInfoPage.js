@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Alert,
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
@@ -15,6 +16,7 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import bookIcon from '../../../images/ic-book-white.png';
 import playIcon from '../../../images/ic-play-white.png';
+import IcPlay from '../../../images/ic-play-detail.png';
 import Native from '../../commons/native';
 import Dummy from '../../../images/dummy-audiobook-info.png';
 import net from '../../commons/net';
@@ -181,6 +183,10 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     marginRight: 4
+  },
+  playButton: {
+    width: 50,
+    height: 50
   }
 });
 
@@ -260,7 +266,7 @@ class AudioBookInfoPage extends React.Component {
     let headerBgImage = null;
     try {
       headerBgImage = itemData.images.header_bg;
-    } catch (e) {}
+    } catch (e) { }
 
     return (
       <SafeAreaView style={CommonStyles.container}>
@@ -324,7 +330,7 @@ class AudioBookInfoPage extends React.Component {
                   </View>
                 </View>
                 <View style={styles.infoBook}>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() =>
                       this.props.navigation.navigate('AudioBookDetailPage', {
@@ -332,13 +338,28 @@ class AudioBookInfoPage extends React.Component {
                         title: itemData.audiobook.title
                       })
                     }
+                  > */}
+
+
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    // onPress={() => Native.play(this.props.store.itemData.cid)}
+                    // 814 , cid 값을 가져와야 재생을 할 수 있군요 
+                    onPress={() => Native.play(itemData.audiobook.cid)}
                   >
                     <ImageBackground
                       source={{ uri: itemData.audiobook.images.cover }}
                       resizeMode={'cover'}
                       style={styles.bookThumbnail}
-                    />
+                    >
+                      <View style={[CommonStyles.container]}>
+                        <Image source={IcPlay} style={styles.playButton} />
+                      </View>
+
+
+                    </ImageBackground>
                   </TouchableOpacity>
+                  {/* </TouchableOpacity> */}
                 </View>
               </View>
             </View>
@@ -393,7 +414,7 @@ class AudioBookInfoPage extends React.Component {
               >
                 <View style={styles.memoButton}>
                   <Image source={bookIcon} style={styles.buttonLargeIcon} />
-                  <Text style={styles.memoButtonText}>이달의 책 상세보기</Text>
+                  <Text style={styles.memoButtonText}>책 상세보기</Text>
                 </View>
               </TouchableOpacity>
             </View>
