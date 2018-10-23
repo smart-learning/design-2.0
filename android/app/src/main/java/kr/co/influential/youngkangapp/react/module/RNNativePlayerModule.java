@@ -95,19 +95,44 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void play(ReadableMap content) {
     if (content.hasKey("offline") && content.getBoolean("offline")) {
       OfflineContentData offlineContentData = parseOfflineContentData(content);
-      // TODO: 2018. 10. 2. Implements offline(play content that is downloaded).
-    } else {
-      ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
-          .getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+//      // TODO: 2018. 10. 2. Implements offline(play content that is downloaded).
 
-      boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
+      contentUrl = offlineContentData.getContentPath();
+      contentName = offlineContentData.getcTitle();
+      contentUuid = offlineContentData.getDrmSchemeUuid();
+      contentDrmLicenseUrl = offlineContentData.getDrmLicenseUrl();
+      contentUserId = offlineContentData.getUserId();
+      contentCid = offlineContentData.getCid();
+
+//      LogHelper.e(TAG , "offlineContentData contentUrl " + contentUrl);
+//      LogHelper.e(TAG , "offlineContentData contentName " + contentName);
+//      LogHelper.e(TAG , "offlineContentData contentUuid " + contentUuid);
+//      LogHelper.e(TAG , "offlineContentData contentDrmLicenseUrl " + contentDrmLicenseUrl);
+//      LogHelper.e(TAG , "offlineContentData contentUserId " + contentUserId);
+//      LogHelper.e(TAG , "offlineContentData contentCid " + contentCid);
+
+    }else{
       contentUrl = content.getString("uri");
       contentName = content.getString("name");
       contentUuid = content.getString("drmSchemeUuid");
       contentDrmLicenseUrl = content.getString("drmLicenseUrl");
       contentUserId = content.getString("userId");
       contentCid = content.getString("cid");
+
+//      LogHelper.e(TAG , " contentUrl " + contentUrl);
+//      LogHelper.e(TAG , " contentName " + contentName);
+//      LogHelper.e(TAG , " contentUuid " + contentUuid);
+//      LogHelper.e(TAG , " contentDrmLicenseUrl " + contentDrmLicenseUrl);
+//      LogHelper.e(TAG , " contentUserId " + contentUserId);
+//      LogHelper.e(TAG , " contentCid " + contentCid);
+    }
+//    else {
+      ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+          .getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+
+      boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
+
       contentToken = content.getString("token");
 
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
@@ -148,7 +173,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
         }
       });
-    }
+//    }
   }
 
   @ReactMethod
