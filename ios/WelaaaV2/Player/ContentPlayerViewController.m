@@ -304,20 +304,6 @@
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
-  
-    // player is playing
-  /*
-    if ( _player.rate != 0 && _player.error == nil )
-    {
-        AVAssetTrack *track = [[_player.currentItem.asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
-        CMTime currentTime = _player.currentItem.currentTime;
-        CVPixelBufferRef buffer = [_videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:nil];
-      
-        NSInteger width = CVPixelBufferGetWidth(buffer);
-        NSInteger height = CVPixelBufferGetHeight(buffer);
-        NSLog(@"Resolution : %ld x %ld", width, height);
-    }
-  */
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -1535,7 +1521,6 @@
 - (void) seekbarDragBegin : (id) sender
 {
     _touchDragging = YES;
-    NSLog(@"  Dragging on the slider bar has begun!");
 }
 
 - (void) seekbarDidChangeValue : (id) sender
@@ -1576,16 +1561,11 @@
         [NSObject cancelPreviousPerformRequestsWithTarget : self
                                                  selector : @selector(unlock)
                                                    object : nil];
-        NSLog(@"  [SeekBar] Dragging ends. (%f)", bar.value);
-        // 이용로그 전송 시작
-        //
-        // 이용로그 전송 종료
     }
 }
 
 - (void) seekbarDragging : (NSTimeInterval) time
 {
-    NSLog(@"  [seekbarDragging]");
     [_player pause];
     [self invalidateTimerOnSlider];
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
@@ -1765,15 +1745,6 @@
                                                                [self setCurrentTime : playTime
                                                                         forceChange : NO];
                                                                [self->_miniPlayerUiView setSeekbarCurrentValue : playTime];
-                                                            
-                                                              /*
-                                                               * 진도체크는 추후에 구현합니다.
-                                                               if ( [self.delegate respondsToSelector: @selector(player:didChangedPlayTime:)] )
-                                                               {
-                                                                  [self.delegate player : self
-                                                                     didChangedPlayTime : playTime];
-                                                               }
-                                                               */
                                                             }];
   
     if ( _seekTimer )
@@ -1937,7 +1908,6 @@
                                                        handler : ^(UIAlertAction * action)
                                                                  {
                                                                      [alert dismissViewControllerAnimated:YES completion:nil];
-                                                                   //[[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
                                                                  }];
             [alert addAction : ok];
           
