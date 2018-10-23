@@ -61,15 +61,19 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
     String uniqueId = "";
 
     synchronized (lock) {
-      SharedPreferences sharedPreferences =
-          getCurrentActivity().getSharedPreferences(PREF_UNIQUE_ID, Context.MODE_PRIVATE);
-      uniqueId = sharedPreferences.getString(PREF_UNIQUE_ID, null);
+      if (getCurrentActivity() != null) {
+        SharedPreferences sharedPreferences =
+            getCurrentActivity().getSharedPreferences(PREF_UNIQUE_ID, Context.MODE_PRIVATE);
+        uniqueId = sharedPreferences.getString(PREF_UNIQUE_ID, null);
 
-      if (uniqueId == null) {
-        uniqueId = UUID.randomUUID().toString();
-        Editor editor = sharedPreferences.edit();
-        editor.putString(PREF_UNIQUE_ID, uniqueId);
-        editor.commit();
+        if (uniqueId == null) {
+          uniqueId = UUID.randomUUID().toString();
+          Editor editor = sharedPreferences.edit();
+          editor.putString(PREF_UNIQUE_ID, uniqueId);
+          editor.commit();
+        }
+      }else{
+        LogHelper.e(TAG , "No current Activity");
       }
     }
     return uniqueId;
