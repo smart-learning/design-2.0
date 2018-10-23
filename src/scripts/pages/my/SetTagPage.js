@@ -86,7 +86,7 @@ export default class SetTagPage extends React.Component {
 			<SafeAreaView style={{flex: 1, width: '100%'}}>
 				<ScrollView style={{flex: 1}}>
 					<View style={CommonStyles.contentContainer}>
-						<Text style={styles.tagParagraph}>관심 태그를 선택하시면 김나람님께 꼭 맞춘 프리미엄 컨텐츠가 추천됩니다.</Text>
+						<Text style={styles.tagParagraph}>관심 태그를 선택하시면 김나람님께 꼭 맞춘 프리미엄 콘텐츠가 추천됩니다.</Text>
 						<View style={styles.labelContainer}>
 							<View style={[styles.label, styles.labelActive]} borderRadius={3}/>
 							<Text style={styles.labelText}>나의태그</Text>

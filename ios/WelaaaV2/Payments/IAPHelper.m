@@ -174,8 +174,6 @@
 {
     NSLog(@"  [completeTransaction] Transaction Identifier : %@", transaction.transactionIdentifier );
     NSLog(@"  [completeTransaction] Transaction Date : %@",       transaction.transactionDate);
-    NSLog(@"  [completeTransaction] Transaction error : %@",      transaction.error);
-    NSLog(@"  [completeTransaction] Original Transaction : %@",   transaction.originalTransaction);
   
     // 구매 완료 후 아이템 인벤등 앱UI쪽 후 처리 진행
     [[SKPaymentQueue defaultQueue] finishTransaction : transaction];  // 결제 관련 대기열을 종료시킵니다.
@@ -438,10 +436,10 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
     [dictionary setObject:transactionId forKey:@"transaction_id"];
     [dictionary setObject:paymentMode   forKey:@"mode"];
     [dictionary setObject:authValue     forKey:@"token"];
-    NSLog(@"  item_id : %@", dictionary[@"item_id"]);
-    NSLog(@"  transaction_id : %@", dictionary[@"transaction_id"]);
-    NSLog(@"  mode : %@", dictionary[@"mode"]);
-    NSLog(@"  token : %@", dictionary[@"token"]);
+    NSLog(@"  [checkReceipt] item_id : %@", dictionary[@"item_id"]);
+    NSLog(@"  [checkReceipt] transaction_id : %@", dictionary[@"transaction_id"]);
+    NSLog(@"  [checkReceipt] mode : %@", dictionary[@"mode"]);
+    NSLog(@"  [checkReceipt] token : %@", dictionary[@"token"]);
   
     NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
                                                        options : 0

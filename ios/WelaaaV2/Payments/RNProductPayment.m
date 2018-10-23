@@ -79,7 +79,6 @@ RCT_EXPORT_MODULE();
                 if ( transaction.transactionState == SKPaymentTransactionStatePurchased )
                 {
                     NSLog(@" [SKPaymentTransactionStatePurchased] productIdentifier: %@", transaction.payment.productIdentifier);
-                    NSLog(@" [SKPaymentTransactionStatePurchased] transactionIdentifier: %@", transaction.originalTransaction.transactionIdentifier);
                   
                     // 구입 완료 상태이기 때문에 영수증 검증을 시작합니다. GCD를 사용했지만 lldb에러가 발생하였습니다. IAPHelper에 GCD 또는 동기방식 통신을 사용해야할듯 합니다.
                     // API 통신을 비동기방식이 아닌 동기방식으로 진행합니다.

@@ -175,5 +175,15 @@ export default {
       console.log('native.buy > args', args);
       return error;
     }
+  },
+
+  restore(args) {
+    try {
+      return RNProductPayment.restore(args);
+    } catch (error) {
+      console.log('native.restore > error', error);
+      console.log('native.restore > args', args);
+      return error;
+    }
   }
 };

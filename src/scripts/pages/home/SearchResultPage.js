@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   ScrollView,
@@ -109,6 +110,7 @@ export default class SearchResultPage extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = { isLoading: true };
   }
   componentWillMount() {
     this._isMount = true;
@@ -127,6 +129,7 @@ export default class SearchResultPage extends React.Component {
   }
 
   searchQuery = async query => {
+    this.setState({ isLoading: true });
     videoResult = await net.searchQuery('video-course', query);
     if (videoResult) {
       this.searchResult.video = videoResult.items;
@@ -135,6 +138,7 @@ export default class SearchResultPage extends React.Component {
     if (audioResult) {
       this.searchResult.audio = audioResult.items;
     }
+    this.setState({ isLoading: false });
   };
 
   makeListItem = ({ item }) => {
@@ -218,68 +222,77 @@ export default class SearchResultPage extends React.Component {
 
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
-        <SafeAreaView style={{ flex: 1, width: '100%' }}>
-          <ScrollView style={{ flex: 1 }}>
-            <View style={styles.tabContentContainer}>
-              {this.tabStatus === 'video' && vcontent}
-              {this.tabStatus === 'audioBook' && acontent}
-            </View>
-          </ScrollView>
-          <View style={styles.tabContainer}>
-            <View style={styles.tabFlex}>
-              <View style={styles.tabItemContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => (this.tabStatus = 'video')}
-                >
-                  <View style={styles.tabItem}>
-                    <Text
-                      style={
-                        this.tabStatus === 'video'
-                          ? styles.tabTextActive
-                          : styles.tabText
-                      }
-                    >
-                      클래스
-                    </Text>
-                    <View
-                      style={
-                        this.tabStatus === 'video'
-                          ? styles.tabHrActive
-                          : styles.tabHr
-                      }
-                    />
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.tabItemContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => (this.tabStatus = 'audioBook')}
-                >
-                  <View style={styles.tabItem}>
-                    <Text
-                      style={
-                        this.tabStatus === 'audioBook'
-                          ? styles.tabTextActive
-                          : styles.tabText
-                      }
-                    >
-                      오디오북
-                    </Text>
-                    <View
-                      style={
-                        this.tabStatus === 'audioBook'
-                          ? styles.tabHrActive
-                          : styles.tabHr
-                      }
-                    />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
+        {this.state.isLoading ? (
+          <View>
+            <ActivityIndicator
+              size="large"
+              color={CommonStyles.COLOR_PRIMARY}
+            />
           </View>
-        </SafeAreaView>
+        ) : (
+          <SafeAreaView style={{ flex: 1, width: '100%' }}>
+            <ScrollView style={{ flex: 1 }}>
+              <View style={styles.tabContentContainer}>
+                {this.tabStatus === 'video' && vcontent}
+                {this.tabStatus === 'audioBook' && acontent}
+              </View>
+            </ScrollView>
+            <View style={styles.tabContainer}>
+              <View style={styles.tabFlex}>
+                <View style={styles.tabItemContainer}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => (this.tabStatus = 'video')}
+                  >
+                    <View style={styles.tabItem}>
+                      <Text
+                        style={
+                          this.tabStatus === 'video'
+                            ? styles.tabTextActive
+                            : styles.tabText
+                        }
+                      >
+                        클래스
+                      </Text>
+                      <View
+                        style={
+                          this.tabStatus === 'video'
+                            ? styles.tabHrActive
+                            : styles.tabHr
+                        }
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.tabItemContainer}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => (this.tabStatus = 'audioBook')}
+                  >
+                    <View style={styles.tabItem}>
+                      <Text
+                        style={
+                          this.tabStatus === 'audioBook'
+                            ? styles.tabTextActive
+                            : styles.tabText
+                        }
+                      >
+                        오디오북
+                      </Text>
+                      <View
+                        style={
+                          this.tabStatus === 'audioBook'
+                            ? styles.tabHrActive
+                            : styles.tabHr
+                        }
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </SafeAreaView>
+        )}
       </View>
     );
   }

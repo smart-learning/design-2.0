@@ -158,8 +158,8 @@ class PolicyPage extends Component {
 						<Text style={styles.sectionListItem}>2. 회사가 회원의 이용신청을 승낙한 때로부터 유료서비스는 개시되며, 회사의 기술적 사유 등 기타 사정에 의하여 서비스를 개시할 수 없는 경우에는 제3조(약관의 효력/변경 등)의 방법에 따라 회원에게 사전 공지합니다.</Text>
 						<Text style={styles.sectionListItem}>3. 회사는 다음 각 호와 같은 유료서비스를 제공하며, 회사의 사정, 기타 제반 여건에 따라 서비스 내용을 추가하거나 변경할 수 있습니다. 각 유료서비스의 내용은 유료서비스 구매페이지, 고객센터(FAQ) 등에서 회원에게 자세히 표시하고 있습니다.</Text>
 						<Text style={styles.sectionListItem}>1) 이용권/서비스의 내용/속성에 따른 분류</Text>
-						<Text style={styles.sectionListItem}>① 베이직 멤버십 이용권 : 회원이 선택한 동영상 컨텐츠의 실시간 스트리밍 및 다운로드 서비스 이용 가능</Text>
-						<Text style={styles.sectionListItem}>② 프리미엄 멤버십,오디오북 이용권 : 회원이 선택한 동영상 컨텐츠와 오디오북의 실시간 스트리밍 및 다운로드 서비스 이용 가능</Text>
+						<Text style={styles.sectionListItem}>① 베이직 멤버십 이용권 : 회원이 선택한 동영상 콘텐츠의 실시간 스트리밍 및 다운로드 서비스 이용 가능</Text>
+						<Text style={styles.sectionListItem}>② 프리미엄 멤버십,오디오북 이용권 : 회원이 선택한 동영상 콘텐츠와 오디오북의 실시간 스트리밍 및 다운로드 서비스 이용 가능</Text>
 						<Text style={styles.sectionListItem}>2) 이용권/서비스의 이용기간/정기결제 여부에 따른 분류</Text>
 						<Text style={styles.sectionListItem}>① 개별결제형 이용권 : 회원이 등록한 결제수단을 통하여 강좌 단위로 이용요금이 결제되고 이용기간이 지나면 이용권이 만료되는 서비스</Text>
 						<Text style={styles.sectionListItem}>② 정기결제형 이용권 : 회원이 등록한 결제수단을 통하여 월 단위로 이용요금이 자동으로 결제되고 이용기간이 자동 갱신되는 서비스</Text>
