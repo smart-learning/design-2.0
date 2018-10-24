@@ -1182,7 +1182,7 @@
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
-        _networkStatusLabel.text = @"DOWNLOAD 재생";
+        _networkStatusLabel.text = @"다운로드 재생";
     }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
     {
@@ -2705,7 +2705,9 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
   
   if (_downloadedFilePath && [_downloadedFilePath containsString:@"/"]) {
     [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
+    _isDownloadFile = true;
   }else{
+    _isDownloadFile = false;
     if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] ){
       [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
     }else{
@@ -2720,6 +2722,23 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
          }
        }];
     }
+  }
+  
+  NSString *netStatus;
+  if ( _isDownloadFile )
+  {
+    netStatus = @"DOWNLOAD";
+    _networkStatusLabel.text = @"다운로드 재생";
+  }
+  else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+  {
+    netStatus = @"Wi-Fi";
+    _networkStatusLabel.text = @"Wi-Fi 재생";
+  }
+  else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+  {
+    netStatus = @"LTE/3G";
+    _networkStatusLabel.text = @"LTE/3G 재생";
   }
 }
 
