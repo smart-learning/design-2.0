@@ -583,44 +583,13 @@
   
     // 탑뷰내의 별점주기 버튼
     // 플레이어 시작과 동시에 별점과 콘텐츠 타입 등을 조회합니다.
+  /*
     if ( !_isAudioContent )
     {
-        NSString *starQueryUrl;
-
-        starQueryUrl = [NSString stringWithFormat : @"http://%@/usingapp/contents_each_author_v2.php", TEST_DOMAIN];
-        NSString *post = [NSString stringWithFormat : @"ckey=582"];
-        NSData *postData = [post dataUsingEncoding : NSUTF8StringEncoding];
+        NSString *userStar = @""; // 1~5
+        BOOL isUserLoggedIn = YES;
+        NSString *cconClassStar = @"1";// 1 = video clip, 2 = audiobook
       
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-        [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", starQueryUrl]]];
-        [request setHTTPBody : postData];
-        [request setHTTPMethod : @"POST"];
-        NSError *error;
-        NSURLResponse *resp = nil;
-        // 비동기방식이 아닌 동기방식으로 접속합니다.
-        NSData *data = [ApiManager sendSynchronousRequest : request
-                                        returningResponse : &resp
-                                                    error : &error];
-      
-        NSString *jsonData = [[NSString alloc] initWithData : data
-                                                   encoding : NSUTF8StringEncoding];
-      
-        NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
-                                                                     options : NSJSONReadingAllowFragments
-                                                                       error : &error];
-      
-        NSDictionary *dataDictionary = jsonResponse[@"data"];
-        NSDictionary *infoDictionary = jsonResponse[@"info"];
-        NSString *userStar = [dataDictionary objectForKey : @"user_star"];
-        BOOL isUserLoggedIn = [dataDictionary objectForKey : @"user_logged_in"];
-        NSString *cconClassStar = [infoDictionary objectForKey : @"ccon_class"]; // 1 = video clip, 2 = audiobook
-      
-        userStar = @""; // 1~5
-        isUserLoggedIn = YES;
-        cconClassStar = @"1";
-        NSLog(@"  [initSubviewsWithAudioMode] userStar = %@", userStar);
-        NSLog(@"  [initSubviewsWithAudioMode] isUserLoggedIn? %@", isUserLoggedIn ? @"TRUE" : @"FALSE");
-        NSLog(@"  [initSubviewsWithAudioMode] ccon_class = %@", cconClassStar);
         // 로그인된 상태이면서 동시에 강의 클립이라면 일단 별점주기 버튼을 그립니다.
         if ( isUserLoggedIn && [cconClassStar isEqualToString : @"1"] )
         {
@@ -651,6 +620,7 @@
             [_topView addSubview : _rateStarButton];
         }
     }
+  */
   
     [_contentView addSubview : _topView];
 }
@@ -1111,7 +1081,7 @@
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
-    NSString *netStatus;
+    NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
@@ -1165,7 +1135,7 @@
     // 기존 타이머를 종료시키고 재시작
     [_logTimer invalidate];
     // 이용로그 전송 시작
-    NSString *netStatus;
+    NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
@@ -1245,6 +1215,7 @@
     _screenMode = ContentsPlayerScreenModeMiniPlayer;
 }
 
+/* API등록 전까지는 별점 기능을 일단 주석처리하였습니다.
 - (void) pressedRateStarButton
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"지식클립이 흥미로우셨나요?"
@@ -1308,6 +1279,7 @@
                        animated : YES
                      completion : nil];
 }
+*/
 
 //
 // 플레이어 컨트롤러UI를 감추거나 표시합니다.
@@ -1368,7 +1340,7 @@
     }
   
     // 이용로그 전송 시작
-    NSString *netStatus;
+    NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
@@ -1413,7 +1385,7 @@
     }
   
     // 이용로그 전송 시작
-    NSString *netStatus;
+    NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
@@ -1591,7 +1563,7 @@
     // 기존 타이머를 종료시키고 재시작
     [_logTimer invalidate];
     // 이용로그 전송 시작
-    NSString *netStatus;
+    NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
@@ -1826,8 +1798,8 @@
         [self setTouchEnable : _closeButton
                       isLock : isLock];
       
-        [self setTouchEnable : _rateStarButton
-                      isLock : isLock];
+      //[self setTouchEnable : _rateStarButton
+      //              isLock : isLock];
       
         [self setTouchEnable : _playButton
                       isLock : isLock];
@@ -2481,7 +2453,7 @@
 {
     NSLog(@"  [reloadLogData] 타이머에 예약에 의해 30초마다 서버로 사용로그를 전송합니다.");
     // 이용로그 전송 시작
-    NSString *netStatus;
+    NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
         netStatus = @"DOWNLOAD";
