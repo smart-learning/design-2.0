@@ -154,14 +154,13 @@
         [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
                   forKey : @"cid"];
       
-        // 2018.10.23
+        // 2018.10.23 ~
         // 로컬에 저장된 콘텐츠가 있는지 확인해서 있으면 uri 를 그 경로로 대체한다.
         // cid 를 검색해서 다운받은 콘텐츠가 있으면 그 콘텐츠 재생경로로 셋팅하는 방식(버튼도 다운로드 완료된 상태로 업데이트)
-        //  -> 재생권한에 대해서는 체크 필요 없는걸로 판단(오디오북이므로 권한이 없는경우에도 다운받은 프리뷰 챕터는 재생해도 되기 때문)
+        //  -> 재생권한에 대해서는 체크 필요 없는걸로 판단(오디오북이므로 권한이 없는 경우에도 다운받은 프리뷰 챕터는 재생해도 되기 때문)
         // 다운로드 중일 때의 상태도 체크해서 버튼 반영
         [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
                   forKey : @"uri"];
-        //[self updateDownloadState];
         // ~ 2018.10.24
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명을 세팅합니다.
@@ -210,7 +209,6 @@
           // 다운로드 대기중일 때 상태도 체크해서 버튼 반영
           [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
                     forKey : @"uri"];
-          //[self updateDownloadState];
           // ~ 2018.10.24
         }
       
@@ -437,15 +435,15 @@
         // 일단 오디오북 콘텐츠인지 확인부터 합니다.
         if ( _isAudioContent )
         {
-            // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
-            NSInteger i = 0;
-            for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
+          // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
+          NSInteger i = 0;
+          for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
+          {
+            if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
             {
-                if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
-                {
-                    break;
-                }
+              break;
             }
+          }
 
           /*
             [_args setObject : contentsListArray[i][@"cid"]
@@ -460,7 +458,7 @@
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
           */
-          
+          // 아래와 같이 수정 2018.10.24
           [_args setObject : contentsListArray[i][@"cid"]
                     forKey : @"cid"];
           
@@ -488,7 +486,7 @@
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
           */
-          
+          // 아래와 같이 수정 2018.10.24
           [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
                     forKey : @"cid"];
           
