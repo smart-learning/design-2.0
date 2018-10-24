@@ -105,6 +105,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
 @property AVPlayerLayer *playerLayer;
 @property (nonatomic, assign) ContentsPlayerScreenMode screenMode;
+@property (nonatomic, assign) NSString * downloadedFilePath;
 @property (nonatomic, assign) BOOL isDownloadFile;
 @property (nonatomic, assign) BOOL isMiniPlayer;
 @property (strong, nonatomic) IFRecommendViewController *recommendViewController;

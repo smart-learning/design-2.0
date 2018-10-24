@@ -154,11 +154,16 @@
         [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
                   forKey : @"cid"];
       
-        NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                      andHeaderInfo : [_args objectForKey : @"token"]];
-      
-        [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+        // 2018.10.23
+        // 로컬에 저장된 콘텐츠가 있는지 확인해서 있으면 uri 를 그 경로로 대체한다.
+        // cid 를 검색해서 다운받은 콘텐츠가 있으면 그 콘텐츠 재생경로로 셋팅하는 방식(버튼도 다운로드 완료된 상태로 업데이트)
+        //  -> 재생권한에 대해서는 체크 필요 없는걸로 판단(오디오북이므로 권한이 없는경우에도 다운받은 프리뷰 챕터는 재생해도 되기 때문)
+        // 다운로드 중일 때의 상태도 체크해서 버튼 반영
+        [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
                   forKey : @"uri"];
+        //[self updateDownloadState];
+        // ~ 2018.10.24
+      
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명을 세팅합니다.
     }
     else if ( !_isAudioContent )  // 영상 콘텐츠의 경우..
@@ -200,8 +205,13 @@
         }
         else if ( _isAuthor )
         {
-            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
-                      forKey : @"uri"];
+          // 2018.10.23 ~
+          // cid 를 검색해서 다운받은 콘텐츠가 있으면 그 콘텐츠로 셋팅(버튼도 다운로드 완료된 상태로 업데이트)
+          // 다운로드 대기중일 때 상태도 체크해서 버튼 반영
+          [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
+                    forKey : @"uri"];
+          //[self updateDownloadState];
+          // ~ 2018.10.24
         }
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
@@ -242,6 +252,7 @@
   
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
+    [self updateDownloadState];
   
     // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
     //CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
@@ -336,6 +347,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+/*
 - (void) fpsSetUrlAsset
 {
     NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
@@ -347,6 +359,31 @@
                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
                  liveKeyRotation : NO];
+}
+*/
+- (void) fpsSetUrlAsset
+{
+  FPSDownloadManager *fps = [FPSDownloadManager sharedInstance];
+  
+  NSString* assetPath = [_args objectForKey : @"uri"];
+  
+  if([fps isPlayableOfflineAsset:assetPath]){ // 오프라인 재생 가능 파일인지 확인
+    NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
+    NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:[fps getPathFromLibraryDir:assetPath]];
+    NSLog(@"오프라인 재생 가능 -> assetURL : %@", assetURL);
+    _urlAsset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
+  }else{  // 오프라인 재생 파일이 아닌 경우
+    NSLog(@"오프라인 재생 불가 파일 -> 스트리밍 재생");
+    NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
+    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
+  }
+  
+  // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+  [_fpsSDK prepareWithUrlAsset : _urlAsset
+                        userId : [_args objectForKey : @"userId"]
+                     contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                    optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+               liveKeyRotation : NO];
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -424,6 +461,7 @@
                 }
             }
 
+          /*
             [_args setObject : contentsListArray[i][@"cid"]
                       forKey : @"cid"];
           
@@ -435,9 +473,23 @@
             _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
+          */
+          
+          [_args setObject : contentsListArray[i][@"cid"]
+                    forKey : @"cid"];
+          
+          [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
+                    forKey : @"uri"];
+          
+          _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
+          
+          [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
+          
+          [self updateDownloadState];
         }
         else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
         {
+          /*
             [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
                       forKey : @"cid"];
           
@@ -449,6 +501,19 @@
             _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
+          */
+          
+          [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
+                    forKey : @"cid"];
+          
+          [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
+                    forKey : @"uri"];
+          
+          _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
+          
+          [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
+          
+          [self updateDownloadState];
         }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
@@ -1079,6 +1144,7 @@
     [self invalidateTimerOnSlider];
   
     // 다운로드받은 콘텐츠의 재생을 마치면 일단 처음으로 돌리고 정지시킵니다.
+    /*
     if ( _isDownloadFile )
     {
         [_player seekToTime : CMTimeMakeWithSeconds(0.f, [self getDuration])];
@@ -1087,6 +1153,7 @@
       
         return ;
     }
+    */
   
     [self fpsSetUrlAsset];
   
@@ -2557,7 +2624,11 @@
     NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
     NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : assetPath];
     NSLog(@"  assetURL : %@", assetURL);
-    
+  
+    //다운로드 버튼 업데이트
+    _downloadedFilePath = location.path;
+    [self updateDownloadState];
+  
     UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"다운로드 완료"
                                                                    message : @"다운로드된 파일로 재생하시겠습니까?"
                                                             preferredStyle : UIAlertControllerStyleAlert];
@@ -2615,7 +2686,7 @@
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
-    ;
+    // 다운로드 진행률에 따라 주기적으로 호출됨.
 }
 
 //
@@ -2625,7 +2696,12 @@
 didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       subtitleDisplayName : (NSString * _Nonnull) subtitleDisplayName
 {
-    NSLog(@"  downloadContent:didStartDownloadWithAsset:subtitleDisplayName");
+  NSLog(@"  downloadContent:didStartDownloadWithAsset:subtitleDisplayName -> %@", contentId);
+  
+  if ([contentId isEqualToString:[_args objectForKey:@"cid"]]) {
+    _downloadedFilePath = nil;
+    [self updateDownloadState];
+  }
 }
 
 
@@ -2645,6 +2721,67 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     {
         [self showToast : downloadMsg]; // 다운로드 진행상황 관련 메시지
     }
+}
+
+
+# pragma mark - Download State Check and GUI Update
+//
+// 지금은 다운로드 상태에 따른 버튼 이미지만 교체하는 수준이지만
+// 추후에는 보다 디테일한 다운로드 진행 상태 업데이트(프로그레스바) 등의 처리 고려
+- (void) updateDownloadState
+{
+  [_downloadButton setImage:@"icon_download"];  // 기본상태
+  
+  if (_downloadedFilePath && [_downloadedFilePath containsString:@"/"]) {
+    [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
+  }else{
+    if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] ){
+      [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
+    }else{
+      [[[FPSDownloadManager sharedInstance] downloadingQueue] enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
+       {
+         FPSDownload *r = obj;
+         if ( [self->_args[@"cid"] isEqualToString : r.clip.cid] )
+         {
+           *stop = YES;
+           [self->_downloadButton setImage:@"icon_download_waiting"]; // 다운로드 대기중
+           return ;
+         }
+       }];
+    }
+  }
+}
+
+# pragma mark - Content URI Setting
+
+// 로컬에 다운로드된 파일일 경우 로컬 경로를 리턴해주고 그렇지 않을 경우 스트리밍 URL 을 리턴해준다.
+- (NSString *) getContentUri:(NSString *)cid
+{
+  NSString *contentPath = [self getDownloadedContentPath:_args[@"cid"]];
+  if (contentPath && [contentPath containsString:@"/"]){
+    _downloadedFilePath = contentPath;  // 로컬 파일 재생 여부 확인을 위해 전역에 보관
+    return contentPath;
+  }else{
+    _downloadedFilePath = nil;  // 로컬 파일 재생 여부 확인을 위해 전역에 보관
+    NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                  andHeaderInfo : [_args objectForKey : @"token"]];
+    return playDataDics[@"media_urls"][@"HLS"];
+  }
+}
+
+// 로컬에 이미 다운로드된 콘텐츠가 있는지 확인하고 있을 경우 경로를 리턴해준다.
+- (NSString *) getDownloadedContentPath:(NSString *)cid
+{
+  NSString *contentPath = nil;
+  
+  NSMutableArray *downloaded = [[DatabaseManager sharedInstance] searchDownloadedContentsId:cid];
+  
+  if (downloaded && downloaded.count > 0) {
+    Clip* clip = downloaded[0];
+    contentPath = clip.contentPath;
+  }
+  
+  return contentPath;
 }
 
 # pragma mark - Event Responder
