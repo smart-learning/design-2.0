@@ -42,6 +42,8 @@
 - (void)removeDownloadedContent:(NSDictionary *)args completion:(void (^)(NSError* error, NSMutableDictionary* result))resultHandler;
 - (void)removeDownloadedContents:(NSArray *)args completion:(void (^)(NSError *error, NSMutableDictionary *result))resultHandler;
 - (void)synchronizeLocalFilesWithDB;  //  DB와 로컬파일간 동기화하는 함수(트랙킹 안되는 파일들 삭제)
+- (BOOL)isPlayableOfflineAsset:(NSString *)contentFullPath; // 재생가능한 파일인지 확인
+- (NSString *)getPathFromLibraryDir:(NSString *)contentFullPath;
 
 - (void)clearQueue;
 - (void)launchNextDownload;
