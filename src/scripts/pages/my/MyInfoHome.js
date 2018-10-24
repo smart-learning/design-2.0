@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   AsyncStorage,
   BackHandler,
+  Platform,
   View
 } from 'react-native';
 import globalStore from '../../../scripts/commons/store';
@@ -584,8 +585,9 @@ export default class MyInfoHome extends React.Component {
               <View style={{ height: 8 }} />
             </View>
 
-            /* 아이폰 구매내역 복원 */
-            if (Platform.OS === 'ios') {
+            {/* /* 아이폰 구매내역 복원 */ }
+
+            {(Platform.OS === 'ios' && (
               <View style={
                 {
                   flexDirection: 'column',
@@ -616,10 +618,9 @@ export default class MyInfoHome extends React.Component {
                   </View>
                 </TouchableOpacity>
                 <View style={{ height: 16 }} />
-              </View>
-            } else {
-              /* 아이폰 이외의 플랫폼 */
-            }
+              </View>            
+            ))}
+
           </ScrollView>
         </SafeAreaView>
       </View>

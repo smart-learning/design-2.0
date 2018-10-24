@@ -315,20 +315,6 @@
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
-  
-    // player is playing
-  /*
-    if ( _player.rate != 0 && _player.error == nil )
-    {
-        AVAssetTrack *track = [[_player.currentItem.asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
-        CMTime currentTime = _player.currentItem.currentTime;
-        CVPixelBufferRef buffer = [_videoOutput copyPixelBufferForItemTime:currentTime itemTimeForDisplay:nil];
-      
-        NSInteger width = CVPixelBufferGetWidth(buffer);
-        NSInteger height = CVPixelBufferGetHeight(buffer);
-        NSLog(@"Resolution : %ld x %ld", width, height);
-    }
-  */
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -1602,7 +1588,6 @@
 - (void) seekbarDragBegin : (id) sender
 {
     _touchDragging = YES;
-    NSLog(@"  Dragging on the slider bar has begun!");
 }
 
 - (void) seekbarDidChangeValue : (id) sender
@@ -1643,16 +1628,11 @@
         [NSObject cancelPreviousPerformRequestsWithTarget : self
                                                  selector : @selector(unlock)
                                                    object : nil];
-        NSLog(@"  [SeekBar] Dragging ends. (%f)", bar.value);
-        // 이용로그 전송 시작
-        //
-        // 이용로그 전송 종료
     }
 }
 
 - (void) seekbarDragging : (NSTimeInterval) time
 {
-    NSLog(@"  [seekbarDragging]");
     [_player pause];
     [self invalidateTimerOnSlider];
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
@@ -1832,15 +1812,6 @@
                                                                [self setCurrentTime : playTime
                                                                         forceChange : NO];
                                                                [self->_miniPlayerUiView setSeekbarCurrentValue : playTime];
-                                                            
-                                                              /*
-                                                               * 진도체크는 추후에 구현합니다.
-                                                               if ( [self.delegate respondsToSelector: @selector(player:didChangedPlayTime:)] )
-                                                               {
-                                                                  [self.delegate player : self
-                                                                     didChangedPlayTime : playTime];
-                                                               }
-                                                               */
                                                             }];
   
     if ( _seekTimer )
@@ -2004,7 +1975,6 @@
                                                        handler : ^(UIAlertAction * action)
                                                                  {
                                                                      [alert dismissViewControllerAnimated:YES completion:nil];
-                                                                   //[[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
                                                                  }];
             [alert addAction : ok];
           
@@ -2610,9 +2580,10 @@
 {
     NSLog(@"  download contentId : %@, location : %@", contentId, location.absoluteString);
   
-    if (![contentId isEqualToString:[_args objectForKey:@"cid"]]) {
-      // 다운로드 완료된 파일이 현재 재생중인 콘텐츠와 다를 경우(다른 영상에서 다운로드를 요청한 케이스)에는 팝업을 띄우지 않습니다.
-      return;
+    if ( ![contentId isEqualToString:[_args objectForKey:@"cid"]] )
+    {
+        // 다운로드 완료된 파일이 현재 재생중인 콘텐츠와 다를 경우(다른 영상에서 다운로드를 요청한 케이스)에는 팝업을 띄우지 않습니다.
+        return ;
     }
   
     if ( self.isMiniPlayer )
@@ -2843,7 +2814,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     if ( playingInfoCenter )
     {
         NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
-      
         MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
                                                                        requestHandler : ^UIImage * _Nonnull(CGSize size)
                                                                                         {
@@ -2874,9 +2844,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (UIImage *) resizeImageWithImage : (UIImage *) image
                       scaledToSize : (CGSize) newSize
 {
-    //UIGraphicsBeginImageContext(newSize);
-    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-    // Pass 1.0 to force exact pixel size.
     UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
     [image drawInRect : CGRectMake(0, 0, newSize.width, newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -2885,56 +2852,4 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     return newImage;
 }
 
-# pragma mark - Labatory
-- (void) toastTestAlert
-{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"Logout"
-                                                                   message : @"Are You Sure Want to Logout!"
-                                                            preferredStyle : UIAlertControllerStyleAlert];
-  
-    //Add Buttons
-    UIAlertAction *yesButton = [UIAlertAction actionWithTitle : @"Yes"
-                                                        style : UIAlertActionStyleDefault
-                                                      handler : ^(UIAlertAction *action)
-                                                                {
-                                                                    //Handle your yes please button action here
-                                                                    //[self clearAllData];
-                                                                    [self closePlayer];
-                                                                }];
-  
-    UIAlertAction *noButton = [UIAlertAction actionWithTitle : @"Cancel"
-                                                       style : UIAlertActionStyleDefault
-                                                     handler : ^(UIAlertAction *action)
-                                                               {
-                                                                  //Handle no, thanks button
-                                                               }];
-  
-    //Add your buttons to alert controller
-  
-    [alert addAction : yesButton];
-    [alert addAction : noButton];
-  
-    [self presentViewController : alert
-                       animated : YES
-                     completion : nil];
-}
-
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

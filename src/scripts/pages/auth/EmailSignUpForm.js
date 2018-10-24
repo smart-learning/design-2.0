@@ -1,30 +1,26 @@
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
   Alert,
+  Dimensions,
   Image,
   ImageBackground,
+  Keyboard,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Keyboard,
-  ScrollView,
-  Dimensions
+  View
 } from 'react-native';
+import { AppEventsLogger } from 'react-native-fbsdk';
+import Swiper from 'react-native-swiper';
 import bgSignUp from '../../../images/bg-join.png';
-import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import logo from '../../../images/logo-en-primary.png';
-import { observer } from 'mobx-react';
-import { observable } from 'mobx';
-import BulletBoxCheck from '../../../images/ic-checkbox.png';
-import BulletBoxChecked from '../../../images/ic-checkbox-checked.png';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Net from '../../commons/net';
 import store from '../../commons/store';
-import Swiper from 'react-native-swiper';
-import bgLogin from '../../../images/bg-signup.jpg';
-import createStore from '../../commons/createStore';
-import {AppEventsLogger} from 'react-native-fbsdk';
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -203,6 +199,9 @@ class EmailSignUpForm extends Component {
     if (this.data.email === null) {
       Alert.alert('이메일은 필수 입력항목입니다.');
       return false;
+    } else if (!this.data.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+      Alert.alert('이메일 형식이 맞지 않습니다.');
+      return false;
     } else if (this.data.password === null) {
       Alert.alert('비밀번호는 필수 입력항목입니다.');
       return false;
@@ -215,8 +214,8 @@ class EmailSignUpForm extends Component {
 
     Net.signUp(this.data.email, this.data.password)
       .then(data => {
-        // 이메일 회원 가입이 완료된 상태 
-        AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');  
+        // 이메일 회원 가입이 완료된 상태
+        AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
         store.welaaaAuth = data;
         this.props.navigation.navigate('HomeScreen');
       })
