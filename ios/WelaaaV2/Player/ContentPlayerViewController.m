@@ -347,27 +347,29 @@
 */
 - (void) fpsSetUrlAsset
 {
-  FPSDownloadManager *fps = [FPSDownloadManager sharedInstance];
-  
-  NSString* assetPath = [_args objectForKey : @"uri"];
-  
-  if([fps isPlayableOfflineAsset:assetPath]){ // 오프라인 재생 가능 파일인지 확인
-    NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
-    NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:[fps getPathFromLibraryDir:assetPath]];
-    NSLog(@"오프라인 재생 가능 -> assetURL : %@", assetURL);
-    _urlAsset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
-  }else{  // 오프라인 재생 파일이 아닌 경우
-    NSLog(@"오프라인 재생 불가 파일 -> 스트리밍 재생");
-    NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
-    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-  }
-  
-  // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-  [_fpsSDK prepareWithUrlAsset : _urlAsset
-                        userId : [_args objectForKey : @"userId"]
-                     contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                    optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-               liveKeyRotation : NO];
+    FPSDownloadManager *fps = [FPSDownloadManager sharedInstance];
+    
+    NSString* assetPath = [_args objectForKey : @"uri"];
+    
+    if([fps isPlayableOfflineAsset:assetPath]){ // 오프라인 재생 가능 파일인지 확인
+        NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
+        NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:[fps getPathFromLibraryDir:assetPath]];
+        NSLog(@"오프라인 재생 가능 -> assetURL : %@", assetURL);
+        _urlAsset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
+        _isDownloadFile = true;
+    }else{  // 오프라인 재생 파일이 아닌 경우
+        NSLog(@"오프라인 재생 불가 파일 -> 스트리밍 재생");
+        NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
+        _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
+        _isDownloadFile = false;
+    }
+    
+    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
+    [_fpsSDK prepareWithUrlAsset : _urlAsset
+                          userId : [_args objectForKey : @"userId"]
+                       contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
+                      optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
+                 liveKeyRotation : NO];
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -2579,6 +2581,7 @@
                                               handler : ^(UIAlertAction * action)
                                                         {
                                                             self->_isDownloadFile = YES;
+                                                            [self updateNetStatusLabel];
                                                             NSTimeInterval cTime = [self getCurrentPlaybackTime];
                                                             NSTimeInterval tTime = [self getDuration];
                                                           
@@ -2596,8 +2599,6 @@
                                                             [self->_player seekToTime : newTime];//playImmediatelyAtRate
                                                             [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
                                                           
-                                                            [self updateDownloadState];
-                                                          
                                                             [[NSNotificationCenter defaultCenter] addObserver : self
                                                                                                      selector : @selector(videoPlayBackDidFinish:)
                                                                                                          name : AVPlayerItemDidPlayToEndTimeNotification
@@ -2610,7 +2611,7 @@
                                                         {
                                                           [alert dismissViewControllerAnimated:YES completion:nil];
                                                           self->_isDownloadFile = NO;
-                                                          [self updateDownloadState];
+                                                          [self updateNetStatusLabel];
                                                         }];
   
     [alert addAction : y];
@@ -2673,45 +2674,47 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 // 추후에는 보다 디테일한 다운로드 진행 상태 업데이트(프로그레스바) 등의 처리 고려
 - (void) updateDownloadState
 {
-  [_downloadButton setImage:@"icon_download"];  // 기본상태
-  
-  if (_downloadedFilePath && [_downloadedFilePath containsString:@"/"]) {
-    [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
-    _isDownloadFile = true;
-  }else{
-    _isDownloadFile = false;
-    if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] ){
-      [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
+    [_downloadButton setImage:@"icon_download"];  // 기본상태
+    
+    if (_downloadedFilePath && [_downloadedFilePath containsString:@"/"]) {
+        [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
     }else{
-      [[[FPSDownloadManager sharedInstance] downloadingQueue] enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
-       {
-         FPSDownload *r = obj;
-         if ( [self->_args[@"cid"] isEqualToString : r.clip.cid] )
-         {
-           *stop = YES;
-           [self->_downloadButton setImage:@"icon_download_waiting"]; // 다운로드 대기중
-           return ;
-         }
-       }];
+        if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] ){
+            [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
+        }else{
+            [[[FPSDownloadManager sharedInstance] downloadingQueue] enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
+             {
+                 FPSDownload *r = obj;
+                 if ( [self->_args[@"cid"] isEqualToString : r.clip.cid] )
+                 {
+                     *stop = YES;
+                     [self->_downloadButton setImage:@"icon_download_waiting"]; // 다운로드 대기중
+                     return ;
+                 }
+             }];
+        }
     }
-  }
-  
-  NSString *netStatus;
-  if ( _isDownloadFile )
-  {
-    netStatus = @"DOWNLOAD";
-    _networkStatusLabel.text = @"다운로드 재생";
-  }
-  else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-  {
-    netStatus = @"Wi-Fi";
-    _networkStatusLabel.text = @"Wi-Fi 재생";
-  }
-  else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-  {
-    netStatus = @"LTE/3G";
-    _networkStatusLabel.text = @"LTE/3G 재생";
-  }
+}
+
+// 재생모드 표시 업데이트(다운로드 파일이지만 사용자가 스트리밍 재생을 원할 경우도 있으므로 다운로드 상태 표시와 별도로 구분)
+- (void) updateNetStatusLabel
+{
+    NSString *netStatus;
+    if ( _isDownloadFile )
+    {
+        netStatus = @"DOWNLOAD";
+        _networkStatusLabel.text = @"다운로드 재생";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+        netStatus = @"Wi-Fi";
+        _networkStatusLabel.text = @"Wi-Fi 재생";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+        netStatus = @"LTE/3G";
+        _networkStatusLabel.text = @"LTE/3G 재생";
+    }
 }
 
 # pragma mark - Content URI Setting
