@@ -8,6 +8,10 @@ export default {
     return RNNativePlayer;
   },
 
+  getPaymentManager() {
+    return RNProductPayment;
+  },
+
   getF_TOKEN(callback) {
     RNNativeBase.getF_TOKEN(callback);
   },
@@ -185,5 +189,10 @@ export default {
       console.log('native.restore > args', args);
       return error;
     }
+  },
+
+  buyResult(arg) {
+    console.log('native.js::buyResult(arg)', arg);
+    globalStore.buyResult.success = arg.success;
   }
 };

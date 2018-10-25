@@ -465,19 +465,24 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
     if ( result == nil )
     {
       //DEFAULT_ALERT(@"결제확인", @"결제가 정상적으로 처리되지 않았습니다.");
+      completion(nil, nil);
     }
     else
     {
         if ( [result intValue] == 0 )
         {
-            NSLog(@"  [checkReceipt] Receipt Validation Success");
-            //[self provideContent: transaction.payment.productIdentifier];
-            // implement proper rewards..
+          NSLog(@"  [checkReceipt] Receipt Validation Success");
+          //[self provideContent: transaction.payment.productIdentifier];
+          // implement proper rewards..
+          
+          completion(jsonData, nil);
+          
         }
         else
         {
-            // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
-            NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
+          // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
+          NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
+          completion(nil, nil);
         }
         // 21000 : App Store에서 사용자가 제공 한 JSON 객체를 읽을 수 없습니다.
         // 21002 : 영수증 데이터 속성의 데이터 형식이 잘못되었습니다.

@@ -2,16 +2,33 @@
 #import "RNProductPayment.h"
 
 @implementation RNProductPayment
+{
+  BOOL _hasListeners;
+}
 
 // To export a module named FPSManager
 RCT_EXPORT_MODULE();
 
+- (NSArray <NSString *> *) supportedEvents
+{
+  return @[@"buyResult"];
+}
+
+// Will be called when this module's first listener is added.
+- (void) startObserving
+{
+  _hasListeners = YES;
+}
+
+// Will be called when this module's last listener is removed, or on dealloc.
+- (void) stopObserving
+{
+  _hasListeners = NO;
+}
+
 #pragma mark - Private Methods
 
-
 #pragma mark - todo : 싱글쓰레드로 처리하든 화면 액션을 차단해야합니다.
-
-
 
 - (void) buyProduct : (NSDictionary *) args
 {
@@ -90,7 +107,9 @@ RCT_EXPORT_MODULE();
                                                      AndToken : [args objectForKey : @"token"]
                                                  onCompletion : ^(NSString *response, NSError *error)
                     {
+                      // 아래의 네비게이션 테스트를 위해 임시로 막아둠(response 콜백 보낼 때 적절한 json 값 셋팅 필요) 2018.10.24
                         // Convert JSON String to NSDictionary
+                      /*
                         NSDictionary *rec = [IAPShare toJSON : response];
                         NSLog(@"  [IAP checkReceipt] response from the server : %@", response);
                         NSLog(@"  [IAP checkReceipt] rec from the server : %@", rec[@"status"]);
@@ -114,6 +133,18 @@ RCT_EXPORT_MODULE();
                
                         NSLog(@"  [IAP checkReceipt] 영수증 확인 후 다음 결제를 위해 PaymentQueue를 초기화합니다..");
                         [IAPShare sharedHelper].iap = nil;
+                      */
+                      
+                      // 2018.10.24
+                      NSLog(@"RN 쪽에 홈화면으로 이동 요청");
+                      NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+                      [params setObject:[NSNumber numberWithBool:true] forKey:@"success"];
+                      if ( self->_hasListeners )
+                      {
+                        [self sendEventWithName : @"buyResult"
+                                           body : params];
+                      }
+                      
                     }];
                     // ios dispatchqueue
                     // https://magi82.github.io/gcd-01/

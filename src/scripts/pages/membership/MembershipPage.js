@@ -16,6 +16,7 @@ import IcPremium from '../../../images/ic-m-premium.png';
 import IcAngleRight from '../../../images/ic-my-angle-right-white.png';
 import globalStore from '../../commons/store';
 import { observer } from 'mobx-react';
+import { observable, observe } from 'mobx';
 import moment from 'moment';
 import native from '../../commons/native';
 import {AppEventsLogger} from 'react-native-fbsdk';
@@ -318,6 +319,20 @@ const MembershipRule = Platform.select({
 export default class MembershipPage extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.disposer = observe(globalStore.buyResult, change => {
+      if ('success' === change.name && change.newValue) {        
+        globalStore.buyResult.success = false;
+        // HomeScreen.js 로 이동 혹은 Back
+        this.props.navigation.navigate('HomeScreen');
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.disposer();
   }
 
   render() {
