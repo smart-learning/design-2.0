@@ -411,7 +411,7 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
 {
     self.checkReceiptCompleteBlock = completion;
   
-    NSString *apiVerifyReceipt = @"/dev/api/v1.0/payment/ios/receipts";
+    NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/receipts";
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
