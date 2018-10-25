@@ -2624,7 +2624,7 @@
                                                             [self->_player seekToTime : newTime];//playImmediatelyAtRate
                                                             [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
                                                           
-                                                            self->_networkStatusLabel.text = @"다운로드 재생";
+                                                            [self updateDownloadState];
                                                           
                                                             [[NSNotificationCenter defaultCenter] addObserver : self
                                                                                                      selector : @selector(videoPlayBackDidFinish:)
@@ -2636,7 +2636,9 @@
                                                 style : UIAlertActionStyleDefault
                                               handler : ^(UIAlertAction * action)
                                                         {
-                                                            [alert dismissViewControllerAnimated:YES completion:nil];
+                                                          [alert dismissViewControllerAnimated:YES completion:nil];
+                                                          self->_isDownloadFile = NO;
+                                                          [self updateDownloadState];
                                                         }];
   
     [alert addAction : y];
