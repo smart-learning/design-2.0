@@ -178,7 +178,8 @@ export default class DownloadContentPage extends React.Component {
           <Text style={{ fontSize: 12, color: '#A6A6A6' }}>
             {item.groupTeacherName} | {item.cPlayTime}
           </Text>
-          {item.view_limitdate !== 'null' && (
+          {/* 현재 시나리오에선 만료기간이 의미가 없으므로 보이지 않게 처리. 추후 시나리오 보완시 다시 적용 고려.*/}
+          {false && (
             <Text style={{ fontSize: 12, color: '#E10D38' }}>
               {item.view_limitdate}
             </Text>
