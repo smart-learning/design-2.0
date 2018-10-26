@@ -53,10 +53,11 @@ class AdvertisingSection extends Component {
 			},
 
 			footerText: {
-				alignSelf: 'center',
+				width: '100%',
 				padding: 15,
 				fontSize: 18,
-				color: '#FFFFFF'
+				color: '#FFFFFF',
+				textAlign: 'center'
 			}
 		});
 

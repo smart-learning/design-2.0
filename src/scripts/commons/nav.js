@@ -386,6 +386,12 @@ export default {
         case 'in_browser':
           navigation.navigate('WebView', { url: schemes[0] });
           break;
+        
+        case 'event_intro':
+          navigation.navigate('EventView', { 
+            title: '이달의 책'
+          });
+          break;
 
         case 'out_browser':
           Linking.openURL(decodeURIComponent(schemes[0]));
