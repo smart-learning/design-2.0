@@ -328,7 +328,7 @@ export default class Book extends React.Component {
               {this.props.itemData.memo.split('<br>').join('')}
             </Text>
           )}
-          {1 === 2 && (
+          {
             <View style={[styles.alignJustify, styles.countWrap]}>
               <Image source={IcView} style={styles.btnSetSmall} />
               <Text style={styles.countText}>
@@ -343,7 +343,7 @@ export default class Book extends React.Component {
                 {this.props.itemData.review_count}
               </Text>
             </View>
-          )}
+          }
         </View>
         <View style={styles.bookThumbnail}>
           <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
