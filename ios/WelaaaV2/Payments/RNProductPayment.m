@@ -247,8 +247,17 @@ RCT_EXPORT_MODULE();
     }];
 }
 
+// 토큰값을 세팅합니다.
+- (void) setTokenToRefresh : (NSString *) authToken
+{
+    self.tokenStr = authToken;
+    NSLog(@"  [setTokenToRefresh] : %@", self.tokenStr);
+}
 - (void) restoreProduct : (NSDictionary *) args
 {
+    NSLog(@"  [restoreProduct] : %@", args);
+    [self setTokenToRefresh : [args objectForKey : @"token"]];
+  
     // 구매복원 구현 시작
     NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
     if ( [[NSFileManager defaultManager] fileExistsAtPath : [receiptUrl path]] )
@@ -259,7 +268,7 @@ RCT_EXPORT_MODULE();
         NSLog(@"  [restoreProduct] Base64 Encoded Payload : %@", receiptBase64);
       //DEFAULT_ALERT(@"구매복원", @"구매내역을 복원하여 서버로 전송 완료했습니다.");
         [common presentAlertWithTitle:@"구매복원" andMessage:@"구매내역을 복원하여 서버로 전송 완료했습니다."];
-        [self sendReceiptToRestore : receiptBase64];
+        [self sendReceiptToRestore:receiptBase64 AndToken:self.tokenStr];
     }
     else
     {
@@ -298,7 +307,7 @@ RCT_EXPORT_MODULE();
                 NSString *receiptBase64 = [NSString base64StringFromData : receiptData
                                                                   length : [receiptData length]];
                 NSLog(@"  [requestDidFinish] Base64 Encoded Payload : %@", receiptBase64);
-                [self sendReceiptToRestore: receiptBase64];
+                [self sendReceiptToRestore:receiptBase64 AndToken:self.tokenStr];
               //DEFAULT_ALERT(@"구매복원", @"구매내역을 다시 복원하여 서버로 전송 완료했습니다.");
                 [common presentAlertWithTitle:@"구매복원" andMessage:@"구매내역을 다시 복원하여 서버로 전송 완료했습니다."];
             }
@@ -314,6 +323,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (void) sendReceiptToRestore : (NSString *) receiptString
+                     AndToken : (NSString *) authValue
 {
     NSString *paymentMode;
 #if DEBUG
@@ -323,74 +333,63 @@ RCT_EXPORT_MODULE();
 #endif
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   
-    NSString *receiptVerificatorUrl;
+    NSString *apiVerifyReceipt = @"/api/v1.0/ios/restore";
+    NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
+    NSURL *url = [NSURL URLWithString : urlStr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+    NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
   
-    if ( [paymentMode isEqualToString: @"live"] )
-    {
-        receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify_restore.php";
-    }
-    else if ( [paymentMode isEqualToString: @"sandbox"] )
-    {
-        receiptVerificatorUrl = @"http://welearn.co.kr/usingapp/receiptverify_restore.php";
-    }
-    else
-    {
-        receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify_restore.php";
-    }
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
   
-    NSString *webToken = [[NSUserDefaults standardUserDefaults] stringForKey: @"webToken"];
-    if ( nil == webToken )
-    {
-        webToken = @"NO_F_TOKEN";
-    }
+    [request setHTTPMethod : @"POST"];
+    [request setValue:headerValue forHTTPHeaderField:@"authorization"];
   
-    NSString *post;
-    post = [NSString stringWithFormat: @"receipt=%@&item_id=RESTORE&rooting=n&transaction_id=RESTORE&mode=%@&f_token=%@", receiptString, paymentMode, webToken];
-    NSData *postData = [post dataUsingEncoding: NSUTF8StringEncoding];
-  
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL: [NSURL URLWithString: [NSString stringWithFormat: @"%@", receiptVerificatorUrl]]];
-    [request setHTTPBody: postData];
-    [request setHTTPMethod: @"POST"];
     NSError *error;
     NSURLResponse *resp = nil;
-    // 비동기방식이 아닌 동기방식으로 접속한다.
-    NSData *data = [NSURLConnection sendSynchronousRequest: request
-                                         returningResponse: &resp
-                                                     error: &error];
   
-    NSString *jsonData = [[NSString alloc] initWithData: data
-                                               encoding: NSUTF8StringEncoding];
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+    [dictionary setObject:receiptString forKey:@"receipt"];
+    [dictionary setObject:paymentMode   forKey:@"mode"];
+    [dictionary setObject:authValue     forKey:@"token"];
   
-    jsonData = [jsonData stringByReplacingOccurrencesOfString: @"'" withString: @"\""];   // ' -> " 작은 따옴표를 큰 따옴표로 변경
-    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData: [jsonData dataUsingEncoding: NSUTF8StringEncoding]
-                                                                 options: NSJSONReadingAllowFragments
-                                                                   error: &error];
-    NSLog(@"  [sendReceiptToRestore] JSON Response : %@", jsonData);
+    NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
+                                                       options : 0
+                                                         error : &error];
+    [request setHTTPBody : postData];
   
-    if ( !jsonResponse )
-    { // ... Handle error ...//
-        NSLog(@"  [sendReceiptToRestore] jsonResponse parsing error..");
-    }
+    // 비동기방식이 아닌 동기방식으로 접속합니다.
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
+  
+    NSString *jsonData = [[NSString alloc] initWithData : data
+                                               encoding : NSUTF8StringEncoding];
+  
+    NSDictionary *statusDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                                   options : NSJSONReadingAllowFragments
+                                                                     error : &error];
+  
+    NSLog(@"  [checkReceipt] result : %@", statusDataDics);
     // ... Send a response back to the device ... //
-    NSNumber *result = [jsonResponse objectForKey: @"status"];
+    NSNumber *result = [statusDataDics objectForKey : @"status"];
   
     if ( result == nil )
     {
-        NSLog(@"  [sendReceiptToRestore] The result is NULL..");
     }
     else
     {
         if ( [result intValue] == 0 )
         {
-            NSLog(@"  [sendReceiptToRestore] Receipt Validation Success");
+            NSLog(@"  [checkReceipt] Receipt Validation Success");
+            //[self provideContent: transaction.payment.productIdentifier];
+            // implement proper rewards..
+          
         }
         else
         {
             // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
-            NSLog(@"  [sendReceiptToRestore] Receipt Validation Failed T_T");
-            NSLog(@"  [sendReceiptToRestore] welastatus : %@", [jsonResponse objectForKey: @"welastatus"]);
-            NSLog(@"  [sendReceiptToRestore] welamsg : %@", [jsonResponse objectForKey: @"welamsg"]);
+            NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
         }
     }
 }

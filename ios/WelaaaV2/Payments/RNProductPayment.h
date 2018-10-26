@@ -5,6 +5,8 @@
 #import "common.h"
 #import "RNReceiptEventEmitter.h"
 
-@interface RNProductPayment : RCTEventEmitter <RCTBridgeModule>
+@interface RNProductPayment : RCTEventEmitter <RCTBridgeModule, SKProductsRequestDelegate>
+
+@property NSString *tokenStr;
 
 @end
