@@ -212,7 +212,7 @@ class EmailSignUpForm extends Component {
       return false;
     }
 
-    Net.signUp(this.data.email, this.data.password)
+    Net.signUp(this.data.name ,this.data.email, this.data.password)
       .then(data => {
         // 이메일 회원 가입이 완료된 상태
         AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
@@ -262,142 +262,147 @@ class EmailSignUpForm extends Component {
                 <Text style={styles.headline}>무료계정만들기</Text>
 
                 <View borderRadius={4} style={styles.inputWrap}>
-                  {/*<TextInput*/}
-                  {/*style={styles.input}*/}
-                  {/*underlineColorAndroid={'rgba(0,0,0,0)'}*/}
-                  {/*onFocus={this.validityNameOnFocus}*/}
-                  {/*value={this.data.name}*/}
-                  {/*autoCapitalize={'none'}*/}
-                  {/*onChangeText={text => {*/}
-                  {/*this.data.name = text*/}
-                  {/*}}/>*/}
-                  {/*<View style={styles.inputBr}/>*/}
-                  <TextInput
-                    style={styles.input}
-                    underlineColorAndroid={'rgba(0,0,0,0)'}
-                    onFocus={this.validityEmailOnFocus}
-                    keyboardType="email-address"
-                    placeholder="이메일"
-                    onSubmitEditing={Keyboard.dismiss}
-                    value={this.data.email}
-                    autoCapitalize={'none'}
-                    onChangeText={text => {
-                      this.data.email = text;
-                    }}
-                  />
+
                   <View style={styles.inputBr} />
                   <TextInput
                     style={styles.input}
                     underlineColorAndroid={'rgba(0,0,0,0)'}
-                    onFocus={this.validityPasswordOnFocus}
-                    secureTextEntry={true}
+                    placeholder="이름"
+                    onFocus={this.validityNameOnFocus}
+                    value={this.data.name}
                     autoCapitalize={'none'}
-                    value={this.data.password}
-                    placeholder="비밀번호"
-                    onSubmitEditing={Keyboard.dismiss}
                     onChangeText={text => {
-                      this.data.password = text;
+                      this.data.name = text;
                     }}
                   />
-                  <View style={styles.inputBr} />
-                  <TextInput
-                    style={styles.input}
-                    underlineColorAndroid={'rgba(0,0,0,0)'}
-                    onFocus={this.validityPassconfOnFocus}
-                    secureTextEntry={true}
-                    autoCapitalize={'none'}
-                    value={this.data.passconf}
-                    placeholder="비밀번호 확인"
-                    onSubmitEditing={Keyboard.dismiss}
-                    onChangeText={text => {
-                      this.data.passconf = text;
-                    }}
-                  />
+
+                    <View style={styles.inputBr} />
+                    <TextInput
+                      style={styles.input}
+                      underlineColorAndroid={'rgba(0,0,0,0)'}
+                      onFocus={this.validityEmailOnFocus}
+                      keyboardType="email-address"
+                      placeholder="이메일"
+                      onSubmitEditing={Keyboard.dismiss}
+                      value={this.data.email}
+                      autoCapitalize={'none'}
+                      onChangeText={text => {
+                        this.data.email = text;
+                      }}
+                    />
+                    <View style={styles.inputBr} />
+                    <TextInput
+                      style={styles.input}
+                      underlineColorAndroid={'rgba(0,0,0,0)'}
+                      onFocus={this.validityPasswordOnFocus}
+                      secureTextEntry={true}
+                      autoCapitalize={'none'}
+                      value={this.data.password}
+                      placeholder="비밀번호"
+                      onSubmitEditing={Keyboard.dismiss}
+                      onChangeText={text => {
+                        this.data.password = text;
+                      }}
+                    />
+                    <View style={styles.inputBr} />
+                    <TextInput
+                      style={styles.input}
+                      underlineColorAndroid={'rgba(0,0,0,0)'}
+                      onFocus={this.validityPassconfOnFocus}
+                      secureTextEntry={true}
+                      autoCapitalize={'none'}
+                      value={this.data.passconf}
+                      placeholder="비밀번호 확인"
+                      onSubmitEditing={Keyboard.dismiss}
+                      onChangeText={text => {
+                        this.data.passconf = text;
+                      }}
+                    />
                 </View>
 
-                <View style={styles.submitContainer}>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={this.handleJoin}
-                  >
-                    <View borderRadius={4} style={styles.btnSubmit}>
-                      <Text style={styles.textSubmit}>가입하기</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-
-                {/*<View style={styles.checkboxContainer}>*/}
-                {/*<View style={styles.checkbox}>*/}
-                {/*<TouchableOpacity activeOpacity={0.9} onPress={this.agreeStatus}>*/}
-                {/*{!!this.data.isAgree &&*/}
-                {/*<Image source={BulletBoxChecked} style={styles.checkBoxImage}/>*/}
-                {/*}*/}
-                {/*{!this.data.isAgree &&*/}
-                {/*<Image source={BulletBoxCheck} style={styles.checkBoxImage}/>*/}
-                {/*}*/}
-                {/*</TouchableOpacity>*/}
-                {/*<View>*/}
-                {/*<Text style={styles.agreeText}>*/}
-                {/*새로운 콘텐츠 및 이벤트 정보 받기*/}
-                {/*</Text>*/}
-                {/*</View>*/}
-                {/*</View>*/}
-                {/*</View>*/}
-
-                <View style={styles.ruleWrap}>
-                  <View style={styles.ruleTextContainer}>
-                    <Text style={styles.ruleText}>
-                      무료 계정을 생성하시면 월라
-                    </Text>
+                  <View style={styles.submitContainer}>
                     <TouchableOpacity
                       activeOpacity={0.9}
-                      onPress={() =>
-                        this.props.navigation.navigate('PolicyPage')
-                      }
+                      onPress={this.handleJoin}
                     >
-                      <Text
-                        style={styles.ruleButton}
-                        textDecorationLine={'underline'}
-                      >
-                        이용약관
-                      </Text>
+                      <View borderRadius={4} style={styles.btnSubmit}>
+                        <Text style={styles.textSubmit}>가입하기</Text>
+                      </View>
                     </TouchableOpacity>
-                    <Text style={styles.ruleText}>및</Text>
                   </View>
-                  <View style={styles.ruleTextContainer}>
-                    <TouchableOpacity
-                      activeOpacity={0.9}
-                      onPress={() =>
-                        this.props.navigation.navigate('PrivacyPage')
-                      }
-                    >
-                      <Text
-                        style={styles.ruleButton}
-                        textDecorationLine={'underline'}
-                      >
-                        개인정보보호정책
-                      </Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ruleText}>
-                      에 동의하는 것으로 간주합니다.
+
+                  {/*<View style={styles.checkboxContainer}>*/}
+                  {/*<View style={styles.checkbox}>*/}
+                  {/*<TouchableOpacity activeOpacity={0.9} onPress={this.agreeStatus}>*/}
+                  {/*{!!this.data.isAgree &&*/}
+                  {/*<Image source={BulletBoxChecked} style={styles.checkBoxImage}/>*/}
+                  {/*}*/}
+                  {/*{!this.data.isAgree &&*/}
+                  {/*<Image source={BulletBoxCheck} style={styles.checkBoxImage}/>*/}
+                  {/*}*/}
+                  {/*</TouchableOpacity>*/}
+                  {/*<View>*/}
+                  {/*<Text style={styles.agreeText}>*/}
+                  {/*새로운 콘텐츠 및 이벤트 정보 받기*/}
+                  {/*</Text>*/}
+                  {/*</View>*/}
+                  {/*</View>*/}
+                  {/*</View>*/}
+
+                  <View style={styles.ruleWrap}>
+                    <View style={styles.ruleTextContainer}>
+                      <Text style={styles.ruleText}>
+                        무료 계정을 생성하시면 월라
                     </Text>
+                      <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() =>
+                          this.props.navigation.navigate('PolicyPage')
+                        }
+                      >
+                        <Text
+                          style={styles.ruleButton}
+                          textDecorationLine={'underline'}
+                        >
+                          이용약관
+                      </Text>
+                      </TouchableOpacity>
+                      <Text style={styles.ruleText}>및</Text>
+                    </View>
+                    <View style={styles.ruleTextContainer}>
+                      <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() =>
+                          this.props.navigation.navigate('PrivacyPage')
+                        }
+                      >
+                        <Text
+                          style={styles.ruleButton}
+                          textDecorationLine={'underline'}
+                        >
+                          개인정보보호정책
+                      </Text>
+                      </TouchableOpacity>
+                      <Text style={styles.ruleText}>
+                        에 동의하는 것으로 간주합니다.
+                    </Text>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
 
-            {!!store.isKeyboardOn && <View style={{ height: 50 }} />}
-          </View>
+              {!!store.isKeyboardOn && <View style={{ height: 50 }} />}
+            </View>
         </ScrollView>
       </View>
-    );
-  }
-}
-
+        );
+      }
+    }
+    
 EmailSignUpForm.navigationOptions = () => {
   return {
-    header: null
-  };
-};
-
-export default EmailSignUpForm;
+          header: null
+      };
+    };
+    
+    export default EmailSignUpForm;

@@ -679,8 +679,9 @@ export default {
   },
 
   //회원가입
-  signUp(email, password) {
+  signUp(name,email, password) {
     let params = {
+      name: name,
       username: email,
       password: password,
       grant_type: 'password'
