@@ -275,7 +275,6 @@ class EmailSignUpForm extends Component {
 
                 <View borderRadius={4} style={styles.inputWrap}>
 
-                  <View style={styles.inputBr} />
                   <TextInput
                     style={styles.input}
                     underlineColorAndroid={'rgba(0,0,0,0)'}
@@ -287,8 +286,8 @@ class EmailSignUpForm extends Component {
                       this.data.name = text;
                     }}
                   />
-
                   <View style={styles.inputBr} />
+
                   <TextInput
                     style={styles.input}
                     underlineColorAndroid={'rgba(0,0,0,0)'}
@@ -330,96 +329,97 @@ class EmailSignUpForm extends Component {
                       this.data.passconf = text;
                     }}
                   />
+                </View>
 
-                  <View style={styles.submitContainer}>
+                <View style={styles.submitContainer}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={this.handleJoin}
+                    disabled={this.state.signupButtonDisabled}
+                  >
+                    <View borderRadius={4} style={styles.btnSubmit}>
+                      <Text style={styles.textSubmit}>
+                        {this.state.signupButtonDisabled
+                          ? '처리중입니다.'
+                          : '가입하기'
+                        }
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
+                {/*<View style={styles.checkboxContainer}>*/}
+                {/*<View style={styles.checkbox}>*/}
+                {/*<TouchableOpacity activeOpacity={0.9} onPress={this.agreeStatus}>*/}
+                {/*{!!this.data.isAgree &&*/}
+                {/*<Image source={BulletBoxChecked} style={styles.checkBoxImage}/>*/}
+                {/*}*/}
+                {/*{!this.data.isAgree &&*/}
+                {/*<Image source={BulletBoxCheck} style={styles.checkBoxImage}/>*/}
+                {/*}*/}
+                {/*</TouchableOpacity>*/}
+                {/*<View>*/}
+                {/*<Text style={styles.agreeText}>*/}
+                {/*새로운 콘텐츠 및 이벤트 정보 받기*/}
+                {/*</Text>*/}
+                {/*</View>*/}
+                {/*</View>*/}
+                {/*</View>*/}
+
+                <View style={styles.ruleWrap}>
+                  <View style={styles.ruleTextContainer}>
+                    <Text style={styles.ruleText}>
+                      무료 계정을 생성하시면 월라
+                    </Text>
                     <TouchableOpacity
                       activeOpacity={0.9}
-                      onPress={this.handleJoin}
-                      disabled={this.state.signupButtonDisabled}
+                      onPress={() =>
+                        this.props.navigation.navigate('PolicyPage')
+                      }
                     >
-                      <View borderRadius={4} style={styles.btnSubmit}>
-                        <Text style={styles.textSubmit}>
-                          {this.state.signupButtonDisabled
-                            ? '처리중입니다.'
-                            : '가입하기'
-                          }
-                        </Text>
-                      </View>
+                      <Text
+                        style={styles.ruleButton}
+                        textDecorationLine={'underline'}
+                      >
+                        이용약관
+                      </Text>
                     </TouchableOpacity>
+                    <Text style={styles.ruleText}>및</Text>
                   </View>
-
-                  {/*<View style={styles.checkboxContainer}>*/}
-                  {/*<View style={styles.checkbox}>*/}
-                  {/*<TouchableOpacity activeOpacity={0.9} onPress={this.agreeStatus}>*/}
-                  {/*{!!this.data.isAgree &&*/}
-                  {/*<Image source={BulletBoxChecked} style={styles.checkBoxImage}/>*/}
-                  {/*}*/}
-                  {/*{!this.data.isAgree &&*/}
-                  {/*<Image source={BulletBoxCheck} style={styles.checkBoxImage}/>*/}
-                  {/*}*/}
-                  {/*</TouchableOpacity>*/}
-                  {/*<View>*/}
-                  {/*<Text style={styles.agreeText}>*/}
-                  {/*새로운 콘텐츠 및 이벤트 정보 받기*/}
-                  {/*</Text>*/}
-                  {/*</View>*/}
-                  {/*</View>*/}
-                  {/*</View>*/}
-
-                  <View style={styles.ruleWrap}>
-                    <View style={styles.ruleTextContainer}>
-                      <Text style={styles.ruleText}>
-                        무료 계정을 생성하시면 월라
-                    </Text>
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={() =>
-                          this.props.navigation.navigate('PolicyPage')
-                        }
+                  <View style={styles.ruleTextContainer}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() =>
+                        this.props.navigation.navigate('PrivacyPage')
+                      }
+                    >
+                      <Text
+                        style={styles.ruleButton}
+                        textDecorationLine={'underline'}
                       >
-                        <Text
-                          style={styles.ruleButton}
-                          textDecorationLine={'underline'}
-                        >
-                          이용약관
+                        개인정보보호정책
                       </Text>
-                      </TouchableOpacity>
-                      <Text style={styles.ruleText}>및</Text>
-                    </View>
-                    <View style={styles.ruleTextContainer}>
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={() =>
-                          this.props.navigation.navigate('PrivacyPage')
-                        }
-                      >
-                        <Text
-                          style={styles.ruleButton}
-                          textDecorationLine={'underline'}
-                        >
-                          개인정보보호정책
-                      </Text>
-                      </TouchableOpacity>
-                      <Text style={styles.ruleText}>
-                        에 동의하는 것으로 간주합니다.
+                    </TouchableOpacity>
+                    <Text style={styles.ruleText}>
+                      에 동의하는 것으로 간주합니다.
                     </Text>
-                    </View>
                   </View>
                 </View>
               </View>
-
-              {!!store.isKeyboardOn && <View style={{ height: 50 }} />}
             </View>
+
+            {!!store.isKeyboardOn && <View style={{ height: 50 }} />}
+          </View>
         </ScrollView>
       </View>
-        );
-      }
-    }
+    );
+  }
+}
 
 EmailSignUpForm.navigationOptions = () => {
   return {
-          header: null
-    };
+    header: null
   };
-  
-  export default EmailSignUpForm;
+};
+
+export default EmailSignUpForm;
