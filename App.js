@@ -169,6 +169,14 @@ class App extends React.Component {
       playerManagerEmitter.addListener('downloadState', arg =>
         Native.downloadState(arg)
       );
+
+      console.log('======', Native.getPaymentManager());
+      const paymentManager = Native.getPaymentManager();
+      const paymentManagerEmitter = new NativeEventEmitter(paymentManager);
+      paymentManagerEmitter.addListener('buyResult', arg =>
+        Native.buyResult(arg)
+      );
+
     } else if ('android' === Platform.OS) {
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayer', params => {

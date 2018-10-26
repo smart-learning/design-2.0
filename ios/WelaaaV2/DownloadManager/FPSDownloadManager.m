@@ -480,7 +480,7 @@
                                                  delegate : nil
                                             delegateQueue : [NSOperationQueue mainQueue]];
   
-  NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/";
+  NSString *apiPlayData = @"/api/v1.0/play/play-data/";
   NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, cid];
   NSURL *url = [NSURL URLWithString : urlWithParams];
   

@@ -411,7 +411,7 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
 {
     self.checkReceiptCompleteBlock = completion;
   
-    NSString *apiVerifyReceipt = @"/dev/api/v1.0/payment/ios/receipts";
+    NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/receipts";
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
@@ -464,7 +464,7 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
   
     if ( result == nil )
     {
-      //DEFAULT_ALERT(@"결제확인", @"결제가 정상적으로 처리되지 않았습니다.");
+        completion(nil, nil);
     }
     else
     {
@@ -473,11 +473,14 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
             NSLog(@"  [checkReceipt] Receipt Validation Success");
             //[self provideContent: transaction.payment.productIdentifier];
             // implement proper rewards..
+          
+            completion(jsonData, nil);
         }
         else
         {
             // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
             NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
+            completion(nil, nil);
         }
         // 21000 : App Store에서 사용자가 제공 한 JSON 객체를 읽을 수 없습니다.
         // 21002 : 영수증 데이터 속성의 데이터 형식이 잘못되었습니다.
@@ -493,172 +496,8 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
         //         실제 서비스 영수증을 테스트 VERIFY_URL로 보냈는지 확인한다.
     }
   
-    // 월요일에 한창표과장님과 파라미터맞추고 리턴값 확인하는 절차가 필요할 것 같습니다.
-    // RNProductPayment.m 으로 값을 리턴해줘서 순차적으로 하면 될것 같습니다.
     return ;
-  
-  /*
-    NSError *jsonError = nil;
-  
-    NSLog(@"  [checkReceipt] Base64 Encoded Payload : %@", receiptBase64);
-    NSLog(@"  [checkReceipt] The app store processes your payments and returns completed transactions.");
-    NSLog(@"  [checkReceipt] The app should now retrieve the receipt data from the transaction and send it to the server.");
-    NSLog(@"  [checkReceipt] Apple is paying off the payload after the normal payment is over.. Receipt data should be kept on the server.");
-    
-    // Load the receipt from the app bundle.
-    // 멤버십 결제라면 ../usingapp/receiptverify_membership.php 로 세팅한다.
-    NSString *receiptVerificatorUrl;
-    if ( [productCode hasPrefix: @"m_0"] )
-    {
-        if ( [paymentMode isEqualToString: @"live"] )
-        {
-            receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify_membership.php";
-        }
-        else if ( [paymentMode isEqualToString: @"sandbox"] )
-        {
-            receiptVerificatorUrl = @"http://welearn.co.kr/usingapp/receiptverify_membership.php";
-        }
-        else
-        {
-            receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify_membership.php";
-        }
-        
-        NSLog(@"  [checkReceipt] Membership payment at %@", receiptVerificatorUrl);
-    }
-    else if ( [productCode hasPrefix: @"audiobook_"] )
-    {
-        if ( [paymentMode isEqualToString: @"live"] )
-        {
-            receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify.php";
-        }
-        else if ( [paymentMode isEqualToString: @"sandbox"] )
-        {
-            receiptVerificatorUrl = @"http://welearn.co.kr/usingapp/receiptverify.php";
-        }
-        else
-        {
-            receiptVerificatorUrl = @"http://welaaa.co.kr/usingapp/receiptverify.php";
-        }
-        
-        NSLog(@"  [checkReceipt] Audiobook payment at %@", receiptVerificatorUrl);
-    }
-    
-    NSString *post;
-    post = [NSString stringWithFormat: @"receipt=%@&item_id=%@&rooting=n&transaction_id=%@&mode=%@&f_token=%@",
-                                                    receiptBase64, productCode, transactionId, paymentMode, authValue];
-    NSLog(@"  [checkReceipt] POST string : %@", post);
-    NSLog(@"  [checkReceipt] POST transactionId : %@", transactionId);
-    NSLog(@"  [checkReceipt] POST paymentMode : %@", paymentMode);
-    NSLog(@"  [checkReceipt] POST f_token : %@", authValue);
-    NSData *postData = [post dataUsingEncoding: NSUTF8StringEncoding];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL: [NSURL URLWithString: [NSString stringWithFormat: receiptVerificatorUrl]]];
-    [request setHTTPBody: postData];
-    [request setHTTPMethod: @"POST"];
-    
-    // Session ID를 넘겨주기 위함.
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL: request.URL];
-    NSDictionary *headers = [NSHTTPCookie requestHeaderFieldsWithCookies: cookies];
-    [request setAllHTTPHeaderFields: headers];
-    NSLog(@"  [checkReceipt] HEADERS : %@", headers);  // 정상으로 로그찍힘.
-    
-    // Make a connection to the iTunes Store on a background queue.
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [NSURLConnection sendAsynchronousRequest: request
-                                       queue: queue
-                           completionHandler: ^(NSURLResponse *response, NSData *data, NSError *connectionError)
-                                              {
-                                                  if ( connectionError )
-                                                  {
-                                                      // ... Handle error ... //
-                                                      NSLog(@"  [checkReceipt] Connection Error with receipt verification server : %@", connectionError);
-                                                      // 윌라 영수증검증서버와 통신오류가 발생되었다고 서버로 로그 전송..
-                                                  }
-                                                  else
-                                                  {
-                                                      NSError *error;
-                                                      NSString *jsonData = [[NSString alloc] initWithData: data
-                                                                                                 encoding: NSUTF8StringEncoding];
-                                                      jsonData = [jsonData stringByReplacingOccurrencesOfString: @"'"
-                                                                                                     withString: @"\""];   // ' -> " 작은 따옴표를 큰 따옴표로 변경
-                                                      NSDictionary *jsonResponse;
-                                                      jsonResponse = [NSJSONSerialization JSONObjectWithData: [jsonData dataUsingEncoding: NSUTF8StringEncoding]
-                                                                                                     options: NSJSONReadingAllowFragments
-                                                                                                       error: &error];
-                                                      
-                                                      NSLog(@"  [checkReceipt] JSON Response : %@", jsonData);
-                                                      //NSLog(@"  jsonResponse error : %@", error.description);
-                                                      
-                                                      if ( !jsonResponse )
-                                                      { // ... Handle error ...//
-                                                          NSLog(@"  [checkReceipt] jsonResponse parsing error..");
-                                                      }
-                                                      // ... Send a response back to the device ... //
-                                                      NSNumber *result = [jsonResponse objectForKey: @"status"];
-                                                      
-                                                      if ( result == nil )
-                                                      {
-                                                          //DEFAULT_ALERT(@"결제확인", @"결제가 정상적으로 처리되지 않았습니다.");
-                                                      }
-                                                      else
-                                                      {
-                                                          if ( [result intValue] == 0 )
-                                                          {
-                                                              NSLog(@"  [checkReceipt] Receipt Validation Success");
-                                                              //[self provideContent: transaction.payment.productIdentifier];
-                                                              // implement proper rewards..
-                                                          }
-                                                          else
-                                                          {
-                                                              // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
-                                                              NSLog(@"  [checkReceipt] Receipt Validation Failed T_T");
-                                                              NSLog(@"  [checkReceipt] welastatus : %@", [jsonResponse objectForKey: @"welastatus"]);
-                                                              NSLog(@"  [checkReceipt] welamsg : %@", [jsonResponse objectForKey: @"welamsg"]);
-                                                          }
-                                                      }
-                                                  }
-                                              }];
-  */
 }
-/*
- * 호출되지 않는 것으로 보입니다. 만약에 문제가 발생된다면 주석해제해야 합니다.
- *
-# pragma mark - Something about receipts
-- (void) connection : (NSURLConnection *) connection
-   didFailWithError : (NSError *) error
-{
-    NSLog(@"  [connection] Cannot transmit receipt data. localizedDescription : %@", [error localizedDescription]);
-    
-    if ( _checkReceiptCompleteBlock )
-    {
-        _checkReceiptCompleteBlock(nil, error);
-    }
-}
-
-- (void) connection : (NSURLConnection *) connection
- didReceiveResponse : (NSURLResponse *) response
-{
-    [self.receiptRequestData setLength: 0];
-}
-
-- (void) connection : (NSURLConnection *) connection
-     didReceiveData : (NSData *) data
-{
-    [self.receiptRequestData appendData: data];
-}
-
-- (void) connectionDidFinishLoading : (NSURLConnection *) connection
-{
-    NSString *response = [[NSString alloc] initWithData : self.receiptRequestData
-                                               encoding : NSUTF8StringEncoding];
-    
-    if ( _checkReceiptCompleteBlock )
-    {
-        _checkReceiptCompleteBlock(response, nil);
-    }
-}
-*/
 
 # pragma mark - Utils
 //

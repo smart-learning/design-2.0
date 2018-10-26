@@ -6,5 +6,5 @@
   Copyright © 2018 Facebook. All rights reserved.
 */
 
-"host_debug" = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev";
-"host_release" = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev";
+"host_debug" = "https://api-prod.welaaa.com";
+"host_release" = "https://api-prod.welaaa.com";

@@ -1,30 +1,26 @@
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
   Alert,
+  Dimensions,
   Image,
   ImageBackground,
+  Keyboard,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Keyboard,
-  ScrollView,
-  Dimensions
+  View
 } from 'react-native';
+import { AppEventsLogger } from 'react-native-fbsdk';
+import Swiper from 'react-native-swiper';
 import bgSignUp from '../../../images/bg-join.png';
-import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import logo from '../../../images/logo-en-primary.png';
-import { observer } from 'mobx-react';
-import { observable } from 'mobx';
-import BulletBoxCheck from '../../../images/ic-checkbox.png';
-import BulletBoxChecked from '../../../images/ic-checkbox-checked.png';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Net from '../../commons/net';
 import store from '../../commons/store';
-import Swiper from 'react-native-swiper';
-import bgLogin from '../../../images/bg-signup.jpg';
-import createStore from '../../commons/createStore';
-import {AppEventsLogger} from 'react-native-fbsdk';
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -172,6 +168,10 @@ class Data {
 class EmailSignUpForm extends Component {
   data = new Data();
 
+  state = {
+    signupButtonDisabled: false,
+  }
+
   constructor(props) {
     super(props);
 
@@ -200,28 +200,39 @@ class EmailSignUpForm extends Component {
   };
 
   handleJoin = () => {
+
+    this.setState({ signupButtonDisabled: true })
+
     if (this.data.email === null) {
       Alert.alert('이메일은 필수 입력항목입니다.');
+      this.setState({ signupButtonDisabled: false })
+      return false;
+    } else if (!this.data.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+      this.setState({ signupButtonDisabled: false })
+      Alert.alert('이메일 형식이 맞지 않습니다.');
       return false;
     } else if (this.data.password === null) {
+      this.setState({ signupButtonDisabled: false })
       Alert.alert('비밀번호는 필수 입력항목입니다.');
       return false;
     }
 
     if (this.data.passconf !== this.data.password) {
       Alert.alert('비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
+      this.setState({ signupButtonDisabled: false })
       return false;
     }
 
-    Net.signUp(this.data.email, this.data.password)
+    Net.signUp(this.data.name, this.data.email, this.data.password)
       .then(data => {
-        // 이메일 회원 가입이 완료된 상태 
-        AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');  
+        // 이메일 회원 가입이 완료된 상태
+        AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
         store.welaaaAuth = data;
         this.props.navigation.navigate('HomeScreen');
       })
       .catch(e => {
         alert(e);
+        this.setState({ signupButtonDisabled: false })
       });
   };
 
@@ -263,16 +274,20 @@ class EmailSignUpForm extends Component {
                 <Text style={styles.headline}>무료계정만들기</Text>
 
                 <View borderRadius={4} style={styles.inputWrap}>
-                  {/*<TextInput*/}
-                  {/*style={styles.input}*/}
-                  {/*underlineColorAndroid={'rgba(0,0,0,0)'}*/}
-                  {/*onFocus={this.validityNameOnFocus}*/}
-                  {/*value={this.data.name}*/}
-                  {/*autoCapitalize={'none'}*/}
-                  {/*onChangeText={text => {*/}
-                  {/*this.data.name = text*/}
-                  {/*}}/>*/}
-                  {/*<View style={styles.inputBr}/>*/}
+
+                  <TextInput
+                    style={styles.input}
+                    underlineColorAndroid={'rgba(0,0,0,0)'}
+                    placeholder="이름"
+                    onFocus={this.validityNameOnFocus}
+                    value={this.data.name}
+                    autoCapitalize={'none'}
+                    onChangeText={text => {
+                      this.data.name = text;
+                    }}
+                  />
+                  <View style={styles.inputBr} />
+
                   <TextInput
                     style={styles.input}
                     underlineColorAndroid={'rgba(0,0,0,0)'}
@@ -320,9 +335,15 @@ class EmailSignUpForm extends Component {
                   <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={this.handleJoin}
+                    disabled={this.state.signupButtonDisabled}
                   >
                     <View borderRadius={4} style={styles.btnSubmit}>
-                      <Text style={styles.textSubmit}>가입하기</Text>
+                      <Text style={styles.textSubmit}>
+                        {this.state.signupButtonDisabled
+                          ? '처리중입니다.'
+                          : '가입하기'
+                        }
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 </View>

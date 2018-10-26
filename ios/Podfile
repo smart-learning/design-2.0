@@ -8,7 +8,7 @@ target 'WelaaaV2' do
   # Pods for WelaaaV2
   
   # Firebase Analytics + Firebase Cloud Message
-  pod 'Firebase/Core'
+  pod 'Firebase/Core', :modular_headers => true
   pod 'Firebase/Messaging'
   
   # Fabric
@@ -37,4 +37,3 @@ target 'WelaaaV2' do
   pod 'SDWebImage', '~> 4.0'
 
 end
-use_frameworks!

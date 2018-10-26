@@ -328,22 +328,22 @@ export default class Book extends React.Component {
               {this.props.itemData.memo.split('<br>').join('')}
             </Text>
           )}
-          {1 === 2 && (
+          {
             <View style={[styles.alignJustify, styles.countWrap]}>
               <Image source={IcView} style={styles.btnSetSmall} />
               <Text style={styles.countText}>
-                {this.props.itemData.hit_count}
+                {numeral(this.props.itemData.hit_count).format('0,0')}
               </Text>
               <Image source={IcHeart} style={styles.btnSetSmall} />
               <Text style={styles.countText}>
-                {this.props.itemData.like_count}
+                {numeral(this.props.itemData.like_count).format('0,0')}
               </Text>
               <Image source={IcComment} style={styles.btnSetSmall} />
               <Text style={styles.countText}>
-                {this.props.itemData.review_count}
+                {numeral(this.props.itemData.review_count).format('0,0')}
               </Text>
             </View>
-          )}
+          }
         </View>
         <View style={styles.bookThumbnail}>
           <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
