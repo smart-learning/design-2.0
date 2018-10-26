@@ -101,12 +101,12 @@ class AudioBookPage extends React.Component {
     pagination: {}
   });
 
-  loadAudioList = async (ccode = null, page = 1) => {
+  loadAudioList = async (ccode = null, page = 1 , sort = 'hot') => {
     this.store.isLoading = true;
     if (page === 1) {
       this.store.displayData = null;
     }
-    const data = await net.getAudioBookList(ccode, page);
+    const data = await net.getAudioBookList(ccode, page, sort);
     const VOs = data.items.map((element, n) => {
       const vo = new BookVO();
       _.each(element, (value, key) => (vo[key] = value));
@@ -161,7 +161,7 @@ class AudioBookPage extends React.Component {
         style={[CommonStyles.container, { backgroundColor: '#ecf0f1' }]}
       >
         <ScrollView style={{ width: '100%' }}>
-          {1 === 2 && (
+          {
             <View style={styles.toggleGroup}>
               <View style={styles.alignJustify}>
                 <View style={styles.sortWrap}>
@@ -169,7 +169,7 @@ class AudioBookPage extends React.Component {
                     <TouchableOpacity
                       activeOpacity={0.9}
                       onPress={() => {
-                        Alert.alert('준비중입니다.');
+                        this.loadAudioList(null,1,'hot');
                       }}
                       style={[styles.alignJustify, styles.sortButton]}
                     >
@@ -180,7 +180,7 @@ class AudioBookPage extends React.Component {
                     <TouchableOpacity
                       activeOpacity={0.9}
                       onPress={() => {
-                        Alert.alert('준비중입니다.');
+                        this.loadAudioList(null,1,'new');
                       }}
                       style={[styles.alignJustify, styles.sortButton]}
                     >
@@ -189,7 +189,7 @@ class AudioBookPage extends React.Component {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   activeOpacity={0.9}
                   style={{ marginLeft: 'auto' }}
                   onPress={() => {
@@ -199,10 +199,10 @@ class AudioBookPage extends React.Component {
                   <View style={styles.myButton} borderRadius={3}>
                     <Text style={styles.myButtonText}>내 오디오북 보기</Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
-          )}
+          }
 
           <PageCategory
             selectedCategory={this.store.selectedCategory}

@@ -332,15 +332,15 @@ export default class Book extends React.Component {
             <View style={[styles.alignJustify, styles.countWrap]}>
               <Image source={IcView} style={styles.btnSetSmall} />
               <Text style={styles.countText}>
-                {this.props.itemData.hit_count}
+                {numeral(this.props.itemData.hit_count).format('0,0')}
               </Text>
               <Image source={IcHeart} style={styles.btnSetSmall} />
               <Text style={styles.countText}>
-                {this.props.itemData.like_count}
+                {numeral(this.props.itemData.like_count).format('0,0')}
               </Text>
               <Image source={IcComment} style={styles.btnSetSmall} />
               <Text style={styles.countText}>
-                {this.props.itemData.review_count}
+                {numeral(this.props.itemData.review_count).format('0,0')}
               </Text>
             </View>
           }
