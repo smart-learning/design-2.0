@@ -17,7 +17,6 @@ import HomePage from './HomePage';
 import HomeSeriesPage from './HomeSeriesPage';
 import SearchResultPage from './SearchResultPage';
 import InAppWebView from '../../components/InAppWebView';
-import EventIntroView from '../event/EventIntro';
 
 const HomeScreen = createStackNavigator(
   {
@@ -64,10 +63,6 @@ const HomeScreen = createStackNavigator(
 
     WebView: {
       screen: InAppWebView
-    },
-
-    EventView: {
-      screen: EventIntroView
     },
 
     PrivacyPage: {
