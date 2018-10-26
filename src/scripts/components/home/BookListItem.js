@@ -148,6 +148,7 @@ class BookListItem extends React.Component {
     if (_.isNaN(starAvg)) {
       starAvg = 0;
     }
+
     return (
       <View style={styles.bookItem}>
         {this.props.itemType === 'hot' && (
@@ -233,13 +234,15 @@ class BookListItem extends React.Component {
         <View style={styles.alignJustify}>
           <Image source={IcView} style={styles.btnSetSmall} />
           <Text style={styles.countText}>
-            {numeral(this.props.hit_count).format('0 a')}
+            {/* {this.props.itemData.hit_count} */}
+            {numeral(this.props.itemData.hit_count).format('0 a')}
           </Text>
-          <Image source={IcStar} style={styles.btnSetSmall} />
-          <Text style={styles.countText}>{starAvg}</Text>
+          {/* <Image source={IcStar} style={styles.btnSetSmall} />
+          <Text style={styles.countText}>{starAvg}</Text> */}
           <Image source={IcComment} style={styles.btnSetSmall} />
           <Text style={styles.countText}>
             {numeral(this.props.itemData.review_count).format('0 a')}
+            {/* {this.props.itemData.review_count} */}
           </Text>
         </View>
       </View>

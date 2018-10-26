@@ -92,12 +92,12 @@ const styles = StyleSheet.create( {
 		has_next: false,
 	} );
 
-	loadClassList = async ( ccode = null, page = 1 ) => {
+	loadClassList = async ( ccode = null, page = 1, sort = 'hot' ) => {
 		this.store.isLoading = true;
 		if( page === 1 ) {
 			this.store.displayData = null;
 		}
-		const data = await net.getClassList( ccode, page );
+		const data = await net.getClassList( ccode, page, sort );
 		let list = data;
 		if( !_.isArray( list ) ) {
 			list = [];
@@ -170,14 +170,14 @@ const styles = StyleSheet.create( {
 	render() {
 		return <SafeAreaView style={[ CommonStyles.container, { backgroundColor: '#ecf0f1' } ]}>
 			<ScrollView style={{ width: '100%' }}>
-				{1 === 2 &&
+				{
 				<View style={styles.toggleGroup}>
 					<View style={styles.alignJustify}>
 						<View style={styles.sortWrap}>
 							<View style={styles.alignJustify}>
 								<TouchableOpacity activeOpacity={0.9}
 												  onPress={() => {
-													  Alert.alert('준비중입니다.')
+													this.loadClassList(null,1,'hot');
 												  }}
 												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create( {
 								<View style={styles.sortBar}/>
 								<TouchableOpacity activeOpacity={0.9}
 												  onPress={() => {
-													  Alert.alert('준비중입니다.')
+													this.loadClassList(null,1,'new');
 												  }}
 												  style={[styles.alignJustify, styles.sortButton]}>
 									<View style={styles.sortDot} borderRadius={3}/>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create( {
 								</TouchableOpacity>
 							</View>
 						</View>
-						<TouchableOpacity activeOpacity={0.9}
+						{/* <TouchableOpacity activeOpacity={0.9}
 										  style={{marginLeft: 'auto'}}
 										  onPress={() => {
 											  this.props.navigation.navigate('ClipPage')
@@ -203,7 +203,7 @@ const styles = StyleSheet.create( {
 							<View style={styles.clipButton} borderRadius={3}>
 								<Text style={styles.clipButtonText}>강의클립 전체보기</Text>
 							</View>
-						</TouchableOpacity>
+						</TouchableOpacity> */}
 					</View>
 				</View>
 				}

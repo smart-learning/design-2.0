@@ -150,7 +150,7 @@ export default {
       });
   },
 
-  getClassList(ccode = null, page = 1) {
+  getClassList(ccode = null, page = 1, sort='hot') {
     let url = API_PREFIX + 'v1.1/contents/video-courses';
     const params = {};
     if (ccode) {
@@ -158,6 +158,9 @@ export default {
     }
     if (page) {
       params.page = page;
+    }
+    if (sort) {
+      params.sort = sort;
     }
     url += '?' + encodeParams(params);
 
@@ -204,8 +207,11 @@ export default {
       });
   },
 
-  getAudioBookList(ccode = null, page = 1) {
+  getAudioBookList(ccode = null, page = 1 , sort = 'hot' ) {
     let url = API_PREFIX + 'v1.1/contents/audiobooks';
+
+    // default 신규 'new' , sort=new 
+    // 인기 , sort=hot 
     const params = {};
     if (ccode) {
       params.ccode = ccode;
@@ -213,6 +219,11 @@ export default {
     if (page) {
       params.page = page;
     }
+
+    if (sort) {
+      params.sort = sort;
+    }
+    
     url += '?' + encodeParams(params);
 
     return axios
@@ -679,8 +690,9 @@ export default {
   },
 
   //회원가입
-  signUp(email, password) {
+  signUp(name,email, password) {
     let params = {
+      name: name,
       username: email,
       password: password,
       grant_type: 'password'
