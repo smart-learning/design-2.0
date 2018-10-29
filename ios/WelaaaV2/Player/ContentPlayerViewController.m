@@ -362,11 +362,13 @@
         NSLog(@"오프라인 재생 가능 -> assetURL : %@", assetURL);
         _urlAsset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
         _isDownloadFile = true;
+        _downloadedFilePath = assetURL;
     }else{  // 오프라인 재생 파일이 아닌 경우
         NSLog(@"오프라인 재생 불가 파일 -> 스트리밍 재생");
         NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
         _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
         _isDownloadFile = false;
+        _downloadedFilePath = nil;
     }
     
     // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
@@ -484,7 +486,7 @@
           
           [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
           
-          [self updateDownloadState];
+          //[self updateDownloadState];
         }
         else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
         {
@@ -512,7 +514,7 @@
           
           [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
           
-          [self updateDownloadState];
+          //[self updateDownloadState];
         }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
@@ -1164,6 +1166,7 @@
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
+  /*
     NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
@@ -1180,6 +1183,10 @@
         netStatus = @"LTE/3G";
         _networkStatusLabel.text = @"LTE/3G 재생";
     }
+   */
+  
+  NSString *netStatus = [self updateNetStatusLabel];
+  [self updateDownloadState];
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"START"             // START / ING / END / FORWARD / BACK
@@ -2713,24 +2720,26 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 }
 
 // 재생모드 표시 업데이트(다운로드 파일이지만 사용자가 스트리밍 재생을 원할 경우도 있으므로 다운로드 상태 표시와 별도로 구분)
-- (void) updateNetStatusLabel
+- (NSString *) updateNetStatusLabel
 {
-    NSString *netStatus;
-    if ( _isDownloadFile )
-    {
-        netStatus = @"DOWNLOAD";
-        _networkStatusLabel.text = @"다운로드 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
-        netStatus = @"Wi-Fi";
-        _networkStatusLabel.text = @"Wi-Fi 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-        _networkStatusLabel.text = @"LTE/3G 재생";
-    }
+  NSString *netStatus = @"no_network";
+  if ( _isDownloadFile )
+  {
+    netStatus = @"DOWNLOAD";
+    _networkStatusLabel.text = @"다운로드 재생";
+  }
+  else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+  {
+    netStatus = @"Wi-Fi";
+    _networkStatusLabel.text = @"Wi-Fi 재생";
+  }
+  else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+  {
+    netStatus = @"LTE/3G";
+    _networkStatusLabel.text = @"LTE/3G 재생";
+  }
+  
+  return netStatus;
 }
 
 # pragma mark - Content URI Setting
