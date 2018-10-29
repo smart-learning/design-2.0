@@ -483,8 +483,6 @@
           _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
           
           [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          
-          [self updateDownloadState];
         }
         else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
         {
@@ -511,8 +509,6 @@
           _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
           
           [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          
-          [self updateDownloadState];
         }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
@@ -1164,6 +1160,7 @@
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
+  /*
     NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
     {
@@ -1180,6 +1177,10 @@
         netStatus = @"LTE/3G";
         _networkStatusLabel.text = @"LTE/3G 재생";
     }
+   */
+  
+  NSString *netStatus = [self updateNetStatusLabel];
+  [self updateDownloadState];
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"START"             // START / ING / END / FORWARD / BACK
@@ -2208,6 +2209,11 @@
         _listView = nil;
     }
   
+    // 플레이어 재생목록에서 선택해서 재생하는 경우에도 다운로드 받은 콘텐츠인지를 확인해서
+    //  다운로드 받은 콘텐츠일 경우 다운로드 받은 경로 설정. 2018.10.29.
+    [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
+              forKey : @"uri"];
+  
     [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
 }
 
@@ -2713,24 +2719,26 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 }
 
 // 재생모드 표시 업데이트(다운로드 파일이지만 사용자가 스트리밍 재생을 원할 경우도 있으므로 다운로드 상태 표시와 별도로 구분)
-- (void) updateNetStatusLabel
+- (NSString *) updateNetStatusLabel
 {
-    NSString *netStatus;
-    if ( _isDownloadFile )
-    {
-        netStatus = @"DOWNLOAD";
-        _networkStatusLabel.text = @"다운로드 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
-        netStatus = @"Wi-Fi";
-        _networkStatusLabel.text = @"Wi-Fi 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-        _networkStatusLabel.text = @"LTE/3G 재생";
-    }
+  NSString *netStatus = @"no_network";
+  if ( _isDownloadFile )
+  {
+    netStatus = @"DOWNLOAD";
+    _networkStatusLabel.text = @"다운로드 재생";
+  }
+  else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+  {
+    netStatus = @"Wi-Fi";
+    _networkStatusLabel.text = @"Wi-Fi 재생";
+  }
+  else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+  {
+    netStatus = @"LTE/3G";
+    _networkStatusLabel.text = @"LTE/3G 재생";
+  }
+  
+  return netStatus;
 }
 
 # pragma mark - Content URI Setting
