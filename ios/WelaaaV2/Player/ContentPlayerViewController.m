@@ -362,13 +362,11 @@
         NSLog(@"오프라인 재생 가능 -> assetURL : %@", assetURL);
         _urlAsset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
         _isDownloadFile = true;
-        _downloadedFilePath = assetURL;
     }else{  // 오프라인 재생 파일이 아닌 경우
         NSLog(@"오프라인 재생 불가 파일 -> 스트리밍 재생");
         NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
         _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
         _isDownloadFile = false;
-        _downloadedFilePath = nil;
     }
     
     // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
@@ -485,8 +483,6 @@
           _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
           
           [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          
-          //[self updateDownloadState];
         }
         else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
         {
@@ -513,8 +509,6 @@
           _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
           
           [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          
-          //[self updateDownloadState];
         }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
@@ -2214,6 +2208,11 @@
         [_listView removeFromSuperview];
         _listView = nil;
     }
+  
+    // 플레이어 재생목록에서 선택해서 재생하는 경우에도 다운로드 받은 콘텐츠인지를 확인해서
+    //  다운로드 받은 콘텐츠일 경우 다운로드 받은 경로 설정. 2018.10.29.
+    [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
+              forKey : @"uri"];
   
     [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
 }
