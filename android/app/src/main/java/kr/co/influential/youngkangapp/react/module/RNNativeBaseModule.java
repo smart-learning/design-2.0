@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
+import com.facebook.appevents.AppEventsConstants;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -47,6 +48,23 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
     constants.put("deviceId", getDeviceId());
     constants.put("model", getModel());
     constants.put("versionNumber", getVersionNumber());
+
+    // facebook event params.
+    constants
+        .put("EVENT_PARAM_REGISTRATION_METHOD", AppEventsConstants.EVENT_PARAM_REGISTRATION_METHOD);
+    constants.put("EVENT_PARAM_CONTENT", AppEventsConstants.EVENT_PARAM_CONTENT);
+    constants.put("EVENT_PARAM_CONTENT_ID", AppEventsConstants.EVENT_PARAM_CONTENT_ID);
+    constants.put("EVENT_PARAM_CONTENT_TYPE", AppEventsConstants.EVENT_PARAM_CONTENT_TYPE);
+    constants.put("EVENT_PARAM_NUM_ITEMS", AppEventsConstants.EVENT_PARAM_NUM_ITEMS);
+    constants.put("EVENT_PARAM_PAYMENT_INFO_AVAILABLE",
+        AppEventsConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE);
+    constants.put("EVENT_PARAM_CURRENCY", AppEventsConstants.EVENT_PARAM_CURRENCY);
+
+    // facebook event name.
+    constants.put("EVENT_NAME_COMPLETED_REGISTRATION",
+        AppEventsConstants.EVENT_NAME_COMPLETED_REGISTRATION);
+    constants
+        .put("EVENT_NAME_INITIATED_CHECKOUT", AppEventsConstants.EVENT_NAME_INITIATED_CHECKOUT);
     return constants;
   }
 
@@ -72,8 +90,8 @@ public class RNNativeBaseModule extends ReactContextBaseJavaModule {
           editor.putString(PREF_UNIQUE_ID, uniqueId);
           editor.commit();
         }
-      }else{
-        LogHelper.e(TAG , "No current Activity");
+      } else {
+        LogHelper.e(TAG, "No current Activity");
       }
     }
     return uniqueId;

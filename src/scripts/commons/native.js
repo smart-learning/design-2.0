@@ -36,7 +36,7 @@ export default {
       // Works on both iOS and Android
       // Alert.alert(
       //   '로그인 후 이용할 수 있습니다.'
-      //   [        
+      //   [
       //     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
       //     { text: 'OK', onPress: () => console.log('OK Pressed') }
       //   ],
@@ -159,16 +159,8 @@ export default {
     }
   },
 
-  getDeviceId() {
-    return RNNativeBase.deviceId;
-  },
-
-  getModel() {
-    return RNNativeBase.model;
-  },
-
-  getVersionNumber() {
-    return RNNativeBase.versionNumber;
+  getConstants() {
+    return RNNativeBase;
   },
 
   buy(args) {
