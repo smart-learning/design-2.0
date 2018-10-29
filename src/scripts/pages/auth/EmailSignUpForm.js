@@ -7,6 +7,7 @@ import {
   Image,
   ImageBackground,
   Keyboard,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,6 +20,7 @@ import Swiper from 'react-native-swiper';
 import bgSignUp from '../../../images/bg-join.png';
 import logo from '../../../images/logo-en-primary.png';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
+import Native from '../../commons/native';
 import Net from '../../commons/net';
 import store from '../../commons/store';
 
@@ -169,8 +171,8 @@ class EmailSignUpForm extends Component {
   data = new Data();
 
   state = {
-    signupButtonDisabled: false,
-  }
+    signupButtonDisabled: false
+  };
 
   constructor(props) {
     super(props);
@@ -200,39 +202,50 @@ class EmailSignUpForm extends Component {
   };
 
   handleJoin = () => {
-
-    this.setState({ signupButtonDisabled: true })
+    this.setState({ signupButtonDisabled: true });
 
     if (this.data.email === null) {
       Alert.alert('이메일은 필수 입력항목입니다.');
-      this.setState({ signupButtonDisabled: false })
+      this.setState({ signupButtonDisabled: false });
       return false;
     } else if (!this.data.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-      this.setState({ signupButtonDisabled: false })
+      this.setState({ signupButtonDisabled: false });
       Alert.alert('이메일 형식이 맞지 않습니다.');
       return false;
     } else if (this.data.password === null) {
-      this.setState({ signupButtonDisabled: false })
+      this.setState({ signupButtonDisabled: false });
       Alert.alert('비밀번호는 필수 입력항목입니다.');
       return false;
     }
 
     if (this.data.passconf !== this.data.password) {
       Alert.alert('비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
-      this.setState({ signupButtonDisabled: false })
+      this.setState({ signupButtonDisabled: false });
       return false;
     }
 
     Net.signUp(this.data.name, this.data.email, this.data.password)
       .then(data => {
         // 이메일 회원 가입이 완료된 상태
+        if (Platform.OS === 'android') {
+          // 2018.10.29 facebook event: 마케팅 요청.
+          const NativeConstants = Native.getConstants();
+          const EVENT_NAME_COMPLETED_REGISTRATION =
+            NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;
+          const EVENT_PARAM_REGISTRATION_METHOD =
+            NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
+          AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
+            [EVENT_PARAM_REGISTRATION_METHOD]: 'email'
+          });
+        }
+
         AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
         store.welaaaAuth = data;
         this.props.navigation.navigate('HomeScreen');
       })
       .catch(e => {
         alert(e);
-        this.setState({ signupButtonDisabled: false })
+        this.setState({ signupButtonDisabled: false });
       });
   };
 
@@ -274,7 +287,6 @@ class EmailSignUpForm extends Component {
                 <Text style={styles.headline}>무료계정만들기</Text>
 
                 <View borderRadius={4} style={styles.inputWrap}>
-
                   <TextInput
                     style={styles.input}
                     underlineColorAndroid={'rgba(0,0,0,0)'}
@@ -341,8 +353,7 @@ class EmailSignUpForm extends Component {
                       <Text style={styles.textSubmit}>
                         {this.state.signupButtonDisabled
                           ? '처리중입니다.'
-                          : '가입하기'
-                        }
+                          : '가입하기'}
                       </Text>
                     </View>
                   </TouchableOpacity>
