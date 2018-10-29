@@ -507,11 +507,14 @@
         // 영상 콘텐츠의 마지막이면 연관 콘텐츠 뷰를 로딩합니다.
         if ( !_isAudioContent )
         {
+          /*
             // 오디오북은 연관컨텐츠뷰를 띄우면 안됩니다.
             self.recommendViewController = [[IFRecommendViewController alloc] init];
             NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
             [self.recommendViewController setDataWithCurrentCgid : chunks[0]];
             [self.view addSubview : self.recommendViewController.view];
+          */
+            [self closePlayer]; // 추천 콘텐츠 뷰의 정책이 확실히 정해지면 다시 주석을 해제하도록 하겠습니다.
         }
         else if ( _isAudioContent )
         {
