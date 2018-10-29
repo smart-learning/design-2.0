@@ -1116,6 +1116,15 @@
 {
   NSLog(@"  synchronizeLocalFilesWithDB");
   
+  // 현재 다운로드 중인 파일인데 삭제되어버리면 안되므로 아래의 처리 추가. 2018.10.29
+  // ㄴ다운로드 중에 다운로드 콘텐츠 화면 진입시 에러 발생하는 문제 있었다. #364 issue
+  // -> 다운로드 중인 상황에서는 동기화 처리 하지 않음.
+  if([self numberOfItemsInActive] > 0 // 진행중인 작업갯수
+     || [self numberOfItemsInWating] > 0) // 대기중인 작업갯수
+  {
+    return;
+  }
+  
   // 로컬에 저장된 콘텐츠 파일(동영상 파일 경로)과 연결된 DB 레코드가 있는지 확인해보고 없으면 삭제(트랙킹이 안되는 파일이므로).
   // Asset 폴더 경로부터 비교. 예) com.apple.UserManagedAssets.jtB6U2/v100015_005_2796BB4F50ADAA4C.movpkg
   NSError* error = nil;
