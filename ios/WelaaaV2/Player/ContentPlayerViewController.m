@@ -39,6 +39,11 @@
         _isAudioContent = NO;
         _isAudioMode = false; // 영상강의의 경우 기본적으로 오디오모드 off인 상태에서 콘텐츠 재생을 시작합니다.
     }
+    else if ( [[_args objectForKey : @"cid"] hasPrefix : @"z"] )  // z_ : 매일 책한권 콘텐츠.
+    {
+      _isDailyBook = YES;
+      _isAudioMode = YES;
+    }
   
     if ( [[_args objectForKey : @"contentPath"] hasPrefix : @"/private/var/mobile/"] )
         _isDownloadFile = true;
@@ -165,9 +170,9 @@
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명을 세팅합니다.
     }
-    else if ( !_isAudioContent )  // 영상 콘텐츠의 경우..
+    else if ( !_isAudioContent )  // '영상 콘텐츠' 또는 '매일 책 한권'의 경우..
     {
-        NSArray *contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+        NSArray *contentsListArray = _currentContentsInfo[@"data"][@"clips"]; // '매일 책 한권' 도 data.clips의 구조로 되어있습니다.
         NSInteger indexOfCurrentContent = 0;
       
         for ( int i=0; i<contentsListArray.count; i++ )
@@ -406,6 +411,14 @@
   
     // 현재 재생중인 콘텐트의 권한이 없다면 종료시킵니다.
     if ( !_isAuthor )
+    {
+        [self closePlayer];
+      
+        return ;
+    }
+  
+    // '매일 책 한권' 콘텐츠일 경우 종료시킵니다.
+    if ( _isDailyBook )
     {
         [self closePlayer];
       
@@ -941,7 +954,7 @@
                     action : @selector(pressedListButton)
           forControlEvents : UIControlEventTouchUpInside];
     [_controlBarView addSubview : _listButton];
-  
+    if ( _isDailyBook ) _listButton.hidden = true;  // '매일 책 한권' 콘텐츠의 경우 리스트뷰버튼 자체를 원천 차단합니다.
   
     _networkStatusLabel = [[UILabel alloc] initWithFrame : CGRectMake(0, CGRectGetMaxY(_playButton.frame), _controlBarView.frame.size.width, 20.f)];
     _networkStatusLabel.backgroundColor = [UIColor clearColor];
