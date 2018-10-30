@@ -273,8 +273,7 @@
                                                 object : [_player currentItem]  ];
     [self setPlayState : YES];
   
-    [[AVAudioSession sharedInstance] setCategory : AVAudioSessionCategoryPlayback
-                                           error : nil];
+  //[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(audioSessionInterrupted:)
@@ -324,6 +323,16 @@
 - (void) viewWillDisappear : (BOOL) animated
 {
     NSLog(@"  [viewWillDisappear] This view will disappear..");
+    [_player pause];
+    [_playerLayer removeFromSuperlayer];
+    _playerLayer.player = nil;
+    [self invalidateTimerOnSlider];
+    [_logTimer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : AVPlayerItemDidPlayToEndTimeNotification
+                                                  object : [_player currentItem]];
+    [common showStatusBar];
+  
     [super viewWillDisappear : animated];
   
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
@@ -556,13 +565,19 @@
     }
 }
 
-// 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
+//
+// 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어를 실행합니다. (콘텐츠가 재생중이었을 경우에만 해당됩니다.)
+//
 - (void) applicationDidEnterBackground : (NSNotification *) notification
 {
     NSLog(@"  applicationDidEnterBackground");
-    [_player performSelector : @selector(play)
-                  withObject : nil
-                  afterDelay : 0.01];
+    // 재생중일 경우
+    if ( _playButton.hidden )
+    {
+        [self performSelector : @selector(pressedPlayButton)
+                   withObject : nil
+                   afterDelay : 0.01];
+    }
 }
 
 #pragma mark - Drawing Player UI components
@@ -1244,7 +1259,9 @@
                                 duration : 0
                                netStatus : netStatus
                                authToken : [_args objectForKey : @"token"]];
-  
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : AVPlayerItemDidPlayToEndTimeNotification
+                                                  object : [_player currentItem]];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [common showStatusBar];
 }
