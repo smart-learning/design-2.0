@@ -1,32 +1,28 @@
+import { observer } from 'mobx-react';
+import moment from 'moment';
 import React from 'react';
-import CommonStyles from '../../../styles/common';
 import {
   ActivityIndicator,
-  Alert,
   Image,
-  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Linking
+  View
 } from 'react-native';
-import { observer } from 'mobx-react';
-import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
-import Series from '../../components/home/Series';
-import PageCategory from '../../components/PageCategory';
-import ClassList from '../../components/home/ClassList';
-import ClipRank from '../../components/home/ClipRank';
-import ClassContinueList from '../../components/home/ClassContinueList';
+import PTRView from 'react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
 import { withNavigation } from 'react-navigation';
-import PTRView from 'react-native-pull-to-refresh';
-import moment from 'moment';
-import globalStore from '../../commons/store';
 import _ from 'underscore';
+import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
+import CommonStyles from '../../../styles/common';
+import globalStore from '../../commons/store';
+import ClassContinueList from '../../components/home/ClassContinueList';
+import ClassList from '../../components/home/ClassList';
+import ClipRank from '../../components/home/ClipRank';
 import HomeBanner from '../../components/home/HomeBanner';
-import nav from "../../commons/nav";
+import Series from '../../components/home/Series';
+import PageCategory from '../../components/PageCategory';
 
 const styles = StyleSheet.create({
   slide: {
@@ -133,6 +129,9 @@ class HomeVideoPage extends React.Component {
     } catch (error) {
       console.log(error);
     }
+
+    const { homeSeriesData } = this.props.store;
+
     return (
       <PTRView onRefresh={() => this.props.onRefresh()}>
         <ScrollView style={{ flex: 1 }}>
@@ -150,10 +149,10 @@ class HomeVideoPage extends React.Component {
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';
-                  const { action_type, action_param } = item
+                  const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) { }
+                  } catch (e) {}
 
                   return (
                     <HomeBanner
@@ -177,52 +176,52 @@ class HomeVideoPage extends React.Component {
             )}
           </View>
           {/* /이미지 스와이퍼 */}
-
-          {this.props.store.homeSeriesData.length <= 6 && (
-            <View style={{ marginTop: 12 }}>
-              <ActivityIndicator
-                size="large"
-                color={CommonStyles.COLOR_PRIMARY}
-              />
-            </View>
-          )}
-          {this.props.store.homeSeriesData.length > 6 && (
-            <View
-              style={[CommonStyles.contentContainer, styles.seriesContainer]}
-            >
-              <View>
-                <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                  윌라 추천 시리즈
-                </Text>
-                <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                  당신이 배우고 싶은 모든 것
-                </Text>
+          {homeSeriesData &&
+            homeSeriesData.length &&
+            (homeSeriesData.length <= 6 ? (
+              <View style={{ marginTop: 12 }}>
+                <ActivityIndicator
+                  size="large"
+                  color={CommonStyles.COLOR_PRIMARY}
+                />
               </View>
-
-              <View style={styles.seriesComponent}>
-                <Series itemData={this.props.store.homeSeriesData} />
-              </View>
-
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() =>
-                  this.props.navigation.navigate('HomeSeriesPage', {
-                    title: '윌라 추천 시리즈'
-                  })
-                }
+            ) : (
+              <View
+                style={[CommonStyles.contentContainer, styles.seriesContainer]}
               >
-                <View style={styles.linkViewAll} borderRadius={5}>
-                  <Text style={styles.linkViewAllText}>
-                    추천 시리즈 전체 보기{' '}
-                    <Image
-                      source={IcAngleRightGrey}
-                      style={styles.linkViewAllIcon}
-                    />
+                <View>
+                  <Text style={[styles.mainTitleCenter, styles.titleH2]}>
+                    윌라 추천 시리즈
+                  </Text>
+                  <Text style={[styles.mainTitleCenter, styles.titleH4]}>
+                    당신이 배우고 싶은 모든 것
                   </Text>
                 </View>
-              </TouchableOpacity>
-            </View>
-          )}
+
+                <View style={styles.seriesComponent}>
+                  <Series itemData={this.props.store.homeSeriesData} />
+                </View>
+
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    this.props.navigation.navigate('HomeSeriesPage', {
+                      title: '윌라 추천 시리즈'
+                    })
+                  }
+                >
+                  <View style={styles.linkViewAll} borderRadius={5}>
+                    <Text style={styles.linkViewAllText}>
+                      추천 시리즈 전체 보기{' '}
+                      <Image
+                        source={IcAngleRightGrey}
+                        style={styles.linkViewAllIcon}
+                      />
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ))}
 
           {this.props.store.classHotData.length > 0 && (
             <View
