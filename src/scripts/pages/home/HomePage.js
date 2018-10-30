@@ -1,29 +1,27 @@
-import React from 'react';
-import { toJS, observable } from 'mobx';
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import CommonStyles from '../../../styles/common';
+import React from 'react';
 import {
-  ActivityIndicator,
+  AsyncStorage,
   BackHandler,
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
-  AsyncStorage,
   View
 } from 'react-native';
-import net from '../../commons/net';
-import { SafeAreaView, withNavigation } from 'react-navigation';
-import createStore from '../../commons/createStore';
-import HomeVideoPage from './HomeVideoPage';
 import ViewPager from 'react-native-view-pager';
-import HomeAudioPage from './HomeAudioPage';
+import { SafeAreaView, withNavigation } from 'react-navigation';
+import _ from 'underscore';
+import CommonStyles from '../../../styles/common';
+import createStore from '../../commons/createStore';
+import net from '../../commons/net';
+import globalStore from '../../commons/store';
+import AdvertisingSection from '../../components/AdvertisingSection';
 import PageCategoryItemVO from '../../vo/PageCategoryItemVO';
 import SummaryVO from '../../vo/SummaryVO';
-import _ from 'underscore';
-import AdvertisingSection from '../../components/AdvertisingSection';
-import globalStore from '../../commons/store';
-import {AppEventsLogger} from 'react-native-fbsdk';
+import HomeAudioPage from './HomeAudioPage';
+import HomeVideoPage from './HomeVideoPage';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -110,9 +108,8 @@ class HomePage extends React.Component {
   });
 
   getData = async (isRefresh = false) => {
-
-    // Facebook AppEventLogger Test 
-    // AppEventsLogger.logEvent('welaaaRN_Main_getData');    
+    // Facebook AppEventLogger Test
+    // AppEventsLogger.logEvent('welaaaRN_Main_getData');
 
     // 시리즈는 제일 먼저 읽어온다
     this.store.homeSeriesData = await net.getHomeSeries();
@@ -230,10 +227,9 @@ class HomePage extends React.Component {
     }
   };
 
-  componentDidMount = async () =>{
-
-    if(this.props.navigation.isFocused()){
-      console.log('componentDidMount ', 'navigation isFocused')
+  componentDidMount = async () => {
+    if (this.props.navigation.isFocused()) {
+      console.log('componentDidMount ', 'navigation isFocused');
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
 
@@ -248,9 +244,8 @@ class HomePage extends React.Component {
         console.log(error);
       }
     }
-    
-    
-    if(globalStore.welaaaAuth){      
+
+    if (globalStore.welaaaAuth) {
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
 
@@ -264,27 +259,25 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
-
-    }else{
+    } else {
       let value = await AsyncStorage.getItem('isAppFirstLoad');
-      
-      if(value===null){
-        value = true;
-      }      
 
-      if(value === true){      
+      if (value === null) {
+        value = true;
+      }
+
+      if (value === true) {
         // Login 은 되고 .
-        // SignUpPage 는 안되고 . 
+        // SignUpPage 는 안되고 .
         // 'change screen:', 'HomeScreen', '-->', 'SignUpPage'
-        // 'change screen:', 'SignUpPage', '-->', 'Login'        
-        this.props.navigation.navigate('SignUpPage');   
-             
-      }else{        
+        // 'change screen:', 'SignUpPage', '-->', 'Login'
+        this.props.navigation.navigate('SignUpPage');
+      } else {
         this.props.navigation.navigate('Login');
       }
     }
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-  }
+  };
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -395,10 +388,7 @@ class HomePage extends React.Component {
             </View>
           </View>
 
-          {globalStore.welaaaAuth && (
-            <AdvertisingSection />
-          )}          
-          
+          {globalStore.welaaaAuth && <AdvertisingSection />}
         </SafeAreaView>
       </View>
     );
