@@ -11,7 +11,8 @@
 
 @implementation RNNativePlayer
 {
-  BOOL _hasListeners;
+    BOOL _hasListeners;
+    BOOL _isConnectedWiFi;
 }
 
 // To export a module named FPSManager
@@ -38,12 +39,31 @@ RCT_EXPORT_MODULE();
 
 - (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
+    /*
+     현재 네트워크 상태값과 RN 마이윌라 설정값을 비교하고 맞지 않으면 얼럿창을 리턴합니다.
+     Wi-Fi에서만 재생허용인데 연결상태가 Wi-Fi가 아닌 경우는 얼럿창을 보여주고 재생을 하지 않습니다.
+     */
+  
+    [[ApiManager sharedInstance] setReachabilityStatusChangeBlock : ^(NSInteger status)
+                                                                    {
+                                                                        if ( status == 2 )
+                                                                            self->_isConnectedWiFi = true;
+                                                                        else
+                                                                            self->_isConnectedWiFi = false;
+                                                                    }];
+  
+    BOOL isPlayableOnWiFi = false;
+    isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
+    NSLog(@"  isPlayableOnWiFi? : %@", isPlayableOnWiFi? @"YES" : @"NO");
+    NSLog(@"  isConnectedWiFi? : %@", _isConnectedWiFi? @"YES" : @"NO");
+  
+    if ( isPlayableOnWiFi && !_isConnectedWiFi )
+    {
+        return [common presentAlertWithTitle:@"알림" andMessage:@"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 영상재생이 가능합니다."];
+    }
+  
     // 미니플레이어가 떠있을수 있으니 일단 종료시킵니다.
     [self stopMediaPlayer];
-  
-  /*
-   현재 네트워크 상태값과 RN 마이윌라 설정값을 비교하고 맞지 않으면 얼럿창을 리턴합니다.
-   */
   
     ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
     NSMutableDictionary *args = [argsFromReactNative mutableCopy];
@@ -89,6 +109,9 @@ RCT_EXPORT_MODULE();
     // 설정값으로 세팅
     [[NSUserDefaults standardUserDefaults] setValue:args[@"cellularDataUseDownload"] forKey:@"cellularDataUseDownload"];
     [[NSUserDefaults standardUserDefaults] setValue:args[@"cellularDataUsePlay"] forKey:@"cellularDataUsePlay"];
+    // 푸시 동의도 추후에 추가해야 합니다.
+    // 이메일 동의도 추후에 추가해야 합니다.
+  
     // 세팅 후 저장 완료
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
