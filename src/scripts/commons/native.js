@@ -8,6 +8,10 @@ export default {
     return RNNativePlayer;
   },
 
+  getPaymentManager() {
+    return RNProductPayment;
+  },
+
   getF_TOKEN(callback) {
     RNNativeBase.getF_TOKEN(callback);
   },
@@ -32,7 +36,7 @@ export default {
       // Works on both iOS and Android
       // Alert.alert(
       //   '로그인 후 이용할 수 있습니다.'
-      //   [        
+      //   [
       //     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
       //     { text: 'OK', onPress: () => console.log('OK Pressed') }
       //   ],
@@ -155,16 +159,8 @@ export default {
     }
   },
 
-  getDeviceId() {
-    return RNNativeBase.deviceId;
-  },
-
-  getModel() {
-    return RNNativeBase.model;
-  },
-
-  getVersionNumber() {
-    return RNNativeBase.versionNumber;
+  getConstants() {
+    return RNNativeBase;
   },
 
   buy(args) {
@@ -185,5 +181,10 @@ export default {
       console.log('native.restore > args', args);
       return error;
     }
+  },
+
+  buyResult(arg) {
+    console.log('native.js::buyResult(arg)', arg);
+    globalStore.buyResult.success = arg.success;
   }
 };

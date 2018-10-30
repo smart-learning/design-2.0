@@ -599,7 +599,7 @@ export default class MyInfoHome extends React.Component {
                 <TouchableOpacity
                   onPress={() => {
                     try {
-                      native.restore({});
+                      native.restore({token: globalStore.accessToken});
                     } catch (error) {
                       console.log(error);
                     }

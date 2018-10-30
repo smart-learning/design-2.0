@@ -317,7 +317,7 @@
 + (NSDictionary *) getContentsInfoWithCgid : (NSString *) contentGroupID
                              andHeaderInfo : (NSString *) authValue
 {
-    NSString *apiContentsInfo = @"/dev/api/v1.0/play/contents-info/"; // dev -> ?
+    NSString *apiContentsInfo = @"/api/v1.0/play/contents-info/"; // dev -> ?
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentsInfo, contentGroupID];//b300200 와 같은 group_ID
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
@@ -351,7 +351,7 @@
 + (NSDictionary *) getPlayDataWithCid : (NSString *) contentID
                         andHeaderInfo : (NSString *) authValue
 {
-    NSString *apiPlayData = @"/dev/api/v1.0/play/play-data/"; // dev -> ?
+    NSString *apiPlayData = @"/api/v1.0/play/play-data/"; // dev -> ?
     NSString *urlWithParams = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiPlayData, contentID];//b300200_001 와 같은 content_ID
     NSURL *url = [NSURL URLWithString : urlWithParams];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
@@ -393,7 +393,7 @@
 {
     // Dealing with parameters...
     NSLog(@"  [sendPlaybackProgressWith] loaded properly.....");
-    NSString *apiProgress = @"/dev/api/v1.0/play/progress"; // dev -> ?
+    NSString *apiProgress = @"/api/v1.0/play/progress"; // dev -> ?
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiProgress];
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];

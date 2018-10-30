@@ -1,5 +1,6 @@
 import React from 'react';
 import CommonStyles from '../../../styles/common';
+import { observable } from 'mobx';
 import {
   ActivityIndicator,
   Alert,
@@ -49,6 +50,11 @@ const styles = StyleSheet.create({
   sortText: {
     fontSize: 12,
     color: '#4A4A4A'
+  },
+  sortTextActive: {
+    fontSize: 12,
+    color: '#000000',
+    fontWeight: 'bold'
   },
   sortBar: {
     width: 1,
@@ -101,12 +107,19 @@ class AudioBookPage extends React.Component {
     pagination: {}
   });
 
-  loadAudioList = async (ccode = null, page = 1) => {
+  // 인기 , 신규 조회 조건 , 'hot' , 'new'
+  @observable
+  tabSortStatus = 'hot';
+
+  loadAudioList = async (ccode = null, page = 1, sort = 'hot') => {
     this.store.isLoading = true;
     if (page === 1) {
       this.store.displayData = null;
     }
-    const data = await net.getAudioBookList(ccode, page);
+
+    this.tabSortStatus = sort;
+
+    const data = await net.getAudioBookList(ccode, page, sort);
     const VOs = data.items.map((element, n) => {
       const vo = new BookVO();
       _.each(element, (value, key) => (vo[key] = value));
@@ -161,7 +174,7 @@ class AudioBookPage extends React.Component {
         style={[CommonStyles.container, { backgroundColor: '#ecf0f1' }]}
       >
         <ScrollView style={{ width: '100%' }}>
-          {1 === 2 && (
+          {
             <View style={styles.toggleGroup}>
               <View style={styles.alignJustify}>
                 <View style={styles.sortWrap}>
@@ -169,27 +182,48 @@ class AudioBookPage extends React.Component {
                     <TouchableOpacity
                       activeOpacity={0.9}
                       onPress={() => {
-                        Alert.alert('준비중입니다.');
+                        this.loadAudioList(this.store.ccode, 1, 'hot');
                       }}
                       style={[styles.alignJustify, styles.sortButton]}
                     >
                       <View style={styles.sortDot} borderRadius={3} />
-                      <Text style={styles.sortText}>인기</Text>
+
+                      {/* <Text style={styles.sortText}>인기</Text> */}
+
+                      <Text
+                        style={
+                          this.tabSortStatus === 'hot'
+                            ? styles.sortTextActive
+                            : styles.sortText
+                        }
+                      >
+                        인기
+                    </Text>
+
                     </TouchableOpacity>
                     <View style={styles.sortBar} />
                     <TouchableOpacity
                       activeOpacity={0.9}
                       onPress={() => {
-                        Alert.alert('준비중입니다.');
+                        this.loadAudioList(this.store.ccode, 1, 'new');
                       }}
                       style={[styles.alignJustify, styles.sortButton]}
                     >
                       <View style={styles.sortDot} borderRadius={3} />
-                      <Text style={styles.sortText}>신규</Text>
+                      {/* <Text style={styles.sortText}>신규</Text> */}
+                      <Text
+                        style={
+                          this.tabSortStatus === 'new'
+                            ? styles.sortTextActive
+                            : styles.sortText
+                        }
+                      >
+                        신규
+                    </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   activeOpacity={0.9}
                   style={{ marginLeft: 'auto' }}
                   onPress={() => {
@@ -199,10 +233,10 @@ class AudioBookPage extends React.Component {
                   <View style={styles.myButton} borderRadius={3}>
                     <Text style={styles.myButtonText}>내 오디오북 보기</Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
-          )}
+          }
 
           <PageCategory
             selectedCategory={this.store.selectedCategory}

@@ -41,6 +41,10 @@ RCT_EXPORT_MODULE();
     // 미니플레이어가 떠있을수 있으니 일단 종료시킵니다.
     [self stopMediaPlayer];
   
+  /*
+   현재 네트워크 상태값과 RN 마이윌라 설정값을 비교하고 맞지 않으면 얼럿창을 리턴합니다.
+   */
+  
     ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
     NSMutableDictionary *args = [argsFromReactNative mutableCopy];
     [playerViewController setContentData : args];
@@ -77,6 +81,16 @@ RCT_EXPORT_MODULE();
         [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated : NO
                                                                                            completion : nil];
     });
+}
+
+// 앱 시작 시, 마이윌라 설정에서 직접 설정값을 변경할 때마다 호출됩니다.
+- (void) setPlayerPolicyFromRN : (NSDictionary *) args
+{
+    // 설정값으로 세팅
+    [[NSUserDefaults standardUserDefaults] setValue:args[@"cellularDataUseDownload"] forKey:@"cellularDataUseDownload"];
+    [[NSUserDefaults standardUserDefaults] setValue:args[@"cellularDataUsePlay"] forKey:@"cellularDataUsePlay"];
+    // 세팅 후 저장 완료
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void) downloadSomething : (NSDictionary *) args
@@ -382,6 +396,7 @@ RCT_EXPORT_METHOD( stop )
 RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
 {
     NSLog(@"  RNNativePlayer setting for RN : %@", argsFromReactNative);
+    [self setPlayerPolicyFromRN : argsFromReactNative];
 }
 
 RCT_EXPORT_METHOD( download : (NSArray *) argsFromReactNative )

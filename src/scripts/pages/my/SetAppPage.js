@@ -190,7 +190,7 @@ class SetAppPage extends React.Component {
                 >
                   <View>
                     <Text style={styles.label}>
-                      현재버전 {Native.getVersionNumber()}
+                      현재버전 {Native.getConstants().versionNumber}
                     </Text>
                   </View>
                 </View>

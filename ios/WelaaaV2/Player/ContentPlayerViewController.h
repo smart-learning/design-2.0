@@ -69,7 +69,8 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
     BOOL _holdTouchDragging;        // 슬라이더 프로퍼티.
     BOOL _isPlaybackContollerHidden;// 재생 컨트롤 UI 모듈 감춤 or 표시.
     BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한.
-    BOOL _isAudioContent;           // 콘텐트 타입. (AVPlayer API를 사용할 수도 있습니다. 추후에 '매일 책 한권' 등의 콘텐트에 대한 분류도 고민해야 할 것입니다.
+    BOOL _isAudioContent;           // 오디오북
+    BOOL _isDailyBook;              // 매일 책 한권
   
     ContentPlayerButton *_autoPlayButton;
     ContentPlayerButton *_scriptButton;
@@ -105,6 +106,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
 @property (strong, nonatomic) PallyConFPSSDK *fpsSDK;
 @property AVPlayerLayer *playerLayer;
 @property (nonatomic, assign) ContentsPlayerScreenMode screenMode;
+@property (nonatomic, assign) NSString * downloadedFilePath;
 @property (nonatomic, assign) BOOL isDownloadFile;
 @property (nonatomic, assign) BOOL isMiniPlayer;
 @property (strong, nonatomic) IFRecommendViewController *recommendViewController;

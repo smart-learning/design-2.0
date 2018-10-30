@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
   Alert,
@@ -9,7 +10,6 @@ import {
   View
 } from 'react-native';
 import { COLOR_PRIMARY } from '../../../styles/common';
-import { observer } from 'mobx-react';
 import createStore from '../../commons/createStore';
 import globalStore from '../../commons/store';
 

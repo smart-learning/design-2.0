@@ -95,6 +95,10 @@ class Store {
   @observable
   downloadState = { complete: false, progress: 50 };
 
+  /* 멤버십 결제 성공시 호출되는 이벤트(화면을 갱신하기 위해 사용 -> HomeScreen 으로 점프)  */
+  @observable
+  buyResult = { success: false };
+
   /* 앱 설정 관련 정보 */
   @observable
   appSettings = {

@@ -1,3 +1,6 @@
+import { observe } from 'mobx';
+import { observer } from 'mobx-react';
+import moment from 'moment';
 import React from 'react';
 import {
   Image,
@@ -8,17 +11,15 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { AppEventsLogger } from 'react-native-fbsdk';
 import { SafeAreaView } from 'react-navigation';
-import CommonStyles from '../../../styles/common';
 import IcClub from '../../../images/ic-m-audiobookclub.png';
 import IcCampus from '../../../images/ic-m-campus.png';
 import IcPremium from '../../../images/ic-m-premium.png';
 import IcAngleRight from '../../../images/ic-my-angle-right-white.png';
-import globalStore from '../../commons/store';
-import { observer } from 'mobx-react';
-import moment from 'moment';
+import CommonStyles from '../../../styles/common';
 import native from '../../commons/native';
-import {AppEventsLogger} from 'react-native-fbsdk';
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#a88050'
-  },      
+  },
   membershipIcon: {
     position: 'absolute',
     top: 18,
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     backgroundColor: '#a88050'
-  },      
+  },
   memberShipButtonTitle: {
     fontSize: 18,
     color: '#ffffff'
@@ -320,11 +321,24 @@ export default class MembershipPage extends React.Component {
     super(props);
   }
 
-  render() {
+  componentDidMount() {
+    this.disposer = observe(globalStore.buyResult, change => {
+      if ('success' === change.name && change.newValue) {
+        globalStore.buyResult.success = false;
+        // HomeScreen.js 로 이동 혹은 Back
+        this.props.navigation.navigate('HomeScreen');
+      }
+    });
+  }
 
-    // 멤버십 페이지 랜더 시점 호출  
-    AppEventsLogger.logEvent('WELAAARN_MEMBERSHIP_PAGE'); 
-      
+  componentWillUnmount() {
+    this.disposer();
+  }
+
+  render() {
+    // 멤버십 페이지 랜더 시점 호출
+    AppEventsLogger.logEvent('WELAAARN_MEMBERSHIP_PAGE');
+
     // 멤버쉽이 존재할 경우
     if (
       globalStore.currentMembership &&
@@ -344,7 +358,9 @@ export default class MembershipPage extends React.Component {
             {globalStore.currentMembership.type === 1 ? (
               <View style={styles.membershipCampusBox}>
                 <Image source={IcCampus} style={styles.membershipIcon} />
-                <Text style={styles.membershipCampusTitle}>윌라 캠퍼스 멤버십</Text>
+                <Text style={styles.membershipCampusTitle}>
+                  윌라 캠퍼스 멤버십
+                </Text>
                 <View style={styles.membershipParagraphBox}>
                   <Text style={styles.membershipParagraph}>
                     1천개의 동영상강좌 무제한 이용
@@ -374,7 +390,9 @@ export default class MembershipPage extends React.Component {
             {globalStore.currentMembership.type === 2 ? (
               <View style={styles.membershipPremiumBox}>
                 <Image source={IcPremium} style={styles.membershipIcon} />
-                <Text style={styles.membershipPremiumTitle}>윌라 프리미엄 멤버십</Text>
+                <Text style={styles.membershipPremiumTitle}>
+                  윌라 프리미엄 멤버십
+                </Text>
                 <View style={styles.membershipParagraphBox}>
                   <Text style={styles.membershipParagraph}>
                     1천개의 동영상강좌 무제한 이용
@@ -504,7 +522,35 @@ export default class MembershipPage extends React.Component {
 
   buyMembershop = args => {
     if (Platform.OS === 'android') {
-      this.props.navigation.navigate('MembershipFormPage', args);
+      // 2018.10.29 facebook event: 마케팅 요청.
+      const NativeConstants = native.getConstants();
+      const EVENT_NAME_INITIATED_CHECKOUT =
+        NativeConstants.EVENT_NAME_INITIATED_CHECKOUT;
+      const EVENT_PARAM_CONTENT = NativeConstants.EVENT_PARAM_CONTENT;
+      const EVENT_PARAM_CONTENT_ID = NativeConstants.EVENT_PARAM_CONTENT_ID;
+      const EVENT_PARAM_CONTENT_TYPE = NativeConstants.EVENT_PARAM_CONTENT_TYPE;
+      const EVENT_PARAM_NUM_ITEMS = NativeConstants.EVENT_PARAM_NUM_ITEMS;
+      const EVENT_PARAM_PAYMENT_INFO_AVAILABLE =
+        NativeConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE;
+      const EVENT_PARAM_CURRENCY = NativeConstants.EVENT_PARAM_CURRENCY;
+      var price =
+        'campus' === args.type
+          ? 7700
+          : 'bookclub' === args.type
+            ? 6600
+            : 'premium' === args.type
+              ? 14300
+              : 0;
+      AppEventsLogger.logEvent(EVENT_NAME_INITIATED_CHECKOUT, price, {
+        [EVENT_PARAM_CONTENT]: args.title,
+        [EVENT_PARAM_CONTENT_ID]: 'membership',
+        [EVENT_PARAM_CONTENT_TYPE]: args.type,
+        [EVENT_PARAM_NUM_ITEMS]: 1,
+        [EVENT_PARAM_PAYMENT_INFO_AVAILABLE]: 0,
+        [EVENT_PARAM_CURRENCY]: 'KRW'
+      });
+
+      this.props.navigation.navigate('MembershipFormPage', price, args);
     } else if (Platform.OS === 'ios') {
       switch (args.type) {
         case 'campus':
@@ -564,7 +610,9 @@ export default class MembershipPage extends React.Component {
 
             <View style={styles.membershipCampusBox}>
               <Image source={IcCampus} style={styles.membershipIcon} />
-              <Text style={styles.membershipCampusTitle}>윌라 캠퍼스 멤버십</Text>
+              <Text style={styles.membershipCampusTitle}>
+                윌라 캠퍼스 멤버십
+              </Text>
               <View style={styles.membershipParagraphBox}>
                 <Text style={styles.membershipParagraph}>
                   1천개의 동영상강좌 무제한 이용
@@ -680,7 +728,9 @@ export default class MembershipPage extends React.Component {
 
             <View style={styles.membershipPremiumBox}>
               <Image source={IcPremium} style={styles.membershipIcon} />
-              <Text style={styles.membershipPremiumTitle}>윌라 프리미엄 멤버십</Text>
+              <Text style={styles.membershipPremiumTitle}>
+                윌라 프리미엄 멤버십
+              </Text>
               <View style={styles.membershipParagraphBox}>
                 <Text style={styles.membershipParagraph}>
                   윌라 캠퍼스 멤버십 + 윌라 오디오북 멤버십
@@ -756,4 +806,4 @@ export default class MembershipPage extends React.Component {
 MembershipPage.defaultProps = {
   membership_price_prefix: '이후 매월 ',
   membership_price_suffix: ' 결제하기 / 해지는 언제든지 쉽게!'
-}
+};

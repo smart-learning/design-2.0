@@ -387,6 +387,25 @@ export default {
           navigation.navigate('WebView', { url: schemes[0] });
           break;
 
+        //이달의 책 바로가기
+        case 'botm':
+          const params = schemes[0].split(',');
+
+          navigation.navigate('HomeMonthlyReviewPage', {
+            month: params[0],
+            sort: params[1],
+            title: '이달의 책 북리뷰'
+          });
+          break;
+        
+        //이달의 책 소개용 페이지
+        case 'botm_intro':
+          navigation.navigate('BotmIntroPage', {
+            title: '이달의 책',
+            info: schemes[0]
+          });
+          break;
+
         case 'out_browser':
           Linking.openURL(decodeURIComponent(schemes[0]));
           break;
@@ -422,6 +441,11 @@ export default {
             title: '다운로드 콘텐츠'
           });
           break;
+          
+        case 'membership':
+          navigation.navigate('MembershipPage', {
+
+          })
       }
     } catch (error) {
       console.log(error);
