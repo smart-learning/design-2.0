@@ -322,7 +322,9 @@
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
 - (void) viewWillDisappear : (BOOL) animated
 {
+    [super viewWillDisappear : animated];
     NSLog(@"  [viewWillDisappear] This view will disappear..");
+  
     [_player pause];
     [_playerLayer removeFromSuperlayer];
     _playerLayer.player = nil;
@@ -330,10 +332,12 @@
     [_logTimer invalidate];
     [[NSNotificationCenter defaultCenter] removeObserver : self
                                                     name : AVPlayerItemDidPlayToEndTimeNotification
-                                                  object : [_player currentItem]];
+                                                  object : nil];
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : UIApplicationDidEnterBackgroundNotification
+                                                  object : nil];
+     
     [common showStatusBar];
-  
-    [super viewWillDisappear : animated];
   
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [self resignFirstResponder];
@@ -570,7 +574,7 @@
 //
 - (void) applicationDidEnterBackground : (NSNotification *) notification
 {
-    NSLog(@"  applicationDidEnterBackground");
+    NSLog(@"  [applicationDidEnterBackground] ? %@", _urlAsset);
     // 재생중일 경우
     if ( _playButton.hidden )
     {
