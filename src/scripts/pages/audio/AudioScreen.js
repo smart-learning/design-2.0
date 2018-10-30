@@ -9,6 +9,7 @@ import {
 import {createStackNavigator} from "react-navigation";
 import AudioBookPage from "./AudioBookPage";
 import AudioBookDetailPage from "./AudioBookDetailPage";
+import BotmIntroPage from "./botm_intro/BotmIntroPage"
 
 
 const AudioScreen = createStackNavigator({
@@ -22,6 +23,10 @@ const AudioScreen = createStackNavigator({
 			screen: AudioBookDetailPage,
 			navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
 			path:'audio',
+		},
+		BotmIntroPage:{
+			screen: BotmIntroPage,
+			title:'이달의 책'
 		}
 	},
 

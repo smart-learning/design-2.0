@@ -16,6 +16,7 @@ import SampleSubScreen2 from '../sample/SampleSubScreen2';
 import HomePage from './HomePage';
 import HomeSeriesPage from './HomeSeriesPage';
 import SearchResultPage from './SearchResultPage';
+import InAppWebView from '../../components/InAppWebView';
 
 const HomeScreen = createStackNavigator(
   {
@@ -58,6 +59,10 @@ const HomeScreen = createStackNavigator(
         header: null,
         gesturesEnabled: false
       }
+    },
+
+    WebView: {
+      screen: InAppWebView
     },
 
     PrivacyPage: {

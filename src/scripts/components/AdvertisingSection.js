@@ -5,6 +5,7 @@ import { COLOR_PRIMARY } from "../../styles/common";
 import moment from 'moment';
 import net from "../commons/net";
 import nav from "../commons/nav";
+import globalStore from '../commons/store';
 
 class AdvertisingSection extends Component {
 
@@ -53,10 +54,11 @@ class AdvertisingSection extends Component {
 			},
 
 			footerText: {
-				alignSelf: 'center',
+				width: '100%',
 				padding: 15,
 				fontSize: 18,
-				color: '#FFFFFF'
+				color: '#FFFFFF',
+				textAlign: 'center'
 			}
 		});
 
@@ -72,6 +74,11 @@ class AdvertisingSection extends Component {
 		let data = await net.getMainPopup();
 		if (data.length === 0) return;
 
+		//메인화면이 아닐경우 팝업 뜨지 않게 설정
+		console.log(globalStore);
+		if (globalStore.lastLocation != 'HomeScreen'){
+			return;
+		}
 
 
 		// 안보기로 한 팝업은 아닌지 날짜 확인
