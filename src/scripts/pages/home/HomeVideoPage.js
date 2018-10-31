@@ -152,7 +152,7 @@ class HomeVideoPage extends React.Component {
                   const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) {}
+                  } catch (e) { }
 
                   return (
                     <HomeBanner
@@ -186,42 +186,42 @@ class HomeVideoPage extends React.Component {
                 />
               </View>
             ) : (
-              <View
-                style={[CommonStyles.contentContainer, styles.seriesContainer]}
-              >
-                <View>
-                  <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                    윌라 추천 시리즈
-                  </Text>
-                  <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                    당신이 배우고 싶은 모든 것
-                  </Text>
-                </View>
-
-                <View style={styles.seriesComponent}>
-                  <Series itemData={this.props.store.homeSeriesData} />
-                </View>
-
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() =>
-                    this.props.navigation.navigate('HomeSeriesPage', {
-                      title: '윌라 추천 시리즈'
-                    })
-                  }
+                <View
+                  style={[CommonStyles.contentContainer, styles.seriesContainer]}
                 >
-                  <View style={styles.linkViewAll} borderRadius={5}>
-                    <Text style={styles.linkViewAllText}>
-                      추천 시리즈 전체 보기{' '}
-                      <Image
-                        source={IcAngleRightGrey}
-                        style={styles.linkViewAllIcon}
-                      />
-                    </Text>
+                  <View>
+                    <Text style={[styles.mainTitleCenter, styles.titleH2]}>
+                      윌라 추천 시리즈
+                  </Text>
+                    <Text style={[styles.mainTitleCenter, styles.titleH4]}>
+                      당신이 배우고 싶은 모든 것
+                  </Text>
                   </View>
-                </TouchableOpacity>
-              </View>
-            ))}
+
+                  <View style={styles.seriesComponent}>
+                    <Series itemData={this.props.store.homeSeriesData} />
+                  </View>
+
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() =>
+                      this.props.navigation.navigate('HomeSeriesPage', {
+                        title: '윌라 추천 시리즈'
+                      })
+                    }
+                  >
+                    <View style={styles.linkViewAll} borderRadius={5}>
+                      <Text style={styles.linkViewAllText}>
+                        추천 시리즈 전체 보기{' '}
+                        <Image
+                          source={IcAngleRightGrey}
+                          style={styles.linkViewAllIcon}
+                        />
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
 
           {this.props.store.classHotData.length > 0 && (
             <View
@@ -246,6 +246,18 @@ class HomeVideoPage extends React.Component {
               </View>
 
               <View style={CommonStyles.alignJustifyContentBetween}>
+                <Text style={styles.titleH3}>새로 나온 클래스</Text>
+                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
+                  {updatedAt} 업데이트
+                </Text>
+              </View>
+
+              <ClassList
+                itemData={this.props.store.classNewData}
+                classType="new"
+              />
+
+              <View style={CommonStyles.alignJustifyContentBetween}>
                 <Text style={styles.titleH3}>
                   회원들이 열심히 듣고 있는 클래스
                 </Text>
@@ -257,18 +269,6 @@ class HomeVideoPage extends React.Component {
               <ClassList
                 classType="hot"
                 itemData={this.props.store.classHotData}
-              />
-
-              <View style={CommonStyles.alignJustifyContentBetween}>
-                <Text style={styles.titleH3}>새로 나온 클래스</Text>
-                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                  {updatedAt} 업데이트
-                </Text>
-              </View>
-
-              <ClassList
-                itemData={this.props.store.classNewData}
-                classType="new"
               />
 
               <View style={CommonStyles.alignJustifyContentBetween}>
