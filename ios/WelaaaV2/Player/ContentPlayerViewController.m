@@ -41,8 +41,8 @@
     }
     else if ( [[_args objectForKey : @"cid"] hasPrefix : @"z"] )  // z_ : 매일 책한권 콘텐츠.
     {
-      _isDailyBook = YES;
-      _isAudioMode = YES;
+        _isDailyBook = YES;
+        _isAudioMode = YES;
     }
   
     if ( [[_args objectForKey : @"contentPath"] hasPrefix : @"/private/var/mobile/"] )
@@ -317,6 +317,10 @@
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
+  
+    // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
+    if ( !_isAuthor )
+        [self showToast : @"프리뷰 모드로 재생합니다."];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
