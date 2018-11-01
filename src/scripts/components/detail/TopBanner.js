@@ -183,6 +183,7 @@ export default class TopBanner extends React.Component {
   }
 
   render() {
+
     return (
       <ImageBackground
         style={styles.banner}
@@ -226,7 +227,7 @@ export default class TopBanner extends React.Component {
         </Text>
         <View style={[styles.bookLabels, CommonStyles.alignJustifyFlex]}>
           {!this.props.store.itemData.is_new &&
-            !this.props.store.itemData.is_exclusive &&
+            !this.props.store.itemData.is_exculsive &&
             !this.props.store.itemData.is_free &&
             !this.props.store.itemData.audiobook_type && (
               <View
@@ -246,7 +247,7 @@ export default class TopBanner extends React.Component {
               <Text style={[styles.bookLabelText]}>New</Text>
             </View>
           )}
-          {!!this.props.store.itemData.is_exclusive && (
+          {!!this.props.store.itemData.is_exculsive && (
             <View
               style={[styles.bookLabel, styles.bookLabelExclusive]}
               borderRadius={10}
