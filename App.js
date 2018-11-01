@@ -17,6 +17,8 @@ import firebase from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
 import {
   createDrawerNavigator,
+  createStackNavigator,
+  createSwitchNavigator,
   DrawerItems,
   SafeAreaView
 } from 'react-navigation';
@@ -28,6 +30,11 @@ import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
 import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
+import EmailSignUpForm from './src/scripts/pages/auth/EmailSignUpForm';
+import LoginPage from './src/scripts/pages/auth/LoginPage';
+import Policy from './src/scripts/pages/auth/PolicyPage';
+import Privacy from './src/scripts/pages/auth/PrivacyPage';
+import SignUpLandingPage from './src/scripts/pages/auth/SignUpLandingPage';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
@@ -176,7 +183,6 @@ class App extends React.Component {
       paymentManagerEmitter.addListener('buyResult', arg =>
         Native.buyResult(arg)
       );
-
     } else if ('android' === Platform.OS) {
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayer', params => {
@@ -329,8 +335,7 @@ class App extends React.Component {
     nav.parseDeepLink(event.url);
   };
 
-  render() {    
-
+  render() {
     return (
       <View style={{ flex: 1 }}>
         {!!this.data.welaaaAuthLoaded && (
@@ -478,4 +483,107 @@ const AppDrawer = createDrawerNavigator(
   }
 );
 
-export default App;
+class AuthLoadingScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this._bootstrapAsync();
+  }
+
+  _bootstrapAsync = async () => {
+    const welaaaAuth = await AsyncStorage.getItem('welaaaAuth');
+    console.log('App.js::welaaaAuth', welaaaAuth);
+    if (welaaaAuth) {
+      this.props.navigation.navigate('Main');
+    } else {
+      const isAppFirstLoad = await AsyncStorage.getItem('isAppFirstLoad');
+      console.log('App.js::isAppFirstLoad', isAppFirstLoad);
+      this.props.navigation.navigate(
+        isAppFirstLoad === true ? 'Signup' : 'Signin'
+      );
+    }
+  };
+
+  render() {
+    return (
+      <View style={commonStyle.container}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+}
+
+const SignupStack = createStackNavigator(
+  {
+    SignUpPage: {
+      screen: SignUpLandingPage
+    },
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
+    },
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false
+      }
+    },
+    PrivacyPage: {
+      screen: Privacy
+    },
+    PolicyPage: {
+      screen: Policy
+    }
+  },
+  {
+    initialRouteName: 'SignUpPage'
+  }
+);
+
+const SigninStack = createStackNavigator(
+  {
+    SignUpPage: {
+      screen: SignUpLandingPage
+    },
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
+    },
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false
+      }
+    },
+    PrivacyPage: {
+      screen: Privacy
+    },
+    PolicyPage: {
+      screen: Policy
+    }
+  },
+  {
+    initialRouteName: 'Login'
+  }
+);
+
+const AppNavigator = createSwitchNavigator(
+  {
+    AuthLoading: {
+      screen: AuthLoadingScreen
+    },
+    Main: {
+      screen: App
+    },
+    Signup: {
+      screen: SignupStack
+    },
+    Signin: {
+      screen: SigninStack
+    }
+  },
+  {
+    initialRouteName: 'AuthLoading'
+  }
+);
+
+export default AppNavigator;
