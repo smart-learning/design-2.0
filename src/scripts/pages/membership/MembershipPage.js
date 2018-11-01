@@ -557,7 +557,8 @@ export default class MembershipPage extends React.Component {
         'EVENT_PARAM_CONTENT_TYPE': args.type,
         'EVENT_PARAM_NUM_ITEMS': 1,
         'EVENT_PARAM_PAYMENT_INFO_AVAILABLE': 0,
-        'EVENT_PARAM_CURRENCY':'KRW'
+        'EVENT_PARAM_CURRENCY':'KRW',
+        'OS_TYPE':Platform.OS
       });
 
       this.props.navigation.navigate('MembershipFormPage', args);

@@ -94,7 +94,8 @@ class KakaoLoginButton extends React.Component {
       }
 
       firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-        'EVENT_PARAM_REGISTRATION_METHOD': 'kakaotalk'
+        'EVENT_PARAM_REGISTRATION_METHOD': 'kakaotalk',
+        'OS_TYPE':Platform.OS
       });
       
       AppEventsLogger.logEvent('WELAAARN_KAKAO_SIGN_UP');

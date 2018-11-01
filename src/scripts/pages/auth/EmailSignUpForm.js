@@ -245,7 +245,8 @@ class EmailSignUpForm extends Component {
         }
 
         firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-          'EVENT_PARAM_REGISTRATION_METHOD': 'email'
+          'EVENT_PARAM_REGISTRATION_METHOD': 'email',
+          'OS_TYPE':Platform.OS
         });
 
         AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
