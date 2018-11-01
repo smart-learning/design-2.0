@@ -551,9 +551,6 @@ export default class MembershipPage extends React.Component {
         [EVENT_PARAM_CURRENCY]: 'KRW'
       });
 
-
-      this.props.navigation.navigate('MembershipFormPage', args);
-
       firebase.analytics().logEvent('EVENT_NAME_INITIATED_CHECKOUT', {
         'EVENT_PARAM_CONTENT': args.title,
         'EVENT_PARAM_CONTENT_ID': 'membership',
@@ -562,6 +559,8 @@ export default class MembershipPage extends React.Component {
         'EVENT_PARAM_PAYMENT_INFO_AVAILABLE': 0,
         'EVENT_PARAM_CURRENCY':'KRW'
       });
+
+      this.props.navigation.navigate('MembershipFormPage', args);
 
     } else if (Platform.OS === 'ios') {
       switch (args.type) {
