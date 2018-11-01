@@ -497,9 +497,11 @@ class AuthLoadingScreen extends React.Component {
     } else {
       const isAppFirstLoad = await AsyncStorage.getItem('isAppFirstLoad');
       console.log('App.js::isAppFirstLoad', isAppFirstLoad);
-      this.props.navigation.navigate(
-        isAppFirstLoad === true ? 'Signup' : 'Signin'
-      );
+      if (isAppFirstLoad && isAppFirstLoad === 'false') {
+        this.props.navigation.navigate('Signin');
+      } else {
+        this.props.navigation.navigate('Signup');
+      }
     }
   };
 
