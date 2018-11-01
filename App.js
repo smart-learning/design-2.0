@@ -349,6 +349,11 @@ class App extends React.Component {
                 console.log('change screen:', prevScreen, '-->', currentScreen);
                 // console.log( 'action :', currentState );
 
+                // firebase.analytics().logEvent('firebase',{
+                //   'eventName': 'Hello'
+                // });
+                firebase.analytics().setCurrentScreen(currentScreen,currentScreen);
+
                 if (currentScreen !== 'AuthCheck') {
                   store.lastLocation = currentScreen;
                   if (prevScreen !== 'AuthCheck')

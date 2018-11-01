@@ -23,6 +23,7 @@ import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
 import Net from '../../commons/net';
 import store from '../../commons/store';
+import firebase from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -242,6 +243,10 @@ class EmailSignUpForm extends Component {
             [EVENT_PARAM_REGISTRATION_METHOD]: 'email'
           });
         }
+
+        firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+          'EVENT_PARAM_REGISTRATION_METHOD': 'email'
+        });
 
         AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
         store.welaaaAuth = data;

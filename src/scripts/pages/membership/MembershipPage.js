@@ -20,6 +20,7 @@ import IcAngleRight from '../../../images/ic-my-angle-right-white.png';
 import CommonStyles from '../../../styles/common';
 import native from '../../commons/native';
 import globalStore from '../../commons/store';
+import firebase from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -550,7 +551,18 @@ export default class MembershipPage extends React.Component {
         [EVENT_PARAM_CURRENCY]: 'KRW'
       });
 
+
       this.props.navigation.navigate('MembershipFormPage', args);
+
+      firebase.analytics().logEvent('EVENT_NAME_INITIATED_CHECKOUT', {
+        'EVENT_PARAM_CONTENT': args.title,
+        'EVENT_PARAM_CONTENT_ID': 'membership',
+        'EVENT_PARAM_CONTENT_TYPE': args.type,
+        'EVENT_PARAM_NUM_ITEMS': 1,
+        'EVENT_PARAM_PAYMENT_INFO_AVAILABLE': 0,
+        'EVENT_PARAM_CURRENCY':'KRW'
+      });
+
     } else if (Platform.OS === 'ios') {
       switch (args.type) {
         case 'campus':
