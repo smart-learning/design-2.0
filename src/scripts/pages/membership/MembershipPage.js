@@ -550,7 +550,7 @@ export default class MembershipPage extends React.Component {
         [EVENT_PARAM_CURRENCY]: 'KRW'
       });
 
-      this.props.navigation.navigate('MembershipFormPage', price, args);
+      this.props.navigation.navigate('MembershipFormPage', args);
     } else if (Platform.OS === 'ios') {
       switch (args.type) {
         case 'campus':
