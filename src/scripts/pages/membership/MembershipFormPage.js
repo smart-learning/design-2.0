@@ -24,7 +24,7 @@ const productItem = {
 	campus: {
 		name: '캠퍼스',
 		ios: {
-			price: '$9.89',
+			price: '11,000원',
 		},
 		android: {
 			price: '7,700원',
@@ -34,7 +34,7 @@ const productItem = {
 	bookclub: {
 		name: '오디오북클럽',
 		ios: {
-			price: '$8.79',
+			price: '9,500원',
 		},
 		android: {
 			price: '6,600원',
@@ -44,7 +44,7 @@ const productItem = {
 	premium: {
 		name: '프리미엄',
 		ios: {
-			price: '$18.69',
+			price: '20,500원',
 		},
 		android: {
 			price: '14,300원',
@@ -503,7 +503,7 @@ class MembershipFormPage extends React.Component {
 							{this.formType === 'campus' &&
 							<View>
 								{Platform.select({
-									ios: <Text style={styles.totalPrice}>$9.89</Text>,
+									ios: <Text style={styles.totalPrice}>11,000 </Text>,
 									android: <Text style={styles.totalPrice}>7,700 <Text
 										style={styles.itemText}>원</Text></Text>
 								})}
@@ -512,7 +512,7 @@ class MembershipFormPage extends React.Component {
 							{this.formType === 'bookclub' &&
 							<View>
 								{Platform.select({
-									ios: <Text style={styles.totalPrice}>$8.79</Text>,
+									ios: <Text style={styles.totalPrice}>9,500 </Text>,
 									android: <Text style={styles.totalPrice}>6,600 <Text
 										style={styles.itemText}>원</Text></Text>
 								})}
@@ -521,7 +521,7 @@ class MembershipFormPage extends React.Component {
 							{this.formType === 'premium' &&
 							<View>
 								{Platform.select({
-									ios: <Text style={styles.totalPrice}>$18.69</Text>,
+									ios: <Text style={styles.totalPrice}>20,500 </Text>,
 									android: <Text style={styles.totalPrice}>14,300 <Text
 										style={styles.itemText}>원</Text></Text>
 								})}
