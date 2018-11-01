@@ -12,7 +12,6 @@
 @implementation RNNativePlayer
 {
     BOOL _hasListeners;
-    BOOL _isConnectedWiFi;
 }
 
 // To export a module named FPSManager
@@ -39,54 +38,50 @@ RCT_EXPORT_MODULE();
 
 - (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
-    /*
-     현재 네트워크 상태값과 RN 마이윌라 설정값을 비교하고 맞지 않으면 얼럿창을 리턴합니다.
-     Wi-Fi에서만 재생허용인데 연결상태가 Wi-Fi가 아닌 경우는 얼럿창을 보여주고 재생을 하지 않습니다.
-     */
-  
-    [[ApiManager sharedInstance] setReachabilityStatusChangeBlock : ^(NSInteger status)
-                                                                    {
-                                                                        if ( status == 2 )
-                                                                            self->_isConnectedWiFi = true;
-                                                                        else
-                                                                            self->_isConnectedWiFi = false;
-                                                                    }];
-  
-    BOOL isPlayableOnWiFi = false;
-    isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
-    NSLog(@"  isPlayableOnWiFi? : %@", isPlayableOnWiFi? @"YES" : @"NO");
-    NSLog(@"  isConnectedWiFi? : %@", _isConnectedWiFi? @"YES" : @"NO");
-  
-    if ( isPlayableOnWiFi && !_isConnectedWiFi )
-    {
-        return [common presentAlertWithTitle:@"알림" andMessage:@"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 영상재생이 가능합니다."];
-    }
-  
-    // 미니플레이어가 떠있을수 있으니 일단 종료시킵니다.
-    [self stopMediaPlayer];
-  
-    ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
-    NSMutableDictionary *args = [argsFromReactNative mutableCopy];
-    [playerViewController setContentData : args];
-  
-    // View를 present할때 옵션없이 하면 지시하는 뷰를 컨텍스트에서 날리고 present하기때문에 검은화면이 맨 아래에 깔리게 됩니다.
-    // https://magi82.github.io/ios-modal-presentation-style-01/
-    playerViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
-  
-    // Exception 'accessing _cachedSystemAnimationFence requires the main thread' was thrown while invoking 에러가 발생된다면..
-    // ref : https://github.com/MOLPay/molpay-mobile-xdk-reactnative-beta/issues/7
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : playerViewController
-                                                                                     animated : YES
-                                                                                   completion : nil];
-    });
   /*
-    // NavigationView방식으로 push해야한다면 아래를 주석해제합니다.
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        UINavigationController *navigationController;
-        navigationController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        [navigationController pushViewController:playerViewController animated:TRUE];
-    });
+   현재 네트워크 상태값과 RN 마이윌라 설정값을 비교하고 맞지 않으면 얼럿창을 리턴합니다.
+   Wi-Fi에서만 재생허용인데 연결상태가 Wi-Fi가 아닌 경우는 얼럿창을 보여주고 재생을 하지 않습니다.
+   */
+  /*
+  [[ApiManager sharedInstance] setReachabilityStatusChangeBlock : ^(NSInteger status)
+                                                                  {
+                                                                      if ( status == 2 )
+                                                                          self->_isConnectedWiFi = true;
+                                                                      else
+                                                                          self->_isConnectedWiFi = false;
+                                                                  }];
+   */
+  // 위와 같이 처리할 경우 비동기 콜백함수라 리턴되기 전에 아래의 루틴이 먼저 실행될 수 있으므로 수정합니다.
+  // 그리고 플레이어의 재생목록에서 다른 콘텐츠를 선택하거나 자동으로 다음 콘텐츠로 넘어가 재생될 때에도 체크하는 루틴이 필요하므로
+  // 해당 처리는 ContentPlayerViewController 에서 하는걸로 수정합니다.
+  // - 2018.10.31.~ 김요한.
+  
+  // 미니플레이어가 떠있을수 있으니 일단 종료시킵니다.
+  [self stopMediaPlayer];
+  
+  ContentPlayerViewController *playerViewController = [[ContentPlayerViewController alloc] init];
+  NSMutableDictionary *args = [argsFromReactNative mutableCopy];
+  [playerViewController setContentData : args];
+  
+  // View를 present할때 옵션없이 하면 지시하는 뷰를 컨텍스트에서 날리고 present하기때문에 검은화면이 맨 아래에 깔리게 됩니다.
+  // https://magi82.github.io/ios-modal-presentation-style-01/
+  playerViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+  
+  // Exception 'accessing _cachedSystemAnimationFence requires the main thread' was thrown while invoking 에러가 발생된다면..
+  // ref : https://github.com/MOLPay/molpay-mobile-xdk-reactnative-beta/issues/7
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : playerViewController
+                                                                                 animated : YES
+                                                                               completion : nil];
+  });
+  
+  // NavigationView방식으로 push해야한다면 아래를 주석해제합니다.
+  /*
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    UINavigationController *navigationController;
+    navigationController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    [navigationController pushViewController:playerViewController animated:TRUE];
+  });
   */
 }
 
@@ -177,14 +172,14 @@ RCT_EXPORT_MODULE();
         UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"알림"
                                                                        message : @"현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?"
                                                                 preferredStyle : UIAlertControllerStyleAlert];
-        UIAlertAction *ok = [UIAlertAction actionWithTitle : @"확인"
+        UIAlertAction *ok = [UIAlertAction actionWithTitle : @"확 인"
                                                      style : UIAlertActionStyleDefault
                                                    handler : ^(UIAlertAction * action)
                              {
                                [alert dismissViewControllerAnimated:YES completion:nil];
                                resultHandler(nil, YES);
                              }];
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle : @"취소"
+        UIAlertAction *cancel = [UIAlertAction actionWithTitle : @"취 소"
                                                          style : UIAlertActionStyleDefault
                                                        handler : ^(UIAlertAction * action)
                                  {
