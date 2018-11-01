@@ -95,7 +95,8 @@ class FBLoginButton extends Component {
             }
 
             firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-              'EVENT_PARAM_REGISTRATION_METHOD': 'facebook'
+              'EVENT_PARAM_REGISTRATION_METHOD': 'facebook',
+              'OS_TYPE':Platform.OS
             });
 
             AppEventsLogger.logEvent('WELAAARN_FACEBOOK_SIGN_UP');
