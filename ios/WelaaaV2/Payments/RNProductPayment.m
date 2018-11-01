@@ -49,19 +49,6 @@ RCT_EXPORT_MODULE();
         return ;
     }
   
-    if ( [productCode hasPrefix : @"campus"] )
-    {
-        productCode = @"m_01";
-    }
-    else if ( [productCode hasPrefix : @"bookclu"] )
-    {
-        productCode = @"m_04";
-    }
-    else if ( [productCode hasPrefix : @"premium"] )
-    {
-        productCode = @"m_02";
-    }
-  
     if ( ![IAPShare sharedHelper].iap )
     {
         NSSet *dataSet = [[NSSet alloc] initWithObjects : productCode, nil];

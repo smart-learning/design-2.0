@@ -2,8 +2,13 @@
     <string name="app_name">윌라</string>
 
     <!-- host_dev, host_release -->
-    <string name="host_debug">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
-    <string name="host_release">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
+    <!-- <string name="host_debug">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string>
+    <string name="host_release">https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev</string> -->
+    <!-- -->
+
+    <!-- host_dev, host_release -->
+    <string name="host_debug">https://api-prod.welaaa.com/</string>
+    <string name="host_release">https://api-prod.welaaa.com/</string>
     <!-- -->
 
     <string name="retry">Retry</string>

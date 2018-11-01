@@ -209,37 +209,36 @@ class HomeAudioPage extends React.Component {
             </View>
 
             <View style={CommonStyles.alignJustifyContentBetween}>
+              <Text style={styles.titleH3}>새로 나온 오디오북</Text>
+            </View>
+
+            {/* {(this.props.store.audioNewData.items !== undefined) && ( */}
+            <BookList
+              itemType={'new'}
+              itemData={
+                this.props.store.audioNewData.items
+                  ? this.props.store.audioNewData.items
+                  : this.props.store.audioNewData
+              }
+            />
+            {/* )} */}
+
+            <View style={CommonStyles.alignJustifyContentBetween}>
               <Text style={styles.titleH3}>많이 듣고있는 오디오북</Text>
               <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
                 {updatedAt} 업데이트
               </Text>
             </View>
             {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
-              <BookList
-                itemType="hot"
-                itemData={
-                  this.props.store.audioHotData.items
-                    ? this.props.store.audioHotData.items
-                    : this.props.store.audioHotData
-                }
-              />
+            <BookList
+              itemType="hot"
+              itemData={
+                this.props.store.audioHotData.items
+                  ? this.props.store.audioHotData.items
+                  : this.props.store.audioHotData
+              }
+            />
             {/* )} */}
-
-            <View style={CommonStyles.alignJustifyContentBetween}>
-              <Text style={styles.titleH3}>새로 나온 오디오북</Text>
-            </View>
-
-            {/* {(this.props.store.audioNewData.items !== undefined) && ( */}
-              <BookList
-                itemType={'new'}
-                itemData={
-                  this.props.store.audioNewData.items
-                    ? this.props.store.audioNewData.items
-                    : this.props.store.audioNewData
-                }
-              />
-            {/* )} */}
-
 
             {1 === 2 && (
               <View>

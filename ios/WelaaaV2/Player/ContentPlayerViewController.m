@@ -41,8 +41,8 @@
     }
     else if ( [[_args objectForKey : @"cid"] hasPrefix : @"z"] )  // z_ : 매일 책한권 콘텐츠.
     {
-      _isDailyBook = YES;
-      _isAudioMode = YES;
+        _isDailyBook = YES;
+        _isAudioMode = YES;
     }
   
     if ( [[_args objectForKey : @"contentPath"] hasPrefix : @"/private/var/mobile/"] )
@@ -273,8 +273,7 @@
                                                 object : [_player currentItem]  ];
     [self setPlayState : YES];
   
-    [[AVAudioSession sharedInstance] setCategory : AVAudioSessionCategoryPlayback
-                                           error : nil];
+  //[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(audioSessionInterrupted:)
@@ -318,13 +317,31 @@
     [self performSelector : @selector(pressedHideAndShowButton)
                withObject : nil
                afterDelay : 3.0f];
+  
+    // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
+    if ( !_isAuthor )
+        [self showToast : @"프리뷰 모드로 재생합니다."];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
 - (void) viewWillDisappear : (BOOL) animated
 {
-    NSLog(@"  [viewWillDisappear] This view will disappear..");
     [super viewWillDisappear : animated];
+    NSLog(@"  [viewWillDisappear] This view will disappear..");
+  
+    [_player pause];
+    [_playerLayer removeFromSuperlayer];
+    _playerLayer.player = nil;
+    [self invalidateTimerOnSlider];
+    [_logTimer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : AVPlayerItemDidPlayToEndTimeNotification
+                                                  object : nil];
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : UIApplicationDidEnterBackgroundNotification
+                                                  object : nil];
+     
+    [common showStatusBar];
   
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [self resignFirstResponder];
@@ -556,13 +573,19 @@
     }
 }
 
-// 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어가 계속 재생되게 처리. 2018.8.21
+//
+// 홈버튼 등을 눌러 앱이 백그라운드로 들어갔을 때 플레이어를 실행합니다. (콘텐츠가 재생중이었을 경우에만 해당됩니다.)
+//
 - (void) applicationDidEnterBackground : (NSNotification *) notification
 {
-    NSLog(@"  applicationDidEnterBackground");
-    [_player performSelector : @selector(play)
-                  withObject : nil
-                  afterDelay : 0.01];
+    NSLog(@"  [applicationDidEnterBackground] ? %@", _urlAsset);
+    // 재생중일 경우
+    if ( _playButton.hidden )
+    {
+        [self performSelector : @selector(pressedPlayButton)
+                   withObject : nil
+                   afterDelay : 0.01];
+    }
 }
 
 #pragma mark - Drawing Player UI components
@@ -1244,7 +1267,9 @@
                                 duration : 0
                                netStatus : netStatus
                                authToken : [_args objectForKey : @"token"]];
-  
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : AVPlayerItemDidPlayToEndTimeNotification
+                                                  object : [_player currentItem]];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [common showStatusBar];
 }
@@ -1973,7 +1998,10 @@
         }
       
         // 2018. 9.14 ~
-        [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result){}];
+      [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result)
+       {
+         [self updateDownloadState];  // 호출될 때마다 다운로드 버튼 갱신. 2018.10.30.
+       }];
     }
 }
 
@@ -2574,6 +2602,8 @@
 {
     NSLog(@"  download contentId : %@, location : %@", contentId, location.absoluteString);
   
+    [self updateDownloadState]; //다운로드 버튼 업데이트
+  
     if ( ![contentId isEqualToString:[_args objectForKey:@"cid"]] )
     {
         // 다운로드 완료된 파일이 현재 재생중인 콘텐츠와 다를 경우(다른 영상에서 다운로드를 요청한 케이스)에는 팝업을 띄우지 않습니다.
@@ -2589,10 +2619,6 @@
     NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
     NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : assetPath];
     NSLog(@"  assetURL : %@", assetURL);
-  
-    //다운로드 버튼 업데이트
-    _downloadedFilePath = location.path;
-    [self updateDownloadState];
   
     UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"다운로드 완료"
                                                                    message : @"다운로드된 파일로 재생하시겠습니까?"
@@ -2652,7 +2678,8 @@
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
-    // 다운로드 진행률에 따라 주기적으로 호출됨.
+  // 다운로드 진행률에 따라 주기적으로 호출됨.
+  //  추후 진행률이나 프로그레스바로 UI 를 주기적으로 갱신해야 할 경우에 여기서 처리하면 된다.
 }
 
 //
@@ -2665,8 +2692,9 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
   NSLog(@"  downloadContent:didStartDownloadWithAsset:subtitleDisplayName -> %@", contentId);
   
   if ([contentId isEqualToString:[_args objectForKey:@"cid"]]) {
-    _downloadedFilePath = nil;
     [self updateDownloadState];
+    // ㄴ다운로드가 시작되었을 때 뿐만이 아니고 대기큐에 들어갔을 때에도 다운로드 버튼 상태가 바뀌어야 되기 때문에(다운로드 대기중 이미지)
+    // 여기서만 버튼 업데이트를 하면 안된다. -> 큐에 들어간 순간에도 업데이트 체크하도록 처리. 2018.10.30. 김요한.
   }
 }
 
@@ -2695,30 +2723,32 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 // 지금은 다운로드 상태에 따른 버튼 이미지만 교체하는 수준이지만
 // 추후에는 보다 디테일한 다운로드 진행 상태 업데이트(프로그레스바) 등의 처리 고려
 - (void) updateDownloadState
-{
-    [_downloadButton setImage:@"icon_download"];  // 기본상태
-    
-    if (_downloadedFilePath && [_downloadedFilePath containsString:@"/"]) {
-        [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
+{  
+  [_downloadButton setImage:@"icon_download"];  // 기본상태
+  
+  NSMutableArray *savedContents = [[DatabaseManager sharedInstance] searchDownloadedContentsId:_args[@"cid"]];
+  
+  if (savedContents && savedContents.count > 0){
+    [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
+  }else{
+    if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] ){
+      [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
     }else{
-        if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] ){
-            [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
-        }else{
-            [[[FPSDownloadManager sharedInstance] downloadingQueue] enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
-             {
-                 FPSDownload *r = obj;
-                 if ( [self->_args[@"cid"] isEqualToString : r.clip.cid] )
-                 {
-                     *stop = YES;
-                     [self->_downloadButton setImage:@"icon_download_waiting"]; // 다운로드 대기중
-                     return ;
-                 }
-             }];
-        }
+      [[[FPSDownloadManager sharedInstance] downloadingQueue] enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
+       {
+         FPSDownload *r = obj;
+         if ( [self->_args[@"cid"] isEqualToString : r.clip.cid] )
+         {
+           *stop = YES;
+           [self->_downloadButton setImage:@"icon_download_waiting"]; // 다운로드 대기중
+           return ;
+         }
+       }];
     }
+  }
 }
 
-// 재생모드 표시 업데이트(다운로드 파일이지만 사용자가 스트리밍 재생을 원할 경우도 있으므로 다운로드 상태 표시와 별도로 구분)
+// 재생모드 표시 업데이트(다운로드 파일이지만 사용자가 스트리밍 재생을 원할 경우도 있으므로 다운로드 버튼 상태 표시와 별도로 구분)
 - (NSString *) updateNetStatusLabel
 {
   NSString *netStatus = @"no_network";
@@ -2748,10 +2778,8 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
   NSString *contentPath = [self getDownloadedContentPath:_args[@"cid"]];
   if (contentPath && [contentPath containsString:@"/"]){
-    _downloadedFilePath = contentPath;  // 로컬 파일 재생 여부 확인을 위해 전역에 보관
     return contentPath;
   }else{
-    _downloadedFilePath = nil;  // 로컬 파일 재생 여부 확인을 위해 전역에 보관
     NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                   andHeaderInfo : [_args objectForKey : @"token"]];
     return playDataDics[@"media_urls"][@"HLS"];

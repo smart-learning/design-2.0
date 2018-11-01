@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
 
 class Data {
   @observable
-  name = '이름';
+  name = null;
   @observable
   email = null;
   @observable
@@ -204,7 +204,11 @@ class EmailSignUpForm extends Component {
   handleJoin = () => {
     this.setState({ signupButtonDisabled: true });
 
-    if (this.data.email === null) {
+    if (this.data.name === null) {
+      Alert.alert('이름은 필수 입력항목입니다.');
+      this.setState({ signupButtonDisabled: false });
+      return false;
+    } else if (this.data.email === null) {
       Alert.alert('이메일은 필수 입력항목입니다.');
       this.setState({ signupButtonDisabled: false });
       return false;
@@ -286,12 +290,15 @@ class EmailSignUpForm extends Component {
               <View style={styles.content}>
                 <Text style={styles.headline}>무료계정만들기</Text>
 
-                <View borderRadius={4} style={styles.inputWrap}>
+                <View borderRadius={4} style={styles.inputWrap}>                
+                  <View style={styles.inputBr} />
                   <TextInput
                     style={styles.input}
                     underlineColorAndroid={'rgba(0,0,0,0)'}
-                    placeholder="이름"
+                    
                     onFocus={this.validityNameOnFocus}
+                    placeholder="이름"
+                    onSubmitEditing={Keyboard.dismiss}
                     value={this.data.name}
                     autoCapitalize={'none'}
                     onChangeText={text => {

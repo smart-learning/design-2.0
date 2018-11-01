@@ -113,7 +113,7 @@ class SetAppPage extends React.Component {
                   ]}
                 >
                   <View>
-                    <Text style={styles.label}>Wifi에서만 재생</Text>
+                    <Text style={styles.label}>Wi-Fi에서만 재생</Text>
                   </View>
                   <View style={styles.switch}>
                     <Switch
@@ -132,7 +132,7 @@ class SetAppPage extends React.Component {
                   ]}
                 >
                   <View>
-                    <Text style={styles.label}>Wifi에서만 다운</Text>
+                    <Text style={styles.label}>Wi-Fi에서만 다운</Text>
                   </View>
                   <View style={styles.switch}>
                     <Switch

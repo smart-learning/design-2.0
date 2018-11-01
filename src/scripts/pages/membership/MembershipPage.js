@@ -550,27 +550,27 @@ export default class MembershipPage extends React.Component {
         [EVENT_PARAM_CURRENCY]: 'KRW'
       });
 
-      this.props.navigation.navigate('MembershipFormPage', price, args);
+      this.props.navigation.navigate('MembershipFormPage', args);
     } else if (Platform.OS === 'ios') {
       switch (args.type) {
         case 'campus':
           native.buy({
             type: 'membership',
-            product_id: 'campus',
+            product_id: 'm_01',
             token: globalStore.accessToken
           });
           break;
         case 'bookclub':
           native.buy({
             type: 'membership',
-            product_id: 'bookclu',
+            product_id: 'm_04',
             token: globalStore.accessToken
           });
           break;
         case 'premium':
           native.buy({
             type: 'membership',
-            product_id: 'premium',
+            product_id: 'm_02',
             token: globalStore.accessToken
           });
           break;

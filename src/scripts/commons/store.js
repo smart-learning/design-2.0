@@ -103,8 +103,8 @@ class Store {
   @observable
   appSettings = {
     isAutoLogin: false,
-    isWifiPlay: false,
-    isWifiDownload: false,
+    isWifiPlay: true,
+    isWifiDownload: true,
     isAlert: false,
     isEmail: false
   };

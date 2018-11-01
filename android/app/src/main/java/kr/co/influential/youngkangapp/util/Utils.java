@@ -58,7 +58,8 @@ public class Utils {
      ************************************************************/
     public static String welaaaWebUrl() {
 
-        String welaaaDomain = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev/";
+        // String welaaaDomain = "https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev/";
+        String welaaaDomain = "https://api-prod.welaaa.com/";
 
         String TYPE = "api";
         String VERSION = "v1.0";
