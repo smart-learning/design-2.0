@@ -320,6 +320,7 @@ class MembershipFormPage extends React.Component {
       const EVENT_PARAM_PAYMENT_INFO_AVAILABLE =
         NativeConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE;
       const EVENT_PARAM_CURRENCY = NativeConstants.EVENT_PARAM_CURRENCY;
+      const { params } = this.props.navigation.state;
       var price =
         'campus' === args.type
           ? 7700
