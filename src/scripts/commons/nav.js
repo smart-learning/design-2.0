@@ -397,7 +397,7 @@ export default {
             title: '이달의 책 북리뷰'
           });
           break;
-        
+
         //이달의 책 소개용 페이지
         case 'botm_intro':
           navigation.navigate('BotmIntroPage', {
@@ -441,11 +441,9 @@ export default {
             title: '다운로드 콘텐츠'
           });
           break;
-          
-        case 'membership':
-          navigation.navigate('MembershipPage', {
 
-          })
+        case 'membership':
+          navigation.navigate('MembershipPage', {});
       }
     } catch (error) {
       console.log(error);
@@ -471,14 +469,20 @@ export default {
   },
 
   commonMainHomeBack: () => {
-    console.log('commonBack start:', globalStore.prevLocations);
+    console.log('commonMainHomeBack start:', globalStore.prevLocations);
 
     globalStore.prevLocations = ['HomeScreen'];
-    // 실행하는데 시간이 필요한 것일까 .. 동일한 현상이 왜 또 안나오는기야 . 
-    console.log('commonBack start: length ', globalStore.prevLocations.length);
+    // 실행하는데 시간이 필요한 것일까 .. 동일한 현상이 왜 또 안나오는기야 .
+    console.log(
+      'commonMainHomeBack start: length ',
+      globalStore.prevLocations.length
+    );
 
     const screen = globalStore.prevLocations.pop();
     navigation.navigate(screen);
+  },
 
+  goBack: () => {
+    navigation.goBack();
   }
 };

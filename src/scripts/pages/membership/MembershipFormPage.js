@@ -256,7 +256,14 @@ class MembershipFormPage extends React.Component {
   }
 
   componentDidMount() {
-    this.formType = this.props.navigation.state.params.type;
+    console.log('MembershipFormPage.js::componentDidMount');
+    if (this.props.navigation.state.params) {
+      this.formType = this.props.navigation.state.params.type;
+    }
+  }
+
+  componentWillUnmount() {
+    console.log('MembershipFormPage.js::componentWillUnMount');
   }
 
   validityPeriodMonthOnFocus = () => {
@@ -302,12 +309,10 @@ class MembershipFormPage extends React.Component {
       if (data && data.membership)
         globalStore.currentMembership = data.membership;
       this.setState({ submitButtonDisabled: false });
-      // 카카오톡 회원 가입이 완료된 상태
+
       AppEventsLogger.logEvent(
         'WELAAARN_MEMBERSHIP_REGISTER_' + globalStore.currentMembership
       );
-      this.props.navigation.popToTop();
-      this.props.navigation.navigate('MembershipScreen');
 
       // 2018.10.29 facebook event: 마케팅 요청.
       const NativeConstants = native.getConstants();
@@ -347,6 +352,8 @@ class MembershipFormPage extends React.Component {
         EVENT_PARAM_CURRENCY: 'KRW',
         OS_TYPE: Platform.OS
       });
+
+      this.props.navigation.goBack();
     } catch (e) {
       // register 실패 (axios response not 200)
       console.log(e);
