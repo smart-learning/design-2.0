@@ -322,26 +322,26 @@ class MembershipFormPage extends React.Component {
       const EVENT_PARAM_CURRENCY = NativeConstants.EVENT_PARAM_CURRENCY;
       const { params } = this.props.navigation.state;
       var price =
-        'campus' === args.type
+        'campus' === params.type
           ? 7700
-          : 'bookclub' === args.type
+          : 'bookclub' === params.type
             ? 6600
-            : 'premium' === args.type
+            : 'premium' === params.type
               ? 14300
               : 0;
       AppEventsLogger.logEvent(EVENT_NAME_INITIATED_CHECKOUT, price, {
-        [EVENT_PARAM_CONTENT]: args.title,
+        [EVENT_PARAM_CONTENT]: params.title,
         [EVENT_PARAM_CONTENT_ID]: 'membership',
-        [EVENT_PARAM_CONTENT_TYPE]: args.type,
+        [EVENT_PARAM_CONTENT_TYPE]: params.type,
         [EVENT_PARAM_NUM_ITEMS]: 1,
         [EVENT_PARAM_PAYMENT_INFO_AVAILABLE]: 0,
         [EVENT_PARAM_CURRENCY]: 'KRW'
       });
 
       firebase.analytics().logEvent('EVENT_NAME_INITIATED_CHECKOUT', {
-        EVENT_PARAM_CONTENT: args.title,
+        EVENT_PARAM_CONTENT: params.title,
         EVENT_PARAM_CONTENT_ID: 'membership',
-        EVENT_PARAM_CONTENT_TYPE: args.type,
+        EVENT_PARAM_CONTENT_TYPE: params.type,
         EVENT_PARAM_NUM_ITEMS: 1,
         EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
         EVENT_PARAM_CURRENCY: 'KRW',
