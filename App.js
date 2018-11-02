@@ -50,8 +50,82 @@ class Data {
   queuePath = null;
 }
 
+class Hidden extends React.Component {
+  render() {
+    return null;
+  }
+}
+
+const HOME_SCREEN = HomeScreen;
+const DEFAULT_SCREEN = VideoScreen;
+
+const AppDrawer = createDrawerNavigator(
+  {
+    // SampleScreen: {
+    // 	screen: SampleScreen,
+    // },
+
+    HomeScreen: {
+      screen: HOME_SCREEN
+    },
+
+    VideoScreen: {
+      screen: VideoScreen
+      // path: 'video_list',
+    },
+
+    AudioScreen: {
+      screen: AudioScreen
+    },
+
+    MyScreen: {
+      screen: MyScreens
+    },
+
+    InquireListScreen: {
+      screen: InquireListScreen
+    },
+
+    MembershipScreen: {
+      screen: MembershipScreens,
+      navigationOptions: {
+        drawerIcon: <Hidden />,
+        drawerLabel: <Hidden />
+      }
+    }
+
+    // Playground: {
+    // 	screen: Playground,
+    // },
+    // June: {
+    // 	screen: PlaygroundJune,
+    // },
+    // BottomControllerTEST: {
+    // 	screen: BottomControllerPage,
+    // },
+    // AndroidNativeCall: {
+    // 	screen: PlaygroundJune,
+    // }
+  },
+
+  {
+    contentComponent: props => (
+      <SafeAreaView
+        style={{ flex: 1 }}
+        forceInset={{ top: 'always', horizontal: 'never' }}
+      >
+        <SidebarUserInfo {...props} />
+        <DrawerItems {...props} />
+        {}
+      </SafeAreaView>
+    )
+  }
+);
+
 @observer
 class App extends React.Component {
+  static router = AppDrawer.router;
+
   data = new Data();
 
   // 키보드 제어 상태를 store에 기록해서 관리
@@ -345,26 +419,7 @@ class App extends React.Component {
               // 플래이어 크래시 때문에 코드 추가
               nav.setNav(navigatorRef);
             }}
-            style={{ width: '80%' }}
-            onNavigationStateChange={(prevState, currentState) => {
-              const currentScreen = getActiveRouteName(currentState);
-              const prevScreen = getActiveRouteName(prevState);
-
-              if (prevScreen !== currentScreen) {
-                console.log('change screen:', prevScreen, '-->', currentScreen);
-                // console.log( 'action :', currentState );
-
-                if (currentScreen !== 'AuthCheck') {
-                  store.lastLocation = currentScreen;
-                  if (prevScreen !== 'AuthCheck')
-                    store.prevLocations.push(prevScreen);
-                  store.prevLocations.length = Math.min(
-                    store.prevLocations.length,
-                    10
-                  );
-                }
-              }
-            }}
+            navigation={this.props.navigation}
           />
         )}
 
@@ -410,79 +465,6 @@ function getActiveRouteName(navigationState) {
 
   return route.routeName;
 }
-
-class Hidden extends React.Component {
-  render() {
-    return null;
-  }
-}
-
-const HOME_SCREEN = HomeScreen;
-const DEFAULT_SCREEN = VideoScreen;
-
-const AppDrawer = createDrawerNavigator(
-  {
-    // SampleScreen: {
-    // 	screen: SampleScreen,
-    // },
-
-    HomeScreen: {
-      screen: HOME_SCREEN
-    },
-
-    VideoScreen: {
-      screen: VideoScreen
-      // path: 'video_list',
-    },
-
-    AudioScreen: {
-      screen: AudioScreen
-    },
-
-    MyScreen: {
-      screen: MyScreens
-    },
-
-    InquireListScreen: {
-      screen: InquireListScreen
-    },
-
-    MembershipScreen: {
-      screen: MembershipScreens,
-      navigationOptions: {
-        drawerIcon: <Hidden />,
-        drawerLabel: <Hidden />
-      }
-    }
-
-    // Playground: {
-    // 	screen: Playground,
-    // },
-    // June: {
-    // 	screen: PlaygroundJune,
-    // },
-    // BottomControllerTEST: {
-    // 	screen: BottomControllerPage,
-    // },
-    // AndroidNativeCall: {
-    // 	screen: PlaygroundJune,
-    // }
-  },
-
-  {
-    contentComponent: props => (
-      <SafeAreaView
-        style={{ flex: 1 }}
-        forceInset={{ top: 'always', horizontal: 'never' }}
-      >
-        <SidebarUserInfo {...props} />
-        <DrawerItems {...props} />
-        {}
-      </SafeAreaView>
-    )
-  }
-);
-
 class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
