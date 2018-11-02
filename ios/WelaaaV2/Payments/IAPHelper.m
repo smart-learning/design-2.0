@@ -464,7 +464,8 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
   
     if ( result == nil )
     {
-        completion(nil, nil);
+      //completion(nil, nil);
+        return [common presentAlertWithTitle:@"영수증 검증" andMessage:@"STATUS값이 NULL입니다."];
     }
     else
     {
