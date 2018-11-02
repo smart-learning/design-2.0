@@ -305,6 +305,8 @@
       [self -> _delegateFpsMsg fpsDownloadMsg : @"다운로드를 시작합니다"];
     }
     [self showToast:@"다운로드를 시작합니다"];
+    
+    resultHandler (nil, nil); // 다운로드 버튼 상태를 업데이트하기 위해 호출. 2018.10.30.
   }
 }
 
@@ -1271,13 +1273,6 @@
 {
     NSLog(@"  download contentId : %@, location : %@",contentId, location.absoluteString);
   
-    if ( _delegateFpsDownload )
-    {
-        [_delegateFpsDownload downloadContent : contentId
-                       didFinishDownloadingTo : location];
-    }
-    // 콜백에 먼저 처리할 수 있게 해주고 그 다음에 데이터를 갱신한다.(현재 다운로드중 목록에서 제거 등).
-  
     // 다운로드 성공시 이후의 처리(데이터베이스와 동기화 등)를 하고 다음 다운로드 시작
   
     FPSDownload *fpsDownload = nil;
@@ -1318,17 +1313,23 @@
         [[DatabaseManager sharedInstance] saveDownloadedContent : downloadedContent]; // SQLite 를 통해 저장(welaaa.db)
         fpsDownload.clip.downloaded = true;
       
-      if (_downloadCompletion) {
-        _downloadCompletion(nil, [downloadedContent mutableCopy]);
-      }
+        [self doNextDownload];
+      
+        if ( _delegateFpsDownload )
+        {
+          [_delegateFpsDownload downloadContent : contentId
+                         didFinishDownloadingTo : location];
+        }
+      
+        if (_downloadCompletion) {
+          _downloadCompletion(nil, [downloadedContent mutableCopy]);
+        }
     }
     @catch (NSException *exception) {
         NSLog(@"  %@", exception.reason);
         return ;
     }
     @finally {}
-  
-    [self doNextDownload];
 }
 
 

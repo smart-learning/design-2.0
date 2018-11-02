@@ -26,6 +26,7 @@ import com.facebook.soloader.SoLoader;
 import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
 import io.fabric.sdk.android.Fabric;
 import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import java.util.Arrays;
@@ -110,6 +111,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebasePackage(),
           new RNFirebaseMessagingPackage(),
           new RNFirebaseNotificationsPackage(),
+          new RNFirebaseAnalyticsPackage(),
           new RNKaKaoSigninPackage(),
           new FBSDKPackage(mCallbackManager),
           new RNLocalizablePackage(R.string.class),

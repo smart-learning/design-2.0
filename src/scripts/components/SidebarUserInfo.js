@@ -288,6 +288,7 @@ class SidebarUserInfo extends React.Component {
                 </TouchableOpacity>
               )}
               {/*isLogin*/}
+
               {store.welaaaAuth && (
                 <TouchableOpacity
                   activeOpacity={0.9}
@@ -296,13 +297,13 @@ class SidebarUserInfo extends React.Component {
                   <View>
                     <Text style={styles.userName}>
                       <Text style={styles.userNameImportant}>
-                        {globalStore.profile
-                          ? globalStore.profile.name || '<윌라회원님>'
+                        {store.welaaaAuth.profile
+                          ? store.welaaaAuth.profile.name || '<윌라회원님>'
                           : '<윌라회원님>'}
                       </Text>
                     </Text>
                     <Text style={styles.userEmail}>
-                      {globalStore.profile ? globalStore.profile.email : ''}
+                      {store.welaaaAuth.profile ? store.welaaaAuth.profile.email : ''}
                     </Text>
                   </View>
                 </TouchableOpacity>
