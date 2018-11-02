@@ -12,6 +12,7 @@ import { AccessToken, AppEventsLogger, LoginManager } from 'react-native-fbsdk';
 import icFbBox from '../../../images/ic-fb-box.png';
 import icFb from '../../../images/ic-fb.png';
 import Native from '../../commons/native';
+import firebase from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   FbButtonWrap: {
@@ -92,6 +93,11 @@ class FBLoginButton extends Component {
                 [EVENT_PARAM_REGISTRATION_METHOD]: 'facebook'
               });
             }
+
+            firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+              'EVENT_PARAM_REGISTRATION_METHOD': 'facebook',
+              'OS_TYPE':Platform.OS
+            });
 
             AppEventsLogger.logEvent('WELAAARN_FACEBOOK_SIGN_UP');
             this.props.onAccess(data.accessToken.toString(), () => {

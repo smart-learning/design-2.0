@@ -12,6 +12,7 @@ import { AppEventsLogger } from 'react-native-fbsdk';
 import icKakaoLight from '../../../images/ic-kakao-light.png';
 import icKakao from '../../../images/ic-kakao.png';
 import Native from '../../commons/native';
+import firebase from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   kakaoButtonWrap: {
@@ -92,6 +93,11 @@ class KakaoLoginButton extends React.Component {
         });
       }
 
+      firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+        'EVENT_PARAM_REGISTRATION_METHOD': 'kakaotalk',
+        'OS_TYPE':Platform.OS
+      });
+      
       AppEventsLogger.logEvent('WELAAARN_KAKAO_SIGN_UP');
       this.setState({ token: kakaoAccessToken });
       this.props.onAccess(kakaoAccessToken, () => {

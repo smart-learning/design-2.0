@@ -420,6 +420,33 @@ class App extends React.Component {
               nav.setNav(navigatorRef);
             }}
             navigation={this.props.navigation}
+            style={{ width: '80%' }}
+            onNavigationStateChange={(prevState, currentState) => {
+              const currentScreen = getActiveRouteName(currentState);
+              const prevScreen = getActiveRouteName(prevState);
+
+              if (prevScreen !== currentScreen) {
+                console.log('change screen:', prevScreen, '-->', currentScreen);
+                // console.log( 'action :', currentState );
+
+                // firebase.analytics().logEvent('firebase',{
+                //   'eventName': 'Hello'
+                // });
+                firebase
+                  .analytics()
+                  .setCurrentScreen(currentScreen, currentScreen);
+
+                if (currentScreen !== 'AuthCheck') {
+                  store.lastLocation = currentScreen;
+                  if (prevScreen !== 'AuthCheck')
+                    store.prevLocations.push(prevScreen);
+                  store.prevLocations.length = Math.min(
+                    store.prevLocations.length,
+                    10
+                  );
+                }
+              }
+            }}
           />
         )}
 
