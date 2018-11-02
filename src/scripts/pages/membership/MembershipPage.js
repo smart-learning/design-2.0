@@ -20,7 +20,6 @@ import IcAngleRight from '../../../images/ic-my-angle-right-white.png';
 import CommonStyles from '../../../styles/common';
 import native from '../../commons/native';
 import globalStore from '../../commons/store';
-import firebase from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -523,46 +522,7 @@ export default class MembershipPage extends React.Component {
 
   buyMembershop = args => {
     if (Platform.OS === 'android') {
-      // 2018.10.29 facebook event: 마케팅 요청.
-      const NativeConstants = native.getConstants();
-      const EVENT_NAME_INITIATED_CHECKOUT =
-        NativeConstants.EVENT_NAME_INITIATED_CHECKOUT;
-      const EVENT_PARAM_CONTENT = NativeConstants.EVENT_PARAM_CONTENT;
-      const EVENT_PARAM_CONTENT_ID = NativeConstants.EVENT_PARAM_CONTENT_ID;
-      const EVENT_PARAM_CONTENT_TYPE = NativeConstants.EVENT_PARAM_CONTENT_TYPE;
-      const EVENT_PARAM_NUM_ITEMS = NativeConstants.EVENT_PARAM_NUM_ITEMS;
-      const EVENT_PARAM_PAYMENT_INFO_AVAILABLE =
-        NativeConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE;
-      const EVENT_PARAM_CURRENCY = NativeConstants.EVENT_PARAM_CURRENCY;
-      var price =
-        'campus' === args.type
-          ? 7700
-          : 'bookclub' === args.type
-            ? 6600
-            : 'premium' === args.type
-              ? 14300
-              : 0;
-      AppEventsLogger.logEvent(EVENT_NAME_INITIATED_CHECKOUT, price, {
-        [EVENT_PARAM_CONTENT]: args.title,
-        [EVENT_PARAM_CONTENT_ID]: 'membership',
-        [EVENT_PARAM_CONTENT_TYPE]: args.type,
-        [EVENT_PARAM_NUM_ITEMS]: 1,
-        [EVENT_PARAM_PAYMENT_INFO_AVAILABLE]: 0,
-        [EVENT_PARAM_CURRENCY]: 'KRW'
-      });
-
-      firebase.analytics().logEvent('EVENT_NAME_INITIATED_CHECKOUT', {
-        'EVENT_PARAM_CONTENT': args.title,
-        'EVENT_PARAM_CONTENT_ID': 'membership',
-        'EVENT_PARAM_CONTENT_TYPE': args.type,
-        'EVENT_PARAM_NUM_ITEMS': 1,
-        'EVENT_PARAM_PAYMENT_INFO_AVAILABLE': 0,
-        'EVENT_PARAM_CURRENCY':'KRW',
-        'OS_TYPE':Platform.OS
-      });
-
       this.props.navigation.navigate('MembershipFormPage', args);
-
     } else if (Platform.OS === 'ios') {
       switch (args.type) {
         case 'campus':
