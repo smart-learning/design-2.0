@@ -413,41 +413,7 @@ class App extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         {!!this.data.welaaaAuthLoaded && (
-          <AppDrawer
-            ref={navigatorRef => {
-              store.drawer = navigatorRef;
-              // 플래이어 크래시 때문에 코드 추가
-              nav.setNav(navigatorRef);
-            }}
-            navigation={this.props.navigation}
-            style={{ width: '80%' }}
-            onNavigationStateChange={(prevState, currentState) => {
-              const currentScreen = getActiveRouteName(currentState);
-              const prevScreen = getActiveRouteName(prevState);
-
-              if (prevScreen !== currentScreen) {
-                console.log('change screen:', prevScreen, '-->', currentScreen);
-                // console.log( 'action :', currentState );
-
-                // firebase.analytics().logEvent('firebase',{
-                //   'eventName': 'Hello'
-                // });
-                firebase
-                  .analytics()
-                  .setCurrentScreen(currentScreen, currentScreen);
-
-                if (currentScreen !== 'AuthCheck') {
-                  store.lastLocation = currentScreen;
-                  if (prevScreen !== 'AuthCheck')
-                    store.prevLocations.push(prevScreen);
-                  store.prevLocations.length = Math.min(
-                    store.prevLocations.length,
-                    10
-                  );
-                }
-              }
-            }}
-          />
+          <AppDrawer navigation={this.props.navigation} />
         )}
 
         {!this.data.welaaaAuthLoaded && (
@@ -597,4 +563,27 @@ const AppNavigator = createSwitchNavigator(
   }
 );
 
-export default AppNavigator;
+export default () => (
+  <AppNavigator
+    ref={navigatorRef => {
+      store.drawer = navigatorRef;
+      // 플래이어 크래시 때문에 코드 추가
+      nav.setNav(navigatorRef);
+    }}
+    onNavigationStateChange={(prevState, currentState) => {
+      const currentScreen = getActiveRouteName(currentState);
+      const prevScreen = getActiveRouteName(prevState);
+
+      if (prevScreen !== currentScreen) {
+        console.log(
+          'App.js::onNavigationStateChange',
+          prevScreen,
+          '-->',
+          currentScreen
+        );
+
+        firebase.analytics().setCurrentScreen(currentScreen, currentScreen);
+      }
+    }}
+  />
+);
