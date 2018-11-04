@@ -46,9 +46,14 @@ RCT_EXPORT_MODULE();
   
     if ( nullStr(productCode) )
     {
-        return ;
+        return [common presentAlertWithTitle:@"인앱결제" andMessage:@"상품 정보를 불러올 수 없습니다."];
     }
   
+    if ( nullStr([args objectForKey:@"token"]) )
+    {
+        return [common presentAlertWithTitle:@"인앱결제" andMessage:@"로그인 후 구입하실 수 있습니다."];
+    }
+        
     if ( ![IAPShare sharedHelper].iap )
     {
         NSSet *dataSet = [[NSSet alloc] initWithObjects : productCode, nil];
