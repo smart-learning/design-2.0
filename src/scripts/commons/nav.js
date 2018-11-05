@@ -483,6 +483,5 @@ export default {
 
     const screen = globalStore.prevLocations.pop();
     navigation.navigate(screen);
-
   }
 };

@@ -1,32 +1,31 @@
+import { observer } from 'mobx-react';
 import React from 'react';
-import CommonStyles from '../../../styles/common';
 import {
+  AsyncStorage,
+  BackHandler,
   Image,
   ImageBackground,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  AsyncStorage,
-  BackHandler,
-  Platform,
   View
 } from 'react-native';
-import globalStore from '../../../scripts/commons/store';
-import { observer } from 'mobx-react';
+import { SafeAreaView } from 'react-navigation';
 import BgMy from '../../../images/bg-my.png';
+import DummyProfile from '../../../images/dummy-my-profile.png';
 import IcAngleRight from '../../../images/ic-my-angle-right.png';
+import IcCog from '../../../images/ic-my-cog.png';
 import IcDownload from '../../../images/ic-my-download.png';
 import IcMusic from '../../../images/ic-my-music.png';
 import IcPlay from '../../../images/ic-my-play.png';
 import IcProfile from '../../../images/ic-my-profile.png';
 import IcTag from '../../../images/ic-my-tag.png';
-import IcCog from '../../../images/ic-my-cog.png';
-import DummyProfile from '../../../images/dummy-my-profile.png';
-import { SafeAreaView } from 'react-navigation';
-import HomeButton from '../../components/header/HomeButton';
-import nav from "../../commons/nav";
+import globalStore from '../../../scripts/commons/store';
+import CommonStyles from '../../../styles/common';
 import native from '../../commons/native';
+import HomeButton from '../../components/header/HomeButton';
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -178,6 +177,10 @@ const styles = StyleSheet.create({
 * */
 @observer
 export default class MyInfoHome extends React.Component {
+  constructor(props) {
+    _navigation = this.props.navigation;
+  }
+
   componentDidMount() {
     if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
 
@@ -193,14 +196,7 @@ export default class MyInfoHome extends React.Component {
   }
 
   handleBackPress = () => {
-    // console.log(
-    //   'MyInfoHome',
-    //   this.props.navigation.isFocused(),
-    //   globalStore.prevLocations
-    // );
-    // if (this.props.navigation.isFocused()) {
-    nav.commonBack();
-    // }
+    _navigation.goBack();
     return true;
   };
 
@@ -253,11 +249,11 @@ export default class MyInfoHome extends React.Component {
                     {1 === 2 && (
                       <View>
                         {globalStore.currentMembership &&
-                          globalStore.currentMembership.type_text ? (
-                            <Text>{globalStore.currentMembership.type_text}</Text>
-                          ) : (
-                            undefined
-                          )}
+                        globalStore.currentMembership.type_text ? (
+                          <Text>{globalStore.currentMembership.type_text}</Text>
+                        ) : (
+                          undefined
+                        )}
                       </View>
                     )}
                   </View>
@@ -585,31 +581,28 @@ export default class MyInfoHome extends React.Component {
               <View style={{ height: 8 }} />
             </View>
 
-            {/* /* 아이폰 구매내역 복원 */ }
+            {/* /* 아이폰 구매내역 복원 */}
 
-            {(Platform.OS === 'ios' && (
-              <View style={
-                {
+            {Platform.OS === 'ios' && (
+              <View
+                style={{
                   flexDirection: 'column',
                   alignItems: 'center',
                   flex: 1
-                }
-              }>
+                }}
+              >
                 <View style={{ height: 8 }} />
                 <TouchableOpacity
                   onPress={() => {
                     try {
-                      native.restore({token: globalStore.accessToken});
+                      native.restore({ token: globalStore.accessToken });
                     } catch (error) {
                       console.log(error);
                     }
                   }}
                 >
                   <View
-                    style={[
-                      styles.buttonRestore,
-                      { width: 200 }
-                    ]}
+                    style={[styles.buttonRestore, { width: 200 }]}
                     borderRadius={5}
                   >
                     <Text style={styles.buttonRestoreText}>
@@ -618,9 +611,8 @@ export default class MyInfoHome extends React.Component {
                   </View>
                 </TouchableOpacity>
                 <View style={{ height: 16 }} />
-              </View>            
-            ))}
-
+              </View>
+            )}
           </ScrollView>
         </SafeAreaView>
       </View>
