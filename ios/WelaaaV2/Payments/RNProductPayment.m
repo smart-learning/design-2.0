@@ -115,17 +115,18 @@ RCT_EXPORT_MODULE();
                             if ( [productCode hasPrefix : @"audiobook_"] )
                             {
                                 NSLog(@"  [IAP checkReceipt] Done buying audiobook.");
-                              /*
-                                NSLog(@"RN 쪽에 홈화면으로 이동 요청");
+                              
+                                // 결재 완료 이벤트를 RN 으로 보내 화면을 갱신. 2018.11.5. ~
+                                NSLog(@"RN 쪽에 결재 완료 이벤트 전달");
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
                                 if ( self->_hasListeners )
                                 {
-                                    [self sendEventWithName : @"buyResult"
-                                                       body : params];
+                                  [self sendEventWithName : @"buyResult"
+                                                     body : params];
                                 }
-                              */
+                              
                                 [IAPShare sharedHelper].iap = nil;
                               
                                 return ;
