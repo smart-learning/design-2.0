@@ -58,7 +58,6 @@ export const NAV_OPTS_STACK_HISTORY_BACK = ({
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    // headerRight: <SearchButton navigation={navigation} />,
     headerLeft: <HistoryBackButton />
   };
 };
@@ -450,6 +449,10 @@ export default {
     }
   },
 
+  goBack: () => {
+    navigation.goBack();
+  },
+
   commonBack: () => {
     console.log('commonBack start:', globalStore.prevLocations);
     if (globalStore.prevLocations.length === 0) navigation.goBack();
@@ -480,9 +483,6 @@ export default {
 
     const screen = globalStore.prevLocations.pop();
     navigation.navigate(screen);
-  },
 
-  goBack: () => {
-    navigation.goBack();
   }
 };
