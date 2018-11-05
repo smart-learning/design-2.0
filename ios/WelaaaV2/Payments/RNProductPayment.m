@@ -38,9 +38,9 @@ RCT_EXPORT_MODULE();
     NSString *productCode = [args objectForKey : @"product_id"];
     NSString *paymentMode;
 #if DEBUG
-    paymentMode = @"sandbox";
+    paymentMode = @"sandbox";//
 #else
-    paymentMode = @"live";
+    paymentMode = @"sandbox";//live
 #endif
     NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
@@ -321,7 +321,7 @@ RCT_EXPORT_MODULE();
 #if DEBUG
     paymentMode = @"sandbox";
 #else
-    paymentMode = @"live";
+    paymentMode = @"sandbox";//live
 #endif
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   

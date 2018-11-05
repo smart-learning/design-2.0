@@ -413,6 +413,7 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
   
     NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/receipts";
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
+    NSLog(@"  [checkReceipt] URL : %@", urlStr);
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
     NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
