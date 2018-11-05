@@ -29,16 +29,16 @@ const styles = StyleSheet.create({
   },
   itemDepthTwoText: {
     width: '75%',
-    minHeight: 35,
+    minHeight: 30,
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 13,
     color: '#333333'
   },  
   itemTitleText: {
     width: '75%',
     minHeight: 30,
     fontSize: 13,
-    paddingLeft: 10,
+    // paddingLeft: 10,
     color: '#333333'
   },
   itemTime: {
@@ -113,15 +113,6 @@ export default class ChapterListItem extends React.Component {
   render() {
     const time = moment.duration(this.props.itemData.play_time);
 
-    console.log('ChapterListItem audioBook'
-      , this.props.itemData.align, this.props.itemData.title, this.props.itemData.a_depth, this.props.itemData.is_preview)
-
-    // console.log('ChapterListItem audioBook',this.props.learnType)    
-
-    // current_membership 상태를 확인한다 
-    // audio_book 권한이 있는가 ? 
-    // 어떻게 판단할 수 있을까   
-
     return (
       <View>
         <View>
@@ -133,11 +124,11 @@ export default class ChapterListItem extends React.Component {
               ]}
             >
               {this.props.itemData.a_depth === 1 ? (
-                <Text style={styles.itemDepthOneText}>
+                <Text style={styles.itemDepthTwoText}>
                   {this.props.itemData.title}
                 </Text>
               ) : this.props.itemData.a_depth === 2 ? (
-                <Text style={styles.itemDepthTwoText}>
+                <Text style={styles.itemTitleText}>
                   {this.props.itemData.title}
                 </Text>
               ) : (
@@ -175,7 +166,7 @@ export default class ChapterListItem extends React.Component {
                 ]}
               >
               {this.props.itemData.a_depth === 1 ? (
-                <Text style={styles.itemDepthOneText}>
+                <Text style={styles.itemDepthTwoText}>
                   {this.props.itemData.title}
                 </Text>
               ) : this.props.itemData.a_depth === 2 ? (
@@ -183,18 +174,10 @@ export default class ChapterListItem extends React.Component {
                   {this.props.itemData.title}
                 </Text>
               ) : (
-                    <Text style={styles.itemTitleText}>
+                    <Text style={styles.itemDepthTwoText}>
                       > {this.props.itemData.title}
                     </Text>
-                  )}
-                {1 === 2 && (
-                  <TouchableOpacity activeOpacity={0.9}>
-                    <Image
-                      source={IcPlayPreview}
-                      style={styles.playButtonPreview}
-                    />
-                  </TouchableOpacity>
-                )}
+                  )}                
                 <View style={styles.chapterHr} />
               </View>
             </View>
