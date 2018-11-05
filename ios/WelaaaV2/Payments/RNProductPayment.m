@@ -149,6 +149,13 @@ RCT_EXPORT_MODULE();
                                 return ;
                             }
                         }
+                        else if ( [rec[@"status"] integerValue] == 21000 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"App Store에서 사용자가 제공 한 JSON 객체를 읽을 수 없습니다."];
+                        }
+                      // 계속 붙여야함.
                         else
                         {
                             // 해당 상태를 NSUserDefaults로 저장하여 다음 앱 구동시에 해당 값을 읽어서 서버로 receipt verification을 한번 더 시도해야 합니다.
