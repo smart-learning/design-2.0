@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 class SetAppPage extends React.Component {
   logout = () => {
     globalStore.clearTokens();
-    this.props.navigation.navigate('Login');
+    this.props.navigation.navigate('Signin');
     Native.doThingAfterLogout();
   };
 
