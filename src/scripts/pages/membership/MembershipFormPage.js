@@ -256,14 +256,7 @@ class MembershipFormPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log('MembershipFormPage.js::componentDidMount');
-    if (this.props.navigation.state.params) {
-      this.formType = this.props.navigation.state.params.type;
-    }
-  }
-
-  componentWillUnmount() {
-    console.log('MembershipFormPage.js::componentWillUnMount');
+    this.formType = this.props.navigation.state.params.type;
   }
 
   validityPeriodMonthOnFocus = () => {
@@ -353,6 +346,7 @@ class MembershipFormPage extends React.Component {
         OS_TYPE: Platform.OS
       });
 
+      // 멤버쉽 화면으로 이동.
       this.props.navigation.goBack();
     } catch (e) {
       // register 실패 (axios response not 200)
