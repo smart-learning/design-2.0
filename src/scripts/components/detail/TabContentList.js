@@ -90,6 +90,7 @@ export default class TabContentList extends React.Component {
               </View>
             </View>
           )}
+
           {this.props.learnType === 'audioBook' && (
             <View style={styles.chapterListContainer}>
               <View style={CommonStyles.contentContainer}>
@@ -111,7 +112,11 @@ export default class TabContentList extends React.Component {
                 <FlatList
                   style={{ width: '100%' }}
                   data={this.props.store.itemClipData}
-                  renderItem={({ item }) => <ChapterListItem itemData={item} />}
+                  renderItem={({ item }) =>
+                    <ChapterListItem
+                      itemData={item}
+                      store={this.props.store}
+                      learnType={this.props.learnType} />}
                 />
               </View>
             </View>
