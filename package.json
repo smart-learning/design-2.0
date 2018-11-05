@@ -19,7 +19,7 @@
 		"ios": "react-native run-ios",
 		"test": "jest",
 		"reload": "adb shell input text 'RR'",
-		"dev-menu": "adb shell input keyevent 82"
+		"menu": "adb shell input keyevent 82"
 	},
 	"main": "node_modules/expo/AppEntry.js",
 	"jest": {

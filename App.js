@@ -17,6 +17,8 @@ import firebase from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
 import {
   createDrawerNavigator,
+  createStackNavigator,
+  createSwitchNavigator,
   DrawerItems,
   SafeAreaView
 } from 'react-navigation';
@@ -28,6 +30,11 @@ import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
 import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
 import AudioScreen from './src/scripts/pages/audio/AudioScreen';
+import EmailSignUpForm from './src/scripts/pages/auth/EmailSignUpForm';
+import LoginPage from './src/scripts/pages/auth/LoginPage';
+import Policy from './src/scripts/pages/auth/PolicyPage';
+import Privacy from './src/scripts/pages/auth/PrivacyPage';
+import SignUpLandingPage from './src/scripts/pages/auth/SignUpLandingPage';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
@@ -43,8 +50,82 @@ class Data {
   queuePath = null;
 }
 
+class Hidden extends React.Component {
+  render() {
+    return null;
+  }
+}
+
+const HOME_SCREEN = HomeScreen;
+const DEFAULT_SCREEN = VideoScreen;
+
+const AppDrawer = createDrawerNavigator(
+  {
+    // SampleScreen: {
+    // 	screen: SampleScreen,
+    // },
+
+    HomeScreen: {
+      screen: HOME_SCREEN
+    },
+
+    VideoScreen: {
+      screen: VideoScreen
+      // path: 'video_list',
+    },
+
+    AudioScreen: {
+      screen: AudioScreen
+    },
+
+    MyScreen: {
+      screen: MyScreens
+    },
+
+    InquireListScreen: {
+      screen: InquireListScreen
+    },
+
+    MembershipScreen: {
+      screen: MembershipScreens,
+      navigationOptions: {
+        drawerIcon: <Hidden />,
+        drawerLabel: <Hidden />
+      }
+    }
+
+    // Playground: {
+    // 	screen: Playground,
+    // },
+    // June: {
+    // 	screen: PlaygroundJune,
+    // },
+    // BottomControllerTEST: {
+    // 	screen: BottomControllerPage,
+    // },
+    // AndroidNativeCall: {
+    // 	screen: PlaygroundJune,
+    // }
+  },
+
+  {
+    contentComponent: props => (
+      <SafeAreaView
+        style={{ flex: 1 }}
+        forceInset={{ top: 'always', horizontal: 'never' }}
+      >
+        <SidebarUserInfo {...props} />
+        <DrawerItems {...props} />
+        {}
+      </SafeAreaView>
+    )
+  }
+);
+
 @observer
 class App extends React.Component {
+  static router = AppDrawer.router;
+
   data = new Data();
 
   // 키보드 제어 상태를 store에 기록해서 관리
@@ -176,7 +257,6 @@ class App extends React.Component {
       paymentManagerEmitter.addListener('buyResult', arg =>
         Native.buyResult(arg)
       );
-
     } else if ('android' === Platform.OS) {
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayer', params => {
@@ -329,43 +409,11 @@ class App extends React.Component {
     nav.parseDeepLink(event.url);
   };
 
-  render() {    
-
+  render() {
     return (
       <View style={{ flex: 1 }}>
         {!!this.data.welaaaAuthLoaded && (
-          <AppDrawer
-            ref={navigatorRef => {
-              store.drawer = navigatorRef;
-              // 플래이어 크래시 때문에 코드 추가
-              nav.setNav(navigatorRef);
-            }}
-            style={{ width: '80%' }}
-            onNavigationStateChange={(prevState, currentState) => {
-              const currentScreen = getActiveRouteName(currentState);
-              const prevScreen = getActiveRouteName(prevState);
-
-              if (prevScreen !== currentScreen) {
-                console.log('change screen:', prevScreen, '-->', currentScreen);
-                // console.log( 'action :', currentState );
-
-                // firebase.analytics().logEvent('firebase',{
-                //   'eventName': 'Hello'
-                // });
-                firebase.analytics().setCurrentScreen(currentScreen,currentScreen);
-
-                if (currentScreen !== 'AuthCheck') {
-                  store.lastLocation = currentScreen;
-                  if (prevScreen !== 'AuthCheck')
-                    store.prevLocations.push(prevScreen);
-                  store.prevLocations.length = Math.min(
-                    store.prevLocations.length,
-                    10
-                  );
-                }
-              }
-            }}
-          />
+          <AppDrawer navigation={this.props.navigation} />
         )}
 
         {!this.data.welaaaAuthLoaded && (
@@ -410,77 +458,132 @@ function getActiveRouteName(navigationState) {
 
   return route.routeName;
 }
+class AuthLoadingScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this._bootstrapAsync();
+  }
 
-class Hidden extends React.Component {
+  _bootstrapAsync = async () => {
+    const welaaaAuth = await AsyncStorage.getItem('welaaaAuth');
+    console.log('App.js::welaaaAuth', welaaaAuth);
+    if (welaaaAuth) {
+      this.props.navigation.navigate('Main');
+    } else {
+      const isAppFirstLoad = await AsyncStorage.getItem('isAppFirstLoad');
+      console.log('App.js::isAppFirstLoad', isAppFirstLoad);
+      if (isAppFirstLoad && isAppFirstLoad === 'false') {
+        this.props.navigation.navigate('Signin');
+      } else {
+        this.props.navigation.navigate('Signup');
+      }
+    }
+  };
+
   render() {
-    return null;
+    return (
+      <View style={commonStyle.container}>
+        <ActivityIndicator />
+      </View>
+    );
   }
 }
 
-const HOME_SCREEN = HomeScreen;
-const DEFAULT_SCREEN = VideoScreen;
-
-const AppDrawer = createDrawerNavigator(
+const SignupStack = createStackNavigator(
   {
-    // SampleScreen: {
-    // 	screen: SampleScreen,
-    // },
-
-    HomeScreen: {
-      screen: HOME_SCREEN
+    SignUpPage: {
+      screen: SignUpLandingPage
     },
-
-    VideoScreen: {
-      screen: VideoScreen
-      // path: 'video_list',
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
     },
-
-    AudioScreen: {
-      screen: AudioScreen
-    },
-
-    MyScreen: {
-      screen: MyScreens
-    },
-
-    InquireListScreen: {
-      screen: InquireListScreen
-    },
-
-    MembershipScreen: {
-      screen: MembershipScreens,
+    Login: {
+      screen: LoginPage,
       navigationOptions: {
-        drawerIcon: <Hidden />,
-        drawerLabel: <Hidden />
+        header: null,
+        gesturesEnabled: false
       }
+    },
+    PrivacyPage: {
+      screen: Privacy
+    },
+    PolicyPage: {
+      screen: Policy
     }
-
-    // Playground: {
-    // 	screen: Playground,
-    // },
-    // June: {
-    // 	screen: PlaygroundJune,
-    // },
-    // BottomControllerTEST: {
-    // 	screen: BottomControllerPage,
-    // },
-    // AndroidNativeCall: {
-    // 	screen: PlaygroundJune,
-    // }
   },
-
   {
-    contentComponent: props => (
-      <SafeAreaView
-        style={{ flex: 1 }}
-        forceInset={{ top: 'always', horizontal: 'never' }}
-      >
-        <SidebarUserInfo {...props} />
-        <DrawerItems {...props} />
-        {}
-      </SafeAreaView>
-    )
+    initialRouteName: 'SignUpPage'
   }
 );
 
-export default App;
+const SigninStack = createStackNavigator(
+  {
+    SignUpPage: {
+      screen: SignUpLandingPage
+    },
+    EmailSignUpForm: {
+      screen: EmailSignUpForm
+    },
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        header: null,
+        gesturesEnabled: false
+      }
+    },
+    PrivacyPage: {
+      screen: Privacy
+    },
+    PolicyPage: {
+      screen: Policy
+    }
+  },
+  {
+    initialRouteName: 'Login'
+  }
+);
+
+const AppNavigator = createSwitchNavigator(
+  {
+    AuthLoading: {
+      screen: AuthLoadingScreen
+    },
+    Main: {
+      screen: App
+    },
+    Signup: {
+      screen: SignupStack
+    },
+    Signin: {
+      screen: SigninStack
+    }
+  },
+  {
+    initialRouteName: 'AuthLoading'
+  }
+);
+
+export default () => (
+  <AppNavigator
+    ref={navigatorRef => {
+      store.drawer = navigatorRef;
+      // 플래이어 크래시 때문에 코드 추가
+      nav.setNav(navigatorRef);
+    }}
+    onNavigationStateChange={(prevState, currentState) => {
+      const currentScreen = getActiveRouteName(currentState);
+      const prevScreen = getActiveRouteName(prevState);
+
+      if (prevScreen !== currentScreen) {
+        console.log(
+          'App.js::onNavigationStateChange',
+          prevScreen,
+          '-->',
+          currentScreen
+        );
+
+        firebase.analytics().setCurrentScreen(currentScreen, currentScreen);
+      }
+    }}
+  />
+);
