@@ -162,26 +162,25 @@ class SignUpLandingPage extends React.Component {
 		}
 	};
 
-	onAccessToken(type, token) {
-
-		let { navigation } = this.props;
-		const resultAuthToken = net.getAuthToken(type, token);
-		resultAuthToken
-			.then(data => {
-				store.socialType = type;
-				store.welaaaAuth = JSON.stringify(data);
-				navigation.navigate('HomeScreen');
-			})
-			.catch(error => {
-				const code = error.response.code;
-				let message = '회원가입 실패';
-				if (error.response.data && error.response.data.error) {
-					message += ` (server message: ${error.response.data.error})`;
-				}
-				Alert.alert(message);
-				console.log(error);
-			});
-	}
+  onAccessToken(type, token) {
+    let { navigation } = this.props;
+    const resultAuthToken = net.signUp('', type, token);
+    resultAuthToken
+      .then(data => {
+        store.socialType = type;
+        store.welaaaAuth = JSON.stringify(data);
+        navigation.navigate('HomeScreen');
+      })
+      .catch(error => {
+        const code = error.response.code;
+        let message = '회원가입 실패';
+        if (error.response.data && error.response.data.error) {
+          message += ` (server message: ${error.response.data.error})`;
+        }
+        Alert.alert(message);
+        console.log(error);
+      });
+  }
 
 	render() {
 		return <View style={[CommonStyles.container, styles.landingContainer]}>
