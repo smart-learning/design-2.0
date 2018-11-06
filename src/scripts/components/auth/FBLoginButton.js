@@ -72,7 +72,7 @@ class FBLoginButton extends Component {
   handleFacebookLogin = () => {
     this.setState({ loginButtonDisabled: true });
     LoginManager.logOut();
-    LoginManager.logInWithReadPermissions([''])
+    LoginManager.logInWithReadPermissions(['public_profile', 'email'])
       .then(result => {
         console.log(result);
         if (result.isCancelled) {
