@@ -188,21 +188,22 @@ export default class Book extends React.Component {
     return (
       <View style={styles.itemContainer}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
-          {this.props.type === 'best' && (
-            <View style={[styles.alignJustify, styles.socialButtonWrap]}>
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={() => {
-                  Device.share(
-                    this.props.itemData.title,
-                    this.props.itemData.url
-                  );
-                }}
-              >
-                <Image source={IcShare} style={styles.socialButton} />
-              </TouchableOpacity>
-            </View>
-          )}
+          {false &&
+            this.props.type === 'best' && (
+              <View style={[styles.alignJustify, styles.socialButtonWrap]}>
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    Device.share(
+                      this.props.itemData.title,
+                      this.props.itemData.url
+                    );
+                  }}
+                >
+                  <Image source={IcShare} style={styles.socialButton} />
+                </TouchableOpacity>
+              </View>
+            )}
           <View style={[styles.alignJustify, styles.itemInfo]}>
             {this.props.type === 'best' && (
               <Text style={styles.sequence}>
