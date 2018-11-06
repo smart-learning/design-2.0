@@ -319,6 +319,9 @@ const MembershipRule = Platform.select({
 export default class MembershipPage extends React.Component {
   constructor(props) {
     super(props);
+
+    this.props.navigation.setParams({'title':'윌라 멤버십 안내'});
+    
   }
 
   componentDidMount() {
@@ -338,7 +341,6 @@ export default class MembershipPage extends React.Component {
   render() {
     // 멤버십 페이지 랜더 시점 호출
     AppEventsLogger.logEvent('WELAAARN_MEMBERSHIP_PAGE');
-
     // 멤버쉽이 존재할 경우
     if (
       globalStore.currentMembership &&
