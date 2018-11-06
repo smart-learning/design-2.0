@@ -150,6 +150,10 @@ class AudioBookPage extends React.Component {
   };
 
   async componentDidMount() {
+	const currCategory = this.props.navigation.getParam('data', {})
+	this.store.ccode = currCategory.ccode ? currCategory.ccode : null
+	this.store.selectedCategory = currCategory.id ? currCategory.id : 0
+
     const loadedCategories = await net.getAudioBookCategory();
     this.store.categories = loadedCategories.map(element => {
       const vo = new PageCategoryItemVO();
