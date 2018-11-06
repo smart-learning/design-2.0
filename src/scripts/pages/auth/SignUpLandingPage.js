@@ -1,26 +1,28 @@
 import React from 'react';
 import {
-  Alert,
-  Dimensions,
-  Image,
-  ImageBackground,
-  StyleSheet,
   Text,
+  StyleSheet,
+  View,
+  Dimensions,
+  ImageBackground,
   TouchableOpacity,
-  View
+  BackHandler,
+  Image,
+  Alert
 } from 'react-native';
+import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
+import FBLoginButton from '../../components/auth/FBLoginButton';
 import Swiper from 'react-native-swiper';
-import icEmail from '../../../images/ic-email.png';
-import icLogin from '../../../images/ic-login.png';
 import Slide1 from '../../../images/login_bg1.png';
 import Slide2 from '../../../images/login_bg2.png';
 import Slide3 from '../../../images/login_bg3.png';
 import Slide4 from '../../../images/login_bg4.png';
+import icEmail from '../../../images/ic-email.png';
+import icLogin from '../../../images/ic-login.png';
+import logo from '../../../images/logo-en-primary.png';
 import CommonStyles from '../../../styles/common';
 import net from '../../commons/net';
 import store from '../../commons/store';
-import FBLoginButton from '../../components/auth/FBLoginButton';
-import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -141,13 +143,26 @@ class SignUpLandingPage extends React.Component {
     this.setState({
       slideHeight: windowHeight
     });
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    console.log('back press:' + store.isAppFirstLoad);
+    if (!store.isAppFirstLoad) {
+      BackHandler.exitApp();
+    } else {
+      this.props.navigation.goBack();
+    }
+  };
 
   onAccessToken(type, token) {
     let { navigation } = this.props;
-    const resultAuthToken = net.getAuthToken(type, token);
+    const resultAuthToken = net.signUp('', type, token);
     resultAuthToken
       .then(data => {
         store.socialType = type;
