@@ -150,6 +150,8 @@ class AudioBookPage extends React.Component {
   };
 
   async componentDidMount() {
+	  this.props.navigation.setParams({'title':'오디오북 전체목록'});
+
 	const currCategory = this.props.navigation.getParam('data', {})
 	this.store.ccode = currCategory.ccode ? currCategory.ccode : null
 	this.store.selectedCategory = currCategory.id ? currCategory.id : 0
