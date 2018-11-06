@@ -1,26 +1,31 @@
 import React from 'react';
 import {
-  Alert,
-  Dimensions,
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+	Text,
+	StyleSheet,
+	View,
+	Dimensions,
+	ImageBackground,
+	TouchableOpacity,
+	BackHandler,
+	Image, Alert, Platform
+} from 'react-native'
+import KakaoLoginButton from "../../components/auth/KakaoLoginButton";
+import FBLoginButton from "../../components/auth/FBLoginButton";
 import Swiper from 'react-native-swiper';
-import icEmail from '../../../images/ic-email.png';
-import icLogin from '../../../images/ic-login.png';
 import Slide1 from '../../../images/login_bg1.png';
 import Slide2 from '../../../images/login_bg2.png';
 import Slide3 from '../../../images/login_bg3.png';
 import Slide4 from '../../../images/login_bg4.png';
-import CommonStyles from '../../../styles/common';
-import net from '../../commons/net';
-import store from '../../commons/store';
-import FBLoginButton from '../../components/auth/FBLoginButton';
-import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
+import icEmail from '../../../images/ic-email.png';
+import icLogin from '../../../images/ic-login.png';
+import logo from '../../../images/logo-en-primary.png';
+import CommonStyles from "../../../styles/common";
+import net from "../../commons/net";
+import store from "../../commons/store";
+import Native from '../../commons/native'
+import { AppEventsLogger } from 'react-native-fbsdk'
+import firebase from "react-native-firebase"
+
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -141,17 +146,52 @@ class SignUpLandingPage extends React.Component {
     this.setState({
       slideHeight: windowHeight
     });
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    console.log('back press:' + store.isAppFirstLoad);
+    if (!store.isAppFirstLoad) {
+      BackHandler.exitApp();
+    } else {
+      this.props.navigation.goBack();
+    }
+  };
 
   onAccessToken(type, token) {
     let { navigation } = this.props;
-    const resultAuthToken = net.getAuthToken(type, token);
+    const resultAuthToken = net.signUp('', type, token);
     resultAuthToken
       .then(data => {
         store.socialType = type;
-        store.welaaaAuth = JSON.stringify(data);
+        // store.welaaaAuth = JSON.stringify(data);
+
+
+		  if (Platform.OS === 'android') {
+			  // 2018.10.29 facebook event: 마케팅 요청.
+			  const NativeConstants = Native.getConstants()
+			  const EVENT_NAME_COMPLETED_REGISTRATION =
+				  NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION
+			  const EVENT_PARAM_REGISTRATION_METHOD =
+				  NativeConstants.EVENT_PARAM_REGISTRATION_METHOD
+			  AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
+				  [EVENT_PARAM_REGISTRATION_METHOD]: 'email'
+			  })
+		  }
+
+		  firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+			  'EVENT_PARAM_REGISTRATION_METHOD': 'email',
+			  'OS_TYPE': Platform.OS
+		  })
+
+		  AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP')
+
+		store.welaaaAuth = data;
         navigation.navigate('HomeScreen');
       })
       .catch(error => {
