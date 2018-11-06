@@ -19,6 +19,26 @@ const styles = StyleSheet.create({
   bookListItemHeadline: {
     marginBottom: 13
   },
+  bookLabel: {
+    height: 22,
+    marginTop: 9,
+    marginRight: 3,
+    paddingTop: 3,
+    paddingRight: 10,
+    paddingBottom: 3,
+    paddingLeft: 10,
+    alignSelf: 'flex-start'
+  },
+  bookLabels: {
+    marginBottom: 15
+  },
+  bookLabelFree: {
+    backgroundColor: '#00afba'
+  },
+  bookLabelText: {
+    fontSize: 12,
+    color: '#ffffff'
+  },
   dateBox: {
     position: 'relative',
     flexDirection: 'column',
@@ -75,7 +95,6 @@ class BookDailyList extends React.Component {
       var today = new Date();
       dd = today.getDate();
       mm = today.getMonth() + 1; //January is 0!
-
     } catch (error) {
       console.log(error);
     }
@@ -89,8 +108,7 @@ class BookDailyList extends React.Component {
           <View style={styles.bookListItemHeadline}>
             <View style={styles.dateBox}>
               <Text style={styles.date}>
-                {mm == month && dd == day ? 'Today' : ''} {month}{' '}
-                / {day}
+                {mm == month && dd == day ? 'Today' : ''} {month} / {day}
               </Text>
               <View
                 style={
@@ -103,6 +121,14 @@ class BookDailyList extends React.Component {
             <Text style={styles.listItemTitle}>
               {itemData ? itemData.title : ''}
             </Text>
+          </View>
+          <View style={styles.bookLabels}>
+            <View
+              style={[styles.bookLabel, styles.bookLabelFree]}
+              borderRadius={10}
+            >
+              <Text style={[styles.bookLabelText]}>무료</Text>
+            </View>
           </View>
           <View>
             <Summary
