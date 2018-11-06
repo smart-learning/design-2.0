@@ -2,7 +2,6 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import {
   AsyncStorage,
-  BackHandler,
   Image,
   ImageBackground,
   Platform,
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
 @observer
 export default class MyInfoHome extends React.Component {
   constructor(props) {
-    _navigation = this.props.navigation;
+    super(props);
   }
 
   componentDidMount() {
@@ -187,21 +186,12 @@ export default class MyInfoHome extends React.Component {
     if (globalStore.welaaaAuth) {
       AsyncStorage.setItem('isAppFirstLoad', 'false');
     }
-
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    _navigation.goBack();
-    return true;
-  };
+  componentWillUnmount() {}
 
   render() {
-    const { navigation } = this.props;
+    const navigation = this.props.navigation;
 
     return (
       <View
