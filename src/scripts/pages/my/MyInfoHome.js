@@ -25,7 +25,7 @@ import IcCog from '../../../images/ic-my-cog.png';
 import DummyProfile from '../../../images/dummy-my-profile.png';
 import { SafeAreaView } from 'react-navigation';
 import HomeButton from '../../components/header/HomeButton';
-import nav from "../../commons/nav";
+import nav from '../../commons/nav';
 import native from '../../commons/native';
 
 const styles = StyleSheet.create({
@@ -253,11 +253,11 @@ export default class MyInfoHome extends React.Component {
                     {1 === 2 && (
                       <View>
                         {globalStore.currentMembership &&
-                          globalStore.currentMembership.type_text ? (
-                            <Text>{globalStore.currentMembership.type_text}</Text>
-                          ) : (
-                            undefined
-                          )}
+                        globalStore.currentMembership.type_text ? (
+                          <Text>{globalStore.currentMembership.type_text}</Text>
+                        ) : (
+                          undefined
+                        )}
                       </View>
                     )}
                   </View>
@@ -401,6 +401,7 @@ export default class MyInfoHome extends React.Component {
                 <View style={styles.listItemBarBullet} />
               </View>
 
+              {/*
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() =>
@@ -418,6 +419,7 @@ export default class MyInfoHome extends React.Component {
                   />
                 </View>
               </TouchableOpacity>
+				*/}
 
               <View style={styles.listItemBarContainer}>
                 <View style={styles.listItemBar} />
@@ -585,31 +587,28 @@ export default class MyInfoHome extends React.Component {
               <View style={{ height: 8 }} />
             </View>
 
-            {/* /* 아이폰 구매내역 복원 */ }
+            {/* /* 아이폰 구매내역 복원 */}
 
-            {(Platform.OS === 'ios' && (
-              <View style={
-                {
+            {Platform.OS === 'ios' && (
+              <View
+                style={{
                   flexDirection: 'column',
                   alignItems: 'center',
                   flex: 1
-                }
-              }>
+                }}
+              >
                 <View style={{ height: 8 }} />
                 <TouchableOpacity
                   onPress={() => {
                     try {
-                      native.restore({token: globalStore.accessToken});
+                      native.restore({ token: globalStore.accessToken });
                     } catch (error) {
                       console.log(error);
                     }
                   }}
                 >
                   <View
-                    style={[
-                      styles.buttonRestore,
-                      { width: 200 }
-                    ]}
+                    style={[styles.buttonRestore, { width: 200 }]}
                     borderRadius={5}
                   >
                     <Text style={styles.buttonRestoreText}>
@@ -618,9 +617,8 @@ export default class MyInfoHome extends React.Component {
                   </View>
                 </TouchableOpacity>
                 <View style={{ height: 16 }} />
-              </View>            
-            ))}
-
+              </View>
+            )}
           </ScrollView>
         </SafeAreaView>
       </View>
