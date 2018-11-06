@@ -739,7 +739,7 @@ export default {
 
   searchQuery(type, query) {
     // type: {video-course, audiobook}
-    let url = API_PREFIX + 'v1.0/contents/contents/search/' + type;
+    let url = API_PREFIX + 'v1.0/contents/search/' + type;
     const params = { search: query };
     url += '?' + encodeParams(params);
     return axios
