@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
   Alert,
+  CheckBox,
   Dimensions,
   Image,
   ImageBackground,
@@ -16,6 +17,7 @@ import {
   View
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
+import firebase from 'react-native-firebase';
 import Swiper from 'react-native-swiper';
 import bgSignUp from '../../../images/bg-join.png';
 import logo from '../../../images/logo-en-primary.png';
@@ -23,7 +25,6 @@ import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
 import Net from '../../commons/net';
 import store from '../../commons/store';
-import firebase from 'react-native-firebase';
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -87,6 +88,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: COLOR_PRIMARY
   },
+  btnSubmitDisabled: {
+    width: '100%',
+    height: 48,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: '#d8d8d8'
+  },
   textSubmit: {
     flex: 1,
     justifyContent: 'center',
@@ -94,6 +102,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 48,
     textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#ffffff'
+  },
+  agreeReceiveMarketingStyle: {
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#ffffff'
   },
@@ -172,7 +185,8 @@ class EmailSignUpForm extends Component {
   data = new Data();
 
   state = {
-    signupButtonDisabled: false
+    signupButtonDisabled: false,
+    agreeReceiveMarketing: false
   };
 
   constructor(props) {
@@ -245,8 +259,8 @@ class EmailSignUpForm extends Component {
         }
 
         firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-          'EVENT_PARAM_REGISTRATION_METHOD': 'email',
-          'OS_TYPE':Platform.OS
+          EVENT_PARAM_REGISTRATION_METHOD: 'email',
+          OS_TYPE: Platform.OS
         });
 
         AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
@@ -296,12 +310,11 @@ class EmailSignUpForm extends Component {
               <View style={styles.content}>
                 <Text style={styles.headline}>무료계정만들기</Text>
 
-                <View borderRadius={4} style={styles.inputWrap}>                
+                <View borderRadius={4} style={styles.inputWrap}>
                   <View style={styles.inputBr} />
                   <TextInput
                     style={styles.input}
                     underlineColorAndroid={'rgba(0,0,0,0)'}
-                    
                     onFocus={this.validityNameOnFocus}
                     placeholder="이름"
                     onSubmitEditing={Keyboard.dismiss}
@@ -356,13 +369,57 @@ class EmailSignUpForm extends Component {
                   />
                 </View>
 
+                {/* 마케팅 수신 동의 체크 박스 */}
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    this.setState(previousState => ({
+                      agreeReceiveMarketing: !previousState.agreeReceiveMarketing
+                    }))
+                  }
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      paddingTop: 20,
+                      paddingBottom: 20,
+                      alignItems: 'center'
+                    }}
+                  >
+                    <CheckBox
+                      value={this.state.agreeReceiveMarketing}
+                      onValueChange={() =>
+                        this.setState(previousState => ({
+                          agreeReceiveMarketing: !previousState.agreeReceiveMarketing
+                        }))
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.agreeReceiveMarketingStyle,
+                        { textAlign: 'left' }
+                      ]}
+                    >
+                      마케팅 수신 동의
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+
                 <View style={styles.submitContainer}>
                   <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={this.handleJoin}
-                    disabled={this.state.signupButtonDisabled}
+                    disabled={!this.state.agreeReceiveMarketing}
                   >
-                    <View borderRadius={4} style={styles.btnSubmit}>
+                    <View
+                      borderRadius={4}
+                      style={
+                        this.state.agreeReceiveMarketing
+                          ? styles.btnSubmit
+                          : styles.btnSubmitDisabled
+                      }
+                    >
                       <Text style={styles.textSubmit}>
                         {this.state.signupButtonDisabled
                           ? '처리중입니다.'

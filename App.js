@@ -56,9 +56,6 @@ class Hidden extends React.Component {
   }
 }
 
-const HOME_SCREEN = HomeScreen;
-const DEFAULT_SCREEN = VideoScreen;
-
 const AppDrawer = createDrawerNavigator(
   {
     // SampleScreen: {
@@ -66,7 +63,7 @@ const AppDrawer = createDrawerNavigator(
     // },
 
     HomeScreen: {
-      screen: HOME_SCREEN
+      screen: HomeScreen
     },
 
     VideoScreen: {
