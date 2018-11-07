@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   btnLinkText: {
-    fontSize: 12,
+    fontSize: 14,
     color: COLOR_PRIMARY
   }
 });
@@ -132,7 +132,7 @@ class EmailAuthPack extends Component {
             </TouchableOpacity>
           )}
 
-          <View style={{ marginLeft: 'auto' }}>
+          <View style={{ marginLeft: 'auto', marginTop: 14 }}>
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => this.props.onNavigate('SignUpPage')}
