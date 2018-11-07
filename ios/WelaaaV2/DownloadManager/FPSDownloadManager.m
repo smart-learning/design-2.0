@@ -1443,10 +1443,14 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
   
   [alert addAction : ok];
   
-  [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController : alert
-                                                                               animated : YES
-                                                                             completion : nil];
-
+  // root뷰컨트롤러를 덮고 있는 뷰가 있으면 그위에 팝업을 띄우기 위해 아래와 같이 처리. 무조건 rootViewController에 띄우면 안뜨는 경우 있으므로. 2018.11.7.
+  UIViewController *frontViewController = [[UIApplication sharedApplication].keyWindow.rootViewController presentedViewController];
+  if (!frontViewController) {
+    frontViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+  }
+  [frontViewController presentViewController : alert
+                                    animated : YES
+                                  completion : nil];
 }
 
 @end
