@@ -638,11 +638,22 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 }
 
                 if (historyId.equals("")) {
-                  if (i == 0) {
-                    contentCid = json.getString("cid");
-                    contentName = json.getString("title");
-                    contentId = i;
+                  // 히스토리가 없고, 미리듣기로 들어오는 경우
+                  if (checkAudioBookChapter) {
+                    if (contentCid.equals(json.getString("cid"))) {
+                      contentName = json.getString("title");
+                      contentCid = json.getString("cid");
+                      contentId = i;
+                    }
+                  }else{
+                  // 히스토리가 없고 , 상단 플레이 버튼을 통해서 진입하는 케이스
+                    if (i == 0) {
+                      contentCid = json.getString("cid");
+                      contentName = json.getString("title");
+                      contentId = i;
+                    }
                   }
+
                 } else {
                   if (checkAudioBookChapter) {
                     if (contentCid.equals(json.getString("cid"))) {
@@ -650,12 +661,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                       contentCid = json.getString("cid");
                       contentId = i;
                     }
+
                   } else {
                     if (historyId.equals(json.getString("id"))) {
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");
                       contentId = i;
                     }
+
                   }
                 }
               }
