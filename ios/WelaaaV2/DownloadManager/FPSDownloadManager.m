@@ -228,7 +228,7 @@
       //  DB 에 이미 있는 파일의 경우 패스 -> 이미 다운로드된 파일
       if ( _delegateFpsMsg )
       {
-        [_delegateFpsMsg fpsDownloadMsg : @"이미 다운로드된 파일입니다"];
+        [_delegateFpsMsg fpsDownloadMsg : @"이미 다운로드된 콘텐츠입니다"];
       }
       
       resultHandler ([NSError errorWithDomain : @"download"
@@ -321,6 +321,8 @@
   
   _downloadCompletion = resultHandler;  // 다운로드 완료될 때마다 결과를 알려주기 위해 호출(다운로드 완료 콜백이 다른곳에 있기 때문에 전역으로 따로 저장)
   
+  int alreadyDownloaded = 0;
+  
   for(NSDictionary *item in items)
   {
     NSString *cid = item[@"cid"];
@@ -393,6 +395,7 @@
       NSLog(@"  %lu Contents already in DB searched by cid : %@", (unsigned long)clips.count, cid);
       //  DB 에 이미 있는 파일의 경우 패스(다음 다운로드로 continue 처리)
       //  어차피 삭제기능 있으므로 지우고 새로 받을 수 있는 시나리오가 있다.
+      alreadyDownloaded++;
       continue;
     }
     else
@@ -462,6 +465,12 @@
   [self doNextDownload];  // 다운로드 작업 시작 요청
   
   // Download Request Success(네트워크 요청 직전 단계까지 성공한 상태)
+  
+  // 이미 모든 콘텐츠가 다운로드 되어 있다면 다운로드 시작메시지 띄우지 않음. 2018.11.7
+  if(alreadyDownloaded >= items.count){
+    NSLog(@"All items was already downloaded. 이미 모든 콘텐츠(강좌목록) 다운로드된 상태.");
+    return;
+  }
   
   if ( self -> _delegateFpsMsg )
   {
@@ -619,7 +628,7 @@
       
       if ( _delegateFpsMsg )
       {
-        [_delegateFpsMsg fpsDownloadMsg : @"다운로드 완료"];
+        [_delegateFpsMsg fpsDownloadMsg : @"모든 다운로드 완료"];
       }
     }
     
@@ -1398,7 +1407,8 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
     NSLog(@"  download contentId : %@, error code : %ld", contentId, error.code);
     // TODO : 다운로드 실패시엔 다운로드 시작을 안하고 에러 메시지를 콜백(델리게이트 등)으로 리턴하고 다음 다운로드 진행.
-  [self showAlertOk:@"Download Error" message:[NSString stringWithFormat:@"contentId : %@\nerror : %@", contentId, error.description]];
+    // 진행되던 다운로드가 취소될 때 발생할 수 있으므로 사용자에겐 노출하지 않음. 2018.11.7.
+    //[self showAlertOk:@"Download Error" message:[NSString stringWithFormat:@"contentId : %@\nerror : %@", contentId, error.description]];
   
     if ( _delegateFpsDownload )
     {
