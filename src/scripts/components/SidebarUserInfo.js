@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   memberShipContainer: {
     justifyContent: 'center',
-    height: 190,
+    height: 220,
     backgroundColor: '#f0f0f0'
   },
   membershipButton: {
@@ -199,6 +199,7 @@ class SidebarUserInfo extends React.Component {
               <View style={styles.membershipItem}>
                 <Text style={styles.membershipItemLabel}>이용권한</Text>
                 <View>
+					<View>
                   {globalStore.currentMembership.type === 2 && (
                     <View>
                       <Text style={styles.membershipItemText}>
@@ -233,6 +234,12 @@ class SidebarUserInfo extends React.Component {
                       개
                     </Text>
                   )}
+					</View>
+					<View style={{marginTop: 8}}>
+						<Text style={[styles.membershipItemText, {color: '#999999'}]}>
+						자세히 보기
+						</Text>
+					</View>
                 </View>
               </View>
             </View>
