@@ -88,6 +88,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: COLOR_PRIMARY
   },
+  btnSubmitDisabled: {
+    width: '100%',
+    height: 48,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: '#d8d8d8'
+  },
   textSubmit: {
     flex: 1,
     justifyContent: 'center',
@@ -363,43 +370,56 @@ class EmailSignUpForm extends Component {
                 </View>
 
                 {/* 마케팅 수신 동의 체크 박스 */}
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    paddingTop: 20,
-                    paddingBottom: 20,
-                    alignItems: 'center'
-                  }}
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    this.setState(previousState => ({
+                      agreeReceiveMarketing: !previousState.agreeReceiveMarketing
+                    }))
+                  }
                 >
-                  <CheckBox
-                    value={this.state.agreeReceiveMarketing}
-                    onValueChange={() =>
-                      this.setState(previousState => ({
-                        agreeReceiveMarketing: !previousState.agreeReceiveMarketing
-                      }))
-                    }
-                  />
-                  <Text
-                    style={[
-                      styles.agreeReceiveMarketingStyle,
-                      { textAlign: 'left' }
-                    ]}
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      paddingTop: 20,
+                      paddingBottom: 20,
+                      alignItems: 'center'
+                    }}
                   >
-                    마케팅 수신 동의
-                  </Text>
-                </View>
+                    <CheckBox
+                      value={this.state.agreeReceiveMarketing}
+                      onValueChange={() =>
+                        this.setState(previousState => ({
+                          agreeReceiveMarketing: !previousState.agreeReceiveMarketing
+                        }))
+                      }
+                    />
+                    <Text
+                      style={[
+                        styles.agreeReceiveMarketingStyle,
+                        { textAlign: 'left' }
+                      ]}
+                    >
+                      마케팅 수신 동의
+                    </Text>
+                  </View>
+                </TouchableOpacity>
 
                 <View style={styles.submitContainer}>
                   <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={this.handleJoin}
-                    disabled={
-                      this.state.signupButtonDisabled ||
-                      !this.state.agreeReceiveMarketing
-                    }
+                    disabled={!this.state.agreeReceiveMarketing}
                   >
-                    <View borderRadius={4} style={styles.btnSubmit}>
+                    <View
+                      borderRadius={4}
+                      style={
+                        this.state.agreeReceiveMarketing
+                          ? styles.btnSubmit
+                          : styles.btnSubmitDisabled
+                      }
+                    >
                       <Text style={styles.textSubmit}>
                         {this.state.signupButtonDisabled
                           ? '처리중입니다.'
