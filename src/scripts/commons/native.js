@@ -89,6 +89,19 @@ export default {
       .catch(failed);
   },
 
+  getDownloadListCid(cid , success, failed) {
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {
+      cid: cid,
+      userId: userId.toString()
+    };
+
+    console.log('native.js::getDownloadList Cid');
+    RNNativePlayer.getDownloadCidList(config)
+      .then(success)
+      .catch(failed);
+  },
+
   getProgressDatabase() {
     try {
       RNNativePlayer.selectProgressDatabase({});
