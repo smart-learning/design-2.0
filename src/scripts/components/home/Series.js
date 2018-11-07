@@ -61,7 +61,8 @@ class Series extends React.Component {
                 activeOpacity={0.9}
                 onPress={() =>
                   this.props.navigation.navigate('HomeSeriesPage', {
-                    title: '윌라 추천 시리즈'
+					title: '윌라 추천 시리즈',
+					focus: item.category
                   })
                 }
               >

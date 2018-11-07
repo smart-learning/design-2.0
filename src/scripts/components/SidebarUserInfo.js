@@ -10,6 +10,7 @@ import {
 import IcFree from '../../images/ic-stamp-free.png';
 import DummyUser from '../../images/dummy-my-profile-2.png';
 import IcAngleRight from '../../images/ic-my-angle-right.png';
+import IcCog from '../../images/ic-my-cog-grey.png';
 import CommonStyles from '../../styles/common';
 import store from '../commons/store';
 import globalStore from '../commons/store';
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   },
   memberShipContainer: {
     justifyContent: 'center',
-    height: 190,
+    height: 220,
     backgroundColor: '#f0f0f0'
   },
   membershipButton: {
@@ -113,6 +114,10 @@ const styles = StyleSheet.create({
   membershipItemText: {
     fontSize: 13,
     color: '#555555'
+  },
+  cogIcon: {
+    width: 18,
+    height: 18
   }
 });
 
@@ -199,40 +204,49 @@ class SidebarUserInfo extends React.Component {
               <View style={styles.membershipItem}>
                 <Text style={styles.membershipItemLabel}>이용권한</Text>
                 <View>
-                  {globalStore.currentMembership.type === 2 && (
-                    <View>
+                  <View>
+                    {globalStore.currentMembership.type === 2 && (
+                      <View>
+                        <Text style={styles.membershipItemText}>
+                          모든 클래스 무제한 보기,
+                        </Text>
+                        <Text style={styles.membershipItemText}>
+                          오디오북 이용권{' '}
+                          <Text>
+                            {' '}
+                            {globalStore.voucherStatus !== null
+                              ? globalStore.voucherStatus.total
+                              : '0'}
+                          </Text>
+                          개
+                        </Text>
+                      </View>
+                    )}
+                    {globalStore.currentMembership.type === 1 && (
                       <Text style={styles.membershipItemText}>
                         모든 클래스 무제한 보기,
                       </Text>
+                    )}
+                    {globalStore.currentMembership.type === 4 && (
                       <Text style={styles.membershipItemText}>
                         오디오북 이용권{' '}
                         <Text>
                           {' '}
                           {globalStore.voucherStatus !== null
                             ? globalStore.voucherStatus.total
-                            : '0'}
+                            : ' 0 '}
                         </Text>
                         개
                       </Text>
-                    </View>
-                  )}
-                  {globalStore.currentMembership.type === 1 && (
-                    <Text style={styles.membershipItemText}>
-                      모든 클래스 무제한 보기,
+                    )}
+                  </View>
+                  <View style={{ marginTop: 8 }}>
+                    <Text
+                      style={[styles.membershipItemText, { color: '#999999' }]}
+                    >
+                      자세히 보기
                     </Text>
-                  )}
-                  {globalStore.currentMembership.type === 4 && (
-                    <Text style={styles.membershipItemText}>
-                      오디오북 이용권{' '}
-                      <Text>
-                        {' '}
-                        {globalStore.voucherStatus !== null
-                          ? globalStore.voucherStatus.total
-                          : ' 0 '}
-                      </Text>
-                      개
-                    </Text>
-                  )}
+                  </View>
                 </View>
               </View>
             </View>
@@ -277,8 +291,10 @@ class SidebarUserInfo extends React.Component {
                 style={styles.thumbnail}
               />
             )}
-            <View>
+
+            <View style={{ width: '100%' }}>
               {/*beforeLogin*/}
+
               {store.welaaaAuth === undefined && (
                 <TouchableOpacity
                   activeOpacity={0.9}
@@ -290,23 +306,77 @@ class SidebarUserInfo extends React.Component {
               {/*isLogin*/}
 
               {store.welaaaAuth && (
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => this.props.navigation.navigate('MyScreen')}
+                <View
+                  style={{
+                    height: 50,
+                    width: '100%'
+                  }}
                 >
-                  <View>
-                    <Text style={styles.userName}>
-                      <Text style={styles.userNameImportant}>
-                        {store.welaaaAuth.profile
-                          ? store.welaaaAuth.profile.name || '<윌라회원님>'
-                          : '<윌라회원님>'}
-                      </Text>
-                    </Text>
-                    <Text style={styles.userEmail}>
-                      {store.welaaaAuth.profile ? store.welaaaAuth.profile.email : ''}
-                    </Text>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 0
+                    }}
+                  >
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() =>
+                        this.props.navigation.navigate('SetAppPage', {
+                          title: '설정'
+                        })
+                      }
+                    >
+                      <View
+                        style={{
+                          width: 50,
+                          height: 50
+                        }}
+                      >
+                        <Image
+                          source={IcCog}
+                          style={[
+                            styles.cogIcon,
+                            {
+                              position: 'absolute',
+                              top: 0,
+                              right: 0
+                            }
+                          ]}
+                        />
+                      </View>
+                    </TouchableOpacity>
                   </View>
-                </TouchableOpacity>
+
+                  <View
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      width: '80%',
+                      height: 50
+                    }}
+                  >
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() => this.props.navigation.navigate('MyScreen')}
+                    >
+                      <View>
+                        <Text style={styles.userName}>
+                          <Text style={styles.userNameImportant}>
+                            {store.welaaaAuth.profile
+                              ? store.welaaaAuth.profile.name || '<윌라회원님>'
+                              : '<윌라회원님>'}
+                          </Text>
+                        </Text>
+                        <Text style={styles.userEmail}>
+                          {store.welaaaAuth.profile
+                            ? store.welaaaAuth.profile.email
+                            : ''}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               )}
             </View>
           </View>
