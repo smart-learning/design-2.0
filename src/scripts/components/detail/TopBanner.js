@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     height: 50
   },
   bookLabels: {
+  	paddingLeft: 15,
     marginBottom: 15
   },
   bookLabel: {
