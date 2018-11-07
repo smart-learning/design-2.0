@@ -156,6 +156,60 @@ RCT_EXPORT_MODULE();
                           
                             return [common presentAlertWithTitle:@"윌라" andMessage:@"App Store에서 사용자가 제공 한 JSON 객체를 읽을 수 없습니다."];
                         }
+                        else if ( [rec[@"status"] integerValue] == 21002 && nil != rec[@"status"] )
+                        {
+                              [IAPShare sharedHelper].iap = nil;
+                          
+                              return [common presentAlertWithTitle:@"윌라" andMessage:@"영수증 데이터 속성의 데이터 형식이 잘못되었습니다."];
+                        }
+                        else if ( [rec[@"status"] integerValue] == 21003 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"영수증을 인증 할 수 없습니다."];
+                        }
+                        else if ( [rec[@"status"] integerValue] == 21004 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"입력 한 공유 암호가 사용자 계정의 파일에있는 공유 암호와 일치하지 않습니다."];
+                        }
+                        else if ( [rec[@"status"] integerValue] == 21005 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"영수증 서버를 현재 사용할 수 없습니다."];
+                        }
+                        else if ( [rec[@"status"] integerValue] == 21006 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"이 영수증은 유효하지만 구독이 만료되었습니다."];
+                        }
+                        else if ( [rec[@"status"] integerValue] == 21007 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"이 영수증은 샌드박스 영수증이지만 확인을 위해 프로덕션 서비스로 보냈습니다."];
+                        }
+                        else if ( [rec[@"status"] integerValue] == 21008 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"이 영수증은 실제 제품 영수증이지만 확인을 위해 샌드박스 서비스로 전송되었습니다."];
+                        }
+                        else if ( [rec[@"status"] integerValue] == 21010 && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"이 영수증을 승인 할 수 없습니다. 구매가 이루어지지 않은 경우와 동일하게 처리하십시오."];
+                        }
+                        else if ( [[rec[@"status"] stringValue] hasPrefix:@"211"] && nil != rec[@"status"] )
+                        {
+                            [IAPShare sharedHelper].iap = nil;
+                          
+                            return [common presentAlertWithTitle:@"윌라" andMessage:@"내부 데이터 액세스 오류입니다."];
+                        }
                       // 계속 붙여야함.
                         else
                         {
