@@ -230,6 +230,8 @@ export default class TopBanner extends React.Component {
           {!this.props.store.itemData.is_new &&
             !this.props.store.itemData.is_exculsive &&
             !this.props.store.itemData.is_free &&
+		  !this.props.store.itemData.is_bookreview &&
+		  !this.props.store.itemData.is_botm &&
             !this.props.store.itemData.audiobook_type && (
               <View
                 style={[styles.bookLabel, styles.bookLabelBlank]}
@@ -256,6 +258,14 @@ export default class TopBanner extends React.Component {
               <Text style={[styles.bookLabelText]}>독점</Text>
             </View>
           )}
+			{!!this.props.store.itemData.is_botm && (
+				<View
+					style={[styles.bookLabel, styles.bookLabelExclusive]}
+					borderRadius={10}
+				>
+					<Text style={[styles.bookLabelText]}>이달의책</Text>
+				</View>
+			)}
           {!!this.props.store.itemData.is_free && (
             <View
               style={[styles.bookLabel, styles.bookLabelFree]}
@@ -264,6 +274,14 @@ export default class TopBanner extends React.Component {
               <Text style={[styles.bookLabelText]}>무료</Text>
             </View>
           )}
+			{!!this.props.store.itemData.is_bookreview && (
+				<View
+					style={[styles.bookLabel, styles.bookLabelFree]}
+					borderRadius={10}
+				>
+					<Text style={[styles.bookLabelText]}>북리뷰</Text>
+				</View>
+			)}
           {this.props.store.itemData.audiobook_type === '완독' && (
             <View
               style={[styles.bookLabel, styles.bookLabelDefault]}
