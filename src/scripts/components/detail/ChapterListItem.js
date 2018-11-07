@@ -14,11 +14,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   previewTitleText: {
-    width: '100%',
     minHeight: 30,
     fontWeight: 'bold',
-    fontSize: 15,
-    color: '#333333'
+    fontSize: 13,
+    color: CommonStyles.COLOR_PRIMARY
   },
   itemDepthOneText: {
     width: '75%',
@@ -33,7 +32,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 13,
     color: '#333333'
-  },  
+  },
   itemTitleText: {
     width: '75%',
     minHeight: 30,
@@ -108,6 +107,69 @@ export default class ChapterListItem extends React.Component {
         return <View />;
       }
     }
+
+
+
+  }
+
+  renderChapterTitleText() {
+
+    if (this.props.itemData.a_depth === 1) {
+
+      if (this.props.itemData.is_preview) {
+        return (
+          <View>
+            <Text style={styles.itemDepthTwoText}>
+              {this.props.itemData.title}
+              <Text style={styles.previewTitleText}>
+              {' '}미리듣기
+            </Text>
+            </Text>
+          </View>
+        );
+      } else {
+        return (
+          <Text style={styles.itemDepthTwoText}>
+            {this.props.itemData.title}
+          </Text>
+        );
+      }
+    } else if (this.props.itemData.a_depth === 2) {
+      if (this.props.itemData.is_preview) {
+        return (
+          <Text style={styles.itemTitleText}>
+            {this.props.itemData.title}
+            <Text style={styles.previewTitleText}>
+            {' '}미리듣기
+            </Text>
+          </Text>
+        );
+      } else {
+        return (
+          <Text style={styles.itemTitleText}>
+            {this.props.itemData.title}
+          </Text>
+        );
+      }
+    } else {
+      if (this.props.itemData.is_preview) {
+        return (
+          <Text style={styles.itemTitleText}>
+             > {this.props.itemData.title}
+            <Text style={styles.previewTitleText}>
+            {' '}미리듣기
+            </Text>
+          </Text>
+        );
+      } else {
+        return (
+          <Text style={styles.itemTitleText}>
+               {'  >'} {this.props.itemData.title}
+          </Text>
+        );
+      }
+    }
+
   }
 
   render() {
@@ -123,19 +185,8 @@ export default class ChapterListItem extends React.Component {
                 styles.chapterItem
               ]}
             >
-              {this.props.itemData.a_depth === 1 ? (
-                <Text style={styles.itemDepthTwoText}>
-                  {this.props.itemData.title}
-                </Text>
-              ) : this.props.itemData.a_depth === 2 ? (
-                <Text style={styles.itemTitleText}>
-                  {this.props.itemData.title}
-                </Text>
-              ) : (
-                    <Text style={styles.itemTitleText}>
-                      > {this.props.itemData.title}
-                    </Text>
-                  )}
+
+              {this.renderChapterTitleText()}
 
               {/* <Text style={styles.itemTitleText}>
                 {this.props.itemData.title}
@@ -165,19 +216,19 @@ export default class ChapterListItem extends React.Component {
                   styles.chapterItem
                 ]}
               >
-              {this.props.itemData.a_depth === 1 ? (
-                <Text style={styles.itemDepthTwoText}>
-                  {this.props.itemData.title}
-                </Text>
-              ) : this.props.itemData.a_depth === 2 ? (
-                <Text style={styles.itemDepthTwoText}>
-                  {this.props.itemData.title}
-                </Text>
-              ) : (
-                    <Text style={styles.itemDepthTwoText}>
-                      > {this.props.itemData.title}
-                    </Text>
-                  )}                
+                {this.props.itemData.a_depth === 1 ? (
+                  <Text style={styles.itemDepthTwoText}>
+                    {this.props.itemData.title}
+                  </Text>
+                ) : this.props.itemData.a_depth === 2 ? (
+                  <Text style={styles.itemDepthTwoText}>
+                    {this.props.itemData.title}
+                  </Text>
+                ) : (
+                      <Text style={styles.itemDepthTwoText}>
+                        > {this.props.itemData.title}
+                      </Text>
+                    )}
                 <View style={styles.chapterHr} />
               </View>
             </View>
