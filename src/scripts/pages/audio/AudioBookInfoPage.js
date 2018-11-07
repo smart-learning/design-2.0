@@ -65,16 +65,16 @@ const styles = StyleSheet.create({
     textAlign: 'right'
   },
   infoButtonWrap: {
-    height: 25,
-    marginBottom: 3
+    height: 30,
+    marginBottom: 6
   },
   infoButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingTop: 8,
+    paddingBottom: 8,
     paddingRight: 8,
     paddingLeft: 8,
     backgroundColor: CommonStyles.COLOR_PRIMARY,
