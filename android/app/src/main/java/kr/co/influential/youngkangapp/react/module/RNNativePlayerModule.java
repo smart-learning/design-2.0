@@ -252,6 +252,21 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
+  public void getDownloadCidList(ReadableMap content, Promise promise) {
+    try {
+      String cid = content.getString("cid");
+      String userId = content.getString("userId");
+
+      Gson gson = new Gson();
+      String json = gson.toJson(ContentManager().getDownLoadedList(cid , userId));
+
+      promise.resolve(json);
+    } catch (Exception e) {
+      promise.reject(e);
+    }
+  }
+
+  @ReactMethod
   public void deleteDownload(ReadableArray contentArray, Promise promise) {
     for (int i = 0; i < contentArray.size(); i++) {
       ReadableType readableType = contentArray.getType(i);
