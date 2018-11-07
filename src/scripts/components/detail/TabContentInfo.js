@@ -1,7 +1,8 @@
-import React from 'react';
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import moment from 'moment';
+import React from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   ImageBackground,
@@ -11,16 +12,13 @@ import {
   View
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
-import IcClip from '../../../images/ic-detail-label-clip.png';
-import IcFile from '../../../images/ic-detail-label-file.png';
-import IcPrize from '../../../images/ic-detail-label-prize.png';
-import IcTime from '../../../images/ic-detail-label-time.png';
-import Evaluation from './Evaluation';
-import moment from 'moment';
 import _ from 'underscore';
 import DummyTeacher from '../../../images/dummy-my-profile-2.png';
-import { observable } from 'mobx';
+import IcClip from '../../../images/ic-detail-label-clip.png';
+import IcFile from '../../../images/ic-detail-label-file.png';
+import IcTime from '../../../images/ic-detail-label-time.png';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
+import Evaluation from './Evaluation';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -275,19 +273,9 @@ class TabContentInfo extends React.Component {
           <Text style={styles.infoTextNormal}>
             {this.props.store.itemData.title}
           </Text>
-          {!!this.props.store.lectureView && (
-            <Text style={styles.infoTextNormal}>
-              {`${this.props.store.itemData.memo.split('<br>').join('\n')}`}
-            </Text>
-          )}
-          <TouchableOpacity onPress={this.toggleLectureView}>
-            {!!this.props.store.lectureView && (
-              <Text style={styles.lectureMoreButton}>간략보기</Text>
-            )}
-            {!this.props.store.lectureView && (
-              <Text style={styles.lectureMoreButton}>요약보기</Text>
-            )}
-          </TouchableOpacity>
+          <Text style={styles.infoTextNormal}>
+            {`${this.props.store.itemData.memo.split('<br>').join('\n')}`}
+          </Text>
         </View>
 
         <View style={styles.contentHr} />
@@ -346,25 +334,11 @@ class TabContentInfo extends React.Component {
               </Text>
             </View>
           </View>
-          {!!this.data.isMemoShow && (
-            <View style={styles.teacherMemo}>
-              <Text style={styles.teacherMemoText}>{teacherMemo}</Text>
-            </View>
-          )}
+          <View style={styles.teacherMemo}>
+            <Text style={styles.teacherMemoText}>{teacherMemo}</Text>
+          </View>
           {this.props.store.itemData.teacher.memo !== null && (
-            <View style={{ width: '100%' }}>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={this.showTeacherMemo}
-              >
-                {!!this.data.buttonTextStatus && (
-                  <Text style={styles.showMemoButtonText}>요약보기</Text>
-                )}
-                {!this.data.buttonTextStatus && (
-                  <Text style={styles.showMemoButtonText}>간략보기</Text>
-                )}
-              </TouchableOpacity>
-            </View>
+            <View style={{ width: '100%' }} />
           )}
         </View>
 

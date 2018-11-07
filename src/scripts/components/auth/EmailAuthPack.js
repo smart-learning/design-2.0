@@ -90,6 +90,7 @@ class EmailAuthPack extends Component {
             keyboardType="email-address"
             underlineColorAndroid={'rgba(0,0,0,0)'}
             value={this.data.email}
+            placeholder="이메일"
             autoCapitalize={'none'}
             onSubmitEditing={Keyboard.dismiss}
             onChangeText={text => {
@@ -102,6 +103,7 @@ class EmailAuthPack extends Component {
             underlineColorAndroid={'rgba(0,0,0,0)'}
             secureTextEntry={true}
             value={this.data.password}
+            placeholder="패스워드"
             autoCapitalize={'none'}
             onSubmitEditing={Keyboard.dismiss}
             onChangeText={text => {
