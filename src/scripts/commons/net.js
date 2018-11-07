@@ -102,6 +102,7 @@ export default {
       expired
     )
       .then(data => {
+        data = [{ ccode: null, id: 0, title: '전체', images: {}, url: '' }, ...data];
         data.forEach(element => {
           element.key = element.id.toString();
         });
@@ -122,7 +123,7 @@ export default {
       expired
     )
       .then(data => {
-        return data;
+        return [{ ccode: null, id: 0, title: '전체', images: {}, url: '' }, ...data];
       })
       .catch(error => {
         console.log(error);
@@ -738,7 +739,7 @@ export default {
 
   searchQuery(type, query) {
     // type: {video-course, audiobook}
-    let url = API_PREFIX + 'v1.0/contents/contents/search/' + type;
+    let url = API_PREFIX + 'v1.0/contents/search/' + type;
     const params = { search: query };
     url += '?' + encodeParams(params);
     return axios
