@@ -387,6 +387,7 @@ export default class MyInfoHome extends React.Component {
                 <View style={styles.listItemBarBullet} />
               </View>
 
+              {/*
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() =>
@@ -404,6 +405,7 @@ export default class MyInfoHome extends React.Component {
                   />
                 </View>
               </TouchableOpacity>
+				*/}
 
               <View style={styles.listItemBarContainer}>
                 <View style={styles.listItemBar} />

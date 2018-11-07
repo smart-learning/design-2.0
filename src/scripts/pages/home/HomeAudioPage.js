@@ -203,6 +203,7 @@ class HomeAudioPage extends React.Component {
               <View style={styles.audioCategoryHr} />
               <PageCategory
                 data={this.props.store.audioBookCategoryData}
+				selectedCategory={0}
                 onCategorySelect={this.premiumCategorySelect}
               />
               <View style={styles.audioCategoryHr} />

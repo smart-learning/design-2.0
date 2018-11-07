@@ -240,6 +240,7 @@ class HomeVideoPage extends React.Component {
                 <View style={styles.classCategoryHr} />
                 <PageCategory
                   data={this.props.store.videoCategoryData}
+				  selectedCategory={0}
                   onCategorySelect={this.premiumCategorySelect}
                 />
                 <View style={styles.classCategoryHr} />

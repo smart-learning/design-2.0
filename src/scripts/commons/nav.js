@@ -185,7 +185,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
-            클래스
+            클래스 전체목록
           </Text>
           <Image
             source={IcAngleRight}
@@ -220,7 +220,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
-            오디오북
+            오디오북 전체목록
           </Text>
           <Image
             source={IcAngleRight}
