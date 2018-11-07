@@ -1,30 +1,30 @@
-import { observer } from 'mobx-react';
-import React from 'react';
+import { observer } from 'mobx-react'
+import React from 'react'
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common'
 import {
-  AsyncStorage,
-  Image,
-  ImageBackground,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import { SafeAreaView } from 'react-navigation';
-import BgMy from '../../../images/bg-my.png';
-import DummyProfile from '../../../images/dummy-my-profile.png';
-import IcAngleRight from '../../../images/ic-my-angle-right.png';
-import IcCog from '../../../images/ic-my-cog.png';
-import IcDownload from '../../../images/ic-my-download.png';
-import IcMusic from '../../../images/ic-my-music.png';
-import IcPlay from '../../../images/ic-my-play.png';
-import IcProfile from '../../../images/ic-my-profile.png';
-import IcTag from '../../../images/ic-my-tag.png';
-import globalStore from '../../../scripts/commons/store';
-import CommonStyles from '../../../styles/common';
-import native from '../../commons/native';
-import HomeButton from '../../components/header/HomeButton';
+	AsyncStorage,
+	Image,
+	ImageBackground,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View
+} from 'react-native'
+import { SafeAreaView } from 'react-navigation'
+import BgMy from '../../../images/bg-my.png'
+import DummyProfile from '../../../images/dummy-my-profile.png'
+import IcAngleRight from '../../../images/ic-my-angle-right.png'
+import IcCog from '../../../images/ic-my-cog.png'
+import IcDownload from '../../../images/ic-my-download.png'
+import IcMusic from '../../../images/ic-my-music.png'
+import IcPlay from '../../../images/ic-my-play.png'
+import IcProfile from '../../../images/ic-my-profile.png'
+import IcTag from '../../../images/ic-my-tag.png'
+import globalStore from '../../../scripts/commons/store'
+import native from '../../commons/native'
+import HomeButton from '../../components/header/HomeButton'
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -169,6 +169,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'normal',
     color: '#ffffff'
+  },
+  buttonSmall: {
+    backgroundColor: COLOR_PRIMARY,
+    borderRadius: 8,
+    marginLeft: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 6,
+    paddingRight: 6
+  },
+  buttonSmallText: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: '#ffffff'
   }
 });
 /*
@@ -236,16 +250,26 @@ export default class MyInfoHome extends React.Component {
                     <Text style={styles.myInfoName}>
                       {globalStore.profile ? globalStore.profile.name : ''}
                     </Text>
-                    {1 === 2 && (
+
+                    {/*<Text>{globalStore.currentMembership.type_text}</Text>*/}
+                    {
                       <View>
                         {globalStore.currentMembership &&
-                        globalStore.currentMembership.type_text ? (
-                          <Text>{globalStore.currentMembership.type_text}</Text>
-                        ) : (
-                          undefined
+                        globalStore.currentMembership.type_text ? null : (
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate('MembershipScreen')
+                            }
+                          >
+                            <View style={styles.buttonSmall}>
+                              <Text style={styles.buttonSmallText}>
+                                윌라 멤버십 안내
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
                         )}
                       </View>
-                    )}
+                    }
                   </View>
                   {/*고객사 요청으로 화면에서 감춤 처리*/}
                   {1 === 2 && (
