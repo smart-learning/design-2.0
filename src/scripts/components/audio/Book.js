@@ -1,3 +1,5 @@
+import moment from 'moment';
+import numeral from 'numeral';
 import React from 'react';
 import {
   Image,
@@ -8,14 +10,11 @@ import {
   View
 } from 'react-native';
 import IcComment from '../../../images/ic-comment-dark.png';
-import IcShare from '../../../images/ic-share-grey.png';
-import IcHeart from '../../../images/ic-heart-pink.png';
 import IcHeartLine from '../../../images/ic-heart-pink-line.png';
+import IcHeart from '../../../images/ic-heart-pink.png';
+import IcShare from '../../../images/ic-share-grey.png';
 import IcView from '../../../images/ic-view-dark.png';
 import Device from '../../commons/device';
-import moment from 'moment';
-import CommonStyles from '../../../styles/common';
-import numeral from 'numeral';
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -188,31 +187,32 @@ export default class Book extends React.Component {
     const time = moment.duration(this.props.itemData.play_time);
     return (
       <View style={styles.itemContainer}>
-        {this.props.type === 'best' && (
-          <View style={[styles.alignJustify, styles.socialButtonWrap]}>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={() => {
-                Device.share(
-                  this.props.itemData.title,
-                  this.props.itemData.url
-                );
-              }}
-            >
-              <Image source={IcShare} style={styles.socialButton} />
-            </TouchableOpacity>
-          </View>
-        )}
-        <View style={[styles.alignJustify, styles.itemInfo]}>
-          {this.props.type === 'best' && (
-            <Text style={styles.sequence}>
-              {this.props.itemData.rankNumber < 10 && <Text>0</Text>}
-              {this.props.itemData.rankNumber}
-            </Text>
-          )}
-          {this.props.type === 'best' && (
-            <View style={styles.bookInfoWrap}>
-              <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
+        <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
+          {false &&
+            this.props.type === 'best' && (
+              <View style={[styles.alignJustify, styles.socialButtonWrap]}>
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onPress={() => {
+                    Device.share(
+                      this.props.itemData.title,
+                      this.props.itemData.url
+                    );
+                  }}
+                >
+                  <Image source={IcShare} style={styles.socialButton} />
+                </TouchableOpacity>
+              </View>
+            )}
+          <View style={[styles.alignJustify, styles.itemInfo]}>
+            {this.props.type === 'best' && (
+              <Text style={styles.sequence}>
+                {this.props.itemData.rankNumber < 10 && <Text>0</Text>}
+                {this.props.itemData.rankNumber}
+              </Text>
+            )}
+            {this.props.type === 'best' && (
+              <View style={styles.bookInfoWrap}>
                 <Text
                   style={styles.bookTitleBest}
                   numberOfLines={2}
@@ -220,41 +220,41 @@ export default class Book extends React.Component {
                 >
                   {this.props.itemData.title}
                 </Text>
-              </TouchableOpacity>
-              <Text style={styles.teacherName}>
-                {this.props.itemData.teacher.name}
-              </Text>
-              <View style={styles.alignJustify}>
-                {time.hours() === 0 && (
-                  <Text style={styles.playTime}>{time.minutes()}분</Text>
-                )}
-                {time.hours() > 0 && (
-                  <Text style={styles.playTime}>
-                    {time.hours()}
-                    시간 {time.minutes()}분
-                  </Text>
-                )}
-                <View style={styles.bar} />
-                {Platform.select({
-                  ios: (
-                    <Text style={styles.price}>
-                      {numeral(this.props.itemData.pay_money_ios).format('0,0')}
+                <Text style={styles.teacherName}>
+                  {this.props.itemData.teacher.name}
+                </Text>
+                <View style={styles.alignJustify}>
+                  {time.hours() === 0 && (
+                    <Text style={styles.playTime}>{time.minutes()}분</Text>
+                  )}
+                  {time.hours() > 0 && (
+                    <Text style={styles.playTime}>
+                      {time.hours()}
+                      시간 {time.minutes()}분
                     </Text>
-                  ),
-                  android: (
-                    <Text>
+                  )}
+                  <View style={styles.bar} />
+                  {Platform.select({
+                    ios: (
                       <Text style={styles.price}>
-                        {numeral(this.props.itemData.pay_money).format('0,0')}
+                        {numeral(this.props.itemData.pay_money_ios).format(
+                          '0,0'
+                        )}
                       </Text>
-                    </Text>
-                  )
-                })}
+                    ),
+                    android: (
+                      <Text>
+                        <Text style={styles.price}>
+                          {numeral(this.props.itemData.pay_money).format('0,0')}
+                        </Text>
+                      </Text>
+                    )
+                  })}
+                </View>
               </View>
-            </View>
-          )}
-          {this.props.type === 'recommend' && (
-            <View style={styles.bookInfoWrap}>
-              <TouchableOpacity activeOpacity={0.5} onPress={this.changePage}>
+            )}
+            {this.props.type === 'recommend' && (
+              <View style={styles.bookInfoWrap}>
                 <Text
                   style={styles.bookTitleRecommend}
                   numberOfLines={2}
@@ -262,97 +262,95 @@ export default class Book extends React.Component {
                 >
                   {this.props.itemData.title}
                 </Text>
-              </TouchableOpacity>
-              <View style={[styles.alignJustify, styles.recommendButtonWrap]}>
-                <Image
-                  source={IcHeartLine}
-                  style={[styles.btnSetLarge, styles.recommendButton]}
-                />
-                {this.props.itemData.is_free === 'true' && (
-                  <View style={styles.recommendPriceWrap} borderRadius={2}>
-                    <Text style={styles.recommendPrice}>무료</Text>
-                  </View>
-                )}
-                {this.props.is_free === 'false' && (
-                  <View style={styles.recommendPriceWrap} borderRadius={2}>
-                    <Text style={styles.recommendPrice}>
-                      {Platform.select({
-                        ios: (
-                          <Text style={styles.recommendPriceOrigin}>
-                            {numeral(this.props.itemData.pay_money_ios).format(
-                              '0,0'
-                            )}
-                          </Text>
-                        ),
-                        android: (
-                          <Text>
+                <View style={[styles.alignJustify, styles.recommendButtonWrap]}>
+                  <Image
+                    source={IcHeartLine}
+                    style={[styles.btnSetLarge, styles.recommendButton]}
+                  />
+                  {this.props.itemData.is_free === 'true' && (
+                    <View style={styles.recommendPriceWrap} borderRadius={2}>
+                      <Text style={styles.recommendPrice}>무료</Text>
+                    </View>
+                  )}
+                  {this.props.is_free === 'false' && (
+                    <View style={styles.recommendPriceWrap} borderRadius={2}>
+                      <Text style={styles.recommendPrice}>
+                        {Platform.select({
+                          ios: (
                             <Text style={styles.recommendPriceOrigin}>
-                              {numeral(this.props.itemData.pay_money).format(
-                                '0,0'
-                              )}
+                              {numeral(
+                                this.props.itemData.pay_money_ios
+                              ).format('0,0')}
                             </Text>
-                          </Text>
-                        )
-                      })}
-                      {1 === 2 && (
-                        <Text style={styles.recommendPriceSale}>(0%)</Text>
-                      )}
-                    </Text>
-                  </View>
-                )}
+                          ),
+                          android: (
+                            <Text>
+                              <Text style={styles.recommendPriceOrigin}>
+                                {numeral(this.props.itemData.pay_money).format(
+                                  '0,0'
+                                )}
+                              </Text>
+                            </Text>
+                          )
+                        })}
+                        {1 === 2 && (
+                          <Text style={styles.recommendPriceSale}>(0%)</Text>
+                        )}
+                      </Text>
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          )}
-        </View>
-        <View
-          style={[
-            { backgroundColor: this.props.itemData.banner_color.trim() },
-            styles.itemContent
-          ]}
-        >
-          {this.props.type === 'best' && (
-            <Text
-              style={styles.bookMemoBest}
-              numberOfLines={3}
-              ellipsizeMode={'tail'}
-            >
-              {this.props.itemData.memo.split('<br>').join('')}
-            </Text>
-          )}
-          {this.props.type === 'recommend' && (
-            <Text
-              style={styles.bookMemoRecommend}
-              numberOfLines={3}
-              ellipsizeMode={'tail'}
-            >
-              {this.props.itemData.memo.split('<br>').join('')}
-            </Text>
-          )}
-          {
-            <View style={[styles.alignJustify, styles.countWrap]}>
-              <Image source={IcView} style={styles.btnSetSmall} />
-              <Text style={styles.countText}>
-                {numeral(this.props.itemData.hit_count).format('0,0')}
+            )}
+          </View>
+          <View
+            style={[
+              { backgroundColor: this.props.itemData.banner_color.trim() },
+              styles.itemContent
+            ]}
+          >
+            {this.props.type === 'best' && (
+              <Text
+                style={styles.bookMemoBest}
+                numberOfLines={3}
+                ellipsizeMode={'tail'}
+              >
+                {this.props.itemData.memo.split('<br>').join('')}
               </Text>
-              <Image source={IcHeart} style={styles.btnSetSmall} />
-              <Text style={styles.countText}>
-                {numeral(this.props.itemData.like_count).format('0,0')}
+            )}
+            {this.props.type === 'recommend' && (
+              <Text
+                style={styles.bookMemoRecommend}
+                numberOfLines={3}
+                ellipsizeMode={'tail'}
+              >
+                {this.props.itemData.memo.split('<br>').join('')}
               </Text>
-              <Image source={IcComment} style={styles.btnSetSmall} />
-              <Text style={styles.countText}>
-                {numeral(this.props.itemData.review_count).format('0,0')}
-              </Text>
-            </View>
-          }
-        </View>
-        <View style={styles.bookThumbnail}>
-          <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
+            )}
+            {
+              <View style={[styles.alignJustify, styles.countWrap]}>
+                <Image source={IcView} style={styles.btnSetSmall} />
+                <Text style={styles.countText}>
+                  {numeral(this.props.itemData.hit_count).format('0,0')}
+                </Text>
+                <Image source={IcHeart} style={styles.btnSetSmall} />
+                <Text style={styles.countText}>
+                  {numeral(this.props.itemData.like_count).format('0,0')}
+                </Text>
+                <Image source={IcComment} style={styles.btnSetSmall} />
+                <Text style={styles.countText}>
+                  {numeral(this.props.itemData.review_count).format('0,0')}
+                </Text>
+              </View>
+            }
+          </View>
+          <View style={styles.bookThumbnail}>
             <Image
               source={{ uri: this.props.itemData.images.book }}
               style={styles.bookThumbnailSize}
             />
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   }

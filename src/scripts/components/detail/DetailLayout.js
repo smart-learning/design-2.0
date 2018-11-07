@@ -1,3 +1,4 @@
+import { observe } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
@@ -12,6 +13,7 @@ import {
 import CommonStyles from '../../../styles/common';
 import Native from '../../commons/native.js';
 import globalStore from '../../commons/store';
+import nav from '../../commons/nav';
 import AudiobookPaymentStatus from './AudiobookPaymentStatus';
 import TabContentInfo from './TabContentInfo';
 import TabContentList from './TabContentList';
@@ -65,6 +67,28 @@ class DetailLayout extends React.Component {
   constructor(props) {
     super(props);
     console.log('DetailLayout.js::props', props);
+  }
+
+  componentDidMount() {
+    // iOS 의 경우 구매 완료 시점에 상세 페이지를 갱신하기 위해 이벤트 리스너를 준비. 2018.11.5.
+    if (Platform.OS === 'ios') {
+      this.disposer = observe(globalStore.buyResult, change => {
+        if ('success' === change.name && change.newValue) {
+          // 구매 완료 이벤트를 받으면 화면을 갱신 -> 우선 back 으로 가는 시나리오로 구현.
+          // 안드로이드쪽 결재 모듈 완료 후 네비게이션 시나리오 작업되면 다시 보는 걸로.
+          console.log('Refresh !!!!');
+          globalStore.buyResult.success = false;
+          nav.goBack();
+        }
+      });
+    } else if (Platform.OS === 'android') {
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS === 'ios') {
+      this.disposer();  
+    }
   }
 
   downloadContentsView() {

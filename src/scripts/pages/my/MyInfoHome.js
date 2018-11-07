@@ -1,32 +1,30 @@
+import { observer } from 'mobx-react';
 import React from 'react';
-import CommonStyles from '../../../styles/common';
 import {
+  AsyncStorage,
   Image,
   ImageBackground,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  AsyncStorage,
-  BackHandler,
-  Platform,
   View
 } from 'react-native';
-import globalStore from '../../../scripts/commons/store';
-import { observer } from 'mobx-react';
+import { SafeAreaView } from 'react-navigation';
 import BgMy from '../../../images/bg-my.png';
+import DummyProfile from '../../../images/dummy-my-profile.png';
 import IcAngleRight from '../../../images/ic-my-angle-right.png';
+import IcCog from '../../../images/ic-my-cog.png';
 import IcDownload from '../../../images/ic-my-download.png';
 import IcMusic from '../../../images/ic-my-music.png';
 import IcPlay from '../../../images/ic-my-play.png';
 import IcProfile from '../../../images/ic-my-profile.png';
 import IcTag from '../../../images/ic-my-tag.png';
-import IcCog from '../../../images/ic-my-cog.png';
-import DummyProfile from '../../../images/dummy-my-profile.png';
-import { SafeAreaView } from 'react-navigation';
-import HomeButton from '../../components/header/HomeButton';
-import nav from '../../commons/nav';
+import globalStore from '../../../scripts/commons/store';
+import CommonStyles from '../../../styles/common';
 import native from '../../commons/native';
+import HomeButton from '../../components/header/HomeButton';
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -178,34 +176,22 @@ const styles = StyleSheet.create({
 * */
 @observer
 export default class MyInfoHome extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   componentDidMount() {
     if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
 
     if (globalStore.welaaaAuth) {
       AsyncStorage.setItem('isAppFirstLoad', 'false');
     }
-
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    // console.log(
-    //   'MyInfoHome',
-    //   this.props.navigation.isFocused(),
-    //   globalStore.prevLocations
-    // );
-    // if (this.props.navigation.isFocused()) {
-    nav.commonBack();
-    // }
-    return true;
-  };
+  componentWillUnmount() {}
 
   render() {
-    const { navigation } = this.props;
+    const navigation = this.props.navigation;
 
     return (
       <View
