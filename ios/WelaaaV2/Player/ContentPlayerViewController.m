@@ -1191,10 +1191,28 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                 NSLog(@"  This is the very first track!");
                 return ;
             }
-            else
+            else if ( indexOfCurrentContent > 0 )
             {
-                // 이전 트랙을 찾아야 합니다.
-                NSLog(@"  Searching previous audiobook chapter hasn't done yet..");
+                int indexOfPreviousContent = (int)indexOfCurrentContent;
+              
+                for (int i=indexOfPreviousContent-1; i>=0; i--)
+                {
+                    if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                    {
+                        indexOfPreviousContent = i;
+                        break;
+                    }
+                }
+              
+                [_args setObject : contentsListArray[indexOfPreviousContent][@"cid"]
+                          forKey : @"cid"];
+              
+                [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
+                          forKey : @"uri"];
+              
+                _currentLectureTitle = contentsListArray[indexOfPreviousContent][@"title"];  // 소챕터명 세팅 합니다.
+              
+                [self playNext];
             }
         }
         else
@@ -1287,8 +1305,24 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             }
             else if ( indexOfCurrentContent < contentsListArray.count-1 )
             {
-                // 다음 트랙을 찾아야 합니다.
-                NSLog(@"  Searching next audiobook chapter hasn't done yet..");
+                for (int i=(int)indexOfCurrentContent+1; i<contentsListArray.count-1; i++)
+                {
+                    if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                    {
+                        indexOfCurrentContent = i;
+                        break;
+                    }
+                }
+              
+                [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
+                          forKey : @"cid"];
+              
+                [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
+                          forKey : @"uri"];
+              
+                _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 소챕터명 세팅 합니다.
+              
+                [self playNext];
             }
         }
         else
