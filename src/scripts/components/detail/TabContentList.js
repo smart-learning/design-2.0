@@ -116,6 +116,7 @@ export default class TabContentList extends React.Component {
                     <ChapterListItem
                       itemData={item}
                       store={this.props.store}
+                      paymentType={this.props.paymentType}
                       learnType={this.props.learnType} />}
                 />
               </View>

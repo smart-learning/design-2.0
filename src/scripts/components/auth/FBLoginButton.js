@@ -82,24 +82,24 @@ class FBLoginButton extends Component {
           AccessToken.getCurrentAccessToken().then(data => {
             //alert( data.accessToken.toString() )
             // 페이스북 가입 완료된 상태
-            if (Platform.OS === 'android') {
-              // 2018.10.29 facebook event: 마케팅 요청.
-              const NativeConstants = Native.getConstants();
-              const EVENT_NAME_COMPLETED_REGISTRATION =
-                NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;
-              const EVENT_PARAM_REGISTRATION_METHOD =
-                NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
-              AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
-                [EVENT_PARAM_REGISTRATION_METHOD]: 'facebook'
-              });
-            }
+            // if (Platform.OS === 'android') {
+            //   // 2018.10.29 facebook event: 마케팅 요청.
+            //   const NativeConstants = Native.getConstants();
+            //   const EVENT_NAME_COMPLETED_REGISTRATION =
+            //     NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;
+            //   const EVENT_PARAM_REGISTRATION_METHOD =
+            //     NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
+            //   AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
+            //     [EVENT_PARAM_REGISTRATION_METHOD]: 'facebook'
+            //   });
+            // }
 
-            firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-              'EVENT_PARAM_REGISTRATION_METHOD': 'facebook',
-              'OS_TYPE':Platform.OS
-            });
+            // firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+            //   'EVENT_PARAM_REGISTRATION_METHOD': 'facebook',
+            //   'OS_TYPE':Platform.OS
+            // });
 
-            AppEventsLogger.logEvent('WELAAARN_FACEBOOK_SIGN_UP');
+            // AppEventsLogger.logEvent('WELAAARN_FACEBOOK_SIGN_UP');
             this.props.onAccess(data.accessToken.toString(), () => {
               this.setState({ loginButtonDisabled: false });
             });
