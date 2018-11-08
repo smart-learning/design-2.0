@@ -755,5 +755,16 @@ export default {
       .catch(error => {
         console.log(error);
       });
+  },
+
+  cancelMembership() {
+    let url = API_PREFIX + 'v1.0/membership/cancel-membership';
+    return axios.get(url)
+      .then(resp => {
+        return resp.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 };

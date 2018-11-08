@@ -9,7 +9,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Alert
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import { SafeAreaView } from 'react-navigation';
@@ -18,6 +19,7 @@ import IcCampus from '../../../images/ic-m-campus.png';
 import IcPremium from '../../../images/ic-m-premium.png';
 import IcAngleRight from '../../../images/ic-my-angle-right-white.png';
 import CommonStyles from '../../../styles/common';
+import net from '../../commons/net';
 import native from '../../commons/native';
 import globalStore from '../../commons/store';
 
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 50,
+    marginBottom: 30,
     width: '100%',
     height: 40,
     backgroundColor: CommonStyles.COLOR_PRIMARY
@@ -207,6 +210,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#dddddd',
     textDecorationLine: 'line-through'
+  },
+  cancelButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    backgroundColor: '#00c73c',
+    marginTop:15
+  },
+  cancelButtonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#ffffff'
   }
 });
 
@@ -277,7 +292,8 @@ const renderRuleIOS = () => {
     </View>
   );
 };
-const renderRuleAndroid = () => {
+
+const renderRuleAndroid = () => {  
   return (
     <View style={styles.sectionList}>
       <View style={styles.sectionListItem}>
@@ -338,6 +354,31 @@ export default class MembershipPage extends React.Component {
     this.disposer();
   }
 
+  //멤버십 해지
+  cancel_membership_confirm() {
+    let _this = this;
+    Alert.alert(
+      '멤버십 구독 해지',
+      '멤버십을 해지 하시겠습니까?',
+      [
+        {text: '아니오', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: '네', onPress: () => this.cancel_membership_proc()},
+      ],
+      { cancelable: false }
+    );
+  };
+
+  cancel_membership_proc = async() => {
+    console.log('cancel_membership_proc------');
+    
+    const membership_info = await net.cancelMembership();
+    console.log(membership_info);
+    console.log(globalStore.currentMembership);
+    // 결제 요청 완료에 멤버십 데이터로 갱신
+    globalStore.currentMembership = membership_info;
+    console.log(globalStore.currentMembership);
+  }
+  
   render() {
     // 멤버십 페이지 랜더 시점 호출
     AppEventsLogger.logEvent('WELAAARN_MEMBERSHIP_PAGE');
@@ -503,19 +544,12 @@ export default class MembershipPage extends React.Component {
             ) : (
               undefined
             )}
-
-            <Text style={styles.membershipParagraph}>
-              멤버십 비용은 매월 자동결제 됩니다.
-            </Text>
-            <Text style={styles.membershipParagraph}>
-              무약정으로 언제든지 해지하실 수 있습니다.
-            </Text>
-            <Text style={styles.membershipParagraph}>
-              해당 금액은 세금 포함 금액입니다.
-            </Text>
-            <Text style={styles.membershipParagraph}>
-              도움이 필요하시면 1:1 문의를 이용해 주세요.
-            </Text>
+            {MembershipRule}
+            <TouchableOpacity onPress={() => this.cancel_membership_confirm()} >
+              <View style={styles.cancelButton} borderRadius={5} >
+                <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
