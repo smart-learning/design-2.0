@@ -1155,35 +1155,191 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                   forState : UIControlStateNormal];
 }
 
-//
 // 재생 가능한 이전 콘텐츠를 찾아 set합니다. 없으면 그냥 리턴합니다.
-//
 - (void) setPreviousContent
 {
-    if ( !_isAuthor )
-        return ;
+    if ( !_isAuthor ) return ;
   
-    NSLog(@"  [setPreviousContent] 재생 가능한 이전 콘텐츠를 찾아 set합니다.");
-  // 현재 재생중인 CID를 조회합니다.
-  // CID를 기준으로 처음 콘텐츠인지 조회합니다.
-  // 처음이라면 아무것도 실행하지 않고 리턴합니다.
-  // 이전 콘텐츠(제목 챕터 제외)가 존재한다면 args를 세팅합니다.
-  // 제목 챕터를 찾으면 그 제목챕터의 이전 cid를 찾습니다.
-  // args 세팅을 마치면 playNext()를 호출합니다.
+    if ( [[_args objectForKey:@"cid"] hasPrefix:@"z"] ) return ;
   
-    return ;
+    NSArray *contentsListArray;
+    NSInteger indexOfCurrentContent = 0;
+  
+    if ( _isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+      
+        // 오디오북 챕터가 하나뿐이라면 아무것도 실행하지 않고 리턴합니다.
+        if ( contentsListArray.count == 0 )
+        {
+            return ;
+        }
+        else if ( contentsListArray.count > 0 )
+        {
+            for ( int i=0; i<contentsListArray.count; i++ )
+            {
+                // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+                {
+                    indexOfCurrentContent = i;
+                    break;
+                }
+            }
+          
+            if ( indexOfCurrentContent == 0 )
+            {
+                NSLog(@"  This is the very first track!");
+                return ;
+            }
+            else
+            {
+                // 이전 트랙을 찾아야 합니다.
+                NSLog(@"  Searching previous audiobook chapter hasn't done yet..");
+            }
+        }
+        else
+        {
+            return ;
+        }
+    }
+    else if ( !_isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+      
+        // 클래스 강의가 하나뿐이라면 아무것도 실행하지 않고 리턴합니다.
+        if ( contentsListArray.count == 0 )
+        {
+            return ;
+        }
+        else if ( contentsListArray.count > 0 )
+        {
+            for ( int i=0; i<contentsListArray.count; i++ )
+            {
+                // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+                {
+                    indexOfCurrentContent = i;
+                    break;
+                }
+            }
+          
+            if ( indexOfCurrentContent == 0 )
+            {
+                NSLog(@"  This is the very first track!");
+                return ;
+            }
+            else if ( indexOfCurrentContent > 0 )
+            {
+                [_args setObject : contentsListArray[indexOfCurrentContent-1][@"cid"]
+                          forKey : @"cid"];
+              
+                [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
+                          forKey : @"uri"];
+              
+                _currentLectureTitle = contentsListArray[indexOfCurrentContent-1][@"title"];  // 소챕터명 세팅 합니다.
+              
+                [self playNext];
+            }
+        }
+        else
+        {
+            return ;
+        }
+    }
 }
 //
 // 재생 가능한 다음 콘텐츠를 찾아 set합니다. 없으면 그냥 리턴합니다.
 //
 - (void) setNextContent
 {
-    if ( !_isAuthor )
-        return ;
+    if ( !_isAuthor ) return ;
   
-    NSLog(@"  [setNextContent] 재생 가능한 다음 콘텐츠를 찾아 set합니다.");
+    if ( [[_args objectForKey:@"cid"] hasPrefix:@"z"] ) return ;
   
-    return ;
+    NSArray *contentsListArray;
+    NSInteger indexOfCurrentContent = 0;
+  
+    if ( _isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+      
+        // 오디오북 챕터가 하나뿐이라면 아무것도 실행하지 않고 리턴합니다.
+        if ( contentsListArray.count == 0 )
+        {
+            return ;
+        }
+        else if ( contentsListArray.count > 0 )
+        {
+            for ( int i=0; i<contentsListArray.count; i++ )
+            {
+                // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+                {
+                    indexOfCurrentContent = i;
+                    break;
+                }
+            }
+          
+            if ( indexOfCurrentContent == contentsListArray.count-1 )
+            {
+                NSLog(@"  This is the last track!");
+                return ;
+            }
+            else if ( indexOfCurrentContent < contentsListArray.count-1 )
+            {
+                // 다음 트랙을 찾아야 합니다.
+                NSLog(@"  Searching next audiobook chapter hasn't done yet..");
+            }
+        }
+        else
+        {
+            return ;
+        }
+    }
+    else if ( !_isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+      
+        // 클래스 강의가 하나뿐이라면 아무것도 실행하지 않고 리턴합니다.
+        if ( contentsListArray.count == 0 )
+        {
+            return ;
+        }
+        else if ( contentsListArray.count > 0 )
+        {
+            for ( int i=0; i<contentsListArray.count; i++ )
+            {
+                // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+                {
+                    indexOfCurrentContent = i;
+                    break;
+                }
+            }
+          
+            if ( indexOfCurrentContent == contentsListArray.count-1 )
+            {
+                NSLog(@"  This is the last track!");
+                return ;
+            }
+            else if ( indexOfCurrentContent < contentsListArray.count-1 )
+            {
+                [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
+                          forKey : @"cid"];
+              
+                [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
+                          forKey : @"uri"];
+              
+                _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
+              
+                [self playNext];
+            }
+        }
+        else
+        {
+            return ;
+        }
+    }
 }
 
 //
@@ -2969,6 +3125,22 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             case UIEventSubtypeRemoteControlNextTrack:
                 [self setNextContent];
                 break;
+            
+            case UIEventSubtypeRemoteControlBeginSeekingForward:
+              NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingForward");
+              break;
+            
+            case UIEventSubtypeRemoteControlEndSeekingForward:
+              NSLog(@"  UIEventSubtypeRemoteControlEndSeekingForward");
+              break;
+            
+            case UIEventSubtypeRemoteControlBeginSeekingBackward:
+              NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingBackward");
+              break;
+            
+            case UIEventSubtypeRemoteControlEndSeekingBackward:
+              NSLog(@"  UIEventSubtypeRemoteControlEndSeekingBackward");
+              break;
             
             default:
                 return;
