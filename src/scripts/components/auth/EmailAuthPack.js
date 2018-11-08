@@ -59,6 +59,14 @@ const styles = StyleSheet.create({
 
 @observer
 class EmailAuthPack extends Component {
+
+  constructor(props) {
+    super(props);
+    
+    this.login_id = React.createRef();
+    this.login_pw = React.createRef();
+  }
+
   data = createStore({
     email: '',
     password: '',
@@ -80,32 +88,35 @@ class EmailAuthPack extends Component {
       this.data.loginButtonDisabled = false;
     });
   };
-
+  
   render() {
     return (
       <View style={styles.contentContainer}>
         <View borderRadius={4} style={styles.inputWrap}>
           <TextInput
+            
+            ref={this.login_id}
             style={styles.input}
             keyboardType="email-address"
             underlineColorAndroid={'rgba(0,0,0,0)'}
             value={this.data.email}
             placeholder="이메일"
             autoCapitalize={'none'}
-            onSubmitEditing={Keyboard.dismiss}
+            onSubmitEditing={() => this.login_pw.current.focus()}
             onChangeText={text => {
               this.data.email = text;
             }}
           />
           <View style={styles.inputBr} />
           <TextInput
+            ref={this.login_pw}
             style={styles.input}
             underlineColorAndroid={'rgba(0,0,0,0)'}
             secureTextEntry={true}
             value={this.data.password}
-            placeholder="패스워드"
+            placeholder="비밀번호"
             autoCapitalize={'none'}
-            onSubmitEditing={Keyboard.dismiss}
+            onSubmitEditing={() => { Keyboard.dismiss; this.handleLogin()}}
             onChangeText={text => {
               this.data.password = text;
             }}

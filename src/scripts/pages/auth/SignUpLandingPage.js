@@ -165,16 +165,14 @@ class SignUpLandingPage extends React.Component {
           const EVENT_PARAM_REGISTRATION_METHOD =
             NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
           AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
-            [EVENT_PARAM_REGISTRATION_METHOD]: 'email'
+            [EVENT_PARAM_REGISTRATION_METHOD]: store.socialType
           });
-        }
 
-        firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-          EVENT_PARAM_REGISTRATION_METHOD: 'email',
-          OS_TYPE: Platform.OS
-        });
-
-        AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
+          firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+            EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
+            OS_TYPE: Platform.OS
+          });
+        }        
 
         store.welaaaAuth = data;
         navigation.navigate('HomeScreen');
