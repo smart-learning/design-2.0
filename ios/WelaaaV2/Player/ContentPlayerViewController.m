@@ -74,6 +74,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // RN 콘텐츠 상세페이지에서 큰 재생아이콘을 탭해서 재생할 경우 Content ID가 아닌 Content Group ID를 arguments로 받아옵니다
     // 일단 history check 보다는 group의 제일 처음이 _001을 append시킵니다.
     // Netflix나 다른 동영상 서비스처럼 재생 이력을 JSON에서 읽어와서 최근 재생시간부터 재생합니다.
+#warning TODO : continue previous playback.
     NSString *str = @"";
     str = [_args objectForKey : @"cid"];
     NSRange strRange;
@@ -195,9 +196,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         if ( !_isAuthor )
         {
-            NSLog(@"  playDataDics : %@", playDataDics);
-            NSLog(@"  playDataDics.preview_urls : %@", playDataDics[@"preview_urls"]);
-            if ( [playDataDics[@"preview_urls"] isKindOfClass : [NSDictionary class]] )
+            if ( [playDataDics[@"preview_urls"] isKindOfClass : [NSDictionary class]] ) // preview_urls dictionary가 null이 아니면..
             {
                 [_args setObject : playDataDics[@"preview_urls"][@"HLS"]
                           forKey : @"uri"];
@@ -205,6 +204,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             else
             {
                 NSLog(@"  preview_urls.HLS == nil");
+                [common presentAlertWithTitle:@"윌라 클래스" andMessage:@"미리보기를 이용하실 수 없습니다ㅠ"];
                 [self closePlayer];
             }
             
@@ -1160,7 +1160,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) setPreviousContent
 {
+    if ( !_isAuthor )
+        return ;
+  
     NSLog(@"  [setPreviousContent] 재생 가능한 이전 콘텐츠를 찾아 set합니다.");
+  // 현재 재생중인 CID를 조회합니다.
+  // CID를 기준으로 처음 콘텐츠인지 조회합니다.
+  // 처음이라면 아무것도 실행하지 않고 리턴합니다.
+  // 이전 콘텐츠(제목 챕터 제외)가 존재한다면 args를 세팅합니다.
+  // 제목 챕터를 찾으면 그 제목챕터의 이전 cid를 찾습니다.
+  // args 세팅을 마치면 playNext()를 호출합니다.
   
     return ;
 }
@@ -1169,6 +1178,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) setNextContent
 {
+    if ( !_isAuthor )
+        return ;
+  
     NSLog(@"  [setNextContent] 재생 가능한 다음 콘텐츠를 찾아 set합니다.");
   
     return ;
