@@ -356,6 +356,7 @@ export default class MembershipPage extends React.Component {
 
   //멤버십 해지
   cancel_membership_confirm() {
+
     let _this = this;
     Alert.alert(
       '멤버십 구독 해지',
@@ -369,14 +370,18 @@ export default class MembershipPage extends React.Component {
   };
 
   cancel_membership_proc = async() => {
-    console.log('cancel_membership_proc------');
     
     const membership_info = await net.cancelMembership();
-    console.log(membership_info);
-    console.log(globalStore.currentMembership);
+    
     // 결제 요청 완료에 멤버십 데이터로 갱신
     globalStore.currentMembership = membership_info;
-    console.log(globalStore.currentMembership);
+    
+    if(Object.keys(membership_info).length === 0 && membership_info.constructor === Object){
+      Alert.alert('안내','멤버십이 해지되었습니다.',[{text:'확인'}]);
+    }else{
+      Alert.alert('안내','일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',[{text:'확인'}]);
+    }
+    
   }
   
   render() {
