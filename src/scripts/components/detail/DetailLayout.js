@@ -410,6 +410,7 @@ class DetailLayout extends React.Component {
           {this.props.store.tabStatus === 'list' && (
             <TabContentList
               store={this.props.store}
+              paymentType={this.props.paymentType}
               learnType={this.props.learnType}
             />
           )}
