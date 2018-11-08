@@ -103,7 +103,7 @@ class EmailAuthPack extends Component {
             underlineColorAndroid={'rgba(0,0,0,0)'}
             secureTextEntry={true}
             value={this.data.password}
-            placeholder="패스워드"
+            placeholder="비밀번호"
             autoCapitalize={'none'}
             onSubmitEditing={Keyboard.dismiss}
             onChangeText={text => {
