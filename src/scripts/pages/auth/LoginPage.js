@@ -148,7 +148,7 @@ class LoginPage extends React.Component {
           { height: this.windowHeight }
         ]}
       >
-        <ScrollView style={{ flex: 1, width: '100%' }}>
+        <ScrollView style={{ flex: 1, width: '100%' }} keyboardShouldPersistTaps='always' >
           <View style={{ width: '100%', height: this.windowHeight }}>
             <Swiper
               style={styles.wrapper}
