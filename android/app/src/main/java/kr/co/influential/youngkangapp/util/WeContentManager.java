@@ -610,7 +610,7 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT * FROM DOWNLOAD ";
+    String query = "SELECT * FROM DOWNLOAD ORDER BY CID ASC";
     Cursor c = db.rawQuery(query, null);
     return CursorToDataTable(c);
   }
