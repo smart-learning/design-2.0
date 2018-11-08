@@ -81,24 +81,24 @@ class KakaoLoginButton extends React.Component {
       console.log(kakaoAccessToken);
 
       // 카카오톡 회원 가입이 완료된 상태
-      if (Platform.OS === 'android') {
-        // 2018.10.29 facebook event: 마케팅 요청.
-        const NativeConstants = Native.getConstants();
-        const EVENT_NAME_COMPLETED_REGISTRATION =
-          NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;
-        const EVENT_PARAM_REGISTRATION_METHOD =
-          NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
-        AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
-          [EVENT_PARAM_REGISTRATION_METHOD]: 'kakaotalk'
-        });
-      }
+      // if (Platform.OS === 'android') {
+      //   // 2018.10.29 facebook event: 마케팅 요청.
+      //   const NativeConstants = Native.getConstants();
+      //   const EVENT_NAME_COMPLETED_REGISTRATION =
+      //     NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;
+      //   const EVENT_PARAM_REGISTRATION_METHOD =
+      //     NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
+      //   AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
+      //     [EVENT_PARAM_REGISTRATION_METHOD]: 'kakaotalk'
+      //   });
+      // }
 
-      firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-        'EVENT_PARAM_REGISTRATION_METHOD': 'kakaotalk',
-        'OS_TYPE':Platform.OS
-      });
+      // firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+      //   'EVENT_PARAM_REGISTRATION_METHOD': 'kakaotalk',
+      //   'OS_TYPE':Platform.OS
+      // });
       
-      AppEventsLogger.logEvent('WELAAARN_KAKAO_SIGN_UP');
+      // AppEventsLogger.logEvent('WELAAARN_KAKAO_SIGN_UP');
       this.setState({ token: kakaoAccessToken });
       this.props.onAccess(kakaoAccessToken, () => {
         this.setState({ loginButtonDisabled: false });

@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import {
   AsyncStorage,
   Image,
@@ -22,9 +23,12 @@ import IcPlay from '../../../images/ic-my-play.png';
 import IcProfile from '../../../images/ic-my-profile.png';
 import IcTag from '../../../images/ic-my-tag.png';
 import globalStore from '../../../scripts/commons/store';
-import CommonStyles from '../../../styles/common';
 import native from '../../commons/native';
 import HomeButton from '../../components/header/HomeButton';
+
+import MembershipBookClub from '../../../images/bullet-membership-book-club.png';
+import MembershipCampus from '../../../images/bullet-membership-campus.png';
+import MembershipPremium from '../../../images/bullet-membership-premium.png';
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -169,6 +173,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'normal',
     color: '#ffffff'
+  },
+  buttonSmall: {
+    backgroundColor: COLOR_PRIMARY,
+    borderRadius: 8,
+    marginLeft: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 6,
+    paddingRight: 6
+  },
+  buttonSmallText: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: '#ffffff'
   }
 });
 /*
@@ -236,16 +254,50 @@ export default class MyInfoHome extends React.Component {
                     <Text style={styles.myInfoName}>
                       {globalStore.profile ? globalStore.profile.name : ''}
                     </Text>
-                    {1 === 2 && (
+
+                    {
                       <View>
                         {globalStore.currentMembership &&
                         globalStore.currentMembership.type_text ? (
-                          <Text>{globalStore.currentMembership.type_text}</Text>
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              navigation.navigate('MembershipScreen')
+                            }
+                          >
+                            {globalStore.currentMembership.type === 2 && (
+                              <Image source={MembershipPremium} />
+                            )}
+                            {globalStore.currentMembership.type === 1 && (
+                              <Image source={MembershipCampus} />
+                            )}
+                            {globalStore.currentMembership.type === 3 && (
+                              <View style={styles.buttonSmall}>
+                                <Text style={styles.buttonSmallText}>
+                                  프리패스
+                                </Text>
+                              </View>
+                            )}
+                            {globalStore.currentMembership.type === 4 && (
+                              <Image source={MembershipBookClub} />
+                            )}
+                          </TouchableOpacity>
                         ) : (
-                          undefined
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              navigation.navigate('MembershipScreen')
+                            }
+                          >
+                            <View style={styles.buttonSmall}>
+                              <Text style={styles.buttonSmallText}>
+                                윌라 멤버십 안내
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
                         )}
                       </View>
-                    )}
+                    }
                   </View>
                   {/*고객사 요청으로 화면에서 감춤 처리*/}
                   {1 === 2 && (

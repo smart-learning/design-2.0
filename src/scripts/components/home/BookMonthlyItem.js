@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
   bookItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 250,
+    // width: 250,
+    width: '100%',
     height: 160,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -37,9 +38,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#555555'
   },
+
+  bookThumbnailWrap: {
+    width: '40%',
+    height: 150
+  },
+
   bookThumbnailContainer: {
-    width: 100,
-    marginRight: 20
+    width: 98,
+    height: 143
   },
   thumbnail: {
     width: '100%',
@@ -52,21 +59,54 @@ export default class BookMonthlyItem extends React.Component {
   render() {
     return (
       <View style={styles.bookItem}>
-        <View style={styles.bookThumbnailContainer}>
-          <ImageBackground
-          source={
-          this.props.itemData.audiobook.images
-          ? { uri: this.props.itemData.audiobook.images.cover }
-          : Dummy
-          }
-          resizeMode={'cover'}
-          style={styles.thumbnail}
-          />
+        <View style={styles.bookThumbnailWrap}>
+          <View
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              height: 150
+            }}
+          >
+            <View style={styles.bookThumbnailContainer}>
+              <ImageBackground
+                style={{
+                  width: 98,
+                  height: 143,
+                  paddingTop: '80%',
+                  paddingBottom: '80%'
+                }}
+                source={
+                  this.props.itemData.audiobook.images
+                    ? { uri: this.props.itemData.audiobook.images.cover }
+                    : Dummy
+                }
+                resizeMode={'cover'}
+                // style={styles.thumbnail}
+              />
+            </View>
+          </View>
         </View>
-        <View style={{ width: '48%' }}>
+
+        <View
+          style={{
+            width: '60%',
+            paddingLeft: 16,
+            paddingRight: 40
+          }}
+        >
           <Text style={styles.title}>{this.props.itemData.title}</Text>
           <Text style={styles.author}>{this.props.itemData.mentor.name}</Text>
-          <View style={styles.detailButton} borderRadius={13}>
+
+          <View
+            style={[
+              styles.detailButton,
+              {
+                width: 120
+              }
+            ]}
+            borderRadius={13}
+          >
             <Text style={styles.detailButtonText}>자세히보기</Text>
           </View>
         </View>

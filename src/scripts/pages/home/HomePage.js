@@ -8,7 +8,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Alert
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -285,10 +286,44 @@ class HomePage extends React.Component {
 
   handleBackPress = () => {
     console.log('back press:');
+    // if (this.props.navigation.isFocused()) {
+    //   Alert.alert(
+    //     'Exit App',
+    //     'Exiting the application?', [{
+    //         text: 'Cancel',
+    //         onPress: () => console.log('Cancel Pressed'),
+    //         style: 'cancel'
+    //     }, {
+    //         text: 'OK',
+    //         onPress: () => this.checkMemberShip()
+    //     }, ], {
+    //         cancelable: false
+    //     }
+    //  )
+    //  return true;
+    // } else {
+    //   this.props.navigation.goBack();
+    // }    
+
+    console.log('back press:');
     if (this.props.navigation.isFocused()) {
       BackHandler.exitApp();
     } else {
       this.props.navigation.goBack();
+    }
+
+  };
+
+  checkMemberShip = () => {
+
+    // Alert.alert('CurrentMemberShip Type ','TEST');
+    // {globalStore.welaaaAuth && <AdvertisingSection />}
+
+    if (globalStore && globalStore.currentMembership) {
+      const { type } = globalStore.currentMembership;
+      console.log('currentMemberShip ', ' type :  ' + type);
+    } else {
+      Alert.alert('CurrentMemberShip Type ', 'NULL ');
     }
   };
 
