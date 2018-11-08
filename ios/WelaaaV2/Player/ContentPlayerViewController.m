@@ -1,6 +1,8 @@
 
 #import "ContentPlayerViewController.h"
 
+static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트워크 상태를 저장(Wi-Fi, LTG/3G, etc.)
+
 @implementation ContentPlayerViewController
 
 //
@@ -340,7 +342,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver : self
                                                     name : UIApplicationDidEnterBackgroundNotification
                                                   object : nil];
-     
+  
     [common showStatusBar];
   
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
@@ -385,13 +387,54 @@
         _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
         _isDownloadFile = false;
     }
-    
+  
+    // 이 시점 이후부터 다운로드 파일인지 아닌지 확인 가능하고 새로운 콘텐츠가 재생될때마다 항상 공통적으로 호출되는 곳이므로 여기서 처리.
+    [self startCheckNetworkPlay]; // 콘텐츠가 바뀔 때마다 네트워크 상태 체크를 하고 필요시 안내팝업과 함께 플레이어를 종료. 2018.10.31.
+  
     // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
     [_fpsSDK prepareWithUrlAsset : _urlAsset
                           userId : [_args objectForKey : @"userId"]
                        contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
                       optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
                  liveKeyRotation : NO];
+}
+
+- (void) startCheckNetworkPlay  // 재생전에 네트워크 상태를 체크(비동기 콜백)
+{
+  [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+  [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock : ^(AFNetworkReachabilityStatus status)
+   {
+     recentNetStatus = status;
+     [self networkStatusChanged:nil];
+   }];
+}
+
+- (void)networkStatusChanged:(NSNotification *)noti // 네트워크 상태에 따른 처리
+{
+  BOOL isPlayableOnWiFi = false;
+  isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
+  NSLog(@"  isPlayableOnWiFi? : %@", isPlayableOnWiFi? @"YES" : @"NO");
+  
+  switch (recentNetStatus) {
+    case AFNetworkReachabilityStatusNotReachable:
+    case AFNetworkReachabilityStatusUnknown:
+      [self pressedPauseButton];
+      NSLog(@"  네트워크 상태를 확인해주시기 바랍니다.");
+      [self showAlertOk:@"알림" message:@"네트워크 상태를 확인해주시기 바랍니다."];
+      break;
+    case AFNetworkReachabilityStatusReachableViaWiFi: // Wi-fi
+      break;
+    case AFNetworkReachabilityStatusReachableViaWWAN: // LTE/3G
+      if(isPlayableOnWiFi && !_isDownloadFile)
+      {
+        [self pressedPauseButton];
+        NSLog(@"  사용자 설정에 따라 Wi-Fi 에서만 재생이 가능합니다.");
+        [self showAlertOk:@"알림" message:@"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 재생이 가능합니다."];
+      }
+      break;
+    default:
+      break;
+  }
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -992,6 +1035,11 @@
   
     [[ApiManager sharedInstance] setReachabilityStatusChangeBlock : ^(NSInteger status)
                                                                     {
+                                                                      NSLog(@"  ApiManager setReachabilityStatusChangeBlock : %ld",(long)status);
+                                                                      
+                                                                      recentNetStatus = status; // 가장 최근에 확인된 네트워크 status 를 보관
+                                                                      [self networkStatusChanged:nil];
+                                                                      
                                                                         if ( self.isDownloadFile )
                                                                         {
                                                                             self->_networkStatusLabel.text = @"다운로드 재생";
@@ -1201,7 +1249,7 @@
         _networkStatusLabel.text = @"LTE/3G 재생";
     }
    */
-  
+  // 공통 사용되는 부분이 많아 아래와 같이 함수화.
   NSString *netStatus = [self updateNetStatusLabel];
   [self updateDownloadState];
   
@@ -1976,6 +2024,7 @@
     }
     else if ( [@"download-mode" isEqualToString : buttonId] )
     {
+      /*
         NSString *wifiDown = [[NSUserDefaults standardUserDefaults] objectForKey : @"wifiDown"];
       
         if ( [@"on" isEqualToString:wifiDown] && ![[ApiManager sharedInstance] isConnectionWifi] )
@@ -2002,10 +2051,74 @@
        {
          [self updateDownloadState];  // 호출될 때마다 다운로드 버튼 갱신. 2018.10.30.
        }];
+      */
+      
+      BOOL isDownloadableOnlyWiFi = false;
+      isDownloadableOnlyWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUseDownload"] isEqualToString:@"1"]; // true = 1, false = 0
+      NSLog(@"  isDownloadableOnlyWiFi? : %@", isDownloadableOnlyWiFi? @"YES" : @"NO");
+      
+      switch (recentNetStatus) {
+        case AFNetworkReachabilityStatusNotReachable:
+        case AFNetworkReachabilityStatusUnknown:
+          [self pressedPauseButton];
+          NSLog(@"  네트워크 상태를 확인해주시기 바랍니다.");
+          [self showAlertOk:@"알림" message:@"네트워크 상태를 확인해주시기 바랍니다."];
+          return;
+        case AFNetworkReachabilityStatusReachableViaWiFi: // Wi-fi
+          break;
+        case AFNetworkReachabilityStatusReachableViaWWAN: // LTE/3G
+          if(isDownloadableOnlyWiFi)
+          {
+            NSLog(@"  사용자 설정에 따라 Wi-Fi에서만 다운로드가 가능합니다.");
+           
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle : @"알림"
+                                                                           message : @"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 다운로드가 가능합니다."
+                                                                    preferredStyle : UIAlertControllerStyleAlert];
+            
+            UIAlertAction *ok = [UIAlertAction actionWithTitle : @"확 인"
+                                                         style : UIAlertActionStyleDefault
+                                                       handler : ^(UIAlertAction * action)
+                                 {
+                                   [alert dismissViewControllerAnimated:YES completion:nil];
+                                 }];
+            [alert addAction : ok];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+            
+            return;
+          }
+      }
+      
+      [_fpsDownloadManager startDownload:_args completion:^(NSError* error, NSMutableDictionary* result)
+       {
+         [self updateDownloadState];  // 호출될 때마다 다운로드 버튼 갱신.
+       }];
     }
 }
 
 #pragma mark - Notifications
+// 현재 뷰에서 팝업을 띄운다.(어플리케이션 루트뷰 찾아서 띄우는거 아님)
+- (void) showAlertOk : (NSString *) title message:(NSString *)msg
+{
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle : title
+                                                                 message : msg
+                                                          preferredStyle : UIAlertControllerStyleAlert];
+  
+  UIAlertAction *ok = [UIAlertAction actionWithTitle : @"확 인"
+                                               style : UIAlertActionStyleDefault
+                                             handler : ^(UIAlertAction * action)
+                       {
+                         [alert dismissViewControllerAnimated:YES completion:nil];
+                         [self closePlayer];
+                       }];
+  
+  [alert addAction : ok];
+  
+  [self presentViewController : alert
+                     animated : YES
+                   completion : nil];
+}
+
 //
 // 2~3초 정도의 토스트메시지를 보여줍니다.
 //

@@ -581,20 +581,17 @@
         if ( [deviceModel isEqual: @"iPad7,2"] )
             return @"iPad Pro (12.9-inch) (2nd generation) (Wi-Fi + Cellular)";
       
-        if ( [deviceModel isEqual: @"iPad8,1"] )
+        if ( [deviceModel isEqual: @"iPad8,1"] || [deviceModel isEqual: @"iPad8,2"] )
             return @"iPad Pro (11-inch) (Wi-Fi)";
       
-        if ( [deviceModel isEqual: @"iPad8,4"] )
+        if ( [deviceModel isEqual: @"iPad8,3"] || [deviceModel isEqual: @"iPad8,4"] )
             return @"iPad Pro (11-inch) (Wi-Fi + Cellular)";
       
-        if ( [deviceModel isEqual: @"iPad8,5"] )
+        if ( [deviceModel isEqual: @"iPad8,5"] || [deviceModel isEqual: @"iPad8,6"] )
             return @"iPad Pro (12.9-inch) (3rd generation) (Wi-Fi)";
       
-        if ( [deviceModel isEqual: @"iPad8,8"] )
+        if ( [deviceModel isEqual: @"iPad8,7"] || [deviceModel isEqual: @"iPad8,8"] )
             return @"iPad Pro (12.9-inch) (3rd generation) (Wi-Fi + Cellular)";
-        
-        // iPad8,2, iPad8,6 (Wi-Fi)
-        // iPad8,3, iPad8,7 (Wi-Fi + Cellular)
     }
     
     // iPod touch

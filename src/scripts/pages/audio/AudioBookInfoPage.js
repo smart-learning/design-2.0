@@ -1,3 +1,6 @@
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import m from 'moment';
 import React from 'react';
 import {
   Image,
@@ -6,19 +9,15 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Alert,
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
-import m from 'moment';
-import { observer } from 'mobx-react';
-import { observable } from 'mobx';
-import bookIcon from '../../../images/ic-book-white.png';
-import playIcon from '../../../images/ic-play-white.png';
-import IcPlay from '../../../images/ic-play-detail.png';
-import Native from '../../commons/native';
 import Dummy from '../../../images/dummy-audiobook-info.png';
+import bookIcon from '../../../images/ic-book-white.png';
+import IcPlay from '../../../images/ic-play-detail.png';
+import playIcon from '../../../images/ic-play-white.png';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
+import Native from '../../commons/native';
 import net from '../../commons/net';
 
 const styles = StyleSheet.create({
@@ -66,16 +65,16 @@ const styles = StyleSheet.create({
     textAlign: 'right'
   },
   infoButtonWrap: {
-    height: 25,
-    marginBottom: 3
+    height: 30,
+    marginBottom: 6
   },
   infoButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingTop: 8,
+    paddingBottom: 8,
     paddingRight: 8,
     paddingLeft: 8,
     backgroundColor: CommonStyles.COLOR_PRIMARY,
@@ -266,7 +265,7 @@ class AudioBookInfoPage extends React.Component {
     let headerBgImage = null;
     try {
       headerBgImage = itemData.images.header_bg;
-    } catch (e) { }
+    } catch (e) {}
 
     return (
       <SafeAreaView style={CommonStyles.container}>
@@ -340,11 +339,10 @@ class AudioBookInfoPage extends React.Component {
                     }
                   > */}
 
-
                   <TouchableOpacity
                     activeOpacity={0.9}
                     // onPress={() => Native.play(this.props.store.itemData.cid)}
-                    // 814 , cid 값을 가져와야 재생을 할 수 있군요 
+                    // 814 , cid 값을 가져와야 재생을 할 수 있군요
                     onPress={() => Native.play(itemData.audiobook.cid)}
                   >
                     <ImageBackground
@@ -355,8 +353,6 @@ class AudioBookInfoPage extends React.Component {
                       <View style={[CommonStyles.container]}>
                         <Image source={IcPlay} style={styles.playButton} />
                       </View>
-
-
                     </ImageBackground>
                   </TouchableOpacity>
                   {/* </TouchableOpacity> */}
@@ -378,25 +374,8 @@ class AudioBookInfoPage extends React.Component {
                 <Text style={styles.teacherName}>{itemData.mentor.name}</Text>
               </View>
             </View>
-            {this.isMemoShow === true && (
-              <View style={styles.teacherMemo}>
-                <Text style={styles.teacherMemoText}>
-                  {itemData.mentor.memo}
-                </Text>
-              </View>
-            )}
-            <View style={{ width: '100%' }}>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={this.showTeacherMemo}
-              >
-                {this.buttonTextStatus && (
-                  <Text style={styles.showMemoButtonText}>소개보기</Text>
-                )}
-                {!this.buttonTextStatus && (
-                  <Text style={styles.showMemoButtonText}>닫기</Text>
-                )}
-              </TouchableOpacity>
+            <View style={styles.teacherMemo}>
+              <Text style={styles.teacherMemoText}>{itemData.mentor.memo}</Text>
             </View>
           </View>
           <View style={styles.memoContainer}>
