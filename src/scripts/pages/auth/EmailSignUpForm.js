@@ -256,14 +256,14 @@ class EmailSignUpForm extends Component {
           AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
             [EVENT_PARAM_REGISTRATION_METHOD]: 'email'
           });
+
+          firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+            EVENT_PARAM_REGISTRATION_METHOD: 'email',
+            OS_TYPE: Platform.OS
+          });
         }
 
-        firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
-          EVENT_PARAM_REGISTRATION_METHOD: 'email',
-          OS_TYPE: Platform.OS
-        });
-
-        AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
+        // AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
         store.welaaaAuth = data;
         this.props.navigation.navigate('HomeScreen');
       })
