@@ -172,10 +172,13 @@ class SignUpLandingPage extends React.Component {
             EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
             OS_TYPE: Platform.OS
           });
-        }        
+        }
 
         store.welaaaAuth = data;
-        navigation.navigate('HomeScreen');
+        // 2018. 11. 9
+        // jungon
+        // 회원가입 후 Membership 가입 촉진 페이지 노출.
+        navigation.navigate('MembershipScreen');
       })
       .catch(error => {
         const code = error.response.code;
