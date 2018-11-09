@@ -274,16 +274,18 @@ class DetailLayout extends React.Component {
           다운로드 부분완료 ({downloadItems.length}/{itemClipData.length})
         </Text>
       );
-    } else if (downloadItems.length === itemClipData.length) {
-      vcontent = (
-        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
-          다운로드 완료
-        </Text>
-      );
     } else {
       vcontent = (
         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
           다운로드
+        </Text>
+      );
+    }
+
+    if (downloadItems.length === itemClipData.length) {
+      vcontent = (
+        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
+          다운로드 완료
         </Text>
       );
     }

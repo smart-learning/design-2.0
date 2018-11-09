@@ -118,14 +118,12 @@ export default class ChapterListItem extends React.Component {
 
       if (this.props.itemData.is_preview) {
         return (
-          <View>
-            <Text style={styles.itemDepthTwoText}>
-              {this.props.itemData.title}
-              <Text style={styles.previewTitleText}>
+          <Text style={styles.itemDepthTwoText}>
+            {this.props.itemData.title}
+            <Text style={styles.previewTitleText}>
               {' '}미리듣기
             </Text>
-            </Text>
-          </View>
+          </Text>
         );
       } else {
         return (
@@ -140,7 +138,7 @@ export default class ChapterListItem extends React.Component {
           <Text style={styles.itemTitleText}>
             {this.props.itemData.title}
             <Text style={styles.previewTitleText}>
-            {' '}미리듣기
+              {' '}미리듣기
             </Text>
           </Text>
         );
@@ -155,16 +153,16 @@ export default class ChapterListItem extends React.Component {
       if (this.props.itemData.is_preview) {
         return (
           <Text style={styles.itemTitleText}>
-             > {this.props.itemData.title}
+            > {this.props.itemData.title}
             <Text style={styles.previewTitleText}>
-            {' '}미리듣기
+              {' '}미리듣기
             </Text>
           </Text>
         );
       } else {
         return (
           <Text style={styles.itemTitleText}>
-               {'  >'} {this.props.itemData.title}
+            {'  >'} {this.props.itemData.title}
           </Text>
         );
       }
