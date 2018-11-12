@@ -24,6 +24,23 @@ import native from '../../commons/native';
 import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
+  membershipHeader: {
+    width: '100%',
+    height: 140
+  },
+  membershipDescription: {
+    width: '100%',
+    height: 108
+  },
+  membershipButton: {
+    width: '100%',
+    height: 34,
+    marginBottom: 11
+  },
+  membershipBody: {
+    width: '100%',
+    height: 403
+  },
   sectionTitle: {
     paddingTop: 20,
     paddingBottom: 10,
@@ -216,7 +233,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 40,
     backgroundColor: '#00c73c',
-    marginTop:15
+    marginTop: 15
   },
   cancelButtonText: {
     fontSize: 15,
@@ -293,7 +310,7 @@ const renderRuleIOS = () => {
   );
 };
 
-const renderRuleAndroid = () => {  
+const renderRuleAndroid = () => {
   return (
     <View style={styles.sectionList}>
       <View style={styles.sectionListItem}>
@@ -336,8 +353,7 @@ export default class MembershipPage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.props.navigation.setParams({'title':'윌라 멤버십 안내'});
-    
+    this.props.navigation.setParams({ title: '윌라 멤버십 안내' });
   }
 
   componentDidMount() {
@@ -356,34 +372,42 @@ export default class MembershipPage extends React.Component {
 
   //멤버십 해지
   cancel_membership_confirm() {
-
     let _this = this;
     Alert.alert(
       '멤버십 구독 해지',
       '멤버십을 해지 하시겠습니까?',
       [
-        {text: '아니오', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: '네', onPress: () => this.cancel_membership_proc()},
+        {
+          text: '아니오',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        { text: '네', onPress: () => this.cancel_membership_proc() }
       ],
       { cancelable: false }
     );
-  };
+  }
 
-  cancel_membership_proc = async() => {
-    
+  cancel_membership_proc = async () => {
     const membership_info = await net.cancelMembership();
-    
+
     // 결제 요청 완료에 멤버십 데이터로 갱신
     globalStore.currentMembership = membership_info;
-    
-    if(Object.keys(membership_info).length === 0 && membership_info.constructor === Object){
-      Alert.alert('안내','멤버십이 해지되었습니다.',[{text:'확인'}]);
-    }else{
-      Alert.alert('안내','일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',[{text:'확인'}]);
+
+    if (
+      Object.keys(membership_info).length === 0 &&
+      membership_info.constructor === Object
+    ) {
+      Alert.alert('안내', '멤버십이 해지되었습니다.', [{ text: '확인' }]);
+    } else {
+      Alert.alert(
+        '안내',
+        '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
+        [{ text: '확인' }]
+      );
     }
-    
-  }
-  
+  };
+
   render() {
     // 멤버십 페이지 랜더 시점 호출
     AppEventsLogger.logEvent('WELAAARN_MEMBERSHIP_PAGE');
@@ -550,8 +574,8 @@ export default class MembershipPage extends React.Component {
               undefined
             )}
             {MembershipRule}
-            <TouchableOpacity onPress={() => this.cancel_membership_confirm()} >
-              <View style={styles.cancelButton} borderRadius={5} >
+            <TouchableOpacity onPress={() => this.cancel_membership_confirm()}>
+              <View style={styles.cancelButton} borderRadius={5}>
                 <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
               </View>
             </TouchableOpacity>
@@ -597,117 +621,32 @@ export default class MembershipPage extends React.Component {
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
       >
         <ScrollView style={{ width: '100%' }}>
-          <View style={CommonStyles.contentContainer}>
-            <Text style={styles.pageTitle}>
-              런칭 기념 멤버십 한정 할인 이벤트
-            </Text>
-            <View style={styles.paragraphBox}>
-              <Text style={styles.paragraphText}>
-                당신의 가능성을 믿기에 윌라가 지원합니다.
-              </Text>
-              <Text style={styles.paragraphText}>
-                파격적으로 할인된 멤버십으로
-              </Text>
-              <Text style={styles.paragraphText}>
-                프리미엄 지식 콘텐츠를 마음껏 이용하세요!
-              </Text>
-            </View>
-            <View style={styles.paragraphBox}>
-              <Text style={styles.paragraphImportantText}>
-                심지어 첫달은 무료!
-              </Text>
-              <Text style={styles.paragraphImportantText}>
-                해지는 클릭한번으로 언제든지 가능!
-              </Text>
-            </View>
-
-            <View style={styles.membershipCampusBox}>
-              <Image source={IcCampus} style={styles.membershipIcon} />
-              <Text style={styles.membershipCampusTitle}>
-                윌라 캠퍼스 멤버십
-              </Text>
-              <View style={styles.membershipParagraphBox}>
-                <Text style={styles.membershipParagraph}>
-                  1천개의 동영상강좌 무제한 이용
-                </Text>
-              </View>
-              <View style={styles.priceBox}>
-                {Platform.select({
-                  ios: <Text style={styles.membershipPrice}>월 11,000원</Text>,
-                  android: (
-                    <View>
-                      <Text style={styles.membershipSalePrice}>
-                        월 30,000원
-                      </Text>
-                      <Text style={styles.membershipPrice}>월 7,700원</Text>
-                    </View>
-                  )
-                })}
-              </View>
+          <View
+            style={{
+              backgroundColor: '#DDEEE2'
+            }}
+          >
+            <Image
+              style={styles.membershipHeader}
+              resizeMode="stretch"
+              source={require('../../../images/membership_header.png')}
+            />
+            <View
+              style={{
+                paddingTop: 32,
+                paddingBottom: 20,
+                paddingLeft: 15,
+                paddingRight: 15
+              }}
+            >
+              {/* 오디오북 멤버쉽 */}
+              <Image
+                style={styles.membershipDescription}
+                resizeMode="stretch"
+                source={require('../../../images/membership-1.png')}
+              />
               <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() =>
-                  this.buyMembershop({
-                    title: '캠퍼스 멤버십 결제',
-                    type: 'campus'
-                  })
-                }
-              >
-                <View
-                  style={[
-                    CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipCampusButton
-                  ]}
-                >
-                  <View>
-                    <Text style={styles.memberShipButtonTitle}>
-                      첫 1개월 무료
-                    </Text>
-                    <Text style={styles.memberShipButtonParagraph}>
-                      {this.props.membership_price_prefix}
-                      {Platform.select({
-                        ios: <Text>11,000원</Text>,
-                        android: <Text>7,700원</Text>
-                      })}
-                      {this.props.membership_price_suffix}
-                    </Text>
-                  </View>
-                  <Image source={IcAngleRight} />
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.membershipAudioBookBox}>
-              <Image source={IcClub} style={styles.membershipIcon} />
-              <Text style={styles.membershipAudioBookClubTitle}>
-                윌라 오디오북클럽 멤버십
-              </Text>
-              <View style={styles.membershipParagraphBox}>
-                <Text style={styles.membershipParagraph}>
-                  이달의 책 1권 + 인기 오디오북 1권
-                </Text>
-                <Text style={styles.membershipParagraph}>
-                  총 2권의 오디오북 이용
-                </Text>
-                <Text style={styles.membershipParagraph}>
-                  (원하는 오디오북이 없을 경우 이월 가능)
-                </Text>
-              </View>
-              <View style={styles.priceBox}>
-                {Platform.select({
-                  ios: <Text style={styles.membershipPrice}>월 9,500원</Text>,
-                  android: (
-                    <View>
-                      <Text style={styles.membershipSalePrice}>
-                        월 15,000원
-                      </Text>
-                      <Text style={styles.membershipPrice}>월 6,600원</Text>
-                    </View>
-                  )
-                })}
-              </View>
-              <TouchableOpacity
-                activeOpacity={0.9}
+                activeOpacity={0.7}
                 onPress={() =>
                   this.buyMembershop({
                     title: '오디오북클럽 멤버십 결제',
@@ -715,55 +654,41 @@ export default class MembershipPage extends React.Component {
                   })
                 }
               >
-                <View
-                  style={[
-                    CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipAudioBookButton
-                  ]}
-                >
-                  <View>
-                    <Text style={styles.memberShipButtonTitle}>
-                      첫 1개월 무료
-                    </Text>
-                    <Text style={styles.memberShipButtonParagraph}>
-                      {this.props.membership_price_prefix}
-                      {Platform.select({
-                        ios: <Text>9,500원</Text>,
-                        android: <Text>6,600원</Text>
-                      })}
-                      {this.props.membership_price_suffix}
-                    </Text>
-                  </View>
-                  <Image source={IcAngleRight} />
-                </View>
+                <Image
+                  style={styles.membershipButton}
+                  resizeMode="stretch"
+                  source={require('../../../images/membership-1-btn.png')}
+                />
               </TouchableOpacity>
-            </View>
-
-            <View style={styles.membershipPremiumBox}>
-              <Image source={IcPremium} style={styles.membershipIcon} />
-              <Text style={styles.membershipPremiumTitle}>
-                윌라 프리미엄 멤버십
-              </Text>
-              <View style={styles.membershipParagraphBox}>
-                <Text style={styles.membershipParagraph}>
-                  윌라 캠퍼스 멤버십 + 윌라 오디오북 멤버십
-                </Text>
-              </View>
-              <View style={styles.priceBox}>
-                {Platform.select({
-                  ios: <Text style={styles.membershipPrice}>월 20,500원</Text>,
-                  android: (
-                    <View>
-                      <Text style={styles.membershipSalePrice}>
-                        월 40,000원
-                      </Text>
-                      <Text style={styles.membershipPrice}>월 14,300원</Text>
-                    </View>
-                  )
-                })}
-              </View>
+              {/* 클래스 멤버쉽 */}
+              <Image
+                style={styles.membershipDescription}
+                resizeMode="stretch"
+                source={require('../../../images/membership-2.png')}
+              />
               <TouchableOpacity
-                activeOpacity={0.9}
+                activeOpacity={0.7}
+                onPress={() =>
+                  this.buyMembershop({
+                    title: '캠퍼스 멤버십 결제',
+                    type: 'campus'
+                  })
+                }
+              >
+                <Image
+                  style={styles.membershipButton}
+                  resizeMode="stretch"
+                  source={require('../../../images/membership-2-btn.png')}
+                />
+              </TouchableOpacity>
+              {/* 프리미엄 멤버쉽 */}
+              <Image
+                style={styles.membershipDescription}
+                resizeMode="stretch"
+                source={require('../../../images/membership-3.png')}
+              />
+              <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() =>
                   this.buyMembershop({
                     title: '프리미엄 멤버십 결제',
@@ -771,44 +696,21 @@ export default class MembershipPage extends React.Component {
                   })
                 }
               >
-                <View
-                  style={[
-                    CommonStyles.alignJustifyContentBetween,
-                    styles.memberShipPremiumButton
-                  ]}
-                >
-                  <View>
-                    <Text style={styles.memberShipButtonTitle}>
-                      첫 1개월 무료
-                    </Text>
-                    <Text style={styles.memberShipButtonParagraph}>
-                      {this.props.membership_price_prefix}
-                      {Platform.select({
-                        ios: <Text>20,500원</Text>,
-                        android: <Text>14,300원</Text>
-                      })}
-                      {this.props.membership_price_suffix}
-                    </Text>
-                  </View>
-                  <Image source={IcAngleRight} />
-                </View>
+                <Image
+                  style={styles.membershipButton}
+                  resizeMode="stretch"
+                  source={require('../../../images/membership-3-btn.png')}
+                />
               </TouchableOpacity>
             </View>
-
-            <Text style={styles.sectionTitle}>멤버십 결제 유의사항</Text>
-            <View>{MembershipRule}</View>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() =>
-                this.props.navigation.navigate('MembershipDetailPage', {
-                  title: '윌라 멤버십'
-                })
-              }
-            >
-              <View style={styles.ruleButton} borderRadius={5}>
-                <Text style={styles.ruleButtonText}>멤버십 정책 상세보기</Text>
-              </View>
-            </TouchableOpacity>
+            <Image
+              style={styles.membershipBody}
+              resizeMode="stretch"
+              source={require('../../../images/membership-body-2.png')}
+            />
+            <View
+              style={{ width: '100%', height: 96, backgroundColor: '#F7F7F7' }}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
