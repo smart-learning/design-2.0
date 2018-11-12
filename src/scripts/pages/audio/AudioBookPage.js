@@ -150,11 +150,12 @@ class AudioBookPage extends React.Component {
   };
 
   async componentDidMount() {
-	  this.props.navigation.setParams({'title':'오디오북 전체목록'});
+    this.props.navigation.setParams({ title: '오디오북 전체목록' });
 
-	const currCategory = this.props.navigation.getParam('data', {})
-	this.store.ccode = currCategory.ccode ? currCategory.ccode : null
-	this.store.selectedCategory = currCategory.id ? currCategory.id : 0
+    const currCategory = this.props.navigation.getParam('data', {});
+    const ccode = currCategory.ccode ? currCategory.ccode : null;
+    this.store.ccode = ccode;
+    this.store.selectedCategory = currCategory.id ? currCategory.id : 0;
 
     const loadedCategories = await net.getAudioBookCategory();
     this.store.categories = loadedCategories.map(element => {
@@ -164,7 +165,7 @@ class AudioBookPage extends React.Component {
       vo.label = element.title;
       return vo;
     });
-    this.loadAudioList();
+    this.loadAudioList(ccode);
   }
 
   onCategorySelect = item => {
@@ -204,8 +205,7 @@ class AudioBookPage extends React.Component {
                         }
                       >
                         인기
-                    </Text>
-
+                      </Text>
                     </TouchableOpacity>
                     <View style={styles.sortBar} />
                     <TouchableOpacity
@@ -225,7 +225,7 @@ class AudioBookPage extends React.Component {
                         }
                       >
                         신규
-                    </Text>
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
