@@ -1695,6 +1695,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         CMTime newTime = CMTimeMakeWithSeconds(cTime - 10.f, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime - 10.f];
     }
     else
     {
@@ -1740,6 +1743,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         CMTime newTime = CMTimeMakeWithSeconds(cTime + 10.f, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime + 10.f];
     }
     else
     {
