@@ -175,8 +175,7 @@ class SignUpLandingPage extends React.Component {
         }
 
         store.welaaaAuth = data;
-        // 2018. 11. 9
-        // jungon
+        // 2018. 11. 9. jungon
         // 회원가입 후 Membership 가입 촉진 페이지 노출.
         navigation.navigate('MembershipScreen');
       })

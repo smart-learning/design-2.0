@@ -649,7 +649,7 @@ export default class MembershipPage extends React.Component {
                 activeOpacity={0.7}
                 onPress={() =>
                   this.buyMembershop({
-                    title: '오디오북클럽 멤버십 결제',
+                    title: '오디오북 멤버십 결제',
                     type: 'bookclub'
                   })
                 }
@@ -670,7 +670,7 @@ export default class MembershipPage extends React.Component {
                 activeOpacity={0.7}
                 onPress={() =>
                   this.buyMembershop({
-                    title: '캠퍼스 멤버십 결제',
+                    title: '클래스 멤버십 결제',
                     type: 'campus'
                   })
                 }
