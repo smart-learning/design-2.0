@@ -241,10 +241,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
 
   @ReactMethod
-  public void getDownloadList(Promise promise) {
+  public void getDownloadList(ReadableMap content, Promise promise) {
     try {
+      String userId = content.getString("userId");
+
       Gson gson = new Gson();
-      String json = gson.toJson(ContentManager().getDatabase());
+      String json = gson.toJson(ContentManager().getDatabase(userId));
       promise.resolve(json);
     } catch (Exception e) {
       promise.reject(e);

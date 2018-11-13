@@ -606,11 +606,17 @@ public class WeContentManager extends SQLiteOpenHelper {
     db.execSQL(sql);
   }
 
-  public ArrayList<HashMap<String, Object>> getDatabase() throws Exception {
+  public ArrayList<HashMap<String, Object>> getDatabase(String userId) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT * FROM DOWNLOAD ORDER BY CID ASC";
+//    String query = "SELECT * FROM DOWNLOAD WHERE userId = '"+ userId+"' ORDER BY CID ASC";
+
+    String query = "select  distinct cid , substring(code , 1,7) as groupKey ,gTitle,groupImg,thumbnailImg,audioVideoType,groupTeacherName,view_limitdate , count(*) as groupContentScnt "
+        + "FROM DOWNLOAD "
+        + "WHERE userId = '"+ userId +"' "
+        + "group by gTitle,groupImg,thumbnailImg,audioVideoType,groupTeacherName ";
+
     Cursor c = db.rawQuery(query, null);
     return CursorToDataTable(c);
   }

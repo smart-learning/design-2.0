@@ -3,12 +3,13 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import {
   FlatList,
+  Alert,  
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,  
+  View,
   ListView
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
@@ -150,9 +151,9 @@ export default class DownloadContentPage extends React.Component {
     Native.play(item);
   }
 
-  makeListItem = ({ item, index }) => {
-    console.log(item, index)
-    return (      
+  makeListItem = ({ item, section }) => {
+    // console.log(item, index)
+    return (
       <TouchableOpacity
         activeOpacity={0.9}
         style={styles.downloadItem}
@@ -176,6 +177,80 @@ export default class DownloadContentPage extends React.Component {
             ellipsizeMode="tail"
           >
             {item.gTitle}
+          </Text>
+          <Text style={{ fontSize: 12, color: '#A6A6A6' }}>
+            {item.groupTeacherName} | {item.cPlayTime}
+          </Text>
+          {/* 현재 시나리오에선 만료기간이 의미가 없으므로 보이지 않게 처리. 추후 시나리오 보완시 다시 적용 고려.*/}
+          {false && (
+            <Text style={{ fontSize: 12, color: '#E10D38' }}>
+              {item.view_limitdate}
+            </Text>
+          )}
+        </View>
+        <View>
+          <TouchableOpacity
+            activeOptacity={0.9}
+            style={styles.downloadItemPlayButton}
+            onPress={() => {
+
+              Alert.alert(
+                '알림',
+                '삭제 하시겠습니까?', [{
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel'
+                }, {
+                  text: 'OK',
+                  onPress: () => Native.deleteDownload(
+                    [{ ...item }],
+                    result => {
+                      var removedDownloadList = globalStore.downloadItems.filter(
+                        item => item.cid !== result
+                      );
+                      globalStore.downloadItems.replace(removedDownloadList);
+                    },
+                    error => console.error(error)
+                  )
+                },], {
+                  cancelable: false
+                }
+              )
+            }}
+          >
+            <Image source={IcTrash} style={{ width: 24, height: 24 }} />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  makeAudioBookListItem = ({ item, index }) => {
+    // console.log(item, index)
+    return (
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={styles.downloadItem}
+        onPress={() => this.play(item)}
+      >
+        <Image
+          source={{ uri: item.thumbnailImg }}
+          style={styles.downloadItemImg}
+        />
+        <View style={styles.downloadItemInfo}>
+          <Text
+            style={{ fontSize: 16, fontWeight: 'bold' }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {item.gTitle}
+          </Text>
+          <Text
+            style={{ fontSize: 12, color: COLOR_PRIMARY }}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {item.cTitle}
           </Text>
           <Text style={{ fontSize: 12, color: '#A6A6A6' }}>
             {item.groupTeacherName} | {item.cPlayTime}
@@ -211,67 +286,13 @@ export default class DownloadContentPage extends React.Component {
     );
   };
 
-  makeAudioBookListItem = ({ item, index }) => {
-    console.log(item, index)
-    return (      
-      <TouchableOpacity
-        activeOpacity={0.9}
-        style={styles.downloadItem}
-        onPress={() => this.play(item)}
-      >
-        <Image
-          source={{ uri: item.thumbnailImg }}
-          style={styles.downloadItemImg}
-        />
-        <View style={styles.downloadItemInfo}>
-          <Text
-            style={{ fontSize: 16, fontWeight: 'bold' }}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {item.gTitle}
-          </Text>
-          <Text
-            style={{ fontSize: 12, color: COLOR_PRIMARY }}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
-            {item.cTitle}
-          </Text>
-          <Text style={{ fontSize: 12, color: '#A6A6A6' }}>
-            {item.groupTeacherName} | {item.cPlayTime}
-          </Text>
-          {/* 현재 시나리오에선 만료기간이 의미가 없으므로 보이지 않게 처리. 추후 시나리오 보완시 다시 적용 고려.*/}
-          {false && (
-            <Text style={{ fontSize: 12, color: '#E10D38' }}>
-              {item.view_limitdate}
-            </Text>
-          )}
-        </View>
-        <View>
-          <TouchableOpacity
-            activeOptacity={0.9}
-            style={styles.downloadItemPlayButton}
-            onPress={() => {
-              Native.deleteDownload(
-                [{ ...item }],
-                result => {
-                  var removedDownloadList = globalStore.downloadItems.filter(
-                    item => item.cid !== result
-                  );
-                  globalStore.downloadItems.replace(removedDownloadList);
-                },
-                error => console.error(error)
-              );
-            }}
-          >
-            <Image source={IcTrash} style={{ width: 24, height: 24 }} />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-    );
-  };  
-
+  _renderSectionHeader = ({ section }) => {
+    return (
+      <View style={styles.sectionHeader}>
+        <Text style={styles.header}>{section.key}</Text>
+      </View>
+    )
+  }
   render() {
     let vcontent = (
       <Text style={styles.noContent}>다운받은 항목이 없습니다.</Text>
@@ -282,15 +303,18 @@ export default class DownloadContentPage extends React.Component {
 
     let video = [];
     let audio = [];
+    let videoHeader = [{ name: "title" }];
+    let i;
+    let initialValue = [];
     // store의 downloadItems이 변경되면..
     const downloadItems = globalStore.downloadItems.toJS();
     if (downloadItems.length > 0) {
       downloadItems.reduce(
         (accumulator, item, index) => {
           if ('video-course' === item.audioVideoType) {
-            // accumulator.video.push({ ...item, key: index.toString() });
             accumulator.video.push({ ...item, key: index.toString() });
           } else if ('audiobook' === item.audioVideoType) {
+
             accumulator.audio.push({ ...item, key: index.toString() });
           }
           return accumulator;
@@ -298,17 +322,22 @@ export default class DownloadContentPage extends React.Component {
         { video: video, audio: audio }
       );
 
+      console.log(video)
       // 데이터를 가지고 리스트를 생성
       if (video.length > 0) {
 
-        console.log('vcotent' , video.length)
         vcontent = (
-          
           <FlatList
             style={styles.flatList}
             data={video}
             renderItem={this.makeListItem}
           />
+          // <SectionList
+          //   style={styles.flatList}
+          //   sections={video}
+          //   renderItem={this.makeListItem}
+          //   renderSectionHeader={this._renderSectionHeader}
+          // />
         );
       }
 

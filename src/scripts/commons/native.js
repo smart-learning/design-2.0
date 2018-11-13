@@ -84,7 +84,15 @@ export default {
 
   getDownloadList(success, failed) {
     console.log('native.js::getDownloadList');
-    RNNativePlayer.getDownloadList()
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {    
+      userId: userId.toString()
+    };
+
+    console.log('native.js::getDownloadList' , config);
+
+    RNNativePlayer.getDownloadList(config)
       .then(success)
       .catch(failed);
   },
@@ -133,9 +141,9 @@ export default {
 
   deleteDownload(arg, success, failed) {
     console.log('native.js::deleteDownload(arg)', arg);
-    RNNativePlayer.deleteDownload(arg)
-      .then(success)
-      .catch(failed);
+    // RNNativePlayer.deleteDownload(arg)
+    //   .then(success)
+    //   .catch(failed);
   },
 
   /* 내정보 > 설정 메뉴에서 호출 */
