@@ -41,7 +41,7 @@ import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
-import SetAppScreen from './src/scripts/pages/my/SetAppPage'
+import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 
 class Data {
   @observable
@@ -83,15 +83,6 @@ const AppDrawer = createDrawerNavigator(
     InquireListScreen: {
       screen: InquireListScreen
     },
-
-    MembershipScreen: {
-      screen: MembershipScreens,
-      navigationOptions: {
-        drawerIcon: <Hidden />,
-        drawerLabel: <Hidden />
-      }
-    },
-
     SetAppScreen: {
       screen: SetAppScreen,
       navigationOptions: {

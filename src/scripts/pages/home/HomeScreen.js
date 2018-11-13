@@ -19,6 +19,7 @@ import ClassDetailPage from '../video/ClassDetailPage';
 import HomePage from './HomePage';
 import HomeSeriesPage from './HomeSeriesPage';
 import SearchResultPage from './SearchResultPage';
+import MembershipScreens from '../membership/MembershipScreen';
 
 const HomeScreen = createStackNavigator(
   {
@@ -26,7 +27,6 @@ const HomeScreen = createStackNavigator(
       screen: HomePage, // 사용하실 페이지용 컴퍼넌트를 제작하셔서 screen속성에 넣으면 됩니다.
       navigationOptions: NAV_OPTS_MAIN // 로고를 포함한 메인헤더를 가질 페이지용 헤더 설정
     },
-
     HomeSeriesPage: {
       screen: HomeSeriesPage,
       navigationOptions: NAV_OPTS_STACK
@@ -53,15 +53,12 @@ const HomeScreen = createStackNavigator(
       screen: SearchResultPage,
       navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     },
-
     SignUpPage: {
       screen: SignUpLandingPage
     },
-
     EmailSignUpForm: {
       screen: EmailSignUpForm
     },
-
     Login: {
       screen: LoginPage,
       navigationOptions: {
@@ -69,7 +66,12 @@ const HomeScreen = createStackNavigator(
         gesturesEnabled: false
       }
     },
-
+    MembershipScreen: {
+      screen: MembershipScreens,
+      navigationOptions: {
+        header: null
+      }
+    },
     WebView: {
       screen: InAppWebView
     },

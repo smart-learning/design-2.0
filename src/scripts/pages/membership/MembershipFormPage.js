@@ -21,7 +21,7 @@ import globalStore from '../../commons/store';
 
 const productItem = {
   campus: {
-    name: '캠퍼스',
+    name: '클래스',
     ios: {
       price: '11,000원'
     },
@@ -31,7 +31,7 @@ const productItem = {
     }
   },
   bookclub: {
-    name: '오디오북클럽',
+    name: '오디오북',
     ios: {
       price: '9,500원'
     },
@@ -347,7 +347,17 @@ class MembershipFormPage extends React.Component {
       });
 
       // 멤버쉽 화면으로 이동.
-      this.props.navigation.goBack();
+      // this.props.navigation.goBack();
+      // 2018. 11. 12. jungon
+      if (this.formType === 'bookclub') {
+        // 오디오북 멤버쉽 -> 오디오북 메인 페이지
+        this.props.navigation.navigate('HomeScreen', {
+          page: 'audioBook'
+        });
+      } else {
+        // 클래스 멤버쉽, 프리미엄 멤버쉽 -> 클래스 메인 페이지
+        this.props.navigation.navigate('HomeScreen');
+      }
     } catch (e) {
       // register 실패 (axios response not 200)
       console.log(e);

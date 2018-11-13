@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, navigationOptions } from 'react-navigation';
 import {
   NAV_OPTS_COMMON,
   NAV_OPTS_DRAWER,
@@ -26,7 +26,5 @@ const MembershipScreen = createStackNavigator(
 
   { navigationOptions: NAV_OPTS_COMMON }
 );
-
-MembershipScreen.navigationOptions = NAV_OPTS_DRAWER;
 
 export default MembershipScreen;
