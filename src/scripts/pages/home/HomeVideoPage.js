@@ -4,6 +4,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   Image,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +16,7 @@ import Swiper from 'react-native-swiper';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
+import IcMainWideBanner from '../../../images/main_wide_banner.png';
 import CommonStyles from '../../../styles/common';
 import globalStore from '../../commons/store';
 import ClassContinueList from '../../components/home/ClassContinueList';
@@ -106,6 +108,12 @@ const styles = StyleSheet.create({
   },
   seriesComponent: {
     paddingTop: 30
+  },
+
+  imageMainBanner: {
+    width: '100%',
+    paddingTop: '12%',
+    paddingBottom: '12%'
   }
 });
 
@@ -176,6 +184,18 @@ class HomeVideoPage extends React.Component {
             )}
           </View>
           {/* /이미지 스와이퍼 */}
+
+          {/* */}
+          {
+            <View>            
+              <ImageBackground
+                source={IcMainWideBanner}
+                resizeMode='contain'
+                style={styles.imageMainBanner}
+              />
+            </View>
+          }
+
           {homeSeriesData &&
             homeSeriesData.length &&
             (homeSeriesData.length <= 6 ? (
@@ -240,7 +260,7 @@ class HomeVideoPage extends React.Component {
                 <View style={styles.classCategoryHr} />
                 <PageCategory
                   data={this.props.store.videoCategoryData}
-				  selectedCategory={0}
+                  selectedCategory={0}
                   onCategorySelect={this.premiumCategorySelect}
                 />
                 <View style={styles.classCategoryHr} />
