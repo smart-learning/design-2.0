@@ -1,11 +1,16 @@
 package kr.co.influential.youngkangapp;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 import java.io.IOException;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.BaseAlertDialog;
@@ -18,42 +23,38 @@ import okhttp3.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
   public static final String TAG = LogHelper.makeLogTag(SplashActivity.class);
 
   private final String API_BASE_URL = Utils.welaaaApiBaseUrl();
 
   private final String API_ENDPOINT = "platform/versions/android";
+  private SurfaceHolder msplashSurfaceHolder = null;
+  private MediaPlayer msplashPlayer = null;
+  private SurfaceView msplashSurfaceView = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.activity_splash);
+
+    msplashSurfaceView = findViewById(R.id.splashvideo);
+    msplashSurfaceView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+    msplashSurfaceHolder = msplashSurfaceView.getHolder();
+    msplashSurfaceHolder.addCallback(SplashActivity.this);
+
+    LogHelper.e(TAG , "SplashActivity onCreate ");
+
   }
 
   @Override
   protected void onPostCreate(@Nullable Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
 
-    // Request version.
-    request(API_BASE_URL + API_ENDPOINT, new Callback() {
-      @Override
-      public void onFailure(Call call, IOException e) {
-        call.cancel();
-        handleError("Request error");
-      }
 
-      @Override
-      public void onResponse(Call call, Response response) throws IOException {
-        if (response.isSuccessful()) {
-          handleResponse(response.body().string());
-        } else {
-          handleError("Request error");
-        }
-      }
-    });
   }
 
   @Override
@@ -136,4 +137,77 @@ public class SplashActivity extends AppCompatActivity {
     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     finish();
   }
-}
+
+  /*******************************************************************
+   * 스플래쉬
+   *******************************************************************/
+  public void splashVideo(){
+
+    LogHelper.e(TAG , "splashVideo ");
+
+    Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/"
+        + R.raw.welaaasplash);
+
+    try {
+      msplashPlayer = new MediaPlayer();
+      msplashPlayer.setDataSource(this, videoUri);
+      msplashPlayer.setDisplay(msplashSurfaceHolder);
+
+      msplashPlayer.prepare();
+      msplashPlayer.start();
+
+      msplashPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+
+          LogHelper.e(TAG , "onCompletion ");
+          // Request version.
+          request(API_BASE_URL + API_ENDPOINT, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+              call.cancel();
+              handleError("Request error");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+              if (response.isSuccessful()) {
+                handleResponse(response.body().string());
+              } else {
+                handleError("Request error");
+              }
+            }
+          });
+
+        }
+      });
+    } catch (IOException e) {
+      return;
+    }
+  }
+
+  @Override
+  public void surfaceCreated(SurfaceHolder holder) {
+
+    LogHelper.e(TAG , "surfaceCreated ");
+
+        splashVideo();
+
+        msplashSurfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+  }
+
+  @Override
+  public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+  }
+
+  @Override
+  public void surfaceDestroyed(SurfaceHolder holder) {
+
+  }
+ }

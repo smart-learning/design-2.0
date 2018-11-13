@@ -265,7 +265,10 @@ class EmailSignUpForm extends Component {
 
         // AppEventsLogger.logEvent('WELAAARN_EMAIL_SIGN_UP');
         store.welaaaAuth = data;
-        this.props.navigation.navigate('HomeScreen');
+        // 2018. 11. 9
+        // jungon
+        // 회원가입 후 Membership 가입 촉진 페이지 노출.
+        this.props.navigation.navigate('MembershipScreen');
       })
       .catch(e => {
         alert(e);
