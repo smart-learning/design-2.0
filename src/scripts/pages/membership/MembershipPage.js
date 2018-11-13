@@ -377,12 +377,8 @@ export default class MembershipPage extends React.Component {
       '멤버십 구독 해지',
       '멤버십을 해지 하시겠습니까?',
       [
-        {
-          text: '아니오',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel'
-        },
-        { text: '네', onPress: () => this.cancel_membership_proc() }
+        {text: '아니오', style: 'cancel'},
+        {text: '네', onPress: () => this.cancel_membership_proc()},
       ],
       { cancelable: false }
     );
@@ -390,21 +386,12 @@ export default class MembershipPage extends React.Component {
 
   cancel_membership_proc = async () => {
     const membership_info = await net.cancelMembership();
-
-    // 결제 요청 완료에 멤버십 데이터로 갱신
-    globalStore.currentMembership = membership_info;
-
-    if (
-      Object.keys(membership_info).length === 0 &&
-      membership_info.constructor === Object
-    ) {
-      Alert.alert('안내', '멤버십이 해지되었습니다.', [{ text: '확인' }]);
-    } else {
-      Alert.alert(
-        '안내',
-        '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
-        [{ text: '확인' }]
-      );
+    
+    if( membership_info.status === true){
+      globalStore.currentMembership.stop_payment = true;
+      Alert.alert('안내','멤버십 정기 구독이 해지되었습니다. 남아있는 기간동안 해당 멤버십 사용이 가능합니다.',[{text:'확인', onPress: () => this.props.navigation.navigate('HomeScreen') }]);
+    }else{
+      Alert.alert('안내','이미 멤버십 정기 구독이 해지되었습니다.',[{text:'확인', onPress: () => this.props.navigation.navigate('HomeScreen') }]);
     }
   };
 
@@ -574,11 +561,18 @@ export default class MembershipPage extends React.Component {
               undefined
             )}
             {MembershipRule}
-            <TouchableOpacity onPress={() => this.cancel_membership_confirm()}>
-              <View style={styles.cancelButton} borderRadius={5}>
+            
+            {Platform.OS === 'android' && globalStore.currentMembership.stop_payment === false ? (
+
+            <TouchableOpacity onPress={() => this.cancel_membership_confirm()} >
+              <View style={styles.cancelButton} borderRadius={5} >
                 <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
               </View>
             </TouchableOpacity>
+            ):(
+            <View style={styles.cancelButton} borderRadius={5} >
+              <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
+            </View>)}
           </View>
         </ScrollView>
       </SafeAreaView>
