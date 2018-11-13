@@ -1667,6 +1667,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_player setRate : _playbackRate];
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : [self getCurrentPlaybackTime]];
 }
 
 - (void) pressedPauseButton
@@ -1676,6 +1678,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_player pause];
     // playButton으로 변경해주어야 합니다.
     [self setPlayState : NO];
+  
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : [self getCurrentPlaybackTime]];
 }
 
 - (void) pressedRwButton
@@ -1690,6 +1695,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         CMTime newTime = CMTimeMakeWithSeconds(cTime - 10.f, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime - 10.f];
     }
     else
     {
@@ -1735,6 +1743,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         CMTime newTime = CMTimeMakeWithSeconds(cTime + 10.f, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime + 10.f];
     }
     else
     {
@@ -1918,6 +1929,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
     [_player setRate : _playbackRate];
+  
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : time];
   
     // 기존 타이머를 종료시키고 재시작
     [_logTimer invalidate];
@@ -3227,6 +3241,15 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     UIGraphicsEndImageContext();
   
     return newImage;
+}
+- (void) updateCurrentPlaybackTimeOnNowPlayingInfoCenter : (NSTimeInterval) time
+{
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+    NSMutableDictionary *playingInfo = [NSMutableDictionary dictionaryWithDictionary : center.nowPlayingInfo];
+    [playingInfo setObject : [NSNumber numberWithFloat : time]
+                    forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    center.nowPlayingInfo = playingInfo;
 }
 
 @end
