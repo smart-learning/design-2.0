@@ -710,7 +710,53 @@ export default class MembershipPage extends React.Component {
             />
             <View
               style={{ width: '100%', height: 96, backgroundColor: '#F7F7F7' }}
-            />
+            >
+              <Image
+                style={{ width: '100%', height: 96 }}
+                resizeMode="stretch"
+                source={require('../../../images/membership-footer.png')}
+              />
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 15
+                }}
+                activeOpacity={0.7}
+                onPress={() =>
+                  this.props.navigation.navigate('MembershipDetailPage')
+                }
+              >
+                <Image
+                  style={{
+                    width: 112,
+                    height: 43
+                  }}
+                  resizeMode="stretch"
+                  source={require('../../../images/membership-footer-btn1.png')}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  bottom: 10,
+                  right: 83
+                }}
+                activeOpacity={0.7}
+                onPress={() =>
+                  this.props.navigation.navigate('InquireListScreen')
+                }
+              >
+                <Image
+                  style={{
+                    width: 30,
+                    height: 27
+                  }}
+                  resizeMode="stretch"
+                  source={require('../../../images/membership-footer-btn2.png')}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
