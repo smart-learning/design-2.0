@@ -1747,6 +1747,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
   
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
+  
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
   
@@ -1794,6 +1802,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 - (void) pressedFfButton
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
+  
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+    
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
   
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
@@ -1979,6 +1995,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
 - (void) seekbarDragging : (NSTimeInterval) time
 {
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
+  
     [_player pause];
     [self invalidateTimerOnSlider];
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
