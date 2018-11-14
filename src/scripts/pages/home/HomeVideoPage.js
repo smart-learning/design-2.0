@@ -25,6 +25,7 @@ import ClipRank from '../../components/home/ClipRank';
 import HomeBanner from '../../components/home/HomeBanner';
 import Series from '../../components/home/Series';
 import PageCategory from '../../components/PageCategory';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   slide: {
@@ -187,12 +188,26 @@ class HomeVideoPage extends React.Component {
 
           {/* */}
           {
-            <View>            
-              <ImageBackground
-                source={IcMainWideBanner}
-                resizeMode='contain'
-                style={styles.imageMainBanner}
-              />
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  // this.props.navigation.navigate('VideoPack', {
+                  //   title: '윌라 홍보 영상'
+                  // })
+                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다. 
+                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다. 
+                  Native.play('v300001_001')
+                }
+              >
+                <ImageBackground
+                  source={IcMainWideBanner}
+                  resizeMode='contain'
+                  style={styles.imageMainBanner}
+                />
+
+              </TouchableOpacity>
+
             </View>
           }
 
