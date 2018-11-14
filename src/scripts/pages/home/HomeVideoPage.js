@@ -4,6 +4,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   Image,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +16,7 @@ import Swiper from 'react-native-swiper';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
+import IcMainWideBanner from '../../../images/main_wide_banner.png';
 import CommonStyles from '../../../styles/common';
 import globalStore from '../../commons/store';
 import ClassContinueList from '../../components/home/ClassContinueList';
@@ -23,6 +25,7 @@ import ClipRank from '../../components/home/ClipRank';
 import HomeBanner from '../../components/home/HomeBanner';
 import Series from '../../components/home/Series';
 import PageCategory from '../../components/PageCategory';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   slide: {
@@ -106,6 +109,12 @@ const styles = StyleSheet.create({
   },
   seriesComponent: {
     paddingTop: 30
+  },
+
+  imageMainBanner: {
+    width: '100%',
+    paddingTop: '12%',
+    paddingBottom: '12%'
   }
 });
 
@@ -176,6 +185,32 @@ class HomeVideoPage extends React.Component {
             )}
           </View>
           {/* /이미지 스와이퍼 */}
+
+          {/* */}
+          {
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  // this.props.navigation.navigate('VideoPack', {
+                  //   title: '윌라 홍보 영상'
+                  // })
+                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다. 
+                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다. 
+                  Native.play('v300001_001')
+                }
+              >
+                <ImageBackground
+                  source={IcMainWideBanner}
+                  resizeMode='contain'
+                  style={styles.imageMainBanner}
+                />
+
+              </TouchableOpacity>
+
+            </View>
+          }
+
           {homeSeriesData &&
             homeSeriesData.length &&
             (homeSeriesData.length <= 6 ? (
@@ -240,7 +275,7 @@ class HomeVideoPage extends React.Component {
                 <View style={styles.classCategoryHr} />
                 <PageCategory
                   data={this.props.store.videoCategoryData}
-				  selectedCategory={0}
+                  selectedCategory={0}
                   onCategorySelect={this.premiumCategorySelect}
                 />
                 <View style={styles.classCategoryHr} />
