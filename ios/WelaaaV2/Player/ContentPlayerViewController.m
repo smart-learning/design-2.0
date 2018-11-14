@@ -337,6 +337,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
   
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
