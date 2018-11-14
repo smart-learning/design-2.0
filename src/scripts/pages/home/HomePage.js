@@ -280,6 +280,14 @@ class HomePage extends React.Component {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   };
 
+  componentDidUpdate() {
+    const params = this.props.navigation.state.params;
+    if (params && 'audioBook' === params.page) {
+      this.props.navigation.state.params.page = undefined;
+      this.goPage('audioBook');
+    }
+  }
+
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
@@ -303,7 +311,7 @@ class HomePage extends React.Component {
     //  return true;
     // } else {
     //   this.props.navigation.goBack();
-    // }    
+    // }
 
     console.log('back press:');
     if (this.props.navigation.isFocused()) {
@@ -311,11 +319,9 @@ class HomePage extends React.Component {
     } else {
       this.props.navigation.goBack();
     }
-
   };
 
   checkMemberShip = () => {
-
     // Alert.alert('CurrentMemberShip Type ','TEST');
     // {globalStore.welaaaAuth && <AdvertisingSection />}
 

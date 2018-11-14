@@ -72,6 +72,7 @@
 		EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832821144239006D3F6C /* NSString+Base64.m */; };
 		EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */; };
 		EFE0835921144239006D3F6C /* IAPShare.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832E21144239006D3F6C /* IAPShare.m */; };
+		EFE5F19D219A8951008E10B7 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE5F19C219A8951008E10B7 /* SplashView.m */; };
 		EFFAAF7D212D533C0061C889 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */; };
 		EFFAAF7E212D533C0061C889 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FEB4A0A1AA6341EE8ED27C0B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC83BF071F44EB699826325 /* libRCTFBSDK.a */; };
@@ -500,6 +501,8 @@
 		EFE0832D21144239006D3F6C /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
 		EFE0832E21144239006D3F6C /* IAPShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPShare.m; sourceTree = "<group>"; };
 		EFE0F3B22117E5F900D4558B /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		EFE5F19B219A8951008E10B7 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashView.h; sourceTree = "<group>"; };
+		EFE5F19C219A8951008E10B7 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashView.m; sourceTree = "<group>"; };
 		EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -603,6 +606,7 @@
 				EF4F4106211ABE5C005E1CBD /* UIFonts */,
 				EFE0832621144239006D3F6C /* Payments */,
 				EFE08308211430E7006D3F6C /* DownloadManager */,
+				EFE5F19A219A8951008E10B7 /* SplashView */,
 				EF13DA2A2113D95000CFED8A /* Utils */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -978,6 +982,16 @@
 			);
 			name = Payments;
 			path = WelaaaV2/Payments;
+			sourceTree = "<group>";
+		};
+		EFE5F19A219A8951008E10B7 /* SplashView */ = {
+			isa = PBXGroup;
+			children = (
+				EFE5F19B219A8951008E10B7 /* SplashView.h */,
+				EFE5F19C219A8951008E10B7 /* SplashView.m */,
+			);
+			name = SplashView;
+			path = WelaaaV2/SplashView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1520,6 +1534,7 @@
 				EFAEBDC6213D33050070F10E /* ContentsListPopupViewCell.m in Sources */,
 				63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */,
 				EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */,
+				EFE5F19D219A8951008E10B7 /* SplashView.m in Sources */,
 				63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */,
 				EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,

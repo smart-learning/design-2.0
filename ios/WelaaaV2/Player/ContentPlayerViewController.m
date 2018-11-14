@@ -71,36 +71,15 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     [common hideStatusBar];
   
-    // RN 콘텐츠 상세페이지에서 큰 재생아이콘을 탭해서 재생할 경우 Content ID가 아닌 Content Group ID를 arguments로 받아옵니다
-    // 일단 history check 보다는 group의 제일 처음이 _001을 append시킵니다.
-    // Netflix나 다른 동영상 서비스처럼 재생 이력을 JSON에서 읽어와서 최근 재생시간부터 재생합니다.
-#warning TODO : continue previous playback.
-    NSString *str = @"";
-    str = [_args objectForKey : @"cid"];
-    NSRange strRange;
-    strRange = [str rangeOfString : @"_"];
-  
-    if ( strRange.location == NSNotFound )
-    {
-        [_args setObject : [str stringByAppendingString : @"_001"]
-                  forKey : @"cid"];
-    }
-  
-    // 강좌 전체 클립 또는 오디오북 전체 챕터를 가져옵니다.
-    NSArray *chunks = [[_args objectForKey : @"cid"] componentsSeparatedByString : @"_"]; // cid를 '_'로 분류하여 각각 array chunk처리합니다.
-    // content-info API에 파라미터로 Content Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
-    _currentContentsInfo = [ApiManager getContentsInfoWithCgid : chunks[0]
+    // content-info API에 파라미터로 Content 또는 Group ID를 넣어 chapter또는clip 데이터를 가져옵니다.
+    _currentContentsInfo = [ApiManager getContentsInfoWithCgid : [_args objectForKey : @"cid"]
                                                  andHeaderInfo : [_args objectForKey : @"token"]];
   
     // 현재 콘텐트의 재생권한.
     if ( [[_currentContentsInfo[@"permission"][@"can_play"] stringValue] isEqualToString : @"0"] )
-    {
         _isAuthor = false;
-    }
     else
-    {
         _isAuthor = true;
-    }
     NSLog(@"  Permission check : %@", _isAuthor? @"YES" : @"NO");
   
     // 오디오북 제목 챕터로 시작되면 다음챕터로 넘깁니다.
@@ -125,38 +104,56 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                 }
             }
         }
-        // 재생 권한이 있는 오디오북에서는..
+        // 재생 권한이 있는 오디오북을 재생 시도하면 GID를 받습니다.
+        // JSON의 history를 check해서 nil이면
+        // nil이 아니면 해당 id로 play-data를 조회하여 해당 콘텐츠를 재생.
         else if ( _isAuthor )
         {
-            for ( int i=0; i<contentsListArray.count; i++ )
+            NSRange strRange = [[_args objectForKey : @"cid"] rangeOfString : @"_"];
+            if ( strRange.location == NSNotFound )
             {
-                // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
-                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+                NSLog(@"  found GID.");
+                if ( [_currentContentsInfo[@"history"] isKindOfClass : [NSDictionary class]] ) // history dictionary가 null이 아니면..
                 {
-                    // 현재 재생할 콘텐트의 play_seconds의 정수값이 0일 경우
-                    if ( [[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                    // history.id랑 일치하는 cid를 찾는다.
+                    for ( int i=0; i<contentsListArray.count; i++ )
                     {
-                        NSLog(@"  Audiobook title chapter.");
-                        // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
-                        for ( i = i+1; i < contentsListArray.count-1; i++ )
+                        if ( [[contentsListArray[i][@"id"] stringValue] isEqualToString : [_currentContentsInfo[@"history"][@"id"] stringValue]] )
                         {
-                            if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
-                            {
-                                break;
-                            }
+                            indexOfCurrentContent = i;
+                            break;
                         }
-                      
-                        indexOfCurrentContent = i;
-                        break;
                     }
-                    // 현재 재생할 콘텐트의 play_seconds의 정수값이 0이 아닐 경우
-                    else
+                }
+                else  // history dictionary가 null이면..
+                {
+                    // cid가 없으므로 제목챕터가 아닌 첫 챕터의 cid를 찾아야 합니다.
+                    for ( int i=0; i<contentsListArray.count; i++ )
+                    {
+                        if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                        {
+                            indexOfCurrentContent = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            // CID로 시작하는 상태라면..
+            else
+            {
+                for ( int i=0; i<contentsListArray.count; i++ )
+                {
+                    if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
                     {
                         indexOfCurrentContent = i;
                         break;
                     }
                 }
             }
+          
+            // progress dictionary가 null이 아니면..
+            if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+                _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
         }
       
         [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
@@ -178,18 +175,55 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         NSArray *contentsListArray = _currentContentsInfo[@"data"][@"clips"]; // '매일 책 한권' 도 data.clips의 구조로 되어있습니다.
         NSInteger indexOfCurrentContent = 0;
       
-        for ( int i=0; i<contentsListArray.count; i++ )
+        NSRange strRange = [[_args objectForKey : @"cid"] rangeOfString : @"_"];
+        if ( strRange.location == NSNotFound )
         {
-            // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
-            if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+            NSLog(@"  found GID.");
+            // history dictionary가 null이 아니면..
+            if ( [_currentContentsInfo[@"history"] isKindOfClass : [NSDictionary class]] )
             {
-                indexOfCurrentContent = i;
-                break;
+                // history.id랑 일치하는 cid를 찾는다.
+                for ( int i=0; i<contentsListArray.count; i++ )
+                {
+                    if ( [[contentsListArray[i][@"id"] stringValue] isEqualToString : [_currentContentsInfo[@"history"][@"id"] stringValue]] )
+                    {
+                        indexOfCurrentContent = i;
+                        break;
+                    }
+                }
+              
+                [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
+                          forKey : @"cid"];
+              
+                // progress dictionary가 null이 아니면..
+                if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+                    _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+            }
+            // history dictionary가 null이면..
+            else
+            {
+                // GID + '_001'로 CID를 임시적으로 세팅합니다.
+                NSString *str = [_args objectForKey : @"cid"];
+                [_args setObject : [str stringByAppendingString : @"_001"]
+                          forKey : @"cid"];
             }
         }
-      
-        [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
-                  forKey : @"cid"];
+        // CID로 시작하는 상태라면..
+        else
+        {
+            for ( int i=0; i<contentsListArray.count; i++ )
+            {
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+                {
+                    indexOfCurrentContent = i;
+                    break;
+                }
+            }
+          
+            // progress dictionary가 null이 아니면..
+            if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+                _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+        }
       
         NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                       andHeaderInfo : [_args objectForKey : @"token"]];
@@ -204,7 +238,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             else
             {
                 NSLog(@"  preview_urls.HLS == nil");
-                [common presentAlertWithTitle:@"윌라 클래스" andMessage:@"미리보기를 이용하실 수 없습니다ㅠ"];
+                [common presentAlertWithTitle:@"윌라 클래스" andMessage:@"미리보기를 이용하실 수 없습니다."];
                 [self closePlayer];
             }
             
@@ -267,8 +301,29 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 플레이어 뷰컨트롤러가 생성되고 첫 재생 시작.
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
+    [self setupNowPlayingInfoCenter];
+  
+    if ( !_startSeconds || _startSeconds == 0 )
+    {
+        NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
+        [_player play];
+    }
+    else if ( _startSeconds || _startSeconds > 0 )
+    {
+        NSLog(@"  Player starts the last point. %f", _startSeconds);
+        [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, CMTimeGetSeconds(_urlAsset.duration))];
+        [_player play];
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
+    }
+    else
+    {
+        NSLog(@"  Player starts at 0 because of uncatchable situation.");
+        [_player play];
+    }
+  
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
-    [_player play];   // 플레이어 재생 실행
+  
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
                                                   name : AVPlayerItemDidPlayToEndTimeNotification
@@ -282,8 +337,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
   
-    [self setupNowPlayingInfoCenter]; // 시간값을 파라미터로 받아서 Pause또는Play시에 시간값을 반영하도록 만듭시다!
-    
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
@@ -1667,6 +1720,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_player setRate : _playbackRate];
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : [self getCurrentPlaybackTime]];
 }
 
 - (void) pressedPauseButton
@@ -1676,6 +1731,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_player pause];
     // playButton으로 변경해주어야 합니다.
     [self setPlayState : NO];
+  
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : [self getCurrentPlaybackTime]];
 }
 
 - (void) pressedRwButton
@@ -1690,6 +1748,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         CMTime newTime = CMTimeMakeWithSeconds(cTime - 10.f, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime - 10.f];
     }
     else
     {
@@ -1735,6 +1796,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         CMTime newTime = CMTimeMakeWithSeconds(cTime + 10.f, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime + 10.f];
     }
     else
     {
@@ -1918,6 +1982,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // pauseButton으로 변경해주어야 합니다.
     [self setPlayState : YES];
     [_player setRate : _playbackRate];
+  
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : time];
   
     // 기존 타이머를 종료시키고 재시작
     [_logTimer invalidate];
@@ -3227,6 +3294,15 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     UIGraphicsEndImageContext();
   
     return newImage;
+}
+- (void) updateCurrentPlaybackTimeOnNowPlayingInfoCenter : (NSTimeInterval) time
+{
+    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+    MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+    NSMutableDictionary *playingInfo = [NSMutableDictionary dictionaryWithDictionary : center.nowPlayingInfo];
+    [playingInfo setObject : [NSNumber numberWithFloat : time]
+                    forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    center.nowPlayingInfo = playingInfo;
 }
 
 @end

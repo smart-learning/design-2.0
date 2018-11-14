@@ -146,7 +146,8 @@ const styles = StyleSheet.create({
 		this.props.navigation.setParams({'title':'클래스 전체목록'});
 
 		const currCategory = this.props.navigation.getParam('data', {})
-		this.store.ccode = currCategory.ccode ? currCategory.ccode : null
+		const ccode = currCategory.ccode ? currCategory.ccode : null
+		this.store.ccode = ccode
 		this.store.selectedCategory = currCategory.id ? currCategory.id : 0
 
 		await this.loadClassList();
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
 		// 	// 	// TODO: 들어온 actionData로 뭔가 해주셔야할듯...
 		// 	// 	break;
 		// }
-		this.loadClassList();
+		this.loadClassList(ccode);
 	}
 
 	onCategorySelect = item => {
