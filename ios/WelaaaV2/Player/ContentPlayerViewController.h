@@ -98,6 +98,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
   
     CGFloat _playbackRate;
     CGFloat _currentPlaybackDuration;
+    CGFloat _startSeconds;  // 플레이어 구동 시 첫 실행되는 콘텐츠의 이어듣기/이어보기에 필요한 값입니다. viewWillAppear에서 세팅되어서 viewDidAppear에서 사용됩니다.
   
     NSTimer *_seekTimer;
     NSTimer *_logTimer;

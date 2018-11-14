@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Base64 from 'Base64';
 import moment from 'moment';
-import { AsyncStorage, Platform } from 'react-native';
+import { AsyncStorage, Platform, Alert } from 'react-native';
 import firebase from 'react-native-firebase';
 import Localizable from 'react-native-localizable';
 import Native from './native';
@@ -758,12 +758,13 @@ export default {
   },
 
   cancelMembership() {
-    let url = API_PREFIX + 'v1.0/membership/cancel-membership';
+    let url = API_PREFIX + 'v1.0/membership/unsubscribe-membership';
     return axios.get(url)
       .then(resp => {
         return resp.data;
       })
       .catch(error => {
+        Alert.alert('안내','일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',[{text:'확인'}]);
         console.log(error);
       });
   }
