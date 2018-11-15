@@ -239,6 +239,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#ffffff'
+  },
+  tripAroundButton: {
+    width: '100%',
+    height: 48,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
+    textAlign: 'center',
+    textAlignVertical: 'center'
   }
 });
 
@@ -377,8 +387,8 @@ export default class MembershipPage extends React.Component {
       '멤버십 구독 해지',
       '멤버십을 해지 하시겠습니까?',
       [
-        {text: '아니오', style: 'cancel'},
-        {text: '네', onPress: () => this.cancel_membership_proc()},
+        { text: '아니오', style: 'cancel' },
+        { text: '네', onPress: () => this.cancel_membership_proc() }
       ],
       { cancelable: false }
     );
@@ -386,12 +396,26 @@ export default class MembershipPage extends React.Component {
 
   cancel_membership_proc = async () => {
     const membership_info = await net.cancelMembership();
-    
-    if( membership_info.status === true){
+
+    if (membership_info.status === true) {
       globalStore.currentMembership.stop_payment = true;
-      Alert.alert('안내','멤버십 정기 구독이 해지되었습니다. 남아있는 기간동안 해당 멤버십 사용이 가능합니다.',[{text:'확인', onPress: () => this.props.navigation.navigate('HomeScreen') }]);
-    }else{
-      Alert.alert('안내','이미 멤버십 정기 구독이 해지되었습니다.',[{text:'확인', onPress: () => this.props.navigation.navigate('HomeScreen') }]);
+      Alert.alert(
+        '안내',
+        '멤버십 정기 구독이 해지되었습니다. 남아있는 기간동안 해당 멤버십 사용이 가능합니다.',
+        [
+          {
+            text: '확인',
+            onPress: () => this.props.navigation.navigate('HomeScreen')
+          }
+        ]
+      );
+    } else {
+      Alert.alert('안내', '이미 멤버십 정기 구독이 해지되었습니다.', [
+        {
+          text: '확인',
+          onPress: () => this.props.navigation.navigate('HomeScreen')
+        }
+      ]);
     }
   };
 
@@ -561,18 +585,21 @@ export default class MembershipPage extends React.Component {
               undefined
             )}
             {MembershipRule}
-            
-            {Platform.OS === 'android' && globalStore.currentMembership.stop_payment === false ? (
 
-            <TouchableOpacity onPress={() => this.cancel_membership_confirm()} >
-              <View style={styles.cancelButton} borderRadius={5} >
-                <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+            {Platform.OS === 'android' &&
+            globalStore.currentMembership.stop_payment === false ? (
+              <TouchableOpacity
+                onPress={() => this.cancel_membership_confirm()}
+              >
+                <View style={styles.cancelButton} borderRadius={5}>
+                  <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.cancelButton} borderRadius={5}>
+                <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
               </View>
-            </TouchableOpacity>
-            ):(
-            <View style={styles.cancelButton} borderRadius={5} >
-              <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
-            </View>)}
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -751,6 +778,21 @@ export default class MembershipPage extends React.Component {
                 />
               </TouchableOpacity>
             </View>
+            <TouchableOpacity
+              style={{
+                paddingTop: 25,
+                paddingBottom: 20,
+                paddingLeft: 15,
+                paddingRight: 15
+              }}
+              activeOpacity={0.7}
+              /* onPress={() => this.props.navigation.navigate('HomeScreen')} */
+              onPress={() => this.props.navigation.dismiss()}
+            >
+              <Text style={styles.tripAroundButton}>
+                무료 계정으로 둘러보기
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
