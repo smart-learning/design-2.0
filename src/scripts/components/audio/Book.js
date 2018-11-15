@@ -237,9 +237,7 @@ export default class Book extends React.Component {
                   {Platform.select({
                     ios: (
                       <Text style={styles.price}>
-                        {numeral(this.props.itemData.pay_money_ios).format(
-                          '0,0'
-                        )}
+                        {numeral(this.props.itemData.pay_money_ios).format('0,0')}
                       </Text>
                     ),
                     android: (
@@ -278,17 +276,13 @@ export default class Book extends React.Component {
                         {Platform.select({
                           ios: (
                             <Text style={styles.recommendPriceOrigin}>
-                              {numeral(
-                                this.props.itemData.pay_money_ios
-                              ).format('0,0')}
+                              {numeral(this.props.itemData.pay_money_ios).format('0,0')}
                             </Text>
                           ),
                           android: (
                             <Text>
                               <Text style={styles.recommendPriceOrigin}>
-                                {numeral(this.props.itemData.pay_money).format(
-                                  '0,0'
-                                )}
+                                {numeral(this.props.itemData.pay_money).format('0,0')}
                               </Text>
                             </Text>
                           )
@@ -331,15 +325,15 @@ export default class Book extends React.Component {
               <View style={[styles.alignJustify, styles.countWrap]}>
                 <Image source={IcView} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  {numeral(this.props.itemData.hit_count).format('0,0')}
+                  {numeral(this.props.itemData.meta?this.props.itemData.meta.play_count:this.props.itemData.hit_count).format('0a')}
                 </Text>
                 <Image source={IcHeart} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  {numeral(this.props.itemData.like_count).format('0,0')}
+                  {numeral(this.props.itemData.meta?this.props.itemData.meta.like_count:this.props.itemData.like_count).format('0a')}
                 </Text>
                 <Image source={IcComment} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  {numeral(this.props.itemData.review_count).format('0,0')}
+                  {numeral(this.props.itemData.meta?this.props.itemData.meta.comment_count:this.props.itemData.review_count).format('0a')}
                 </Text>
               </View>
             }

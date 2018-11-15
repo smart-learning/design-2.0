@@ -65,8 +65,8 @@ class LectureUsePage extends React.Component {
                     thumbnail={item.data.images ? item.data.images.list : null}
                     title={item.data.headline}
                     author={item.data.teacher ? item.data.teacher.name : ''}
-                    likeCount={item.data.like_count}
-                    reviewCount={item.data.review_count}
+                    likeCount={item.data.meta?item.data.meta.like_count:item.data.like_count}
+                    reviewCount={item.data.meta?item.data.meta.comment_count:item.data.review_count}
                     isLike={false}
                     navigation={this.props.navigation}
                     onPress={() => this.goLecture(item)}
