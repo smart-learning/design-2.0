@@ -76,6 +76,8 @@ export default class SummaryListItem extends React.Component {
   };
 
   render() {
+    console.log('summary list');
+    console.log(this.props);
     return (
       <View>
         <TouchableOpacity activeOpacity={0.9} onPress={this.onPress}>
@@ -100,11 +102,11 @@ export default class SummaryListItem extends React.Component {
               <View style={styles.summaryCountContainer}>
                 <Image source={IcHeartActive} style={styles.summaryIcon} />
                 <Text style={styles.summaryCountText}>
-                  {this.props.likeCount}
+                  {numeral(this.props.likeCount).format('0a')}
                 </Text>
                 <Image source={IcReview} style={styles.summaryIcon} />
                 <Text style={styles.summaryCountText}>
-                  {this.props.reviewCount}
+                  {numeral(this.props.reviewCount).format('0a')}
                 </Text>
               </View>
             </View>

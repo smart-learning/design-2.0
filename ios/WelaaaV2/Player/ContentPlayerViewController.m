@@ -1884,7 +1884,18 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         playListArray = _currentContentsInfo[@"data"][@"chapters"];
     }
   
-    NSInteger currentIndex = playListArray.count;
+    int indexOfCurrentContent = 0;
+    for ( int i=0; i<playListArray.count; i++ )
+    {
+        // 현재 재생중인 콘텐츠의 index number를 탐색합니다.
+        if ( [[_args objectForKey:@"cid"] isEqualToString : playListArray[i][@"cid"]] )
+        {
+            indexOfCurrentContent = i;
+            break;
+        }
+    }
+  
+    NSInteger currentIndex = indexOfCurrentContent; // 현재 재생중인 콘텐츠의 index number를 리스트뷰를 띄우기전에 넘겨줍니다.
     NSString *groupTitle = _currentContentsInfo[@"data"][@"title"]; //group_title
 
     CGRect frame = self.view.bounds;

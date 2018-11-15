@@ -19,6 +19,7 @@ import Native from '../../commons/native';
 import numeral from 'numeral';
 import _ from 'underscore';
 
+
 const styles = StyleSheet.create({
   itemContainer: {
     width: '100%',
@@ -133,7 +134,7 @@ export default class Summary extends React.Component {
   };
 
   render() {
-    let starAvg = parseFloat(this.props.star_avg).toFixed(1);
+    let starAvg = parseFloat(this.props.meta?this.props.meta.star_average:this.props.star_avg).toFixed(1);
 
     if (_.isNaN(starAvg)) {
       starAvg = 0;
@@ -179,7 +180,7 @@ export default class Summary extends React.Component {
               <View style={[styles.alignJustify, styles.detailClipView]}>
                 <Image source={IcView} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  조회수 {this.props.itemData.hit_count}
+                  {numeral(this.props.itemData.meta?this.props.itemData.meta.play_count:this.props.itemData.hit_count).format('0a')}
                 </Text>
               </View>
               <TouchableOpacity
@@ -205,7 +206,7 @@ export default class Summary extends React.Component {
               <View style={[styles.alignJustify, styles.detailClipView]}>
                 <Image source={IcView} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  조회수 {this.props.itemData.hit_count}
+                  {numeral(this.props.itemData.meta?this.props.itemData.meta.play_count:this.props.itemData.hit_count).format('0a')}
                 </Text>
               </View>
               <TouchableOpacity
@@ -224,13 +225,17 @@ export default class Summary extends React.Component {
               <View style={styles.alignJustify}>
                 <Image source={IcView} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  조회수 {numeral(this.props.hit_count).format('0 a')}
+                  {/* 재생수 */}
+                  {numeral(this.props.meta?this.props.meta.play_count:this.props.hit_count).format('0a')}
                 </Text>
                 <Image source={IcStar} style={styles.btnSetSmall} />
-                <Text style={styles.countText}>별점 {starAvg}</Text>
+                <Text style={styles.countText}>
+                  {/* 별점 */}
+                  {starAvg}</Text>
                 <Image source={IcComment} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  리뷰 {numeral(this.props.review_count).format('0 a')}
+                  {/* 댓글수 */}
+                  {numeral(this.props.meta?this.props.meta.comment_count:this.props.review_count).format('0a')}
                 </Text>
                 {1 === 2 && (
                   <View style={{ marginLeft: 'auto' }}>
