@@ -562,17 +562,17 @@ export default class MembershipPage extends React.Component {
             )}
             {MembershipRule}
             
-            {Platform.OS === 'android' && globalStore.currentMembership.stop_payment === false ? (
-
+            {Platform.OS === 'android' && globalStore.currentMembership.stop_payment === true ? (
+            <View style={styles.cancelButton} borderRadius={5} >
+              <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
+            </View>
+            ):(
             <TouchableOpacity onPress={() => this.cancel_membership_confirm()} >
               <View style={styles.cancelButton} borderRadius={5} >
                 <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
               </View>
             </TouchableOpacity>
-            ):(
-            <View style={styles.cancelButton} borderRadius={5} >
-              <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
-            </View>)}
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
