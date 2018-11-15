@@ -46,8 +46,7 @@ export default class Lecture extends React.Component {
 				</Text>
 				{/*서브타이틀*/}
 				<Text style={styles.subTitle}>
-					{this.props.item.teacher.headline}
-					{this.props.item.teacher.name}
+					{this.props.item.teacher.headline} {this.props.item.teacher.name}
 				</Text>
 			</TouchableOpacity>
 			{/*썸네일*/}
