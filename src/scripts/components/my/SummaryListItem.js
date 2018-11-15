@@ -11,6 +11,7 @@ import dummy from '../../../images/dummy-summary.jpg';
 import IcReview from '../../../images/ic-comment-dark.png';
 import IcHeart from '../../../images/ic-heart-green-line.png';
 import IcHeartActive from '../../../images/ic-heart-green.png';
+import numeral from 'numeral';
 
 const styles = StyleSheet.create({
   summary: {
