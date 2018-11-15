@@ -186,7 +186,7 @@ class EmailSignUpForm extends Component {
 
   state = {
     signupButtonDisabled: false,
-    agreeReceiveMarketing: false
+    agreeReceiveMarketing: true
   };
 
   constructor(props) {
