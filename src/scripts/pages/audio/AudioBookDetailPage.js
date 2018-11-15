@@ -65,6 +65,8 @@ class AudioBookDetailPage extends React.Component {
         Alert.alert('이용권을 이용한 오디오북 구매에 성공했습니다.');
 
         this.data.permissions = await this.getPermissions();
+        // 이용권 사용 후 바우처 상태 갱신 
+        globalStore.voucherStatus = await net.getVouchersStatus();
 
         return true;
       } else {
