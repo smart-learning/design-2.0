@@ -181,7 +181,10 @@ public class SplashActivity extends AppCompatActivity implements SurfaceHolder.C
 
         }
       });
+
     } catch (IOException e) {
+      return;
+    } catch (IllegalStateException e){
       return;
     }
   }

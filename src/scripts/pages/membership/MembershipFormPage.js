@@ -297,6 +297,10 @@ class MembershipFormPage extends React.Component {
 
     try {
       const data = await net.registerMembership(payload);
+
+      // 결제 완료 후 바우처 상태 갱신 
+      globalStore.voucherStatus = await net.getVouchersStatus();
+
       // register 성공
       // 결제 요청 완료에 멤버십 데이터로 갱신
       if (data && data.membership)
