@@ -1531,7 +1531,29 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
     NSTimeInterval currentTime = [self getCurrentPlaybackTime];
-    NSTimeInterval totalTime = [self getDuration];
+    // 전체 재생시간을 구합니다.
+    NSArray *contentsListArray;
+    if ( _isAuthor && _isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+    }
+    else if ( _isAuthor && !_isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+    }
+  
+    NSInteger indexOfCurrentContent = 0;
+    for ( int i=0; i<contentsListArray.count; i++ )
+    {
+        if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+        {
+            indexOfCurrentContent = i;
+            break;
+        }
+    }
+    NSTimeInterval totalTime = [common convertStringToTime : contentsListArray[indexOfCurrentContent][@"play_time"]];//[self getDuration];
+  //NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
+  //NSLog(@"  mini Player Duration double : %f", totalTime);
     NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
     playInfo[@"currentTime"] = @(currentTime);
     playInfo[@"totalTime"] = @(totalTime);
