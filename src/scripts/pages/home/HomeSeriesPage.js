@@ -205,8 +205,6 @@ class HomeSeriesPage extends React.Component {
                 styles.seriesContentContainer
               ]}
             >
-              <Text style={styles.titleH2}>윌라 추천 시리즈</Text>
-
               <View onLayout={this.setDefaultOffset}>
                 {this.data.isLoading ? (
                   <View style={{ marginTop: 12 }}>
