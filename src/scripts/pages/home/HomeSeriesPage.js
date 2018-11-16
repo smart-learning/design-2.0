@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   titleH3: {
     marginTop: 30,
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333333'
   },
