@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   memberShipContainerNoMembership: {
     justifyContent: 'center',
-    height: 100,
+    height: 106,
     backgroundColor: '#f0f0f0'
   },
   memberShipContainer: {
@@ -273,6 +273,23 @@ class SidebarUserInfo extends React.Component {
             </View>
             <Image source={IcAngleRight} style={styles.membershipButtonIcon} />
           </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => this.props.navigation.navigate('MembershipDetailPage')}
+        >
+          <Text
+            style={{
+              width: '100%',
+              paddingTop: 5,
+              paddingRight: 20,
+              fontSize: 10,
+              textAlign: 'right',
+              color: CommonStyles.COLOR_PRIMARY
+            }}
+          >
+            윕라 멤버쉽 소개
+          </Text>
         </TouchableOpacity>
       </View>
     );

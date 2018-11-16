@@ -128,7 +128,7 @@ class ClassListItem extends React.Component {
             </Text>
 
             <Text style={styles.classAuthor}>
-              {this.props.itemData.teacher.name}
+              {this.props.itemData.teacher.headline} {this.props.itemData.teacher.name}
             </Text>
           </View>
         </TouchableOpacity>
