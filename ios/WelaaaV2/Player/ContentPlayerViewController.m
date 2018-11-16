@@ -321,7 +321,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         NSLog(@"  Player starts at 0 because of uncatchable situation.");
         [_player play];
     }
-  
+    _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
