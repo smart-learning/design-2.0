@@ -111,14 +111,16 @@ class ClassListPage extends React.Component {
   @observable
   tabSortStatus = 'hot';
 
-  loadClassList = async (ccode = null, page = 1, sort = 'hot') => {
+  loadClassList = async (ccode = null, page = 1, sort) => {
     this.store.isLoading = true;
     if (page === 1) {
       this.store.displayData = null;
     }
-    this.tabSortStatus = sort;
+    if (sort) {
+      this.tabSortStatus = sort;
+    }
 
-    const data = await net.getClassList(ccode, page, sort);
+    const data = await net.getClassList(ccode, page, this.tabSortStatus);
     let list = data;
     if (!_.isArray(list)) {
       list = [];

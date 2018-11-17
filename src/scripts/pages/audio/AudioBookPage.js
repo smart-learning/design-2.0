@@ -111,15 +111,15 @@ class AudioBookPage extends React.Component {
   @observable
   tabSortStatus = 'hot';
 
-  loadAudioList = async (ccode = null, page = 1, sort = 'hot') => {
+  loadAudioList = async (ccode = null, page = 1, sort) => {
     this.store.isLoading = true;
     if (page === 1) {
       this.store.displayData = null;
     }
-
-    this.tabSortStatus = sort;
-
-    const data = await net.getAudioBookList(ccode, page, sort);
+    if (sort) {
+      this.tabSortStatus = sort;
+    }
+    const data = await net.getAudioBookList(ccode, page, this.tabSortStatus);
     const VOs = data.items.map((element, n) => {
       const vo = new BookVO();
       _.each(element, (value, key) => (vo[key] = value));
