@@ -110,7 +110,15 @@ const styles = StyleSheet.create({
   seriesComponent: {
     paddingTop: 30
   },
-
+  showMoreWrapper: {
+    marginBottom: 10,
+    alignItems: 'flex-end'
+  },
+  showMore: {
+    borderColor: '#efefef',
+    borderWidth: 1,
+    padding: 3
+  },
   imageMainBanner: {
     width: '100%',
     paddingTop: '12%',
@@ -231,8 +239,15 @@ class HomeVideoPage extends React.Component {
                       당신이 배우고 싶은 모든 것
                     </Text>
                   </View>
-                  <View>
-                    <TouchableOpacity activeOpacity={0.9} onPress={() => {}}>
+                  <View style={styles.showMoreWrapper}>
+                    <TouchableOpacity
+                      style={styles.showMore}
+                      onPress={() => {
+                        this.props.navigation.navigate('HomeSeriesPage', {
+                          title: '윌라 추천 시리즈'
+                        });
+                      }}
+                    >
                       <Text>더 보기</Text>
                     </TouchableOpacity>
                   </View>
@@ -274,6 +289,16 @@ class HomeVideoPage extends React.Component {
                 <Text style={[styles.mainTitleCenter, styles.titleH4]}>
                   당신의 커리어 성공과 행복한 일상을 위한 교육
                 </Text>
+              </View>
+              <View style={styles.showMoreWrapper}>
+                <TouchableOpacity
+                  style={styles.showMore}
+                  onPress={() => {
+                    this.props.navigation.navigate('ClassListPage');
+                  }}
+                >
+                  <Text>더 보기</Text>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.classCategory}>
