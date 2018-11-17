@@ -64,6 +64,9 @@ const styles = StyleSheet.create({
   classLabelNew: {
     backgroundColor: '#5f45b4'
   },
+  classLabelFeatured: {
+    backgroundColor: 'black'
+  },
   classLabelExclusive: {
     backgroundColor: '#ff761b'
   },
@@ -102,6 +105,14 @@ class ClassListItem extends React.Component {
                       borderRadius={10}
                     >
                       <Text style={styles.classLabelText}>NEW</Text>
+                    </View>
+                  )}
+                  {!!this.props.itemData.is_featured && (
+                    <View
+                      style={[styles.classLabel, styles.classLabelFeatured]}
+                      borderRadius={10}
+                    >
+                      <Text style={styles.classLabelText}>추천</Text>
                     </View>
                   )}
                   {!!this.props.itemData.is_exclusive && (
