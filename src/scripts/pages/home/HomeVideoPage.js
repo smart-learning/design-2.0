@@ -161,7 +161,7 @@ class HomeVideoPage extends React.Component {
                   const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) { }
+                  } catch (e) {}
 
                   return (
                     <HomeBanner
@@ -195,19 +195,17 @@ class HomeVideoPage extends React.Component {
                   // this.props.navigation.navigate('VideoPack', {
                   //   title: '윌라 홍보 영상'
                   // })
-                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다. 
-                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다. 
+                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
                   Native.play('v300001_001')
                 }
               >
                 <ImageBackground
                   source={IcMainWideBanner}
-                  resizeMode='contain'
+                  resizeMode="contain"
                   style={styles.imageMainBanner}
                 />
-
               </TouchableOpacity>
-
             </View>
           }
 
@@ -221,42 +219,49 @@ class HomeVideoPage extends React.Component {
                 />
               </View>
             ) : (
-                <View
-                  style={[CommonStyles.contentContainer, styles.seriesContainer]}
-                >
+              <View
+                style={[CommonStyles.contentContainer, styles.seriesContainer]}
+              >
+                <View>
                   <View>
                     <Text style={[styles.mainTitleCenter, styles.titleH2]}>
                       윌라 추천 시리즈
-                  </Text>
+                    </Text>
                     <Text style={[styles.mainTitleCenter, styles.titleH4]}>
                       당신이 배우고 싶은 모든 것
-                  </Text>
+                    </Text>
                   </View>
-
-                  <View style={styles.seriesComponent}>
-                    <Series itemData={this.props.store.homeSeriesData} />
+                  <View>
+                    <TouchableOpacity activeOpacity={0.9} onPress={() => {}}>
+                      <Text>더 보기</Text>
+                    </TouchableOpacity>
                   </View>
-
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={() =>
-                      this.props.navigation.navigate('HomeSeriesPage', {
-                        title: '윌라 추천 시리즈'
-                      })
-                    }
-                  >
-                    <View style={styles.linkViewAll} borderRadius={5}>
-                      <Text style={styles.linkViewAllText}>
-                        추천 시리즈 전체 보기{' '}
-                        <Image
-                          source={IcAngleRightGrey}
-                          style={styles.linkViewAllIcon}
-                        />
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
                 </View>
-              ))}
+
+                <View style={styles.seriesComponent}>
+                  <Series itemData={this.props.store.homeSeriesData} />
+                </View>
+
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    this.props.navigation.navigate('HomeSeriesPage', {
+                      title: '윌라 추천 시리즈'
+                    })
+                  }
+                >
+                  <View style={styles.linkViewAll} borderRadius={5}>
+                    <Text style={styles.linkViewAllText}>
+                      추천 시리즈 전체 보기{' '}
+                      <Image
+                        source={IcAngleRightGrey}
+                        style={styles.linkViewAllIcon}
+                      />
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ))}
 
           {this.props.store.classHotData.length > 0 && (
             <View
