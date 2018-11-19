@@ -47,9 +47,13 @@
 
 - (void) initPlayer
 {
-    NSString *url = [NSString stringWithFormat: @"http://welaaa.co.kr/splashmovie/welaaasplash_IOS.mp4"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"welaaasplash_" ofType:@"mp4"];
+    NSLog(@"  welaaa splash : %@", path);
+  //NSURL *videoURL = [NSURL fileURLWithPath:path];
+  
+  //NSString *url = [NSString stringWithFormat: @"http://welaaa.co.kr/splashmovie/welaaasplash_IOS.mp4"];
 
-    _playerItem = [[AVPlayerItem alloc] initWithURL : [NSURL URLWithString : url]];
+    _playerItem = [[AVPlayerItem alloc] initWithURL : [NSURL URLWithString : path]];    //url
     
     [_playerItem addObserver : self
                   forKeyPath : @"status"
