@@ -2183,10 +2183,12 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( isAudioMode )
     {
         _playerLayer.hidden = YES;
+      //[self.view bringSubviewToFront : _audioUiView]; // 최상단에 올라오면 메뉴hiddenview를 가려서 인터랙션을 가로막습니다.
     }
     else if ( !isAudioMode )
     {
         _playerLayer.hidden = NO;
+      //[self.view sendSubviewToBack : _audioUiView];
     }
 }
 
