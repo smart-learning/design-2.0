@@ -71,7 +71,7 @@
 // 오프라인 체크
 - (BOOL) isConnectedToInternet
 {
-    NSString *URLString = [NSString stringWithContentsOfURL : [NSURL URLWithString : @"http://welaaa.co.kr"]
+    NSString *URLString = [NSString stringWithContentsOfURL : [NSURL URLWithString : @"https://welaaa.com/"]
                                                    encoding : NSUTF8StringEncoding
                                                       error : nil];
     

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   titleH3: {
     marginTop: 30,
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333333'
   },
@@ -205,8 +205,6 @@ class HomeSeriesPage extends React.Component {
                 styles.seriesContentContainer
               ]}
             >
-              <Text style={styles.titleH2}>윌라 추천 시리즈</Text>
-
               <View onLayout={this.setDefaultOffset}>
                 {this.data.isLoading ? (
                   <View style={{ marginTop: 12 }}>
