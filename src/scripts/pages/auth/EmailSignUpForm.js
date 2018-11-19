@@ -410,13 +410,14 @@ class EmailSignUpForm extends Component {
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={this.handleJoin}
+                  disabled={!this.state.agreeReceiveMarketing}
                 >
                   <View
                     borderRadius={4}
                     style={
                       this.state.agreeReceiveMarketing
                         ? styles.btnSubmit
-                        : styles.btnSubmit
+                        : styles.btnSubmitDisabled
                     }
                   >
                     <Text style={styles.textSubmit}>
