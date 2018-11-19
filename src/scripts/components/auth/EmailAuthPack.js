@@ -62,7 +62,7 @@ class EmailAuthPack extends Component {
 
   constructor(props) {
     super(props);
-    
+
     this.login_id = React.createRef();
     this.login_pw = React.createRef();
   }
@@ -72,6 +72,26 @@ class EmailAuthPack extends Component {
     password: '',
     loginButtonDisabled: false
   });
+
+  componentDidMount () {
+		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+	}
+
+	componentWillUnmount () {
+		this.keyboardDidShowListener.remove();
+		this.keyboardDidHideListener.remove();
+	}
+
+	_keyboardDidShow = () => {
+    console.log('_keyboardDidShow');
+    this.props.onKeyboardStatus(true);
+	};
+
+	_keyboardDidHide = () => {
+    console.log('_keyboardDidHide');
+    this.props.onKeyboardStatus(false);
+	};
 
   handleLogin = () => {
     if (this.data.email === '') {
@@ -88,13 +108,12 @@ class EmailAuthPack extends Component {
       this.data.loginButtonDisabled = false;
     });
   };
-  
+
   render() {
     return (
       <View style={styles.contentContainer}>
         <View borderRadius={4} style={styles.inputWrap}>
           <TextInput
-            
             ref={this.login_id}
             style={styles.input}
             keyboardType="email-address"
@@ -154,7 +173,6 @@ class EmailAuthPack extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        {!!globalStore.isKeyboardOn && <View style={{ height: 200 }} />}
       </View>
     );
   }

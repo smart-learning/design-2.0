@@ -9,7 +9,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
+  KeyboardAvoidingView
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import _ from 'underscore';
@@ -97,6 +98,17 @@ class LoginPage extends React.Component {
 
   componentWillUnmount() {}
 
+  keyboardStateChanged = isKeyboardOn => {
+    console.log('keyboardStateChanged isKeyboardOn: ', isKeyboardOn);
+    // 키보드 때문에 텍스트입력창이 가려지는 이슈를 해결하기 위해 KeyboardAvoidingView 를 통해
+    // 자동으로 뷰가 움직이도록 처리하였으나 이 방식 말고 화면 사이즈를 수동으로 변경하여 처리하고자 하거나
+    // (디바이스별 키보드 사이즈를 구해서 스크롤뷰 사이즈에서 직접 빼준다든지 하는 등의 처리)
+    // 기타 키보드 show/hide 에 따른 부가적인 처리를 해줘야 할 경우 여기에서 하면 된다. 
+    // - 2018.11.16. 김요한.
+    if(isKeyboardOn){}
+    else{}
+  };
+
   /*
 	* @params email: 이메일이나 소셜 타입
 	* @params password: 이메일비번이나 소셜 토큰
@@ -148,6 +160,7 @@ class LoginPage extends React.Component {
           { height: this.windowHeight }
         ]}
       >
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <ScrollView style={{ flex: 1, width: '100%' }} keyboardShouldPersistTaps='always' >
           <View style={{ width: '100%', height: this.windowHeight }}>
             <Swiper
@@ -189,6 +202,7 @@ class LoginPage extends React.Component {
 
               <EmailAuthPack
                 onAccess={this.login}
+                onKeyboardStatus={this.keyboardStateChanged}
                 onNavigate={routerName =>
                   this.props.navigation.navigate(routerName)
                 }
@@ -196,6 +210,7 @@ class LoginPage extends React.Component {
             </View>
           </View>
         </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     );
   }
