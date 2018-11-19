@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
   Alert,
-  CheckBox,
   Dimensions,
   Image,
   ImageBackground,
@@ -16,6 +15,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { CheckBox } from 'react-native-elements'
 import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import Swiper from 'react-native-swiper';
@@ -313,7 +313,7 @@ class EmailSignUpForm extends Component {
           </View>
           <View style={styles.contentWrap}>
             <View style={styles.content}>
-              <Text style={styles.headline}>무료계정만들기</Text>
+              <Text style={styles.headline}>이메일 간편가입</Text>
 
               <View borderRadius={4} style={styles.inputWrap}>
                 <View style={styles.inputBr} />
@@ -383,52 +383,40 @@ class EmailSignUpForm extends Component {
               {/* 마케팅 수신 동의 체크 박스 */}
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() =>
-                  this.setState(previousState => ({
-                    agreeReceiveMarketing: !previousState.agreeReceiveMarketing
-                  }))
-                }
               >
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    paddingTop: 20,
-                    paddingBottom: 20,
-                    alignItems: 'center'
+                <CheckBox
+                  title='새로운 콘텐츠 및 이벤트 정보 받기'
+                  checked={this.state.agreeReceiveMarketing}
+                  onPress={() =>
+                    this.setState(previousState => ({
+                      agreeReceiveMarketing: !previousState.agreeReceiveMarketing
+                    }))
+                  }
+                  textStyle={[
+                    styles.agreeReceiveMarketingStyle,
+                    { textAlign: 'left' }
+                  ]}
+                  containerStyle={{
+                    backgroundColor: '#0000',
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    paddingLeft: 0,
+                    borderWidth: 0
                   }}
-                >
-                  <CheckBox
-                    value={this.state.agreeReceiveMarketing}
-                    onValueChange={() =>
-                      this.setState(previousState => ({
-                        agreeReceiveMarketing: !previousState.agreeReceiveMarketing
-                      }))
-                    }
-                  />
-                  <Text
-                    style={[
-                      styles.agreeReceiveMarketingStyle,
-                      { textAlign: 'left' }
-                    ]}
-                  >
-                    마케팅 수신 동의
-                  </Text>
-                </View>
+                />
               </TouchableOpacity>
 
               <View style={styles.submitContainer}>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={this.handleJoin}
-                  disabled={!this.state.agreeReceiveMarketing}
                 >
                   <View
                     borderRadius={4}
                     style={
                       this.state.agreeReceiveMarketing
                         ? styles.btnSubmit
-                        : styles.btnSubmitDisabled
+                        : styles.btnSubmit
                     }
                   >
                     <Text style={styles.textSubmit}>
