@@ -23,6 +23,7 @@ import PageCategoryItemVO from '../../vo/PageCategoryItemVO';
 import SummaryVO from '../../vo/SummaryVO';
 import HomeAudioPage from './HomeAudioPage';
 import HomeVideoPage from './HomeVideoPage';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -229,6 +230,18 @@ class HomePage extends React.Component {
   };
 
   componentDidMount = async () => {
+
+    console.log('historyGet', Native.getProgressDatabase())
+    // native getHomeMiniPlayer 
+    // [{"duration":"9822","playCount":"1","reg_date":"2018-11-19 18:07:43",
+    // "server_sync_flag":"N","progress":"","cid":"v100006_001"}]
+    // 재생할 수 있는 준비를 한다. Native.play (v100006_001)
+    // 타이틀 , progress 확인을 한다 ?
+    // getProgressDatabase 가 null 경우 , '최근 재생 이력이 없습니다.'
+    // 오디오북 의 경우 재생하면 될 것 이고, 클래스 동영상의 경우는 어떻게 해야 할까요 ? 
+
+    Native.toggleMiniPlayer(true);
+
     if (this.props.navigation.isFocused()) {
       console.log('componentDidMount ', 'navigation isFocused');
       let windowWidth = Dimensions.get('window').width;
