@@ -86,18 +86,18 @@ export default {
     console.log('native.js::getDownloadList');
 
     let userId = globalStore.welaaaAuth.profile.id;
-    let config = {    
+    let config = {
       userId: userId.toString()
     };
 
-    console.log('native.js::getDownloadList' , config);
+    console.log('native.js::getDownloadList', config);
 
     RNNativePlayer.getDownloadList(config)
       .then(success)
       .catch(failed);
   },
 
-  getDownloadListCid(cid , success, failed) {
+  getDownloadListCid(cid, success, failed) {
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
       cid: cid,
@@ -139,11 +139,15 @@ export default {
     RNNativePlayer.download(args);
   },
 
-  deleteDownload(arg, success, failed) {
-    console.log('native.js::deleteDownload(arg)', arg);
-    // RNNativePlayer.deleteDownload(arg)
-    //   .then(success)
-    //   .catch(failed);
+  deleteDownload(args, success, failed) {
+    console.log('native.js::deleteDownload(arg)', args);
+    let userId = globalStore.welaaaAuth.profile.id;
+
+    args['userId'] = userId.toString();
+
+    RNNativePlayer.deleteDownload(args)
+      .then(success)
+      .catch(failed);
   },
 
   /* 내정보 > 설정 메뉴에서 호출 */
