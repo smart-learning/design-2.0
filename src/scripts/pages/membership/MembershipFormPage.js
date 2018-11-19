@@ -389,7 +389,7 @@ class MembershipFormPage extends React.Component {
       <SafeAreaView
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
       >
-        <ScrollView style={{ width: '100%' }}>
+        <ScrollView style={{ width: '100%' }} keyboardShouldPersistTaps="always">
           <View style={CommonStyles.contentContainer}>
             <View style={styles.itemInfoContainer}>
               <View style={styles.itemInfo}>

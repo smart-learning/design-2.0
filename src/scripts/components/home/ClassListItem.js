@@ -64,6 +64,9 @@ const styles = StyleSheet.create({
   classLabelNew: {
     backgroundColor: '#5f45b4'
   },
+  classLabelFeatured: {
+    backgroundColor: 'black'
+  },
   classLabelExclusive: {
     backgroundColor: '#ff761b'
   },
@@ -85,7 +88,6 @@ class ClassListItem extends React.Component {
       <View style={styles.classItem}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.gotoClassPage}>
           <View>
-            <View style={[CommonStyles.alignJustifyItemCenter]}>
               {this.props.classType === 'hot' && (
                 <View style={styles.classRank}>
                   <Text style={styles.classRankText}>
@@ -94,35 +96,6 @@ class ClassListItem extends React.Component {
                   <View style={styles.classRankHr} />
                 </View>
               )}
-              <View>
-                <View style={CommonStyles.alignJustifyFlex}>
-                  {!!this.props.itemData.is_new && (
-                    <View
-                      style={[styles.classLabel, styles.classLabelNew]}
-                      borderRadius={10}
-                    >
-                      <Text style={styles.classLabelText}>NEW</Text>
-                    </View>
-                  )}
-                  {!!this.props.itemData.is_exclusive && (
-                    <View
-                      style={[styles.classLabel, styles.classLabelExclusive]}
-                      borderRadius={10}
-                    >
-                      <Text style={styles.classLabelText}>독점</Text>
-                    </View>
-                  )}
-                  {!!this.props.itemData.is_free && (
-                    <View
-                      style={[styles.classLabel, styles.classLabelFree]}
-                      borderRadius={10}
-                    >
-                      <Text style={styles.classLabelText}>무료</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-            </View>
             <Text style={styles.classTitle}>
               {this.props.itemData.headline}
             </Text>

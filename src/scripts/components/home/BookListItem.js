@@ -205,6 +205,14 @@ class BookListItem extends React.Component {
                       <Text style={[styles.bookLabelText]}>독점</Text>
                     </View>
                   )}
+                  {this.props.itemData.is_botm && (
+                    <View
+                      style={[styles.bookLabel, styles.bookLabelExclusive]}
+                      borderRadius={10}
+                    >
+                      <Text style={[styles.bookLabelText]}>이달의책</Text>
+                    </View>
+                  )}
                   {!!this.props.itemData.is_free && (
                     <View
                       style={[styles.bookLabel, styles.bookLabelFree]}
