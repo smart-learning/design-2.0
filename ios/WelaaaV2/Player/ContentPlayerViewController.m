@@ -570,65 +570,43 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         // 일단 오디오북 콘텐츠인지 확인부터 합니다.
         if ( _isAudioContent )
         {
-          // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
-          NSInteger i = 0;
-          for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
-          {
-            if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+            // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
+            NSInteger i = 0;
+            for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
             {
-              break;
+                if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                {
+                    break;
+                }
             }
-          }
 
-          /*
+            // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+            [self sendProgressWhenCurrentContentEnds];
+          
             [_args setObject : contentsListArray[i][@"cid"]
                       forKey : @"cid"];
           
-            NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                          andHeaderInfo : [_args objectForKey : @"token"]];
-          
-            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+            [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                       forKey : @"uri"];
+          
             _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          */
-          // 아래와 같이 수정 2018.10.24
-          [_args setObject : contentsListArray[i][@"cid"]
-                    forKey : @"cid"];
-          
-          [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
-                    forKey : @"uri"];
-          
-          _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
-          
-          [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
         }
         else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
         {
-          /*
+            // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+            [self sendProgressWhenCurrentContentEnds];
+          
             [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
                       forKey : @"cid"];
           
-            NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                          andHeaderInfo : [_args objectForKey : @"token"]];
-          
-            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+            [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
                       forKey : @"uri"];
+          
             _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          */
-          // 아래와 같이 수정 2018.10.24
-          [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
-                    forKey : @"cid"];
-          
-          [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
-                    forKey : @"uri"];
-          
-          _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
-          
-          [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
         }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
@@ -1264,6 +1242,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                     }
                 }
               
+                // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+                [self sendProgressWhenCurrentContentEnds];
+              
                 [_args setObject : contentsListArray[indexOfPreviousContent][@"cid"]
                           forKey : @"cid"];
               
@@ -1308,6 +1289,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             }
             else if ( indexOfCurrentContent > 0 )
             {
+                // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+                [self sendProgressWhenCurrentContentEnds];
+              
                 [_args setObject : contentsListArray[indexOfCurrentContent-1][@"cid"]
                           forKey : @"cid"];
               
@@ -1455,12 +1439,58 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         return ;
     }
     */
+    // 네트워크 체크하여 온라인이라면 Contents-Info dictionary를 업데이트합니다.
+    if ( [[ApiManager sharedInstance] isConnectedToInternet] )
+    {
+        _currentContentsInfo = [ApiManager getContentsInfoWithCgid : [_args objectForKey : @"cid"]
+                                                     andHeaderInfo : [_args objectForKey : @"token"]];
+    }
+  
+    NSArray *contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+    NSInteger indexOfCurrentContent = 0;
+    if ( _isAudioContent )
+        contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+    else if ( !_isAudioContent )
+        contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+  
+    // 재생할 콘텐츠의 CID가 있는 배열을 검색합니다.
+    for ( int i=0; i<contentsListArray.count; i++ )
+    {
+        if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+        {
+            indexOfCurrentContent = i;
+            break;
+        }
+    }
+  
+    // progress dictionary가 null이 아니면..
+    if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+        _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
   
     [self fpsSetUrlAsset];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
-    [_player play];
+    [self setupNowPlayingInfoCenter];
+    if ( !_startSeconds || _startSeconds == 0 )
+    {
+        NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
+        [_player play];
+    }
+    else if ( _startSeconds || _startSeconds > 0 )
+    {
+        NSLog(@"  Player starts the last point. %f", _startSeconds);
+        [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, CMTimeGetSeconds(_urlAsset.duration))];
+        [_player play];
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
+    }
+    else
+    {
+        NSLog(@"  Player starts at 0 because of uncatchable situation.");
+        [_player play];
+    }
+    _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
@@ -1488,32 +1518,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
     }
   
-    [self setupNowPlayingInfoCenter];
+  //[self setupNowPlayingInfoCenter];
   
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
-  /*
-    NSString *netStatus = @"no_network";
-    if ( _isDownloadFile )
-    {
-        netStatus = @"DOWNLOAD";
-        _networkStatusLabel.text = @"다운로드 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
-        netStatus = @"Wi-Fi";
-        _networkStatusLabel.text = @"Wi-Fi 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-        _networkStatusLabel.text = @"LTE/3G 재생";
-    }
-   */
-  // 공통 사용되는 부분이 많아 아래와 같이 함수화.
-  NSString *netStatus = [self updateNetStatusLabel];
-  [self updateDownloadState];
+    // 공통 사용되는 부분이 많아 아래와 같이 함수화.
+    NSString *netStatus = [self updateNetStatusLabel];
+    [self updateDownloadState];
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"START"             // START / ING / END / FORWARD / BACK
@@ -1532,6 +1544,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
     NSTimeInterval currentTime = [self getCurrentPlaybackTime];
     // 전체 재생시간을 구합니다.
+  /*
     NSArray *contentsListArray;
     if ( _isAuthor && _isAudioContent )
     {
@@ -1551,6 +1564,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             break;
         }
     }
+  */
     NSTimeInterval totalTime = [common convertStringToTime : contentsListArray[indexOfCurrentContent][@"play_time"]];//[self getDuration];
   //NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
   //NSLog(@"  mini Player Duration double : %f", totalTime);
@@ -2659,6 +2673,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         selectedOtherIndex : (NSInteger) index
 {
     NSLog(@"  [playListPopupView:selectedOtherIndex:] index : %li", (long)index);
+  
+    // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+    [self sendProgressWhenCurrentContentEnds];
+  
     // 선택된 index에서 uri와 cid를 읽어와서 재생하는 것을 구현해야 합니다.
     if ( _isAudioContent )
     {
@@ -3010,7 +3028,23 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 }
 
 
-#pragma mark - Timer event
+#pragma mark - Log Timer event
+//
+// 콘텐츠가 재생 종료되는 시점의 이용내역을 전송합니다.
+//
+- (void) sendProgressWhenCurrentContentEnds
+{
+    // 현재 재생중이던 콘텐츠의 이용내역(progress)을 API서버로 put합니다.
+    NSString *netStatus = [self updateNetStatusLabel];
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"END"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime]
+                                duration : 0
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
+}
+
 //
 // 정해진 타이머대로 로그데이터를 전송합니다.
 //
