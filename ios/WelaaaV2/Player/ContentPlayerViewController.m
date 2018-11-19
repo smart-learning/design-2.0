@@ -321,7 +321,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         NSLog(@"  Player starts at 0 because of uncatchable situation.");
         [_player play];
     }
-  
+    _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
@@ -337,6 +337,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
   
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
@@ -1740,6 +1747,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
   
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
+  
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
   
@@ -1787,6 +1802,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 - (void) pressedFfButton
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
+  
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+    
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
   
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
@@ -1884,7 +1907,18 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         playListArray = _currentContentsInfo[@"data"][@"chapters"];
     }
   
-    NSInteger currentIndex = playListArray.count;
+    int indexOfCurrentContent = 0;
+    for ( int i=0; i<playListArray.count; i++ )
+    {
+        // 현재 재생중인 콘텐츠의 index number를 탐색합니다.
+        if ( [[_args objectForKey:@"cid"] isEqualToString : playListArray[i][@"cid"]] )
+        {
+            indexOfCurrentContent = i;
+            break;
+        }
+    }
+  
+    NSInteger currentIndex = indexOfCurrentContent; // 현재 재생중인 콘텐츠의 index number를 리스트뷰를 띄우기전에 넘겨줍니다.
     NSString *groupTitle = _currentContentsInfo[@"data"][@"title"]; //group_title
 
     CGRect frame = self.view.bounds;
@@ -1961,6 +1995,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
 - (void) seekbarDragging : (NSTimeInterval) time
 {
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
+  
     [_player pause];
     [self invalidateTimerOnSlider];
     [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];

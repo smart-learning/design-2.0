@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import BookDailyList from '../../components/home/BookDailyList';
 import { observer } from 'mobx-react';
@@ -69,7 +70,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333333'
   },
-  dailyBookContentHeadline: {}
+  dailyBookContentHeadline: {},
+  showMoreWrapper: {
+    marginBottom: 10,
+    alignItems: 'flex-end'
+  },
+  showMore: {
+    borderColor: '#efefef',
+    borderWidth: 1,
+    padding: 3
+  }
 });
 
 @observer
@@ -118,6 +128,16 @@ class BookDaily extends React.Component {
           <Text style={[styles.mainTitleCenter, styles.titleH4]}>
             책 좀 아는 사람들이 요약해 주는 읽은 척 매뉴얼
           </Text>
+        </View>
+        <View style={styles.showMoreWrapper}>
+          <TouchableOpacity
+            style={styles.showMore}
+            onPress={() => {
+              this.props.navigation.navigate('AudioBookPage');
+            }}
+          >
+            <Text>더 보기</Text>
+          </TouchableOpacity>
         </View>
 
         {/*카테고리*/}
@@ -295,4 +315,4 @@ class BookDaily extends React.Component {
   }
 }
 
-export default BookDaily;
+export default withNavigation(BookDaily);

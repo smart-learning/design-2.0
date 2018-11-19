@@ -8,6 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Style, { COLOR_PRIMARY } from '../../../styles/common';
+import CommonStyles from '../../../styles/common';
 import IcFilm from '../../../images/icons/film.png';
 import IcComment from '../../../images/icons/commenting.png';
 import IcShare from '../../../images/ic-share-light.png';
@@ -118,6 +119,32 @@ const styles = StyleSheet.create({
     bottom: 25,
     width: 50,
     height: 50
+  },
+  classLabel: {
+    height: 22,
+    marginRight: 3,
+    marginBottom: 10,
+    paddingTop: 3,
+    paddingRight: 10,
+    paddingBottom: 3,
+    paddingLeft: 10
+  },
+  classLabelText: {
+    fontSize: 12,
+    color: '#ffffff'
+  },
+  classLabelBlank: {
+    borderColor: 'transparent',
+    opacity: 0
+  },
+  classLabelNew: {
+    backgroundColor: '#5f45b4'
+  },
+  classLabelExclusive: {
+    backgroundColor: '#ff761b'
+  },
+  classLabelFree: {
+    backgroundColor: '#00afba'
   }
 });
 
@@ -133,7 +160,9 @@ export default class Summary extends React.Component {
   };
 
   render() {
-    let starAvg = parseFloat(this.props.star_avg).toFixed(1);
+    let starAvg = parseFloat(
+      this.props.meta ? this.props.meta.star_average : this.props.star_avg
+    ).toFixed(1);
 
     if (_.isNaN(starAvg)) {
       starAvg = 0;
@@ -142,6 +171,41 @@ export default class Summary extends React.Component {
     return (
       <View style={styles.itemContainer}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
+          <View style={CommonStyles.alignJustifyFlex}>
+            {!!this.props.is_new && (
+              <View
+                style={[styles.classLabel, styles.classLabelNew]}
+                borderRadius={10}
+              >
+                <Text style={styles.classLabelText}>NEW</Text>
+              </View>
+            )}
+            {!!this.props.is_featured && (
+              <View
+                style={[styles.classLabel, styles.classLabelFeatured]}
+                borderRadius={10}
+              >
+                <Text style={styles.classLabelText}>추천</Text>
+              </View>
+            )}
+            {!!this.props.is_exclusive && (
+              <View
+                style={[styles.classLabel, styles.classLabelExclusive]}
+                borderRadius={10}
+              >
+                <Text style={styles.classLabelText}>독점</Text>
+              </View>
+            )}
+            {!!this.props.is_free && (
+              <View
+                style={[styles.classLabel, styles.classLabelFree]}
+                borderRadius={10}
+              >
+                <Text style={styles.classLabelText}>무료</Text>
+              </View>
+            )}
+          </View>
+
           {this.props.type !== 'detailClip' &&
             this.props.type !== 'dailyBook' && (
               <ImageBackground
@@ -179,7 +243,11 @@ export default class Summary extends React.Component {
               <View style={[styles.alignJustify, styles.detailClipView]}>
                 <Image source={IcView} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  조회수 {this.props.itemData.hit_count}
+                  {numeral(
+                    this.props.itemData.meta
+                      ? this.props.itemData.meta.play_count
+                      : this.props.itemData.hit_count
+                  ).format('0a')}
                 </Text>
               </View>
               <TouchableOpacity
@@ -205,7 +273,11 @@ export default class Summary extends React.Component {
               <View style={[styles.alignJustify, styles.detailClipView]}>
                 <Image source={IcView} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  조회수 {this.props.itemData.hit_count}
+                  {numeral(
+                    this.props.itemData.meta
+                      ? this.props.itemData.meta.play_count
+                      : this.props.itemData.hit_count
+                  ).format('0a')}
                 </Text>
               </View>
               <TouchableOpacity
@@ -224,13 +296,26 @@ export default class Summary extends React.Component {
               <View style={styles.alignJustify}>
                 <Image source={IcView} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  조회수 {numeral(this.props.hit_count).format('0 a')}
+                  {/* 재생수 */}
+                  {numeral(
+                    this.props.meta
+                      ? this.props.meta.play_count
+                      : this.props.hit_count
+                  ).format('0a')}
                 </Text>
                 <Image source={IcStar} style={styles.btnSetSmall} />
-                <Text style={styles.countText}>별점 {starAvg}</Text>
+                <Text style={styles.countText}>
+                  {/* 별점 */}
+                  {starAvg}
+                </Text>
                 <Image source={IcComment} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  리뷰 {numeral(this.props.review_count).format('0 a')}
+                  {/* 댓글수 */}
+                  {numeral(
+                    this.props.meta
+                      ? this.props.meta.comment_count
+                      : this.props.review_count
+                  ).format('0a')}
                 </Text>
                 {1 === 2 && (
                   <View style={{ marginLeft: 'auto' }}>
