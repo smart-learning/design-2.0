@@ -239,25 +239,7 @@ class HomePage extends React.Component {
   };
 
   componentDidMount = async () => {
-    if (this.props.navigation.isFocused()) {
-      console.log('componentDidMount ', 'navigation isFocused');
-      let windowWidth = Dimensions.get('window').width;
-      let windowHeight = Dimensions.get('window').height;
-
-      this.store.windowWidth = windowWidth;
-      this.store.windowHeight = windowHeight;
-      this.store.slideHeight = windowWidth * 0.347;
-      this.store.clipRankContentSize = windowWidth - 85;
-
-      try {
-        this.getData();
-      } catch (error) {
-        console.log(error);
-      }
-      this.setState({ show_popup:true });
-    }
-
-    if (globalStore.welaaaAuth) {
+    if (this.props.navigation.isFocused() && globalStore.welaaaAuth) {
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
 
