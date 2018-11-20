@@ -199,5 +199,9 @@ export default {
   buyResult(arg) {
     console.log('native.js::buyResult(arg)', arg);
     globalStore.buyResult.success = arg.success;
+  },
+
+  unsubscribe() {
+    return RNProductPayment.unsubscribe();
   }
 };

@@ -388,7 +388,13 @@ export default class MembershipPage extends React.Component {
       '멤버십을 해지 하시겠습니까?',
       [
         { text: '아니오', style: 'cancel' },
-        { text: '네', onPress: () => this.cancel_membership_proc() }
+        { text: '네', onPress: () => {
+          if (Platform.OS === 'ios')
+            native.unsubscribe()
+          else
+            this.cancel_membership_proc()
+          }
+        }
       ],
       { cancelable: false }
     );

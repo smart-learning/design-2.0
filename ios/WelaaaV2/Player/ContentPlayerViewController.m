@@ -415,34 +415,24 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // Dispose of any resources that can be recreated.
 }
 
-/*
-- (void) fpsSetUrlAsset
-{
-    NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
-    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-  
-    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [_fpsSDK prepareWithUrlAsset : _urlAsset
-                          userId : [_args objectForKey : @"userId"]
-                       contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                      optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                 liveKeyRotation : NO];
-}
-*/
 - (void) fpsSetUrlAsset
 {
     FPSDownloadManager *fps = [FPSDownloadManager sharedInstance];
     
-    NSString* assetPath = [_args objectForKey : @"uri"];
-    
-    if([fps isPlayableOfflineAsset:assetPath]){ // 오프라인 재생 가능 파일인지 확인
-        NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
-        NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:[fps getPathFromLibraryDir:assetPath]];
-        NSLog(@"오프라인 재생 가능 -> assetURL : %@", assetURL);
-        _urlAsset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
+    NSString *assetPath = [_args objectForKey : @"uri"];
+  
+    // 오프라인 재생 가능 파일인지 확인
+    if ( [fps isPlayableOfflineAsset : assetPath] )
+    {
+        NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
+        NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : [fps getPathFromLibraryDir : assetPath]];
+        NSLog(@"  오프라인 재생 가능 -> assetURL : %@", assetURL);
+        _urlAsset = [AVURLAsset assetWithURL : [NSURL URLWithString : assetURL]];
         _isDownloadFile = true;
-    }else{  // 오프라인 재생 파일이 아닌 경우
-        NSLog(@"오프라인 재생 불가 파일 -> 스트리밍 재생");
+    }
+    else // 오프라인 재생 파일이 아닌 경우
+    {
+        NSLog(@"  오프라인 재생 불가 파일 -> 스트리밍 재생");
         NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
         _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
         _isDownloadFile = false;
@@ -469,32 +459,40 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
    }];
 }
 
-- (void)networkStatusChanged:(NSNotification *)noti // 네트워크 상태에 따른 처리
+//
+// 네트워크 상태에 따른 처리를 실행합니다.
+//
+- (void) networkStatusChanged : (NSNotification *) noti
 {
-  BOOL isPlayableOnWiFi = false;
-  isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
-  NSLog(@"  isPlayableOnWiFi? : %@", isPlayableOnWiFi? @"YES" : @"NO");
+    BOOL isPlayableOnWiFi = false;
+    isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
+    NSLog(@"  isPlayableOnWiFi? : %@", isPlayableOnWiFi? @"YES" : @"NO");
   
-  switch (recentNetStatus) {
-    case AFNetworkReachabilityStatusNotReachable:
-    case AFNetworkReachabilityStatusUnknown:
-      [self pressedPauseButton];
-      NSLog(@"  네트워크 상태를 확인해주시기 바랍니다.");
-      [self showAlertOk:@"알림" message:@"네트워크 상태를 확인해주시기 바랍니다."];
-      break;
-    case AFNetworkReachabilityStatusReachableViaWiFi: // Wi-fi
-      break;
-    case AFNetworkReachabilityStatusReachableViaWWAN: // LTE/3G
-      if(isPlayableOnWiFi && !_isDownloadFile)
-      {
-        [self pressedPauseButton];
-        NSLog(@"  사용자 설정에 따라 Wi-Fi 에서만 재생이 가능합니다.");
-        [self showAlertOk:@"알림" message:@"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 재생이 가능합니다."];
-      }
-      break;
-    default:
-      break;
-  }
+    switch ( recentNetStatus )
+    {
+        case AFNetworkReachabilityStatusNotReachable:
+        
+        case AFNetworkReachabilityStatusUnknown:
+            [self pressedPauseButton];
+            NSLog(@"  네트워크 상태를 확인해주시기 바랍니다.");
+            [self showAlertOk:@"알림" message:@"네트워크 상태를 확인해주시기 바랍니다."];
+            break;
+        
+        case AFNetworkReachabilityStatusReachableViaWiFi: // Wi-fi
+            break;
+        
+        case AFNetworkReachabilityStatusReachableViaWWAN: // LTE/3G
+            if ( isPlayableOnWiFi && !_isDownloadFile )
+            {
+                [self pressedPauseButton];
+                NSLog(@"  사용자 설정에 따라 Wi-Fi 에서만 재생이 가능합니다.");
+                [self showAlertOk:@"알림" message:@"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 재생이 가능합니다."];
+            }
+            break;
+    
+        default:
+            break;
+    }
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -507,6 +505,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] : %@", error.localizedDescription);
     // 종료 메시지와 함께 뷰를 종료시킵니다.
+    return [common presentAlertWithTitle:[_args objectForKey : @"cid"] andMessage:error.localizedDescription];
 }
 
 //
@@ -1592,23 +1591,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // 기존 타이머를 종료시키고 재시작
     [_logTimer invalidate];
     // 이용로그 전송 시작
-    NSString *netStatus = @"no_network";
-    if ( _isDownloadFile )
-    {
-        netStatus = @"DOWNLOAD";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
-        netStatus = @"Wi-Fi";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-    }
-    else
-    {
-        netStatus = @"unknown_netStatus";
-    }
+    NSString *netStatus = [self updateNetStatusLabel];
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"END"             // START / ING / END / FORWARD / BACK
@@ -1626,6 +1609,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
 #pragma mark - Selectors
 
+//
+// 미니플레이어뷰로 전환합니다.
+//
 - (void) pressedCloseButton
 {
     self.isMiniPlayer = YES;
@@ -2530,9 +2516,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  [openTimerSelectView]");
     if ( _playerSleepTimerSelectView )
-    {
         return ;
-    }
   
     CGFloat height = 0;
   
