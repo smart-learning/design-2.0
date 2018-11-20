@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
 
 @observer
 class HomePage extends React.Component {
+  state = {
+    show_popup:false
+  };
+  
   @observable
   tabStatus = 'video';
 
@@ -228,6 +232,12 @@ class HomePage extends React.Component {
     }
   };
 
+  showPopup(){
+    if(globalStore.welaaaAuth){
+      return <AdvertisingSection show_popup={this.state.show_popup} />;
+    } 
+  };
+
   componentDidMount = async () => {
     if (this.props.navigation.isFocused()) {
       console.log('componentDidMount ', 'navigation isFocused');
@@ -244,6 +254,7 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
+      this.setState({ show_popup:true });
     }
 
     if (globalStore.welaaaAuth) {
@@ -282,10 +293,16 @@ class HomePage extends React.Component {
 
   componentDidUpdate() {
     const params = this.props.navigation.state.params;
-    if (params && 'audioBook' === params.page) {
-      this.props.navigation.state.params.page = undefined;
-      this.goPage('audioBook');
-    }
+    if(params){
+      if(params.page === 'audioBook'){
+        this.props.navigation.state.params.page = undefined;
+        this.goPage('audioBook');
+      }
+      if(params.show_popup){
+        this.props.navigation.state.params.show_popup = undefined;
+        this.setState({ show_popup:true });
+      }
+    }    
   }
 
   componentWillUnmount() {
@@ -428,8 +445,7 @@ class HomePage extends React.Component {
               </View>
             </View>
           </View>
-
-          {globalStore.welaaaAuth && <AdvertisingSection />}
+          {this.showPopup()}
         </SafeAreaView>
       </View>
     );

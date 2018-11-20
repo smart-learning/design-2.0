@@ -786,8 +786,8 @@ export default class MembershipPage extends React.Component {
                 paddingRight: 15
               }}
               activeOpacity={0.7}
-              /* onPress={() => this.props.navigation.navigate('HomeScreen')} */
-              onPress={() => this.props.navigation.dismiss()}
+              onPress={() => { this.props.navigation.navigate('HomeScreen', { show_popup:true } ); }}
+              /* onPress={() => this.props.navigation.dismiss()} */
             >
               <Text style={styles.tripAroundButton}>
                 무료 계정으로 둘러보기
