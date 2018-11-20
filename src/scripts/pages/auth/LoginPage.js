@@ -160,7 +160,7 @@ class LoginPage extends React.Component {
           { height: this.windowHeight }
         ]}
       >
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <KeyboardAvoidingView style={styles.container} behavior="position" enabled>
         <ScrollView style={{ flex: 1, width: '100%' }} keyboardShouldPersistTaps='always' >
           <View style={{ width: '100%', height: this.windowHeight }}>
             <Swiper
