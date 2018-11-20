@@ -288,7 +288,7 @@ class SidebarUserInfo extends React.Component {
               color: CommonStyles.COLOR_PRIMARY
             }}
           >
-            윕라 멤버쉽 소개
+            윌라 멤버십 소개
           </Text>
         </TouchableOpacity>
       </View>
