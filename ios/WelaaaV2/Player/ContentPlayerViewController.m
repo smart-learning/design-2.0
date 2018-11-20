@@ -1463,16 +1463,20 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         }
     }
   
+    NSInteger progress = 0;
     // progress dictionary가 null이 아니면..
     if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+    {
         _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+        progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+    }
   
     [self fpsSetUrlAsset];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
     [self setupNowPlayingInfoCenter];
-    if ( !_startSeconds || _startSeconds == 0 )
+    if ( !_startSeconds || _startSeconds == 0 || progress == 100 )  // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
