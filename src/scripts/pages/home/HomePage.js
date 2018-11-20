@@ -253,6 +253,7 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
+      this.setState({ show_popup:true })
     } else {
       let value = await AsyncStorage.getItem('isAppFirstLoad');
 
