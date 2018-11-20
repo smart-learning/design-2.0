@@ -248,7 +248,7 @@ class HomeVideoPage extends React.Component {
                         });
                       }}
                     >
-                      <Text>더 보기</Text>
+                      <Text>전체보기</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -297,7 +297,7 @@ class HomeVideoPage extends React.Component {
                     this.props.navigation.navigate('ClassListPage');
                   }}
                 >
-                  <Text>더 보기</Text>
+                  <Text>전체보기</Text>
                 </TouchableOpacity>
               </View>
 

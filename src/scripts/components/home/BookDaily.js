@@ -136,7 +136,7 @@ class BookDaily extends React.Component {
               this.props.navigation.navigate('AudioBookPage');
             }}
           >
-            <Text>더 보기</Text>
+            <Text>전체보기</Text>
           </TouchableOpacity>
         </View>
 
