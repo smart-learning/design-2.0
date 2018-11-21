@@ -178,6 +178,8 @@ class Data {
   isAgree = false;
   @observable
   windowHeight = null;
+  @observable
+  email_vailidate = false;
 }
 
 @observer
@@ -220,28 +222,33 @@ class EmailSignUpForm extends Component {
   };
 
   handleJoin = () => {
+    
     this.setState({ signupButtonDisabled: true });
 
     if (this.data.name === null) {
-      Alert.alert('이름은 필수 입력항목입니다.');
+      Alert.alert('오류', '이름은 필수 입력항목입니다.');
       this.setState({ signupButtonDisabled: false });
       return false;
     } else if (this.data.email === null) {
-      Alert.alert('이메일은 필수 입력항목입니다.');
+      Alert.alert('오류', '이메일은 필수 입력항목입니다.');
       this.setState({ signupButtonDisabled: false });
       return false;
     } else if (!this.data.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
       this.setState({ signupButtonDisabled: false });
-      Alert.alert('이메일 형식이 맞지 않습니다.');
+      Alert.alert('오류', '이메일 형식이 맞지 않습니다.');
+      return false;
+    } else if (this.data.email_vailidate === false) {
+      this.setState({ signupButtonDisabled: false });
+      Alert.alert('오류', '다른 이메일을 사용해주세요.');
       return false;
     } else if (this.data.password === null) {
       this.setState({ signupButtonDisabled: false });
-      Alert.alert('비밀번호는 필수 입력항목입니다.');
+      Alert.alert('오류', '비밀번호는 필수 입력항목입니다.');
       return false;
     }
 
     if (this.data.passconf !== this.data.password) {
-      Alert.alert('비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
+      Alert.alert('오류', '비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
       this.setState({ signupButtonDisabled: false });
       return false;
     }
@@ -278,6 +285,17 @@ class EmailSignUpForm extends Component {
         this.setState({ signupButtonDisabled: false });
       });
   };
+
+  email_vailidate = async () => {
+    let vailidate_info = await Net.email_vailidate(this.data.email);
+    
+    if(vailidate_info.success !== '1'){
+      Alert.alert("오류", vailidate_info.msg);
+      this.data.email_vailidate = false;
+    }else{
+      this.data.email_vailidate = true;
+    }
+  }
 
   agreeStatus = () => {
     this.data.isAgree = !this.data.isAgree;
@@ -346,6 +364,7 @@ class EmailSignUpForm extends Component {
                   onChangeText={text => {
                     this.data.email = text;
                   }}
+                  onBlur={() => this.email_vailidate()}
                 />
                 <View style={styles.inputBr} />
                 <TextInput
@@ -405,7 +424,7 @@ class EmailSignUpForm extends Component {
               <View style={styles.submitContainer}>
                 <TouchableOpacity
                   activeOpacity={0.9}
-                  onPress={this.handleJoin}
+                  onPress={() => { Keyboard.dismiss();this.handleJoin() }}
                   disabled={!this.state.agreeReceiveMarketing}
                 >
                   <View

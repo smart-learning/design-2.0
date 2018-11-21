@@ -692,6 +692,20 @@ export default {
       });
   },
 
+  //이메일 중복검증
+  email_vailidate(email){
+    return axios.get(API_PREFIX + 'v1.0/email-validation',
+    {
+      params:{
+        email:email
+      }
+    }).then(
+      resp => {
+        return resp.data;
+      }
+    );
+  },
+
   //회원가입
   signUp(name, email, password) {
     let params = {
