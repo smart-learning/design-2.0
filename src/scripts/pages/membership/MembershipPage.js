@@ -388,11 +388,11 @@ export default class MembershipPage extends React.Component {
       '멤버십을 해지 하시겠습니까?',
       [
         { text: '아니오', style: 'cancel' },
-        { text: '네', onPress: () => {
-          if (Platform.OS === 'ios')
-            native.unsubscribe()
-          else
-            this.cancel_membership_proc()
+        {
+          text: '네',
+          onPress: () => {
+            if (Platform.OS === 'ios') native.unsubscribe();
+            else this.cancel_membership_proc();
           }
         }
       ],
@@ -443,7 +443,14 @@ export default class MembershipPage extends React.Component {
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
       >
         <ScrollView style={{ width: '100%' }}>
-          <View style={{ marginLeft: 20, marginRight: 20, marginTop: 30 }}>
+          <View
+            style={{
+              marginLeft: 20,
+              marginRight: 20,
+              marginTop: 30,
+              paddingBottom: 40
+            }}
+          >
             {globalStore.currentMembership.type === 1 ? (
               <View style={styles.membershipCampusBox}>
                 <Image source={IcCampus} style={styles.membershipIcon} />
@@ -602,11 +609,15 @@ export default class MembershipPage extends React.Component {
                 onPress={() => this.cancel_membership_confirm()}
               >
                 <View style={styles.cancelButton} borderRadius={5}>
-                {Platform.OS === 'ios' ? (
-                  <Text style={styles.cancelButtonText}>Apple 구독 취소 또는 변경</Text>
-                ) : (
-                  <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
-                )}
+                  {Platform.OS === 'ios' ? (
+                    <Text style={styles.cancelButtonText}>
+                      Apple 구독 취소 또는 변경
+                    </Text>
+                  ) : (
+                    <Text style={styles.cancelButtonText}>
+                      멤버십 구독 해지
+                    </Text>
+                  )}
                 </View>
               </TouchableOpacity>
             )}
@@ -654,7 +665,8 @@ export default class MembershipPage extends React.Component {
         <ScrollView style={{ width: '100%' }}>
           <View
             style={{
-              backgroundColor: '#DDEEE2'
+              backgroundColor: '#DDEEE2',
+              paddingBottom: 40
             }}
           >
             <Image
