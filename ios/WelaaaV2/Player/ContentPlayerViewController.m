@@ -3260,7 +3260,8 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
     NSString *contentPath = [self getDownloadedContentPath:_args[@"cid"]];
   
-    if ( contentPath && [contentPath containsString : @"/"] )
+    // 권한있는 계정으로 다운로드 후 로그아웃하고 권한없는 계정으로 로그인하면 다운로드된 콘텐츠에 대한 권한체크를 다시 해야합니다.
+    if ( contentPath && [contentPath containsString : @"/"] && _isAuthor )
     {
         return contentPath;
     }
