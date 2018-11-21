@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { CheckBox } from 'react-native-elements'
+import { CheckBox } from 'react-native-elements';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import Swiper from 'react-native-swiper';
@@ -381,30 +381,26 @@ class EmailSignUpForm extends Component {
               </View>
 
               {/* 마케팅 수신 동의 체크 박스 */}
-              <TouchableOpacity
-                activeOpacity={0.9}
-              >
-                <CheckBox
-                  title='새로운 콘텐츠 및 이벤트 정보 받기'
-                  checked={this.state.agreeReceiveMarketing}
-                  onPress={() =>
-                    this.setState(previousState => ({
-                      agreeReceiveMarketing: !previousState.agreeReceiveMarketing
-                    }))
-                  }
-                  textStyle={[
-                    styles.agreeReceiveMarketingStyle,
-                    { textAlign: 'left' }
-                  ]}
-                  containerStyle={{
-                    backgroundColor: '#0000',
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                    paddingLeft: 0,
-                    borderWidth: 0
-                  }}
-                />
-              </TouchableOpacity>
+              <CheckBox
+                title="새로운 콘텐츠 및 이벤트 정보 받기"
+                checked={this.state.agreeReceiveMarketing}
+                onPress={() =>
+                  this.setState(previousState => ({
+                    agreeReceiveMarketing: !previousState.agreeReceiveMarketing
+                  }))
+                }
+                textStyle={[
+                  styles.agreeReceiveMarketingStyle,
+                  { textAlign: 'left' }
+                ]}
+                containerStyle={{
+                  backgroundColor: '#0000',
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  paddingLeft: 0,
+                  borderWidth: 0
+                }}
+              />
 
               <View style={styles.submitContainer}>
                 <TouchableOpacity
