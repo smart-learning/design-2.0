@@ -12,6 +12,7 @@
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) BOOL isAudioContentType;
 @property (nonatomic, assign) BOOL isPreviewMode;
+@property (nonatomic, assign) BOOL hasPermission;
 
 - (void)updateCell;
 
