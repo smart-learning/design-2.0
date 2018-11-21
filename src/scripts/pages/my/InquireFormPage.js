@@ -53,20 +53,6 @@ const styles = StyleSheet.create({
   }
 });
 
-/*
-class UselessTextInput extends React.Component {
-  render() {
-    return (
-      <TextInput
-        {...this.props} // Inherit any props passed to it; e.g., multiline, numberOfLines below
-        editable={true}
-        underlineColorAndroid={'rgba(0,0,0,0)'}
-      />
-    );
-  }
-}
-*/
-
 @observer
 export default class InquireFormPage extends React.Component {
   @observable
@@ -82,14 +68,6 @@ export default class InquireFormPage extends React.Component {
       return;
     }
 
-    /*
-    if (!this.title.text || !this.content.text) {
-      Alert.alert('오류', '제목과 내용을 입력해주세요.');
-      return;
-    }
-    */
-
-    //let result = await net.postInqueryItem(this.title.text, this.content.text);
     let result = await net.postInqueryItem(this.title, this.content);
     this.isSubmitStatus = true;
 
@@ -133,7 +111,7 @@ export default class InquireFormPage extends React.Component {
                   <Text style={styles.label}>제목</Text>
                   <View style={styles.titleInput} borderRadius={5}>
                     <TextInput
-                      style={styles.input}
+                      style={{ flex: 1 }}
                       value={this.title}
                       underlineColorAndroid={'rgba(0,0,0,0)'}
                       onChangeText={text => (this.title = text)}
@@ -142,7 +120,7 @@ export default class InquireFormPage extends React.Component {
                   <Text style={styles.label}>내용</Text>
                   <View style={styles.contentInput} borderRadius={5}>
                     <TextInput
-                      style={styles.input}
+                      style={{ flex: 1 }}
                       multiline={true}
                       numberOfLines={8}
                       onChangeText={text => (this.content = text)}
