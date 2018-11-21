@@ -602,7 +602,11 @@ export default class MembershipPage extends React.Component {
                 onPress={() => this.cancel_membership_confirm()}
               >
                 <View style={styles.cancelButton} borderRadius={5}>
+                {Platform.OS === 'ios' ? (
+                  <Text style={styles.cancelButtonText}>Apple 구독 취소 또는 변경</Text>
+                ) : (
                   <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+                )}
                 </View>
               </TouchableOpacity>
             )}
