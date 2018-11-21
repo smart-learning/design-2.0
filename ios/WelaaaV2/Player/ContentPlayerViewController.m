@@ -3305,6 +3305,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         {
             // EarPod 또는 다른 헤드폰의 이벤트를 받았을 경우 호출됩니다.
             case UIEventSubtypeRemoteControlTogglePlayPause:
+                NSLog(@"  UIEventSubtypeRemoteControlTogglePlayPause");
                 if ( _playButton.hidden )  // 플레이 중인지 체크해야 합니다.
                     [self pressedPauseButton];
                 else
@@ -3314,26 +3315,31 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPlay:
+                NSLog(@"  UIEventSubtypeRemoteControlPlay");
                 [self pressedPlayButton];
                 break;
             
             // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPause:
+                NSLog(@"  UIEventSubtypeRemoteControlPause");
                 [self pressedPauseButton];
                 break;
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlStop:
+                NSLog(@"  UIEventSubtypeRemoteControlStop");
                 [self closePlayer];
                 break;
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
+                NSLog(@"  UIEventSubtypeRemoteControlPreviousTrack");
                 [self setPreviousContent];
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
+                NSLog(@"  UIEventSubtypeRemoteControlNextTrack");
                 [self setNextContent];
                 break;
             
