@@ -238,7 +238,7 @@ class HomePage extends React.Component {
   }
 
   componentDidMount = async () => {
-    if (this.props.navigation.isFocused() && globalStore.welaaaAuth) {
+    if (globalStore.welaaaAuth) {
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
 
