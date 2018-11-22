@@ -940,24 +940,19 @@
 + (void) processCheckingUpdate
 {
     // Check available updates.
-    NSLog(@"  Current Version on this app : %@", [[common infoPlist] objectForKey : @"CFBundleShortVersionString"]);
+    NSString *currentVersionStr = [[common infoPlist] objectForKey : @"CFBundleShortVersionString"];
     NSDictionary *updateInfo = [ApiManager getUpdateData];
-    NSLog(@"  updateInfo : %@", [updateInfo description]);
   
     if ( [updateInfo isKindOfClass : [NSDictionary class]] ) // API 서버에서 데이터를 제대로 받아왔는지 확인합니다.
     {
         if ( [updateInfo[@"version"] isKindOfClass : [NSDictionary class]] ) // version dictionary가 정상인지 확인합니다.
         {
             BOOL forceUpdate = [[updateInfo[@"force_update"] stringValue] isEqualToString : @"1"];
-            NSLog(@"  force_update? %@", forceUpdate? @"YES" : @"NO");
-            BOOL isAvailableMinUpdate = [self compareBetweenCurrentVersion : [[common infoPlist] objectForKey : @"CFBundleShortVersionString"]
+            BOOL isAvailableMinUpdate = [self compareBetweenCurrentVersion : currentVersionStr
                                                              andNewVersion : updateInfo[@"version"][@"min"]];
-            NSLog(@"  isAvailableMinUpdate? %@", isAvailableMinUpdate? @"YES" : @"NO");
-            BOOL isAvailableUpdate = [self compareBetweenCurrentVersion : [[common infoPlist] objectForKey : @"CFBundleShortVersionString"]
+            BOOL isAvailableUpdate = [self compareBetweenCurrentVersion : currentVersionStr
                                                           andNewVersion : updateInfo[@"version"][@"current"]];
-            NSLog(@"  isAvailableUpdate? %@", isAvailableUpdate? @"YES" : @"NO");
-          //forceUpdate = true; // 테스트를 위한 강제 세팅.
-          //isAvailableMinUpdate = true; // 테스트를 위한 강제 세팅.
+          
             // "force_update"가 true && 설치된 앱버젼 < updateInfo[@"version"]["min"] -> 강제업데이트 팝업(description + store_url)
             if ( forceUpdate && isAvailableMinUpdate )
             {
@@ -965,8 +960,8 @@
                 UIAlertAction *ok;
                 UIAlertAction *no;
               
-                alert = [UIAlertController alertControllerWithTitle : @"알림"
-                                                            message : updateInfo[@"description"]
+                alert = [UIAlertController alertControllerWithTitle : @"업데이트"
+                                                            message : @"필수 업데이트가 있습니다.\n업데이트하시겠습니까?"//updateInfo[@"description"]
                                                      preferredStyle : UIAlertControllerStyleAlert];
               
                 ok = [UIAlertAction actionWithTitle : @"업데이트"
@@ -978,12 +973,9 @@
                                                                                    completionHandler : ^(BOOL success) { exit(0); }];
                                                       }];
               
-                no = [UIAlertAction actionWithTitle : @"종 료"
+                no = [UIAlertAction actionWithTitle : @"앱 종료"
                                               style : UIAlertActionStyleDefault
-                                            handler : ^(UIAlertAction * action)
-                                                      {
-                                                          exit(0);
-                                                      }];
+                                            handler : ^(UIAlertAction * action) { exit(0); }];
                 [alert addAction : ok];
                 [alert addAction : no];
               
@@ -1000,8 +992,8 @@
                 UIAlertAction *ok;
                 UIAlertAction *no;
               
-                alert = [UIAlertController alertControllerWithTitle : @"알림"
-                                                            message : updateInfo[@"description"]
+                alert = [UIAlertController alertControllerWithTitle : @"업데이트"
+                                                            message : @"최신 업데이트가 있습니다.\n업데이트하시겠습니까?"//updateInfo[@"description"]
                                                      preferredStyle : UIAlertControllerStyleAlert];
               
                 ok = [UIAlertAction actionWithTitle : @"업데이트"
@@ -1013,7 +1005,7 @@
                                                                                    completionHandler : ^(BOOL success) { exit(0); }];
                                                       }];
               
-                no = [UIAlertAction actionWithTitle : @"취 소"
+                no = [UIAlertAction actionWithTitle : @"나중에"
                                               style : UIAlertActionStyleDefault
                                             handler : ^(UIAlertAction * action)
                                                       {
