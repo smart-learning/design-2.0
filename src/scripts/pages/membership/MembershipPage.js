@@ -371,7 +371,11 @@ export default class MembershipPage extends React.Component {
       if ('success' === change.name && change.newValue) {
         globalStore.buyResult.success = false;
         // HomeScreen.js 로 이동 혹은 Back
-        this.props.navigation.navigate('HomeScreen');
+        //this.props.navigation.navigate('HomeScreen');
+        // -> 이전 화면으로 돌아갔을 때 멤버십 갱신되도록 아래와 같이 수정. 2018.11.22
+        this.props.navigation.navigate('HomeScreen', {
+          reload_mbs: true
+        });
       }
     });
   }
@@ -808,8 +812,12 @@ export default class MembershipPage extends React.Component {
                 paddingRight: 15
               }}
               activeOpacity={0.7}
-              /* onPress={() => this.props.navigation.navigate('HomeScreen')} */
-              onPress={() => this.props.navigation.dismiss()}
+              onPress={() =>
+                this.props.navigation.navigate('HomeScreen', {
+                  reload_mbs: true
+                })
+              }
+              // onPress={() => this.props.navigation.dismiss()}
             >
               <Text style={styles.tripAroundButton}>
                 무료 계정으로 둘러보기
