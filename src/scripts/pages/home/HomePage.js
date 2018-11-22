@@ -285,6 +285,13 @@ class HomePage extends React.Component {
     if (params && 'audioBook' === params.page) {
       this.props.navigation.state.params.page = undefined;
       this.goPage('audioBook');
+    } else if (params && true === params.reload_mbs) {
+      this.props.navigation.state.params.reload_mbs = undefined;
+
+      // 멤버쉽 가져오기
+      globalStore.currentMembership = async () => net.getMembershipCurrent();
+      // 이용권 가져오기
+      globalStore.voucherStatus = async () => net.getVouchersStatus();
     }
   }
 
