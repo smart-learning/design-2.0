@@ -383,13 +383,19 @@ export default {
   },
 
   getMainPopup() {
-    return cacheOrLoad(API_PREFIX + 'v1.0/users/popup')
-      .then(data => {
-        return data;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const url = API_PREFIX + 'v1.0/users/popup';
+    params={
+      platform:Platform.OS
+    }
+    return axios
+    .get(url, { params: params })
+    .then(resp => {
+      console.log('popup',resp);
+      return resp.data;
+    })
+    .catch(error => {
+      console.log(error);
+    });
   },
 
   getHomeContents(isRefresh = false) {
