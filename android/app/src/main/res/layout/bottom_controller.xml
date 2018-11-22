@@ -70,15 +70,36 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
-          android:id="@+id/mini_title"
-          android:layout_width="0dp"
+        <LinearLayout
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:ellipsize="end"
-          android:marqueeRepeatLimit="marquee_forever"
-          android:maxLines="1"
-          android:textColor="@color/colorWhite"/>
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/mini_group_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:text="그룹 타이틀이 출력됩니다. 그룹 타이틀이 출력됩니다. 그룹 타이틀이 출력됩니다. "
+            android:textColor="@color/colorWhite"/>
+
+          <TextView
+            android:id="@+id/mini_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:text="클립 타이틀이 출력됩니다. 클립 타이틀이 출력됩니다. 클립 타이틀이 출력됩니다. "
+            android:textColor="@color/colorWhite"/>
+
+        </LinearLayout>
+
+
 
         <TextView
           android:id="@+id/mini_current_time"
@@ -86,6 +107,7 @@
           android:layout_height="wrap_content"
           android:gravity="right|end|center_vertical"
           android:maxLines="1"
+          android:text="00:00"
           android:textColor="@color/colorControlTextEnable"/>
 
         <TextView
@@ -102,6 +124,7 @@
           android:layout_height="wrap_content"
           android:gravity="left|start|center_vertical"
           android:maxLines="1"
+          android:text="00:00"
           android:textColor="@color/colorWhite"/>
       </LinearLayout>
     </LinearLayout>
