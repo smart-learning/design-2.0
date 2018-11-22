@@ -53,6 +53,7 @@ typedef void (^kErrorBlock)(NSError *error);
                         authToken : (NSString *) authValue;
 
 + (NSArray *) getSubtitles : (NSString *) contentID;
++ (NSDictionary *) getUpdateData;
 
 - (void) setReachabilityStatusChangeBlock : (void (^)(NSInteger status)) block;
 - (BOOL) isConnectionWifi;

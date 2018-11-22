@@ -501,6 +501,34 @@
     return array;
 }
 
+//
+// 업데이트 관련 데이터를 가져옵니다.
+//
++ (NSDictionary *) getUpdateData
+{
+    NSString *apiPlatformVersion = @"/api/v1.0/platform/versions/ios";
+    NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiPlatformVersion];
+    NSURL *url = [NSURL URLWithString : urlStr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
+  
+    [request setHTTPMethod : @"GET"];
+  
+    NSError *error;
+    NSURLResponse *resp = nil;
+    // 비동기방식이 아닌 동기방식으로 접속합니다.
+    NSData *data = [ApiManager sendSynchronousRequest : request
+                                    returningResponse : &resp
+                                                error : &error];
+  
+    NSString *jsonData = [[NSString alloc] initWithData : data
+                                               encoding : NSUTF8StringEncoding];
+  
+    NSDictionary *updateDataDics = [NSJSONSerialization JSONObjectWithData : [jsonData dataUsingEncoding : NSUTF8StringEncoding]
+                                                                   options : NSJSONReadingAllowFragments
+                                                                     error : &error];
+  
+    return updateDataDics;
+}
 @end
 
 
