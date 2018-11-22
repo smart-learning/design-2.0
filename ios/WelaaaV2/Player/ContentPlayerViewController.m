@@ -2293,6 +2293,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         if ( [@"script-mode" isEqualToString : buttonId] )
         {
             [_scriptView setStatus : MediaPlayerScriptViewModeNone];
+            [_scriptButton setStatus : 0];
             isToast = YES;
         }
         else if ( [@"download-mode" isEqualToString : buttonId] )
