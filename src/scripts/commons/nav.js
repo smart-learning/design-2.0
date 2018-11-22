@@ -16,7 +16,7 @@ export const NAV_OPTS_COMMON = {
   },
   headerTintColor: '#fff',
   headerTitleStyle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold'
   }
 };
