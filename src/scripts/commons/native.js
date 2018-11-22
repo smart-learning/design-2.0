@@ -1,5 +1,6 @@
 ﻿import { Alert, NativeModules } from 'react-native';
 import globalStore from '../commons/store';
+import net from '../commons/net';
 
 const { RNNativePlayer, RNNativeBase, RNProductPayment } = NativeModules;
 
@@ -89,7 +90,7 @@ export default {
       .catch(failed);
   },
 
-  getDownloadListCid(cid , success, failed) {
+  getDownloadListCid(cid, success, failed) {
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
       cid: cid,
@@ -196,12 +197,15 @@ export default {
     }
   },
 
-  buyResult(arg) {
-    console.log('native.js::buyResult(arg)', arg);
-    globalStore.buyResult.success = arg.success;
-  },
-
-  unsubscribe() {
-    return RNProductPayment.unsubscribe();
+  async buyResult(arg) {
+    try {
+      const resp = await net.getMembershipCurrentFresh();
+      console.log('buyResult > resp', resp);
+      globalStore.currentMembership = resp.data;
+    } catch (error) {
+      console.log('buyResult > error', error);
+      return false;
+    }
+    return true;
   }
 };
