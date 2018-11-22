@@ -42,6 +42,7 @@ public class ReactBottomControllerView extends FrameLayout {
   private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
 
   private ProgressBar timeBar;
+  private TextView groupTitle;
   private TextView title;
   private TextView currentTime;
   private TextView durationTime;
@@ -71,6 +72,7 @@ public class ReactBottomControllerView extends FrameLayout {
     super(context);
     inflate(context, R.layout.bottom_controller, this);
 
+    groupTitle = findViewById(R.id.mini_group_title);
     title = findViewById(R.id.mini_title);
     currentTime = findViewById(R.id.mini_current_time);
     durationTime = findViewById(R.id.mini_duration_time);
@@ -191,6 +193,7 @@ public class ReactBottomControllerView extends FrameLayout {
     LogHelper.d(TAG, "updateMediaDescription called");
     if (description != null) {
       title.setText(description.getTitle());
+      groupTitle.setText(description.getSubtitle());
     }
   }
 
