@@ -2,14 +2,13 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
-  AsyncStorage,
+  Alert,
   BackHandler,
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Alert
+  View
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -78,9 +77,9 @@ const styles = StyleSheet.create({
 @observer
 class HomePage extends React.Component {
   state = {
-    show_popup:false
+    show_popup: false
   };
-  
+
   @observable
   tabStatus = 'video';
 
@@ -232,11 +231,11 @@ class HomePage extends React.Component {
     }
   };
 
-  showPopup(){
-    if(globalStore.welaaaAuth){
+  showPopup() {
+    if (globalStore.welaaaAuth) {
       return <AdvertisingSection show_popup={this.state.show_popup} />;
-    } 
-  };
+    }
+  }
 
   componentDidMount = async () => {
     if (this.props.navigation.isFocused() && globalStore.welaaaAuth) {
@@ -253,39 +252,25 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
-      this.setState({ show_popup:true })
-    } else {
-      let value = await AsyncStorage.getItem('isAppFirstLoad');
 
-      if (value === null) {
-        value = true;
-      }
-
-      if (value === true) {
-        // Login 은 되고 .
-        // SignUpPage 는 안되고 .
-        // 'change screen:', 'HomeScreen', '-->', 'SignUpPage'
-        // 'change screen:', 'SignUpPage', '-->', 'Login'
-        this.props.navigation.navigate('SignUpPage');
-      } else {
-        this.props.navigation.navigate('Login');
-      }
+      this.setState({ show_popup: true });
     }
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   };
 
   componentDidUpdate() {
     const params = this.props.navigation.state.params;
-    if(params){
-      if(params.page === 'audioBook'){
+    if (params) {
+      if (params.page === 'audioBook') {
         this.props.navigation.state.params.page = undefined;
         this.goPage('audioBook');
       }
-      if(params.show_popup){
+      if (params.show_popup) {
         this.props.navigation.state.params.show_popup = undefined;
-        this.setState({ show_popup:true });
+        this.setState({ show_popup: true });
       }
-    }    
+    }
   }
 
   componentWillUnmount() {
