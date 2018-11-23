@@ -70,16 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333333'
   },
-  dailyBookContentHeadline: {},
-  showMoreWrapper: {
-    marginBottom: 10,
-    alignItems: 'flex-end'
-  },
-  showMore: {
-    borderColor: '#efefef',
-    borderWidth: 1,
-    padding: 3
-  }
+  dailyBookContentHeadline: {}
 });
 
 @observer
@@ -128,16 +119,6 @@ class BookDaily extends React.Component {
           <Text style={[styles.mainTitleCenter, styles.titleH4]}>
             책 좀 아는 사람들이 요약해 주는 읽은 척 매뉴얼
           </Text>
-        </View>
-        <View style={styles.showMoreWrapper}>
-          <TouchableOpacity
-            style={styles.showMore}
-            onPress={() => {
-              this.props.navigation.navigate('AudioBookPage');
-            }}
-          >
-            <Text>더 보기</Text>
-          </TouchableOpacity>
         </View>
 
         {/*카테고리*/}
@@ -292,8 +273,8 @@ class BookDaily extends React.Component {
               </View>
             </View>
           ) : this.data.dailyTabSelected === 'Fri' ||
-          this.data.dailyTabSelected === 'Sat' ||
-          this.data.dailyTabSelected === 'Sun' ? (
+            this.data.dailyTabSelected === 'Sat' ||
+            this.data.dailyTabSelected === 'Sun' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [금] 이영미의 밤 새워 읽고 싶은 책
