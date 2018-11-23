@@ -1,4 +1,4 @@
-﻿import { Alert, NativeModules } from 'react-native';
+﻿import { Alert, NativeModules, Platform } from 'react-native';
 import globalStore from '../commons/store';
 import net from '../commons/net';
 
@@ -89,9 +89,23 @@ export default {
 
   getDownloadList(success, failed) {
     console.log('native.js::getDownloadList');
-    RNNativePlayer.getDownloadList()
-      .then(success)
-      .catch(failed);
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {
+      userId: userId.toString()
+    };
+
+    console.log('native.js::getDownloadList', config);
+
+    if (Platform.OS === 'android') {
+      RNNativePlayer.getDownloadList(config)
+        .then(success)
+        .catch(failed);
+    } else {
+      RNNativePlayer.getDownloadList()
+        .then(success)
+        .catch(failed);
+    }
   },
 
   getDownloadListCid(cid, success, failed) {
@@ -222,6 +236,6 @@ export default {
   },
 
   unsubscribe() {
-   return RNProductPayment.unsubscribe();
+    return RNProductPayment.unsubscribe();
   }
 };
