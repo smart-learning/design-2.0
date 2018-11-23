@@ -252,7 +252,8 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
-
+    }
+    if (this.props.navigation.isFocused()) {
       this.setState({ show_popup: true });
     }
 
