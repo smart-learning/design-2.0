@@ -298,7 +298,7 @@ class MembershipFormPage extends React.Component {
     try {
       const data = await net.registerMembership(payload);
 
-      // 결제 완료 후 바우처 상태 갱신 
+      // 결제 완료 후 바우처 상태 갱신
       globalStore.voucherStatus = await net.getVouchersStatus();
 
       // register 성공
@@ -323,14 +323,13 @@ class MembershipFormPage extends React.Component {
         NativeConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE;
       const EVENT_PARAM_CURRENCY = NativeConstants.EVENT_PARAM_CURRENCY;
       const { params } = this.props.navigation.state;
-      var price =
-        'campus' === params.type
-          ? 7700
-          : 'bookclub' === params.type
-            ? 6600
-            : 'premium' === params.type
-              ? 14300
-              : 0;
+      const product = productItem[params.type || 'none'];
+      var price = 0;
+      if ('android' === Platform.OS) {
+        price = product.android.price;
+      } else if ('ios' === Platform.OS) {
+        price = product.ios.price;
+      }
       AppEventsLogger.logEvent(EVENT_NAME_INITIATED_CHECKOUT, price, {
         [EVENT_PARAM_CONTENT]: params.title,
         [EVENT_PARAM_CONTENT_ID]: 'membership',
@@ -389,7 +388,10 @@ class MembershipFormPage extends React.Component {
       <SafeAreaView
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
       >
-        <ScrollView style={{ width: '100%' }} keyboardShouldPersistTaps="always">
+        <ScrollView
+          style={{ width: '100%' }}
+          keyboardShouldPersistTaps="always"
+        >
           <View style={CommonStyles.contentContainer}>
             <View style={styles.itemInfoContainer}>
               <View style={styles.itemInfo}>
