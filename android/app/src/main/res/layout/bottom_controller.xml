@@ -70,15 +70,34 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+
+          android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/mini_group_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:maxLines="1"
+          android:marqueeRepeatLimit="marquee_forever"
+          android:text="최근 재생 이력이 없습니다. "
+          android:textColor="@color/colorWhite"/>
+
         <TextView
           android:id="@+id/mini_title"
-          android:layout_width="0dp"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:ellipsize="end"
-          android:marqueeRepeatLimit="marquee_forever"
           android:maxLines="1"
+          android:marqueeRepeatLimit="marquee_forever"
           android:textColor="@color/colorWhite"/>
+
+        </LinearLayout>
 
         <TextView
           android:id="@+id/mini_current_time"

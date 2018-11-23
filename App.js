@@ -424,9 +424,11 @@ class App extends React.Component {
           </View>
         )}
 
+        {console.log('bottomController ? ', store.miniPlayerArg)}
+
         {store.miniPlayerVisible &&
           Platform.select({
-            android: <BottomController />,
+            android: <BottomController arg={store.miniPlayerArg} />,
             ios: null
           })}
         <NotificationUI

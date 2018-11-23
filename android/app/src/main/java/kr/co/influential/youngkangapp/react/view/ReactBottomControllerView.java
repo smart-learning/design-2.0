@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -23,6 +24,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -42,6 +45,7 @@ public class ReactBottomControllerView extends FrameLayout {
   private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
 
   private ProgressBar timeBar;
+  private TextView groupTitle;
   private TextView title;
   private TextView currentTime;
   private TextView durationTime;
@@ -72,6 +76,7 @@ public class ReactBottomControllerView extends FrameLayout {
     inflate(context, R.layout.bottom_controller, this);
 
     title = findViewById(R.id.mini_title);
+    groupTitle = findViewById(R.id.mini_group_title);
     currentTime = findViewById(R.id.mini_current_time);
     durationTime = findViewById(R.id.mini_duration_time);
     pause = findViewById(R.id.mini_btn_pause);
@@ -191,6 +196,10 @@ public class ReactBottomControllerView extends FrameLayout {
     LogHelper.d(TAG, "updateMediaDescription called");
     if (description != null) {
       title.setText(description.getTitle());
+      groupTitle.setText(description.getSubtitle());
+    } else {
+      title.setText("최근 재생 이력이 없습니다.");
+      groupTitle.setText("");
     }
   }
 
@@ -358,6 +367,46 @@ public class ReactBottomControllerView extends FrameLayout {
         .getMediaController(activity);
     if (mediaController != null) {
       mediaController.getTransportControls().stop();
+    }
+  }
+
+  public void setMiniPlayer(@Nullable ReadableMap content){
+    try{
+
+      String miniPlayerCid = "";
+      String miniPlayerTitle = "";
+      String miniPlayercurrentPlayTime = "";
+      String miniPlayerTotalPlayTime = "";
+      String miniPlayerGroupTitle = "";
+
+      ReadableNativeMap readableNativeMap = (ReadableNativeMap) content;
+
+      miniPlayerTitle = readableNativeMap.getMap("arg").getString("miniPlayerTitle");
+      miniPlayercurrentPlayTime = readableNativeMap.getMap("arg").getString("miniPlayercurrentPlayTime");
+      miniPlayerTotalPlayTime = readableNativeMap.getMap("arg").getString("miniPlayerTotalPlayTime");
+      miniPlayerGroupTitle =  readableNativeMap.getMap("arg").getString("miniPlayerGroupTitle");
+
+      title = findViewById(R.id.mini_title);
+      groupTitle = findViewById(R.id.mini_group_title);
+      currentTime = findViewById(R.id.mini_current_time);
+      durationTime = findViewById(R.id.mini_duration_time);
+
+      title.setText(miniPlayerTitle);
+      currentTime.setText(Utils.timeToString(Double.parseDouble(miniPlayercurrentPlayTime)));
+
+      if(miniPlayerTotalPlayTime!=null){
+        String[] timesplit = miniPlayerTotalPlayTime.split(":");
+
+        if(timesplit[0].equals("00")){
+          miniPlayerTotalPlayTime = timesplit[1]+":"+timesplit[2];
+        }
+      }
+
+      durationTime.setText(miniPlayerTotalPlayTime);
+      groupTitle.setText(miniPlayerGroupTitle);
+
+    }catch (Exception e){
+      e.printStackTrace();
     }
   }
 }

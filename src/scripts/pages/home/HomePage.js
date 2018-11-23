@@ -9,7 +9,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -104,7 +105,8 @@ class HomePage extends React.Component {
       hot: [],
       new: [],
       recommend: []
-    }
+    },
+    contentDataInfo: []
 
     // audioPlayRecentData: [],
   });
@@ -229,18 +231,87 @@ class HomePage extends React.Component {
     }
   };
 
+  async setMiniPlayer(cid, duration) {
+    try {
+      const contentDataInfo = await net.getContentInfo(cid);
+
+      let videoClips = [];
+      let audioChapters = [];
+      let miniPlayerCid = cid;
+      let miniPlayerTitle = "";
+      let miniPlayerGroupTitle = contentDataInfo.data.data.title;
+      let miniPlayerTotalPlayTime = "";
+      let miniPlayercurrentPlayTime = duration;
+
+      if (contentDataInfo.data.type === 'video-course') {
+        videoClips = contentDataInfo.data.data.clips;
+        videoClips.map((item, key) => {
+          if (item.cid === miniPlayerCid) {
+            miniPlayerCid = item.cid;
+            miniPlayerTitle = item.title;
+            miniPlayerTotalPlayTime = item.play_time;
+          }
+        })
+      } else if (contentDataInfo.data.type === 'audiobook') {
+        audioChapters = contentDataInfo.data.data.chapters;
+        audioChapters.map((item, key) => {
+          if (item.cid === miniPlayerCid) {
+            miniPlayerCid = item.cid;
+            miniPlayerTitle = item.title;
+            miniPlayerTotalPlayTime = item.play_time;
+          }
+        })
+      }
+
+      let config = {
+        miniPlayerCid: miniPlayerCid,
+        miniPlayerTitle: miniPlayerTitle,
+        miniPlayerTotalPlayTime: miniPlayerTotalPlayTime,
+        miniPlayerGroupTitle: miniPlayerGroupTitle,
+        miniPlayercurrentPlayTime: miniPlayercurrentPlayTime
+      };
+
+      Native.mainToggleMiniPlayer(true, config);
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
+  getProgressList = async () => {
+
+    if (Platform.OS === 'android') {
+      // native getHomeMiniPlayer 
+      // [{"duration":"9822","playCount":"1","reg_date":"2018-11-19 18:07:43",
+      // "server_sync_flag":"N","progress":"","cid":"v100006_001"}]
+      // 재생할 수 있는 준비를 한다. Native.play (v100006_001)
+      // 타이틀 , progress 확인을 한다 ?
+      // getProgressDatabase 가 null 경우 , '최근 재생 이력이 없습니다.'
+      // 오디오북 의 경우 재생하면 될 것 이고, 클래스 동영상의 경우는 어떻게 해야 할까요 ? 
+
+      Native.getProgressDatabase(
+        result => {
+          if ('null' !== result.trim()) {
+            try {
+              let jsonData = JSON.parse(result);
+              jsonData.map((item, key) => {
+                if (key === 0) {
+                  this.setMiniPlayer(item.cid, item.duration);
+                }
+              });
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        },
+        error => console.error(e)
+      );
+    }
+  }
+
   componentDidMount = async () => {
 
-    console.log('historyGet', Native.getProgressDatabase())
-    // native getHomeMiniPlayer 
-    // [{"duration":"9822","playCount":"1","reg_date":"2018-11-19 18:07:43",
-    // "server_sync_flag":"N","progress":"","cid":"v100006_001"}]
-    // 재생할 수 있는 준비를 한다. Native.play (v100006_001)
-    // 타이틀 , progress 확인을 한다 ?
-    // getProgressDatabase 가 null 경우 , '최근 재생 이력이 없습니다.'
-    // 오디오북 의 경우 재생하면 될 것 이고, 클래스 동영상의 경우는 어떻게 해야 할까요 ? 
-
-    Native.toggleMiniPlayer(true);
+    this.getProgressList();
 
     if (this.props.navigation.isFocused()) {
       console.log('componentDidMount ', 'navigation isFocused');
@@ -340,9 +411,6 @@ class HomePage extends React.Component {
 
     if (globalStore && globalStore.currentMembership) {
       const { type } = globalStore.currentMembership;
-      console.log('currentMemberShip ', ' type :  ' + type);
-    } else {
-      Alert.alert('CurrentMemberShip Type ', 'NULL ');
     }
   };
 
