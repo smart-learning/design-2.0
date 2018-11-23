@@ -2,7 +2,7 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
-  AsyncStorage,
+  Alert,
   BackHandler,
   Dimensions,
   StyleSheet,
@@ -76,6 +76,10 @@ const styles = StyleSheet.create({
 
 @observer
 class HomePage extends React.Component {
+  state = {
+    show_popup: false
+  };
+
   @observable
   tabStatus = 'video';
 
@@ -227,24 +231,13 @@ class HomePage extends React.Component {
     }
   };
 
-  componentDidMount = async () => {
-    if (this.props.navigation.isFocused()) {
-      console.log('componentDidMount ', 'navigation isFocused');
-      let windowWidth = Dimensions.get('window').width;
-      let windowHeight = Dimensions.get('window').height;
-
-      this.store.windowWidth = windowWidth;
-      this.store.windowHeight = windowHeight;
-      this.store.slideHeight = windowWidth * 0.347;
-      this.store.clipRankContentSize = windowWidth - 85;
-
-      try {
-        this.getData();
-      } catch (error) {
-        console.log(error);
-      }
+  showPopup() {
+    if (globalStore.welaaaAuth) {
+      return <AdvertisingSection show_popup={this.state.show_popup} />;
     }
+  }
 
+  componentDidMount = async () => {
     if (globalStore.welaaaAuth) {
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
@@ -259,25 +252,26 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
-    } else {
-      let value = await AsyncStorage.getItem('isAppFirstLoad');
 
-      if (value === null) {
-        value = true;
-      }
-
-      if (value === true) {
-        // Login 은 되고 .
-        // SignUpPage 는 안되고 .
-        // 'change screen:', 'HomeScreen', '-->', 'SignUpPage'
-        // 'change screen:', 'SignUpPage', '-->', 'Login'
-        this.props.navigation.navigate('SignUpPage');
-      } else {
-        this.props.navigation.navigate('Login');
-      }
+      this.setState({ show_popup: true });
     }
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   };
+
+  componentDidUpdate() {
+    const params = this.props.navigation.state.params;
+    if (params) {
+      if (params.page === 'audioBook') {
+        this.props.navigation.state.params.page = undefined;
+        this.goPage('audioBook');
+      }
+      if (params.show_popup) {
+        this.props.navigation.state.params.show_popup = undefined;
+        this.setState({ show_popup: true });
+      }
+    }
+  }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -285,10 +279,42 @@ class HomePage extends React.Component {
 
   handleBackPress = () => {
     console.log('back press:');
+    // if (this.props.navigation.isFocused()) {
+    //   Alert.alert(
+    //     'Exit App',
+    //     'Exiting the application?', [{
+    //         text: 'Cancel',
+    //         onPress: () => console.log('Cancel Pressed'),
+    //         style: 'cancel'
+    //     }, {
+    //         text: 'OK',
+    //         onPress: () => this.checkMemberShip()
+    //     }, ], {
+    //         cancelable: false
+    //     }
+    //  )
+    //  return true;
+    // } else {
+    //   this.props.navigation.goBack();
+    // }
+
+    console.log('back press:');
     if (this.props.navigation.isFocused()) {
       BackHandler.exitApp();
     } else {
       this.props.navigation.goBack();
+    }
+  };
+
+  checkMemberShip = () => {
+    // Alert.alert('CurrentMemberShip Type ','TEST');
+    // {globalStore.welaaaAuth && <AdvertisingSection />}
+
+    if (globalStore && globalStore.currentMembership) {
+      const { type } = globalStore.currentMembership;
+      console.log('currentMemberShip ', ' type :  ' + type);
+    } else {
+      Alert.alert('CurrentMemberShip Type ', 'NULL ');
     }
   };
 
@@ -387,8 +413,7 @@ class HomePage extends React.Component {
               </View>
             </View>
           </View>
-
-          {globalStore.welaaaAuth && <AdvertisingSection />}
+          {this.showPopup()}
         </SafeAreaView>
       </View>
     );

@@ -1,10 +1,8 @@
 import React from 'react';
-
 import {
   ImageBackground,
   Linking,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -31,13 +29,12 @@ export default class HomeBanner extends React.Component {
         title: '멤버십'
       });
     } else if (action_type === 'videocourse') {
-      this.props.navigation.navigate('ClassDetailPage', {
+      this.props.navigation.navigate('ClassDetail', {
         id: action_param,
         title: '강좌'
       });
     } else if (action_type === 'audiobook') {
-
-      this.props.navigation.navigate('AudioBookDetailPage', {
+      this.props.navigation.navigate('AudioBookDetail', {
         id: action_param,
         title: '오디오북'
       });

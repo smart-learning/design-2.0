@@ -4,6 +4,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   Image,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +16,7 @@ import Swiper from 'react-native-swiper';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
+import IcMainWideBanner from '../../../images/main_wide_banner.png';
 import CommonStyles from '../../../styles/common';
 import globalStore from '../../commons/store';
 import ClassContinueList from '../../components/home/ClassContinueList';
@@ -23,6 +25,7 @@ import ClipRank from '../../components/home/ClipRank';
 import HomeBanner from '../../components/home/HomeBanner';
 import Series from '../../components/home/Series';
 import PageCategory from '../../components/PageCategory';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   slide: {
@@ -97,7 +100,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50
   },
   classCategory: {
-    marginTop: 20,
+    marginTop: 0,
     marginBottom: 20
   },
   classCategoryHr: {
@@ -106,6 +109,20 @@ const styles = StyleSheet.create({
   },
   seriesComponent: {
     paddingTop: 30
+  },
+  showMoreWrapper: {
+    marginBottom: 10,
+    alignItems: 'flex-end'
+  },
+  showMore: {
+    borderColor: '#efefef',
+    borderWidth: 1,
+    padding: 3
+  },
+  imageMainBanner: {
+    width: '100%',
+    paddingTop: '12%',
+    paddingBottom: '12%'
   }
 });
 
@@ -152,7 +169,7 @@ class HomeVideoPage extends React.Component {
                   const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) { }
+                  } catch (e) {}
 
                   return (
                     <HomeBanner
@@ -176,6 +193,30 @@ class HomeVideoPage extends React.Component {
             )}
           </View>
           {/* /이미지 스와이퍼 */}
+
+          {/* */}
+          {
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  // this.props.navigation.navigate('VideoPack', {
+                  //   title: '윌라 홍보 영상'
+                  // })
+                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                  Native.play('v300001_001')
+                }
+              >
+                <ImageBackground
+                  source={IcMainWideBanner}
+                  resizeMode="contain"
+                  style={styles.imageMainBanner}
+                />
+              </TouchableOpacity>
+            </View>
+          }
+
           {homeSeriesData &&
             homeSeriesData.length &&
             (homeSeriesData.length <= 6 ? (
@@ -186,42 +227,56 @@ class HomeVideoPage extends React.Component {
                 />
               </View>
             ) : (
-                <View
-                  style={[CommonStyles.contentContainer, styles.seriesContainer]}
-                >
+              <View
+                style={[CommonStyles.contentContainer, styles.seriesContainer]}
+              >
+                <View>
                   <View>
                     <Text style={[styles.mainTitleCenter, styles.titleH2]}>
                       윌라 추천 시리즈
-                  </Text>
+                    </Text>
                     <Text style={[styles.mainTitleCenter, styles.titleH4]}>
                       당신이 배우고 싶은 모든 것
-                  </Text>
+                    </Text>
                   </View>
-
-                  <View style={styles.seriesComponent}>
-                    <Series itemData={this.props.store.homeSeriesData} />
+                  <View style={styles.showMoreWrapper}>
+                    <TouchableOpacity
+                      style={styles.showMore}
+                      onPress={() => {
+                        this.props.navigation.navigate('HomeSeriesPage', {
+                          title: '윌라 추천 시리즈'
+                        });
+                      }}
+                    >
+                      <Text>전체보기</Text>
+                    </TouchableOpacity>
                   </View>
-
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={() =>
-                      this.props.navigation.navigate('HomeSeriesPage', {
-                        title: '윌라 추천 시리즈'
-                      })
-                    }
-                  >
-                    <View style={styles.linkViewAll} borderRadius={5}>
-                      <Text style={styles.linkViewAllText}>
-                        추천 시리즈 전체 보기{' '}
-                        <Image
-                          source={IcAngleRightGrey}
-                          style={styles.linkViewAllIcon}
-                        />
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
                 </View>
-              ))}
+
+                <View style={styles.seriesComponent}>
+                  <Series itemData={this.props.store.homeSeriesData} />
+                </View>
+
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    this.props.navigation.navigate('HomeSeriesPage', {
+                      title: '윌라 추천 시리즈'
+                    })
+                  }
+                >
+                  <View style={styles.linkViewAll} borderRadius={5}>
+                    <Text style={styles.linkViewAllText}>
+                      추천 시리즈 전체 보기{' '}
+                      <Image
+                        source={IcAngleRightGrey}
+                        style={styles.linkViewAllIcon}
+                      />
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ))}
 
           {this.props.store.classHotData.length > 0 && (
             <View
@@ -235,11 +290,22 @@ class HomeVideoPage extends React.Component {
                   당신의 커리어 성공과 행복한 일상을 위한 교육
                 </Text>
               </View>
+              <View style={styles.showMoreWrapper}>
+                <TouchableOpacity
+                  style={styles.showMore}
+                  onPress={() => {
+                    this.props.navigation.navigate('ClassListPage');
+                  }}
+                >
+                  <Text>전체보기</Text>
+                </TouchableOpacity>
+              </View>
 
               <View style={styles.classCategory}>
                 <View style={styles.classCategoryHr} />
                 <PageCategory
                   data={this.props.store.videoCategoryData}
+                  selectedCategory={0}
                   onCategorySelect={this.premiumCategorySelect}
                 />
                 <View style={styles.classCategoryHr} />

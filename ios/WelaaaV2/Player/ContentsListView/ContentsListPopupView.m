@@ -96,6 +96,12 @@
     _tableView.hidden = YES;
     
     [self requestHistory];
+  
+    // 현재 재생중인 콘텐츠의 index로 이동시킵니다.
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentPlayIndex inSection:0];
+    [_tableView scrollToRowAtIndexPath : indexPath
+                      atScrollPosition : UITableViewScrollPositionTop
+                              animated : YES];
 }
 
 - (UIView *) makeTitleView : (CGRect) frame

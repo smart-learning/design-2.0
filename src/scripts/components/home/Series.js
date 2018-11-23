@@ -36,9 +36,10 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingLeft: 15,
     paddingRight: 15,
-    fontSize: 24,
+    fontSize: 18,
     color: '#ffffff',
-    textAlign: 'center'
+    textAlign: 'center',
+    lineHeight: 24
   }
 });
 
@@ -61,14 +62,14 @@ class Series extends React.Component {
                 activeOpacity={0.9}
                 onPress={() =>
                   this.props.navigation.navigate('HomeSeriesPage', {
-                    title: '윌라 추천 시리즈'
+                    title: '윌라 추천 시리즈',
+                    focus: item.category
                   })
                 }
               >
                 <ImageBackground
                   source={{ uri: item.image }}
                   resizeMode="cover"
-                  borderRadius={5}
                   style={styles.thumbnail}
                 >
                   <Text style={styles.title}>{item.title}</Text>

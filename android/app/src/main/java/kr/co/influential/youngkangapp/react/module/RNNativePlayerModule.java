@@ -30,6 +30,7 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.UUID;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
@@ -245,6 +246,21 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     try {
       Gson gson = new Gson();
       String json = gson.toJson(ContentManager().getDatabase());
+      promise.resolve(json);
+    } catch (Exception e) {
+      promise.reject(e);
+    }
+  }
+
+  @ReactMethod
+  public void getDownloadCidList(ReadableMap content, Promise promise) {
+    try {
+      String cid = content.getString("cid");
+      String userId = content.getString("userId");
+
+      Gson gson = new Gson();
+      String json = gson.toJson(ContentManager().getDownLoadedList(cid , userId));
+
       promise.resolve(json);
     } catch (Exception e) {
       promise.reject(e);
@@ -477,7 +493,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 String audio_preview = "";
 
                 sb.append("&ckey=" + ckey);
-                sb.append("&cname=" + cname);
+                sb.append("&cname=" + URLEncoder.encode(cname, "EUC-KR"));
                 sb.append("&cmemo=" + cmemo);
                 sb.append("&curl=" + curl);
                 sb.append("&cplay_time=" + cplay_time);
@@ -638,11 +654,22 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 }
 
                 if (historyId.equals("")) {
-                  if (i == 0) {
-                    contentCid = json.getString("cid");
-                    contentName = json.getString("title");
-                    contentId = i;
+                  // 히스토리가 없고, 미리듣기로 들어오는 경우
+                  if (checkAudioBookChapter) {
+                    if (contentCid.equals(json.getString("cid"))) {
+                      contentName = json.getString("title");
+                      contentCid = json.getString("cid");
+                      contentId = i;
+                    }
+                  }else{
+                  // 히스토리가 없고 , 상단 플레이 버튼을 통해서 진입하는 케이스
+                    if (i == 0) {
+                      contentCid = json.getString("cid");
+                      contentName = json.getString("title");
+                      contentId = i;
+                    }
                   }
+
                 } else {
                   if (checkAudioBookChapter) {
                     if (contentCid.equals(json.getString("cid"))) {
@@ -650,12 +677,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                       contentCid = json.getString("cid");
                       contentId = i;
                     }
+
                   } else {
                     if (historyId.equals(json.getString("id"))) {
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");
                       contentId = i;
                     }
+
                   }
                 }
               }

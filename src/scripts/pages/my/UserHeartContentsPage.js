@@ -226,8 +226,8 @@ class UserHeartContentsPage extends React.Component {
                         thumbnail={item.images ? item.images.list : null}
                         title={item.headline}
                         author={item.teacher ? item.teacher.name : ''}
-                        likeCount={item.like_count}
-                        reviewCount={item.review_count}
+                        likeCount={item.meta?item.meta.like_count:item.like_count}
+                        reviewCount={item.meta?item.meta.comment_count:item.review_count}
                         isLike={true}
                         navigation={this.props.navigation}
                         onPress={() => this.goLecture(item)}
@@ -283,8 +283,8 @@ class UserHeartContentsPage extends React.Component {
                         }
                         title={item.title}
                         author={item.teacher ? item.teacher.name : ''}
-                        likeCount={item.like_count}
-                        reviewCount={item.review_count}
+                        likeCount={item.meta?item.meta.like_count:item.like_count}
+                        reviewCount={item.meta?item.meta.comment_count:item.review_count}
                         isLike={true}
                         navigation={this.props.navigation}
                         onPress={() => this.goAudiobook(item)}

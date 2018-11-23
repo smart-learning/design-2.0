@@ -428,21 +428,17 @@ public class WeContentManager extends SQLiteOpenHelper {
     return CursorToDataTable(c);
   }
 
-  public int getDownLoadedList(String cid, String customerId) throws Exception {
+  public ArrayList<HashMap<String, Object>> getDownLoadedList(String cid,String userId) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
-    String query =
-        "SELECT cId, customerId FROM DOWNLOAD WHERE customerid='" + customerId + "' AND cid='" + cid
-            + "'";
-
+    String query = "SELECT groupkey, ckey, userId, drmSchemeUuid, drmLicenseUrl, cid, oid, "
+        + "contentPath,totalSize,gTitle,cTitle,groupImg,thumbnailImg,audioVideoType,"
+        + "groupTeacherName,cPlayTime,groupContentScnt,groupAllPlayTime,view_limitdate,modified "
+        + "FROM DOWNLOAD WHERE cid like '" + cid + "%' AND userId='" + userId
+        + "'";
     Cursor c = db.rawQuery(query, null);
-    int nCount = 0;
-    nCount = c.getCount();
-    if (c != null) {
-      c.close();
-    }
-    return nCount;
+    return CursorToDataTable(c);
   }
 
   public int getDownLoadedList(String gId, String cId, String customerId) throws Exception {

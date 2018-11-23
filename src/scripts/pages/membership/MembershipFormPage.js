@@ -21,7 +21,7 @@ import globalStore from '../../commons/store';
 
 const productItem = {
   campus: {
-    name: '캠퍼스',
+    name: '클래스',
     ios: {
       price: '11,000원'
     },
@@ -31,7 +31,7 @@ const productItem = {
     }
   },
   bookclub: {
-    name: '오디오북클럽',
+    name: '오디오북',
     ios: {
       price: '9,500원'
     },
@@ -256,14 +256,7 @@ class MembershipFormPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log('MembershipFormPage.js::componentDidMount');
-    if (this.props.navigation.state.params) {
-      this.formType = this.props.navigation.state.params.type;
-    }
-  }
-
-  componentWillUnmount() {
-    console.log('MembershipFormPage.js::componentWillUnMount');
+    this.formType = this.props.navigation.state.params.type;
   }
 
   validityPeriodMonthOnFocus = () => {
@@ -304,6 +297,10 @@ class MembershipFormPage extends React.Component {
 
     try {
       const data = await net.registerMembership(payload);
+
+      // 결제 완료 후 바우처 상태 갱신 
+      globalStore.voucherStatus = await net.getVouchersStatus();
+
       // register 성공
       // 결제 요청 완료에 멤버십 데이터로 갱신
       if (data && data.membership)
@@ -353,7 +350,18 @@ class MembershipFormPage extends React.Component {
         OS_TYPE: Platform.OS
       });
 
-      this.props.navigation.goBack();
+      // 멤버쉽 화면으로 이동.
+      // this.props.navigation.goBack();
+      // 2018. 11. 12. jungon
+      if (this.formType === 'bookclub') {
+        // 오디오북 멤버쉽 -> 오디오북 메인 페이지
+        this.props.navigation.navigate('HomeScreen', {
+          page: 'audioBook'
+        });
+      } else {
+        // 클래스 멤버쉽, 프리미엄 멤버쉽 -> 클래스 메인 페이지
+        this.props.navigation.navigate('HomeScreen');
+      }
     } catch (e) {
       // register 실패 (axios response not 200)
       console.log(e);
@@ -381,7 +389,7 @@ class MembershipFormPage extends React.Component {
       <SafeAreaView
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
       >
-        <ScrollView style={{ width: '100%' }}>
+        <ScrollView style={{ width: '100%' }} keyboardShouldPersistTaps="always">
           <View style={CommonStyles.contentContainer}>
             <View style={styles.itemInfoContainer}>
               <View style={styles.itemInfo}>

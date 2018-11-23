@@ -413,6 +413,7 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
   
     NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/receipts";
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
+    NSLog(@"  [checkReceipt] URL : %@", urlStr);
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
     NSString *headerValue = [@"Bearer " stringByAppendingString : authValue];
@@ -464,7 +465,8 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
   
     if ( result == nil )
     {
-        completion(nil, nil);
+      //completion(nil, nil);
+        return [common presentAlertWithTitle:@"영수증 검증" andMessage:@"STATUS값이 NULL입니다."];
     }
     else
     {
@@ -474,6 +476,12 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
             //[self provideContent: transaction.payment.productIdentifier];
             // implement proper rewards..
           
+            completion(jsonData, nil);
+        }
+        else if ( [[result stringValue] hasPrefix:@"21"] )
+        {
+            // 결제는 성공했지만 영수증 확인에 문제가 발생되었습니다.
+            NSLog(@"  [checkReceipt] Receipt Validation slightly wrong -_-?");
             completion(jsonData, nil);
         }
         else
@@ -494,6 +502,8 @@ restoreCompletedTransactionsFailedWithError : (NSError *) error
         //         테스트용 영수증을 실 서비스 VERIFY_URL로 보냈는지 확인한다.
         // 21008 : 이 영수증은 실제 제품 영수증이지만 확인을 위해 샌드 박스 서비스로 전송되었습니다.
         //         실제 서비스 영수증을 테스트 VERIFY_URL로 보냈는지 확인한다.
+        // 21010 : 이 영수증을 승인 할 수 없습니다. 구매가 이루어지지 않은 경우와 동일하게 처리하십시오.
+        // 21100-21199 : 내부 데이터 액세스 오류입니다.
     }
   
     return ;

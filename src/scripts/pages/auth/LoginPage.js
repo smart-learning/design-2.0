@@ -1,31 +1,28 @@
-import React from 'react';
 import { observable } from 'mobx';
-import CommonStyles from '../../../styles/common';
+import { observer } from 'mobx-react';
+import React from 'react';
 import {
   Alert,
-  BackHandler,
   Dimensions,
   Image,
   ImageBackground,
-  Keyboard,
   ScrollView,
   StyleSheet,
-  AsyncStorage,
   Text,
   View
 } from 'react-native';
-import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
-import EmailAuthPack from '../../components/auth/EmailAuthPack';
-import logo from '../../../images/logo-en-primary.png';
+import Swiper from 'react-native-swiper';
+import _ from 'underscore';
 import bgLogin from '../../../images/bg-signup.jpg';
-import FBLoginButton from '../../components/auth/FBLoginButton';
+import logo from '../../../images/logo-en-primary.png';
 import store from '../../../scripts/commons/store';
+import CommonStyles from '../../../styles/common';
+import createStore from '../../commons/createStore';
 import net from '../../commons/net';
 import globalStore from '../../commons/store';
-import _ from 'underscore';
-import { observer } from 'mobx-react';
-import createStore from '../../commons/createStore';
-import Swiper from 'react-native-swiper';
+import EmailAuthPack from '../../components/auth/EmailAuthPack';
+import FBLoginButton from '../../components/auth/FBLoginButton';
+import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
 
 const styles = StyleSheet.create({
   loginContainer: {
@@ -81,7 +78,7 @@ const styles = StyleSheet.create({
 
 class Data {
   @observable
-  isAppFirstLoadLoginPage = false;  
+  isAppFirstLoadLoginPage = false;
 }
 
 @observer
@@ -96,37 +93,9 @@ class LoginPage extends React.Component {
     this.windowHeight = Dimensions.get('window').height;
   }
 
-  componentDidMount = async () =>{
-    let value = await AsyncStorage.getItem('isAppFirstLoad');
+  componentDidMount() {}
 
-    this.data.isAppFirstLoadLoginPage = value;
-
-    console.log('LoginPage value ' , value );
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-
-    console.log('this.data.isAppFirstLoadLoginPage ' + this.data.isAppFirstLoadLoginPage);
-    let value = this.data.isAppFirstLoadLoginPage;
-    if (value === null) {
-      value = true;
-    }
-
-    if (value === true) {
-    }
-
-    console.log('back press:' + store.isAppFirstLoad);
-		if (value) {
-			BackHandler.exitApp();
-		} else {
-			this.props.navigation.navigate('HomeScreen');
-    }    
-  };
+  componentWillUnmount() {}
 
   /*
 	* @params email: 이메일이나 소셜 타입
@@ -140,9 +109,7 @@ class LoginPage extends React.Component {
       .then(data => {
         store.socialType = email;
         store.welaaaAuth = data;
-        navigation.navigate(
-          navigation.getParam('requestScreenName', 'HomeScreen')
-        );
+        navigation.navigate(navigation.getParam('requestScreenName', 'Main'));
 
         // 로그인이 완료 되면 loginCompleted를 보내 App.js의
         // 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
@@ -181,7 +148,7 @@ class LoginPage extends React.Component {
           { height: this.windowHeight }
         ]}
       >
-        <ScrollView style={{ flex: 1, width: '100%' }}>
+        <ScrollView style={{ flex: 1, width: '100%' }} keyboardShouldPersistTaps='always' >
           <View style={{ width: '100%', height: this.windowHeight }}>
             <Swiper
               style={styles.wrapper}

@@ -5,6 +5,7 @@ import {
   NAV_OPTS_STACK_HISTORY_BACK
 } from '../../commons/nav';
 import globalStore from '../../commons/store';
+import AudioBookDetailPage from '../audio/AudioBookDetailPage';
 import AuthLoadingScreen from '../auth/AuthLoadingScreen';
 import EmailSignUpForm from '../auth/EmailSignUpForm';
 import FindPasswordPage from '../auth/FindPasswordPage';
@@ -12,6 +13,7 @@ import LoginPage from '../auth/LoginPage';
 import Policy from '../auth/PolicyPage';
 import Privacy from '../auth/PrivacyPage';
 import SignUpLandingPage from '../auth/SignUpLandingPage';
+import ClassDetailPage from '../video/ClassDetailPage';
 import AudioBookBuyPage from './AudioBookBuyPage';
 import AudioBookTicketPage from './AudioBookTicketPage';
 import AudioBookUsePage from './AudioBookUsePage';
@@ -79,7 +81,6 @@ const MyScreens = createStackNavigator(
       screen: SetAppPage,
       navigationOptions: NAV_OPTS_STACK
     },
-
     LectureUsePage: {
       screen: LectureUsePage,
       navigationOptions: NAV_OPTS_STACK
@@ -99,6 +100,14 @@ const MyScreens = createStackNavigator(
     AudioBookBuyPage: {
       screen: AudioBookBuyPage,
       navigationOptions: NAV_OPTS_STACK
+    },
+    ClassDetail: {
+      screen: ClassDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
+    },
+    AudioBookDetail: {
+      screen: AudioBookDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     },
     DownloadContentPage: {
       screen: DownloadContentPage,

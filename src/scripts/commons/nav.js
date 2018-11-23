@@ -58,7 +58,6 @@ export const NAV_OPTS_STACK_HISTORY_BACK = ({
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    // headerRight: <SearchButton navigation={navigation} />,
     headerLeft: <HistoryBackButton />
   };
 };
@@ -186,7 +185,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
-            클래스
+            클래스 전체목록
           </Text>
           <Image
             source={IcAngleRight}
@@ -221,7 +220,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
-            오디오북
+            오디오북 전체목록
           </Text>
           <Image
             source={IcAngleRight}
@@ -450,6 +449,10 @@ export default {
     }
   },
 
+  goBack: () => {
+    navigation.goBack();
+  },
+
   commonBack: () => {
     console.log('commonBack start:', globalStore.prevLocations);
     if (globalStore.prevLocations.length === 0) navigation.goBack();
@@ -480,9 +483,5 @@ export default {
 
     const screen = globalStore.prevLocations.pop();
     navigation.navigate(screen);
-  },
-
-  goBack: () => {
-    navigation.goBack();
   }
 };

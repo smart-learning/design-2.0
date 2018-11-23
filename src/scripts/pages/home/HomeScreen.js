@@ -6,6 +6,8 @@ import {
   NAV_OPTS_STACK,
   NAV_OPTS_STACK_HISTORY_BACK
 } from '../../commons/nav';
+import InAppWebView from '../../components/InAppWebView';
+import AudioBookDetailPage from '../audio/AudioBookDetailPage';
 import AudioBookInfoPage from '../audio/AudioBookInfoPage';
 import EmailSignUpForm from '../auth/EmailSignUpForm';
 import LoginPage from '../auth/LoginPage';
@@ -13,10 +15,11 @@ import Policy from '../auth/PolicyPage';
 import Privacy from '../auth/PrivacyPage';
 import SignUpLandingPage from '../auth/SignUpLandingPage';
 import SampleSubScreen2 from '../sample/SampleSubScreen2';
+import ClassDetailPage from '../video/ClassDetailPage';
 import HomePage from './HomePage';
 import HomeSeriesPage from './HomeSeriesPage';
 import SearchResultPage from './SearchResultPage';
-import InAppWebView from '../../components/InAppWebView';
+import MembershipScreens from '../membership/MembershipScreen';
 
 const HomeScreen = createStackNavigator(
   {
@@ -24,7 +27,6 @@ const HomeScreen = createStackNavigator(
       screen: HomePage, // 사용하실 페이지용 컴퍼넌트를 제작하셔서 screen속성에 넣으면 됩니다.
       navigationOptions: NAV_OPTS_MAIN // 로고를 포함한 메인헤더를 가질 페이지용 헤더 설정
     },
-
     HomeSeriesPage: {
       screen: HomeSeriesPage,
       navigationOptions: NAV_OPTS_STACK
@@ -39,20 +41,24 @@ const HomeScreen = createStackNavigator(
       screen: SampleSubScreen2,
       navigationOptions: NAV_OPTS_MAIN // 로고없이 서브타이틀과 검색버튼을 가질 페이지용 헤더 설정
     },
-
+    ClassDetail: {
+      screen: ClassDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
+    },
+    AudioBookDetail: {
+      screen: AudioBookDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
+    },
     SearchResultPage: {
       screen: SearchResultPage,
       navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     },
-
     SignUpPage: {
       screen: SignUpLandingPage
     },
-
     EmailSignUpForm: {
       screen: EmailSignUpForm
     },
-
     Login: {
       screen: LoginPage,
       navigationOptions: {
@@ -60,7 +66,12 @@ const HomeScreen = createStackNavigator(
         gesturesEnabled: false
       }
     },
-
+    MembershipScreen: {
+      screen: MembershipScreens,
+      navigationOptions: {
+        header: null
+      }
+    },
     WebView: {
       screen: InAppWebView
     },

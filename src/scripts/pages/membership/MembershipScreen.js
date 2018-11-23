@@ -1,14 +1,12 @@
-import React from 'react';
+import { createStackNavigator, navigationOptions } from 'react-navigation';
 import {
   NAV_OPTS_COMMON,
-  NAV_OPTS_STACK,
   NAV_OPTS_DRAWER,
   NAV_OPTS_STACK_HISTORY_BACK
 } from '../../commons/nav';
-import { createStackNavigator } from 'react-navigation';
-import MembershipPage from './MembershipPage';
 import MembershipDetailPage from './MembershipDetailPage';
 import MembershipFormPage from './MembershipFormPage';
+import MembershipPage from './MembershipPage';
 
 const MembershipScreen = createStackNavigator(
   {
@@ -28,7 +26,5 @@ const MembershipScreen = createStackNavigator(
 
   { navigationOptions: NAV_OPTS_COMMON }
 );
-
-MembershipScreen.navigationOptions = NAV_OPTS_DRAWER;
 
 export default MembershipScreen;

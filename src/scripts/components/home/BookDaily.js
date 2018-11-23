@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import BookDailyList from '../../components/home/BookDailyList';
 import { observer } from 'mobx-react';
@@ -272,8 +273,8 @@ class BookDaily extends React.Component {
               </View>
             </View>
           ) : this.data.dailyTabSelected === 'Fri' ||
-          this.data.dailyTabSelected === 'Sat' ||
-          this.data.dailyTabSelected === 'Sun' ? (
+            this.data.dailyTabSelected === 'Sat' ||
+            this.data.dailyTabSelected === 'Sun' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [금] 이영미의 밤 새워 읽고 싶은 책
@@ -295,4 +296,4 @@ class BookDaily extends React.Component {
   }
 }
 
-export default BookDaily;
+export default withNavigation(BookDaily);

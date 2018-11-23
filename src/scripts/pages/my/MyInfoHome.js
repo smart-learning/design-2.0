@@ -1,32 +1,34 @@
+import { observer } from 'mobx-react';
 import React from 'react';
-import CommonStyles from '../../../styles/common';
+import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import {
+  AsyncStorage,
   Image,
   ImageBackground,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  AsyncStorage,
-  BackHandler,
-  Platform,
   View
 } from 'react-native';
-import globalStore from '../../../scripts/commons/store';
-import { observer } from 'mobx-react';
+import { SafeAreaView } from 'react-navigation';
 import BgMy from '../../../images/bg-my.png';
+import DummyProfile from '../../../images/dummy-my-profile.png';
 import IcAngleRight from '../../../images/ic-my-angle-right.png';
+import IcCog from '../../../images/ic-my-cog.png';
 import IcDownload from '../../../images/ic-my-download.png';
 import IcMusic from '../../../images/ic-my-music.png';
 import IcPlay from '../../../images/ic-my-play.png';
 import IcProfile from '../../../images/ic-my-profile.png';
 import IcTag from '../../../images/ic-my-tag.png';
-import IcCog from '../../../images/ic-my-cog.png';
-import DummyProfile from '../../../images/dummy-my-profile.png';
-import { SafeAreaView } from 'react-navigation';
-import HomeButton from '../../components/header/HomeButton';
-import nav from "../../commons/nav";
+import globalStore from '../../../scripts/commons/store';
 import native from '../../commons/native';
+import HomeButton from '../../components/header/HomeButton';
+
+import MembershipBookClub from '../../../images/bullet-membership-book-club.png';
+import MembershipCampus from '../../../images/bullet-membership-campus.png';
+import MembershipPremium from '../../../images/bullet-membership-premium.png';
 
 const styles = StyleSheet.create({
   myHeader: {
@@ -171,6 +173,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'normal',
     color: '#ffffff'
+  },
+  buttonSmall: {
+    backgroundColor: COLOR_PRIMARY,
+    borderRadius: 8,
+    marginLeft: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 6,
+    paddingRight: 6
+  },
+  buttonSmallText: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: '#ffffff'
   }
 });
 /*
@@ -178,34 +194,22 @@ const styles = StyleSheet.create({
 * */
 @observer
 export default class MyInfoHome extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   componentDidMount() {
     if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
 
     if (globalStore.welaaaAuth) {
       AsyncStorage.setItem('isAppFirstLoad', 'false');
     }
-
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    // console.log(
-    //   'MyInfoHome',
-    //   this.props.navigation.isFocused(),
-    //   globalStore.prevLocations
-    // );
-    // if (this.props.navigation.isFocused()) {
-    nav.commonBack();
-    // }
-    return true;
-  };
+  componentWillUnmount() {}
 
   render() {
-    const { navigation } = this.props;
+    const navigation = this.props.navigation;
 
     return (
       <View
@@ -250,16 +254,50 @@ export default class MyInfoHome extends React.Component {
                     <Text style={styles.myInfoName}>
                       {globalStore.profile ? globalStore.profile.name : ''}
                     </Text>
-                    {1 === 2 && (
+
+                    {
                       <View>
                         {globalStore.currentMembership &&
-                          globalStore.currentMembership.type_text ? (
-                            <Text>{globalStore.currentMembership.type_text}</Text>
-                          ) : (
-                            undefined
-                          )}
+                        globalStore.currentMembership.type_text ? (
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              navigation.navigate('MembershipScreen')
+                            }
+                          >
+                            {globalStore.currentMembership.type === 2 && (
+                              <Image source={MembershipPremium} />
+                            )}
+                            {globalStore.currentMembership.type === 1 && (
+                              <Image source={MembershipCampus} />
+                            )}
+                            {globalStore.currentMembership.type === 3 && (
+                              <View style={styles.buttonSmall}>
+                                <Text style={styles.buttonSmallText}>
+                                  프리패스
+                                </Text>
+                              </View>
+                            )}
+                            {globalStore.currentMembership.type === 4 && (
+                              <Image source={MembershipBookClub} />
+                            )}
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              navigation.navigate('MembershipScreen')
+                            }
+                          >
+                            <View style={styles.buttonSmall}>
+                              <Text style={styles.buttonSmallText}>
+                                윌라 멤버십 안내
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        )}
                       </View>
-                    )}
+                    }
                   </View>
                   {/*고객사 요청으로 화면에서 감춤 처리*/}
                   {1 === 2 && (
@@ -401,6 +439,7 @@ export default class MyInfoHome extends React.Component {
                 <View style={styles.listItemBarBullet} />
               </View>
 
+              {/*
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() =>
@@ -418,6 +457,7 @@ export default class MyInfoHome extends React.Component {
                   />
                 </View>
               </TouchableOpacity>
+				*/}
 
               <View style={styles.listItemBarContainer}>
                 <View style={styles.listItemBar} />
@@ -585,31 +625,28 @@ export default class MyInfoHome extends React.Component {
               <View style={{ height: 8 }} />
             </View>
 
-            {/* /* 아이폰 구매내역 복원 */ }
+            {/* /* 아이폰 구매내역 복원 */}
 
-            {(Platform.OS === 'ios' && (
-              <View style={
-                {
+            {Platform.OS === 'ios' && (
+              <View
+                style={{
                   flexDirection: 'column',
                   alignItems: 'center',
                   flex: 1
-                }
-              }>
+                }}
+              >
                 <View style={{ height: 8 }} />
                 <TouchableOpacity
                   onPress={() => {
                     try {
-                      native.restore({token: globalStore.accessToken});
+                      native.restore({ token: globalStore.accessToken });
                     } catch (error) {
                       console.log(error);
                     }
                   }}
                 >
                   <View
-                    style={[
-                      styles.buttonRestore,
-                      { width: 200 }
-                    ]}
+                    style={[styles.buttonRestore, { width: 200 }]}
                     borderRadius={5}
                   >
                     <Text style={styles.buttonRestoreText}>
@@ -618,9 +655,8 @@ export default class MyInfoHome extends React.Component {
                   </View>
                 </TouchableOpacity>
                 <View style={{ height: 16 }} />
-              </View>            
-            ))}
-
+              </View>
+            )}
           </ScrollView>
         </SafeAreaView>
       </View>

@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
 
 class BookMonthly extends React.Component {
   render() {
-
     let itemData = [];
     if (_.isObject(this.props.itemData)) {
       itemData = this.props.itemData;
@@ -115,9 +114,8 @@ class BookMonthly extends React.Component {
                       </Text>
                     </View>
 
-                    {(globalStore.currentMembership !== undefined) && (
-
-                      (globalStore.currentMembership.type === 2 ||
+                    {globalStore.currentMembership !== undefined &&
+                      ((globalStore.currentMembership.type === 2 ||
                         globalStore.currentMembership.type === 4) && (
                         <View>
                           <TouchableOpacity
@@ -137,22 +135,20 @@ class BookMonthly extends React.Component {
                                 />
                                 <Text style={styles.couponText}>
                                   보유한 오디오북 이용권
-            <Text style={styles.couponCountText}>
+                                  <Text style={styles.couponCountText}>
                                     {' '}
                                     {globalStore.voucherStatus !== null
                                       ? globalStore.voucherStatus.total
                                       : '0'}
                                     개
-            </Text>
+                                  </Text>
                                 </Text>
                               </View>
                             </View>
                           </TouchableOpacity>
                         </View>
-                      )
-                    )}
+                      ))}
 
-                    {}
                     <View style={styles.bookItemContainer}>
                       <TouchableOpacity
                         activeOpacity={0.9}
