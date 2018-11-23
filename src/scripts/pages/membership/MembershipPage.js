@@ -443,7 +443,7 @@ export default class MembershipPage extends React.Component {
               <View style={styles.membershipCampusBox}>
                 <Image source={IcCampus} style={styles.membershipIcon} />
                 <Text style={styles.membershipCampusTitle}>
-                  윌라 캠퍼스 멤버십
+                  윌라 클래스 멤버십
                 </Text>
                 <View style={styles.membershipParagraphBox}>
                   <Text style={styles.membershipParagraph}>
@@ -550,7 +550,7 @@ export default class MembershipPage extends React.Component {
               <View style={styles.membershipAudioBookBox}>
                 <Image source={IcClub} style={styles.membershipIcon} />
                 <Text style={styles.membershipAudioBookClubTitle}>
-                  윌라 오디오북클럽 멤버십
+                  윌라 오디오북 멤버십
                 </Text>
                 <View style={styles.membershipParagraphBox}>
                   <View style={styles.membershipParagraphBox}>
