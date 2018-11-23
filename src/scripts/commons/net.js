@@ -464,7 +464,7 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/banner', expired)
+    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/banner?hide_ios=true', expired)
       .then(data => {
         data.forEach(element => {
           element.key = element.id.toString();
