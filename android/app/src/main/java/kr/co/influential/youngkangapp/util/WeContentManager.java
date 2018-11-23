@@ -541,7 +541,8 @@ public class WeContentManager extends SQLiteOpenHelper {
     }
 
     String query =
-        "SELECT cid , duration , PlayCount , progress , reg_date , server_sync_flag FROM PROGRESS";
+        "SELECT cid , duration , PlayCount , progress , reg_date , server_sync_flag "
+            + "FROM PROGRESS ORDER BY reg_date desc";
     Cursor c = db.rawQuery(query, null);
 
     return CursorToDataTable(c);
