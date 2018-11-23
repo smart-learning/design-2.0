@@ -9,7 +9,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -23,6 +24,7 @@ import PageCategoryItemVO from '../../vo/PageCategoryItemVO';
 import SummaryVO from '../../vo/SummaryVO';
 import HomeAudioPage from './HomeAudioPage';
 import HomeVideoPage from './HomeVideoPage';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -103,7 +105,8 @@ class HomePage extends React.Component {
       hot: [],
       new: [],
       recommend: []
-    }
+    },
+    contentDataInfo: []
 
     // audioPlayRecentData: [],
   });
@@ -228,7 +231,91 @@ class HomePage extends React.Component {
     }
   };
 
+  async setMiniPlayer(cid, duration) {
+    try {
+      const contentDataInfo = await net.getContentInfo(cid);
+
+      let videoClips = [];
+      let audioChapters = [];
+      let miniPlayerCid = cid;
+      let miniPlayerTitle = "";
+      let miniPlayerGroupTitle = contentDataInfo.data.data.title;
+      let miniPlayerTotalPlayTime = "";
+      let miniPlayercurrentPlayTime = duration;
+
+      if (contentDataInfo.data.type === 'video-course') {
+        videoClips = contentDataInfo.data.data.clips;
+        videoClips.map((item, key) => {
+          if (item.cid === miniPlayerCid) {
+            miniPlayerCid = item.cid;
+            miniPlayerTitle = item.title;
+            miniPlayerTotalPlayTime = item.play_time;
+          }
+        })
+      } else if (contentDataInfo.data.type === 'audiobook') {
+        audioChapters = contentDataInfo.data.data.chapters;
+        audioChapters.map((item, key) => {
+          if (item.cid === miniPlayerCid) {
+            miniPlayerCid = item.cid;
+            miniPlayerTitle = item.title;
+            miniPlayerTotalPlayTime = item.play_time;
+          }
+        })
+      }
+
+      let userId = globalStore.welaaaAuth.profile.id;
+      let accessToken = globalStore.welaaaAuth.access_token;
+
+      let config = {
+        miniPlayerCid: miniPlayerCid,
+        miniPlayerTitle: miniPlayerTitle,
+        miniPlayerTotalPlayTime: miniPlayerTotalPlayTime,
+        miniPlayerGroupTitle: miniPlayerGroupTitle,
+        miniPlayercurrentPlayTime: miniPlayercurrentPlayTime,
+        userId: userId.toString(),
+        accessToken: accessToken
+      };
+
+      Native.mainToggleMiniPlayer(true, config);
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
+  getProgressList = async () => {
+
+    if (Platform.OS === 'android') {
+      // SQLite 저장된 정보 베이스로 마지막 재생 콘텐츠 첫번째를 로드합니다. (desc)
+      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고 
+      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid) 
+      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가 
+      // 쉽지가 않네요 ... 
+
+      Native.getProgressDatabase(
+        result => {
+          if ('null' !== result.trim()) {
+            try {
+              let jsonData = JSON.parse(result);
+              jsonData.map((item, key) => {
+                if (key === 0) {
+                  this.setMiniPlayer(item.cid, item.duration);
+                }
+              });
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        },
+        error => console.error(e)
+      );
+    }
+  }
+
   componentDidMount = async () => {
+
+    this.getProgressList();
+
     if (this.props.navigation.isFocused()) {
       console.log('componentDidMount ', 'navigation isFocused');
       let windowWidth = Dimensions.get('window').width;
@@ -327,9 +414,6 @@ class HomePage extends React.Component {
 
     if (globalStore && globalStore.currentMembership) {
       const { type } = globalStore.currentMembership;
-      console.log('currentMemberShip ', ' type :  ' + type);
-    } else {
-      Alert.alert('CurrentMemberShip Type ', 'NULL ');
     }
   };
 

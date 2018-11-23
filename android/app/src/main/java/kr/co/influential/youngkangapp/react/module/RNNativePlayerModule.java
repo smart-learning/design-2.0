@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -305,20 +304,20 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void selectProgressDatabase(ReadableMap content) {
+  public void selectProgressDatabase(ReadableMap content, Promise promise) {
     // 2018.10.05
     try {
+
+      String userId = content.getString("userId");
+
       Gson gson = new Gson();
       String json = gson.toJson(ContentManager().getProgressCid());
 
-      WritableMap params = Arguments.createMap();
-
-      params.putString("selectProgressDatabase", json);
-      sendEvent("selectProgressDatabase", params);
-
+      promise.resolve(json);
     } catch (Exception e) {
-      e.printStackTrace();
+      promise.reject(e);
     }
+
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {

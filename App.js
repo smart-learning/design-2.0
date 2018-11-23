@@ -262,6 +262,13 @@ class App extends React.Component {
       );
 
       this.subscription.push(
+        DeviceEventEmitter.addListener('miniPlayerCallPlayer', params => {
+          console.log('miniPlayerCallPlayer DeviceEventEmitter ', params);
+          Native.play(params.cid);
+        })
+      );
+
+      this.subscription.push(
         DeviceEventEmitter.addListener('downloadState', arg =>
           Native.downloadState(arg)
         )
@@ -424,9 +431,11 @@ class App extends React.Component {
           </View>
         )}
 
+        {console.log('bottomController ? ', store.miniPlayerArg)}
+
         {store.miniPlayerVisible &&
           Platform.select({
-            android: <BottomController />,
+            android: <BottomController arg={store.miniPlayerArg} />,
             ios: null
           })}
         <NotificationUI

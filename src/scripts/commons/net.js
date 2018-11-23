@@ -190,7 +190,7 @@ export default {
           pagination[key.replace('pagination-', '')] = eval(
             headers[key].toLowerCase()
           );
-        } catch (e) {}
+        } catch (e) { }
       }
     });
     return pagination;
@@ -527,7 +527,7 @@ export default {
       });
   },
 
-  getUserHeartContent: function(contentType, page = 1) {
+  getUserHeartContent: function (contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
       videoCourses: 'video-courses'
@@ -778,7 +778,29 @@ export default {
         return resp.data;
       })
       .catch(error => {
-        Alert.alert('안내','일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',[{text:'확인'}]);
+        Alert.alert('안내', '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.', [{ text: '확인' }]);
+        console.log(error);
+      });
+  },
+
+  getContentInfo(cid) {
+    return axios.get(API_PREFIX + 'v1.0/play/contents-info/' + cid)
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+
+  },
+
+  getPlayDataInfo(cid) {
+    return axios.get(API_PREFIX + 'v1.0/play/play-data/' + cid)
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
         console.log(error);
       });
   }

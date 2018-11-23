@@ -72,7 +72,11 @@ export default {
   },
 
   toggleMiniPlayer(bool) {
-    console.log('toggleMiniPlayer:', bool);
+    globalStore.miniPlayerVisible = bool;
+  },
+
+  mainToggleMiniPlayer(bool, arg) {
+    globalStore.miniPlayerArg = arg;
     globalStore.miniPlayerVisible = bool;
   },
 
@@ -89,7 +93,7 @@ export default {
       .catch(failed);
   },
 
-  getDownloadListCid(cid , success, failed) {
+  getDownloadListCid(cid, success, failed) {
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
       cid: cid,
@@ -102,9 +106,17 @@ export default {
       .catch(failed);
   },
 
-  getProgressDatabase() {
+  getProgressDatabase(success, failed) {
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {
+      userId: userId.toString()
+    };
+
     try {
-      RNNativePlayer.selectProgressDatabase({});
+      RNNativePlayer.selectProgressDatabase(config)
+        .then(success)
+        .catch(failed);
     } catch (error) {
       console.log(error);
     }
