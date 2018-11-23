@@ -1,6 +1,8 @@
 package kr.co.influential.youngkangapp.player;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * 1. FileNae  : WebPlayerInfo.java
@@ -174,8 +176,13 @@ public class WebPlayerInfo implements Serializable {
 
             }else if(param.startsWith("cname=")){
 
-                String _cname= param.substring("cname=".length());
-                cname[arr2Idx]=_cname;
+                String _cname= "";
+                try {
+                    _cname = URLDecoder.decode(param.substring("cname=".length()), "EUC-KR");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                cname[arr2Idx]= _cname;
                 ++arr2Idx;
 
             }else if(param.startsWith("cmemo=")){

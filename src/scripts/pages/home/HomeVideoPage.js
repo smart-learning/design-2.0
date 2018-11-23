@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50
   },
   classCategory: {
-    marginTop: 20,
+    marginTop: 0,
     marginBottom: 20
   },
   classCategoryHr: {

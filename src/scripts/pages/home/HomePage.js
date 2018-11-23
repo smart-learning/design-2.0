@@ -2,14 +2,13 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
-  AsyncStorage,
+  Alert,
   BackHandler,
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Alert
+  View
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -77,6 +76,10 @@ const styles = StyleSheet.create({
 
 @observer
 class HomePage extends React.Component {
+  state = {
+    show_popup: false
+  };
+
   @observable
   tabStatus = 'video';
 
@@ -228,24 +231,13 @@ class HomePage extends React.Component {
     }
   };
 
-  componentDidMount = async () => {
-    if (this.props.navigation.isFocused()) {
-      console.log('componentDidMount ', 'navigation isFocused');
-      let windowWidth = Dimensions.get('window').width;
-      let windowHeight = Dimensions.get('window').height;
-
-      this.store.windowWidth = windowWidth;
-      this.store.windowHeight = windowHeight;
-      this.store.slideHeight = windowWidth * 0.347;
-      this.store.clipRankContentSize = windowWidth - 85;
-
-      try {
-        this.getData();
-      } catch (error) {
-        console.log(error);
-      }
+  showPopup() {
+    if (globalStore.welaaaAuth) {
+      return <AdvertisingSection show_popup={this.state.show_popup} />;
     }
+  }
 
+  componentDidMount = async () => {
     if (globalStore.welaaaAuth) {
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
@@ -260,38 +252,32 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
-    } else {
-      let value = await AsyncStorage.getItem('isAppFirstLoad');
 
-      if (value === null) {
-        value = true;
-      }
-
-      if (value === true) {
-        // Login 은 되고 .
-        // SignUpPage 는 안되고 .
-        // 'change screen:', 'HomeScreen', '-->', 'SignUpPage'
-        // 'change screen:', 'SignUpPage', '-->', 'Login'
-        this.props.navigation.navigate('SignUpPage');
-      } else {
-        this.props.navigation.navigate('Login');
-      }
+      this.setState({ show_popup: true });
     }
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   };
 
   componentDidUpdate() {
     const params = this.props.navigation.state.params;
-    if (params && 'audioBook' === params.page) {
-      this.props.navigation.state.params.page = undefined;
-      this.goPage('audioBook');
-    } else if (params && true === params.reload_mbs) {
-      this.props.navigation.state.params.reload_mbs = undefined;
+    if (params) {
+      if (params.page === 'audioBook') {
+        this.props.navigation.state.params.page = undefined;
+        this.goPage('audioBook');
+      }
+      if (params.show_popup) {
+        this.props.navigation.state.params.show_popup = undefined;
+        this.setState({ show_popup: true });
+      }
+      if (params.reload_mbs) {
+        this.props.navigation.state.params.reload_mbs = undefined;
 
-      // 멤버쉽 가져오기
-      globalStore.currentMembership = async () => net.getMembershipCurrent();
-      // 이용권 가져오기
-      globalStore.voucherStatus = async () => net.getVouchersStatus();
+        // 멤버쉽 가져오기
+        globalStore.currentMembership = async () => net.getMembershipCurrent();
+        // 이용권 가져오기
+        globalStore.voucherStatus = async () => net.getVouchersStatus();
+      }
     }
   }
 
@@ -435,8 +421,7 @@ class HomePage extends React.Component {
               </View>
             </View>
           </View>
-
-          {globalStore.welaaaAuth && <AdvertisingSection />}
+          {this.showPopup()}
         </SafeAreaView>
       </View>
     );
