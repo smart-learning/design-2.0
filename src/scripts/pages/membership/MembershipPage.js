@@ -996,7 +996,6 @@ export default class MembershipPage extends React.Component {
               resizeMode="stretch"
               source={membership_bg}
             />
-
             <TouchableOpacity
               style={{
                 position: 'absolute',
@@ -1022,7 +1021,6 @@ export default class MembershipPage extends React.Component {
                 source={membership_btn_1}
               />
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{
                 position: 'absolute',
@@ -1048,7 +1046,6 @@ export default class MembershipPage extends React.Component {
                 source={membership_btn_2}
               />
             </TouchableOpacity>
-
             <TouchableOpacity
               style={{
                 position: 'absolute',
@@ -1073,6 +1070,26 @@ export default class MembershipPage extends React.Component {
                 resizeMode="stretch"
                 source={membership_btn_3}
               />
+            </TouchableOpacity>
+            {/* 둘러보기. */}
+            <TouchableOpacity
+              style={{
+                paddingTop: 25,
+                paddingBottom: 20,
+                paddingLeft: 15,
+                paddingRight: 15
+              }}
+              activeOpacity={0.7}
+              onPress={() => {
+                this.props.navigation.navigate('HomeScreen', {
+                  show_popup: true
+                });
+              }}
+              /* onPress={() => this.props.navigation.dismiss()} */
+            >
+              <Text style={styles.tripAroundButton}>
+                무료 계정으로 둘러보기
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
