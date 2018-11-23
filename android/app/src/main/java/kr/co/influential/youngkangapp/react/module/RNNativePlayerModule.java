@@ -255,8 +255,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       Gson gson = new Gson();
       String json = gson.toJson(ContentManager().getDatabase(userId));
 
-      LogHelper.e(TAG, "getDownloadList json " + json);
-
       promise.resolve(json);
     } catch (Exception e) {
       promise.reject(e);

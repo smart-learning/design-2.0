@@ -610,7 +610,7 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-//    String query = "SELECT * FROM DOWNLOAD WHERE userId = '"+ userId+"' ORDER BY CID ASC";
+    String query = "SELECT * FROM DOWNLOAD WHERE userId = '"+ userId+"' ORDER BY CID ASC";
 
 //    String query = "select distinct cid , gTitle , audioVideoType ,groupTeacherName,view_limitdate , count(*) as groupContentScnt "
 //        + "FROM DOWNLOAD "
@@ -618,12 +618,12 @@ public class WeContentManager extends SQLiteOpenHelper {
 //        + "order by cid asc "
 //        + "group by gTitle,audioVideoType,groupTeacherName ";
 
-    String query = "select * from ("
-        +" select * "
-        +" from download "
-        +" order by cid desc "
-        +") as a "
-        +" group by a.gTitle ";
+//    String query = "select * from ("
+//        +" select * "
+//        +" from download "
+//        +" order by cid desc "
+//        +") as a "
+//        +" group by a.gTitle ";
 
     Cursor c = db.rawQuery(query, null);
     return CursorToDataTable(c);
