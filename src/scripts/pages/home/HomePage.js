@@ -272,37 +272,20 @@ class HomePage extends React.Component {
 
   componentDidUpdate() {
     const params = this.props.navigation.state.params;
-<<<<<<< HEAD
+
     if (params && 'audioBook' === params.page) {
       this.props.navigation.state.params.page = undefined;
       this.goPage('audioBook');
-    }
-
-    if (params && true === params.reload_mbs) {
+    }else if (params && true === params.reload_mbs) {
       // 멤버쉽 가져오기
       globalStore.currentMembership = async () =>
         await net.getMembershipCurrent();
       // 이용권 가져오기
       globalStore.voucherStatus = async () => await net.getVouchersStatus();
-=======
-    if (params) {
-      if (params.page === 'audioBook') {
-        this.props.navigation.state.params.page = undefined;
-        this.goPage('audioBook');
-      }
-      if (params.show_popup) {
-        this.props.navigation.state.params.show_popup = undefined;
-        this.setState({ show_popup: true });
-      }
-      if (params.reload_mbs) {
-        this.props.navigation.state.params.reload_mbs = undefined;
-
-        // 멤버쉽 가져오기
-        globalStore.currentMembership = async () => net.getMembershipCurrent();
-        // 이용권 가져오기
-        globalStore.voucherStatus = async () => net.getVouchersStatus();
-      }
->>>>>>> develop
+    }else if(params && true === params.show_popup) {
+      // 멤버십 화면에서 돌아왔을 경우에 팝업 띄워주도록 state변경
+      this.props.navigation.state.params.show_popup = undefined;
+      this.setState({ show_popup: true });
     }
   }
 
