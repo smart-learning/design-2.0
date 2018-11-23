@@ -883,7 +883,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_menuItemView addSubview : _menuItemTopLineView];
   
   
-    NSInteger buttonCount = _isAudioContent ? 4 : 6;
+    NSInteger buttonCount = _isAudioContent ? 3 : 5;  // origin => 4 : 6  // 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
   
     CGFloat buttonPadding = _isAudioContent ? 70 : 10;
     CGFloat buttonWidth = ((_menuItemView.frame.size.width - (buttonPadding * 2)) / buttonCount);
@@ -952,7 +952,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         buttonOffsetX = buttonOffsetX + buttonWidth;
     }
-  
+  /*// 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
     {
         _sleepButton = [[ContentPlayerButton alloc] initWithId : @"timer-mode"
                                                    normalImage : @"icon_timer"
@@ -970,7 +970,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         buttonOffsetX = buttonOffsetX + buttonWidth;
     }
-  
+  */// 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
     {
         _lockButton = [[ContentPlayerButton alloc] initWithId : @"lock-mode"
                                                   normalImage : @"icon_lock"
@@ -1097,6 +1097,34 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                                             }
                                                                         }
                                                                     }];
+  
+    // 챕터 컨트롤 뷰
+    _chapterControlView = [ [UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMaxY(_contentView.frame) / 2 - 24.f, self.view.frame.size.width, 48.f) ];
+    _chapterControlView.backgroundColor = [UIColor clearColor];
+    [_contentView addSubview : _chapterControlView];
+    // 챕터 이동 버튼을 붙입시다.
+  
+    _moveBackButton = [UIButton buttonWithType: UIButtonTypeCustom];
+    _moveBackButton.frame = CGRectMake(0.f, 0.f, 48.f, 48.f);
+    [_moveBackButton setImage : [UIImage imageNamed : @"icon_move_back"]
+                 forState : UIControlStateNormal];
+    [_moveBackButton setImage : [[UIImage imageNamed : @"icon_move_back"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                 forState : UIControlStateHighlighted];
+    [_moveBackButton addTarget : self
+                    action : @selector(setPreviousContent)
+          forControlEvents : UIControlEventTouchUpInside];
+    [_chapterControlView addSubview : _moveBackButton];
+  
+    _moveNextButton = [UIButton buttonWithType: UIButtonTypeCustom];
+    _moveNextButton.frame = CGRectMake(CGRectGetMaxX(_chapterControlView.frame) - 48.f, 0.f, 48.f, 48.f);
+    [_moveNextButton setImage : [UIImage imageNamed : @"icon_move_next"]
+                 forState : UIControlStateNormal];
+    [_moveNextButton setImage : [[UIImage imageNamed : @"icon_move_next"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                 forState : UIControlStateHighlighted];
+    [_moveNextButton addTarget : self
+                    action : @selector(setNextContent)
+          forControlEvents : UIControlEventTouchUpInside];
+    [_chapterControlView addSubview : _moveNextButton];
 }
 
 - (void) setSpeedButtonImage
@@ -2146,6 +2174,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _menuItemBottomLineView.alpha = hidden ? 1.f : 0.f;
     _controlBarView.hidden = NO;
     _controlBarView.alpha = hidden ? 1.f : 0.f;
+    _chapterControlView.hidden = NO;
+    _chapterControlView.alpha = hidden ? 1.f : 0.f;
   
     [UIView animateWithDuration : 0.3f
                           delay : 0
@@ -2157,6 +2187,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                       self->_menuItemTopLineView.alpha = hidden ? 0.f : 1.f;
                                       self->_menuItemBottomLineView.alpha = hidden ? 0.f : 1.f;
                                       self->_controlBarView.alpha = hidden ? 0.f : 1.f;
+                                      self->_chapterControlView.alpha = hidden ? 0.f : 1.f;
                        
                                       if ( !hidden )
                                       {
@@ -2171,6 +2202,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                       self->_menuItemTopLineView.hidden = hidden;
                                       self->_menuItemBottomLineView.hidden = hidden;
                                       self->_controlBarView.hidden = hidden;
+                                      self->_chapterControlView.hidden = hidden;
                                     
                                       self.view.userInteractionEnabled = YES;
        
@@ -2261,6 +2293,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         if ( [@"script-mode" isEqualToString : buttonId] )
         {
             [_scriptView setStatus : MediaPlayerScriptViewModeNone];
+            [_scriptButton setStatus : 0];
             isToast = YES;
         }
         else if ( [@"download-mode" isEqualToString : buttonId] )
@@ -2332,6 +2365,12 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                       isLock : isLock];
       
         [self setTouchEnable : _slider
+                      isLock : isLock];
+      
+        [self setTouchEnable : _moveBackButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _moveNextButton
                       isLock : isLock];
       
         // 아직 다운로드 구현이 완료되지 않았으므로 일괄적으로 다운로드버튼도 잠금처리합니다.
@@ -3260,7 +3299,8 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
     NSString *contentPath = [self getDownloadedContentPath:_args[@"cid"]];
   
-    if ( contentPath && [contentPath containsString : @"/"] )
+    // 권한있는 계정으로 다운로드 후 로그아웃하고 권한없는 계정으로 로그인하면 다운로드된 콘텐츠에 대한 권한체크를 다시 해야합니다.
+    if ( contentPath && [contentPath containsString : @"/"] && _isAuthor )
     {
         return contentPath;
     }

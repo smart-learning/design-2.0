@@ -29,6 +29,7 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.UUID;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
@@ -491,7 +492,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 String audio_preview = "";
 
                 sb.append("&ckey=" + ckey);
-                sb.append("&cname=" + cname);
+                sb.append("&cname=" + URLEncoder.encode(cname, "EUC-KR"));
                 sb.append("&cmemo=" + cmemo);
                 sb.append("&curl=" + curl);
                 sb.append("&cplay_time=" + cplay_time);

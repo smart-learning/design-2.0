@@ -80,13 +80,7 @@ class AdvertisingSection extends Component {
   componentDidMount = async () => {
     let data = await net.getMainPopup();
     if (data.length === 0) return;
-
-    //메인화면이 아닐경우 팝업 뜨지 않게 설정
-    //console.log(globalStore);
-    if (globalStore.lastLocation != 'HomeScreen') {
-      return;
-    }
-
+    
     // 안보기로 한 팝업은 아닌지 날짜 확인
     const adsIds = data.map(item => `pop-${item.id}`);
     const adKeyDateMaps = await AsyncStorage.multiGet(adsIds);
@@ -144,12 +138,12 @@ class AdvertisingSection extends Component {
       ad = this.state.ads[cnt - 1];
       img_ratio = (device_size.width - 50) / ad.img_width;
     }
-
+    
     return (
       <Modal
         animationType="slide"
         transparent={true}
-        visible={cnt > 0}
+        visible={cnt>0 && this.props.show_popup}
         onRequestClose={() => {}}
       >
         <View style={this.style.container}>

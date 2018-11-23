@@ -251,9 +251,14 @@ class App extends React.Component {
       console.log('======', Native.getPaymentManager());
       const paymentManager = Native.getPaymentManager();
       const paymentManagerEmitter = new NativeEventEmitter(paymentManager);
-      paymentManagerEmitter.addListener('buyResult', arg =>
-        Native.buyResult(arg)
-      );
+      paymentManagerEmitter.addListener('buyResult', async arg => {
+        const result = await Native.buyResult(arg);
+        if (result) {
+          this.props.navigation.navigate('HomeScreen');
+        } else {
+          console.log('Native.buyResult error.');
+        }
+      });
     } else if ('android' === Platform.OS) {
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayer', params => {

@@ -102,7 +102,10 @@ export default {
       expired
     )
       .then(data => {
-        data = [{ ccode: null, id: 0, title: '전체', images: {}, url: '' }, ...data];
+        data = [
+          { ccode: null, id: 0, title: '전체', images: {}, url: '' },
+          ...data
+        ];
         data.forEach(element => {
           element.key = element.id.toString();
         });
@@ -123,7 +126,10 @@ export default {
       expired
     )
       .then(data => {
-        return [{ ccode: null, id: 0, title: '전체', images: {}, url: '' }, ...data];
+        return [
+          { ccode: null, id: 0, title: '전체', images: {}, url: '' },
+          ...data
+        ];
       })
       .catch(error => {
         console.log(error);
@@ -383,9 +389,15 @@ export default {
   },
 
   getMainPopup() {
-    return cacheOrLoad(API_PREFIX + 'v1.0/users/popup')
-      .then(data => {
-        return data;
+    const url = API_PREFIX + 'v1.0/users/popup';
+    params = {
+      platform: Platform.OS
+    }
+    return axios
+      .get(url, { params: params })
+      .then(resp => {
+        console.log('popup', resp);
+        return resp.data;
       })
       .catch(error => {
         console.log(error);
@@ -567,14 +579,19 @@ export default {
   },
 
   getMembershipCurrent() {
-    const expired = 0;
+    const expired = 1;
     return cacheOrLoad(API_PREFIX + 'v1.0/membership/current', expired)
       .then(data => {
+        console.log('now_current_membership', data);
         return data;
       })
       .catch(error => {
         console.log(error);
       });
+  },
+
+  async getMembershipCurrentFresh() {
+    return axios.get(API_PREFIX + 'v1.0/membership/current');
   },
 
   getVouchersStatus() {
@@ -693,17 +710,16 @@ export default {
   },
 
   //이메일 중복검증
-  email_vailidate(email){
-    return axios.get(API_PREFIX + 'v1.0/email-validation',
-    {
-      params:{
-        email:email
-      }
-    }).then(
-      resp => {
+  email_vailidate(email) {
+    return axios
+      .get(API_PREFIX + 'v1.0/email-validation', {
+        params: {
+          email: email
+        }
+      })
+      .then(resp => {
         return resp.data;
-      }
-    );
+      });
   },
 
   //회원가입
@@ -773,7 +789,8 @@ export default {
 
   cancelMembership() {
     let url = API_PREFIX + 'v1.0/membership/unsubscribe-membership';
-    return axios.get(url)
+    return axios
+      .get(url)
       .then(resp => {
         return resp.data;
       })
@@ -801,6 +818,11 @@ export default {
         return data;
       })
       .catch(error => {
+        Alert.alert(
+          '안내',
+          '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
+          [{ text: '확인' }]
+        );
         console.log(error);
       });
   }

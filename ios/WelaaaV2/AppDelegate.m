@@ -21,6 +21,8 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
         NSLog(@"  All push badges removed.");
     }
   
+    [common processCheckingUpdate];
+  
     // Background Playback Enabled
     // Allow the app sound to continue to play when the screen is locked.
     //https://stackoverflow.com/questions/4771105/how-do-i-get-my-avplayer-to-play-while-app-is-in-background

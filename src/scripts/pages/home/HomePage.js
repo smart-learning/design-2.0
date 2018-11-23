@@ -2,14 +2,13 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
-  AsyncStorage,
+  Alert,
   BackHandler,
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Alert,
   Platform
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
@@ -79,6 +78,10 @@ const styles = StyleSheet.create({
 
 @observer
 class HomePage extends React.Component {
+  state = {
+    show_popup: false
+  };
+
   @observable
   tabStatus = 'video';
 
@@ -312,6 +315,12 @@ class HomePage extends React.Component {
     }
   }
 
+  showPopup() {
+    if (globalStore.welaaaAuth) {
+      return <AdvertisingSection show_popup={this.state.show_popup} />;
+    }
+  }
+
   componentDidMount = async () => {
 
     this.getProgressList();
@@ -347,31 +356,40 @@ class HomePage extends React.Component {
       } catch (error) {
         console.log(error);
       }
-    } else {
-      let value = await AsyncStorage.getItem('isAppFirstLoad');
 
-      if (value === null) {
-        value = true;
-      }
-
-      if (value === true) {
-        // Login 은 되고 .
-        // SignUpPage 는 안되고 .
-        // 'change screen:', 'HomeScreen', '-->', 'SignUpPage'
-        // 'change screen:', 'SignUpPage', '-->', 'Login'
-        this.props.navigation.navigate('SignUpPage');
-      } else {
-        this.props.navigation.navigate('Login');
-      }
+      this.setState({ show_popup: true });
     }
+
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   };
 
+  componentWillUpdate() {
+    const params = this.props.navigation.state.params;
+    if (params && true === params.reload_mbs) {
+      // 멤버쉽 가져오기
+      globalStore.currentMembership = async () =>
+        await net.getMembershipCurrent();
+      // 이용권 가져오기
+      globalStore.voucherStatus = async () => await net.getVouchersStatus();
+    }
+  }
+
   componentDidUpdate() {
     const params = this.props.navigation.state.params;
+
     if (params && 'audioBook' === params.page) {
       this.props.navigation.state.params.page = undefined;
       this.goPage('audioBook');
+    } else if (params && true === params.reload_mbs) {
+      // 멤버쉽 가져오기
+      globalStore.currentMembership = async () =>
+        await net.getMembershipCurrent();
+      // 이용권 가져오기
+      globalStore.voucherStatus = async () => await net.getVouchersStatus();
+    } else if (params && true === params.show_popup) {
+      // 멤버십 화면에서 돌아왔을 경우에 팝업 띄워주도록 state변경
+      this.props.navigation.state.params.show_popup = undefined;
+      this.setState({ show_popup: true });
     }
   }
 
@@ -512,8 +530,7 @@ class HomePage extends React.Component {
               </View>
             </View>
           </View>
-
-          {globalStore.welaaaAuth && <AdvertisingSection />}
+          {this.showPopup()}
         </SafeAreaView>
       </View>
     );
