@@ -71,7 +71,8 @@ class AdvertisingSection extends Component {
     });
 
     this.state = {
-      ads: []
+      ads: [],
+      show_popup: true
     };
 
     this.now = moment();
@@ -80,7 +81,7 @@ class AdvertisingSection extends Component {
   componentDidMount = async () => {
     let data = await net.getMainPopup();
     if (data.length === 0) return;
-    
+
     // 안보기로 한 팝업은 아닌지 날짜 확인
     const adsIds = data.map(item => `pop-${item.id}`);
     const adKeyDateMaps = await AsyncStorage.multiGet(adsIds);
@@ -125,6 +126,7 @@ class AdvertisingSection extends Component {
   };
 
   goEvent = info => {
+    this.setState({ show_popup: false });
     nav.parseDeepLink('welaaa://' + info.action_type + '/' + info.action_param);
   };
 
@@ -138,13 +140,13 @@ class AdvertisingSection extends Component {
       ad = this.state.ads[cnt - 1];
       img_ratio = (device_size.width - 50) / ad.img_width;
     }
-    
+
     return (
       <Modal
         animationType="slide"
         transparent={true}
-        visible={cnt>0 && this.props.show_popup}
-        onRequestClose={() => {}}
+        visible={cnt > 0 && this.props.show_popup && this.state.show_popup}
+        onRequestClose={() => { }}
       >
         <View style={this.style.container}>
           <View style={this.style.frame}>
