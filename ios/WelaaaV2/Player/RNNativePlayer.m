@@ -38,6 +38,10 @@ RCT_EXPORT_MODULE();
 
 - (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
+    if ( [[common getModel] isEqualToString : @"iPhone 5s"] )
+    {
+        return [common presentAlertWithTitle:@"윌라" andMessage:@"iPhone 5s에서는 성능 이슈로 콘텐츠 이용이 불가합니다.\n윌라웹에서 이용해 주세요."];
+    }
     /*
      현재 네트워크 상태값과 RN 마이윌라 설정값을 비교하고 맞지 않으면 얼럿창을 리턴합니다.
      Wi-Fi에서만 재생허용인데 연결상태가 Wi-Fi가 아닌 경우는 얼럿창을 보여주고 재생을 하지 않습니다.

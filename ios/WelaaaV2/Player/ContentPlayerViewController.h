@@ -45,6 +45,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
     UIView *_menuItemTopLineView;
     UIView *_menuItemBottomLineView;
     UIView *_controlBarView;         // 재생, 정지, 뒤로 가기, 빨리 가기를 포함한 유틸뷰.
+    UIView *_chapterControlView;     // 앞 챕터, 다음 챕터 가기 버튼을 포함.
   
     UIButton *_closeButton;
     UIButton *_rateStarButton;
@@ -55,6 +56,8 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
     UIButton *_ffButton;        // 빨리 가기 버튼.
     UIButton *_speedButton;     // 재생 속도 버튼.
     UIButton *_listButton;      // .
+    UIButton *_moveBackButton;
+    UIButton *_moveNextButton;
   
     UILabel *_courseTitleLabel;   // 전체 강좌명
     UILabel *_lectureTitleLabel;  // 강좌 내 강의명

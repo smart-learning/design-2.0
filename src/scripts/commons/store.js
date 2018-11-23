@@ -36,7 +36,7 @@ class Store {
 
   get accessToken() {
     if (welaaaAuth === undefined) return '';
-    
+
     if (welaaaAuth === null) return '';
     return welaaaAuth.access_token;
   }
@@ -67,6 +67,9 @@ class Store {
   /* 미니 플레이어 전환여부 결정 */
   @observable
   miniPlayerVisible = false;
+  /* 미니 플레이어 전환여부 결정 */
+  @observable
+  miniPlayerArg = {};
 
   clearTokens = () => {
     socialType = null;

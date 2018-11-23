@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -87,6 +86,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
   private boolean checkAudioBookChapter = false;
 
+  private String userId = "";
+
   @Override
   public String getName() {
     return "RNNativePlayer";
@@ -112,7 +113,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 //      LogHelper.e(TAG , "offlineContentData contentUserId " + contentUserId);
 //      LogHelper.e(TAG , "offlineContentData contentCid " + contentCid);
 
-    }else{
+    } else {
       contentUrl = content.getString("uri");
       contentName = content.getString("name");
       contentUuid = content.getString("drmSchemeUuid");
@@ -128,52 +129,52 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 //      LogHelper.e(TAG , " contentCid " + contentCid);
     }
 //    else {
-      ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
-          .getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+    ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+        .getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-      boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
+    boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
 
-      contentToken = content.getString("token");
+    contentToken = content.getString("token");
 
-      Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
-      Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
+    Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+    Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
 
-      checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
+    checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
 
-      LogHelper.e(TAG, " contentCid is " + contentCid);
-      LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
+    LogHelper.e(TAG, " contentCid is " + contentCid);
+    LogHelper.e(TAG, " checkAudioBookChapter is " + checkAudioBookChapter);
 
-      if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
-
-        UiThreadUtil.runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
-                "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
-                getReactApplicationContext().getString(R.string.info_dial_ok),
-                getReactApplicationContext().getString(R.string.info_dial_cancel),
-                FLAG_PLAY_NETWORK_CHECK, "");
-          }
-        });
-
-        return;
-      } else {
-        callbackMethodName = "play/contents-info";
-        callbackMethod = "play";
-
-        sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
-      }
-
-      Preferences.setSQLiteDuration(getReactApplicationContext(), true);
+    if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
 
       UiThreadUtil.runOnUiThread(new Runnable() {
         @Override
         public void run() {
-          Activity activity = getCurrentActivity();
-          mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
+          alertDownloadWindow(getReactApplicationContext().getString(R.string.info_dial_notice),
+              "현재 네트워크 환경이  Wi-Fi 가 아닙니다.\n Wi-Fi 환경이 아닌 3G/LTE 상에 재생시 가입하신 요금제 따라 데이터 요금이 발생할 수 있습니다. \n 계속 진행 하시겠습니까 ?",
+              getReactApplicationContext().getString(R.string.info_dial_ok),
+              getReactApplicationContext().getString(R.string.info_dial_cancel),
+              FLAG_PLAY_NETWORK_CHECK, "");
         }
       });
+
+      return;
+    } else {
+      callbackMethodName = "play/contents-info";
+      callbackMethod = "play";
+
+      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+    }
+
+    Preferences.setSQLiteDuration(getReactApplicationContext(), true);
+
+    UiThreadUtil.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        mProgressDialog = ProgressDialog.show(activity, null, mszMsgLoading, true, true);
+      }
+    });
 //    }
   }
 
@@ -224,7 +225,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void setting(ReadableMap content) {
 
     // NoSuchKeyException token http://crashes.to/s/63dafa1dc65 
-    try{
+    try {
       boolean cellularDataUsePlay = content.getBoolean("cellularDataUsePlay");
       boolean cellularDataUseDownload = content.getBoolean("cellularDataUseDownload");
       String token = content.getString("token");
@@ -235,17 +236,21 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       Preferences.setOnlyWifiDownload(getReactApplicationContext(), cellularDataUseDownload);
 
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
 
   @ReactMethod
-  public void getDownloadList(Promise promise) {
+  public void getDownloadList(ReadableMap content, Promise promise) {
     try {
+
+      String userId = content.getString("userId");
+
       Gson gson = new Gson();
-      String json = gson.toJson(ContentManager().getDatabase());
+      String json = gson.toJson(ContentManager().getDatabase(userId));
+
       promise.resolve(json);
     } catch (Exception e) {
       promise.reject(e);
@@ -259,7 +264,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       String userId = content.getString("userId");
 
       Gson gson = new Gson();
-      String json = gson.toJson(ContentManager().getDownLoadedList(cid , userId));
+      String json = gson.toJson(ContentManager().getDownLoadedList(cid, userId));
 
       promise.resolve(json);
     } catch (Exception e) {
@@ -306,20 +311,20 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void selectProgressDatabase(ReadableMap content) {
+  public void selectProgressDatabase(ReadableMap content, Promise promise) {
     // 2018.10.05
     try {
+
+      String userId = content.getString("userId");
+
       Gson gson = new Gson();
       String json = gson.toJson(ContentManager().getProgressCid());
 
-      WritableMap params = Arguments.createMap();
-
-      params.putString("selectProgressDatabase", json);
-      sendEvent("selectProgressDatabase", params);
-
+      promise.resolve(json);
     } catch (Exception e) {
-      e.printStackTrace();
+      promise.reject(e);
     }
+
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
@@ -661,8 +666,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                       contentCid = json.getString("cid");
                       contentId = i;
                     }
-                  }else{
-                  // 히스토리가 없고 , 상단 플레이 버튼을 통해서 진입하는 케이스
+                  } else {
+                    // 히스토리가 없고 , 상단 플레이 버튼을 통해서 진입하는 케이스
                     if (i == 0) {
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");

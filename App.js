@@ -251,13 +251,25 @@ class App extends React.Component {
       console.log('======', Native.getPaymentManager());
       const paymentManager = Native.getPaymentManager();
       const paymentManagerEmitter = new NativeEventEmitter(paymentManager);
-      paymentManagerEmitter.addListener('buyResult', arg =>
-        Native.buyResult(arg)
-      );
+      paymentManagerEmitter.addListener('buyResult', async arg => {
+        const result = await Native.buyResult(arg);
+        if (result) {
+          this.props.navigation.navigate('HomeScreen');
+        } else {
+          console.log('Native.buyResult error.');
+        }
+      });
     } else if ('android' === Platform.OS) {
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayer', params => {
           Native.toggleMiniPlayer(params.visible);
+        })
+      );
+
+      this.subscription.push(
+        DeviceEventEmitter.addListener('miniPlayerCallPlayer', params => {
+          console.log('miniPlayerCallPlayer DeviceEventEmitter ', params);
+          Native.play(params.cid);
         })
       );
 
@@ -424,9 +436,11 @@ class App extends React.Component {
           </View>
         )}
 
+        {console.log('bottomController ? ', store.miniPlayerArg)}
+
         {store.miniPlayerVisible &&
           Platform.select({
-            android: <BottomController />,
+            android: <BottomController arg={store.miniPlayerArg} />,
             ios: null
           })}
         <NotificationUI
