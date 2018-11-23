@@ -883,7 +883,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_menuItemView addSubview : _menuItemTopLineView];
   
   
-    NSInteger buttonCount = _isAudioContent ? 4 : 5;  // origin => 4 : 6  // 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
+    NSInteger buttonCount = _isAudioContent ? 3 : 5;  // origin => 4 : 6  // 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
   
     CGFloat buttonPadding = _isAudioContent ? 70 : 10;
     CGFloat buttonWidth = ((_menuItemView.frame.size.width - (buttonPadding * 2)) / buttonCount);

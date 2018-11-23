@@ -207,5 +207,9 @@ export default {
       return false;
     }
     return true;
+  },
+
+  unsubscribe() {
+   return RNProductPayment.unsubscribe();
   }
 };
