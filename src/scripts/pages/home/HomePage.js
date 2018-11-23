@@ -263,12 +263,17 @@ class HomePage extends React.Component {
         })
       }
 
+      let userId = globalStore.welaaaAuth.profile.id;
+      let accessToken = globalStore.welaaaAuth.access_token;
+
       let config = {
         miniPlayerCid: miniPlayerCid,
         miniPlayerTitle: miniPlayerTitle,
         miniPlayerTotalPlayTime: miniPlayerTotalPlayTime,
         miniPlayerGroupTitle: miniPlayerGroupTitle,
-        miniPlayercurrentPlayTime: miniPlayercurrentPlayTime
+        miniPlayercurrentPlayTime: miniPlayercurrentPlayTime,
+        userId: userId.toString(),
+        accessToken: accessToken
       };
 
       Native.mainToggleMiniPlayer(true, config);
@@ -281,13 +286,11 @@ class HomePage extends React.Component {
   getProgressList = async () => {
 
     if (Platform.OS === 'android') {
-      // native getHomeMiniPlayer 
-      // [{"duration":"9822","playCount":"1","reg_date":"2018-11-19 18:07:43",
-      // "server_sync_flag":"N","progress":"","cid":"v100006_001"}]
-      // 재생할 수 있는 준비를 한다. Native.play (v100006_001)
-      // 타이틀 , progress 확인을 한다 ?
-      // getProgressDatabase 가 null 경우 , '최근 재생 이력이 없습니다.'
-      // 오디오북 의 경우 재생하면 될 것 이고, 클래스 동영상의 경우는 어떻게 해야 할까요 ? 
+      // SQLite 저장된 정보 베이스로 마지막 재생 콘텐츠 첫번째를 로드합니다. (desc)
+      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고 
+      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid) 
+      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가 
+      // 쉽지가 않네요 ... 
 
       Native.getProgressDatabase(
         result => {

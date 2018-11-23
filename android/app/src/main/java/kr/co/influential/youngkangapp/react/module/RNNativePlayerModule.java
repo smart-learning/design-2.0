@@ -1348,22 +1348,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     return true;
   }
 
-  @ReactMethod
-  public void setAlwaysMiniPlayer(ReadableMap content) {
-    try {
-      String miniPlayerCid = content.getString("miniPlayerCid");
-      String miniPlayerTitle = content.getString("miniPlayerTitle");
-      String miniPlayerTotalPlayTime = content.getString("miniPlayerTotalPlayTime");
-
-      LogHelper.e("RNNativePlayerModule" , miniPlayerCid);
-      LogHelper.e("RNNativePlayerModule" , miniPlayerTitle);
-      LogHelper.e("RNNativePlayerModule" , miniPlayerTotalPlayTime);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   private OfflineContentData parseOfflineContentData(ReadableMap content) {
     OfflineContentData offlineContentData = new OfflineContentData();
     if (content.hasKey("audioVideoType")) {
