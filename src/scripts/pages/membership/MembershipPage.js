@@ -243,13 +243,10 @@ const styles = StyleSheet.create({
   },
   tripAroundButton: {
     width: '100%',
-    height: 48,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-    textAlign: 'center',
-    textAlignVertical: 'center'
+    textAlign: 'center'
   }
 });
 
@@ -1091,10 +1088,15 @@ export default class MembershipPage extends React.Component {
             {/* 둘러보기. */}
             <TouchableOpacity
               style={{
-                paddingTop: 25,
-                paddingBottom: 20,
-                paddingLeft: 15,
-                paddingRight: 15
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                backgroundColor: CommonStyles.COLOR_PRIMARY,
+                height: 48,
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 25,
+                marginBottom: 20
               }}
               activeOpacity={0.7}
               onPress={() => {
