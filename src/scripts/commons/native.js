@@ -1,4 +1,4 @@
-﻿import { Alert, NativeModules } from 'react-native';
+﻿import { Alert, NativeModules, Platform } from 'react-native';
 import globalStore from '../commons/store';
 import net from '../commons/net';
 
@@ -73,7 +73,11 @@ export default {
   },
 
   toggleMiniPlayer(bool) {
-    console.log('toggleMiniPlayer:', bool);
+    globalStore.miniPlayerVisible = bool;
+  },
+
+  mainToggleMiniPlayer(bool, arg) {
+    globalStore.miniPlayerArg = arg;
     globalStore.miniPlayerVisible = bool;
   },
 
@@ -85,9 +89,23 @@ export default {
 
   getDownloadList(success, failed) {
     console.log('native.js::getDownloadList');
-    RNNativePlayer.getDownloadList()
-      .then(success)
-      .catch(failed);
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {
+      userId: userId.toString()
+    };
+
+    console.log('native.js::getDownloadList', config);
+
+    if (Platform.OS === 'android') {
+      RNNativePlayer.getDownloadList(config)
+        .then(success)
+        .catch(failed);
+    } else {
+      RNNativePlayer.getDownloadList()
+        .then(success)
+        .catch(failed);
+    }
   },
 
   getDownloadListCid(cid, success, failed) {
@@ -103,9 +121,17 @@ export default {
       .catch(failed);
   },
 
-  getProgressDatabase() {
+  getProgressDatabase(success, failed) {
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {
+      userId: userId.toString()
+    };
+
     try {
-      RNNativePlayer.selectProgressDatabase({});
+      RNNativePlayer.selectProgressDatabase(config)
+        .then(success)
+        .catch(failed);
     } catch (error) {
       console.log(error);
     }
@@ -210,6 +236,6 @@ export default {
   },
 
   unsubscribe() {
-   return RNProductPayment.unsubscribe();
+    return RNProductPayment.unsubscribe();
   }
 };

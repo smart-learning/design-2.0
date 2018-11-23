@@ -83,7 +83,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:marqueeRepeatLimit="marquee_forever"
-            android:text="그룹 타이틀이 출력됩니다. 그룹 타이틀이 출력됩니다. 그룹 타이틀이 출력됩니다. "
+            android:text="최근 재생 이력이 없습니다. "
             android:textColor="@color/colorWhite"/>
 
           <TextView
@@ -94,12 +94,9 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:marqueeRepeatLimit="marquee_forever"
-            android:text="클립 타이틀이 출력됩니다. 클립 타이틀이 출력됩니다. 클립 타이틀이 출력됩니다. "
             android:textColor="@color/colorWhite"/>
 
         </LinearLayout>
-
-
 
         <TextView
           android:id="@+id/mini_current_time"

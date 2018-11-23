@@ -1,6 +1,7 @@
 package kr.co.influential.youngkangapp.react.view;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -23,15 +25,24 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeMap;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.player.PlayerActivity;
+import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.playback.PlaybackManager;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
+import kr.co.influential.youngkangapp.react.RNEventEmitter;
+import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Utils;
 
 public class ReactBottomControllerView extends FrameLayout {
@@ -68,12 +79,41 @@ public class ReactBottomControllerView extends FrameLayout {
 
   private GestureDetector mgestureScanner;
 
+
+  private HttpConnection httpConn = HttpConnection.getInstance();
+  private final String WELEARN_WEB_URL = Utils.welaaaApiBaseUrl();
+  private String contentUrl = "";
+  private String contentName = "";
+  private String contentUuid = "";
+  private String contentDrmLicenseUrl = "";
+  private String contentUserId = "";
+  private String contentCid = "";
+  private String contentToken = "";
+  private String callbackMethodName = "";
+  private String callbackMethod = "";
+  private String contentType = "";
+  private int contentId = 0;
+
+  private int contentHistory_seconds = 0;
+
+  private WebPlayerInfo mWebPlayerInfo = null;
+  private RNEventEmitter eventEmitter;
+  ProgressDialog mProgressDialog;
+  public static String mszMsgLoading = "로딩 중 입니다.\n잠시만 기다려주세요";
+
+  private final int FLAG_PLAY_NETWORK_CHECK = 6;
+  private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
+
+  private boolean checkAudioBookChapter = false;
+
   public ReactBottomControllerView(@NonNull Context context) {
     super(context);
+
     inflate(context, R.layout.bottom_controller, this);
 
     groupTitle = findViewById(R.id.mini_group_title);
     title = findViewById(R.id.mini_title);
+    groupTitle = findViewById(R.id.mini_group_title);
     currentTime = findViewById(R.id.mini_current_time);
     durationTime = findViewById(R.id.mini_duration_time);
     pause = findViewById(R.id.mini_btn_pause);
@@ -194,6 +234,9 @@ public class ReactBottomControllerView extends FrameLayout {
     if (description != null) {
       title.setText(description.getTitle());
       groupTitle.setText(description.getSubtitle());
+    } else {
+      title.setText("최근 재생 이력이 없습니다.");
+      groupTitle.setText("");
     }
   }
 
@@ -248,10 +291,28 @@ public class ReactBottomControllerView extends FrameLayout {
   }
 
   private void moveToPlayer() {
-    Intent intent = new Intent(getContext(), PlayerActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    intent.putExtra(PlaybackManager.FROM_MEDIA_SESSION, true);
-    ContextCompat.startActivity(getContext(), intent, null);
+
+    Activity activity = Utils.getActivity(getContext());
+    MediaControllerCompat mediaController = MediaControllerCompat
+        .getMediaController(activity);
+
+    if (mediaController != null) {
+
+      PlaybackStateCompat state = mediaController.getPlaybackState();
+      MediaMetadataCompat metadata = mediaController.getMetadata();
+
+      LogHelper.e(TAG , "moveToPlayer PlaybackStateCompat " + state );
+      LogHelper.e(TAG , "moveToPlayer MediaMetadataCompat " + metadata );
+
+      if (state != null && metadata !=null){
+        Intent intent = new Intent(getContext(), PlayerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra(PlaybackManager.FROM_MEDIA_SESSION, true);
+        ContextCompat.startActivity(getContext(), intent, null);
+      }else{
+        onReceiveNativeEvent(contentCid);
+      }
+    }
   }
 
   private void pause() {
@@ -269,6 +330,17 @@ public class ReactBottomControllerView extends FrameLayout {
         .getMediaController(activity);
     if (mediaController != null) {
       mediaController.getTransportControls().play();
+    }
+
+    if (mediaController != null) {
+      PlaybackStateCompat state = mediaController.getPlaybackState();
+      MediaMetadataCompat metadata = mediaController.getMetadata();
+
+      if (state != null && metadata !=null){
+        mediaController.getTransportControls().play();
+      }else{
+        onReceiveNativeEvent(contentCid);
+      }
     }
   }
 
@@ -363,4 +435,63 @@ public class ReactBottomControllerView extends FrameLayout {
       mediaController.getTransportControls().stop();
     }
   }
+
+  public void setMiniPlayer(@Nullable ReadableMap content){
+    try{
+
+      String miniPlayerCid = "";
+      String miniPlayerTitle = "";
+      String miniPlayercurrentPlayTime = "";
+      String miniPlayerTotalPlayTime = "";
+      String miniPlayerGroupTitle = "";
+      String userId = "";
+      String accessToken = "";
+
+      ReadableNativeMap readableNativeMap = (ReadableNativeMap) content;
+
+      miniPlayerTitle = readableNativeMap.getMap("arg").getString("miniPlayerTitle");
+      miniPlayercurrentPlayTime = readableNativeMap.getMap("arg").getString("miniPlayercurrentPlayTime");
+      miniPlayerTotalPlayTime = readableNativeMap.getMap("arg").getString("miniPlayerTotalPlayTime");
+      miniPlayerGroupTitle =  readableNativeMap.getMap("arg").getString("miniPlayerGroupTitle");
+      miniPlayerCid =  readableNativeMap.getMap("arg").getString("miniPlayerCid");
+      userId =  readableNativeMap.getMap("arg").getString("userId");
+      accessToken =  readableNativeMap.getMap("arg").getString("accessToken");
+
+      title = findViewById(R.id.mini_title);
+      groupTitle = findViewById(R.id.mini_group_title);
+      currentTime = findViewById(R.id.mini_current_time);
+      durationTime = findViewById(R.id.mini_duration_time);
+
+      contentCid = miniPlayerCid;
+      contentUserId = userId;
+      contentToken = accessToken;
+
+      title.setText(miniPlayerTitle);
+      currentTime.setText(Utils.timeToString(Double.parseDouble(miniPlayercurrentPlayTime)));
+
+      if(miniPlayerTotalPlayTime!=null){
+        String[] timesplit = miniPlayerTotalPlayTime.split(":");
+
+        if(timesplit[0].equals("00")){
+          miniPlayerTotalPlayTime = timesplit[1]+":"+timesplit[2];
+        }
+      }
+
+      durationTime.setText(miniPlayerTotalPlayTime);
+      groupTitle.setText(miniPlayerGroupTitle);
+
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+  }
+
+  public void onReceiveNativeEvent(String cid) {
+    WritableMap event = Arguments.createMap();
+    event.putString("cid", cid);
+    ReactContext reactContext = (ReactContext)getContext();
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(
+        "miniPlayerCallPlayer",
+        event);
+  }
+
 }
