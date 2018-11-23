@@ -122,7 +122,6 @@ export default {
   },
 
   getProgressDatabase(success, failed) {
-
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
       userId: userId.toString()
@@ -225,9 +224,13 @@ export default {
 
   async buyResult(arg) {
     try {
-      const resp = await net.getMembershipCurrentFresh();
-      console.log('buyResult > resp', resp);
-      globalStore.currentMembership = resp.data;
+      // 멤버십 정보
+      const respMembership = await net.getMembershipCurrentFresh();
+      console.log('buyResult > respMembership', respMembership);
+      globalStore.currentMembership = respMembership.data;
+      // 이용권 정보
+      globalStore.voucherStatus = await net.getVouchersStatus();
+      console.log('buyResult > voucherStatus', globalStore.voucherStatus);
     } catch (error) {
       console.log('buyResult > error', error);
       return false;

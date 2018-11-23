@@ -372,7 +372,10 @@ export default class MembershipPage extends React.Component {
       if ('success' === change.name && change.newValue) {
         globalStore.buyResult.success = false;
         // HomeScreen.js 로 이동 혹은 Back
-        this.props.navigation.navigate('HomeScreen');
+        // -> 이전 화면으로 돌아갔을 때 멤버십 갱신되도록 아래와 같이 수정. 2018.11.22
+        this.props.navigation.navigate('HomeScreen', {
+          reload_mbs: true
+        });
       }
     });
   }
@@ -389,11 +392,11 @@ export default class MembershipPage extends React.Component {
       '멤버십을 해지 하시겠습니까?',
       [
         { text: '아니오', style: 'cancel' },
-        { text: '네', onPress: () => {
-          if (Platform.OS === 'ios')
-            native.unsubscribe()
-          else
-            this.cancel_membership_proc()
+        {
+          text: '네',
+          onPress: () => {
+            if (Platform.OS === 'ios') native.unsubscribe();
+            else this.cancel_membership_proc();
           }
         }
       ],
@@ -609,11 +612,15 @@ export default class MembershipPage extends React.Component {
                 onPress={() => this.cancel_membership_confirm()}
               >
                 <View style={styles.cancelButton} borderRadius={5}>
-                {Platform.OS === 'ios' ? (
-                  <Text style={styles.cancelButtonText}>Apple 구독 취소 또는 변경</Text>
-                ) : (
-                  <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
-                )}
+                  {Platform.OS === 'ios' ? (
+                    <Text style={styles.cancelButtonText}>
+                      Apple 구독 취소 또는 변경
+                    </Text>
+                  ) : (
+                    <Text style={styles.cancelButtonText}>
+                      멤버십 구독 해지
+                    </Text>
+                  )}
                 </View>
               </TouchableOpacity>
             )}
