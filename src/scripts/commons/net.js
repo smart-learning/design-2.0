@@ -728,7 +728,8 @@ export default {
       name: name,
       username: email,
       password: password,
-      grant_type: 'password'
+      grant_type: 'password',
+      source: Platform.OS
     };
     params = encodeParams(params);
 
