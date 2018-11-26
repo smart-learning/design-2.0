@@ -390,7 +390,7 @@ export default {
 
   getMainPopup() {
     const url = API_PREFIX + 'v1.0/users/popup';
-    params = {
+    const params = {
       platform: Platform.OS
     }
     return axios
@@ -464,7 +464,7 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/banner', expired)
+    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/banner?platform=' + Platform.OS, expired)
       .then(data => {
         data.forEach(element => {
           element.key = element.id.toString();
@@ -728,7 +728,8 @@ export default {
       name: name,
       username: email,
       password: password,
-      grant_type: 'password'
+      grant_type: 'password',
+      source: Platform.OS
     };
     params = encodeParams(params);
 
