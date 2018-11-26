@@ -50,7 +50,7 @@ public class SubtitlsJeson {
         } // doInBackground : 백그라운드 작업을 진행한다.
         @Override
         protected void onPostExecute(String result) {
-            mplayerController.setSubtitls(result);
+            mplayerController.setSubtitle(result);
         } // onPostExecute : 백그라운드 작업이 끝난 후 UI 작업을 진행한다.
     } // JsonLoadingTask
 

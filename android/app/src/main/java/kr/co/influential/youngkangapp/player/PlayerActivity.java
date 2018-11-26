@@ -100,7 +100,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import kr.co.influential.youngkangapp.BasePlayerActivity;
 import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
@@ -786,7 +785,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
             LocalPlayback.getInstance(PlayerActivity.this).setRendererDisabled(true);
           } else {
-
             // 클래스 동영상 강좌 / 강의 
 //            simpleExoPlayerView.showController();
             simpleExoPlayerView.setUseController(true);
@@ -1595,19 +1593,14 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void setSubTitleJson(int i) {
 
-    String subTitlsWebUrl = "none";
-
     try {
       if (Utils.isAirModeOn(getApplicationContext())) {
         setNoneSubtilteText();
         hasSubTitlsJesonUrl = false;
       } else {
-
         callbackMethodName = "play/contents-smi/";
-
         sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
             callbackMethodName);
-
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -2635,7 +2628,7 @@ public class PlayerActivity extends BasePlayerActivity {
   /*******************************************************************
    *  자막설정
    *******************************************************************/
-  public void setSubtitls(String subTitls) {
+  public void setSubtitle(String subTitls) {
 
     SubtitlsInfo msubtitlsInfo = new SubtitlsInfo(subTitls);
 
@@ -4825,29 +4818,39 @@ public class PlayerActivity extends BasePlayerActivity {
         } else if (callbackMethodName.equals("play/contents-smi/")) {
           StringBuffer sb = new StringBuffer();
           try {
-
-            //읽어들인 JSON포맷의 데이터를 JSON객체로 변환
             JSONArray jArr = new JSONArray(body);
 
-            //배열의 크기만큼 반복하면서, ksNo과 korName의 값을 추출함
             for (int i = 0; i < jArr.length(); i++) {
 
               JSONObject jObject = jArr.getJSONObject(i);
-              //값을 추출함
               String time = jObject.getString("time");
               String memo = jObject.getString("memo");
 
-              //StringBuffer 출력할 값을 저장
               sb.append("&time=" + time);
               sb.append("&memo=" + memo);
 
-              setSubtitls(sb.toString());
+            }
+
+            setSubtitle(sb.toString());
+
+            try{
+
+              hasSubTitlsJesonUrl = true;
+
+              Message msg = mCurrentTimeHandler.obtainMessage();
+              mCurrentTimeHandler.sendMessageDelayed(msg, 1000);
+            }catch (Exception e){
+              e.printStackTrace();
             }
 
           } catch (Exception e) {
             // TODO: handle exception
+
+            LogHelper.e(TAG , "20181125 Exception " + e.toString() );
+
             setNoneSubtilteText();
             hasSubTitlsJesonUrl = false;
+            e.printStackTrace();
           }
         } else if (callbackMethodName.equals("contents/playlist-suggest/")) {
 
