@@ -115,6 +115,11 @@
 
 + (void) showStatusBar;
 
++ (void) processCheckingUpdate;
+
++ (BOOL) compareBetweenCurrentVersion : (NSString *) currentVersion
+                        andNewVersion : (NSString *) newVersion;
+
 @end
 
 

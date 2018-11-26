@@ -243,13 +243,10 @@ const styles = StyleSheet.create({
   },
   tripAroundButton: {
     width: '100%',
-    height: 48,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-    textAlign: 'center',
-    textAlignVertical: 'center'
+    textAlign: 'center'
   }
 });
 
@@ -372,7 +369,10 @@ export default class MembershipPage extends React.Component {
       if ('success' === change.name && change.newValue) {
         globalStore.buyResult.success = false;
         // HomeScreen.js 로 이동 혹은 Back
-        this.props.navigation.navigate('HomeScreen');
+        // -> 이전 화면으로 돌아갔을 때 멤버십 갱신되도록 아래와 같이 수정. 2018.11.22
+        this.props.navigation.navigate('HomeScreen', {
+          reload_mbs: true
+        });
       }
     });
   }
@@ -389,7 +389,13 @@ export default class MembershipPage extends React.Component {
       '멤버십을 해지 하시겠습니까?',
       [
         { text: '아니오', style: 'cancel' },
-        { text: '네', onPress: () => this.cancel_membership_proc() }
+        {
+          text: '네',
+          onPress: () => {
+            if (Platform.OS === 'ios') native.unsubscribe();
+            else this.cancel_membership_proc();
+          }
+        }
       ],
       { cancelable: false }
     );
@@ -427,9 +433,15 @@ export default class MembershipPage extends React.Component {
     if (
       globalStore.currentMembership &&
       globalStore.currentMembership.type_text
-    )
+    ) {
       return this.renderMembership();
-    else return this.renderNonMembership();
+    } else {
+      if ('android' === Platform.OS) {
+        return this.renderNonMembership_android();
+      } else {
+        return this.renderNonMembership_ios();
+      }
+    }
   }
 
   renderMembership() {
@@ -443,7 +455,7 @@ export default class MembershipPage extends React.Component {
               <View style={styles.membershipCampusBox}>
                 <Image source={IcCampus} style={styles.membershipIcon} />
                 <Text style={styles.membershipCampusTitle}>
-                  윌라 캠퍼스 멤버십
+                  윌라 클래스 멤버십
                 </Text>
                 <View style={styles.membershipParagraphBox}>
                   <Text style={styles.membershipParagraph}>
@@ -550,7 +562,7 @@ export default class MembershipPage extends React.Component {
               <View style={styles.membershipAudioBookBox}>
                 <Image source={IcClub} style={styles.membershipIcon} />
                 <Text style={styles.membershipAudioBookClubTitle}>
-                  윌라 오디오북클럽 멤버십
+                  윌라 오디오북 멤버십
                 </Text>
                 <View style={styles.membershipParagraphBox}>
                   <View style={styles.membershipParagraphBox}>
@@ -597,7 +609,15 @@ export default class MembershipPage extends React.Component {
                 onPress={() => this.cancel_membership_confirm()}
               >
                 <View style={styles.cancelButton} borderRadius={5}>
-                  <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+                  {Platform.OS === 'ios' ? (
+                    <Text style={styles.cancelButtonText}>
+                      Apple 구독 취소 또는 변경
+                    </Text>
+                  ) : (
+                    <Text style={styles.cancelButtonText}>
+                      멤버십 구독 해지
+                    </Text>
+                  )}
                 </View>
               </TouchableOpacity>
             )}
@@ -637,7 +657,7 @@ export default class MembershipPage extends React.Component {
     }
   };
 
-  renderNonMembership() {
+  renderNonMembership_android() {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const aspectRatio = windowWidth / 1440;
@@ -926,6 +946,170 @@ export default class MembershipPage extends React.Component {
                 />
               </TouchableOpacity>
             </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  renderNonMembership_ios() {
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
+    const aspectRatio = windowWidth / 1440;
+
+    // Image resources.
+    // Background.
+    const membership_bg = require('../../../images/membership_bg_ios.png');
+    const membership_bg_source = Image.resolveAssetSource(membership_bg);
+
+    // Membership.
+    const membership_btn_1 = require('../../../images/membership_btn_1_ios.png');
+    const membership_btn_1_source = Image.resolveAssetSource(membership_btn_1);
+
+    const membership_btn_2 = require('../../../images/membership_btn_2_ios.png');
+    const membership_btn_2_source = Image.resolveAssetSource(membership_btn_2);
+
+    const membership_btn_3 = require('../../../images/membership_btn_3_ios.png');
+    const membership_btn_3_source = Image.resolveAssetSource(membership_btn_3);
+
+    return (
+      <SafeAreaView
+        style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
+      >
+        <ScrollView style={{ width: '100%' }}>
+          <View
+            style={{
+              backgroundColor: '#DDEEE2'
+            }}
+          >
+            <Image
+              onResponderRelease={e => {
+                const x = e.nativeEvent.locationX;
+                const y = e.nativeEvent.locationY;
+                if (
+                  x > 1000 * aspectRatio &&
+                  x < 1373 * aspectRatio &&
+                  y > 4300 * aspectRatio &&
+                  y < 4350 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('MembershipDetailPage');
+                } else if (
+                  x > 1060 * aspectRatio &&
+                  x < 1170 * aspectRatio &&
+                  y > 4447 * aspectRatio &&
+                  y < 4485 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('InquireListScreen');
+                }
+              }}
+              onStartShouldSetResponder={e => true}
+              style={{
+                width: membership_bg_source.width * aspectRatio,
+                height: membership_bg_source.height * aspectRatio
+              }}
+              resizeMode="stretch"
+              source={membership_bg}
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 686 * aspectRatio,
+                left:
+                  (windowWidth - membership_btn_1_source.width * aspectRatio) /
+                  2
+              }}
+              onActiveOpacity={0.9}
+              onPress={() =>
+                this.buyMembershop({
+                  title: '오디오북 멤버십 결제',
+                  type: 'bookclub'
+                })
+              }
+            >
+              <Image
+                style={{
+                  width: membership_btn_1_source.width * aspectRatio,
+                  height: membership_btn_1_source.height * aspectRatio
+                }}
+                resizeMode="stretch"
+                source={membership_btn_1}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 1298 * aspectRatio,
+                left:
+                  (windowWidth - membership_btn_2_source.width * aspectRatio) /
+                  2
+              }}
+              onActiveOpacity={0.9}
+              onPress={() =>
+                this.buyMembershop({
+                  title: '클래스 멤버십 결제',
+                  type: 'campus'
+                })
+              }
+            >
+              <Image
+                style={{
+                  width: membership_btn_2_source.width * aspectRatio,
+                  height: membership_btn_2_source.height * aspectRatio
+                }}
+                resizeMode="stretch"
+                source={membership_btn_2}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 1910 * aspectRatio,
+                left:
+                  (windowWidth - membership_btn_2_source.width * aspectRatio) /
+                  2
+              }}
+              onActiveOpacity={0.9}
+              onPress={() =>
+                this.buyMembershop({
+                  title: '프리미엄 멤버십 결제',
+                  type: 'premium'
+                })
+              }
+            >
+              <Image
+                style={{
+                  width: membership_btn_3_source.width * aspectRatio,
+                  height: membership_btn_3_source.height * aspectRatio
+                }}
+                resizeMode="stretch"
+                source={membership_btn_3}
+              />
+            </TouchableOpacity>
+            {/* 둘러보기. */}
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                backgroundColor: CommonStyles.COLOR_PRIMARY,
+                height: 48,
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 25,
+                marginBottom: 20
+              }}
+              activeOpacity={0.7}
+              onPress={() => {
+                this.props.navigation.navigate('HomeScreen', {
+                  show_popup: true
+                });
+              }}
+              /* onPress={() => this.props.navigation.dismiss()} */
+            >
+              <Text style={styles.tripAroundButton}>
+                무료 계정으로 둘러보기
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -541,7 +541,8 @@ public class WeContentManager extends SQLiteOpenHelper {
     }
 
     String query =
-        "SELECT cid , duration , PlayCount , progress , reg_date , server_sync_flag FROM PROGRESS";
+        "SELECT cid , duration , PlayCount , progress , reg_date , server_sync_flag "
+            + "FROM PROGRESS ORDER BY reg_date desc";
     Cursor c = db.rawQuery(query, null);
 
     return CursorToDataTable(c);
@@ -606,11 +607,25 @@ public class WeContentManager extends SQLiteOpenHelper {
     db.execSQL(sql);
   }
 
-  public ArrayList<HashMap<String, Object>> getDatabase() throws Exception {
+  public ArrayList<HashMap<String, Object>> getDatabase(String userId) throws Exception {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT * FROM DOWNLOAD ";
+    String query = "SELECT * FROM DOWNLOAD WHERE userId = '"+ userId+"' ORDER BY CID ASC";
+
+//    String query = "select distinct cid , gTitle , audioVideoType ,groupTeacherName,view_limitdate , count(*) as groupContentScnt "
+//        + "FROM DOWNLOAD "
+//        + "WHERE userId = '"+ userId +"' "
+//        + "order by cid asc "
+//        + "group by gTitle,audioVideoType,groupTeacherName ";
+
+//    String query = "select * from ("
+//        +" select * "
+//        +" from download "
+//        +" order by cid desc "
+//        +") as a "
+//        +" group by a.gTitle ";
+
     Cursor c = db.rawQuery(query, null);
     return CursorToDataTable(c);
   }

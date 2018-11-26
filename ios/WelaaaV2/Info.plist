@@ -36,7 +36,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1504004</string>
+	<string>1506</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -117,6 +117,21 @@
 		<string>Montserrat-Bold.ttf</string>
 		<string>Spoqa Han Sans Bold.ttf</string>
 		<string>Spoqa Han Sans Regular.ttf</string>
+		<string>AntDesign.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Zocial.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

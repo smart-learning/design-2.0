@@ -164,7 +164,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         // cid 를 검색해서 다운받은 콘텐츠가 있으면 그 콘텐츠 재생경로로 셋팅하는 방식(버튼도 다운로드 완료된 상태로 업데이트)
         //  -> 재생권한에 대해서는 체크 필요 없는걸로 판단(오디오북이므로 권한이 없는 경우에도 다운받은 프리뷰 챕터는 재생해도 되기 때문)
         // 다운로드 중일 때의 상태도 체크해서 버튼 반영
-        [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
+        [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                   forKey : @"uri"];
         // ~ 2018.10.24
       
@@ -415,34 +415,24 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // Dispose of any resources that can be recreated.
 }
 
-/*
-- (void) fpsSetUrlAsset
-{
-    NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
-    _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
-  
-    // FPS 콘텐츠가 재생 되기 전에 FPS 콘텐츠 정보를 설정합니다.
-    [_fpsSDK prepareWithUrlAsset : _urlAsset
-                          userId : [_args objectForKey : @"userId"]
-                       contentId : [_args objectForKey : @"cid"] // PALLYCON_CONTENT_ID
-                      optionalId : [_args objectForKey : @"oid"] // PALLYCON_OPTIONAL_ID
-                 liveKeyRotation : NO];
-}
-*/
 - (void) fpsSetUrlAsset
 {
     FPSDownloadManager *fps = [FPSDownloadManager sharedInstance];
     
-    NSString* assetPath = [_args objectForKey : @"uri"];
-    
-    if([fps isPlayableOfflineAsset:assetPath]){ // 오프라인 재생 가능 파일인지 확인
-        NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
-        NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:[fps getPathFromLibraryDir:assetPath]];
-        NSLog(@"오프라인 재생 가능 -> assetURL : %@", assetURL);
-        _urlAsset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
+    NSString *assetPath = [_args objectForKey : @"uri"];
+  
+    // 오프라인 재생 가능 파일인지 확인
+    if ( [fps isPlayableOfflineAsset : assetPath] )
+    {
+        NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
+        NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : [fps getPathFromLibraryDir : assetPath]];
+        NSLog(@"  오프라인 재생 가능 -> assetURL : %@", assetURL);
+        _urlAsset = [AVURLAsset assetWithURL : [NSURL URLWithString : assetURL]];
         _isDownloadFile = true;
-    }else{  // 오프라인 재생 파일이 아닌 경우
-        NSLog(@"오프라인 재생 불가 파일 -> 스트리밍 재생");
+    }
+    else // 오프라인 재생 파일이 아닌 경우
+    {
+        NSLog(@"  오프라인 재생 불가 파일 -> 스트리밍 재생");
         NSURL *contentUrl = [NSURL URLWithString : [_args objectForKey : @"uri"]];
         _urlAsset = [[AVURLAsset alloc] initWithURL:contentUrl options:nil];
         _isDownloadFile = false;
@@ -469,32 +459,40 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
    }];
 }
 
-- (void)networkStatusChanged:(NSNotification *)noti // 네트워크 상태에 따른 처리
+//
+// 네트워크 상태에 따른 처리를 실행합니다.
+//
+- (void) networkStatusChanged : (NSNotification *) noti
 {
-  BOOL isPlayableOnWiFi = false;
-  isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
-  NSLog(@"  isPlayableOnWiFi? : %@", isPlayableOnWiFi? @"YES" : @"NO");
+    BOOL isPlayableOnWiFi = false;
+    isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
+    NSLog(@"  isPlayableOnWiFi? : %@", isPlayableOnWiFi? @"YES" : @"NO");
   
-  switch (recentNetStatus) {
-    case AFNetworkReachabilityStatusNotReachable:
-    case AFNetworkReachabilityStatusUnknown:
-      [self pressedPauseButton];
-      NSLog(@"  네트워크 상태를 확인해주시기 바랍니다.");
-      [self showAlertOk:@"알림" message:@"네트워크 상태를 확인해주시기 바랍니다."];
-      break;
-    case AFNetworkReachabilityStatusReachableViaWiFi: // Wi-fi
-      break;
-    case AFNetworkReachabilityStatusReachableViaWWAN: // LTE/3G
-      if(isPlayableOnWiFi && !_isDownloadFile)
-      {
-        [self pressedPauseButton];
-        NSLog(@"  사용자 설정에 따라 Wi-Fi 에서만 재생이 가능합니다.");
-        [self showAlertOk:@"알림" message:@"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 재생이 가능합니다."];
-      }
-      break;
-    default:
-      break;
-  }
+    switch ( recentNetStatus )
+    {
+        case AFNetworkReachabilityStatusNotReachable:
+        
+        case AFNetworkReachabilityStatusUnknown:
+            [self pressedPauseButton];
+            NSLog(@"  네트워크 상태를 확인해주시기 바랍니다.");
+            [self showAlertOk:@"알림" message:@"네트워크 상태를 확인해주시기 바랍니다."];
+            break;
+        
+        case AFNetworkReachabilityStatusReachableViaWiFi: // Wi-fi
+            break;
+        
+        case AFNetworkReachabilityStatusReachableViaWWAN: // LTE/3G
+            if ( isPlayableOnWiFi && !_isDownloadFile )
+            {
+                [self pressedPauseButton];
+                NSLog(@"  사용자 설정에 따라 Wi-Fi 에서만 재생이 가능합니다.");
+                [self showAlertOk:@"알림" message:@"LTE/3G로 연결되어 있습니다. 사용자 설정에 따라 Wi-Fi에서만 재생이 가능합니다."];
+            }
+            break;
+    
+        default:
+            break;
+    }
 }
 
 - (void) fpsLicenseDidSuccessAcquiringWithContentId : (NSString * _Nonnull) contentId
@@ -507,6 +505,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] : %@", error.localizedDescription);
     // 종료 메시지와 함께 뷰를 종료시킵니다.
+    return [common presentAlertWithTitle:[_args objectForKey : @"cid"] andMessage:error.localizedDescription];
 }
 
 //
@@ -529,8 +528,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         return ;
     }
   
-    // 현재 재생중인 콘텐트의 권한이 없다면 종료시킵니다.
-    if ( !_isAuthor )
+    // 현재 재생중인 오디오북 콘텐트의 권한이 없다면 종료시킵니다.
+    if ( !_isAuthor && _isAudioContent)
     {
         [self closePlayer];
       
@@ -554,7 +553,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     NSInteger indexOfCurrentContent = 0;
   
-    for (int i=0; i<contentsListArray.count; i++)
+    for ( int i = 0; i < contentsListArray.count; i++ )
     {
         // 현재 재생중인 콘텐트의 cid와 콘텐츠정보의 배열의 cid와 일치한다면..
         if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
@@ -570,65 +569,43 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         // 일단 오디오북 콘텐츠인지 확인부터 합니다.
         if ( _isAudioContent )
         {
-          // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
-          NSInteger i = 0;
-          for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
-          {
-            if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+            // 다음 콘텐츠의 play_seconds가 '0'이 아닌 경우에만 해당 cid와 uri를 세팅하여 playNext로 넘깁시다.
+            NSInteger i = 0;
+            for ( i = indexOfCurrentContent+1; i < contentsListArray.count-1; i++ )
             {
-              break;
+                if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
+                {
+                    break;
+                }
             }
-          }
 
-          /*
+            // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+            [self sendProgressWhenCurrentContentEnds];
+          
             [_args setObject : contentsListArray[i][@"cid"]
                       forKey : @"cid"];
           
-            NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                          andHeaderInfo : [_args objectForKey : @"token"]];
-          
-            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+            [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                       forKey : @"uri"];
+          
             _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          */
-          // 아래와 같이 수정 2018.10.24
-          [_args setObject : contentsListArray[i][@"cid"]
-                    forKey : @"cid"];
-          
-          [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
-                    forKey : @"uri"];
-          
-          _currentLectureTitle = contentsListArray[i][@"title"];  // 소챕터명 세팅 합니다.
-          
-          [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
         }
         else if ( !_isAudioContent )  // 영상 콘텐츠라면 다음 순서의 cid와 uri를 세팅하고 playNext를 실행합니다.
         {
-          /*
+            // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+            [self sendProgressWhenCurrentContentEnds];
+          
             [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
                       forKey : @"cid"];
           
-            NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                          andHeaderInfo : [_args objectForKey : @"token"]];
-          
-            [_args setObject : playDataDics[@"media_urls"][@"HLS"]
+            [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                       forKey : @"uri"];
+          
             _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
           
             [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
-          */
-          // 아래와 같이 수정 2018.10.24
-          [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
-                    forKey : @"cid"];
-          
-          [_args setObject : [self getContentUri:[_args objectForKey : @"cid"]]
-                    forKey : @"uri"];
-          
-          _currentLectureTitle = contentsListArray[indexOfCurrentContent+1][@"title"];  // 소챕터명 세팅 합니다.
-          
-          [self playNext];  // 새로운 콘텐츠 재생이므로 시작 시간이 0 입니다.
         }
     }
     else if ( indexOfCurrentContent == contentsListArray.count-1 )  // 배열의 마지막이라면 재생할 콘텐트가 없는 것입니다.
@@ -906,7 +883,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_menuItemView addSubview : _menuItemTopLineView];
   
   
-    NSInteger buttonCount = _isAudioContent ? 4 : 6;
+    NSInteger buttonCount = _isAudioContent ? 3 : 5;  // origin => 4 : 6  // 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
   
     CGFloat buttonPadding = _isAudioContent ? 70 : 10;
     CGFloat buttonWidth = ((_menuItemView.frame.size.width - (buttonPadding * 2)) / buttonCount);
@@ -975,7 +952,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         buttonOffsetX = buttonOffsetX + buttonWidth;
     }
-  
+  /*// 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
     {
         _sleepButton = [[ContentPlayerButton alloc] initWithId : @"timer-mode"
                                                    normalImage : @"icon_timer"
@@ -993,7 +970,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         buttonOffsetX = buttonOffsetX + buttonWidth;
     }
-  
+  */// 타이머버튼 일시적으로 주석처리함. (18.11.23 김태현)
     {
         _lockButton = [[ContentPlayerButton alloc] initWithId : @"lock-mode"
                                                   normalImage : @"icon_lock"
@@ -1120,6 +1097,34 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                                             }
                                                                         }
                                                                     }];
+  
+    // 챕터 컨트롤 뷰
+    _chapterControlView = [ [UIView alloc] initWithFrame : CGRectMake(0, CGRectGetMaxY(_contentView.frame) / 2 - 24.f, self.view.frame.size.width, 48.f) ];
+    _chapterControlView.backgroundColor = [UIColor clearColor];
+    [_contentView addSubview : _chapterControlView];
+    // 챕터 이동 버튼을 붙입시다.
+  
+    _moveBackButton = [UIButton buttonWithType: UIButtonTypeCustom];
+    _moveBackButton.frame = CGRectMake(0.f, 0.f, 48.f, 48.f);
+    [_moveBackButton setImage : [UIImage imageNamed : @"icon_move_back"]
+                 forState : UIControlStateNormal];
+    [_moveBackButton setImage : [[UIImage imageNamed : @"icon_move_back"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                 forState : UIControlStateHighlighted];
+    [_moveBackButton addTarget : self
+                    action : @selector(setPreviousContent)
+          forControlEvents : UIControlEventTouchUpInside];
+    [_chapterControlView addSubview : _moveBackButton];
+  
+    _moveNextButton = [UIButton buttonWithType: UIButtonTypeCustom];
+    _moveNextButton.frame = CGRectMake(CGRectGetMaxX(_chapterControlView.frame) - 48.f, 0.f, 48.f, 48.f);
+    [_moveNextButton setImage : [UIImage imageNamed : @"icon_move_next"]
+                 forState : UIControlStateNormal];
+    [_moveNextButton setImage : [[UIImage imageNamed : @"icon_move_next"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                 forState : UIControlStateHighlighted];
+    [_moveNextButton addTarget : self
+                    action : @selector(setNextContent)
+          forControlEvents : UIControlEventTouchUpInside];
+    [_chapterControlView addSubview : _moveNextButton];
 }
 
 - (void) setSpeedButtonImage
@@ -1218,7 +1223,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 // 재생 가능한 이전 콘텐츠를 찾아 set합니다. 없으면 그냥 리턴합니다.
 - (void) setPreviousContent
 {
-    if ( !_isAuthor ) return ;
+    if ( !_isAuthor && _isAudioContent ) return ;
   
     if ( [[_args objectForKey:@"cid"] hasPrefix:@"z"] ) return ;
   
@@ -1264,6 +1269,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                     }
                 }
               
+                // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+                [self sendProgressWhenCurrentContentEnds];
+              
                 [_args setObject : contentsListArray[indexOfPreviousContent][@"cid"]
                           forKey : @"cid"];
               
@@ -1308,6 +1316,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             }
             else if ( indexOfCurrentContent > 0 )
             {
+                // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+                [self sendProgressWhenCurrentContentEnds];
+              
                 [_args setObject : contentsListArray[indexOfCurrentContent-1][@"cid"]
                           forKey : @"cid"];
               
@@ -1330,7 +1341,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) setNextContent
 {
-    if ( !_isAuthor ) return ;
+    if ( !_isAuthor && _isAudioContent ) return ;
   
     if ( [[_args objectForKey:@"cid"] hasPrefix:@"z"] ) return ;
   
@@ -1455,12 +1466,62 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         return ;
     }
     */
+    // 네트워크 체크하여 온라인이라면 Contents-Info dictionary를 업데이트합니다.
+    if ( [[ApiManager sharedInstance] isConnectedToInternet] )
+    {
+        _currentContentsInfo = [ApiManager getContentsInfoWithCgid : [_args objectForKey : @"cid"]
+                                                     andHeaderInfo : [_args objectForKey : @"token"]];
+    }
+  
+    NSArray *contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+    NSInteger indexOfCurrentContent = 0;
+    if ( _isAudioContent )
+        contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+    else if ( !_isAudioContent )
+        contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+  
+    // 재생할 콘텐츠의 CID가 있는 배열을 검색합니다.
+    for ( int i=0; i<contentsListArray.count; i++ )
+    {
+        if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+        {
+            indexOfCurrentContent = i;
+            break;
+        }
+    }
+  
+    NSInteger progress = 0;
+    // progress dictionary가 null이 아니면..
+    if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+    {
+        _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+        progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+    }
   
     [self fpsSetUrlAsset];
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
-    [_player play];
+    [self setupNowPlayingInfoCenter];
+    if ( !_startSeconds || _startSeconds == 0 || progress == 100 )  // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
+    {
+        NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
+        [_player play];
+    }
+    else if ( _startSeconds || _startSeconds > 0 )
+    {
+        NSLog(@"  Player starts the last point. %f", _startSeconds);
+        [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, CMTimeGetSeconds(_urlAsset.duration))];
+        [_player play];
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
+    }
+    else
+    {
+        NSLog(@"  Player starts at 0 because of uncatchable situation.");
+        [_player play];
+    }
+    _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
@@ -1488,32 +1549,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
     }
   
-    [self setupNowPlayingInfoCenter];
+  //[self setupNowPlayingInfoCenter];
   
     // 플레이어가 시작되면 일단 백그라운드에서 돌고있을지도 모를 타이머를 일단 종료합니다.
     [_logTimer invalidate];
   
-  /*
-    NSString *netStatus = @"no_network";
-    if ( _isDownloadFile )
-    {
-        netStatus = @"DOWNLOAD";
-        _networkStatusLabel.text = @"다운로드 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
-        netStatus = @"Wi-Fi";
-        _networkStatusLabel.text = @"Wi-Fi 재생";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-        _networkStatusLabel.text = @"LTE/3G 재생";
-    }
-   */
-  // 공통 사용되는 부분이 많아 아래와 같이 함수화.
-  NSString *netStatus = [self updateNetStatusLabel];
-  [self updateDownloadState];
+    // 공통 사용되는 부분이 많아 아래와 같이 함수화.
+    NSString *netStatus = [self updateNetStatusLabel];
+    [self updateDownloadState];
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"START"             // START / ING / END / FORWARD / BACK
@@ -1531,13 +1574,40 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
     NSTimeInterval currentTime = [self getCurrentPlaybackTime];
-    NSTimeInterval totalTime = [self getDuration];
+    // 전체 재생시간을 구합니다.
+  /*
+    NSArray *contentsListArray;
+    if ( _isAuthor && _isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+    }
+    else if ( _isAuthor && !_isAudioContent )
+    {
+        contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+    }
+  
+    NSInteger indexOfCurrentContent = 0;
+    for ( int i=0; i<contentsListArray.count; i++ )
+    {
+        if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
+        {
+            indexOfCurrentContent = i;
+            break;
+        }
+    }
+  */
+    NSTimeInterval totalTime = [common convertStringToTime : contentsListArray[indexOfCurrentContent][@"play_time"]];//[self getDuration];
+  //NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
+  //NSLog(@"  mini Player Duration double : %f", totalTime);
     NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
     playInfo[@"currentTime"] = @(currentTime);
     playInfo[@"totalTime"] = @(totalTime);
     playInfo[@"isAudioContent"] = @(_isAudioContent);
     [_miniPlayerUiView setPreparedToPlayInfo : playInfo];
     [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
+  
+    if ( !_isAuthor )
+        [self showToast : @"프리뷰 모드로 재생됩니다."];
 }
 
 //
@@ -1552,23 +1622,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // 기존 타이머를 종료시키고 재시작
     [_logTimer invalidate];
     // 이용로그 전송 시작
-    NSString *netStatus = @"no_network";
-    if ( _isDownloadFile )
-    {
-        netStatus = @"DOWNLOAD";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
-        netStatus = @"Wi-Fi";
-    }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-    }
-    else
-    {
-        netStatus = @"unknown_netStatus";
-    }
+    NSString *netStatus = [self updateNetStatusLabel];
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"END"             // START / ING / END / FORWARD / BACK
@@ -1586,6 +1640,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
 #pragma mark - Selectors
 
+//
+// 미니플레이어뷰로 전환합니다.
+//
 - (void) pressedCloseButton
 {
     self.isMiniPlayer = YES;
@@ -1885,13 +1942,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) pressedListButton
 {
+  /*
     if ( !_isAuthor )
     {
         [_contentView makeToast : @"프리뷰 이용중입니다."];
       
         return ;
     }
-  
+  */
     if ( _listView )
     {
         return ;
@@ -2116,6 +2174,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _menuItemBottomLineView.alpha = hidden ? 1.f : 0.f;
     _controlBarView.hidden = NO;
     _controlBarView.alpha = hidden ? 1.f : 0.f;
+    _chapterControlView.hidden = NO;
+    _chapterControlView.alpha = hidden ? 1.f : 0.f;
   
     [UIView animateWithDuration : 0.3f
                           delay : 0
@@ -2127,6 +2187,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                       self->_menuItemTopLineView.alpha = hidden ? 0.f : 1.f;
                                       self->_menuItemBottomLineView.alpha = hidden ? 0.f : 1.f;
                                       self->_controlBarView.alpha = hidden ? 0.f : 1.f;
+                                      self->_chapterControlView.alpha = hidden ? 0.f : 1.f;
                        
                                       if ( !hidden )
                                       {
@@ -2141,6 +2202,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                       self->_menuItemTopLineView.hidden = hidden;
                                       self->_menuItemBottomLineView.hidden = hidden;
                                       self->_controlBarView.hidden = hidden;
+                                      self->_chapterControlView.hidden = hidden;
                                     
                                       self.view.userInteractionEnabled = YES;
        
@@ -2161,10 +2223,12 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( isAudioMode )
     {
         _playerLayer.hidden = YES;
+      //[self.view bringSubviewToFront : _audioUiView]; // 최상단에 올라오면 메뉴hiddenview를 가려서 인터랙션을 가로막습니다.
     }
     else if ( !isAudioMode )
     {
         _playerLayer.hidden = NO;
+      //[self.view sendSubviewToBack : _audioUiView];
     }
 }
 
@@ -2229,6 +2293,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         if ( [@"script-mode" isEqualToString : buttonId] )
         {
             [_scriptView setStatus : MediaPlayerScriptViewModeNone];
+            [_scriptButton setStatus : 0];
             isToast = YES;
         }
         else if ( [@"download-mode" isEqualToString : buttonId] )
@@ -2300,6 +2365,12 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                       isLock : isLock];
       
         [self setTouchEnable : _slider
+                      isLock : isLock];
+      
+        [self setTouchEnable : _moveBackButton
+                      isLock : isLock];
+      
+        [self setTouchEnable : _moveNextButton
                       isLock : isLock];
       
         // 아직 다운로드 구현이 완료되지 않았으므로 일괄적으로 다운로드버튼도 잠금처리합니다.
@@ -2488,9 +2559,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  [openTimerSelectView]");
     if ( _playerSleepTimerSelectView )
-    {
         return ;
-    }
   
     CGFloat height = 0;
   
@@ -2635,6 +2704,18 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         selectedOtherIndex : (NSInteger) index
 {
     NSLog(@"  [playListPopupView:selectedOtherIndex:] index : %li", (long)index);
+    // 오디오북인데 전체권한이 없고 프리뷰챕터도 아닌걸 선택하면 그냥 토스트메시지를 리턴합니다.
+    if ( _isAudioContent && !_isAuthor && [[_currentContentsInfo[@"data"][@"chapters"][index][@"is_preview"] stringValue] isEqualToString : @"0"] )
+    {
+        [_listView removeFromSuperview];
+        _listView = nil;
+      
+        return [self showToast : @"프리뷰 이용 중입니다."];
+    }
+  
+    // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
+    [self sendProgressWhenCurrentContentEnds];
+  
     // 선택된 index에서 uri와 cid를 읽어와서 재생하는 것을 구현해야 합니다.
     if ( _isAudioContent )
     {
@@ -2986,7 +3067,23 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 }
 
 
-#pragma mark - Timer event
+#pragma mark - Log Timer event
+//
+// 콘텐츠가 재생 종료되는 시점의 이용내역을 전송합니다.
+//
+- (void) sendProgressWhenCurrentContentEnds
+{
+    // 현재 재생중이던 콘텐츠의 이용내역(progress)을 API서버로 put합니다.
+    NSString *netStatus = [self updateNetStatusLabel];
+    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                  action : @"END"             // START / ING / END / FORWARD / BACK
+                             startSecond : [self getCurrentPlaybackTime]
+                               endSecond : [self getCurrentPlaybackTime]
+                                duration : 0
+                               netStatus : netStatus
+                               authToken : [_args objectForKey : @"token"]];
+}
+
 //
 // 정해진 타이머대로 로그데이터를 전송합니다.
 //
@@ -3198,16 +3295,27 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 # pragma mark - Content URI Setting
 
 // 로컬에 다운로드된 파일일 경우 로컬 경로를 리턴해주고 그렇지 않을 경우 스트리밍 URL 을 리턴해준다.
-- (NSString *) getContentUri:(NSString *)cid
+- (NSString *) getContentUri : (NSString *) cid
 {
-  NSString *contentPath = [self getDownloadedContentPath:_args[@"cid"]];
-  if (contentPath && [contentPath containsString:@"/"]){
-    return contentPath;
-  }else{
-    NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
-                                                  andHeaderInfo : [_args objectForKey : @"token"]];
-    return playDataDics[@"media_urls"][@"HLS"];
-  }
+    NSString *contentPath = [self getDownloadedContentPath:_args[@"cid"]];
+  
+    // 권한있는 계정으로 다운로드 후 로그아웃하고 권한없는 계정으로 로그인하면 다운로드된 콘텐츠에 대한 권한체크를 다시 해야합니다.
+    if ( contentPath && [contentPath containsString : @"/"] && _isAuthor )
+    {
+        return contentPath;
+    }
+    else
+    {
+        NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
+                                                      andHeaderInfo : [_args objectForKey : @"token"]];
+      
+        if ( _isAuthor )
+            return playDataDics[@"media_urls"][@"HLS"];
+        else if ( !_isAuthor && _isAudioContent )
+            return playDataDics[@"media_urls"][@"HLS"];
+        else
+            return playDataDics[@"preview_urls"][@"HLS"];
+    }
 }
 
 // 로컬에 이미 다운로드된 콘텐츠가 있는지 확인하고 있을 경우 경로를 리턴해준다.
@@ -3237,6 +3345,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         {
             // EarPod 또는 다른 헤드폰의 이벤트를 받았을 경우 호출됩니다.
             case UIEventSubtypeRemoteControlTogglePlayPause:
+                NSLog(@"  UIEventSubtypeRemoteControlTogglePlayPause");
                 if ( _playButton.hidden )  // 플레이 중인지 체크해야 합니다.
                     [self pressedPauseButton];
                 else
@@ -3246,26 +3355,31 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPlay:
+                NSLog(@"  UIEventSubtypeRemoteControlPlay");
                 [self pressedPlayButton];
                 break;
             
             // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPause:
+                NSLog(@"  UIEventSubtypeRemoteControlPause");
                 [self pressedPauseButton];
                 break;
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlStop:
+                NSLog(@"  UIEventSubtypeRemoteControlStop");
                 [self closePlayer];
                 break;
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
+                NSLog(@"  UIEventSubtypeRemoteControlPreviousTrack");
                 [self setPreviousContent];
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
+                NSLog(@"  UIEventSubtypeRemoteControlNextTrack");
                 [self setNextContent];
                 break;
             
