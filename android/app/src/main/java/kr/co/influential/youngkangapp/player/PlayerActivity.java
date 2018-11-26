@@ -3889,13 +3889,17 @@ public class PlayerActivity extends BasePlayerActivity {
 
           playListType = "1";
 
-          lectureListItemdapter
-              .add(getwebPlayerInfo().getCplayTime()[i], getwebPlayerInfo().getCkey()[i],
-                  getwebPlayerInfo().getCname()[i],
-                  getwebPlayerInfo().getGroupTitle(),
-                  getwebPlayerInfo().getGroupTeachername(),
-                  getwebPlayerInfo().getHistory_endtime()[i],
-                  playListType);
+          if(getwebPlayerInfo().getCplayTime()[i]!=null){
+            if(!getwebPlayerInfo().getCplayTime()[i].equals("00:00:00")){
+              lectureListItemdapter
+                  .add(getwebPlayerInfo().getCplayTime()[i], getwebPlayerInfo().getCkey()[i],
+                      getwebPlayerInfo().getCname()[i],
+                      getwebPlayerInfo().getGroupTitle(),
+                      getwebPlayerInfo().getGroupTeachername(),
+                      getwebPlayerInfo().getHistory_endtime()[i],
+                      playListType);
+            }
+          }
         }
 
         lecturListView.setAdapter(lectureListItemdapter);
