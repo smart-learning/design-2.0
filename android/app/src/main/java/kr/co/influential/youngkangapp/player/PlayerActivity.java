@@ -623,6 +623,10 @@ public class PlayerActivity extends BasePlayerActivity {
       unregisterReceiver(myBroadcastReceiver);
     }
 
+    if(mCurrentTimeHandler!=null){
+      mCurrentTimeHandler.removeCallbacksAndMessages(null);
+    }
+
     getContentResolver().unregisterContentObserver(settingsContentObserver);
 
   }
@@ -1713,7 +1717,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
     if (Utils.isAirModeOn(getApplicationContext())) {
       ckey = "70";
-
     } else {
       try {
         ckey = getwebPlayerInfo().getCkey()[getContentId()];
@@ -4208,7 +4211,19 @@ public class PlayerActivity extends BasePlayerActivity {
             }
           }
 
-          mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
+          try {
+            if (LocalPlayback.getInstance(PlayerActivity.this).isPlaying()) {
+              // 재생 중인 내용을 확인 합니다.
+              mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
+            }else{
+              // 재생 중이 아니라면
+              if (mCurrentTimeHandler != null) {
+                mCurrentTimeHandler.removeCallbacksAndMessages(null);
+              }
+            }
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -4409,6 +4424,13 @@ public class PlayerActivity extends BasePlayerActivity {
         } catch (Exception e) {
           e.printStackTrace();
         }
+
+        if(mCurrentTimeHandler!=null){
+          mCurrentTimeHandler.removeCallbacksAndMessages(null);
+
+          mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
+        }
+
 
         break;
       case PlaybackStateCompat.STATE_PAUSED:
