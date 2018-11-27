@@ -737,6 +737,10 @@ export default {
       .then(resp => resp.data);
   },
 
+  async getPermissionByCid(cid) {
+    return axios.get(`${API_PREFIX}v1.0/membership/permissions/${cid}`);
+  },
+
   getBotmData(month, sort) {
     return axios
       .get(API_PREFIX + `v1.0/contents/audiobooks/botm/${month}/${sort}`)
@@ -781,5 +785,25 @@ export default {
         Alert.alert('안내','일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',[{text:'확인'}]);
         console.log(error);
       });
+  },
+
+  async getCartItems() {
+    return axios.get(API_PREFIX + 'v1.0/payment/cart-items');
+  },
+
+  async addToCart(contentType, itemId) {
+    const data = {
+      id: itemId,
+      type: contentType
+    };
+    return axios.post(API_PREFIX + 'v1.0/payment/cart-items', data);
+  },
+
+  async removeCartItem(cartItemId) {
+    return axios.delete(`${API_PREFIX}v1.0/payment/cart-items/${cartItemId}`);
+  },
+
+  async getCartStatus() {
+    return axios.get(API_PREFIX + 'v1.0/payment/cart-items/status');
   }
 };

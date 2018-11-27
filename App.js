@@ -25,6 +25,7 @@ import {
 import Native from './src/scripts/commons/native';
 import nav from './src/scripts/commons/nav';
 import net from './src/scripts/commons/net';
+import utils from './src/scripts/commons/utils';
 import store from './src/scripts/commons/store';
 import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
@@ -146,6 +147,7 @@ class App extends React.Component {
       store.currentMembership = await net.getMembershipCurrent();
       // 이용권 가져오기
       store.voucherStatus = await net.getVouchersStatus();
+      await utils.updateCartStatus();
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;

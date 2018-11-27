@@ -301,9 +301,15 @@ class DetailLayout extends React.Component {
             learnType={this.props.learnType}
             store={this.props.store}
           />
+
           {/* 가격 및 구매버튼 등을 보여주는 라인(iOS 의 경우 오디오북일 때에만 노출) */}
           {this.props.learnType === 'audioBook' ? (
             <AudiobookPaymentStatus
+
+
+				addToCart={this.props.addToCart}
+				useVoucher={this.props.useVoucher}
+
               purchase={this.props.purchase}
               voucherStatus={this.props.voucherStatus}
               permissions={this.props.permissions}
@@ -313,11 +319,14 @@ class DetailLayout extends React.Component {
               paymentType={this.props.paymentType}
               expire={this.props.expire}
               permissionLoading={this.props.permissionLoading}
+
             />
           ) : (Platform.OS === 'android' ? (
             <VideoPaymentStatus
+
+				addToCart={this.props.addToCart}
+
               purchase={this.props.purchase}
-              voucherStatus={this.props.voucherStatus}
               permissions={this.props.permissions}
               itemData={this.props.itemData}
               learnType={this.props.learnType}
@@ -325,8 +334,10 @@ class DetailLayout extends React.Component {
               paymentType={this.props.paymentType}
               expire={this.props.expire}
               permissionLoading={this.props.permissionLoading}
+
             />
           ) : (<View />))}
+
           {/* Download contents */}
           {this.downloadContentsView(vcontent)}
 

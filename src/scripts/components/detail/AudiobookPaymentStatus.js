@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import {
   Platform,
   StyleSheet,
@@ -31,6 +32,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     top: 2,
     fontSize: 12,
+    color: '#ffffff'
+  },
+  stateText: {
+    paddingRight: 7,
+    fontSize: 15,
+    fontWeight: 'bold',
     color: '#ffffff'
   },
   priceDiscount: {
@@ -107,60 +114,128 @@ const styles = StyleSheet.create({
 export default class AudiobookPaymentStatus extends React.Component {
   constructor(props) {
     super(props);
-
-    this.learnType = this.learnType.bind(this);
   }
 
-  learnType() {
-    if (this.props.learnType === 'audioBook') {
-      return '오디오북';
-    } else if (this.props.learnType === 'class') {
-      return '클래스';
-    } else {
-      return '';
-    }
-  }
+  useVoucher = () => {};
 
-  componentWillReceiveProps(props) {
-    console.log('PaymentStatus.js', props.store);
-  }
-
-  renderPriceOrExpire(itemData, paymentType, expire) {
-    // 3: 소장중
-
-    if (paymentType === 3) {
-      return (
+  renderFreeAudiobook() {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer
+        ]}
+      >
         <View>
           <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
-            <Text style={styles.priceText}>{expire}</Text>
+            <Text style={styles.priceOriginal}>₩0</Text>
           </View>
         </View>
-      );
-    } else {
-      return (
+
+        <View>
+          <View style={styles.buttonBuy} borderRadius={5}>
+            <Text style={styles.buttonBuyText}>무료</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  renderUserOwned() {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer
+        ]}
+      >
         <View>
           <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
-            {Platform.select({
-              ios: (
-                <Text style={styles.priceOriginal}>
-                  ₩{numeral(itemData.pay_money_ios).format('0,0')}
-                </Text>
-              ),
-              android: (
-                <Text style={styles.priceOriginal}>
-                  ₩{numeral(itemData.sale_price).format('0,0')}
-                </Text>
-              )
-            })}
-            {itemData.orig_price !== itemData.sale_price
-              ? (itemData.sale_price > 0 ||
-                  itemData.sale_price !== itemData.orig_price) && (
+            <Text style={styles.stateText}>영구소장</Text>
+          </View>
+        </View>
+        <View>
+          <View style={styles.buttonBuy} borderRadius={5}>
+            <Text style={styles.buttonBuyText}>소장중</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  renderRentAudiobook(expire_at) {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer
+        ]}
+      >
+        <View>
+          <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+            <Text style={styles.stateText}>
+              {moment(expire_at).format('YYYY/MM/DD')} 만료
+            </Text>
+          </View>
+        </View>
+        <View>
+          <View style={styles.buttonBuy} borderRadius={5}>
+            <Text style={styles.buttonBuyText}>소장중</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  renderUserHaveVoucher(salePrice) {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer
+        ]}
+      >
+        <View>
+          <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+            <Text style={styles.priceOriginal}>
+              ₩{numeral(salePrice).format('0,0')}
+            </Text>
+          </View>
+        </View>
+        <View>
+			<TouchableOpacity onPress={this.props.useVoucher}>
+
+          <View style={[styles.buttonBuy, { width: 120 }]} borderRadius={5}>
+            <Text style={styles.buttonBuyText}>이용권 사용</Text>
+          </View>
+			</TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  renderBuyAudiobook(origPrice, userPrice) {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer
+        ]}
+      >
+        <View>
+          <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+            <Text style={styles.priceOriginal}>
+              ₩{numeral(userPrice).format('0,0')}
+            </Text>
+
+            {origPrice !== userPrice
+              ? (userPrice > 0 || userPrice !== origPrice) && (
                   <Text style={styles.priceText}>
                     {Platform.select({
                       ios: <Text />,
                       android: (
-                        <Text style={styles.price}>
-                          {numeral(itemData.orig_price).format('0,0')}
+                        <Text style={styles.priceDiscount}>
+                          ₩{numeral(origPrice).format('0,0')}
                         </Text>
                       )
                     })}
@@ -169,84 +244,100 @@ export default class AudiobookPaymentStatus extends React.Component {
               : undefined}
           </View>
         </View>
-      );
-    }
-
-    // return (
-    // 	<View>
-    // 		{
-    // 			paymentType === 3 ? (
-    // 			) : (
-    // 				<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
-    // 					<Text style={styles.priceOriginal}>
-    // 						₩{itemData.sale_price}
-    // 					</Text>
-    // 						{itemData.orig_price !== itemData.sale_price ? (
-    // 							(itemData.sale_price > 0 || itemData.sale_price !== itemData.orig_price) &&
-    // 							<Text style={styles.priceText}>
-    // 								<Text style={styles.priceDiscount}>₩{itemData.orig_price}</Text>
-    // 							</Text>
-    // 						) : undefined
-    // 						}
-    // 				</View>
-    // 			)
-    // 		}
-    // 	</View>
-    // )
-  }
-
-  render() {
-    const { paymentType, expire, itemData, permissionLoading } = this.props;
-
-    return (
-      <View>
-        {permissionLoading ? (
-          <View
-            style={[
-              CommonStyles.alignJustifyContentBetween,
-              styles.paymentContainer
-            ]}
-          >
-            <Text style={[styles.priceText, { alignItems: 'center' }]}>
-              구매 정보를 로딩 중입니다.
-            </Text>
+        <View>
+			<TouchableOpacity onPress={this.props.addToCart}>
+          <View style={styles.buttonBuy} borderRadius={5}>
+            <Text style={styles.buttonBuyText}>구매</Text>
           </View>
-        ) : (
-          <View
-            style={[
-              CommonStyles.alignJustifyContentBetween,
-              styles.paymentContainer
-            ]}
-          >
-            {this.renderPriceOrExpire(itemData, paymentType, expire)}
-
-            {/* paymentType: 0, // 0 무료, 1 구매, 2 이용권 사용, 3 소장중, 4 미로그인 */}
-            {paymentType === 1 || paymentType === 2 || paymentType === 4 ? (
-              <TouchableOpacity
-                onPress={() => this.props.purchase(paymentType)}
-              >
-                <View
-                  style={[
-                    styles.buttonBuy,
-                    { width: paymentType === 2 ? 120 : 80 }
-                  ]}
-                  borderRadius={5}
-                >
-                  <Text style={styles.buttonBuyText}>
-                    {paymentType === 2 ? '이용권 사용' : '구매'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.buttonBuy} borderRadius={5}>
-                <Text style={styles.buttonBuyText}>
-                  {paymentType === 0 ? '무료' : '소장중'}
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
+			</TouchableOpacity>
+        </View>
       </View>
     );
   }
+
+  // renderPriceOrExpire(itemData, paymentType, expire) {
+  //   // 3: 소장중
+  //
+  //   if (paymentType === 3) {
+  //     return (
+  //       <View>
+  //         <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+  //           <Text style={styles.priceText}>{expire}</Text>
+  //         </View>
+  //       </View>
+  //     );
+  //   } else {
+  //     return (
+  //       <View>
+  //         <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+  //           {Platform.select({
+  //             ios: (
+  //               <Text style={styles.priceOriginal}>
+  //                 ₩{numeral(itemData.pay_money_ios).format('0,0')}
+  //               </Text>
+  //             ),
+  //             android: (
+  //               <Text style={styles.priceOriginal}>
+  //                 ₩{numeral(itemData.sale_price).format('0,0')}
+  //               </Text>
+  //             )
+  //           })}
+  //           {itemData.orig_price !== itemData.sale_price
+  //             ? (itemData.sale_price > 0 ||
+  //                 itemData.sale_price !== itemData.orig_price) && (
+  //                 <Text style={styles.priceText}>
+  //                   {Platform.select({
+  //                     ios: <Text />,
+  //                     android: (
+  //                       <Text style={styles.price}>
+  //                         {numeral(itemData.orig_price).format('0,0')}
+  //                       </Text>
+  //                     )
+  //                   })}
+  //                 </Text>
+  //               )
+  //             : undefined}
+  //         </View>
+  //       </View>
+  //     );
+  //   }
+  // }
+
+  renderPermissionLoading() {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer
+        ]}
+      >
+        <Text style={[styles.priceText, { alignItems: 'center' }]}>
+          구매 정보를 불러오는 중입니다.
+        </Text>
+      </View>
+    );
+  }
+
+  render() {
+    const { itemData, permissionLoading } = this.props;
+
+    if (permissionLoading) {
+      return this.renderPermissionLoading();
+    } else {
+      return (
+        <View>
+          <View style={{ marginTop: 5 }}>{this.renderFreeAudiobook()}</View>
+          <View style={{ marginTop: 5 }}>{this.renderUserOwned()}</View>
+          <View style={{ marginTop: 5 }}>
+            {this.renderRentAudiobook('2019-07-14T01:00:00+09:00')}
+          </View>
+          <View style={{ marginTop: 5 }}>{this.renderUserHaveVoucher()}</View>
+          <View style={{ marginTop: 5 }}>
+            {this.renderBuyAudiobook(12000, 10500)}
+          </View>
+        </View>
+      );
+    }
+  }
+
 }

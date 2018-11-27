@@ -16,6 +16,8 @@ import DetailLayout from '../../components/detail/DetailLayout';
 import moment from 'moment';
 import native from '../../commons/native';
 import nav from '../../commons/nav';
+import { withNavigation } from 'react-navigation'
+import utils from '../../commons/utils'
 
 @observer
 class AudioBookDetailPage extends React.Component {
@@ -38,11 +40,16 @@ class AudioBookDetailPage extends React.Component {
     voucherStatus: {}
   });
 
-  state = {
-    paymentType: 1,
-    expire: null,
-    permissionLoading: true
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      id: this.props.navigation.state.params.id,
+      paymentType: 1,
+      expire: null,
+      permissionLoading: true
+    };
+  }
 
   purchase = async paymentType => {
     if (paymentType === 1) {
@@ -58,7 +65,7 @@ class AudioBookDetailPage extends React.Component {
       }
     } else if (paymentType === 2) {
       // 이용권 사용
-      const audiobook_id = this.props.navigation.state.params.id;
+      const audiobook_id = this.state.id;
       const res = await net.voucherExchange(audiobook_id);
       console.log('purchase resp', res);
       if (res.status === 200) {
@@ -79,14 +86,36 @@ class AudioBookDetailPage extends React.Component {
     }
   };
 
+  addToCart = async () => {
+    const itemId = this.state.id;
+    const { navigation } = this.props;
+
+    try {
+      await net.addToCart('audiobook', itemId);
+      await utils.updateCartStatus();
+      Alert.alert(
+        '장바구니',
+        `${itemId} 아이템을 담았습니다. 장바구니로 이동하시겠습니까?`,
+        [
+          { text: '취소' },
+          { text: '이동하기', onPress: () => navigation.navigate('CartScreen') }
+        ]
+      );
+    } catch (e) {
+      console.log(e);
+      Alert.alert(`장바구니에 담는 중 오류 발생하였습니다. ${e.toString()}`);
+    }
+  };
+
+  useVoucher = () => {
+    const audiobook_id = this.state.id;
+    Alert.alert(`이용권 사용하기 ${audiobook_id}`);
+  };
+
   getData = async () => {
     this.data.isLoading = true;
-    const resultBookData = await net.getBookItem(
-      this.props.navigation.state.params.id
-    );
-    const resultChapterData = await net.getBookChapterList(
-      this.props.navigation.state.params.id
-    );
+    const resultBookData = await net.getBookItem(this.state.id);
+    const resultChapterData = await net.getBookChapterList(this.state.id);
 
     this.props.navigation.setParams({
       title: resultBookData.title
@@ -119,7 +148,7 @@ class AudioBookDetailPage extends React.Component {
       globalStore.prevLocations
     );
     // if (this.props.navigation.isFocused()) {
-      nav.commonBack();
+    nav.commonBack();
     // }
 
     return true;
@@ -150,7 +179,7 @@ class AudioBookDetailPage extends React.Component {
         // logged in
         this.data.permissions = await net.getContentPermission(
           'audiobooks',
-          this.props.navigation.state.params.id
+          this.state.id
         );
         if (!this.data.permissions.permission) {
           this.data.voucherStatus = await net.getVouchersStatus(true);
@@ -210,6 +239,8 @@ class AudioBookDetailPage extends React.Component {
           </View>
         ) : this.data.itemData !== null ? (
           <DetailLayout
+            addToCart={this.addToCart}
+            useVoucher={this.useVoucher}
             purchase={this.purchase}
             voucherStatus={this.data.voucherStatus}
             permissions={this.data.permissions}
@@ -222,7 +253,7 @@ class AudioBookDetailPage extends React.Component {
           />
         ) : (
           <View>
-            <Text>!!! </Text>
+            <Text>데이터를 가져오는 중 오류가 발생하였습니다.</Text>
           </View>
         )}
       </View>
@@ -230,4 +261,4 @@ class AudioBookDetailPage extends React.Component {
   }
 }
 
-export default AudioBookDetailPage;
+export default withNavigation(AudioBookDetailPage);

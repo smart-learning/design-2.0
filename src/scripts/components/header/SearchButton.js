@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Image, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import IcSearch from '../../../images/ic-search.png';
 import Styles from '../../../styles/common';
 
@@ -58,7 +64,7 @@ class SearchButton extends Component {
           style={[
             Styles.size24,
             {
-              marginRight: 15
+              marginRight: 5
             }
           ]}
         />
@@ -67,10 +73,13 @@ class SearchButton extends Component {
   }
 
   renderQueryTextInput() {
+    const { width } = Dimensions.get('window');
+    const textInfoWidth = width - 140;
+
     return (
       <TextInput
         style={{
-          width: 300,
+          width: textInfoWidth,
           paddingStart: 20,
           paddingEnd: 20,
           paddingTop: 10,
@@ -102,7 +111,9 @@ class SearchButton extends Component {
       <View
         style={{
           flex: 1,
-          flexDirection: 'row'
+          flexDirection: 'row',
+          borderWidth: 1,
+          borderColor: 'blue'
         }}
       >
         {this.state.isExpanded && this.renderQueryTextInput()}
