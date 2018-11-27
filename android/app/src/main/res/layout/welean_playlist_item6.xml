@@ -36,7 +36,7 @@
 
             <TextView
                 android:text="00:00:00"
-                android:textColor="#9b9b9b"
+                android:textColor="#09b774"
                 android:paddingLeft="10dp"
                 android:paddingRight="4dp"
                 android:layout_width="wrap_content"
@@ -77,9 +77,12 @@
                 android:id="@+id/groupTitleTxt"
                 android:ellipsize="end"
                 android:textSize="13sp"
-                android:textColor="#bba693"
+                android:textColor="#09b774"
+
                 android:lineSpacingExtra="7sp"
                 android:maxLines="1"/>
+
+            <!--android:textColor="#bba693"-->
 
             <TextView
                 android:text="강사명"
@@ -88,9 +91,11 @@
                 android:id="@+id/teacherName"
                 android:ellipsize="end"
                 android:textSize="13sp"
-                android:textColor="#706d76"
+                android:textColor="#09b774"
                 android:lineSpacingExtra="7sp"
                 android:maxLines="1"/>
+
+            <!--android:textColor="#706d76"-->
         </LinearLayout>
 
     </LinearLayout>
