@@ -235,7 +235,7 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
         _totalTimeLabel.text = totalTimeStr;
     }
   
-  //_totalTime = totalTime;
+    _totalTime = totalTime;
     _currentTime = currentTime;
   
     [self resizeTimeLabel];
