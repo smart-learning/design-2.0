@@ -470,14 +470,11 @@ public class PlayerActivity extends BasePlayerActivity {
     mSessionManager = mCastContext.getSessionManager();
     mCastSession = mSessionManager.getCurrentCastSession();
     if (mCastSession != null) {
-      Log.d(TAG, "[CAST] CastSession exists");
       try {
         mCastSession.setMessageReceivedCallbacks(CAST_MSG_NAMESPACE, mMessageReceivedCallback);
       } catch (IOException e) {
         e.printStackTrace();
       }
-    } else {
-      Log.d(TAG, "mCastSession is null");
     }
 
     bNowOnChromecast = false;
@@ -625,6 +622,26 @@ public class PlayerActivity extends BasePlayerActivity {
 
     if(mCurrentTimeHandler!=null){
       mCurrentTimeHandler.removeCallbacksAndMessages(null);
+    }
+
+    if (lectureListItemdapter != null) {
+      lectureListItemdapter = null;
+    }
+
+    if (lectureAudioBookListItemdapter != null) {
+      lectureAudioBookListItemdapter = null;
+    }
+
+    if (listSameSeriesAdapter != null) {
+      listSameSeriesAdapter = null;
+    }
+
+    if (listSameCategoryAdapter != null) {
+      listSameCategoryAdapter = null;
+    }
+
+    if (listPopClipAdapter != null) {
+      listPopClipAdapter = null;
     }
 
     getContentResolver().unregisterContentObserver(settingsContentObserver);
@@ -1592,10 +1609,10 @@ public class PlayerActivity extends BasePlayerActivity {
           });
     }
 
-    setSubTitleJson(contentId);
+    setSubTitleJson();
   }
 
-  public void setSubTitleJson(int i) {
+  public void setSubTitleJson() {
 
     try {
       if (Utils.isAirModeOn(getApplicationContext())) {
@@ -2182,7 +2199,7 @@ public class PlayerActivity extends BasePlayerActivity {
           case R.id.WELAAA_ICON_LIST: {
 
             callbackWebPlayerInfo(CONTENT_TYPE, "");
-            // 일시정지
+            // 일시정지 였으나 대표님 의견에 따라 그냥 재생
             // if (getTransportControls() != null) {
             //   getTransportControls().pause();
             // }
@@ -2631,9 +2648,9 @@ public class PlayerActivity extends BasePlayerActivity {
   /*******************************************************************
    *  자막설정
    *******************************************************************/
-  public void setSubtitle(String subTitls) {
+  public void setSubtitle(String subTitle) {
 
-    SubtitlsInfo msubtitlsInfo = new SubtitlsInfo(subTitls);
+    SubtitlsInfo msubtitlsInfo = new SubtitlsInfo(subTitle);
 
     mSubtitlsmemo = msubtitlsInfo.getMemo();
     mSubtitlstime = msubtitlsInfo.getTime();
@@ -3818,7 +3835,6 @@ public class PlayerActivity extends BasePlayerActivity {
     }
 
     try {
-
       if (methodName.equals("video-course")) {
         mPlaylistGroupLayout.setVisibility(View.VISIBLE);
         mPlaylistGroupLayout.startAnimation(mAniSlideShow);
@@ -3826,71 +3842,34 @@ public class PlayerActivity extends BasePlayerActivity {
         mButtonGroupLayout.setVisibility(View.INVISIBLE);
 
         ListView lecturListView = findViewById(R.id.weleanplaylistview);
-        lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-          @Override
-          public void onScrollStateChanged(AbsListView absListView, int i) {
-          }
-
-          @Override
-          public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-
-            audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
-            audioItemProgressBar.setProgressDrawable(Utils.getDrawable(getApplicationContext(),
-                R.drawable.progress_horizontal_custom_movie_bar));
-            audioItemProgressBar.setVisibility(View.VISIBLE);
-
-            if (i == 0) {
-              audioItemProgressBar.setProgress(1);
-            }
-
-            if (i > 0 && i < 30) {
-              audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
-            }
-
-            if (i > 30) {
-              audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
-            }
-          }
-        });
-
-        String currentPosition = "";
 
         if (lectureListItemdapter != null) {
           lectureListItemdapter = null;
         }
 
-        lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
+        lectureListItemdapter = new PlayerListAdapter(getApplicationContext(),  this);
 
         for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
 
-          String playListType = "";
+          String playListType = "1";
 
-          // listKey 가 현재 재생 중인 ?
+          MediaControllerCompat mediaController = MediaControllerCompat
+              .getMediaController(PlayerActivity.this);
 
-//          if (Integer.parseInt(currentPosition) == (itemArray.length() - Integer
-//              .parseInt(objItem.getString("listkey")))) {
-//
-//            if (objItem.getString("end_seconds").equals("0") || objItem.getString("end_seconds")
-//                .equals("")) {
-//              playListType = "4";
-//            } else if (objItem.getString("end_seconds").equals("9999999")) {
-//              playListType = "5";
-//            } else {
-//              playListType = "6";
-//            }
-//
-//          } else {
+          Bundle BeforeExtras;
 
-//          if (getwebPlayerInfo().getHistory_endtime()[i].equals("0") ||
-//              getwebPlayerInfo().getHistory_endtime()[i].equals("")) {
-//            playListType = "1";
-//          } else if (getwebPlayerInfo().getHistory_endtime()[i].equals("9999999")) {
-//            playListType = "3";
-//          } else {
-//            playListType = "2";
-//          }
+          try {
+            if (LocalPlayback.getInstance(this).isPlaying()) {
+              BeforeExtras = mediaController.getMetadata().getBundle();
 
-          playListType = "1";
+              String beforeCid = BeforeExtras.getString("drm_cid");
+              if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+                playListType = "6";
+              }
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
 
           if(getwebPlayerInfo().getCplayTime()[i]!=null){
             if(!getwebPlayerInfo().getCplayTime()[i].equals("00:00:00")){
@@ -3906,6 +3885,34 @@ public class PlayerActivity extends BasePlayerActivity {
         }
 
         lecturListView.setAdapter(lectureListItemdapter);
+
+//        lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//          @Override
+//          public void onScrollStateChanged(AbsListView absListView, int i) {
+//          }
+//
+//          @Override
+//          public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+//
+//            audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
+//            audioItemProgressBar.setProgressDrawable(Utils.getDrawable(getApplicationContext(),
+//                R.drawable.progress_horizontal_custom_movie_bar));
+//            audioItemProgressBar.setVisibility(View.VISIBLE);
+//
+//            if (i == 0) {
+//              audioItemProgressBar.setProgress(1);
+//            }
+//
+//            if (i > 0 && i < 30) {
+//              audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
+//            }
+//
+//            if (i > 30) {
+//              audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
+//            }
+//          }
+//        });
+
 //        lecturListView.setSelection(Integer.parseInt(currentPosition));
         Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
 
@@ -3929,12 +3936,35 @@ public class PlayerActivity extends BasePlayerActivity {
           if (getwebPlayerInfo().getA_depth()[i].equals("1")) {
             if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
                 .equals("0.0")) {
+
               lectureAudioBookListItemdapter.add("",
                   "", getwebPlayerInfo().getCname()[i], "", "", "", "1");
+
             } else {
-              lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
-                  "2");
+              MediaControllerCompat mediaController = MediaControllerCompat
+                  .getMediaController(PlayerActivity.this);
+
+              Bundle BeforeExtras;
+
+              try {
+                if (LocalPlayback.getInstance(this).isPlaying()) {
+                  BeforeExtras = mediaController.getMetadata().getBundle();
+
+                  String beforeCid = BeforeExtras.getString("drm_cid");
+                  if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        "7");
+                  }else{
+                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        "2");
+                  }
+                }
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+
             }
           } else if (getwebPlayerInfo().getA_depth()[i].equals("2")) {
             if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
@@ -3942,9 +3972,30 @@ public class PlayerActivity extends BasePlayerActivity {
               lectureAudioBookListItemdapter.add("",
                   "", getwebPlayerInfo().getCname()[i], "", "", "", "3");
             } else {
-              lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
-                  "4");
+              MediaControllerCompat mediaController = MediaControllerCompat
+                  .getMediaController(PlayerActivity.this);
+
+              Bundle BeforeExtras;
+
+              try {
+                if (LocalPlayback.getInstance(this).isPlaying()) {
+                  BeforeExtras = mediaController.getMetadata().getBundle();
+
+                  String beforeCid = BeforeExtras.getString("drm_cid");
+                  if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        "9");
+                  }else{
+                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        "4");
+                  }
+                }
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+
             }
           } else {
             if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
@@ -3952,9 +4003,30 @@ public class PlayerActivity extends BasePlayerActivity {
               lectureAudioBookListItemdapter.add("",
                   "", getwebPlayerInfo().getCname()[i], "", "", "", "5");
             } else {
-              lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                  getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
-                  "6");
+
+              MediaControllerCompat mediaController = MediaControllerCompat
+                  .getMediaController(PlayerActivity.this);
+
+              Bundle BeforeExtras;
+
+              try {
+                if (LocalPlayback.getInstance(this).isPlaying()) {
+                  BeforeExtras = mediaController.getMetadata().getBundle();
+
+                  String beforeCid = BeforeExtras.getString("drm_cid");
+                  if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        "11");
+                  }else{
+                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        "6");
+                  }
+                }
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
             }
           }
         }
@@ -3962,9 +4034,6 @@ public class PlayerActivity extends BasePlayerActivity {
         lecturListView.setAdapter(lectureAudioBookListItemdapter);
 
         int position = 0;
-
-        LogHelper.e(TAG, " 4359 getWelaaaPlayerOnClickPos is " + Preferences
-            .getWelaaaPlayerOnClickPos(getApplicationContext()));
 
         if (Preferences.getWelaaaPlayerOnClickPos(getApplicationContext()) > 0) {
           position = Preferences.getWelaaaPlayerOnClickPos(getApplicationContext());
@@ -4192,39 +4261,50 @@ public class PlayerActivity extends BasePlayerActivity {
     public void handleMessage(Message msg) {
       try {
         Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
-        mCurrenttime = (int) player.getCurrentPosition();
 
-        if (hasSubTitlsJesonUrl) {
-          if (mSubtitlstime != null) {
-            for (int i = 0; i < mSubtitlstime.length - 2; i++) {
-              if (mSubtitlstime[i] < mCurrenttime && mCurrenttime < mSubtitlstime[i + 1]) {
-                if (oldMoveScrollCheckNum != i) {
-                  moveScrollCheck = true;
-                  oldMoveScrollCheckNum = i;
-                  autoTextScrollNum = i;
-                }
+        if(player!=null){
 
-                if (moveScrollCheck) {
-                  autoTxtScroll(mCurrenttime);
+          mCurrenttime = (int) player.getCurrentPosition();
+
+          if (hasSubTitlsJesonUrl) {
+            if (mSubtitlstime != null) {
+              for (int i = 0; i < mSubtitlstime.length - 2; i++) {
+                if (mSubtitlstime[i] < mCurrenttime && mCurrenttime < mSubtitlstime[i + 1]) {
+                  if (oldMoveScrollCheckNum != i) {
+                    moveScrollCheck = true;
+                    oldMoveScrollCheckNum = i;
+                    autoTextScrollNum = i;
+                  }
+
+                  if (moveScrollCheck) {
+                    autoTxtScroll(mCurrenttime);
+                  }
                 }
               }
+            }
+
+            try {
+              if (LocalPlayback.getInstance(PlayerActivity.this).isPlaying()) {
+                // 재생 중인 내용을 확인 합니다.
+                mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
+              }else{
+                // 재생 중이 아니라면
+                if (mCurrentTimeHandler != null) {
+                  mCurrentTimeHandler.removeCallbacksAndMessages(null);
+                }
+              }
+            } catch (Exception ex) {
+              ex.printStackTrace();
             }
           }
-
-          try {
-            if (LocalPlayback.getInstance(PlayerActivity.this).isPlaying()) {
-              // 재생 중인 내용을 확인 합니다.
-              mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
-            }else{
-              // 재생 중이 아니라면
-              if (mCurrentTimeHandler != null) {
-                mCurrentTimeHandler.removeCallbacksAndMessages(null);
-              }
-            }
-          } catch (Exception ex) {
-            ex.printStackTrace();
+        } else {
+          if (mCurrentTimeHandler != null) {
+            mCurrentTimeHandler.removeCallbacksAndMessages(null);
+            mCurrentTimeHandler.sendEmptyMessageDelayed(0, 1000);
           }
         }
+
+
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -4369,10 +4449,6 @@ public class PlayerActivity extends BasePlayerActivity {
           e.printStackTrace();
         }
 
-        LogHelper.e(TAG, "ConnectToSession currentCkey is " + extras);
-        LogHelper.e(TAG,
-            "ConnectToSession currentCkey is " + uri + " fromMediaSession " + fromMediaSession);
-
         setData(fromMediaSession, extras, uri);
       } else {
         try {
@@ -4417,20 +4493,12 @@ public class PlayerActivity extends BasePlayerActivity {
 
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
-
         try {
           setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
               getwebPlayerInfo().getCname()[getContentId()]);
         } catch (Exception e) {
           e.printStackTrace();
         }
-
-        if(mCurrentTimeHandler!=null){
-          mCurrentTimeHandler.removeCallbacksAndMessages(null);
-
-          mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
-        }
-
 
         break;
       case PlaybackStateCompat.STATE_PAUSED:
@@ -4540,7 +4608,6 @@ public class PlayerActivity extends BasePlayerActivity {
         // 타이틀 동기화는 meta 데이터를 활용할 것
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
-
       }
     }
   }
@@ -4861,10 +4928,39 @@ public class PlayerActivity extends BasePlayerActivity {
 
             try{
 
+              UiThreadUtil.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                  if (CAN_PLAY) {
+                    mBtnSubtitlesOff.setVisibility(View.VISIBLE);
+                    mBtnSubtitlesOn.setVisibility(View.INVISIBLE);
+
+                    msubtitls_view.setVisibility(View.VISIBLE);
+                    msubtitls_view_long.setVisibility(View.INVISIBLE);
+
+                    final int positoinY = getTextviewHeight() * getTextViewNumber();
+
+                    mscrollview.scrollTo(0, positoinY);
+
+                    simpleExoPlayerView.setControllerShowTimeoutMs(0);
+                    simpleExoPlayerView.setControllerHideOnTouch(false);
+                  }
+                }
+              });
+
               hasSubTitlsJesonUrl = true;
 
-              Message msg = mCurrentTimeHandler.obtainMessage();
-              mCurrentTimeHandler.sendMessageDelayed(msg, 1000);
+              if(mCurrentTimeHandler!=null){
+                mCurrentTimeHandler.removeCallbacksAndMessages(null);
+
+                Message msg = mCurrentTimeHandler.obtainMessage();
+                mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+
+              }else{
+                Message msg = mCurrentTimeHandler.obtainMessage();
+                mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+              }
+
             }catch (Exception e){
               e.printStackTrace();
             }
@@ -5259,14 +5355,6 @@ public class PlayerActivity extends BasePlayerActivity {
         }
         if (mButtonGroupLayout != null) {
           mButtonGroupLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (lectureListItemdapter != null) {
-          lectureListItemdapter = null;
-        }
-
-        if (lectureAudioBookListItemdapter != null) {
-          lectureAudioBookListItemdapter = null;
         }
       }
     });

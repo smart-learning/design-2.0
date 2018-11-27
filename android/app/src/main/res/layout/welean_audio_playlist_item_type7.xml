@@ -43,6 +43,7 @@
                 android:id="@+id/totalTime"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="5dp"
+                android:textColor="#ff4f72"
                  />
 
         </LinearLayout>
