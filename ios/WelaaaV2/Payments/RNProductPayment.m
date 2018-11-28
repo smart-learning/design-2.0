@@ -40,7 +40,7 @@ RCT_EXPORT_MODULE();
 #if DEBUG
     paymentMode = @"sandbox";//
 #else
-    paymentMode = @"sandbox";//live
+    paymentMode = @"live";//live
 #endif
     NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
@@ -383,7 +383,7 @@ RCT_EXPORT_MODULE();
 #if DEBUG
     paymentMode = @"sandbox";
 #else
-    paymentMode = @"sandbox";//live
+    paymentMode = @"live";//live
 #endif
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   
