@@ -720,6 +720,9 @@ public class PlayerActivity extends BasePlayerActivity {
       cId = extras.getString(PlaybackManager.DRM_CID, "");
     }
 
+    LogHelper.e(TAG , "sendData : fromMediaSession " + fromMediaSession );
+    LogHelper.e(TAG , "sendData : cId " + cId );
+
     initialize();
 
     playFromUri(uri, extras);
@@ -2592,11 +2595,6 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   Boolean moveScrollCheck = true;
-
-  // welaaa 1.47.X 에서는 Seek Update Runnable 을 통해서 수동으로 맞춤 ..
-  // startTimerSeekBar
-  // stopTimerSeekbar 로 제어가 됨 ..
-  // 동영상 모드의 경우는 onPlayerStateChanged 에 따라서 제어 하면 되지 않을까요 ??
   public void autoTxtScroll(int current) {
 
     if (hasSubTitlsJesonUrl) {
@@ -2652,14 +2650,29 @@ public class PlayerActivity extends BasePlayerActivity {
 
     SubtitlsInfo msubtitlsInfo = new SubtitlsInfo(subTitle);
 
+    if(mSubtitlsmemo!=null){
+      mSubtitlsmemo = null;
+    }
+
+    if(mSubtitlstime!=null){
+      mSubtitlstime = null;
+    }
+
     mSubtitlsmemo = msubtitlsInfo.getMemo();
     mSubtitlstime = msubtitlsInfo.getTime();
 
     try {
-      if (mSubtitlstime != null && mSubtitlsmemo != null) {
-        setShortText();
-        setFullText();
-      }
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          if (mSubtitlstime != null && mSubtitlsmemo != null) {
+            setShortText();
+            setFullText();
+          }
+        }
+      });
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -3859,7 +3872,7 @@ public class PlayerActivity extends BasePlayerActivity {
           Bundle BeforeExtras;
 
           try {
-            if (LocalPlayback.getInstance(this).isPlaying()) {
+            if(mediaController.getMetadata().getBundle()!=null){
               BeforeExtras = mediaController.getMetadata().getBundle();
 
               String beforeCid = BeforeExtras.getString("drm_cid");
@@ -3947,7 +3960,7 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+                if(mediaController.getMetadata().getBundle()!=null){
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
@@ -3978,7 +3991,7 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+                if(mediaController.getMetadata().getBundle()!=null){
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
@@ -4010,7 +4023,7 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+                if(mediaController.getMetadata().getBundle()!=null){
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
@@ -4285,10 +4298,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
             try {
               if (LocalPlayback.getInstance(PlayerActivity.this).isPlaying()) {
-                // 재생 중인 내용을 확인 합니다.
                 mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
               }else{
-                // 재생 중이 아니라면
                 if (mCurrentTimeHandler != null) {
                   mCurrentTimeHandler.removeCallbacksAndMessages(null);
                 }
@@ -4496,6 +4507,14 @@ public class PlayerActivity extends BasePlayerActivity {
         try {
           setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
               getwebPlayerInfo().getCname()[getContentId()]);
+
+          if(mCurrentTimeHandler!=null){
+            mCurrentTimeHandler.removeCallbacksAndMessages(null);
+
+            Message msg = mCurrentTimeHandler.obtainMessage();
+            mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+          }
+
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -4814,6 +4833,8 @@ public class PlayerActivity extends BasePlayerActivity {
                   // Meta data update 정상 .
                 }
 
+                setSubTitleJson();
+
               } else {
                 // 자동 재생 여부를 참조하여 재생합니다.
                 if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
@@ -4970,7 +4991,13 @@ public class PlayerActivity extends BasePlayerActivity {
 
             LogHelper.e(TAG , "20181125 Exception " + e.toString() );
 
-            setNoneSubtilteText();
+            UiThreadUtil.runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                setNoneSubtilteText();
+              }
+            });
+
             hasSubTitlsJesonUrl = false;
             e.printStackTrace();
           }
@@ -5318,14 +5345,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
 //          setContentId(contentId);
 
-        }
-
-      } else {
-        LogHelper.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
-
-        if (callbackMethodName.equals("play/contents-smi/")) {
-          setNoneSubtilteText();
-          hasSubTitlsJesonUrl = false;
         }
       }
     }
