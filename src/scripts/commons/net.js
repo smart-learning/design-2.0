@@ -196,7 +196,7 @@ export default {
           pagination[key.replace('pagination-', '')] = eval(
             headers[key].toLowerCase()
           );
-        } catch (e) { }
+        } catch (e) {}
       }
     });
     return pagination;
@@ -392,7 +392,7 @@ export default {
     const url = API_PREFIX + 'v1.0/users/popup';
     const params = {
       platform: Platform.OS
-    }
+    };
     return axios
       .get(url, { params: params })
       .then(resp => {
@@ -464,7 +464,10 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/banner?platform=' + Platform.OS, expired)
+    return cacheOrLoad(
+      API_PREFIX + 'v1.0/cms/main/banner?platform=' + Platform.OS,
+      expired
+    )
       .then(data => {
         data.forEach(element => {
           element.key = element.id.toString();
@@ -539,7 +542,7 @@ export default {
       });
   },
 
-  getUserHeartContent: function (contentType, page = 1) {
+  getUserHeartContent: function(contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
       videoCourses: 'video-courses'
@@ -796,25 +799,29 @@ export default {
         return resp.data;
       })
       .catch(error => {
-        Alert.alert('안내', '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.', [{ text: '확인' }]);
+        Alert.alert(
+          '안내',
+          '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
+          [{ text: '확인' }]
+        );
         console.log(error);
       });
   },
 
   getContentInfo(cid) {
-    return axios.get(API_PREFIX + 'v1.0/play/contents-info/' + cid)
+    return axios
+      .get(API_PREFIX + 'v1.0/play/contents-info/' + cid)
       .then(data => {
         return data;
       })
       .catch(error => {
         console.log(error);
       });
-
-
   },
 
   getPlayDataInfo(cid) {
-    return axios.get(API_PREFIX + 'v1.0/play/play-data/' + cid)
+    return axios
+      .get(API_PREFIX + 'v1.0/play/play-data/' + cid)
       .then(data => {
         return data;
       })
@@ -825,6 +832,15 @@ export default {
           [{ text: '확인' }]
         );
         console.log(error);
+      });
+  },
+
+  postAddContentViewCount(cid) {
+    return axios
+      .post(API_PREFIX + 'v1.0/contents/add-view-count/' + cid)
+      .then(data => {
+        console.log('addContentView', data);
+        return data;
       });
   }
 };
