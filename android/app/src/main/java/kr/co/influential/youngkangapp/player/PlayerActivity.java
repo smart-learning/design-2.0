@@ -2724,6 +2724,12 @@ public class PlayerActivity extends BasePlayerActivity {
       }
       TextView mblankTextView = new TextView(getApplicationContext());
       mblankTextView.setText(R.string.nosubTitledata);
+
+      int emfontcolor = ContextCompat
+          .getColor(getApplicationContext(), R.color.colorPrimary);
+
+      mblankTextView.setTextColor(emfontcolor);
+
       shortTextView.addView(mblankTextView);
     } catch (Exception e) {
       e.printStackTrace();
@@ -5378,6 +5384,14 @@ public class PlayerActivity extends BasePlayerActivity {
 //          setContentId(contentId);
 
         }
+      } else {
+        // status code check
+
+        if (callbackMethodName.equals("play/contents-smi/")) {
+          setNoneSubtilteText();
+          hasSubTitlsJesonUrl = false;
+        }
+
       }
     }
   };
