@@ -181,6 +181,8 @@ public class WebPlayerInfo implements Serializable {
                     _cname = URLDecoder.decode(param.substring("cname=".length()), "EUC-KR");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
+                } catch (IllegalArgumentException argumentException){
+                    argumentException.printStackTrace();
                 }
                 cname[arr2Idx]= _cname;
                 ++arr2Idx;
