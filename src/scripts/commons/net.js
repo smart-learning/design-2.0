@@ -465,7 +465,7 @@ export default {
       expired = 1;
     }
     return cacheOrLoad(
-      API_PREFIX + 'v1.0/cms/main/banner?platform=' + Platform.OS,
+      API_PREFIX + 'v1.0/cms/main/banner?hide_ios=true',
       expired
     )
       .then(data => {
