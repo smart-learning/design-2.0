@@ -409,19 +409,16 @@ public class PlayerActivity extends BasePlayerActivity {
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-      LogHelper.d(TAG, "onPlaybackstate changed", state);
       updatePlaybackState(state);
     }
 
     @Override
     public void onMetadataChanged(MediaMetadataCompat metadata) {
       if (metadata != null) {
-
-        LogHelper.d(TAG, "onMetadataChanged changed", metadata.getDescription().getMediaUri());
-        LogHelper.d(TAG, "onMetadataChanged changed", metadata.getDescription().getTitle());
-
         updateMediaDescription(metadata.getDescription());
         updateDuration(metadata);
+
+        setSubTitleJson();
       }
     }
   };
@@ -871,7 +868,15 @@ public class PlayerActivity extends BasePlayerActivity {
 
             if (!visible) {
 
-              control_wrap_bg.setVisibility(View.INVISIBLE);
+              control_wrap_bg.setVisibility(View.VISIBLE);
+
+              control_wrap_bg.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                  return true;
+                }
+              });
+
               general_button_group.setVisibility(View.INVISIBLE);
               myrepu_button_group.setVisibility(View.INVISIBLE);
               play_button_group.setVisibility(View.INVISIBLE);
@@ -884,10 +889,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
               play_network_type_text.setVisibility(View.INVISIBLE);
 
-              msubtitls_view.setY(msubtitls_view.getY() + control_wrap_bg.getHeight());
-              msubtitls_view_long.setY(
-                  msubtitls_view_long.getY() + control_wrap_bg.getHeight() + smart_button_wrap
-                      .getHeight() + welean_blank_line2.getHeight());
+//              msubtitls_view.setY(msubtitls_view.getY() + control_wrap_bg.getHeight());
+//              msubtitls_view_long.setY(
+//                  msubtitls_view_long.getY() + control_wrap_bg.getHeight() + smart_button_wrap
+//                      .getHeight() + welean_blank_line2.getHeight());
+
               visible = true;
 
               return true;
@@ -907,10 +913,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
               play_network_type_text.setVisibility(View.VISIBLE);
 
-              msubtitls_view.setY(msubtitls_view.getY() - control_wrap_bg.getHeight());
-              msubtitls_view_long.setY(
-                  msubtitls_view_long.getY() - control_wrap_bg.getHeight() - smart_button_wrap
-                      .getHeight() - welean_blank_line2.getHeight());
+//              msubtitls_view.setY(msubtitls_view.getY() - control_wrap_bg.getHeight());
+//              msubtitls_view_long.setY(
+//                  msubtitls_view_long.getY() - control_wrap_bg.getHeight() - smart_button_wrap
+//                      .getHeight() - welean_blank_line2.getHeight());
+
               visible = false;
               return true;
             }
@@ -2813,7 +2820,7 @@ public class PlayerActivity extends BasePlayerActivity {
           msubtitls_view_long.setVisibility(View.VISIBLE);
 
           RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
-
+          control_wrap_bg.setVisibility(View.VISIBLE);
           control_wrap_bg.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -2833,7 +2840,6 @@ public class PlayerActivity extends BasePlayerActivity {
           play_button_group.setVisibility(View.INVISIBLE);
           general_button_group.setVisibility(View.INVISIBLE);
           myrepu_button_group.setVisibility(View.INVISIBLE);
-//                    control_wrap_bg.setVisibility(View.VISIBLE);
           smart_button_wrap.setVisibility(View.GONE);  // Full Screen
           welean_blank_line2.setVisibility(View.GONE);
           welean_blank_line.setVisibility(View.INVISIBLE);
@@ -2932,21 +2938,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
-//
-//
-//
-//                LogHelper.e(TAG , "textViewSumHightValue " + textViewSumHeight);
-//
-//                highlightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//                        // pixel set //
-//                        highlightView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//                        highlightTimeView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//
-//                        highlightView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                    }
-//                });
 
         textFullView.addView(highlightView);
         textFullTimeView.addView(highlightTimeView);
@@ -2954,8 +2945,6 @@ public class PlayerActivity extends BasePlayerActivity {
         int position = 0;
 
         position = getTextviewHeight() * getTextViewNumber();
-
-//                LogHelper.e(TAG, "position is  :: " + position + " position ");
 
         if (fontSize.equals("small")) {
 
@@ -3002,21 +2991,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
-        // TextView getHeight
-//                highlightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//
-//                        // pixel set //
-//                        highlightView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//                        highlightTimeView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//
-//
-//                        LogHelper.e(TAG , "highlightView " + highlightView.getText() + " :: " +highlightView.getHeight() );
-//
-//                        highlightView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                    }
-//                });
 
         textFullView.addView(highlightView);
         textFullTimeView.addView(highlightTimeView);
@@ -3073,32 +3047,13 @@ public class PlayerActivity extends BasePlayerActivity {
             play_button_group.setVisibility(View.VISIBLE);
             general_button_group.setVisibility(View.VISIBLE);
             myrepu_button_group.setVisibility(View.VISIBLE);
-//                        control_wrap_bg.setVisibility(View.VISIBLE);
+            control_wrap_bg.setVisibility(View.VISIBLE);
             smart_button_wrap.setVisibility(View.VISIBLE);
             welean_blank_line2.setVisibility(View.VISIBLE);
             welean_blank_line.setVisibility(View.VISIBLE);
             welean_wrap_bg.setVisibility(View.VISIBLE);
-
-            // setVisibility 확인이 필요함 //
-            // Full Size Mode Check //
-
             play_network_type_text.setVisibility(View.VISIBLE);
 
-            Logger.i(TAG + "msubtitls_view.getWidth() " + msubtitls_view.getWidth());
-            Logger.i(TAG + "msubtitls_view_long.getWidth() " + msubtitls_view_long.getWidth());
-            Logger.i(TAG + "msubtitls_view_long.setVisibility() " + msubtitls_view_long
-                .getVisibility());
-            Logger.i(TAG + "msubtitls_view.setVisibility() " + msubtitls_view.getVisibility());
-
-//                        if(msubtitls_view.getVisibility() == View.VISIBLE){
-//                            play_button_group.setVisibility(View.INVISIBLE);
-//                            general_button_group.setVisibility(View.INVISIBLE);
-////                        control_wrap_bg.setVisibility(View.VISIBLE);
-//                            smart_button_wrap.setVisibility(View.INVISIBLE);
-//                            welean_blank_line2.setVisibility(View.INVISIBLE);
-//                            welean_blank_line.setVisibility(View.INVISIBLE);
-//                            welean_wrap_bg.setVisibility(View.INVISIBLE);
-//                        }
           }
 
           @Override
@@ -3106,7 +3061,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
           }
         });
-        Log.d("TAG", "OnClick : click");
       }
     });
   }
@@ -4878,8 +4832,6 @@ public class PlayerActivity extends BasePlayerActivity {
                   playFromUri(uri, extras);
                   // Meta data update 정상 .
                 }
-
-                setSubTitleJson();
 
               } else {
                 // 자동 재생 여부를 참조하여 재생합니다.
