@@ -2813,6 +2813,14 @@ public class PlayerActivity extends BasePlayerActivity {
           msubtitls_view_long.setVisibility(View.VISIBLE);
 
           RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+
+          control_wrap_bg.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+              return true;
+            }
+          });
+
           RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
           RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
           RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
