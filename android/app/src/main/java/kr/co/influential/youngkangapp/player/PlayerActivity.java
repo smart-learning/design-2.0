@@ -1546,6 +1546,38 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   public void setSubtitlesUI() {
+
+    if(msubtitls_view_long!=null){
+      if(msubtitls_view_long.getVisibility() == View.VISIBLE){
+
+        msubtitls_view.setVisibility(View.VISIBLE);
+        msubtitls_view_long.setVisibility(View.GONE);
+        setBlankSpaceParams(msubtitls_view.getWidth(), 0);
+
+        RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+        RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+        RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
+        RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+        RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+        RelativeLayout welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+        RelativeLayout welean_blank_line = findViewById(R.id.welean_blank_line);
+        RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+        RelativeLayout play_network_type_text = findViewById(
+            R.id.wrap_welean_play_network_type);
+
+        play_button_group.setVisibility(View.VISIBLE);
+        general_button_group.setVisibility(View.VISIBLE);
+        myrepu_button_group.setVisibility(View.VISIBLE);
+//                        control_wrap_bg.setVisibility(View.VISIBLE);
+        smart_button_wrap.setVisibility(View.VISIBLE);
+        welean_blank_line2.setVisibility(View.VISIBLE);
+        welean_blank_line.setVisibility(View.VISIBLE);
+        welean_wrap_bg.setVisibility(View.VISIBLE);
+
+        play_network_type_text.setVisibility(View.VISIBLE);
+      }
+    }
+
     //자막UI set
     msubtitls_view = findViewById(R.id.SUB_TITLS_VIEW);
 
