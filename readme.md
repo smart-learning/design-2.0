@@ -56,7 +56,16 @@ yarn ios
 
 ### Package Setting
 
-#### [Android Studio]
+#### [Android]
+>in '~/.bash_profile
+```
+...
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+...
+```
 
 
 

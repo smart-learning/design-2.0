@@ -6,10 +6,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        // classpath 'com.android.tools.build:gradle:3.1.4'
-        // classpath 'com.google.gms:google-services:4.0.1'             
-        classpath 'com.android.tools.build:gradle:3.1.2'
-        classpath 'com.google.gms:google-services:3.2.1'
+         classpath 'com.android.tools.build:gradle:3.1.4'
+         classpath 'com.google.gms:google-services:4.0.1'
     }
 }
 
@@ -31,6 +29,11 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.4'
+    distributionUrl = distributionUrl.replace("bin", "all")
 }
 
 ext {
