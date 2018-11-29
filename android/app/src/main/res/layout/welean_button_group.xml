@@ -269,10 +269,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/subtitls_longview_full_height"
+        android:layout_height="match_parent"
         android:id="@+id/SUB_TITLS_VIEW_LONG"
         android:layout_above="@+id/welean_blank_line2"
         android:visibility="gone"/>
+
+    <!--android:layout_height="@dimen/subtitls_longview_full_height"-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -901,8 +903,6 @@
                     android:gravity="center_horizontal|center"
                     android:background="@drawable/sleep_textview_selector"
                     android:textSize="15sp" />
-
-
 
                 <TextView
                     android:id="@+id/sleeptext60_land"

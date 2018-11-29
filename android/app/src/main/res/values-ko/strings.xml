@@ -133,7 +133,7 @@
     <string name="title_section2">컨텐츠 재생</string>
 
     <!--WelaaaPlayer playList Text -->
-    <string name="nosubTitledata">컨텐츠 제공되는 자막이 없습니다.</string>
+    <string name="nosubTitledata">제공되는 자막이 없습니다.</string>
 
     <!--WelaaaPlayer-->
     <string name="info_fristplay">처음 영상입니다.</string>

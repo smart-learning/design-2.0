@@ -88,20 +88,21 @@ class ClassListItem extends React.Component {
       <View style={styles.classItem}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.gotoClassPage}>
           <View>
-              {this.props.classType === 'hot' && (
-                <View style={styles.classRank}>
-                  <Text style={styles.classRankText}>
-                    {this.props.itemData.rankNumber}
-                  </Text>
-                  <View style={styles.classRankHr} />
-                </View>
-              )}
+            {this.props.classType === 'hot' && (
+              <View style={styles.classRank}>
+                <Text style={styles.classRankText}>
+                  {this.props.itemData.rankNumber}
+                </Text>
+                <View style={styles.classRankHr} />
+              </View>
+            )}
             <Text style={styles.classTitle}>
               {this.props.itemData.headline}
             </Text>
 
             <Text style={styles.classAuthor}>
-              {this.props.itemData.teacher.headline} {this.props.itemData.teacher.name}
+              {this.props.itemData.teacher.headline}{' '}
+              {this.props.itemData.teacher.name}
             </Text>
           </View>
         </TouchableOpacity>

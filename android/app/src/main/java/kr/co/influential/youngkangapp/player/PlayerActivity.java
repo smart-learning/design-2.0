@@ -409,19 +409,16 @@ public class PlayerActivity extends BasePlayerActivity {
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-      LogHelper.d(TAG, "onPlaybackstate changed", state);
       updatePlaybackState(state);
     }
 
     @Override
     public void onMetadataChanged(MediaMetadataCompat metadata) {
       if (metadata != null) {
-
-        LogHelper.d(TAG, "onMetadataChanged changed", metadata.getDescription().getMediaUri());
-        LogHelper.d(TAG, "onMetadataChanged changed", metadata.getDescription().getTitle());
-
         updateMediaDescription(metadata.getDescription());
         updateDuration(metadata);
+
+        setSubTitleJson();
       }
     }
   };
@@ -720,6 +717,9 @@ public class PlayerActivity extends BasePlayerActivity {
       cId = extras.getString(PlaybackManager.DRM_CID, "");
     }
 
+    LogHelper.e(TAG , "sendData : fromMediaSession " + fromMediaSession );
+    LogHelper.e(TAG , "sendData : cId " + cId );
+
     initialize();
 
     playFromUri(uri, extras);
@@ -868,7 +868,15 @@ public class PlayerActivity extends BasePlayerActivity {
 
             if (!visible) {
 
-              control_wrap_bg.setVisibility(View.INVISIBLE);
+              control_wrap_bg.setVisibility(View.VISIBLE);
+
+              control_wrap_bg.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                  return true;
+                }
+              });
+
               general_button_group.setVisibility(View.INVISIBLE);
               myrepu_button_group.setVisibility(View.INVISIBLE);
               play_button_group.setVisibility(View.INVISIBLE);
@@ -881,10 +889,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
               play_network_type_text.setVisibility(View.INVISIBLE);
 
-              msubtitls_view.setY(msubtitls_view.getY() + control_wrap_bg.getHeight());
-              msubtitls_view_long.setY(
-                  msubtitls_view_long.getY() + control_wrap_bg.getHeight() + smart_button_wrap
-                      .getHeight() + welean_blank_line2.getHeight());
+//              msubtitls_view.setY(msubtitls_view.getY() + control_wrap_bg.getHeight());
+//              msubtitls_view_long.setY(
+//                  msubtitls_view_long.getY() + control_wrap_bg.getHeight() + smart_button_wrap
+//                      .getHeight() + welean_blank_line2.getHeight());
+
               visible = true;
 
               return true;
@@ -904,10 +913,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
               play_network_type_text.setVisibility(View.VISIBLE);
 
-              msubtitls_view.setY(msubtitls_view.getY() - control_wrap_bg.getHeight());
-              msubtitls_view_long.setY(
-                  msubtitls_view_long.getY() - control_wrap_bg.getHeight() - smart_button_wrap
-                      .getHeight() - welean_blank_line2.getHeight());
+//              msubtitls_view.setY(msubtitls_view.getY() - control_wrap_bg.getHeight());
+//              msubtitls_view_long.setY(
+//                  msubtitls_view_long.getY() - control_wrap_bg.getHeight() - smart_button_wrap
+//                      .getHeight() - welean_blank_line2.getHeight());
+
               visible = false;
               return true;
             }
@@ -1543,6 +1553,38 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   public void setSubtitlesUI() {
+
+    if(msubtitls_view_long!=null){
+      if(msubtitls_view_long.getVisibility() == View.VISIBLE){
+
+        msubtitls_view.setVisibility(View.VISIBLE);
+        msubtitls_view_long.setVisibility(View.GONE);
+        setBlankSpaceParams(msubtitls_view.getWidth(), 0);
+
+        RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+        RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+        RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
+        RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+        RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+        RelativeLayout welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+        RelativeLayout welean_blank_line = findViewById(R.id.welean_blank_line);
+        RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+        RelativeLayout play_network_type_text = findViewById(
+            R.id.wrap_welean_play_network_type);
+
+        play_button_group.setVisibility(View.VISIBLE);
+        general_button_group.setVisibility(View.VISIBLE);
+        myrepu_button_group.setVisibility(View.VISIBLE);
+//                        control_wrap_bg.setVisibility(View.VISIBLE);
+        smart_button_wrap.setVisibility(View.VISIBLE);
+        welean_blank_line2.setVisibility(View.VISIBLE);
+        welean_blank_line.setVisibility(View.VISIBLE);
+        welean_wrap_bg.setVisibility(View.VISIBLE);
+
+        play_network_type_text.setVisibility(View.VISIBLE);
+      }
+    }
+
     //자막UI set
     msubtitls_view = findViewById(R.id.SUB_TITLS_VIEW);
 
@@ -2592,11 +2634,6 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   Boolean moveScrollCheck = true;
-
-  // welaaa 1.47.X 에서는 Seek Update Runnable 을 통해서 수동으로 맞춤 ..
-  // startTimerSeekBar
-  // stopTimerSeekbar 로 제어가 됨 ..
-  // 동영상 모드의 경우는 onPlayerStateChanged 에 따라서 제어 하면 되지 않을까요 ??
   public void autoTxtScroll(int current) {
 
     if (hasSubTitlsJesonUrl) {
@@ -2652,14 +2689,29 @@ public class PlayerActivity extends BasePlayerActivity {
 
     SubtitlsInfo msubtitlsInfo = new SubtitlsInfo(subTitle);
 
+    if(mSubtitlsmemo!=null){
+      mSubtitlsmemo = null;
+    }
+
+    if(mSubtitlstime!=null){
+      mSubtitlstime = null;
+    }
+
     mSubtitlsmemo = msubtitlsInfo.getMemo();
     mSubtitlstime = msubtitlsInfo.getTime();
 
     try {
-      if (mSubtitlstime != null && mSubtitlsmemo != null) {
-        setShortText();
-        setFullText();
-      }
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          if (mSubtitlstime != null && mSubtitlsmemo != null) {
+            setShortText();
+            setFullText();
+          }
+        }
+      });
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -2679,6 +2731,12 @@ public class PlayerActivity extends BasePlayerActivity {
       }
       TextView mblankTextView = new TextView(getApplicationContext());
       mblankTextView.setText(R.string.nosubTitledata);
+
+      int emfontcolor = ContextCompat
+          .getColor(getApplicationContext(), R.color.colorPrimary);
+
+      mblankTextView.setTextColor(emfontcolor);
+
       shortTextView.addView(mblankTextView);
     } catch (Exception e) {
       e.printStackTrace();
@@ -2762,6 +2820,14 @@ public class PlayerActivity extends BasePlayerActivity {
           msubtitls_view_long.setVisibility(View.VISIBLE);
 
           RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+          control_wrap_bg.setVisibility(View.VISIBLE);
+          control_wrap_bg.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+              return true;
+            }
+          });
+
           RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
           RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
           RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
@@ -2774,7 +2840,6 @@ public class PlayerActivity extends BasePlayerActivity {
           play_button_group.setVisibility(View.INVISIBLE);
           general_button_group.setVisibility(View.INVISIBLE);
           myrepu_button_group.setVisibility(View.INVISIBLE);
-//                    control_wrap_bg.setVisibility(View.VISIBLE);
           smart_button_wrap.setVisibility(View.GONE);  // Full Screen
           welean_blank_line2.setVisibility(View.GONE);
           welean_blank_line.setVisibility(View.INVISIBLE);
@@ -2873,21 +2938,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
-//
-//
-//
-//                LogHelper.e(TAG , "textViewSumHightValue " + textViewSumHeight);
-//
-//                highlightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//                        // pixel set //
-//                        highlightView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//                        highlightTimeView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//
-//                        highlightView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                    }
-//                });
 
         textFullView.addView(highlightView);
         textFullTimeView.addView(highlightTimeView);
@@ -2895,8 +2945,6 @@ public class PlayerActivity extends BasePlayerActivity {
         int position = 0;
 
         position = getTextviewHeight() * getTextViewNumber();
-
-//                LogHelper.e(TAG, "position is  :: " + position + " position ");
 
         if (fontSize.equals("small")) {
 
@@ -2943,21 +2991,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
-        // TextView getHeight
-//                highlightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//
-//                        // pixel set //
-//                        highlightView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//                        highlightTimeView.setHeight( Utils.dpToPx(mAppcontext , (Utils.pxToDp( mAppcontext , highlightView.getHeight()+ Utils.dpToPx( mAppcontext , 20 ))) ) ) ;
-//
-//
-//                        LogHelper.e(TAG , "highlightView " + highlightView.getText() + " :: " +highlightView.getHeight() );
-//
-//                        highlightView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                    }
-//                });
 
         textFullView.addView(highlightView);
         textFullTimeView.addView(highlightTimeView);
@@ -3014,32 +3047,13 @@ public class PlayerActivity extends BasePlayerActivity {
             play_button_group.setVisibility(View.VISIBLE);
             general_button_group.setVisibility(View.VISIBLE);
             myrepu_button_group.setVisibility(View.VISIBLE);
-//                        control_wrap_bg.setVisibility(View.VISIBLE);
+            control_wrap_bg.setVisibility(View.VISIBLE);
             smart_button_wrap.setVisibility(View.VISIBLE);
             welean_blank_line2.setVisibility(View.VISIBLE);
             welean_blank_line.setVisibility(View.VISIBLE);
             welean_wrap_bg.setVisibility(View.VISIBLE);
-
-            // setVisibility 확인이 필요함 //
-            // Full Size Mode Check //
-
             play_network_type_text.setVisibility(View.VISIBLE);
 
-            Logger.i(TAG + "msubtitls_view.getWidth() " + msubtitls_view.getWidth());
-            Logger.i(TAG + "msubtitls_view_long.getWidth() " + msubtitls_view_long.getWidth());
-            Logger.i(TAG + "msubtitls_view_long.setVisibility() " + msubtitls_view_long
-                .getVisibility());
-            Logger.i(TAG + "msubtitls_view.setVisibility() " + msubtitls_view.getVisibility());
-
-//                        if(msubtitls_view.getVisibility() == View.VISIBLE){
-//                            play_button_group.setVisibility(View.INVISIBLE);
-//                            general_button_group.setVisibility(View.INVISIBLE);
-////                        control_wrap_bg.setVisibility(View.VISIBLE);
-//                            smart_button_wrap.setVisibility(View.INVISIBLE);
-//                            welean_blank_line2.setVisibility(View.INVISIBLE);
-//                            welean_blank_line.setVisibility(View.INVISIBLE);
-//                            welean_wrap_bg.setVisibility(View.INVISIBLE);
-//                        }
           }
 
           @Override
@@ -3047,7 +3061,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
           }
         });
-        Log.d("TAG", "OnClick : click");
       }
     });
   }
@@ -3859,7 +3872,7 @@ public class PlayerActivity extends BasePlayerActivity {
           Bundle BeforeExtras;
 
           try {
-            if (LocalPlayback.getInstance(this).isPlaying()) {
+            if(mediaController.getMetadata().getBundle()!=null){
               BeforeExtras = mediaController.getMetadata().getBundle();
 
               String beforeCid = BeforeExtras.getString("drm_cid");
@@ -3947,7 +3960,7 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+                if(mediaController.getMetadata().getBundle()!=null){
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
@@ -3978,7 +3991,7 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+                if(mediaController.getMetadata().getBundle()!=null){
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
@@ -4010,7 +4023,7 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+                if(mediaController.getMetadata().getBundle()!=null){
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
@@ -4285,10 +4298,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
             try {
               if (LocalPlayback.getInstance(PlayerActivity.this).isPlaying()) {
-                // 재생 중인 내용을 확인 합니다.
                 mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
               }else{
-                // 재생 중이 아니라면
                 if (mCurrentTimeHandler != null) {
                   mCurrentTimeHandler.removeCallbacksAndMessages(null);
                 }
@@ -4496,6 +4507,14 @@ public class PlayerActivity extends BasePlayerActivity {
         try {
           setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
               getwebPlayerInfo().getCname()[getContentId()]);
+
+          if(mCurrentTimeHandler!=null){
+            mCurrentTimeHandler.removeCallbacksAndMessages(null);
+
+            Message msg = mCurrentTimeHandler.obtainMessage();
+            mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+          }
+
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -4970,7 +4989,13 @@ public class PlayerActivity extends BasePlayerActivity {
 
             LogHelper.e(TAG , "20181125 Exception " + e.toString() );
 
-            setNoneSubtilteText();
+            UiThreadUtil.runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                setNoneSubtilteText();
+              }
+            });
+
             hasSubTitlsJesonUrl = false;
             e.printStackTrace();
           }
@@ -5319,14 +5344,14 @@ public class PlayerActivity extends BasePlayerActivity {
 //          setContentId(contentId);
 
         }
-
       } else {
-        LogHelper.e(TAG, "서버에서 응답한 Body: " + body + " response code " + response.code());
+        // status code check
 
         if (callbackMethodName.equals("play/contents-smi/")) {
           setNoneSubtilteText();
           hasSubTitlsJesonUrl = false;
         }
+
       }
     }
   };
