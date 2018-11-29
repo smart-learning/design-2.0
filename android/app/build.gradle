@@ -191,7 +191,7 @@ dependencies {
     implementation project(':react-native-firebase')
     implementation project(':react-native-kakao-signin')
     implementation project(':react-native-fbsdk')
-    implementation project(':react-native-localizable')
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
     compileOnly "com.google.android.wearable:wearable:$wearableVersion"

@@ -13,7 +13,6 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
-import com.fabricio.vergal.rnlocalizable.RNLocalizablePackage;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -116,7 +115,6 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseAnalyticsPackage(),
           new RNKaKaoSigninPackage(),
           new FBSDKPackage(mCallbackManager),
-          new RNLocalizablePackage(R.string.class),
           new RNNativePlayerPackage(MainApplication.this)
       );
     }
