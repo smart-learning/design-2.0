@@ -3,13 +3,14 @@
 	"version": "0.1.0",
 	"private": true,
 	"devDependencies": {
-		"babel-preset-react-native-stage-0": "^1.0.1",
-		"jest": "^23.1.0",
-		"jest-react-native": "^18.0.0",
+		"@babel/plugin-proposal-decorators": "^7.1.6",
+		"@babel/preset-flow": "^7.0.0",
+		"babel-jest": "23.6.0",
+		"jest": "23.6.0",
+		"metro-react-native-babel-preset": "0.48.1",
 		"prettier": "^1.14.2",
 		"react-native-create-bridge": "^2.0.1",
-		"react-test-renderer": "16.3.1",
-		"watchman": "^1.0.0"
+		"react-test-renderer": "16.6.1"
 	},
 	"scripts": {
 		"eject": "react-native eject",
@@ -28,18 +29,15 @@
 	"dependencies": {
 		"Base64": "^1.0.1",
 		"axios": "^0.18.0",
-		"babel-preset-react-native-stage-0": "^1.0.1",
 		"events": "^3.0.0",
-		"jest": "^23.1.0",
-		"jest-react-native": "^18.0.0",
 		"mobx": "^4",
 		"mobx-react": "^5.2.0",
 		"moment": "^2.22.2",
 		"npm": "^6.4.1",
 		"numeral": "^2.0.6",
-		"react": "16.3.1",
+		"react": "16.6.1",
 		"react-dom": "^16.4.2",
-		"react-native": "^0.55.4",
+		"react-native": "0.57.5",
 		"react-native-asyncstorage": "^1.0.0",
 		"react-native-cli": "^2.0.1",
 		"react-native-elements": "^0.19.1",
@@ -55,9 +53,7 @@
 		"react-native-vector-icons": "^6.1.0",
 		"react-native-video": "2.2.0",
 		"react-native-view-pager": "^0.2.3",
-		"react-navigation": "^2.12.1",
-		"react-test-renderer": "16.3.1",
-		"underscore": "^1.9.1",
-		"watchman": "^1.0.0"
+		"react-navigation": "2.18.3",
+		"underscore": "^1.9.1"
 	}
 }
