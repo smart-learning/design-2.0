@@ -2778,7 +2778,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         NSLog(@"  [-readScript] Found a subtitles file stored.");
       
-        return arrDicData;
+        return [ApiManager getSubtitles : [_args objectForKey : @"cid"]];//arrDicData;  // 로컬에 자막이 존재해도 안해도 무조건 API서버를 통해 매번 자막을 가져옵니다.
     }
 }
 
