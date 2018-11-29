@@ -19,8 +19,8 @@
 .env.production.local
 
 # Lock Files
-# package-lock.json
-# yarn.lock
+package-lock.json
+yarn.lock
 ios/Podfile.lock
 
 # Logs
