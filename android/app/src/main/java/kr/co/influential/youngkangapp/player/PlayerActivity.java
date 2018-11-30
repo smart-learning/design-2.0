@@ -617,7 +617,7 @@ public class PlayerActivity extends BasePlayerActivity {
       unregisterReceiver(myBroadcastReceiver);
     }
 
-    if(mCurrentTimeHandler!=null){
+    if (mCurrentTimeHandler != null) {
       mCurrentTimeHandler.removeCallbacksAndMessages(null);
     }
 
@@ -717,8 +717,8 @@ public class PlayerActivity extends BasePlayerActivity {
       cId = extras.getString(PlaybackManager.DRM_CID, "");
     }
 
-    LogHelper.e(TAG , "sendData : fromMediaSession " + fromMediaSession );
-    LogHelper.e(TAG , "sendData : cId " + cId );
+    LogHelper.e(TAG, "sendData : fromMediaSession " + fromMediaSession);
+    LogHelper.e(TAG, "sendData : cId " + cId);
 
     initialize();
 
@@ -1554,8 +1554,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void setSubtitlesUI() {
 
-    if(msubtitls_view_long!=null){
-      if(msubtitls_view_long.getVisibility() == View.VISIBLE){
+    if (msubtitls_view_long != null) {
+      if (msubtitls_view_long.getVisibility() == View.VISIBLE) {
 
         msubtitls_view.setVisibility(View.VISIBLE);
         msubtitls_view_long.setVisibility(View.GONE);
@@ -2487,11 +2487,6 @@ public class PlayerActivity extends BasePlayerActivity {
             if (lectureAudioBookListItemdapter != null) {
               lectureAudioBookListItemdapter = null;
             }
-
-            if (getTransportControls() != null) {
-              getTransportControls().play();
-            }
-
           }
 
           break;
@@ -2512,10 +2507,6 @@ public class PlayerActivity extends BasePlayerActivity {
             }
             if (lectureAudioBookListItemdapter != null) {
               lectureAudioBookListItemdapter = null;
-            }
-
-            if (getTransportControls() != null) {
-              getTransportControls().play();
             }
           }
 
@@ -2634,6 +2625,7 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   Boolean moveScrollCheck = true;
+
   public void autoTxtScroll(int current) {
 
     if (hasSubTitlsJesonUrl) {
@@ -2689,11 +2681,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
     SubtitlsInfo msubtitlsInfo = new SubtitlsInfo(subTitle);
 
-    if(mSubtitlsmemo!=null){
+    if (mSubtitlsmemo != null) {
       mSubtitlsmemo = null;
     }
 
-    if(mSubtitlstime!=null){
+    if (mSubtitlstime != null) {
       mSubtitlstime = null;
     }
 
@@ -3860,7 +3852,7 @@ public class PlayerActivity extends BasePlayerActivity {
           lectureListItemdapter = null;
         }
 
-        lectureListItemdapter = new PlayerListAdapter(getApplicationContext(),  this);
+        lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
 
         for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
 
@@ -3872,11 +3864,11 @@ public class PlayerActivity extends BasePlayerActivity {
           Bundle BeforeExtras;
 
           try {
-            if(mediaController.getMetadata().getBundle()!=null){
+            if (mediaController.getMetadata().getBundle() != null) {
               BeforeExtras = mediaController.getMetadata().getBundle();
 
               String beforeCid = BeforeExtras.getString("drm_cid");
-              if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+              if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                 playListType = "6";
               }
             }
@@ -3884,8 +3876,8 @@ public class PlayerActivity extends BasePlayerActivity {
             e.printStackTrace();
           }
 
-          if(getwebPlayerInfo().getCplayTime()[i]!=null){
-            if(!getwebPlayerInfo().getCplayTime()[i].equals("00:00:00")){
+          if (getwebPlayerInfo().getCplayTime()[i] != null) {
+            if (!getwebPlayerInfo().getCplayTime()[i].equals("00:00:00")) {
               lectureListItemdapter
                   .add(getwebPlayerInfo().getCplayTime()[i], getwebPlayerInfo().getCkey()[i],
                       getwebPlayerInfo().getCname()[i],
@@ -3960,17 +3952,19 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if(mediaController.getMetadata().getBundle()!=null){
+                if (mediaController.getMetadata().getBundle() != null) {
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
-                  if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+                  if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                     lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                        "",
                         "7");
-                  }else{
+                  } else {
                     lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                        "",
                         "2");
                   }
                 }
@@ -3991,17 +3985,19 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if(mediaController.getMetadata().getBundle()!=null){
+                if (mediaController.getMetadata().getBundle() != null) {
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
-                  if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+                  if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                     lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                        "",
                         "9");
-                  }else{
+                  } else {
                     lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                        "",
                         "4");
                   }
                 }
@@ -4023,17 +4019,19 @@ public class PlayerActivity extends BasePlayerActivity {
               Bundle BeforeExtras;
 
               try {
-                if(mediaController.getMetadata().getBundle()!=null){
+                if (mediaController.getMetadata().getBundle() != null) {
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
-                  if(getwebPlayerInfo().getCkey()[i].equals(beforeCid)){
+                  if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                     lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                        "",
                         "11");
-                  }else{
+                  } else {
                     lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "", "",
+                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                        "",
                         "6");
                   }
                 }
@@ -4275,7 +4273,7 @@ public class PlayerActivity extends BasePlayerActivity {
       try {
         Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
 
-        if(player!=null){
+        if (player != null) {
 
           mCurrenttime = (int) player.getCurrentPosition();
 
@@ -4299,7 +4297,7 @@ public class PlayerActivity extends BasePlayerActivity {
             try {
               if (LocalPlayback.getInstance(PlayerActivity.this).isPlaying()) {
                 mCurrentTimeHandler.sendEmptyMessageDelayed(0, 100);
-              }else{
+              } else {
                 if (mCurrentTimeHandler != null) {
                   mCurrentTimeHandler.removeCallbacksAndMessages(null);
                 }
@@ -4436,8 +4434,9 @@ public class PlayerActivity extends BasePlayerActivity {
                   //  update
                   if (ContentManager().isProgressExist(beforeCid) > 0) {
                     ContentManager()
-                        .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()) , "UPDATE");
-                  //insert
+                        .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()),
+                            "UPDATE");
+                    //insert
                   } else {
                     ContentManager().insertProgress(beforeCid,
                         String.valueOf(player.getCurrentPosition()));
@@ -4508,7 +4507,7 @@ public class PlayerActivity extends BasePlayerActivity {
           setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
               getwebPlayerInfo().getCname()[getContentId()]);
 
-          if(mCurrentTimeHandler!=null){
+          if (mCurrentTimeHandler != null) {
             mCurrentTimeHandler.removeCallbacksAndMessages(null);
 
             Message msg = mCurrentTimeHandler.obtainMessage();
@@ -4945,7 +4944,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
             setSubtitle(sb.toString());
 
-            try{
+            try {
 
               UiThreadUtil.runOnUiThread(new Runnable() {
                 @Override
@@ -4969,25 +4968,25 @@ public class PlayerActivity extends BasePlayerActivity {
 
               hasSubTitlsJesonUrl = true;
 
-              if(mCurrentTimeHandler!=null){
+              if (mCurrentTimeHandler != null) {
                 mCurrentTimeHandler.removeCallbacksAndMessages(null);
 
                 Message msg = mCurrentTimeHandler.obtainMessage();
                 mCurrentTimeHandler.sendMessageDelayed(msg, 100);
 
-              }else{
+              } else {
                 Message msg = mCurrentTimeHandler.obtainMessage();
                 mCurrentTimeHandler.sendMessageDelayed(msg, 100);
               }
 
-            }catch (Exception e){
+            } catch (Exception e) {
               e.printStackTrace();
             }
 
           } catch (Exception e) {
             // TODO: handle exception
 
-            LogHelper.e(TAG , "20181125 Exception " + e.toString() );
+            LogHelper.e(TAG, "20181125 Exception " + e.toString());
 
             UiThreadUtil.runOnUiThread(new Runnable() {
               @Override
