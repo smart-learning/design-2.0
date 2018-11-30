@@ -2529,11 +2529,6 @@ public class PlayerActivity extends BasePlayerActivity {
             if (lectureAudioBookListItemdapter != null) {
               lectureAudioBookListItemdapter = null;
             }
-
-            if (getTransportControls() != null) {
-              getTransportControls().play();
-            }
-
             break;
 
           case R.id.BTN_CLOSE:
