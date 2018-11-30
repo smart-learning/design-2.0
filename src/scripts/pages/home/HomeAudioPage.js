@@ -163,7 +163,7 @@ class HomeAudioPage extends React.Component {
                 height={window.width}
                 dotColor={'#888888'}
                 activeDotColor={'#ffffff'}
-                paginationStyle={{ bottom: 10 }}
+				paginationStyle={{ left: '-65%', bottom: 10 }}
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';

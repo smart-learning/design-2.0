@@ -162,15 +162,15 @@ class HomeVideoPage extends React.Component {
         <ScrollView style={{ flex: 1 }}>
           {/* 이미지 스와이퍼 */}
 
-          <View style={{ height: this.props.store.slideHeight }}>
+          <View style={{ height: this.props.store.slideHeight, background: '#ff0' }}>
             {homeBannerData.length > 0 && (
               <Swiper
                 style={styles.wrapper}
                 showsButtons={false}
-                height={window.width}
+                height={this.props.store.slideHeight}
                 dotColor={'#888888'}
                 activeDotColor={'#ffffff'}
-                paginationStyle={{ bottom: 10 }}
+                paginationStyle={{ left: '-65%', bottom: 10 }}
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';

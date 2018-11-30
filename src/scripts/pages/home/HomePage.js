@@ -236,7 +236,7 @@ class HomePage extends React.Component {
 
       this.store.windowWidth = windowWidth;
       this.store.windowHeight = windowHeight;
-      this.store.slideHeight = windowWidth * 0.347;
+      this.store.slideHeight = windowWidth * 0.44444;
       this.store.clipRankContentSize = windowWidth - 85;
 
       try {
@@ -252,7 +252,7 @@ class HomePage extends React.Component {
 
       this.store.windowWidth = windowWidth;
       this.store.windowHeight = windowHeight;
-      this.store.slideHeight = windowWidth * 0.347;
+      this.store.slideHeight = windowWidth * 0.44444;
       this.store.clipRankContentSize = windowWidth - 85;
 
       try {

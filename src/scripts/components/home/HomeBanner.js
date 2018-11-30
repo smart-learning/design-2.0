@@ -10,8 +10,8 @@ import {
 const styles = StyleSheet.create({
   thumbnail: {
     width: '100%',
-    paddingTop: '17.3571428572%',
-    paddingBottom: '17.3571428572%'
+    paddingTop: '22.22%',
+    paddingBottom: '22.22%'
   }
 });
 
