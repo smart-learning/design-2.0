@@ -196,7 +196,7 @@ export default {
           pagination[key.replace('pagination-', '')] = eval(
             headers[key].toLowerCase()
           );
-        } catch (e) { }
+        } catch (e) {}
       }
     });
     return pagination;
@@ -465,7 +465,7 @@ export default {
       expired = 1;
     }
     return cacheOrLoad(
-      API_PREFIX + 'v1.0/cms/main/banner?hide_ios=true',
+      API_PREFIX + 'v1.0/cms/main/banner?platform=' + Platform.OS,
       expired
     )
       .then(data => {
@@ -542,7 +542,7 @@ export default {
       });
   },
 
-  getUserHeartContent: function (contentType, page = 1) {
+  getUserHeartContent: function(contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
       videoCourses: 'video-courses'
