@@ -76,9 +76,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   showMore: {
-    borderColor: '#efefef',
+    paddingTop: 2,
+    paddingRight: 10,
+    paddingBottom: 2,
+    paddingLeft: 10,
+    borderColor: CommonStyles.COLOR_PRIMARY,
     borderWidth: 1,
-    padding: 3
+    borderRadius: 18,
+    color: CommonStyles.COLOR_PRIMARY
   }
 });
 
@@ -136,7 +141,7 @@ class BookDaily extends React.Component {
               this.props.navigation.navigate('AudioBookPage');
             }}
           >
-            <Text>더 보기</Text>
+            <Text>전체보기</Text>
           </TouchableOpacity>
         </View>
 
@@ -292,8 +297,8 @@ class BookDaily extends React.Component {
               </View>
             </View>
           ) : this.data.dailyTabSelected === 'Fri' ||
-          this.data.dailyTabSelected === 'Sat' ||
-          this.data.dailyTabSelected === 'Sun' ? (
+            this.data.dailyTabSelected === 'Sat' ||
+            this.data.dailyTabSelected === 'Sun' ? (
             <View style={styles.dailyBookContentHeadline}>
               <Text style={styles.dailyBookHeadlineText}>
                 [금] 이영미의 밤 새워 읽고 싶은 책

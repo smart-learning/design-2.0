@@ -115,9 +115,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   showMore: {
-    borderColor: '#efefef',
+    borderColor: CommonStyles.COLOR_PRIMARY,
     borderWidth: 1,
-    padding: 3
+    borderRadius: 18,
+    paddingTop: 2,
+    paddingRight: 10,
+    paddingBottom: 2,
+    paddingLeft: 10
+  },
+  showMoreText: {
+    color: CommonStyles.COLOR_PRIMARY,
+    fontSize: 12
   },
   imageMainBanner: {
     width: '100%',
@@ -248,7 +256,7 @@ class HomeVideoPage extends React.Component {
                         });
                       }}
                     >
-                      <Text>더 보기</Text>
+                      <Text style={styles.showMoreText}>전체보기</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -256,25 +264,6 @@ class HomeVideoPage extends React.Component {
                 <View style={styles.seriesComponent}>
                   <Series itemData={this.props.store.homeSeriesData} />
                 </View>
-
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() =>
-                    this.props.navigation.navigate('HomeSeriesPage', {
-                      title: '윌라 추천 시리즈'
-                    })
-                  }
-                >
-                  <View style={styles.linkViewAll} borderRadius={5}>
-                    <Text style={styles.linkViewAllText}>
-                      추천 시리즈 전체 보기{' '}
-                      <Image
-                        source={IcAngleRightGrey}
-                        style={styles.linkViewAllIcon}
-                      />
-                    </Text>
-                  </View>
-                </TouchableOpacity>
               </View>
             ))}
 
@@ -297,7 +286,7 @@ class HomeVideoPage extends React.Component {
                     this.props.navigation.navigate('ClassListPage');
                   }}
                 >
-                  <Text>더 보기</Text>
+                  <Text style={styles.showMoreText}>전체보기</Text>
                 </TouchableOpacity>
               </View>
 
@@ -345,24 +334,6 @@ class HomeVideoPage extends React.Component {
               </View>
 
               <ClassList itemData={this.props.store.classRecommendData} />
-
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => this.props.navigation.navigate('ClassListPage')}
-              >
-                <View
-                  style={[styles.linkViewAll, styles.classLinkViewAll]}
-                  borderRadius={5}
-                >
-                  <Text style={styles.linkViewAllText}>
-                    클래스 전체 보기{' '}
-                    <Image
-                      source={IcAngleRightGrey}
-                      style={styles.linkViewAllIcon}
-                    />
-                  </Text>
-                </View>
-              </TouchableOpacity>
 
               {1 === 2 && (
                 <View>

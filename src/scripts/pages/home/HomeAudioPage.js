@@ -111,6 +111,23 @@ const styles = StyleSheet.create({
   linkViewAllIcon: {
     paddingLeft: 7,
     height: 13
+  },
+  showMoreWrapper: {
+    marginBottom: 10,
+    alignItems: 'flex-end'
+  },
+  showMore: {
+    borderColor: CommonStyles.COLOR_PRIMARY,
+    borderWidth: 1,
+    borderRadius: 18,
+    paddingTop: 2,
+    paddingRight: 10,
+    paddingBottom: 2,
+    paddingLeft: 10
+  },
+  showMoreText: {
+    color: CommonStyles.COLOR_PRIMARY,
+    fontSize: 12
   }
 });
 
@@ -153,7 +170,7 @@ class HomeAudioPage extends React.Component {
                   const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) { }
+                  } catch (e) {}
 
                   return (
                     <HomeBanner
@@ -198,12 +215,22 @@ class HomeAudioPage extends React.Component {
                 4차 산업혁명 시대의 새로운 책 읽기
               </Text>
             </View>
+            <View style={styles.showMoreWrapper}>
+              <TouchableOpacity
+                style={styles.showMore}
+                onPress={() => {
+                  this.props.navigation.navigate('AudioBookPage');
+                }}
+              >
+                <Text style={styles.showMoreText}>전체보기</Text>
+              </TouchableOpacity>
+            </View>
 
             <View style={styles.audioCategory}>
               <View style={styles.audioCategoryHr} />
               <PageCategory
                 data={this.props.store.audioBookCategoryData}
-				selectedCategory={0}
+                selectedCategory={0}
                 onCategorySelect={this.premiumCategorySelect}
               />
               <View style={styles.audioCategoryHr} />
@@ -257,24 +284,6 @@ class HomeAudioPage extends React.Component {
                 />
               </View>
             )}
-
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => this.props.navigation.navigate('AudioBookPage')}
-            >
-              <View
-                style={[styles.linkViewAll, styles.classLinkViewAll]}
-                borderRadius={5}
-              >
-                <Text style={styles.linkViewAllText}>
-                  오디오북 전체 보기{' '}
-                  <Image
-                    source={IcAngleRightGrey}
-                    style={styles.linkViewAllIcon}
-                  />
-                </Text>
-              </View>
-            </TouchableOpacity>
 
             {1 === 2 && (
               <View>
