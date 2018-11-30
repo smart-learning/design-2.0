@@ -12,9 +12,15 @@ import globalStore from './store';
 
 export const NAV_OPTS_COMMON = {
   headerStyle: {
-    backgroundColor: CommonStyle.COLOR_PRIMARY
+    backgroundColor: '#fff',
+    shadowOpacity: 0,
+    shadowOffset: {
+      height: 0
+    },
+    shadowRadius: 0,
+    elevation: 0
   },
-  headerTintColor: '#fff',
+  headerTintColor: '#000',
   headerTitleStyle: {
     fontSize: 18,
     fontWeight: 'bold'
@@ -71,7 +77,8 @@ export const NAV_OPTS_MY_HOME = ({ navigation, navigationOptions }) => {
       backgroundColor: 'transparent',
       paddingLeft: 0,
       paddingRight: 0,
-      borderBottomWidth: 0
+      borderBottomWidth: 0,
+      shadowOpacity: 0
     },
     headerLeft: <HomeButton />,
     headerTitle: <HomeWelaaaButton />,

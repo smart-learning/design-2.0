@@ -29,12 +29,12 @@ const HomeScreen = createStackNavigator(
     },
     HomeSeriesPage: {
       screen: HomeSeriesPage,
-      navigationOptions: NAV_OPTS_STACK
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     },
 
     HomeMonthlyReviewPage: {
       screen: AudioBookInfoPage,
-      navigationOptions: NAV_OPTS_STACK
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     },
 
     HomeScreen2: {
