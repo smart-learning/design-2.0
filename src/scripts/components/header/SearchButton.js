@@ -17,10 +17,6 @@ class SearchButton extends Component {
     this._isMount = false;
   }
 
-  shouldComponentUpdate() {
-    return this._isMount;
-  }
-
   onSearch = () => {
     if (this.state.isExpanded) {
       if (this.state.queryString) {

@@ -200,9 +200,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/playlistparent"
-            android:background="@color/last_view_list_background_color"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+
+
             android:orientation="vertical"/>
 
         <!--android:background="@color/last_view_list_background_color"-->
