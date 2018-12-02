@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   BackHandler,
   Text,
-  View
+  View,
 } from 'react-native';
 import net from '../../commons/net';
 import CommonStyles from '../../../styles/common';
@@ -15,10 +15,11 @@ import Store from '../../commons/store';
 import nav from '../../commons/nav';
 import { withNavigation } from 'react-navigation';
 import utils from '../../commons/utils';
+import globalStore from '../../commons/store';
 
 @observer
 class ClassDetailPage extends React.Component {
-  store = createStore({
+  data = createStore({
     isLoading: true,
     itemData: null,
     itemClipData: [],
@@ -28,11 +29,11 @@ class ClassDetailPage extends React.Component {
     slideHeight: null,
     reviewText: '',
     reviewStar: 0,
-    permissions: {
-      permission: false,
-      expire_at: null
-    },
-    voucherStatus: {}
+    // permissions: {
+    //   permission: false,
+    //   expire_at: null,
+    // },
+    voucherStatus: {},
   });
 
   constructor(props) {
@@ -42,7 +43,10 @@ class ClassDetailPage extends React.Component {
       id: this.props.navigation.state.params.id,
       paymentType: 1,
       expire: null,
-      permissionLoading: true
+      permissionLoading: true,
+      permission: {
+        type: null,
+      },
     };
   }
 
@@ -58,8 +62,11 @@ class ClassDetailPage extends React.Component {
         `${itemId} 아이템을 담았습니다. 장바구니로 이동하시겠습니까?`,
         [
           { text: '취소' },
-          { text: '이동하기', onPress: () => navigation.navigate('CartScreen') }
-        ]
+          {
+            text: '이동하기',
+            onPress: () => navigation.navigate('CartScreen'),
+          },
+        ],
       );
     } catch (e) {
       console.log(e);
@@ -68,21 +75,19 @@ class ClassDetailPage extends React.Component {
   };
 
   getData = async () => {
-    const resultLectureData = await net.getLectureItem(
-      this.props.navigation.state.params.id
-    );
-    const resultLectureClipData = await net.getLectureClipList(
-      this.props.navigation.state.params.id
-    );
+    const resultLectureData = await net.getLectureItem(this.state.id);
+    const resultLectureClipData = await net.getLectureClipList(this.state.id);
 
     this.props.navigation.setParams({
-      title: resultLectureData.title
+      title: resultLectureData.title,
     });
 
-    this.store.itemData = resultLectureData;
-    this.store.itemClipData = resultLectureClipData;
+    this.data.itemData = resultLectureData;
+    this.data.itemClipData = resultLectureClipData;
 
-    this.store.isLoading = false;
+    this.data.isLoading = false;
+
+    await this.getPlayPermissions();
   };
 
   componentDidMount() {
@@ -98,7 +103,7 @@ class ClassDetailPage extends React.Component {
     console.log(
       'cdp back button:',
       this.props.navigation.isFocused(),
-      Store.prevLocations
+      Store.prevLocations,
     );
     // if (this.props.navigation.isFocused()) {
     nav.commonBack();
@@ -106,22 +111,55 @@ class ClassDetailPage extends React.Component {
     return true;
   };
 
+  async getPlayPermissions() {
+    const userLoggedIn = globalStore.welaaaAuth !== undefined;
+    let permissionLoading = true;
+    let permission = null;
+    let { cid, orig_price: origPrice } = this.data.itemData;
+
+    this.setState({ permissionLoading });
+
+    if (!userLoggedIn) {
+      permission = {
+        type: null,
+        canPlay: false,
+        origPrice: origPrice,
+        userPrice: origPrice,
+      };
+      this.setState({
+        permission,
+        permissionLoading: false,
+      });
+
+      return;
+    }
+
+    const permissionData = await net.getPlayPermissionByCid(cid);
+    this.setState({
+      permission: permissionData,
+      permissionLoading: false,
+    });
+  }
+
   render() {
+    const { permission, permissionLoading } = this.state;
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
-        {this.store.isLoading ? (
+        {this.data.isLoading ? (
           <View style={{ marginTop: 12 }}>
             <ActivityIndicator
               size="large"
               color={CommonStyles.COLOR_PRIMARY}
             />
           </View>
-        ) : this.store.itemData !== null ? (
+        ) : this.data.itemData !== null ? (
           <DetailLayout
             learnType={'class'}
             addToCart={this.addToCart}
-            itemData={this.store.itemData}
-            store={this.store}
+            itemData={this.data.itemData}
+            store={this.data}
+            permissionLoading={permissionLoading}
+            permission={permission}
           />
         ) : (
           <View>

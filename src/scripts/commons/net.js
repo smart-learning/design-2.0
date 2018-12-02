@@ -14,6 +14,7 @@ if (Localizable) {
   if (__DEV__) host = Localizable.host_debug || host;
   else host = Localizable.host_release || host;
 }
+host = 'https://5764e50b.ngrok.io';
 
 const HOST = host;
 const TYPE = 'api';
@@ -737,8 +738,9 @@ export default {
       .then(resp => resp.data);
   },
 
-  async getPermissionByCid(cid) {
-    return axios.get(`${API_PREFIX}v1.0/membership/permissions/${cid}`);
+  async getPlayPermissionByCid(cid) {
+    const { data } = await axios.get(`${API_PREFIX}v1.0/play/permissions/${cid}`);
+    return data
   },
 
   getBotmData(month, sort) {
@@ -788,7 +790,7 @@ export default {
   },
 
   async getCartItems() {
-    return axios.get(API_PREFIX + 'v1.0/payment/cart-items');
+    return axios.get(`${API_PREFIX}v1.0/payment/cart-items`);
   },
 
   async addToCart(contentType, itemId) {
@@ -796,7 +798,7 @@ export default {
       id: itemId,
       type: contentType
     };
-    return axios.post(API_PREFIX + 'v1.0/payment/cart-items', data);
+    return axios.post(`${API_PREFIX}v1.0/payment/cart-items`, data);
   },
 
   async removeCartItem(cartItemId) {
@@ -804,6 +806,6 @@ export default {
   },
 
   async getCartStatus() {
-    return axios.get(API_PREFIX + 'v1.0/payment/cart-items/status');
+    return axios.get(`${API_PREFIX}v1.0/payment/cart-items/status`);
   }
 };

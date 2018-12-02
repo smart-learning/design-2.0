@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  View
+  View,
 } from 'react-native';
 import net from '../../commons/net';
 import { SafeAreaView } from 'react-navigation';
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   summaryWrapper: {
     backgroundColor: '#f6f6f6',
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#000',
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: 12
+    paddingVertical: 12,
   },
   totalPriceWrapper: {
     borderTopWidth: 1,
@@ -43,14 +43,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#000',
     marginBottom: 8,
-    paddingVertical: 8
+    paddingVertical: 8,
   },
   totalPrice: {
     fontSize: 18,
-    color: '#FF4F72'
+    color: '#FF4F72',
   },
   priceUnitText: {
-    fontSize: 14
+    fontSize: 14,
   },
   buttonPay: {
     backgroundColor: CommonStyles.COLOR_PRIMARY,
@@ -58,34 +58,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 25,
     width: '100%',
-    height: 50
+    height: 50,
   },
   buttonPayText: {
     fontSize: 15,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   cartEmptyWrapper: {
     backgroundColor: '#f6f6f6',
     paddingVertical: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15
+    marginBottom: 15,
   },
   cartEmptyText: {
-    color: '#333'
+    color: '#333',
   },
   summaryHighlight: {
     color: '#43c57d',
-    fontSize: 18
+    fontSize: 18,
   },
   summaryHighlightSmall: {
-    fontSize: 14
-  }
+    fontSize: 14,
+  },
 });
 
 export default class CartScreen extends React.Component {
   static navigationOptions = {
-    title: '구매예정 목록'
+    title: '구매예정 목록',
   };
 
   constructor(props) {
@@ -96,7 +96,7 @@ export default class CartScreen extends React.Component {
       loadingData: false,
       confirmRemoveCartItem: false,
       removeCartItemProgress: false,
-      removeCartItemId: null
+      removeCartItemId: null,
     };
   }
 
@@ -107,18 +107,18 @@ export default class CartScreen extends React.Component {
   loadData = async () => {
     try {
       this.setState({
-        loadingData: true
+        loadingData: true,
       });
       const resp = await net.getCartItems();
       this.setState({
         cartItems: resp.data.items,
-        totalPrice: resp.data.total_price
+        totalPrice: resp.data.total_price,
       });
     } catch (e) {
       Alert.alert(e.toString());
     } finally {
       this.setState({
-        loadingData: false
+        loadingData: false,
       });
     }
   };
@@ -130,8 +130,8 @@ export default class CartScreen extends React.Component {
         text: '삭제',
         onPress: () => {
           this._removeFromCart(cartItemId);
-        }
-      }
+        },
+      },
     ]);
   };
 
@@ -146,7 +146,7 @@ export default class CartScreen extends React.Component {
   };
 
   _renderCartItems() {
-    const { cartItems, totalPrice } = this.state;
+    const { cartItems } = this.state;
 
     if (cartItems.length === 0) {
       return this._renderCartItemEmpty();
@@ -164,9 +164,9 @@ export default class CartScreen extends React.Component {
               type,
               images: { list: thumbnail },
               clip_count: clipCount,
-              teacher: { name: teacherName }
+              teacher: { name: teacherName },
             },
-            rent_period: rentPeriod
+            rent_period: rentPeriod,
           } = item;
 
           const params = {
@@ -178,7 +178,7 @@ export default class CartScreen extends React.Component {
             type,
             title,
             userPrice,
-            cartItemId
+            cartItemId,
           };
 
           return (
@@ -275,12 +275,17 @@ export default class CartScreen extends React.Component {
           <ScrollView
             style={{
               flex: 1,
-              paddingHorizontal: 16,
-              paddingVertical: 16
             }}
           >
-            {this._renderCartItems()}
-            {this._renderTotalPrice()}
+            <View
+              style={{
+                paddingHorizontal: 16,
+                paddingVertical: 16,
+              }}
+            >
+              {this._renderCartItems()}
+              {this._renderTotalPrice()}
+            </View>
           </ScrollView>
         </SafeAreaView>
       </View>

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import globalStore from '../../../scripts/commons/store';
 import CommonStyles from '../../../styles/common';
@@ -20,52 +20,52 @@ const styles = StyleSheet.create({
     height: 60,
     paddingRight: 20,
     paddingLeft: 20,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   priceContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   priceOriginal: {
     paddingRight: 7,
     fontSize: 25,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   priceText: {
     position: 'relative',
     top: 2,
     fontSize: 12,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   rentDurationText: {
     fontSize: 15,
     fontWeight: 'bold',
     color: '#ffffff',
-    paddingLeft: 7
+    paddingLeft: 7,
   },
   stateText: {
     paddingRight: 7,
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   priceDiscount: {
     textDecorationLine: 'line-through',
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   buttonBuy: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
     height: 40,
-    backgroundColor: '#008350'
+    backgroundColor: '#008350',
   },
   buttonBuyText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   buttonAdd: {
     flexDirection: 'row',
@@ -73,17 +73,17 @@ const styles = StyleSheet.create({
     height: 40,
     paddingRight: 15,
     paddingLeft: 15,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   buttonAddImage: {
     width: 13,
     height: 15,
-    marginRight: 5
+    marginRight: 5,
   },
   buttonAddText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   bulletMy: {
     flexDirection: 'row',
@@ -93,31 +93,35 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginRight: 10,
     borderWidth: 1,
-    borderColor: '#ffffff'
+    borderColor: '#ffffff',
   },
   bulletMyImage: {
     width: 9,
     height: 11,
-    marginRight: 5
+    marginRight: 5,
   },
   bulletMyText: {
     fontSize: 15,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   buyText: {
     fontSize: 13,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   buyTextBullet: {
     opacity: 0.2,
     paddingRight: 5,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
   finishText: {
     paddingTop: 5,
     fontSize: 11,
-    color: '#ffffff'
-  }
+    color: '#ffffff',
+  },
+  membershipDescText: {
+    fontSize: 13,
+    color: '#ffffff',
+  },
 });
 
 @observer
@@ -126,16 +130,12 @@ export default class VideoPaymentStatus extends React.Component {
     super(props);
   }
 
-  purchase() {
-    Alert.alert('알림', '강좌 전편 구매는 준비중입니다.');
-  }
-
-  renderFreeVideo() {
+  renderFreeContent() {
     return (
       <View
         style={[
           CommonStyles.alignJustifyContentBetween,
-          styles.paymentContainer
+          styles.paymentContainer,
         ]}
       >
         <View>
@@ -153,12 +153,65 @@ export default class VideoPaymentStatus extends React.Component {
     );
   }
 
-  renderRentVideo(expire_at) {
+  renderUserHaveMembership() {
     return (
       <View
         style={[
           CommonStyles.alignJustifyContentBetween,
-          styles.paymentContainer
+          styles.paymentContainer,
+        ]}
+      >
+        <View>
+          <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+            <Text style={styles.membershipDescText}>무제한 시청</Text>
+          </View>
+        </View>
+
+        <View>
+          <View
+            style={[
+              styles.buttonBuy,
+              { width: 'auto', alignSelf: 'flex-start', paddingHorizontal: 12 },
+            ]}
+            borderRadius={5}
+          >
+            <Text style={styles.buttonBuyText}>
+              {globalStore.currentMembership.type_text}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  renderUserOwned() {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer,
+        ]}
+      >
+        <View>
+          <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
+            <Text style={styles.stateText}>영구소장</Text>
+          </View>
+        </View>
+        <View>
+          <View style={styles.buttonBuy} borderRadius={5}>
+            <Text style={styles.buttonBuyText}>소장중</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  renderUserRent(expire_at) {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          styles.paymentContainer,
         ]}
       >
         <View>
@@ -177,12 +230,12 @@ export default class VideoPaymentStatus extends React.Component {
     );
   }
 
-  renderBuyVideo(origPrice, userPrice, rentDuration) {
+  renderUserCanBuy(origPrice, userPrice, rentDuration) {
     return (
       <View
         style={[
           CommonStyles.alignJustifyContentBetween,
-          styles.paymentContainer
+          styles.paymentContainer,
         ]}
       >
         <View>
@@ -200,7 +253,7 @@ export default class VideoPaymentStatus extends React.Component {
                         <Text style={styles.priceDiscount}>
                           ₩{numeral(origPrice).format('0,0')}
                         </Text>
-                      )
+                      ),
                     })}
                   </Text>
                 )
@@ -230,7 +283,7 @@ export default class VideoPaymentStatus extends React.Component {
       <View
         style={[
           CommonStyles.alignJustifyContentBetween,
-          styles.paymentContainer
+          styles.paymentContainer,
         ]}
       >
         <Text style={[styles.priceText, { alignItems: 'center' }]}>
@@ -241,20 +294,25 @@ export default class VideoPaymentStatus extends React.Component {
   }
 
   render() {
-    const { itemData, permissionLoading } = this.props;
+    const { permission, permissionLoading } = this.props;
+    const {
+      orig_price: origPrice,
+      user_price: userPrice,
+      expire_at: expireAt,
+      rental_period: rentalPeriod,
+    } = permission;
 
     if (permissionLoading) {
       return this.renderPermissionLoading();
     } else {
       return (
         <View>
-          <View style={{ marginTop: 5 }}>{this.renderFreeVideo()}</View>
-          <View style={{ marginTop: 5 }}>
-            {this.renderRentVideo('2019-07-14T01:00:00+09:00')}
-          </View>
-          <View style={{ marginTop: 5 }}>
-            {this.renderBuyVideo(12000, 10500, 14)}
-          </View>
+          {permission.type === 'free' && this.renderFreeContent()}
+          {permission.type === 'membership' && this.renderUserHaveMembership()}
+          {permission.type === 'owned' && this.renderUserOwned()}
+          {permission.type === 'rental' && this.renderUserRent(expireAt)}
+          {permission.type === 'can_buy' &&
+            this.renderUserCanBuy(origPrice, userPrice, rentalPeriod)}
         </View>
       );
     }
