@@ -5,6 +5,7 @@ import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, TextInput 
 import CommonStyles from "../../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import Net from "../../commons/net"
+import Util from "../../commons/util"
 import globalStore from '../../commons/store'
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -61,10 +62,9 @@ class CouponInputPage extends React.Component {
     if (!globalStore.welaaaAuth) this.props.navigation.navigate('Login');
   }
 
-  handle() {
+  registerCoupon() {
     // 로딩 보이기
     this.loading = true
-
     // 시간 한계 주기
     setTimeout(() => {
       // 10초 후에 로딩이 아직도 떠 있다면
@@ -73,17 +73,11 @@ class CouponInputPage extends React.Component {
         this.loading = false
       }
     }, 10000)
-    this.props.onAccess(this.data.email, this.data.password, () => {
-      this.loading = false
-    });
-  }
-
-  registerCoupon() {
     Net.registerCoupon(this.coupon)
       .then(data => {
         // alert 후 'ok'누르면 이전 페이지로 이동
         Alert.alert('알림', data.message,
-          [{ text: 'OK', onPress: () => this.props.navigation.pop() }],
+          [{ text: 'OK', onPress: () => this.props.navigation.navigate('MyInfoHome') }],
         );
       })
       .catch(e => {
@@ -93,6 +87,7 @@ class CouponInputPage extends React.Component {
             text: 'OK', onPress: () => {
               this.coupon = '';
               this.couponTextInput.focus();
+              this.loading = false
             }
           }],
         );

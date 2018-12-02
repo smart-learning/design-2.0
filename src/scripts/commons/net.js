@@ -196,7 +196,7 @@ export default {
           pagination[key.replace('pagination-', '')] = eval(
             headers[key].toLowerCase()
           );
-        } catch (e) {}
+        } catch (e) { }
       }
     });
     return pagination;
@@ -542,7 +542,7 @@ export default {
       });
   },
 
-  getUserHeartContent: function(contentType, page = 1) {
+  getUserHeartContent: function (contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
       videoCourses: 'video-courses'
@@ -581,9 +581,10 @@ export default {
       });
   },
 
-  getMembershipCurrent() {
+  getMembershipCurrent(nocache = false) { // membership을 갱신하는 등의 작업을 할때 nocache=true
     const expired = 1;
-    return cacheOrLoad(API_PREFIX + 'v1.0/membership/current', expired)
+    const url = API_PREFIX + 'v1.0/membership/current'
+    return (nocache ? axios(url) : cacheOrLoad(url, expired))
       .then(data => {
         console.log('now_current_membership', data);
         return data;
@@ -845,23 +846,20 @@ export default {
   },
 
   registerCoupon(coupon_num) {
-    return new Promise((resolve, reject) => {
-      if (coupon_num.toLowerCase() === 'qwer1234') {
-        resolve(({ message: '등록되었습니다.' }))
-      }
-      reject({ message: '쿠폰 번호가 일치하지 않습니다. 확인 후 다시 등록해주세요.' })
-    })
+    // 테스트 케이스
+    // return new Promise((resolve, reject) => {
+    //   if (coupon_num.toLowerCase() === 'qwer1234') {
+    //     resolve(({ message: '등록되었습니다.' }))
+    //   }
+    //   reject({ message: '쿠폰 번호가 일치하지 않습니다. 확인 후 다시 등록해주세요.' })
+    // })
 
-    // let params = {
-    //   coupon_num: coupon_num.toLowerCase(),
-    // };
-    // return axios
-    //   .post(API_PREFIX + 'v1.0/membership/coupon-register', params)
-    //   .then(response => {
-    //     resolve(response.data);
-    //   })
-    //   .catch((error, a, b) => {
-    //     reject(error);
-    //   });
+    let params = {
+      coupon_num: coupon_num.toLowerCase(),
+    };
+    return axios
+      .post(API_PREFIX + 'v1.0/membership/coupon-register', params)
+      .then(response => resolve(response.data))
+      .catch((error, a, b) => reject(error));
   },
 };
