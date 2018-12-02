@@ -859,7 +859,7 @@ export default {
     };
     return axios
       .post(API_PREFIX + 'v1.0/membership/coupon-register', params)
-      .then(response => resolve(response.data))
-      .catch((error, a, b) => reject(error));
+      .then(response => response.data)
+      .catch((error, a, b) => error);
   },
 };
