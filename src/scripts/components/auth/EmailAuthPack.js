@@ -73,25 +73,25 @@ class EmailAuthPack extends Component {
     loginButtonDisabled: false
   });
 
-  componentDidMount () {
-		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-	}
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
 
-	componentWillUnmount () {
-		this.keyboardDidShowListener.remove();
-		this.keyboardDidHideListener.remove();
-	}
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
 
-	_keyboardDidShow = () => {
+  _keyboardDidShow = () => {
     console.log('_keyboardDidShow');
     this.props.onKeyboardStatus(true);
-	};
+  };
 
-	_keyboardDidHide = () => {
+  _keyboardDidHide = () => {
     console.log('_keyboardDidHide');
     this.props.onKeyboardStatus(false);
-	};
+  };
 
   handleLogin = () => {
     if (this.data.email === '') {
@@ -135,7 +135,7 @@ class EmailAuthPack extends Component {
             value={this.data.password}
             placeholder="비밀번호"
             autoCapitalize={'none'}
-            onSubmitEditing={() => { Keyboard.dismiss; this.handleLogin()}}
+            onSubmitEditing={() => { this.handleLogin() }}
             onChangeText={text => {
               this.data.password = text;
             }}
