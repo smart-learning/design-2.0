@@ -842,5 +842,26 @@ export default {
         console.log('addContentView', data);
         return data;
       });
-  }
+  },
+
+  registerCoupon(coupon_num) {
+    return new Promise((resolve, reject) => {
+      if (coupon_num.toLowerCase() === 'qwer1234') {
+        resolve(({ message: '등록되었습니다.' }))
+      }
+      reject({ message: '쿠폰 번호가 일치하지 않습니다. 확인 후 다시 등록해주세요.' })
+    })
+
+    // let params = {
+    //   coupon_num: coupon_num.toLowerCase(),
+    // };
+    // return axios
+    //   .post(API_PREFIX + 'v1.0/membership/coupon-register', params)
+    //   .then(response => {
+    //     resolve(response.data);
+    //   })
+    //   .catch((error, a, b) => {
+    //     reject(error);
+    //   });
+  },
 };

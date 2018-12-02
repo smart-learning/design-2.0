@@ -258,44 +258,44 @@ export default class MyInfoHome extends React.Component {
                     {
                       <View>
                         {globalStore.currentMembership &&
-                        globalStore.currentMembership.type_text ? (
-                          <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() =>
-                              navigation.navigate('MembershipScreen')
-                            }
-                          >
-                            {globalStore.currentMembership.type === 2 && (
-                              <Image source={MembershipPremium} />
-                            )}
-                            {globalStore.currentMembership.type === 1 && (
-                              <Image source={MembershipCampus} />
-                            )}
-                            {globalStore.currentMembership.type === 3 && (
-                              <View style={styles.buttonSmall}>
-                                <Text style={styles.buttonSmallText}>
+                          globalStore.currentMembership.type_text ? (
+                            <TouchableOpacity
+                              activeOpacity={0.9}
+                              onPress={() =>
+                                navigation.navigate('MembershipScreen')
+                              }
+                            >
+                              {globalStore.currentMembership.type === 2 && (
+                                <Image source={MembershipPremium} />
+                              )}
+                              {globalStore.currentMembership.type === 1 && (
+                                <Image source={MembershipCampus} />
+                              )}
+                              {globalStore.currentMembership.type === 3 && (
+                                <View style={styles.buttonSmall}>
+                                  <Text style={styles.buttonSmallText}>
                                   프리패스
                                 </Text>
-                              </View>
-                            )}
-                            {globalStore.currentMembership.type === 4 && (
-                              <Image source={MembershipBookClub} />
-                            )}
-                          </TouchableOpacity>
-                        ) : (
-                          <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() =>
-                              navigation.navigate('MembershipScreen')
-                            }
-                          >
-                            <View style={styles.buttonSmall}>
-                              <Text style={styles.buttonSmallText}>
+                                </View>
+                              )}
+                              {globalStore.currentMembership.type === 4 && (
+                                <Image source={MembershipBookClub} />
+                              )}
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              activeOpacity={0.9}
+                              onPress={() =>
+                                navigation.navigate('MembershipScreen')
+                              }
+                            >
+                              <View style={styles.buttonSmall}>
+                                <Text style={styles.buttonSmallText}>
                                 윌라 멤버십 안내
                               </Text>
-                            </View>
-                          </TouchableOpacity>
-                        )}
+                              </View>
+                            </TouchableOpacity>
+                          )}
                       </View>
                     }
                   </View>
@@ -620,9 +620,40 @@ export default class MyInfoHome extends React.Component {
                   </View>
                 </TouchableOpacity>
                 <View style={styles.guideHr} />
+
+                <View style={{ height: 16 }} />
+
+                {/* 안드로이드 쿠폰함 */}
+
+                {Platform.OS === 'android' && (
+                  <View
+                    style={{
+                      flexDirection: 'column',
+                      alignSelf: 'center',
+                      flex: 1,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('CouponInputPage', {
+                          title: '쿠폰함'
+                        })
+                      }}
+                    >
+                      <View
+                        style={[styles.buttonRestore, { width: 200 }]}
+                        borderRadius={5}
+                      >
+                        <Text style={styles.buttonRestoreText}>
+                          {'쿠폰함'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
 
-              <View style={{ height: 8 }} />
+              <View style={{ height: 16 }} />
             </View>
 
             {/* /* 아이폰 구매내역 복원 */}
