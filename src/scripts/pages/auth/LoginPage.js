@@ -82,7 +82,6 @@ class Data {
   isAppFirstLoadLoginPage = false;
 }
 
-@observer
 class LoginPage extends React.Component {
   data = createStore({
     windowHeight: null
@@ -94,9 +93,9 @@ class LoginPage extends React.Component {
     this.windowHeight = Dimensions.get('window').height;
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   keyboardStateChanged = isKeyboardOn => {
     console.log('keyboardStateChanged isKeyboardOn: ', isKeyboardOn);
@@ -224,4 +223,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default observer(LoginPage);

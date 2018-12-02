@@ -1,3 +1,4 @@
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
@@ -9,6 +10,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { COLOR_PRIMARY } from '../../../styles/common';
 import createStore from '../../commons/createStore';
 import globalStore from '../../commons/store';
@@ -57,7 +59,6 @@ const styles = StyleSheet.create({
   }
 });
 
-@observer
 class EmailAuthPack extends Component {
 
   constructor(props) {
@@ -70,7 +71,6 @@ class EmailAuthPack extends Component {
   data = createStore({
     email: '',
     password: '',
-    loginButtonDisabled: false
   });
 
   componentDidMount() {
@@ -93,7 +93,10 @@ class EmailAuthPack extends Component {
     this.props.onKeyboardStatus(false);
   };
 
+  @observable loading = false
+
   handleLogin = () => {
+    // 밸리데이션
     if (this.data.email === '') {
       Alert.alert('오류', '이메일은 필수 입력항목입니다.');
       return;
@@ -103,15 +106,28 @@ class EmailAuthPack extends Component {
       return;
     }
 
-    this.setState({ loginButtonDisabled: true });
+    // 로딩 보이기
+    this.loading = true
+
+    // 시간 한계 주기
+    setTimeout(() => {
+      // 10초 후에 로딩이 아직도 떠 있다면
+      if (this.loading) {
+        Alert.alert('오류', '관리자에게 문의 하거나 잠시 후 다시 시도해 주세요.')
+        this.loading = false
+      }
+    }, 10000)
     this.props.onAccess(this.data.email, this.data.password, () => {
-      this.data.loginButtonDisabled = false;
+      this.loading = false
     });
   };
 
   render() {
     return (
       <View style={styles.contentContainer}>
+        <Spinner // 로딩 인디케이터
+          visible={this.loading}
+        />
         <View borderRadius={4} style={styles.inputWrap}>
           <TextInput
             ref={this.login_id}
@@ -144,12 +160,11 @@ class EmailAuthPack extends Component {
 
         <TouchableOpacity
           activeOpacity={0.9}
-          disabled={this.data.loginButtonDisabled}
           onPress={this.handleLogin}
         >
           <View borderRadius={4} style={styles.btnSubmit}>
             <Text style={styles.textSubmit}>
-              {this.data.loginButtonDisabled ? '로그인 중' : '이메일로  로그인'}
+              이메일로 로그인
             </Text>
           </View>
         </TouchableOpacity>
@@ -178,4 +193,4 @@ class EmailAuthPack extends Component {
   }
 }
 
-export default EmailAuthPack;
+export default observer(EmailAuthPack);
