@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import PTRView from 'react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
@@ -26,6 +26,7 @@ import HomeBanner from '../../components/home/HomeBanner';
 import Series from '../../components/home/Series';
 import PageCategory from '../../components/PageCategory';
 import Native from '../../commons/native';
+import CircularCarousel from '../../components/CircularCarousel';
 
 const styles = StyleSheet.create({
   slide: {
@@ -133,6 +134,7 @@ const styles = StyleSheet.create({
     paddingBottom: '12%'
   }
 });
+
 
 @observer
 class HomeVideoPage extends React.Component {
@@ -260,6 +262,10 @@ class HomeVideoPage extends React.Component {
                     </TouchableOpacity>
                   </View>
                 </View>
+
+				 <View style={{ flex:1, justifyContent: 'center', alignItems:'center' }}>
+					  <CircularCarousel/>
+				 </View>
 
                 <View style={styles.seriesComponent}>
                   <Series itemData={this.props.store.homeSeriesData} />
