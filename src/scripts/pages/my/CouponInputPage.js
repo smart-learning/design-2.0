@@ -74,20 +74,26 @@ class CouponInputPage extends React.Component {
       }
     }, 10000)
     Net.registerCoupon(this.coupon)
-      .then(data => {
+      .then(async data => {
         // alert 후 'ok'누르면 이전 페이지로 이동
-        Alert.alert('알림', data.message,
-          [{ text: 'OK', onPress: () => this.props.navigation.navigate('MyInfoHome') }],
+        await Util.updateCurrentMembership()
+        this.loading = false
+        Alert.alert('알림', data.msg,
+          [{
+            text: 'OK', onPress: () => {
+              this.props.navigation.navigate('MyInfoHome')
+            }
+          }],
         );
       })
       .catch(e => {
+        this.loading = false
         // alert 후 'ok'누르면 입력해둔 coupon 번호 삭제 후 textinput focus
         Alert.alert('오류', e.message,
           [{
             text: 'OK', onPress: () => {
               this.coupon = '';
               this.couponTextInput.focus();
-              this.loading = false
             }
           }],
         );

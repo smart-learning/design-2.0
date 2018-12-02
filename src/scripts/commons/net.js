@@ -860,6 +860,10 @@ export default {
     return axios
       .post(API_PREFIX + 'v1.0/membership/coupon-register', params)
       .then(response => response.data)
-      .catch((error, a, b) => error);
+      .catch((error) => {
+        if (error.response.status === 400)
+          throw new Error(error.response.data.msg)
+        throw new Error('오류가 발생했습니다. 잠시후에 다시 시도해 주세요.')
+      });
   },
 };
