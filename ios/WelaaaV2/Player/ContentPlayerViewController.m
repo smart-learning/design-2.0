@@ -634,7 +634,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 }
 
 //
-// 전화통화 등으로 재생에 interrupt가 걸렸을 경우..
+// 전화통화 등으로 재생에 interrupt가 걸렸을 경우 즉, 전화가 올때 호출되고 전화가 끝날때에도 호출됩니다.
 //
 - (void) audioSessionInterrupted : (NSNotification *) notification
 {
@@ -643,13 +643,23 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
     {
         NSLog(@"  Pausing for audio session interruption");
+        if ( _playButton.hidden )
+            _shouldContinuePlaying = true;
+        else
+            _shouldContinuePlaying = false;
+      
         [self pressedPauseButton];
     }
     else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
     {
         NSLog(@"  Resuming after audio session interruption");
         // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
-        //[self pressedPlayButton];
+        if ( _shouldContinuePlaying )
+            [self pressedPlayButton];
+        else
+            NSLog(@"  [audioSessionInterrupted] do nothing..");
+      
+        _shouldContinuePlaying = nil;
     }
 }
 
@@ -1003,16 +1013,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
           forControlEvents : UIControlEventTouchUpInside];
     [_controlBarView addSubview : _playButton];
   
-    _paueseButton = [UIButton buttonWithType : UIButtonTypeCustom];
-    _paueseButton.frame = CGRectMake((_controlBarView.frame.size.width - 60.f) / 2.f, 0.f, 60.f, 60.f);
-    [_paueseButton setImage : [UIImage imageNamed : @"icon_pause"]
+    _pauseButton = [UIButton buttonWithType : UIButtonTypeCustom];
+    _pauseButton.frame = CGRectMake((_controlBarView.frame.size.width - 60.f) / 2.f, 0.f, 60.f, 60.f);
+    [_pauseButton setImage : [UIImage imageNamed : @"icon_pause"]
                    forState : UIControlStateNormal];
-    [_paueseButton setImage : [[UIImage imageNamed : @"icon_pause"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+    [_pauseButton setImage : [[UIImage imageNamed : @"icon_pause"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                    forState : UIControlStateHighlighted];
-    [_paueseButton addTarget : self
+    [_pauseButton addTarget : self
                       action : @selector(pressedPauseButton)
             forControlEvents : UIControlEventTouchUpInside];
-    [_controlBarView addSubview : _paueseButton];
+    [_controlBarView addSubview : _pauseButton];
   
     _rwButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _rwButton.frame = CGRectMake(CGRectGetMinX(_playButton.frame) - 60.f - 10.f, 0.f, 60.f, 60.f);
@@ -1068,7 +1078,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     [self setSpeedButtonImage];
     _playButton.hidden = NO;
-    _paueseButton.hidden = YES;
+    _pauseButton.hidden = YES;
   
     [[ApiManager sharedInstance] setReachabilityStatusChangeBlock : ^(NSInteger status)
                                                                     {
@@ -1183,8 +1193,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) setPlayState : (BOOL) isPlaying
 {
-    _paueseButton.hidden = !isPlaying;
-    _playButton.hidden = !_paueseButton.hidden;
+    _pauseButton.hidden = !isPlaying;
+    _playButton.hidden = !_pauseButton.hidden;
 }
 
 - (void) setCurrentTime : (CGFloat) time
@@ -1670,7 +1680,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     if ( _playButton.hidden )
         [_miniPlayerUiView setPlayState : YES];
-    else if ( _paueseButton.hidden )
+    else if ( _pauseButton.hidden )
         [_miniPlayerUiView setPlayState : NO];
   
     [self changedPlayerMode : YES];
@@ -2339,7 +2349,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [self setTouchEnable : _playButton
                       isLock : isLock];
       
-        [self setTouchEnable : _paueseButton
+        [self setTouchEnable : _pauseButton
                       isLock : isLock];
       
         [self setTouchEnable : _rwButton
