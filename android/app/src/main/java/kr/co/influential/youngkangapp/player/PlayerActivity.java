@@ -4154,9 +4154,7 @@ public class PlayerActivity extends BasePlayerActivity {
         Preferences.setWelaaaPlayAudioUsed(getApplication(), false);
 
         if (getTransportControls() != null) {
-
-          getTransportControls().stop();
-
+          getTransportControls().pause();
         }
 
       } catch (Exception e) {
