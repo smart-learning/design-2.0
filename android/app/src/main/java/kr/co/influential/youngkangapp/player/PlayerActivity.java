@@ -4330,6 +4330,8 @@ public class PlayerActivity extends BasePlayerActivity {
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
         callbackMethodName);
 
+    setContentId(getContentId());
+
   }
 
   protected class ContentGroup {
