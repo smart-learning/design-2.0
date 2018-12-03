@@ -581,13 +581,12 @@ export default {
       });
   },
 
-  getMembershipCurrent(nocache = false) { // membership을 갱신하는 등의 작업을 할때 nocache=true
-    const expired = 1;
+  getMembershipCurrent() {
     const url = API_PREFIX + 'v1.0/membership/current'
-    return (nocache ? axios(url) : cacheOrLoad(url, expired))
-      .then(data => {
-        console.log('now_current_membership', data);
-        return data;
+
+    return axios.get(url)
+      .then(res => {
+        return res.data;
       })
       .catch(error => {
         console.log(error);
