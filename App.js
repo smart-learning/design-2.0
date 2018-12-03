@@ -43,6 +43,7 @@ import MyScreens from './src/scripts/pages/my/MyScreens';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
 import SetAppScreen from './src/scripts/pages/my/SetAppPage';
+import Playground from './src/scripts/pages/Playground';
 
 class Data {
   @observable
@@ -90,11 +91,11 @@ const AppDrawer = createDrawerNavigator(
         drawerIcon: <Hidden />,
         drawerLabel: <Hidden />
       }
-    }
+    },
 
-    // Playground: {
-    // 	screen: Playground,
-    // },
+    Playground: {
+    	screen: Playground,
+    },
     // June: {
     // 	screen: PlaygroundJune,
     // },
@@ -145,6 +146,7 @@ class App extends React.Component {
       store.profile = await net.getProfile();
       // 멤버쉽 가져오기
       store.currentMembership = await net.getMembershipCurrent();
+
       // 이용권 가져오기
       store.voucherStatus = await net.getVouchersStatus();
       await utils.updateCartStatus();
@@ -495,7 +497,14 @@ const SignupStack = createStackNavigator(
     },
     EmailSignUpForm: {
       screen: EmailSignUpForm
+    // SampleScreen: {
+    // 	screen: SampleScreen,
     },
+
+	Playground: {
+	  screen: Playground,
+	},
+
     Login: {
       screen: LoginPage,
       navigationOptions: {

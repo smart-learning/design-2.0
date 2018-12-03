@@ -2,18 +2,21 @@ import React from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Dimensions,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import net from '../../commons/net';
-import { SafeAreaView } from 'react-navigation';
+import { Header, SafeAreaView } from 'react-navigation';
 import { CartItem } from '../../components/cart/CartItem';
 import CommonStyles from '../../../styles/common';
 import utils from '../../commons/utils';
 import numeral from 'numeral';
+import PurchaseView from '../../components/PurchaseView';
+import globalStore from '../../commons/store'
 
 const styles = StyleSheet.create({
   loading: {
@@ -97,6 +100,7 @@ export default class CartScreen extends React.Component {
       confirmRemoveCartItem: false,
       removeCartItemProgress: false,
       removeCartItemId: null,
+      showPurchaseView: false,
     };
   }
 
@@ -115,12 +119,44 @@ export default class CartScreen extends React.Component {
         totalPrice: resp.data.total_price,
       });
     } catch (e) {
-      Alert.alert(e.toString());
+      Alert.alert('오류', '데이터를 가져오는 중 오류가 발생하였습니다.');
     } finally {
       this.setState({
         loadingData: false,
       });
     }
+  };
+
+  onPurchaseSuccess = response => {
+    // 결제 성공시
+    console.log('결제 성공');
+    console.log(response);
+
+    const { result, imp_uid, merchant_uid } = response;
+
+    try {
+      const resp = net.postPurchaseCallback(imp_uid, merchant_uid);
+      Alert.alert('결제 성공', JSON.stringify(resp.data));
+    } catch (e) {
+    	console.log(e)
+      Alert.alert('결제 실패', JSON.stringify(resp.data));
+    }
+  };
+
+  onPurchaseError = response => {
+    // 결제 실패/취소시
+    console.log('결제 실패 또는 취소');
+    console.log(response);
+    Alert.alert('결제 실패 또는 취소', JSON.stringify(response));
+  };
+
+  showPurchaseView = () => {
+    this.props.navigation.setParams({
+      title: '구매',
+    });
+    this.setState({
+      showPurchaseView: true,
+    });
   };
 
   showRemoveCartItemAlert = async cartItemId => {
@@ -234,7 +270,7 @@ export default class CartScreen extends React.Component {
           </Text>
         </View>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.showPurchaseView}>
             <View style={styles.buttonPay} borderRadius={5}>
               <Text style={styles.buttonPayText}>구매하기</Text>
             </View>
@@ -262,11 +298,39 @@ export default class CartScreen extends React.Component {
     );
   }
 
+  _renderPurchaseView() {
+    const { height } = Dimensions.get('window');
+    return (
+      <SafeAreaView
+        style={[CommonStyles.container, { backgroundColor: '#fff' }]}
+      >
+        <ScrollView style={{ width: '100%' }}>
+          <PurchaseView
+            name={'주문명: 결제테스트'}
+            amount={this.state.totalPrice}
+            buyer_email={globalStore.profile.email}
+            buyer_name={globalStore.profile.name}
+            buyer_tel={''}
+            buyer_addr={''}
+            buyer_postcode={''}
+            height={height - Header.HEIGHT}
+            onPurchaseSuccess={this.onPurchaseSuccess}
+            onPurchaseError={this.onPurchaseError}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   render() {
-    const { loadingData } = this.state;
+    const { loadingData, showPurchaseView } = this.state;
 
     if (loadingData) {
       return this._renderLoadingData();
+    }
+
+    if (showPurchaseView) {
+      return this._renderPurchaseView();
     }
 
     return (

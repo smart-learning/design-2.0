@@ -68,7 +68,7 @@ function cacheOrLoad(uri, expired = 0) {
         response.data.__cache_timestamp = Number(moment().format('x'));
         AsyncStorage.multiSet([
           ['timestamp::' + uri, moment().format('x')],
-          [uri, JSON.stringify(response.data)]
+          [uri, JSON.stringify(response.data)],
         ]);
         resolve(response.data);
       })
@@ -100,10 +100,13 @@ export default {
     }
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/video-courses/categories',
-      expired
+      expired,
     )
       .then(data => {
-        data = [{ ccode: null, id: 0, title: '전체', images: {}, url: '' }, ...data];
+        data = [
+          { ccode: null, id: 0, title: '전체', images: {}, url: '' },
+          ...data,
+        ];
         data.forEach(element => {
           element.key = element.id.toString();
         });
@@ -121,10 +124,13 @@ export default {
     }
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/audiobooks/categories',
-      expired
+      expired,
     )
       .then(data => {
-        return [{ ccode: null, id: 0, title: '전체', images: {}, url: '' }, ...data];
+        return [
+          { ccode: null, id: 0, title: '전체', images: {}, url: '' },
+          ...data,
+        ];
       })
       .catch(error => {
         console.log(error);
@@ -173,9 +179,9 @@ export default {
         return {
           items: response.data.map(element => ({
             ...element,
-            key: element.id.toString()
+            key: element.id.toString(),
           })),
-          pagination: this.parsePaginationHeaders(response.headers)
+          pagination: this.parsePaginationHeaders(response.headers),
         };
       })
       .catch(error => {
@@ -189,7 +195,7 @@ export default {
       if (key.indexOf('pagination-') === 0) {
         try {
           pagination[key.replace('pagination-', '')] = eval(
-            headers[key].toLowerCase()
+            headers[key].toLowerCase(),
           );
         } catch (e) {}
       }
@@ -200,7 +206,7 @@ export default {
   getLectureListByCategories() {
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/video-courses/promotion-with-categories',
-      DEFAULT_EXPIRED
+      DEFAULT_EXPIRED,
     )
       .then(data => {
         return data;
@@ -235,9 +241,9 @@ export default {
         return {
           items: response.data.map(element => ({
             ...element,
-            key: element.id.toString()
+            key: element.id.toString(),
           })),
-          pagination: this.parsePaginationHeaders(response.headers)
+          pagination: this.parsePaginationHeaders(response.headers),
         };
       })
       .catch(error => {
@@ -248,7 +254,7 @@ export default {
   getAudioBookByCategories() {
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/audiobooks/group-by/categories',
-      DEFAULT_EXPIRED
+      DEFAULT_EXPIRED,
     )
       .then(data => {
         return data;
@@ -332,7 +338,7 @@ export default {
       username: email,
       password: password,
       scope: 'profile',
-      grant_type: 'password'
+      grant_type: 'password',
     });
     // console.log('getAuthToken:', HOS + 'oauth/token', email, password);
     // console.log('encodedParams:', params);
@@ -342,8 +348,8 @@ export default {
         .post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token', params, {
           headers: {
             Authorization: 'Basic ' + authBasicCode,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
         })
         .then(response => {
           resolve(response.data);
@@ -362,7 +368,7 @@ export default {
       username: 'f_token',
       password: f_token,
       scope: 'profile',
-      grant_type: 'password'
+      grant_type: 'password',
     });
     console.log('encodedParams:', params);
 
@@ -371,8 +377,8 @@ export default {
         .post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token', params, {
           headers: {
             Authorization: 'Basic ' + authBasicCode,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
         })
         .then(response => {
           resolve(response.data);
@@ -414,7 +420,7 @@ export default {
     }
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/video-clips/realtime-chart',
-      expired
+      expired,
     )
       .then(data => {
         data.forEach(element => {
@@ -507,7 +513,7 @@ export default {
     const expired = 1;
     return cacheOrLoad(
       API_PREFIX + 'v1.0/play/purchased/video-courses',
-      expired
+      expired,
     )
       .then(data => {
         return data;
@@ -531,7 +537,7 @@ export default {
   getUserHeartContent: function(contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
-      videoCourses: 'video-courses'
+      videoCourses: 'video-courses',
     };
 
     if (!(contentType in urlMappings)) {
@@ -546,9 +552,9 @@ export default {
         return {
           items: resp.data.map(element => ({
             ...element,
-            key: element.id.toString()
+            key: element.id.toString(),
           })),
-          pagination: this.parsePaginationHeaders(resp.headers)
+          pagination: this.parsePaginationHeaders(resp.headers),
         };
       })
       .catch(error => {
@@ -628,7 +634,7 @@ export default {
     return axios
       .post(
         API_PREFIX + 'v1.0/payment/import/subscriptions/issue-billing',
-        data
+        data,
       )
       .then(resp => resp.data);
   },
@@ -653,7 +659,7 @@ export default {
         device_id: deviceId,
         device_model: model,
         fcm_token: fcmToken,
-        push_receive: bool
+        push_receive: bool,
       };
 
       console.log('registerFcmToken params', params);
@@ -694,17 +700,16 @@ export default {
   },
 
   //이메일 중복검증
-  email_vailidate(email){
-    return axios.get(API_PREFIX + 'v1.0/email-validation',
-    {
-      params:{
-        email:email
-      }
-    }).then(
-      resp => {
+  email_vailidate(email) {
+    return axios
+      .get(API_PREFIX + 'v1.0/email-validation', {
+        params: {
+          email: email,
+        },
+      })
+      .then(resp => {
         return resp.data;
-      }
-    );
+      });
   },
 
   //회원가입
@@ -713,7 +718,7 @@ export default {
       name: name,
       username: email,
       password: password,
-      grant_type: 'password'
+      grant_type: 'password',
     };
     params = encodeParams(params);
 
@@ -721,8 +726,8 @@ export default {
       .post(API_PREFIX + 'v1.0/signup', params, {
         headers: {
           Authorization: 'Basic ' + authBasicCode,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       })
       .then(response => {
         return response.data;
@@ -739,8 +744,10 @@ export default {
   },
 
   async getPlayPermissionByCid(cid) {
-    const { data } = await axios.get(`${API_PREFIX}v1.0/play/permissions/${cid}`);
-    return data
+    const { data } = await axios.get(
+      `${API_PREFIX}v1.0/play/permissions/${cid}`,
+    );
+    return data;
   },
 
   getBotmData(month, sort) {
@@ -768,8 +775,8 @@ export default {
         return {
           items: response.data.map(element => ({
             ...element,
-            key: element.id.toString()
-          }))
+            key: element.id.toString(),
+          })),
         };
       })
       .catch(error => {
@@ -779,12 +786,17 @@ export default {
 
   cancelMembership() {
     let url = API_PREFIX + 'v1.0/membership/unsubscribe-membership';
-    return axios.get(url)
+    return axios
+      .get(url)
       .then(resp => {
         return resp.data;
       })
       .catch(error => {
-        Alert.alert('안내','일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',[{text:'확인'}]);
+        Alert.alert(
+          '안내',
+          '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
+          [{ text: '확인' }],
+        );
         console.log(error);
       });
   },
@@ -796,7 +808,7 @@ export default {
   async addToCart(contentType, itemId) {
     const data = {
       id: itemId,
-      type: contentType
+      type: contentType,
     };
     return axios.post(`${API_PREFIX}v1.0/payment/cart-items`, data);
   },
@@ -807,5 +819,13 @@ export default {
 
   async getCartStatus() {
     return axios.get(`${API_PREFIX}v1.0/payment/cart-items/status`);
-  }
+  },
+
+  async postPurchaseCallback(imp_uid, merchant_uid) {
+    const data = {
+      imp_uid,
+      merchant_uid,
+    };
+    return axios.post(`${API_PREFIX}v1.0/payment/import/callback`, data);
+  },
 };
