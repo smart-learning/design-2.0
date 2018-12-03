@@ -241,9 +241,9 @@ class HomePage extends React.Component {
       let videoClips = [];
       let audioChapters = [];
       let miniPlayerCid = cid;
-      let miniPlayerTitle = "";
+      let miniPlayerTitle = '';
       let miniPlayerGroupTitle = contentDataInfo.data.data.title;
-      let miniPlayerTotalPlayTime = "";
+      let miniPlayerTotalPlayTime = '';
       let miniPlayercurrentPlayTime = duration;
 
       if (contentDataInfo.data.type === 'video-course') {
@@ -254,7 +254,7 @@ class HomePage extends React.Component {
             miniPlayerTitle = item.title;
             miniPlayerTotalPlayTime = item.play_time;
           }
-        })
+        });
       } else if (contentDataInfo.data.type === 'audiobook') {
         audioChapters = contentDataInfo.data.data.chapters;
         audioChapters.map((item, key) => {
@@ -263,7 +263,7 @@ class HomePage extends React.Component {
             miniPlayerTitle = item.title;
             miniPlayerTotalPlayTime = item.play_time;
           }
-        })
+        });
       }
 
       let userId = globalStore.welaaaAuth.profile.id;
@@ -281,19 +281,17 @@ class HomePage extends React.Component {
 
       Native.mainToggleMiniPlayer(true, config);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
-
   getProgressList = async () => {
-
     if (Platform.OS === 'android') {
       // SQLite 저장된 정보 베이스로 마지막 재생 콘텐츠 첫번째를 로드합니다. (desc)
-      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고 
-      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid) 
-      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가 
-      // 쉽지가 않네요 ... 
+      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고
+      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid)
+      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가
+      // 쉽지가 않네요 ...
 
       Native.getProgressDatabase(
         result => {
@@ -313,7 +311,7 @@ class HomePage extends React.Component {
         error => console.error(e)
       );
     }
-  }
+  };
 
   showPopup() {
     if (globalStore.welaaaAuth) {
@@ -322,7 +320,6 @@ class HomePage extends React.Component {
   }
 
   componentDidMount = async () => {
-
     this.getProgressList();
 
     if (globalStore.welaaaAuth) {
@@ -383,30 +380,8 @@ class HomePage extends React.Component {
 
   handleBackPress = () => {
     console.log('back press:');
-    // if (this.props.navigation.isFocused()) {
-    //   Alert.alert(
-    //     'Exit App',
-    //     'Exiting the application?', [{
-    //         text: 'Cancel',
-    //         onPress: () => console.log('Cancel Pressed'),
-    //         style: 'cancel'
-    //     }, {
-    //         text: 'OK',
-    //         onPress: () => this.checkMemberShip()
-    //     }, ], {
-    //         cancelable: false
-    //     }
-    //  )
-    //  return true;
-    // } else {
-    //   this.props.navigation.goBack();
-    // }
-
-    console.log('back press:');
     if (this.props.navigation.isFocused()) {
       BackHandler.exitApp();
-    } else {
-      this.props.navigation.goBack();
     }
   };
 

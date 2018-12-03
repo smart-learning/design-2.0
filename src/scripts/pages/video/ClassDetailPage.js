@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { ActivityIndicator, BackHandler, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import net from '../../commons/net';
 import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
@@ -50,24 +50,9 @@ class ClassDetailPage extends React.Component {
 
   componentDidMount() {
     this.getData();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    console.log(
-      'cdp back button:',
-      this.props.navigation.isFocused(),
-      Store.prevLocations
-    );
-    // if (this.props.navigation.isFocused()) {
-    nav.commonBack();
-    // }
-    return true;
-  };
+  componentWillUnmount() {}
 
   render() {
     return (
