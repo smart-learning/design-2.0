@@ -113,7 +113,8 @@ class EmailAuthPack extends Component {
     setTimeout(() => {
       // 10초 후에 로딩이 아직도 떠 있다면
       if (this.loading) {
-        Alert.alert('오류', '관리자에게 문의 하거나 잠시 후 다시 시도해 주세요.')
+        // TODO: 확인이 필요 합니다. 
+        // Alert.alert('오류', '관리자에게 문의 하거나 잠시 후 다시 시도해 주세요.')
         this.loading = false
       }
     }, 10000)
