@@ -5,6 +5,7 @@ import {
 	Dimensions, Text
 } from 'react-native';
 import Math from 'mathjs';
+import store from '../commons/store';
 
 const duration = (Platform.OS == "ios")? 1:0;
 const elevationConstant = Math.cos(Math.pi/2.3);
@@ -90,23 +91,58 @@ export default class CircularCarousel extends Component {
 			itemWidth: 200,
 			itemHeight: 300,
 			containerWidth: Dimensions.get('window').width - 20,
-			containerHeight: 340,
 			dragging: false,
 			selectedIndex: -1,
-		};
+		}
 
 
-		this.initAnimateValue();
+		this.fullScreenH = Dimensions.get('window').height - 110;
+
 		this.setUpState();
 	}
 
+
+	// componentDidMount(){
+	// 	Animated.spring( this.selectedH, {
+	// 		toValue: 300,
+	// 		duration: 0.1,
+	// 	});
+	// }
+
 	initAnimateValue(){
+		console.log( 'initAnimateValue' );
 		this.selectedW = new Animated.Value( 200 );
 		this.selectedH = new Animated.Value( 300 );
 		this.selectedML = new Animated.Value( ( this.state.containerWidth - 200 ) * 0.5 );
-		this.selectedMT = new Animated.Value( 20 );
-		this.state.selectedIndex = -1;
+		this.containerHeight = new Animated.Value( 300 ),
+
+		this.setState({
+			selectedIndex: -1,
+		});
 	}
+
+
+	recoveryAnimateValue(){
+		Animated.parallel([
+			Animated.spring( this.containerHeight, {
+				toValue: 300,
+			}),
+			Animated.spring( this.selectedH, {
+				toValue: 300,
+			}),
+			Animated.spring( this.selectedW, {
+				toValue: 200,
+			}),
+			Animated.spring( this.selectedML, {
+				toValue: ( this.state.containerWidth - 200 ) * 0.5,
+			})
+		]).start(()=>{
+			this.setState({
+				selectedIndex: -1,
+			});
+		});
+	}
+
 
 	componentWillMount() {
 
@@ -126,26 +162,30 @@ export default class CircularCarousel extends Component {
 				selectedIndex: index
 			});
 
+			this.props.onFullScreenToggle( true );
 
 			Animated.parallel([
+				Animated.spring( this.containerHeight, {
+					toValue: this.fullScreenH,
+				}),
+				Animated.spring( this.selectedH, {
+					toValue: this.fullScreenH,
+				}),
 				Animated.spring( this.selectedW, {
 					toValue: this.state.containerWidth,
 				}),
 				Animated.spring( this.selectedML, {
 					toValue: 0,
-				}),
-				Animated.spring( this.selectedMT, {
-					toValue: 0,
-				}),
-				Animated.spring( this.selectedH, {
-					toValue: this.state.containerHeight,
 				})
 			]).start(()=>{
 				// TODO: Router 이동은 이곳에서 !!
 				console.log( 'animated complete' );
 
-				// 다음 동작을 위해 원복
-				this.initAnimateValue();
+				setTimeout(()=>{
+					// 다음 동작을 위해 원복
+					this.recoveryAnimateValue();
+					this.props.onFullScreenToggle( false );
+				}, 1000 );
 			});
 
 			return;
@@ -264,9 +304,14 @@ export default class CircularCarousel extends Component {
 			width: this.selectedW,
 			height: this.selectedH,
 			marginLeft: this.selectedML,
-			marginTop: this.selectedMT,
 			zIndex: 100,
 		};
+
+		const containerStyle = {
+			height: this.containerHeight,
+		};
+
+		console.log( 'height:', this.containerHeight );
 
 		// 가운데 클릭했을때 꽉 채울 이미지
 		let fullViewItem = null;
@@ -293,11 +338,13 @@ export default class CircularCarousel extends Component {
 					resizeMode="contain"
 				/>
 			</Animated.View>
+		}else{
+			fullViewItem = null;
 		}
 
 		return (
-			<View
-				style={[Styles.containerStyle, this.props.style]}
+			<Animated.View
+				style={[Styles.containerStyle, containerStyle ]}
 				{...this.panResponder.panHandlers}
 			>
 
@@ -307,7 +354,7 @@ export default class CircularCarousel extends Component {
 
 				{fullViewItem}
 
-			</View>
+			</Animated.View>
 		);
 	}
 
@@ -372,7 +419,7 @@ export default class CircularCarousel extends Component {
 			let cosalpha = Math.cos(alpha);
 
 			let x = r * sinalpha + marginX + (offset * 0.8);
-			let y = cosalpha * elevationConstant + marginY + Math.abs( offset * 0.5 ) + 20;
+			let y = cosalpha * elevationConstant + marginY + Math.abs( offset * 0.5 );
 
 			this.state.items[item].X = x;
 			this.state.items[item].Y = y;
@@ -518,15 +565,11 @@ export default class CircularCarousel extends Component {
 
 const Styles = {
 
-	activeStyle: {
-		transform: 'scale(2)',
-		// transform: 'scale(0.5)',
-	},
 	containerStyle: {
 		backgroundColor: 'transparent',
 		width: '100%',
-		height: 340,
-		overflow:'hidden'
+		minHeight: 300,
+		overflow:'visible'
 
 	}
 

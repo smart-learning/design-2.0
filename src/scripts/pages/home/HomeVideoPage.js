@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  UIManager,
 } from 'react-native';
 import PTRView from 'react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: '100%',
-    paddingTop: '17.3571428572%',
+	  paddingTop: '17.3571428572%',
     paddingBottom: '17.3571428572%'
   },
   mainTitleCenter: {
@@ -138,6 +139,26 @@ const styles = StyleSheet.create({
 
 @observer
 class HomeVideoPage extends React.Component {
+
+	ccContainer = null;
+	ccContainerY = -1;
+
+	constructor(props){
+		super(props);
+		this.state = {
+			forceScrollValue: null,
+		}
+	}
+
+	/* CircularCarousel이 확대될때 스크롤 위치를 top에 맞춰주기 */
+	onFullScreenToggle = bool => {
+		if( bool ) {
+			this.setState({
+				forceScrollValue: 430, // 컨덴츠의 y값 + 헤더 영역뺀 값
+			});
+		}
+	}
+
   /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
   premiumCategorySelect = data => {
     this.props.navigation.navigate(
@@ -160,7 +181,8 @@ class HomeVideoPage extends React.Component {
     const { homeSeriesData } = this.props.store;
 
     return (
-      <PTRView onRefresh={() => this.props.onRefresh()}>
+      <PTRView forceScrollValue={ this.state.forceScrollValue }
+		  onRefresh={() => this.props.onRefresh()}>
         <ScrollView style={{ flex: 1 }}>
           {/* 이미지 스와이퍼 */}
 
@@ -238,6 +260,7 @@ class HomeVideoPage extends React.Component {
               </View>
             ) : (
               <View
+				  ref={ ref=>( this.ccContainer = ref )}
                 style={[CommonStyles.contentContainer, styles.seriesContainer]}
               >
                 <View>
@@ -264,7 +287,9 @@ class HomeVideoPage extends React.Component {
                 </View>
 
 				 <View style={{ flex:1, justifyContent: 'center', alignItems:'center' }}>
-					  <CircularCarousel/>
+					  <CircularCarousel
+						  onFullScreenToggle={ this.onFullScreenToggle }
+					  />
 				 </View>
 
                 <View style={styles.seriesComponent}>
