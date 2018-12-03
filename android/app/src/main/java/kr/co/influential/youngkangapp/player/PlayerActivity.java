@@ -5386,6 +5386,9 @@ public class PlayerActivity extends BasePlayerActivity {
 
     Preferences.setWelaaaPlayerOnClickPos(getApplicationContext(), currentPosition);
 
+//    플레이어 화면에서 목차 변경 시 이어듣기 되지 않음 #469
+    Preferences.setSQLiteDuration(getApplicationContext(), true);
+
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);
   }
