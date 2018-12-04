@@ -55,7 +55,7 @@ class ClassDetailPage extends React.Component {
       await utils.updateCartStatus();
       Alert.alert(
         '장바구니',
-        `${itemId} 아이템을 담았습니다. 장바구니로 이동하시겠습니까?`,
+        `클래스를 담았습니다. 장바구니로 이동하시겠습니까?`,
         [
           { text: '취소' },
           {
@@ -80,7 +80,6 @@ class ClassDetailPage extends React.Component {
 
     this.data.itemData = resultLectureData;
     this.data.itemClipData = resultLectureClipData;
-
     this.data.isLoading = false;
 
     await this.getPlayPermissions();
