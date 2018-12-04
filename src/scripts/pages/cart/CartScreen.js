@@ -9,14 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Header, SafeAreaView, withNavigation } from 'react-navigation';
+import numeral from 'numeral';
 import net from '../../commons/net';
-import { Header, SafeAreaView } from 'react-navigation';
 import { CartItem } from '../../components/cart/CartItem';
 import CommonStyles from '../../../styles/common';
 import utils from '../../commons/utils';
-import numeral from 'numeral';
 import PurchaseView from '../../components/PurchaseView';
-import globalStore from '../../commons/store'
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   loading: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class CartScreen extends React.Component {
+class CartScreen extends React.Component {
   static navigationOptions = {
     title: '구매예정 목록',
   };
@@ -98,9 +98,12 @@ export default class CartScreen extends React.Component {
       totalPrice: 0,
       loadingData: false,
       confirmRemoveCartItem: false,
+      orderTitle: '주문',
       removeCartItemProgress: false,
       removeCartItemId: null,
       showPurchaseView: false,
+      totalClassCount: 0,
+      totalAudiobookCount: 0,
     };
   }
 
@@ -109,14 +112,33 @@ export default class CartScreen extends React.Component {
   }
 
   loadData = async () => {
+    let orderTitle = '';
+    let totalClassCount = 0;
+    let totalAudiobookCount = 0;
+
     try {
       this.setState({
         loadingData: true,
       });
       const resp = await net.getCartItems();
+
+      resp.data.items.forEach(item => {
+        if (item.type === 'video-course') {
+          ++totalClassCount;
+        }
+        if (item.type === 'audiobook') {
+          ++totalAudiobookCount;
+        }
+      });
+
+      orderTitle = `클래스 ${totalClassCount} 편 / 오디오북 ${totalAudiobookCount} 권 구매`;
+
       this.setState({
         cartItems: resp.data.items,
         totalPrice: resp.data.total_price,
+        orderTitle,
+        totalAudiobookCount,
+        totalClassCount,
       });
     } catch (e) {
       Alert.alert('오류', '데이터를 가져오는 중 오류가 발생하였습니다.');
@@ -127,18 +149,45 @@ export default class CartScreen extends React.Component {
     }
   };
 
-  onPurchaseSuccess = response => {
+  onPurchaseSuccess = async response => {
     // 결제 성공시
-    console.log('결제 성공');
-    console.log(response);
-
-    const { result, imp_uid, merchant_uid } = response;
+    const { imp_uid, merchant_uid } = response;
 
     try {
-      const resp = net.postPurchaseCallback(imp_uid, merchant_uid);
-      Alert.alert('결제 성공', JSON.stringify(resp.data));
+      const resp = await net.postPurchaseCallback(imp_uid, merchant_uid);
+      console.log('결제 완료', resp);
+      await utils.updateCartStatus();
+      Alert.alert(
+        '구매 완료',
+        `${this.state.orderTitle} 결제가 완료되었습니다.`,
+        [
+          {
+            text: '확인',
+            onPress: () => {
+              const { totalAudiobookCount, totalClassCount } = this.state;
+              const { navigation } = this.props;
+
+              if (totalAudiobookCount > 0 && totalClassCount > 0) {
+                navigation.navigate('MyInfoHome', {
+                  title: '마이 윌라',
+                });
+              } else if (totalAudiobookCount > 0) {
+                navigation.navigate('AudioBookBuyPage', {
+                  title: '구매한 오디오북',
+                });
+              } else if (totalClassCount > 0) {
+                navigation.navigate('LectureBuyPage', {
+                  title: '구매한 클래스',
+                });
+              } else {
+                navigation.navigate('HomeScreen');
+              }
+            },
+          },
+        ],
+      );
     } catch (e) {
-    	console.log(e)
+      console.log('결제 실패', e);
       Alert.alert('결제 실패', JSON.stringify(resp.data));
     }
   };
@@ -147,16 +196,15 @@ export default class CartScreen extends React.Component {
     // 결제 실패/취소시
     console.log('결제 실패 또는 취소');
     console.log(response);
-    Alert.alert('결제 실패 또는 취소', JSON.stringify(response));
+    Alert.alert('결제 실패', '결제가 실패하였습니다.');
   };
 
   showPurchaseView = () => {
-    this.props.navigation.setParams({
-      title: '구매',
-    });
-    this.setState({
-      showPurchaseView: true,
-    });
+    if (this.state.totalPrice > 0) {
+      this.setState({
+        showPurchaseView: true,
+      });
+    }
   };
 
   showRemoveCartItemAlert = async cartItemId => {
@@ -177,7 +225,8 @@ export default class CartScreen extends React.Component {
       await this.loadData();
       await utils.updateCartStatus();
     } catch (e) {
-      Alert.alert(`장바구니 항목 삭제 중 오류가 발생했습니다: ${e.toString()}`);
+      console.log('장바구니 항목 삭제 중 오류', e);
+      Alert.alert(`장바구니 항목 삭제 중 오류가 발생했습니다`);
     }
   };
 
@@ -230,17 +279,7 @@ export default class CartScreen extends React.Component {
   }
 
   _renderTotalPrice() {
-    let totalClassCount = 0;
-    let totalAudiobookCount = 0;
-
-    this.state.cartItems.forEach(item => {
-      if (item.type === 'video-course') {
-        ++totalClassCount;
-      }
-      if (item.type === 'audiobook') {
-        ++totalAudiobookCount;
-      }
-    });
+    const { totalAudiobookCount, totalClassCount } = this.state;
 
     return (
       <View>
@@ -306,7 +345,7 @@ export default class CartScreen extends React.Component {
       >
         <ScrollView style={{ width: '100%' }}>
           <PurchaseView
-            name={'주문명: 결제테스트'}
+            name={this.state.orderTitle}
             amount={this.state.totalPrice}
             buyer_email={globalStore.profile.email}
             buyer_name={globalStore.profile.name}
@@ -356,3 +395,5 @@ export default class CartScreen extends React.Component {
     );
   }
 }
+
+export default withNavigation(CartScreen);
