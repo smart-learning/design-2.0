@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import withNavigation from 'react-navigation/src/views/withNavigation';
 import globalStore from '../../commons/store';
 import IconBadge from 'react-native-icon-badge';
 import { observer } from 'mobx-react';
+import IcCart from '../../../images/ic-cart.png';
+import Styles from '../../../styles/common';
 
 @observer
 class CartButton extends Component {
@@ -14,13 +16,16 @@ class CartButton extends Component {
   renderIcon() {
     return (
       <TouchableOpacity activeOpacity={0.9} onPress={this.onPress}>
-        <View
-          style={{
-            backgroundColor: '#489EFE',
-            width: 36,
-            height: 36,
-            margin: 6
-          }}
+        <Image
+          source={IcCart}
+          style={[
+            Styles.size24,
+            {
+              width: 30,
+              height: 30,
+              margin: 6,
+            },
+          ]}
         />
       </TouchableOpacity>
     );
@@ -32,7 +37,7 @@ class CartButton extends Component {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
         <IconBadge
@@ -45,7 +50,7 @@ class CartButton extends Component {
           IconBadgeStyle={{
             width: 20,
             height: 20,
-            backgroundColor: '#FF00EE'
+            backgroundColor: '#FF7901',
           }}
           Hidden={globalStore.cartItemCount === 0}
         />
