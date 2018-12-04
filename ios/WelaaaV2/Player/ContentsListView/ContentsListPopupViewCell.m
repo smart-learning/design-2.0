@@ -47,7 +47,7 @@
     _previewLabel.font = [UIFont fontWithName:@"SpoqaHanSans" size:12];
     _previewLabel.textColor = UIColorFromRGB(0xffffff, 1.f);
     _previewLabel.numberOfLines = 1;
-    _previewLabel.text = @"미리보기";
+    _previewLabel.text = @"프리뷰";
     _previewLabel.textAlignment = NSTextAlignmentCenter;
     _previewLabel.layer.cornerRadius = 4.f;
     _previewLabel.clipsToBounds = YES;
@@ -242,15 +242,44 @@
       
         if ( progress == 0 )
         {
-            playImageName = !self.isAudioContentType ? @"icon_play_green" : @"icon_play_pink";
+            // 클래스는 권한 체크없이 아이콘을 항상 세팅합니다.
+            if ( !self.isAudioContentType )
+                playImageName = @"icon_play_green";
+            else if ( self.isAudioContentType )
+            {
+                if ( _hasPermission )
+                    playImageName = @"icon_play_pink";
+                else if ( !_hasPermission && [[self.itemDict[@"is_preview"] stringValue] isEqualToString : @"1"] )
+                    playImageName = @"icon_play_pink";
+            }
         }
         else if ( progress < 100 )
         {
-            playImageName = !self.isAudioContentType ? @"icon_video_list_play_half_filled" : @"icon_audiobook_play_half_filled";
+            // 클래스는 권한 체크없이 아이콘을 항상 세팅합니다.
+            if ( !self.isAudioContentType )
+                playImageName = @"icon_video_list_play_half_filled";
+            else if ( self.isAudioContentType )
+            {
+                if ( _hasPermission )
+                    playImageName = @"icon_audiobook_play_half_filled";
+                else if ( !_hasPermission && [[self.itemDict[@"is_preview"] stringValue] isEqualToString : @"1"] )
+                    playImageName = @"icon_audiobook_play_half_filled";
+            }
+          //playImageName = !self.isAudioContentType ? @"icon_video_list_play_half_filled" : @"icon_audiobook_play_half_filled";
         }
         else if ( progress == 100 )
         {
-            playImageName = !self.isAudioContentType ? @"icon_video_list_play_filled" : @"icon_audiobook_play_filled";
+            // 클래스는 권한 체크없이 아이콘을 항상 세팅합니다.
+            if ( !self.isAudioContentType )
+                playImageName = @"icon_video_list_play_filled";
+            else if ( self.isAudioContentType )
+            {
+                if ( _hasPermission )
+                    playImageName = @"icon_audiobook_play_filled";
+                else if ( !_hasPermission && [[self.itemDict[@"is_preview"] stringValue] isEqualToString : @"1"] )
+                    playImageName = @"icon_audiobook_play_filled";
+            }
+          //playImageName = !self.isAudioContentType ? @"icon_video_list_play_filled" : @"icon_audiobook_play_filled";
         }
 
         if ( !nullStr(playImageName) )

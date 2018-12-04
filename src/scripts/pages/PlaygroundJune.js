@@ -3,7 +3,6 @@ import { Button, Modal, Text, TouchableHighlight, View, NativeModules } from "re
 import CommonStyles from "../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import { NAV_OPTS_DRAWER } from "../commons/nav";
-import Localizable from 'react-native-localizable';
 import Device from "../commons/device";
 
 /*
@@ -12,7 +11,7 @@ import Device from "../commons/device";
 * */
 class PlaygroundJune extends Component {
 
-	onPlay = () =>{
+	onPlay = () => {
 		// alert('play');
 		//RNAudioPlayer.play("http://vprbbc.streamguys.net/vprbbc24-mobile.mp3");
 		/*
@@ -46,7 +45,7 @@ class PlaygroundJune extends Component {
 		'sintel-trailer-480p' / 'https://contents.welaaa.com/public/contents/HLS_sintel-trailer-480p_mp4/master.m3u8'
 		*/
 		var args = {
-			type : "streaming",
+			type: "streaming",
 			uri: "https://contents.welaaa.com/media/v100015/HLS_v100015_001/master.m3u8",
 			name: "140년 지속 성장을 이끈 MLB 사무국의 전략",
 			drmSchemeUuid: "widevine",
@@ -75,12 +74,12 @@ class PlaygroundJune extends Component {
 			cid: "v100015_001",
 			oid: "",
 			token: ""
-		
+
 		}
-		
+
 		try {
 			NativeModules.RNNativePlayer.download(args);
-		}catch (e) {
+		} catch (e) {
 			alert('실패');
 		}
 
@@ -97,7 +96,7 @@ class PlaygroundJune extends Component {
 
 		try {
 			NativeModules.RNNativePlayer.downloadDelete(args);
-		}catch (e) {
+		} catch (e) {
 			alert('실패');
 		}
 
@@ -114,26 +113,26 @@ class PlaygroundJune extends Component {
 
 		try {
 			NativeModules.RNNativePlayer.selectDatabase(args);
-		}catch (e) {
+		} catch (e) {
 			alert('실패');
 		}
 
 
-	}	
-
-	getNativeVariable = () =>{
-		alert( `host_debug: ${Localizable.host_debug} \n\n host_release: ${Localizable.host_release}` );
 	}
 
-	onPurchase = () =>{
+	getNativeVariable = () => {
+		// alert(`host_debug: ${Localizable.host_debug} \n\n host_release: ${Localizable.host_release}`);
+	}
+
+	onPurchase = () => {
 		// args는 appstoreconnect.apple.com에서 앱내구입 product_id를 참고바랍니다.
 		/*
 		 * audiobook_b300048 / 0~5세 말걸기 육아의 힘 / sandbox 테스트 잘 안됨..
 		 * audiobook_100 / 톰 소여의 모험 / 
 		 */
 		var args = {
-			product_id : "audiobook_101",	//0~5세 말걸기 육아의 힘
-			webToken : "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
+			product_id: "audiobook_101",	//0~5세 말걸기 육아의 힘
+			webToken: "" // RN 에서 가져올 토큰 정보 , 서버 호출간 이용 
 		}
 		NativeModules.RNProductPayment.buy(args);
 	}
@@ -161,21 +160,21 @@ class PlaygroundJune extends Component {
 			/>
 
 			<Button title="디바이스 언어 가져오기"
-				onPress={ ()=>{ alert( Device.getLocale() ) } }
+				onPress={() => { alert(Device.getLocale()) }}
 			/>
 
 			<Button title="BuildMode가 DEBUG인지 아닌지 확인"
-				onPress={()=>{ alert( __DEV__ ) }}
+				onPress={() => { alert(__DEV__) }}
 			/>
 
 			<Button title="저장된 host 변수 가져오기"
-				onPress={ this.getNativeVariable }
+				onPress={this.getNativeVariable}
 			/>
 
 			<Button title="인앱결제"
-					onPress={ this.onPurchase }
+				onPress={this.onPurchase}
 			/>
-			
+
 			{/* <ImageView
 				style={{ width:100, height:100 }}
 				src={[{ uri: "https://pbs.twimg.com/tweet_video_thumb/Dg3sOjuV4AEtzIR.jpg", width:100, height:100}]}

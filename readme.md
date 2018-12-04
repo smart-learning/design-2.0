@@ -56,7 +56,16 @@ yarn ios
 
 ### Package Setting
 
-#### [Android Studio]
+#### [Android]
+>in '~/.bash_profile
+```
+...
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+...
+```
 
 
 
@@ -122,3 +131,38 @@ USB 연결을 해제한 후 다시 연결한다.
 - exoplayer2 = **2.8.2**
 
 ### iOS
+
+
+## spinner
+```
+// 원시코드
+
+// 불러오기
+import Spinner from 'react-native-loading-spinner-overlay';
+
+// mobx 변수 하나 등록
+@observable loading = false
+
+// component 등록
+<Spinner // 로딩 인디케이터
+  visible={this.loading}
+/>
+
+// handler
+handle() {
+  // 로딩 보이기
+  this.loading = true
+
+  // 시간 한계 주기
+  setTimeout(() => {
+    // 10초 후에 로딩이 아직도 떠 있다면
+    if (this.loading) {
+      Alert.alert('오류', '관리자에게 문의 하거나 잠시 후 다시 시도해 주세요.')
+      this.loading = false
+    }
+  }, 10000)
+  this.props.onAccess(this.data.email, this.data.password, () => {
+    this.loading = false
+  });
+}
+```

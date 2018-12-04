@@ -122,8 +122,8 @@ android {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 137
-        versionName "1.50.037"
+        versionCode 142
+        versionName "1.50.042"
         archivesBaseName = "welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -188,10 +188,11 @@ apply plugin: 'io.fabric'
 
 dependencies {
     compile project(':react-native-iamport')
+    compile project(':react-native-vector-icons')
     implementation project(':react-native-firebase')
     implementation project(':react-native-kakao-signin')
     implementation project(':react-native-fbsdk')
-    implementation project(':react-native-localizable')
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
     compileOnly "com.google.android.wearable:wearable:$wearableVersion"

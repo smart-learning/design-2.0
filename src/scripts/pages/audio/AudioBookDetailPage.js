@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   Alert,
   BackHandler,
-  Platform,
   Text,
   View,
 } from 'react-native';
@@ -13,8 +12,6 @@ import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
 import globalStore from '../../commons/store';
 import DetailLayout from '../../components/detail/DetailLayout';
-import moment from 'moment';
-import native from '../../commons/native';
 import nav from '../../commons/nav';
 import { withNavigation } from 'react-navigation';
 import utils from '../../commons/utils';
@@ -168,9 +165,10 @@ class AudioBookDetailPage extends React.Component {
     }
 
     this.data.isLoading = false;
-
-    // await this.getPermissions();
     await this.getPlayPermissions();
+
+    //조회수 증가
+    await net.postAddContentViewCount(resultBookData.cid);
   };
 
   componentWillUnmount() {
@@ -221,74 +219,6 @@ class AudioBookDetailPage extends React.Component {
     });
   }
 
-  // async getPermissions() {
-  //   let permissionLoading = true;
-  //   let paymentType = 0;
-  //   let expire = null;
-  //
-  //   this.setState({ permissionLoading });
-  //
-  //   let { sale_price } = this.data.itemData;
-  //
-  //   if (sale_price === 0) {
-  //     this.data.permissions = {
-  //       is_free: true,
-  //       permission: true,
-  //       expire_at: null,
-  //     };
-  //   } else {
-  //     const userLoggedIn = globalStore.welaaaAuth !== undefined;
-  //
-  //     if (!userLoggedIn) {
-  //       paymentType = 4;
-  //       expire = null;
-  //     } else {
-  //       // logged in
-  //       this.data.permissions = await net.getContentPermission(
-  //         'audiobooks',
-  //         this.state.id,
-  //       );
-  //       if (!this.data.permissions.permission) {
-  //         this.data.voucherStatus = await net.getVouchersStatus(true);
-  //       }
-  //       if (this.data.permissions.is_free) {
-  //         // 무료
-  //         paymentType = 0;
-  //       } else {
-  //         // 유료
-  //         if (this.data.permissions.permission) {
-  //           // 소장 중
-  //           paymentType = 3;
-  //
-  //           if (this.data.permissions.expire_at) {
-  //             expire = `${moment(this.data.permissions.expire_at).format(
-  //               'YYYY-MM-DD',
-  //             )} 만료`;
-  //           } else {
-  //             expire = '영구소장';
-  //           }
-  //         } else {
-  //           if (
-  //             (this.data.itemData.is_botm &&
-  //               this.data.voucherStatus.botm > 0) ||
-  //             (!this.data.itemData.is_botm && this.data.voucherStatus.total > 0)
-  //           ) {
-  //             paymentType = 2;
-  //           } else {
-  //             paymentType = 1;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //
-  //   this.setState({
-  //     paymentType,
-  //     expire,
-  //     permissionLoading: false,
-  //   });
-  // }
-
   async componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     this.getData();
@@ -309,9 +239,7 @@ class AudioBookDetailPage extends React.Component {
           <DetailLayout
             addToCart={this.addToCart}
             useVoucher={this.useVoucher}
-            // purchase={this.purchase}
             voucherStatus={this.data.voucherStatus}
-            // permissions={this.data.permissions}
             itemData={this.data.itemData}
             learnType={'audioBook'}
             store={this.data}

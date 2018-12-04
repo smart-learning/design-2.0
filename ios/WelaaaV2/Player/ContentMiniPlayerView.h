@@ -12,6 +12,7 @@
 
 - (void) reOrderSubviews;
 - (void) setControllerColorWithAudioMode : (BOOL) isAudioMode;
+- (void) setTitleLabel00 : (NSString *) text;
 - (void) setTitleLabel01 : (NSString *) text;
 - (void) setPreparedToPlayInfo : (NSDictionary *) info;
 - (void) setPlayState : (BOOL) isPlay;

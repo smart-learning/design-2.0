@@ -1,21 +1,21 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import {
-  Alert,
   ActivityIndicator,
+  Alert,
   BackHandler,
   Text,
   View,
 } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import net from '../../commons/net';
 import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
 import DetailLayout from '../../components/detail/DetailLayout';
 import Store from '../../commons/store';
-import nav from '../../commons/nav';
-import { withNavigation } from 'react-navigation';
-import utils from '../../commons/utils';
 import globalStore from '../../commons/store';
+import nav from '../../commons/nav';
+import utils from '../../commons/utils';
 
 @observer
 class ClassDetailPage extends React.Component {
@@ -29,10 +29,6 @@ class ClassDetailPage extends React.Component {
     slideHeight: null,
     reviewText: '',
     reviewStar: 0,
-    // permissions: {
-    //   permission: false,
-    //   expire_at: null,
-    // },
     voucherStatus: {},
   });
 
@@ -88,6 +84,9 @@ class ClassDetailPage extends React.Component {
     this.data.isLoading = false;
 
     await this.getPlayPermissions();
+
+    //조회수 증가
+    await net.postAddContentViewCount(resultLectureData.cid);
   };
 
   componentDidMount() {

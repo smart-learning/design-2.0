@@ -68,6 +68,9 @@ class Store {
   /* 미니 플레이어 전환여부 결정 */
   @observable
   miniPlayerVisible = false;
+  /* 미니 플레이어 전환여부 결정 */
+  @observable
+  miniPlayerArg = {};
 
   clearTokens = () => {
     socialType = null;

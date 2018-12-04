@@ -937,4 +937,115 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
 }
 
++ (void) processCheckingUpdate
+{
+    // Check available updates.
+    NSString *currentVersionStr = [[common infoPlist] objectForKey : @"CFBundleShortVersionString"];
+    NSDictionary *updateInfo = [ApiManager getUpdateData];
+  
+    if ( [updateInfo isKindOfClass : [NSDictionary class]] ) // API 서버에서 데이터를 제대로 받아왔는지 확인합니다.
+    {
+        if ( [updateInfo[@"version"] isKindOfClass : [NSDictionary class]] ) // version dictionary가 정상인지 확인합니다.
+        {
+            BOOL forceUpdate = [[updateInfo[@"force_update"] stringValue] isEqualToString : @"1"];
+            BOOL isAvailableMinUpdate = [self compareBetweenCurrentVersion : currentVersionStr
+                                                             andNewVersion : updateInfo[@"version"][@"min"]];
+            BOOL isAvailableUpdate = [self compareBetweenCurrentVersion : currentVersionStr
+                                                          andNewVersion : updateInfo[@"version"][@"current"]];
+          
+            // "force_update"가 true && 설치된 앱버젼 < updateInfo[@"version"]["min"] -> 강제업데이트 팝업(description + store_url)
+            if ( forceUpdate && isAvailableMinUpdate )
+            {
+                UIAlertController *alert;
+                UIAlertAction *ok;
+                UIAlertAction *no;
+              
+                alert = [UIAlertController alertControllerWithTitle : @"업데이트"
+                                                            message : @"필수 업데이트가 있습니다.\n업데이트하시겠습니까?"//updateInfo[@"description"]
+                                                     preferredStyle : UIAlertControllerStyleAlert];
+              
+                ok = [UIAlertAction actionWithTitle : @"업데이트"
+                                              style : UIAlertActionStyleDefault
+                                            handler : ^(UIAlertAction * action)
+                                                      {
+                                                          [[UIApplication sharedApplication] openURL : [NSURL URLWithString:updateInfo[@"store_url"]]
+                                                                                             options : @{}
+                                                                                   completionHandler : ^(BOOL success) { exit(0); }];
+                                                      }];
+              
+                no = [UIAlertAction actionWithTitle : @"앱 종료"
+                                              style : UIAlertActionStyleDefault
+                                            handler : ^(UIAlertAction * action) { exit(0); }];
+                [alert addAction : ok];
+                [alert addAction : no];
+              
+                UIWindow *topWindow = [[UIWindow alloc] initWithFrame : [UIScreen mainScreen].bounds];
+                topWindow.rootViewController = [UIViewController new];
+                topWindow.windowLevel = UIWindowLevelAlert + 1;
+                [topWindow makeKeyAndVisible];
+                [topWindow.rootViewController presentViewController:alert animated:YES completion:nil];
+            }
+            // 설치된 앱버젼 < updateInfo[@"version"]["current"] -> 업데이트 팝업(store_url)
+            else if ( isAvailableUpdate )
+            {
+                UIAlertController *alert;
+                UIAlertAction *ok;
+                UIAlertAction *no;
+              
+                alert = [UIAlertController alertControllerWithTitle : @"업데이트"
+                                                            message : @"최신 업데이트가 있습니다.\n업데이트하시겠습니까?"//updateInfo[@"description"]
+                                                     preferredStyle : UIAlertControllerStyleAlert];
+              
+                ok = [UIAlertAction actionWithTitle : @"업데이트"
+                                              style : UIAlertActionStyleDefault
+                                            handler : ^(UIAlertAction * action)
+                                                      {
+                                                          [[UIApplication sharedApplication] openURL : [NSURL URLWithString:updateInfo[@"store_url"]]
+                                                                                             options : @{}
+                                                                                   completionHandler : ^(BOOL success) { exit(0); }];
+                                                      }];
+              
+                no = [UIAlertAction actionWithTitle : @"나중에"
+                                              style : UIAlertActionStyleDefault
+                                            handler : ^(UIAlertAction * action)
+                                                      {
+                                                          [alert dismissViewControllerAnimated:YES completion:nil];
+                                                      }];
+                [alert addAction : ok];
+                [alert addAction : no];
+              
+                UIWindow *topWindow = [[UIWindow alloc] initWithFrame : [UIScreen mainScreen].bounds];
+                topWindow.rootViewController = [UIViewController new];
+                topWindow.windowLevel = UIWindowLevelAlert + 1;
+                [topWindow makeKeyAndVisible];
+                [topWindow.rootViewController presentViewController:alert animated:YES completion:nil];
+            }
+        }
+    }
+}
+
++ (BOOL) compareBetweenCurrentVersion : (NSString *) currentVersion
+                        andNewVersion : (NSString *) newVersion
+{
+    NSArray *versionNow = [currentVersion componentsSeparatedByString : @"."];
+    NSArray *versionNew = [newVersion componentsSeparatedByString : @"."];
+  
+    if ( [versionNow[0] intValue] > [versionNew[0] intValue] )
+        return false;
+    else if ( [versionNow[0] intValue] < [versionNew[0] intValue] )
+        return true;
+  
+    if ( [versionNow[1] intValue] > [versionNew[1] intValue] )
+        return false;
+    else if ( [versionNow[1] intValue] < [versionNew[1] intValue] )
+        return true;
+  
+    if ( [versionNow[2] intValue] > [versionNew[2] intValue] )
+        return false;
+    else if ( [versionNow[2] intValue] < [versionNew[2] intValue] )
+        return true;
+  
+    return false;
+}
+
 @end

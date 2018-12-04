@@ -3,17 +3,9 @@ import Base64 from 'Base64';
 import moment from 'moment';
 import { AsyncStorage, Platform, Alert } from 'react-native';
 import firebase from 'react-native-firebase';
-import Localizable from 'react-native-localizable';
 import Native from './native';
 
-// 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
-// let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
-// TODO: iOS에서 Localizable 이 undefined인 상황이 발견되었음. 원인 미상. 확인 필요.
 let host = 'https://api-prod.welaaa.com';
-if (Localizable) {
-  if (__DEV__) host = Localizable.host_debug || host;
-  else host = Localizable.host_release || host;
-}
 host = 'https://5764e50b.ngrok.io';
 
 const HOST = host;
@@ -390,9 +382,15 @@ export default {
   },
 
   getMainPopup() {
-    return cacheOrLoad(API_PREFIX + 'v1.0/users/popup')
-      .then(data => {
-        return data;
+    const url = API_PREFIX + 'v1.0/users/popup';
+    const params = {
+      platform: Platform.OS,
+    };
+    return axios
+      .get(url, { params: params })
+      .then(resp => {
+        console.log('popup', resp);
+        return resp.data;
       })
       .catch(error => {
         console.log(error);
@@ -459,7 +457,10 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/banner', expired)
+    return cacheOrLoad(
+      API_PREFIX + 'v1.0/cms/main/banner?platform=' + Platform.OS,
+      expired,
+    )
       .then(data => {
         data.forEach(element => {
           element.key = element.id.toString();
@@ -574,14 +575,20 @@ export default {
   },
 
   getMembershipCurrent() {
-    const expired = 0;
-    return cacheOrLoad(API_PREFIX + 'v1.0/membership/current', expired)
-      .then(data => {
-        return data;
+    const url = API_PREFIX + 'v1.0/membership/current';
+
+    return axios
+      .get(url)
+      .then(res => {
+        return res.data;
       })
       .catch(error => {
         console.log(error);
       });
+  },
+
+  async getMembershipCurrentFresh() {
+    return axios.get(API_PREFIX + 'v1.0/membership/current');
   },
 
   getVouchersStatus() {
@@ -719,6 +726,7 @@ export default {
       username: email,
       password: password,
       grant_type: 'password',
+      source: Platform.OS,
     };
     params = encodeParams(params);
 
@@ -827,5 +835,63 @@ export default {
       merchant_uid,
     };
     return axios.post(`${API_PREFIX}v1.0/payment/import/callback`, data);
+  },
+
+  getContentInfo(cid) {
+    return axios
+      .get(API_PREFIX + 'v1.0/play/contents-info/' + cid)
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
+
+  getPlayDataInfo(cid) {
+    return axios
+      .get(API_PREFIX + 'v1.0/play/play-data/' + cid)
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
+        Alert.alert(
+          '안내',
+          '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
+          [{ text: '확인' }],
+        );
+        console.log(error);
+      });
+  },
+
+  postAddContentViewCount(cid) {
+    return axios
+      .post(API_PREFIX + 'v1.0/contents/add-view-count/' + cid)
+      .then(data => {
+        console.log('addContentView', data);
+        return data;
+      });
+  },
+
+  registerCoupon(coupon_num) {
+    // 테스트 케이스
+    // return new Promise((resolve, reject) => {
+    //   if (coupon_num.toLowerCase() === 'qwer1234') {
+    //     resolve(({ message: '등록되었습니다.' }))
+    //   }
+    //   reject({ message: '쿠폰 번호가 일치하지 않습니다. 확인 후 다시 등록해주세요.' })
+    // })
+
+    let params = {
+      coupon_num: coupon_num.toLowerCase(),
+    };
+    return axios
+      .post(API_PREFIX + 'v1.0/membership/coupon-register', params)
+      .then(response => response.data)
+      .catch(error => {
+        if (error.response.status === 400)
+          throw new Error(error.response.data.msg);
+        throw new Error('오류가 발생했습니다. 잠시후에 다시 시도해 주세요.');
+      });
   },
 };

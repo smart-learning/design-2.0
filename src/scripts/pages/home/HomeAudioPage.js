@@ -79,12 +79,21 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 50
   },
+  showMoreWrapper: {
+    marginBottom: 10,
+    alignItems: 'flex-end'
+  },
+  showMore: {
+    borderColor: '#efefef',
+    borderWidth: 1,
+    padding: 3
+  },
   audioBookContainer: {
     paddingTop: 50,
     paddingBottom: 50
   },
   audioCategory: {
-    marginTop: 20,
+    marginTop: 0,
     marginBottom: 20
   },
   audioCategoryHr: {
@@ -153,7 +162,7 @@ class HomeAudioPage extends React.Component {
                   const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) { }
+                  } catch (e) {}
 
                   return (
                     <HomeBanner
@@ -197,13 +206,24 @@ class HomeAudioPage extends React.Component {
               <Text style={[styles.mainTitleCenter, styles.titleH4]}>
                 4차 산업혁명 시대의 새로운 책 읽기
               </Text>
+
+              <View style={styles.showMoreWrapper}>
+                <TouchableOpacity
+                  style={styles.showMore}
+                  onPress={() => {
+                    this.props.navigation.navigate('AudioBookPage');
+                  }}
+                >
+                  <Text>전체보기</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.audioCategory}>
               <View style={styles.audioCategoryHr} />
               <PageCategory
                 data={this.props.store.audioBookCategoryData}
-				selectedCategory={0}
+                selectedCategory={0}
                 onCategorySelect={this.premiumCategorySelect}
               />
               <View style={styles.audioCategoryHr} />

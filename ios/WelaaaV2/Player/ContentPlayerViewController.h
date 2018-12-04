@@ -45,16 +45,19 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
     UIView *_menuItemTopLineView;
     UIView *_menuItemBottomLineView;
     UIView *_controlBarView;         // 재생, 정지, 뒤로 가기, 빨리 가기를 포함한 유틸뷰.
+    UIView *_chapterControlView;     // 앞 챕터, 다음 챕터 가기 버튼을 포함.
   
     UIButton *_closeButton;
     UIButton *_rateStarButton;
     UIButton *_hideAndShowButton;
     UIButton *_playButton;      // 재생 버튼.
-    UIButton *_paueseButton;    // 일시 정지 버튼.
+    UIButton *_pauseButton;    // 일시 정지 버튼.
     UIButton *_rwButton;        // 뒤로 가기 버튼.
     UIButton *_ffButton;        // 빨리 가기 버튼.
     UIButton *_speedButton;     // 재생 속도 버튼.
     UIButton *_listButton;      // .
+    UIButton *_moveBackButton;
+    UIButton *_moveNextButton;
   
     UILabel *_courseTitleLabel;   // 전체 강좌명
     UILabel *_lectureTitleLabel;  // 강좌 내 강의명
@@ -71,6 +74,7 @@ typedef NS_ENUM(NSUInteger, ContentsPlayerScreenMode)
     BOOL _isAuthor;                 // 유저의 콘텐트에 대한 권한.
     BOOL _isAudioContent;           // 오디오북
     BOOL _isDailyBook;              // 매일 책 한권
+    BOOL _shouldContinuePlaying;    // 플레이어 재생중에 전화 등의 interrupt로 인해 중단되었던 콘텐츠 재생을 다시 할 것인지의 여부.
   
     ContentPlayerButton *_autoPlayButton;
     ContentPlayerButton *_scriptButton;

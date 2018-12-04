@@ -40,7 +40,7 @@ RCT_EXPORT_MODULE();
 #if DEBUG
     paymentMode = @"sandbox";//
 #else
-    paymentMode = @"sandbox";//live
+    paymentMode = @"live";//live
 #endif
     NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
@@ -383,7 +383,7 @@ RCT_EXPORT_MODULE();
 #if DEBUG
     paymentMode = @"sandbox";
 #else
-    paymentMode = @"sandbox";//live
+    paymentMode = @"live";//live
 #endif
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   
@@ -448,6 +448,18 @@ RCT_EXPORT_MODULE();
     }
 }
 
+- (void) moveToManageSubscriptions
+{
+    // AlertView로 안내 후에 이동?
+    NSString *urlStr = @"itms-apps://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions";
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] openURL : [NSURL URLWithString: urlStr]
+                                           options : @{}
+                                 completionHandler : ^(BOOL success) { }];
+    });
+    // 참고 : https://stackoverflow.com/questions/15530794/link-to-app-manage-subscriptions-in-app-store
+}
+
 
 #pragma mark - RCT_EXPORT
 
@@ -459,6 +471,11 @@ RCT_EXPORT_METHOD( buy : (NSDictionary *) args )
 RCT_EXPORT_METHOD( restore : (NSDictionary *) args )
 {
     [self restoreProduct : args];
+}
+
+RCT_EXPORT_METHOD( unsubscribe )
+{
+    [self moveToManageSubscriptions];
 }
 
 @end
