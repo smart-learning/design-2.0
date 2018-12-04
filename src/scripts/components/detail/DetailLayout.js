@@ -258,9 +258,17 @@ class DetailLayout extends React.Component {
   render() {
     const downloadItems = globalStore.downloadItems.toJS();
     const itemClipData = this.props.store.itemClipData.toJS();
+    let realLength = 0;
+
+    itemClipData.forEach((ad, idx) => {
+      if (itemClipData[idx].play_time !== '00:00:00') {
+        realLength++;
+      }
+    });
 
     console.log(downloadItems.length, itemClipData.length)
     console.log(downloadItems.cid, this.props.itemData.cid)
+    console.log(realLength, realLength)
 
     let vcontent = (
       <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
@@ -271,7 +279,7 @@ class DetailLayout extends React.Component {
     if (downloadItems.length > 0) {
       vcontent = (
         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
-          다운로드 부분완료 ({downloadItems.length}/{itemClipData.length})
+          다운로드 부분완료 ({downloadItems.length}/{realLength})
         </Text>
       );
     } else {
@@ -282,7 +290,7 @@ class DetailLayout extends React.Component {
       );
     }
 
-    if (downloadItems.length === itemClipData.length) {
+    if (downloadItems.length === realLength) {
       vcontent = (
         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
           다운로드 완료
