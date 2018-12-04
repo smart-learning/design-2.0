@@ -362,6 +362,7 @@ class HomePage extends React.Component {
       this.props.navigation.state.params.page = undefined;
       this.goPage('audioBook');
     } else if (params && true === params.reload_mbs) {
+      this.props.navigation.state.params.reload_mbs = undefined;
       // 멤버쉽 가져오기
       globalStore.currentMembership = async () =>
         await net.getMembershipCurrent();

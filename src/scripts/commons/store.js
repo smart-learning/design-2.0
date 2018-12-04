@@ -75,6 +75,13 @@ class Store {
     socialType = null;
     socialToken = null;
     welaaaAuth = null;
+    /**
+     * 2018.12.4
+     * jungon
+     * Initialize membership.
+     */
+    currentMembership = null;
+
     delete axios.defaults.headers.common['authorization'];
 
     AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
