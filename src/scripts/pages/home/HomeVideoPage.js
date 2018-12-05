@@ -10,7 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  UIManager,
+  UIManager
 } from 'react-native';
 import PTRView from 'react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
@@ -37,16 +37,19 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: '100%',
-	  paddingTop: '17.3571428572%',
+    paddingTop: '17.3571428572%',
     paddingBottom: '17.3571428572%'
   },
   mainTitleCenter: {
     textAlign: 'center'
   },
+  titleContainer: {
+    marginBottom: 15
+  },
   titleH2: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#353A3C'
   },
   titleH4: {
     paddingTop: 10,
@@ -54,9 +57,8 @@ const styles = StyleSheet.create({
     color: '#888888'
   },
   titleH3: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: '#333333'
+    fontSize: 16,
+    color: '#353A3C'
   },
   titleParagraph: {
     paddingLeft: 15,
@@ -136,28 +138,26 @@ const styles = StyleSheet.create({
   }
 });
 
-
 @observer
 class HomeVideoPage extends React.Component {
+  ccContainer = null;
+  ccContainerY = -1;
 
-	ccContainer = null;
-	ccContainerY = -1;
+  constructor(props) {
+    super(props);
+    this.state = {
+      forceScrollValue: null
+    };
+  }
 
-	constructor(props){
-		super(props);
-		this.state = {
-			forceScrollValue: null,
-		}
-	}
-
-	/* CircularCarousel이 확대될때 스크롤 위치를 top에 맞춰주기 */
-	onFullScreenToggle = bool => {
-		if( bool ) {
-			this.setState({
-				forceScrollValue: 430, // 컨덴츠의 y값 + 헤더 영역뺀 값
-			});
-		}
-	}
+  /* CircularCarousel이 확대될때 스크롤 위치를 top에 맞춰주기 */
+  onFullScreenToggle = bool => {
+    if (bool) {
+      this.setState({
+        forceScrollValue: 430 // 컨덴츠의 y값 + 헤더 영역뺀 값
+      });
+    }
+  };
 
   /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
   premiumCategorySelect = data => {
@@ -181,12 +181,16 @@ class HomeVideoPage extends React.Component {
     const { homeSeriesData } = this.props.store;
 
     return (
-      <PTRView forceScrollValue={ this.state.forceScrollValue }
-		  onRefresh={() => this.props.onRefresh()}>
+      <PTRView
+        forceScrollValue={this.state.forceScrollValue}
+        onRefresh={() => this.props.onRefresh()}
+      >
         <ScrollView style={{ flex: 1 }}>
           {/* 이미지 스와이퍼 */}
 
-          <View style={{ height: this.props.store.slideHeight, background: '#ff0' }}>
+          <View
+            style={{ height: this.props.store.slideHeight, background: '#ff0' }}
+          >
             {homeBannerData.length > 0 && (
               <Swiper
                 style={styles.wrapper}
@@ -260,17 +264,17 @@ class HomeVideoPage extends React.Component {
               </View>
             ) : (
               <View
-				  ref={ ref=>( this.ccContainer = ref )}
+                ref={ref => (this.ccContainer = ref)}
                 style={[CommonStyles.contentContainer, styles.seriesContainer]}
               >
-                <View>
+                <View
+                  style={[
+                    CommonStyles.alignJustifyContentBetween,
+                    styles.titleContainer
+                  ]}
+                >
                   <View>
-                    <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                      윌라 추천 시리즈
-                    </Text>
-                    <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                      당신이 배우고 싶은 모든 것
-                    </Text>
+                    <Text style={styles.titleH2}>윌라 추천 시리즈</Text>
                   </View>
                   <View style={styles.showMoreWrapper}>
                     <TouchableOpacity
@@ -286,11 +290,17 @@ class HomeVideoPage extends React.Component {
                   </View>
                 </View>
 
-				 <View style={{ flex:1, justifyContent: 'center', alignItems:'center' }}>
-					  <CircularCarousel
-						  onFullScreenToggle={ this.onFullScreenToggle }
-					  />
-				 </View>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  <CircularCarousel
+                    onFullScreenToggle={this.onFullScreenToggle}
+                  />
+                </View>
 
                 <View style={styles.seriesComponent}>
                   <Series itemData={this.props.store.homeSeriesData} />
@@ -302,23 +312,25 @@ class HomeVideoPage extends React.Component {
             <View
               style={[CommonStyles.contentContainer, styles.classContainer]}
             >
-              <View>
-                <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                  윌라 프리미엄 클래스
-                </Text>
-                <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                  당신의 커리어 성공과 행복한 일상을 위한 교육
-                </Text>
-              </View>
-              <View style={styles.showMoreWrapper}>
-                <TouchableOpacity
-                  style={styles.showMore}
-                  onPress={() => {
-                    this.props.navigation.navigate('ClassListPage');
-                  }}
-                >
-                  <Text style={styles.showMoreText}>전체보기</Text>
-                </TouchableOpacity>
+              <View
+                style={[
+                  CommonStyles.alignJustifyContentBetween,
+                  styles.titleContainer
+                ]}
+              >
+                <View>
+                  <Text style={styles.titleH2}>윌라 프리미엄 클래스</Text>
+                </View>
+                <View style={styles.showMoreWrapper}>
+                  <TouchableOpacity
+                    style={styles.showMore}
+                    onPress={() => {
+                      this.props.navigation.navigate('ClassListPage');
+                    }}
+                  >
+                    <Text style={styles.showMoreText}>전체보기</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
 
               <View style={styles.classCategory}>
@@ -332,10 +344,7 @@ class HomeVideoPage extends React.Component {
               </View>
 
               <View style={CommonStyles.alignJustifyContentBetween}>
-                <Text style={styles.titleH3}>새로 나온 클래스</Text>
-                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                  {updatedAt} 업데이트
-                </Text>
+				  <Text style={styles.titleH3}>새로 나온 클래스</Text>
               </View>
 
               <ClassList
@@ -347,9 +356,6 @@ class HomeVideoPage extends React.Component {
                 <Text style={styles.titleH3}>
                   회원들이 열심히 듣고 있는 클래스
                 </Text>
-                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                  {updatedAt} 업데이트
-                </Text>
               </View>
 
               <ClassList
@@ -359,9 +365,6 @@ class HomeVideoPage extends React.Component {
 
               <View style={CommonStyles.alignJustifyContentBetween}>
                 <Text style={styles.titleH3}>윌라 추천 클래스</Text>
-                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                  {updatedAt} 업데이트
-                </Text>
               </View>
 
               <ClassList itemData={this.props.store.classRecommendData} />
@@ -371,11 +374,6 @@ class HomeVideoPage extends React.Component {
                   <View style={CommonStyles.alignJustifyContentBetween}>
                     <Text style={styles.titleH3}>
                       지금 많이 듣고 있는 강의클립
-                    </Text>
-                    <Text
-                      style={[styles.titleParagraph, { marginLeft: 'auto' }]}
-                    >
-                      {updatedAt} 업데이트
                     </Text>
                   </View>
                   <View style={styles.titleHr} />
@@ -389,9 +387,6 @@ class HomeVideoPage extends React.Component {
                     <View>
                       <View style={CommonStyles.alignJustifyItemCenter}>
                         <Text style={styles.titleH3}>이어보기</Text>
-                        <Text style={styles.titleParagraph}>
-                          {updatedAt} 업데이트
-                        </Text>
                       </View>
                       <View style={styles.titleHr} />
 
