@@ -133,7 +133,7 @@ class AudioBookDetailPage extends React.Component {
     if (res.status === 200) {
       Alert.alert('이용권을 이용한 오디오북 구매에 성공했습니다.');
 
-      // this.data.permissions = await this.getPermissions();
+      this.data.permissions = await this.getPlayPermissions();
       globalStore.voucherStatus = await net.getVouchersStatus();
 
       return true;
