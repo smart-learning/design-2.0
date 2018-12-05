@@ -1,8 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ImageBackground,
+  Image
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import CommonStyles from '../../../styles/common';
-import Summary from '../video/Summary';
+import IcPlay from '../../../images/ic-play-dark.png';
+import numeral from 'numeral';
+import IcHeart from '../../../images/ic-heart-dark.png';
+import IcComment from '../../../images/ic-commenting-dark.png';
+import IcClip from '../../../images/ic-clip-dark.png';
+import Device from '../../commons/device';
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
   classList: {
@@ -11,38 +24,24 @@ const styles = StyleSheet.create({
   classItem: {
     position: 'relative',
     marginBottom: 15,
-    padding: 15,
     borderWidth: 1,
     borderColor: '#dddddd'
   },
-  classRank: {
-    height: 22,
-    marginBottom: 15,
-    marginRight: 10
-  },
-  classRankText: {
-    width: 20,
-    textAlign: 'center',
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: CommonStyles.COLOR_PRIMARY
-  },
-  classRankHr: {
-    width: 20,
-    borderTopWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 1,
-    borderLeftWidth: 0,
-    borderColor: CommonStyles.COLOR_PRIMARY
-  },
   classTitle: {
-    fontSize: 16,
-    color: CommonStyles.COLOR_PRIMARY
+    paddingLeft: 12,
+    paddingTop: 8,
+    fontSize: 14,
+    color: '#353A3C'
   },
   classAuthor: {
-    fontSize: 14,
-    color: '#888888',
-    marginBottom: 15
+    fontSize: 13,
+    color: '#767B80',
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 12
+  },
+  classLabels: {
+    paddingLeft: 12
   },
   classLabel: {
     height: 22,
@@ -50,7 +49,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingTop: 3,
     paddingRight: 10,
-    paddingBottom: 3,
     paddingLeft: 10
   },
   classLabelText: {
@@ -72,6 +70,49 @@ const styles = StyleSheet.create({
   },
   classLabelFree: {
     backgroundColor: '#00afba'
+  },
+  thumbnail: {
+    position: 'relative',
+    width: '100%',
+    paddingTop: '21.75%',
+    paddingBottom: '21.75%'
+  },
+  thumbnailTitle: {
+    position: 'absolute',
+    top: 10,
+    left: '5%',
+    width: '90%',
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#ffffff'
+  },
+  btnSetSmall: {
+    width: 14,
+    height: 14
+  },
+  countText: {
+    paddingLeft: 4,
+    paddingRight: 10,
+    fontSize: 12,
+    color: '#353A3C'
+  },
+  alignJustify: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  countHr: {
+    height: 1,
+    marginTop: 7,
+    marginLeft: 12,
+    marginRight: 12,
+    backgroundColor: '#E2E2E2'
+  },
+  countWrap: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 12,
+    paddingRight: 2
   }
 });
 
@@ -87,30 +128,92 @@ class ClassListItem extends React.Component {
     return (
       <View style={styles.classItem}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.gotoClassPage}>
+          <ImageBackground
+            source={{ uri: this.props.itemData.thumbnail }}
+            resizeMode="cover"
+            style={styles.thumbnail}
+          >
+            <Text style={styles.thumbnailTitle}>
+              {this.props.itemData.title}
+            </Text>
+          </ImageBackground>
           <View>
-              {this.props.classType === 'hot' && (
-                <View style={styles.classRank}>
-                  <Text style={styles.classRankText}>
-                    {this.props.itemData.rankNumber}
-                  </Text>
-                  <View style={styles.classRankHr} />
-                </View>
-              )}
-            <Text style={styles.classTitle}>
+            <Text
+              style={styles.classTitle}
+              ellipsizeMode={'tail'}
+              numberOfLines={2}
+            >
               {this.props.itemData.headline}
             </Text>
-
-            <Text style={styles.classAuthor}>
-              {this.props.itemData.teacher.headline} {this.props.itemData.teacher.name}
+            <Text
+              style={styles.classAuthor}
+              ellipsizeMode={'tail'}
+              numberOfLines={1}
+            >
+              {this.props.itemData.teacher.headline}{' '}
+              {this.props.itemData.teacher.name}
             </Text>
           </View>
+          <View style={[CommonStyles.alignJustifyFlex, styles.classLabels]}>
+            {!!this.props.itemData.is_new && (
+              <View style={[styles.classLabel, styles.classLabelNew]}>
+                <Text style={styles.classLabelText}>NEW</Text>
+              </View>
+            )}
+            {!!this.props.itemData.is_featured && (
+              <View style={[styles.classLabel, styles.classLabelFeatured]}>
+                <Text style={styles.classLabelText}>추천</Text>
+              </View>
+            )}
+            {!!this.props.itemData.is_exclusive && (
+              <View style={[styles.classLabel, styles.classLabelExclusive]}>
+                <Text style={styles.classLabelText}>독점</Text>
+              </View>
+            )}
+            {!!this.props.itemData.is_free && (
+              <View style={[styles.classLabel, styles.classLabelFree]}>
+                <Text style={styles.classLabelText}>무료</Text>
+              </View>
+            )}
+          </View>
         </TouchableOpacity>
-        <Summary
-          type="course"
-          classType={this.props.classType}
-          {...this.props.itemData}
-          onPress={this.gotoClassPage}
-        />
+        <View style={styles.countHr} />
+        <View style={[styles.alignJustify, styles.countWrap]}>
+          <Image source={IcPlay} style={styles.btnSetSmall} />
+          <Text style={styles.countText}>
+            {/* 재생수 */}
+            {numeral(
+              this.props.itemData.meta
+                ? this.props.itemData.meta.play_count
+                : this.props.itemData.hit_count
+            ).format('0a')}
+          </Text>
+          <Image source={IcHeart} style={styles.btnSetSmall} />
+          <Text style={styles.countText}>
+            {/* 별점 */}
+            {numeral(
+              this.props.itemData.meta
+                ? this.props.itemData.meta.like_count
+                : this.props.itemData.like_count
+            ).format('0a')}
+          </Text>
+          <Image source={IcComment} style={styles.btnSetSmall} />
+          <Text style={styles.countText}>
+            {/* 댓글수 */}
+            {numeral(
+              this.props.itemData.meta
+                ? this.props.itemData.meta.comment_count
+                : this.props.itemData.review_count
+            ).format('0a')}
+          </Text>
+          <Image
+            source={IcClip}
+            style={[styles.btnSetSmall, { marginLeft: 'auto' }]}
+          />
+          <Text style={styles.clipCount}>
+            {this.props.itemData.clip_count}개 강의
+          </Text>
+        </View>
       </View>
     );
   }
