@@ -183,6 +183,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                   forKey : @"uri"];
         // ~ 2018.10.24
+        if ( [[_args objectForKey:@"uri"] isEqualToString:@"NULL"] )
+        {
+            [common presentAlertWithTitle:@"윌라" andMessage:@"콘텐츠 URI가 NULL입니다."];
+            return [self closePlayer];
+        }
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명을 세팅합니다.
     }
@@ -261,12 +266,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         }
         else if ( _isAuthor )
         {
-          // 2018.10.23 ~
-          // cid 를 검색해서 다운받은 콘텐츠가 있으면 그 콘텐츠로 셋팅(버튼도 다운로드 완료된 상태로 업데이트)
-          // 다운로드 대기중일 때 상태도 체크해서 버튼 반영
-          [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
-                    forKey : @"uri"];
-          // ~ 2018.10.24
+            [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
+                      forKey : @"uri"];
+          
+            if ( [[_args objectForKey:@"uri"] isEqualToString:@"NULL"] )
+            {
+                [common presentAlertWithTitle:@"윌라" andMessage:@"콘텐츠 URI가 NULL입니다."];
+                return [self closePlayer];
+            }
         }
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
