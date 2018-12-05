@@ -389,8 +389,8 @@ class DetailLayout extends React.Component {
                   >
                     {this.props.learnType === 'audioBook' && (
                       <Text>
-                        목차(
-                        {this.props.store.itemClipData.length})
+                        목차({realLength})
+                        {/* {this.props.store.itemClipData.length} */}
                       </Text>
                     )}
                     {this.props.learnType === 'class' && (
