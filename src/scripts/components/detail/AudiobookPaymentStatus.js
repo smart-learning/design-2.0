@@ -223,7 +223,7 @@ export default class AudiobookPaymentStatus extends React.Component {
     );
   }
 
-  renderUserCanUseVoucher(origPrice, userPrice) {
+  renderUserCanUseVoucher(origPrice, userPrice, iosPrice) {
     return (
       <View
         style={[
@@ -231,28 +231,41 @@ export default class AudiobookPaymentStatus extends React.Component {
           styles.paymentContainer,
         ]}
       >
-        <View>
-			<View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
-				<Text style={styles.priceOriginal}>
-					₩{numeral(userPrice).format('0,0')}
-				</Text>
+        {Platform.select({
+          ios: (
+            <View>
+              <View
+                style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}
+              >
+                <Text style={styles.priceOriginal}>
+                  ₩{numeral(iosPrice).format('0,0')}
+                </Text>
+              </View>
+            </View>
+          ),
+          android: (
+            <View>
+              <View
+                style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}
+              >
+                <Text style={styles.priceOriginal}>
+                  ₩{numeral(userPrice).format('0,0')}
+                </Text>
 
-				{origPrice !== userPrice
-					? (userPrice > 0 || userPrice !== origPrice) && (
-					<Text style={styles.priceText}>
-						{Platform.select({
-							ios: <Text />,
-							android: (
-								<Text style={styles.priceDiscount}>
-									₩{numeral(origPrice).format('0,0')}
-								</Text>
-							),
-						})}
-					</Text>
-				)
-					: undefined}
-			</View>
-        </View>
+                {origPrice !== userPrice
+                  ? (userPrice > 0 || userPrice !== origPrice) && (
+                      <Text style={styles.priceText}>
+                        <Text style={styles.priceDiscount}>
+                          ₩{numeral(origPrice).format('0,0')}
+                        </Text>
+                      </Text>
+                    )
+                  : undefined}
+              </View>
+            </View>
+          ),
+        })}
+
         <View>
           <TouchableOpacity onPress={this.props.useVoucher}>
             <View style={[styles.buttonBuy, { width: 120 }]} borderRadius={5}>
@@ -264,7 +277,7 @@ export default class AudiobookPaymentStatus extends React.Component {
     );
   }
 
-  renderUserCanBuy(origPrice, userPrice) {
+  renderUserCanBuy(origPrice, userPrice, iosPrice) {
     return (
       <View
         style={[
@@ -273,29 +286,43 @@ export default class AudiobookPaymentStatus extends React.Component {
         ]}
       >
         <View>
-          <View style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}>
-            <Text style={styles.priceOriginal}>
-              ₩{numeral(userPrice).format('0,0')}
-            </Text>
+          {Platform.select({
+            ios: (
+              <View
+                style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}
+              >
+                <Text style={styles.priceOriginal}>
+                  ₩{numeral(iosPrice).format('0,0')}
+                </Text>
+              </View>
+            ),
+            android: (
+              <View
+                style={[CommonStyles.alignJustifyFlex, styles.priceContainer]}
+              >
+                <Text style={styles.priceOriginal}>
+                  ₩{numeral(userPrice).format('0,0')}
+                </Text>
 
-            {origPrice !== userPrice
-              ? (userPrice > 0 || userPrice !== origPrice) && (
-                  <Text style={styles.priceText}>
-                    {Platform.select({
-                      ios: <Text />,
-                      android: (
+                {origPrice !== userPrice
+                  ? (userPrice > 0 || userPrice !== origPrice) && (
+                      <Text style={styles.priceText}>
                         <Text style={styles.priceDiscount}>
                           ₩{numeral(origPrice).format('0,0')}
                         </Text>
-                      ),
-                    })}
-                  </Text>
-                )
-              : undefined}
-          </View>
+                      </Text>
+                    )
+                  : undefined}
+              </View>
+            ),
+          })}
         </View>
         <View>
-          <TouchableOpacity onPress={this.props.addToCart}>
+          <TouchableOpacity
+            onPress={
+              Platform.os === 'ios' ? this.props.iosBuy : this.props.addToCart
+            }
+          >
             <View style={styles.buttonBuy} borderRadius={5}>
               <Text style={styles.buttonBuyText}>구매</Text>
             </View>
@@ -325,8 +352,10 @@ export default class AudiobookPaymentStatus extends React.Component {
     const {
       orig_price: origPrice,
       user_price: userPrice,
+      ios_price: iosPrice,
       expire_at: expireAt,
     } = permission;
+    console.log('permission', permission);
 
     if (permissionLoading) {
       return this.renderPermissionLoading();
@@ -337,8 +366,10 @@ export default class AudiobookPaymentStatus extends React.Component {
           {permission.type === 'membership' && this.renderUserHaveMembership()}
           {permission.type === 'owned' && this.renderUserOwned()}
           {permission.type === 'rental' && this.renderUserRent(expireAt)}
-          {permission.type === 'can_use_voucher' && this.renderUserCanUseVoucher(origPrice, userPrice)}
-          {permission.type === 'can_buy' && this.renderUserCanBuy(origPrice, userPrice)}
+          {permission.type === 'can_use_voucher' &&
+            this.renderUserCanUseVoucher(origPrice, userPrice, iosPrice)}
+          {permission.type === 'can_buy' &&
+            this.renderUserCanBuy(origPrice, userPrice, iosPrice)}
         </View>
       );
     }

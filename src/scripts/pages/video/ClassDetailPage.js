@@ -1,13 +1,13 @@
-import React from 'react'
-import { observer } from 'mobx-react'
-import { withNavigation } from 'react-navigation'
-import { ActivityIndicator, Text, View } from 'react-native'
-import net from '../../commons/net'
-import CommonStyles from '../../../styles/common'
-import createStore from '../../commons/createStore'
-import DetailLayout from '../../components/detail/DetailLayout'
-import globalStore from '../../commons/store'
-import utils from '../../commons/utils'
+import React from 'react';
+import { observer } from 'mobx-react';
+import { withNavigation } from 'react-navigation';
+import { ActivityIndicator, Text, View } from 'react-native';
+import net from '../../commons/net';
+import CommonStyles from '../../../styles/common';
+import createStore from '../../commons/createStore';
+import DetailLayout from '../../components/detail/DetailLayout';
+import globalStore from '../../commons/store';
+import utils from '../../commons/utils';
 
 @observer
 class ClassDetailPage extends React.Component {

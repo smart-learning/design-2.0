@@ -2,7 +2,6 @@ import { observer } from 'mobx-react';
 import numeral from 'numeral';
 import React from 'react';
 import {
-  Alert,
   Platform,
   StyleSheet,
   Text,
@@ -231,6 +230,10 @@ export default class VideoPaymentStatus extends React.Component {
   }
 
   renderUserCanBuy(origPrice, userPrice, rentDuration) {
+    if (Platform.OS === 'ios') {
+      return null;
+    }
+
     return (
       <View
         style={[
@@ -247,14 +250,9 @@ export default class VideoPaymentStatus extends React.Component {
             {origPrice !== userPrice
               ? (userPrice > 0 || userPrice !== origPrice) && (
                   <Text style={styles.priceText}>
-                    {Platform.select({
-                      ios: <Text />,
-                      android: (
-                        <Text style={styles.priceDiscount}>
-                          ₩{numeral(origPrice).format('0,0')}
-                        </Text>
-                      ),
-                    })}
+                    <Text style={styles.priceDiscount}>
+                      ₩{numeral(origPrice).format('0,0')}
+                    </Text>
                   </Text>
                 )
               : undefined}

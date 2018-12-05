@@ -276,6 +276,7 @@ class DetailLayout extends React.Component {
           {this.props.learnType === 'audioBook' ? (
             <AudiobookPaymentStatus
               addToCart={this.props.addToCart}
+			  iosBuy={this.props.iosBuy}
               useVoucher={this.props.useVoucher}
               voucherStatus={this.props.voucherStatus}
               // permissions={this.props.permissions}

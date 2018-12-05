@@ -1,13 +1,14 @@
-import React from 'react'
-import { observer } from 'mobx-react'
-import { ActivityIndicator, Alert, Text, View } from 'react-native'
-import net from '../../commons/net'
-import CommonStyles from '../../../styles/common'
-import createStore from '../../commons/createStore'
-import globalStore from '../../commons/store'
-import DetailLayout from '../../components/detail/DetailLayout'
-import { withNavigation } from 'react-navigation'
-import utils from '../../commons/utils'
+import React from 'react';
+import { observer } from 'mobx-react';
+import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { withNavigation } from 'react-navigation';
+import native from '../../commons/native';
+import net from '../../commons/net';
+import CommonStyles from '../../../styles/common';
+import createStore from '../../commons/createStore';
+import globalStore from '../../commons/store';
+import DetailLayout from '../../components/detail/DetailLayout';
+import utils from '../../commons/utils';
 
 @observer
 class AudioBookDetailPage extends React.Component {
@@ -37,40 +38,13 @@ class AudioBookDetailPage extends React.Component {
     };
   }
 
-  // purchase = async paymentType => {
-  //   if (paymentType === 1) {
-  //     // 구매
-  //     if (Platform.OS === 'ios') {
-  //       native.buy({
-  //         type: 'audio_book',
-  //         product_id: this.data.itemData.pay_key_ios,
-  //         token: globalStore.accessToken,
-  //       });
-  //     } else {
-  //       Alert.alert('알림', '오디오북 단품 결제는 준비중입니다.');
-  //     }
-  //   } else if (paymentType === 2) {
-  //     // 이용권 사용
-  //     const audiobook_id = this.state.id;
-  //     const res = await net.voucherExchange(audiobook_id);
-  //     console.log('purchase resp', res);
-  //     if (res.status === 200) {
-  //       Alert.alert('이용권을 이용한 오디오북 구매에 성공했습니다.');
-  //
-  //       this.data.permissions = await this.getPermissions();
-  //       // 이용권 사용 후 바우처 상태 갱신
-  //       globalStore.voucherStatus = await net.getVouchersStatus();
-  //
-  //       return true;
-  //     } else {
-  //       Alert.alert('이용권을 이용한 오디오북 구매 중 오류가 발생하였습니다.');
-  //
-  //       return false;
-  //     }
-  //   } else if (paymentType === 4) {
-  //     Alert.alert('로그인 후 이용해 주세요.');
-  //   }
-  // };
+  iosBuy = async () => {
+    native.buy({
+      type: 'audio_book',
+      product_id: this.data.itemData.pay_key_ios,
+      token: globalStore.accessToken,
+    });
+  };
 
   addToCart = async () => {
     const itemId = this.state.id;
@@ -166,7 +140,7 @@ class AudioBookDetailPage extends React.Component {
     let permissionLoading = true;
     let permission = null;
 
-    let { cid, orig_price: origPrice } = this.data.itemData;
+    let { cid, orig_price: origPrice, pay_money_ios: iosPrice } = this.data.itemData;
 
     this.setState({ permissionLoading });
 
@@ -177,6 +151,7 @@ class AudioBookDetailPage extends React.Component {
         canPlay: false,
         origPrice: origPrice,
         userPrice: origPrice,
+		iosPrice: iosPrice,
       };
       this.setState({
         permission,
@@ -211,6 +186,7 @@ class AudioBookDetailPage extends React.Component {
         ) : this.data.itemData !== null ? (
           <DetailLayout
             addToCart={this.addToCart}
+            iosBuy={this.iosBuy}
             useVoucher={this.useVoucher}
             voucherStatus={this.data.voucherStatus}
             itemData={this.data.itemData}
