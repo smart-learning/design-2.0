@@ -108,11 +108,9 @@ class FBLoginButton extends Component {
       })
       .catch(error => {
         this.setState({ loginButtonDisabled: false });
-      //alert(error);
         console.log(error);
         console.log('Login fail with error: ' + error.message);
-        LoginManager.logOut();
-        alert('페이스북 로그인 중 일시적인 오류가 발생되었습니다. 다시 한번 시도해 주세요.');
+        this.handleFacebookLogin(); // 성공할 때까지 시도
       });
   };
 
