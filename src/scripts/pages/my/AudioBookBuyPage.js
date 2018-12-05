@@ -11,7 +11,7 @@ import SummaryListItem from '../../components/my/SummaryListItem';
 class AudioBookBuyPage extends React.Component {
   store = createStore({
     isLoading: true,
-    list: []
+    list: [],
   });
 
   load = async () => {
@@ -27,8 +27,11 @@ class AudioBookBuyPage extends React.Component {
     this.load();
   }
 
-  go = item => {
-    this.props.navigation.navigate('AudioBookDetail', { id: item.data.id });
+  gotoAudiobookDetail = (id, title) => {
+    this.props.navigation.navigate('AudioBookDetail', {
+      id,
+      title,
+    });
   };
 
   render() {
@@ -68,7 +71,9 @@ class AudioBookBuyPage extends React.Component {
                     reviewCount={item.data.review_count}
                     isLike={false}
                     navigation={this.props.navigation}
-                    onPress={() => this.go(item)}
+                    onPress={() =>
+                      this.gotoAudiobookDetail(item.data.id, item.data.title)
+                    }
                   />
                 );
               })}

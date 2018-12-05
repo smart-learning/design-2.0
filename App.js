@@ -25,6 +25,7 @@ import {
 import Native from './src/scripts/commons/native';
 import nav from './src/scripts/commons/nav';
 import net from './src/scripts/commons/net';
+import utils from './src/scripts/commons/utils';
 import store from './src/scripts/commons/store';
 import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
@@ -42,6 +43,7 @@ import MyScreens from './src/scripts/pages/my/MyScreens';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
 import SetAppScreen from './src/scripts/pages/my/SetAppPage';
+import Playground from './src/scripts/pages/Playground';
 
 class Data {
   @observable
@@ -89,11 +91,8 @@ const AppDrawer = createDrawerNavigator(
         drawerIcon: <Hidden />,
         drawerLabel: <Hidden />
       }
-    }
+    },
 
-    // Playground: {
-    // 	screen: Playground,
-    // },
     // June: {
     // 	screen: PlaygroundJune,
     // },
@@ -144,8 +143,10 @@ class App extends React.Component {
       store.profile = await net.getProfile();
       // 멤버쉽 가져오기
       store.currentMembership = await net.getMembershipCurrent();
+
       // 이용권 가져오기
       store.voucherStatus = await net.getVouchersStatus();
+      await utils.updateCartStatus();
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
@@ -507,7 +508,14 @@ const SignupStack = createStackNavigator(
     },
     EmailSignUpForm: {
       screen: EmailSignUpForm
+    // SampleScreen: {
+    // 	screen: SampleScreen,
     },
+
+	Playground: {
+	  screen: Playground,
+	},
+
     Login: {
       screen: LoginPage,
       navigationOptions: {
