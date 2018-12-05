@@ -94,10 +94,14 @@ export class CartItem extends React.Component {
                 }}
               >
                 <Text style={styles.priceText}>
-                  <Text style={styles.origPriceText}>
-                    {numeral(origPrice).format('0,0')}
-                  </Text>{' '}
-                  {numeral(userPrice).format('0,0')}
+					{
+						origPrice !== userPrice ? (
+							<Text style={styles.origPriceText}>
+								{numeral(origPrice).format('0,0')}
+							</Text>
+						) : undefined
+					}
+                  {' ' + numeral(userPrice).format('0,0')}
                   <Text style={styles.priceUnitText}>원</Text>
                 </Text>
               </View>
