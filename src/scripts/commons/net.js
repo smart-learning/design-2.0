@@ -6,7 +6,6 @@ import firebase from 'react-native-firebase';
 import Native from './native';
 
 let host = 'https://api-prod.welaaa.com';
-host = 'https://5764e50b.ngrok.io';
 
 const HOST = host;
 const TYPE = 'api';
