@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import Native from '../../commons/native.js';
@@ -23,30 +23,30 @@ import VideoPaymentStatus from './VideoPaymentStatus';
 const styles = StyleSheet.create({
   tabContainer: {
     // width: '33.3%',
-    width: '50%'
+    width: '50%',
   },
   tabItem: {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
     height: 60,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabNormalText: {
     fontSize: 15,
-    color: '#555555'
+    color: '#555555',
   },
   tabActiveText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#333333',
   },
   tabNormalHr: {
     position: 'absolute',
     left: 0,
     bottom: 0,
     height: 3,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabActiveHr: {
     position: 'absolute',
@@ -54,16 +54,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 3,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
-  }
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
+  },
 });
 
 @observer
 class DetailLayout extends React.Component {
-  state = {
-    permission: false
-  };
-
   constructor(props) {
     super(props);
   }
@@ -81,7 +77,6 @@ class DetailLayout extends React.Component {
         }
       });
     } else if (Platform.OS === 'android') {
-
       this.checkDownloadContent();
 
       this.disposer = observe(globalStore.downloadState, change => {
@@ -90,7 +85,6 @@ class DetailLayout extends React.Component {
           globalStore.downloadState.complete = false;
         }
       });
-
     }
   }
 
@@ -105,32 +99,8 @@ class DetailLayout extends React.Component {
   }
 
   downloadContentsView(vcontent) {
-    var renderView = false;
-
-    if ('class' === this.props.learnType) {
-      if (globalStore && globalStore.currentMembership) {
-        const { type } = globalStore.currentMembership;
-        if (1 === type || 2 === type || 3 === type) {
-          // 무제한 소장중(1, 2: type) 또는 프리패스(3) 경우.
-          renderView = true;
-        } else if (0 === this.props.itemData.orig_price) {
-          // 무료(0: itemData.orig_price)일 경우.
-          renderView = true;
-        }
-      }
-    } else if ('audioBook' === this.props.learnType) {
-      const { paymentType } = this.props;
-      if (0 === paymentType || 3 === paymentType) {
-        // 무료(0) 이거나 소장중(3)일 경우.
-        renderView = true;
-      } else if (globalStore && globalStore.currentMembership) {
-        const { type } = globalStore.currentMembership;
-        if (3 === type) {
-          // 프리패스일 경우.
-          renderView = true;
-        }
-      }
-    }
+    const { can_play: canPlay } = this.props.permission;
+    const renderView = !!canPlay;
 
     if (renderView) {
       return (
@@ -143,12 +113,9 @@ class DetailLayout extends React.Component {
               alignItems: 'center',
               marginTop: 10,
               backgroundColor: CommonStyles.COLOR_PRIMARY,
-              height: 48
+              height: 48,
             }}
           >
-            {/* {<Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
-              다운로드
-            </Text>} */}
             {vcontent}
           </View>
         </TouchableOpacity>
@@ -159,7 +126,6 @@ class DetailLayout extends React.Component {
   }
 
   checkDownloadContent = () => {
-
     // console.log('welaaaAuth:', globalStore.welaaaAuth);
 
     /* TODO: id를 이용하여 api에서 필요 정보 받아오는 과정 필요 */
@@ -177,11 +143,7 @@ class DetailLayout extends React.Component {
     // let accessToken = globalStore.welaaaAuth.access_token;
 
     if ('ios' === Platform.OS) {
-
     } else if ('android' === Platform.OS) {
-
-      console.log('cid is ', this.props.itemData.cid)
-
       Native.getDownloadListCid(
         this.props.itemData.cid,
         result => {
@@ -190,16 +152,16 @@ class DetailLayout extends React.Component {
               let jsonData = JSON.parse(result);
               globalStore.downloadItems = jsonData;
 
-              console.log('DownloadItem', globalStore.downloadItems)
+              console.log('DownloadItem', globalStore.downloadItems);
             } catch (e) {
               console.error(e);
             }
           }
         },
-        error => console.error(error)
+        error => console.error(error),
       );
     }
-  }
+  };
 
   onDownload = () => {
     const { welaaaAuth } = globalStore;
@@ -229,7 +191,7 @@ class DetailLayout extends React.Component {
           accumulator.push({
             cid: item.cid,
             userId: userId.toString(),
-            token: accessToken
+            token: accessToken,
           });
           return accumulator;
         }, params);
@@ -239,7 +201,7 @@ class DetailLayout extends React.Component {
             accumulator.push({
               cid: item.cid,
               userId: userId.toString(),
-              token: accessToken
+              token: accessToken,
             });
             return accumulator;
           }, params);
@@ -247,7 +209,7 @@ class DetailLayout extends React.Component {
           params.push({
             cid: itemData.cid,
             userId: userId.toString(),
-            token: accessToken
+            token: accessToken,
           });
         }
       }
@@ -301,7 +263,7 @@ class DetailLayout extends React.Component {
       <View
         style={[
           CommonStyles.container,
-          { backgroundColor: '#ffffff', width: '100%' }
+          { backgroundColor: '#ffffff', width: '100%' },
         ]}
       >
         <ScrollView style={{ width: '100%' }}>
@@ -309,12 +271,16 @@ class DetailLayout extends React.Component {
             learnType={this.props.learnType}
             store={this.props.store}
           />
+
           {/* 가격 및 구매버튼 등을 보여주는 라인(iOS 의 경우 오디오북일 때에만 노출) */}
           {this.props.learnType === 'audioBook' ? (
             <AudiobookPaymentStatus
-              purchase={this.props.purchase}
+              addToCart={this.props.addToCart}
+			  iosBuy={this.props.iosBuy}
+              useVoucher={this.props.useVoucher}
               voucherStatus={this.props.voucherStatus}
-              permissions={this.props.permissions}
+              // permissions={this.props.permissions}
+              permission={this.props.permission}
               itemData={this.props.itemData}
               learnType={this.props.learnType}
               store={this.props.store}
@@ -322,11 +288,11 @@ class DetailLayout extends React.Component {
               expire={this.props.expire}
               permissionLoading={this.props.permissionLoading}
             />
-          ) : (Platform.OS === 'android' ? (
+          ) : Platform.OS === 'android' ? (
             <VideoPaymentStatus
-              purchase={this.props.purchase}
-              voucherStatus={this.props.voucherStatus}
-              permissions={this.props.permissions}
+              addToCart={this.props.addToCart}
+              permission={this.props.permission}
+              // permissions={this.props.permissions}
               itemData={this.props.itemData}
               learnType={this.props.learnType}
               store={this.props.store}
@@ -334,7 +300,10 @@ class DetailLayout extends React.Component {
               expire={this.props.expire}
               permissionLoading={this.props.permissionLoading}
             />
-          ) : (<View />))}
+          ) : (
+            <View />
+          )}
+
           {/* Download contents */}
           {this.downloadContentsView(vcontent)}
 

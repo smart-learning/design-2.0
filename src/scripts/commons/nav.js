@@ -1,14 +1,14 @@
 // 네비게이션 기본 속성 옵션
-import React from 'react';
-import { Button, Image, Linking, Text, View } from 'react-native';
-import IcAngleRight from '../../images/ic-angle-right-primary.png';
-import CommonStyle from '../../styles/common';
-import HistoryBackButton from '../components/header/HistoryBackButton';
-import HomeButton from '../components/header/HomeButton';
-import HomeWelaaaButton from '../components/header/HomeWelaaaButton';
-import SearchButton from '../components/header/SearchButton';
-import Native from './native';
-import globalStore from './store';
+import React from 'react'
+import { Button, Image, Linking, Text, View } from 'react-native'
+import IcAngleRight from '../../images/ic-angle-right-primary.png'
+import CommonStyle from '../../styles/common'
+import HistoryBackButton from '../components/header/HistoryBackButton'
+import HomeButton from '../components/header/HomeButton'
+import HomeWelaaaButton from '../components/header/HomeWelaaaButton'
+import Native from './native'
+import globalStore from './store'
+import SearchAndCartButton from '../components/header/SearchAndCart'
 
 export const NAV_OPTS_COMMON = {
   headerStyle: {
@@ -24,7 +24,7 @@ export const NAV_OPTS_COMMON = {
 export const NAV_OPTS_MAIN = ({ navigation, navigationOptions }) => ({
   headerLeft: <HomeButton />,
   headerTitle: <HomeWelaaaButton />,
-  headerRight: <SearchButton navigation={navigation} />
+  headerRight: <SearchAndCartButton navigation={navigation} />
 });
 
 export const NAV_OPTS_STACK = ({ navigation, navigationOptions }) => {
@@ -44,7 +44,7 @@ export const NAV_OPTS_STACK_WITH_SEARCH = ({
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    headerRight: <SearchButton navigation={navigation} />,
+    headerRight: <SearchAndCartButton navigation={navigation} />,
     headerLeft: <HomeButton />
   };
 };
