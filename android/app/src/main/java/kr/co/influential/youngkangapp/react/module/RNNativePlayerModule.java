@@ -533,8 +533,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   }
 
                 } else {
-                  if (contentCid.equals(json.getString("cid"))) {
+                  if(Utils.checkCidAudioChapter(contentCid)){
                     contentId = i;
+                  }else{
+                    if (i == 0) {
+                      contentCid = json.getString("cid");
+                      contentName = json.getString("title");
+                      contentId = i;
+                    }
                   }
                 }
               }
