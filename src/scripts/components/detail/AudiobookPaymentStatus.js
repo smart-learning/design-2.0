@@ -317,10 +317,11 @@ export default class AudiobookPaymentStatus extends React.Component {
             ),
           })}
         </View>
+        <View><Text>{Platform.os}</Text></View>
         <View>
           <TouchableOpacity
             onPress={
-              Platform.os === 'ios' ? this.props.iosBuy : this.props.addToCart
+              Platform.OS === 'ios' ? this.props.iosBuy : this.props.addToCart
             }
           >
             <View style={styles.buttonBuy} borderRadius={5}>
