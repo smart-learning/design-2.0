@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { withNavigation } from 'react-navigation';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Text, View } from 'react-native';
 import net from '../../commons/net';
 import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
@@ -41,13 +41,14 @@ class ClassDetailPage extends React.Component {
   addToCart = async () => {
     const itemId = this.state.id;
     const { navigation } = this.props;
+    let errorMessage = '장바구니에 담는 중 오류가 발생하였습니다.';
 
     try {
       await net.addToCart('video-course', itemId);
       await utils.updateCartStatus();
       Alert.alert(
         '장바구니',
-        `클래스를 담았습니다. 장바구니로 이동하시겠습니까?`,
+        `클래스를 장바구니에 담았습니다. 장바구니로 이동하시겠습니까?`,
         [
           { text: '취소' },
           {
@@ -56,9 +57,28 @@ class ClassDetailPage extends React.Component {
           },
         ],
       );
-    } catch (e) {
-      console.log(e);
-      Alert.alert(`장바구니에 담는 중 오류 발생 ${itemId} `);
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+
+        if (error.response.data.msg) {
+          errorMessage = error.response.data.msg;
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+
+      Alert.alert('오류', errorMessage, [{ text: '확인' }]);
     }
   };
 
