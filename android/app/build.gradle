@@ -187,6 +187,7 @@ apply plugin: 'io.fabric'
 
 
 dependencies {
+    compile project(':react-native-iamport')
     compile project(':react-native-vector-icons')
     implementation project(':react-native-firebase')
     implementation project(':react-native-kakao-signin')

@@ -3,7 +3,6 @@ import { Button, Modal, Text, TouchableHighlight, View, NativeModules } from "re
 import CommonStyles from "../../styles/common";
 import { SafeAreaView } from "react-navigation";
 import { NAV_OPTS_DRAWER } from "../commons/nav";
-// import Localizable from 'react-native-localizable';
 import Device from "../commons/device";
 
 /*

@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
-import { Image, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Platform,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import IcSearch from '../../../images/ic-search.png';
 import Styles from '../../../styles/common';
 
 class SearchButton extends Component {
   constructor(props) {
     super(props);
-    this.state = { isExpanded: false, queryString: '' };
+    const isIos = Platform.OS === 'ios';
+    this.state = {
+      isIos: isIos,
+      isExpanded: false,
+      queryString: '',
+    };
   }
 
   componentWillMount() {
@@ -22,7 +34,7 @@ class SearchButton extends Component {
       if (this.state.queryString) {
         this.props.navigation.navigate('SearchResultPage', {
           title: '검색 결과',
-          queryString: this.state.queryString
+          queryString: this.state.queryString,
         });
       }
     }
@@ -44,7 +56,7 @@ class SearchButton extends Component {
         style={{
           flex: 1,
           flexDirection: 'column',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
         activeOpacity={0.9}
         onPress={this.onSearch}
@@ -54,8 +66,10 @@ class SearchButton extends Component {
           style={[
             Styles.size24,
             {
-              marginRight: 15
-            }
+              marginRight: 5,
+              width: 30,
+              height: 30,
+            },
           ]}
         />
       </TouchableOpacity>
@@ -63,10 +77,14 @@ class SearchButton extends Component {
   }
 
   renderQueryTextInput() {
+    const { width } = Dimensions.get('window');
+    const padding = this.state.isIos ? 115 : 152;
+    const textInfoWidth = width - padding;
+
     return (
       <TextInput
         style={{
-          width: 300,
+          width: textInfoWidth,
           paddingStart: 20,
           paddingEnd: 20,
           paddingTop: 10,
@@ -75,7 +93,7 @@ class SearchButton extends Component {
           backgroundColor: '#ffffff',
           borderColor: Styles.COLOR_PRIMARY,
           borderWidth: 6,
-          marginRight: 15
+          marginRight: 8,
         }}
         underlineColorAndroid={'rgba(0,0,0,0)'}
         autoCapitalize={'none'}
@@ -98,7 +116,7 @@ class SearchButton extends Component {
       <View
         style={{
           flex: 1,
-          flexDirection: 'row'
+          flexDirection: 'row',
         }}
       >
         {this.state.isExpanded && this.renderQueryTextInput()}

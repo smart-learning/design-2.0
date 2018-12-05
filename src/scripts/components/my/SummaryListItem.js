@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import dummy from '../../../images/dummy-summary.jpg';
 import IcReview from '../../../images/ic-comment-dark.png';
@@ -17,56 +17,56 @@ const styles = StyleSheet.create({
   summary: {
     flexDirection: 'row',
     position: 'relative',
-    paddingTop: 15
+    paddingTop: 15,
   },
   summaryThumbnail: {
     width: 65,
     height: 92,
     marginLeft: 15,
-    marginRight: 10
+    marginRight: 10,
   },
   summaryContent: {
     position: 'relative',
     width: '65%',
-    paddingRight: 15
+    paddingRight: 15,
   },
   summaryTitle: {
     fontSize: 16,
-    color: '#4a4a4a'
+    color: '#4a4a4a',
   },
   summaryAuthor: {
     fontSize: 12,
-    color: '#999999'
+    color: '#999999',
   },
   summaryCountContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 0
+    bottom: 0,
   },
   summaryIcon: {
     width: 14,
-    height: 14
+    height: 14,
   },
   summaryCountText: {
     paddingLeft: 3,
     paddingRight: 7,
     fontSize: 12,
-    color: '#999999'
+    color: '#999999',
   },
   summaryLikeButtonActive: {
     width: 24,
-    height: 24
+    height: 24,
   },
   summaryLikeButton: {
     width: 24,
-    height: 24
+    height: 24,
   },
   summaryHr: {
     marginTop: 15,
     width: '100%',
     height: 1,
-    backgroundColor: '#efefef'
-  }
+    backgroundColor: '#efefef',
+  },
 });
 
 export default class SummaryListItem extends React.Component {
@@ -111,20 +111,22 @@ export default class SummaryListItem extends React.Component {
                 </Text>
               </View>
             </View>
-            <View>
-              {/* TODO: 터치시 상태변경 작업 필요 */}
-              <TouchableOpacity activeOpacity={0.9}>
-                {!!this.props.isLike && (
-                  <Image
-                    source={IcHeartActive}
-                    style={styles.summaryLikeButtonActive}
-                  />
-                )}
-                {!this.props.isLike && (
-                  <Image source={IcHeart} style={styles.summaryLikeButton} />
-                )}
-              </TouchableOpacity>
-            </View>
+            {false && (
+              <View>
+                {/* TODO: 터치시 상태변경 작업 필요 */}
+                <TouchableOpacity activeOpacity={0.9}>
+                  {!!this.props.isLike && (
+                    <Image
+                      source={IcHeartActive}
+                      style={styles.summaryLikeButtonActive}
+                    />
+                  )}
+                  {!this.props.isLike && (
+                    <Image source={IcHeart} style={styles.summaryLikeButton} />
+                  )}
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
           <View style={styles.summaryHr} />
         </TouchableOpacity>

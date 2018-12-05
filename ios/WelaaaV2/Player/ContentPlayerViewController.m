@@ -3338,11 +3338,38 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                                                       andHeaderInfo : [_args objectForKey : @"token"]];
       
         if ( _isAuthor )
-            return playDataDics[@"media_urls"][@"HLS"];
+        {
+            if ( nil == playDataDics[@"media_urls"][@"HLS"] )
+            {
+                [self closePlayer];
+                [common presentAlertWithTitle:@"알림" andMessage:@"콘텐츠 로딩에 실패하였습니다."];
+                return @"NULL";
+            }
+            else
+                return playDataDics[@"media_urls"][@"HLS"];
+        }
         else if ( !_isAuthor && _isAudioContent )
-            return playDataDics[@"media_urls"][@"HLS"];
+        {
+            if ( nil == playDataDics[@"media_urls"][@"HLS"] )
+            {
+                [self closePlayer];
+                [common presentAlertWithTitle:@"알림" andMessage:@"콘텐츠 로딩에 실패하였습니다."];
+                return @"NULL";
+            }
+            else
+                return playDataDics[@"media_urls"][@"HLS"];
+        }
         else
-            return playDataDics[@"preview_urls"][@"HLS"];
+        {
+            if ( nil == playDataDics[@"preview_urls"][@"HLS"] )
+            {
+                [self closePlayer];
+                [common presentAlertWithTitle:@"알림" andMessage:@"콘텐츠 로딩에 실패하였습니다."];
+                return @"NULL";
+            }
+            else
+                return playDataDics[@"preview_urls"][@"HLS"];
+        }
     }
 }
 

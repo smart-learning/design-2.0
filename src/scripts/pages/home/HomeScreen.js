@@ -20,6 +20,7 @@ import HomePage from './HomePage';
 import HomeSeriesPage from './HomeSeriesPage';
 import SearchResultPage from './SearchResultPage';
 import MembershipScreens from '../membership/MembershipScreen';
+import CartScreen from '../cart/CartScreen'
 
 const HomeScreen = createStackNavigator(
   {
@@ -84,7 +85,10 @@ const HomeScreen = createStackNavigator(
     PolicyPage: {
       screen: Policy
       // navigationOptions: NAV_OPTS_STACK,
-    }
+    },
+	  CartScreen: {
+    	screen: CartScreen
+	  }
   },
 
   { navigationOptions: NAV_OPTS_COMMON } // 공통 적용입니다.
