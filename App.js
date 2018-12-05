@@ -93,9 +93,6 @@ const AppDrawer = createDrawerNavigator(
       }
     },
 
-    Playground: {
-    	screen: Playground,
-    },
     // June: {
     // 	screen: PlaygroundJune,
     // },
