@@ -1540,12 +1540,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
+        [_player setRate : _playbackRate];
     }
     else if ( _startSeconds || _startSeconds > 0 )
     {
         NSLog(@"  Player starts the last point. %f", _startSeconds);
         [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, CMTimeGetSeconds(_urlAsset.duration))];
         [_player play];
+        [_player setRate : _playbackRate];
         // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
         [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
     }
@@ -1553,6 +1555,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         NSLog(@"  Player starts at 0 because of uncatchable situation.");
         [_player play];
+        [_player setRate : _playbackRate];
     }
     _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
   
@@ -1563,7 +1566,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
                                                 Minute : YES];
-    [self setPreparedToPlay];
+  //[self setPreparedToPlay];
+    if ( _slider )
+    {
+        _slider.minimumValue = 0.f;
+        _slider.maximumValue = CMTimeGetSeconds(_urlAsset.duration);
+    }
+  
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [self setPlayState : YES];
     _lectureTitleLabel.text = _currentLectureTitle;
