@@ -95,17 +95,20 @@ const styles = StyleSheet.create({
     paddingLeft: 7,
     height: 13
   },
+  continueContainer: {
+    paddingTop: 30,
+    paddingBottom: 30
+  },
   seriesContainer: {
-    paddingTop: 50,
-    paddingBottom: 50
+    paddingTop: 30,
+    paddingBottom: 30
   },
   classContainer: {
-    paddingTop: 50,
-    paddingBottom: 50
+    paddingTop: 30,
+    paddingBottom: 30
   },
   classCategory: {
-    marginTop: 20,
-    marginBottom: 20
+    marginBottom: 25
   },
   classCategoryHr: {
     height: 1,
@@ -219,16 +222,34 @@ class HomeVideoPage extends React.Component {
                 })}
               </Swiper>
             )}
-            {homeBannerData.length === 0 && (
-              <View style={{ marginTop: '20%' }}>
-                <ActivityIndicator
-                  size="large"
-                  color={CommonStyles.COLOR_PRIMARY}
-                />
-              </View>
-            )}
           </View>
           {/* /이미지 스와이퍼 */}
+
+          {1 === 2 && (
+            <View>
+              {globalStore.welaaaAuth && (
+                <View
+                  style={[
+                    CommonStyles.contentContainer,
+                    styles.continueContainer
+                  ]}
+                >
+                  {this.props.store.classUseData &&
+                    this.props.store.classUseData.length > 0 && (
+                      <View>
+                        <View>
+                          <Text style={styles.titleH3}>최근재생클래스</Text>
+                        </View>
+
+                        <ClassContinueList
+                          itemData={this.props.store.classUseData}
+                        />
+                      </View>
+                    )}
+                </View>
+              )}
+            </View>
+          )}
 
           {/* */}
           {
@@ -308,6 +329,15 @@ class HomeVideoPage extends React.Component {
               </View>
             ))}
 
+          {homeBannerData.length === 0 && (
+            <View style={{ marginTop: '20%' }}>
+              <ActivityIndicator
+                size="large"
+                color={CommonStyles.COLOR_PRIMARY}
+              />
+            </View>
+          )}
+
           {this.props.store.classHotData.length > 0 && (
             <View
               style={[CommonStyles.contentContainer, styles.classContainer]}
@@ -344,7 +374,7 @@ class HomeVideoPage extends React.Component {
               </View>
 
               <View style={CommonStyles.alignJustifyContentBetween}>
-				  <Text style={styles.titleH3}>새로 나온 클래스</Text>
+                <Text style={styles.titleH3}>새로 나온 클래스</Text>
               </View>
 
               <ClassList
@@ -382,35 +412,6 @@ class HomeVideoPage extends React.Component {
                     itemData={this.props.store.clipRankData}
                     clipRankContentSize={this.props.store.clipRankContentSize}
                   />
-
-                  {globalStore.welaaaAuth && (
-                    <View>
-                      <View style={CommonStyles.alignJustifyItemCenter}>
-                        <Text style={styles.titleH3}>이어보기</Text>
-                      </View>
-                      <View style={styles.titleHr} />
-
-                      {this.props.store.classUseData &&
-                        this.props.store.classUseData.length === 0 && (
-                          <Text
-                            style={{
-                              paddingTop: 20,
-                              paddingBottom: 20,
-                              textAlign: 'center'
-                            }}
-                          >
-                            재생 내역이 없습니다
-                          </Text>
-                        )}
-
-                      {this.props.store.classUseData &&
-                        this.props.store.classUseData.length > 0 && (
-                          <ClassContinueList
-                            itemData={this.props.store.classUseData}
-                          />
-                        )}
-                    </View>
-                  )}
                 </View>
               )}
             </View>

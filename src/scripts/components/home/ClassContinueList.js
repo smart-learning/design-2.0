@@ -1,10 +1,8 @@
 import React from "react";
 import {Text, View, StyleSheet, TouchableOpacity, ImageBackground, Image,} from "react-native";
 import CommonStyles from "../../../styles/common";
-import IcPlay from "../../../images/ic-play.png";
+import IcPlay from "../../../images/ic-class-continue-play.png";
 import Native from "../../commons/native";
-import moment from "moment";
-import _ from 'underscore';
 
 const styles = StyleSheet.create({
 	continueGrid: {
@@ -19,55 +17,24 @@ const styles = StyleSheet.create({
 	thumbnail: {
 		position: 'relative',
 		width: '100%',
-		paddingTop: '22%',
-		paddingBottom: '22%',
+		paddingTop: '20%',
+		paddingBottom: '20%',
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#efefef',
 	},
 	thumbnailTitle: {
 		position: 'absolute',
-		top: 15,
+		top: 10,
 		left: '5%',
-		width: '65%',
+		width: '90%',
 		fontSize: 14,
 		fontWeight: '800',
 		color: '#ffffff',
-		textShadowColor: 'rgba(0, 0, 0, 0.8)',
-		textShadowOffset: {
-			width: 1,
-			height: 2
-		},
-		textShadowRadius: 4,
 	},
 	play: {
-		position: 'absolute',
-		right: 15,
-		width: 32,
-		height: 32,
-	},
-	progress: {
-		position: 'relative',
-		width: '100%',
-		height: 4,
-		backgroundColor: '#b7b7b7',
-	},
-	progressBar: {
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		height: 4,
-		backgroundColor: CommonStyles.COLOR_PRIMARY,
-	},
-	info: {
-		paddingTop: 6,
-		paddingRight: 10,
-		paddingBottom: 6,
-		paddingLeft: 10,
-	},
-	infoText: {
-		fontSize: 12,
-		color: '#555555',
+		width: 40,
+		height: 40,
 	},
 });
 
@@ -87,11 +54,6 @@ export default class ClassContinueList extends React.Component {
 
 		return <View style={[CommonStyles.alignJustifyContentBetween, styles.continueGrid]}>
 			{ items.map( ( item, key ) => {
-				const playTime = moment.duration(item.data.play_time);
-				let progress = parseFloat( item.data.progress );
-				if( _.isNaN( progress ) ) {
-					progress = 0;
-				}
 				return (
 					<View style={styles.continueItem} key={ key }>
 						<View style={styles.itemContainer}>
@@ -100,7 +62,7 @@ export default class ClassContinueList extends React.Component {
 									source={{uri: item.data.images ? item.data.images.list : null}}
 									resizeMode="cover"
 									style={styles.thumbnail}>
-									<Text style={styles.thumbnailTitle} ellipsizeMode={'tail'} numberOfLines={3}>
+									<Text style={styles.thumbnailTitle} ellipsizeMode={'tail'} numberOfLines={1}>
 										{item.data.headline}
 									</Text>
 									<View style={styles.play}>
@@ -108,14 +70,6 @@ export default class ClassContinueList extends React.Component {
 									</View>
 								</ImageBackground>
 							</TouchableOpacity>
-						</View>
-						<View style={styles.progress}>
-							<View style={[styles.progressBar, {width: progress + '%'}]}/>
-						</View>
-						<View style={styles.info}>
-							<Text style={styles.infoText}>
-								{item.data.clip_count}개 클립, {`${playTime.hours()}시간 ${playTime.minutes()}분`}
-							</Text>
 						</View>
 					</View>
 				)
