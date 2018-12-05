@@ -1287,6 +1287,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == 0 )
             {
                 NSLog(@"  This is the very first track!");
+                [self showToast : @"맨 처음 챕터입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent > 0 )
@@ -1345,6 +1347,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == 0 )
             {
                 NSLog(@"  This is the very first track!");
+                [self showToast : @"맨 처음 클립입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent > 0 )
@@ -1405,6 +1409,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == contentsListArray.count-1 )
             {
                 NSLog(@"  This is the last track!");
+                [self showToast : @"마지막 챕터입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent < contentsListArray.count-1 )
@@ -1458,6 +1464,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == contentsListArray.count-1 )
             {
                 NSLog(@"  This is the last track!");
+                [self showToast : @"마지막 클립입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent < contentsListArray.count-1 )
