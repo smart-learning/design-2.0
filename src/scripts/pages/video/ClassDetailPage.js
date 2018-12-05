@@ -1,21 +1,13 @@
-import React from 'react';
-import { observer } from 'mobx-react';
-import {
-  ActivityIndicator,
-  Alert,
-  BackHandler,
-  Text,
-  View,
-} from 'react-native';
-import { withNavigation } from 'react-navigation';
-import net from '../../commons/net';
-import CommonStyles from '../../../styles/common';
-import createStore from '../../commons/createStore';
-import DetailLayout from '../../components/detail/DetailLayout';
-import Store from '../../commons/store';
-import globalStore from '../../commons/store';
-import nav from '../../commons/nav';
-import utils from '../../commons/utils';
+import React from 'react'
+import { observer } from 'mobx-react'
+import { withNavigation } from 'react-navigation'
+import { ActivityIndicator, Text, View } from 'react-native'
+import net from '../../commons/net'
+import CommonStyles from '../../../styles/common'
+import createStore from '../../commons/createStore'
+import DetailLayout from '../../components/detail/DetailLayout'
+import globalStore from '../../commons/store'
+import utils from '../../commons/utils'
 
 @observer
 class ClassDetailPage extends React.Component {
@@ -90,24 +82,9 @@ class ClassDetailPage extends React.Component {
 
   componentDidMount() {
     this.getData();
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    console.log(
-      'cdp back button:',
-      this.props.navigation.isFocused(),
-      Store.prevLocations,
-    );
-    // if (this.props.navigation.isFocused()) {
-    nav.commonBack();
-    // }
-    return true;
-  };
+  componentWillUnmount() {}
 
   async getPlayPermissions() {
     const userLoggedIn = globalStore.welaaaAuth !== undefined;

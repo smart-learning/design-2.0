@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   View,
-  BackHandler,
   Dimensions
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
@@ -79,22 +78,9 @@ export default class EventDetailPage extends React.Component {
     }
   }
 
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);  
-  }
+  componentDidMount() {}
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    
-    // if (this.props.navigation.isFocused()) {
-      nav.commonBack();
-    // }
-
-    return true;
-  };
+  componentWillUnmount() {}
 
   render() {
     const { eventDetail } = this.state;

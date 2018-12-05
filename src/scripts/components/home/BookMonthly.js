@@ -5,8 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
-  Image,
-  BackHandler
+  Image
 } from 'react-native';
 import IcHeadphone from '../../../images/ic-headphones.png';
 import Dummy from '../../../images/dummy-audioBook.png';

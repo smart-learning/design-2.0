@@ -1,20 +1,13 @@
-import React from 'react';
-import { observer } from 'mobx-react';
-import {
-  ActivityIndicator,
-  Alert,
-  BackHandler,
-  Text,
-  View,
-} from 'react-native';
-import net from '../../commons/net';
-import CommonStyles from '../../../styles/common';
-import createStore from '../../commons/createStore';
-import globalStore from '../../commons/store';
-import DetailLayout from '../../components/detail/DetailLayout';
-import nav from '../../commons/nav';
-import { withNavigation } from 'react-navigation';
-import utils from '../../commons/utils';
+import React from 'react'
+import { observer } from 'mobx-react'
+import { ActivityIndicator, Alert, Text, View } from 'react-native'
+import net from '../../commons/net'
+import CommonStyles from '../../../styles/common'
+import createStore from '../../commons/createStore'
+import globalStore from '../../commons/store'
+import DetailLayout from '../../components/detail/DetailLayout'
+import { withNavigation } from 'react-navigation'
+import utils from '../../commons/utils'
 
 @observer
 class AudioBookDetailPage extends React.Component {
@@ -29,10 +22,6 @@ class AudioBookDetailPage extends React.Component {
     slideHeight: null,
     reviewText: '',
     reviewStar: 0,
-    // permissions: {
-    //   permission: false,
-    //   expire_at: null,
-    // },
     voucherStatus: {},
   });
 
@@ -171,22 +160,7 @@ class AudioBookDetailPage extends React.Component {
     await net.postAddContentViewCount(resultBookData.cid);
   };
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-    console.log(
-      'audiobook detail hardware back button:',
-      this.props.navigation.isFocused(),
-      globalStore.prevLocations,
-    );
-    // if (this.props.navigation.isFocused()) {
-    nav.commonBack();
-    // }
-
-    return true;
-  };
+  componentWillUnmount() {}
 
   async getPlayPermissions() {
     let permissionLoading = true;
@@ -220,7 +194,6 @@ class AudioBookDetailPage extends React.Component {
   }
 
   async componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     this.getData();
   }
 

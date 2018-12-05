@@ -47,7 +47,7 @@
     _previewLabel.font = [UIFont fontWithName:@"SpoqaHanSans" size:12];
     _previewLabel.textColor = UIColorFromRGB(0xffffff, 1.f);
     _previewLabel.numberOfLines = 1;
-    _previewLabel.text = @"프리뷰";
+    _previewLabel.text = @"미리듣기";
     _previewLabel.textAlignment = NSTextAlignmentCenter;
     _previewLabel.layer.cornerRadius = 4.f;
     _previewLabel.clipsToBounds = YES;

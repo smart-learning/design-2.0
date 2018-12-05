@@ -93,14 +93,30 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         NSInteger indexOfCurrentContent = 0;
       
         // 재생 권한이 없는 오디오북이라면 프리뷰챕터의 인덱스를 검색합니다.
+        // 프리뷰챕터가 여러개있는 오디오북이 있으므로 무조건 처음부터 루프를 돌려서 검색되는 첫번째 프리뷰콘텐츠 재생은 수정되어야 합니다.
         if ( !_isAuthor )
         {
+            // RN -> N 으로 넘겨받은 args의 cid가 preview인지 확인해봐야 할것 같습니다.
+            // 우선 cid가 배열의 몇번째인지 파악부터 합니다.
             for ( int i=0; i<contentsListArray.count; i++ )
             {
-                if ( [[contentsListArray[i][@"is_preview"] stringValue] isEqualToString : @"1"] )
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
                 {
                     indexOfCurrentContent = i;
                     break;
+                }
+            }
+          
+            // 넘겨받은 args가 프리뷰챕터가 아니라면 프리뷰챕터를 검색해야합니다. 프리뷰챕터라면 검색과정없이 'indexOfCurrentContent'값을 가지고 다음으로 이동합니다.
+            if ( ![[contentsListArray[indexOfCurrentContent][@"is_preview"] stringValue] isEqualToString : @"1"] )
+            {
+                for ( int i=0; i<contentsListArray.count; i++ )
+                {
+                    if ( [[contentsListArray[i][@"is_preview"] stringValue] isEqualToString : @"1"] )
+                    {
+                        indexOfCurrentContent = i;
+                        break;
+                    }
                 }
             }
         }
