@@ -39,7 +39,6 @@
 		"react-dom": "^16.4.2",
 		"react-native": "^0.57.5",
 		"react-native-asyncstorage": "^1.0.0",
-		"react-native-awesome-alerts": "^1.2.0",
 		"react-native-cli": "^2.0.1",
 		"react-native-elements": "^0.19.1",
 		"react-native-fbsdk": "^0.8.0",
