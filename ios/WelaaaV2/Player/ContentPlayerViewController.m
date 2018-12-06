@@ -327,7 +327,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
     [self setupNowPlayingInfoCenter];
   
-    if ( !_startSeconds || _startSeconds == 0 )
+    if ( !_startSeconds || _startSeconds == 0 || _isDailyBook )
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
