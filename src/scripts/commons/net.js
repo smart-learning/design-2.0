@@ -196,7 +196,7 @@ export default {
           pagination[key.replace('pagination-', '')] = eval(
             headers[key].toLowerCase()
           );
-        } catch (e) { }
+        } catch (e) {}
       }
     });
     return pagination;
@@ -388,10 +388,15 @@ export default {
     });
   },
 
-  getMainPopup() {
+  getMainPopup(popup_type) {
+    //popup_type
+    //공백 - 기존과 동일
+    //membership - 멤버십 가입 후
+
     const url = API_PREFIX + 'v1.0/users/popup';
     const params = {
-      platform: Platform.OS
+      platform: Platform.OS,
+      popup_type: popup_type
     };
     return axios
       .get(url, { params: params })
@@ -542,7 +547,7 @@ export default {
       });
   },
 
-  getUserHeartContent: function (contentType, page = 1) {
+  getUserHeartContent: function(contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
       videoCourses: 'video-courses'

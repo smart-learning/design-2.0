@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
 @observer
 class HomePage extends React.Component {
   state = {
-    show_popup: false
+    show_popup: false,
+    show_popup_mbs: false
   };
 
   @observable
@@ -241,9 +242,9 @@ class HomePage extends React.Component {
       let videoClips = [];
       let audioChapters = [];
       let miniPlayerCid = cid;
-      let miniPlayerTitle = "";
+      let miniPlayerTitle = '';
       let miniPlayerGroupTitle = contentDataInfo.data.data.title;
-      let miniPlayerTotalPlayTime = "";
+      let miniPlayerTotalPlayTime = '';
       let miniPlayercurrentPlayTime = duration;
 
       if (contentDataInfo.data.type === 'video-course') {
@@ -254,7 +255,7 @@ class HomePage extends React.Component {
             miniPlayerTitle = item.title;
             miniPlayerTotalPlayTime = item.play_time;
           }
-        })
+        });
       } else if (contentDataInfo.data.type === 'audiobook') {
         audioChapters = contentDataInfo.data.data.chapters;
         audioChapters.map((item, key) => {
@@ -263,7 +264,7 @@ class HomePage extends React.Component {
             miniPlayerTitle = item.title;
             miniPlayerTotalPlayTime = item.play_time;
           }
-        })
+        });
       }
 
       let userId = globalStore.welaaaAuth.profile.id;
@@ -281,19 +282,17 @@ class HomePage extends React.Component {
 
       Native.mainToggleMiniPlayer(true, config);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
-
   getProgressList = async () => {
-
     if (Platform.OS === 'android') {
       // SQLite 저장된 정보 베이스로 마지막 재생 콘텐츠 첫번째를 로드합니다. (desc)
-      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고 
-      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid) 
-      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가 
-      // 쉽지가 않네요 ... 
+      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고
+      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid)
+      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가
+      // 쉽지가 않네요 ...
 
       Native.getProgressDatabase(
         result => {
@@ -313,16 +312,28 @@ class HomePage extends React.Component {
         error => console.error(e)
       );
     }
-  }
+  };
 
   showPopup() {
     if (globalStore.welaaaAuth) {
-      return <AdvertisingSection show_popup={this.state.show_popup} />;
+      return (
+        <AdvertisingSection show_popup={this.state.show_popup} popup_type="" />
+      );
+    }
+  }
+
+  showMbsPopup() {
+    if (globalStore.welaaaAuth) {
+      return (
+        <AdvertisingSection
+          show_popup={this.state.show_popup_mbs}
+          popup_type="membership"
+        />
+      );
     }
   }
 
   componentDidMount = async () => {
-
     this.getProgressList();
 
     if (globalStore.welaaaAuth) {
@@ -348,6 +359,7 @@ class HomePage extends React.Component {
   };
 
   componentWillUpdate() {
+    /*
     const params = this.props.navigation.state.params;
     if (params && true === params.reload_mbs) {
       // 멤버쉽 가져오기
@@ -356,6 +368,7 @@ class HomePage extends React.Component {
       // 이용권 가져오기
       globalStore.voucherStatus = async () => await net.getVouchersStatus();
     }
+    */
   }
 
   componentDidUpdate() {
@@ -374,6 +387,13 @@ class HomePage extends React.Component {
       // 멤버십 화면에서 돌아왔을 경우에 팝업 띄워주도록 state변경
       this.props.navigation.state.params.show_popup = undefined;
       this.setState({ show_popup: true });
+    }
+
+    if ('ios' === Platform.OS && params && true === params.popup_mbs) {
+      this.props.navigation.state.params.popup_mbs = undefined;
+      // 멤버십 구매한 직후의 사용자 대상으로 별도 팝업(프로모션 등)을 띄워주고자 할 때 여기에서.
+      // TODO: 팝업이 있는 경우와 없는 경우 혹은 네트워크 실패시의 예외처리.
+      this.setState({ show_popup_mbs: true });
     }
   }
 
@@ -515,6 +535,7 @@ class HomePage extends React.Component {
             </View>
           </View>
           {this.showPopup()}
+          {this.showMbsPopup()}
         </SafeAreaView>
       </View>
     );
