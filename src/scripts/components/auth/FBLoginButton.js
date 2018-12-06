@@ -76,6 +76,7 @@ class FBLoginButton extends Component {
       .then(result => {
         console.log(result);
         if (result.isCancelled) {
+          this.setState({ loginButtonDisabled: false });
           Alert.alert('알림', '로그인이 취소 되었습니다.');
         } else {
           console.log('Login Passsed form Facebook');
