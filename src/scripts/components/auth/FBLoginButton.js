@@ -108,6 +108,7 @@ class FBLoginButton extends Component {
         }
       })
       .catch(error => {
+        LoginManager.logOut();
         this.setState({ loginButtonDisabled: false });
         console.log(error);
         console.log('Login fail with error: ' + error.message);
