@@ -225,9 +225,9 @@ class HomeVideoPage extends React.Component {
           </View>
           {/* /이미지 스와이퍼 */}
 
-          {1 === 2 && (
-            <View>
-              {globalStore.welaaaAuth && (
+          <View>
+            {globalStore.welaaaAuth && (
+              <View>
                 <View
                   style={[
                     CommonStyles.contentContainer,
@@ -237,8 +237,8 @@ class HomeVideoPage extends React.Component {
                   {this.props.store.classUseData &&
                     this.props.store.classUseData.length > 0 && (
                       <View>
-                        <View>
-                          <Text style={styles.titleH3}>최근재생클래스</Text>
+                        <View style={styles.titleContainer}>
+                          <Text style={styles.titleH2}>최근재생클래스</Text>
                         </View>
 
                         <ClassContinueList
@@ -247,32 +247,16 @@ class HomeVideoPage extends React.Component {
                       </View>
                     )}
                 </View>
-              )}
-            </View>
-          )}
-
-          {/* */}
-          {
-            <View>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() =>
-                  // this.props.navigation.navigate('VideoPack', {
-                  //   title: '윌라 홍보 영상'
-                  // })
-                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
-                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
-                  Native.play('v300001_001')
-                }
-              >
-                <ImageBackground
-                  source={IcMainWideBanner}
-                  resizeMode="contain"
-                  style={styles.imageMainBanner}
+                <View
+                  style={{
+                    width: '100%',
+                    height: 8,
+                    backgroundColor: '#F0F0F4'
+                  }}
                 />
-              </TouchableOpacity>
-            </View>
-          }
+              </View>
+            )}
+          </View>
 
           {homeSeriesData &&
             homeSeriesData.length &&
@@ -323,12 +307,38 @@ class HomeVideoPage extends React.Component {
                   />
                 </View>
 
-                <View style={styles.seriesComponent}>
-                  <Series itemData={this.props.store.homeSeriesData} />
-                </View>
+                {1 === 2 && (
+                  <View style={styles.seriesComponent}>
+                    <Series itemData={this.props.store.homeSeriesData} />
+                  </View>
+                )}
               </View>
             ))}
-
+          <View
+            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+          />
+          <View>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() =>
+                // this.props.navigation.navigate('VideoPack', {
+                //   title: '윌라 홍보 영상'
+                // })
+                // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                Native.play('v300001_001')
+              }
+            >
+              <ImageBackground
+                source={IcMainWideBanner}
+                resizeMode="contain"
+                style={styles.imageMainBanner}
+              />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+          />
           {homeBannerData.length === 0 && (
             <View style={{ marginTop: '20%' }}>
               <ActivityIndicator
