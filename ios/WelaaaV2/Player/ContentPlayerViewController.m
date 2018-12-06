@@ -88,6 +88,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         // 오디오북 or 오디오모드 용 배경이미지를 세팅합니다.
         [self setAudioContentBackgroundImageUrl : _currentContentsInfo[@"data"][@"images"][@"cover"]];
+        [_contentView setBackgroundColor : [UIColor clearColor]];
       
         NSArray *contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
         NSInteger indexOfCurrentContent = 0;
@@ -2275,12 +2276,12 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( isAudioMode )
     {
         _playerLayer.hidden = YES;
-      //[self.view bringSubviewToFront : _audioUiView]; // 최상단에 올라오면 메뉴hiddenview를 가려서 인터랙션을 가로막습니다.
+        [_contentView setBackgroundColor : [UIColor clearColor]];
     }
     else if ( !isAudioMode )
     {
         _playerLayer.hidden = NO;
-      //[self.view sendSubviewToBack : _audioUiView];
+        [_contentView setBackgroundColor : [UIColor blackColor]];
     }
 }
 
