@@ -31,11 +31,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
-    distributionUrl = distributionUrl.replace("bin", "all")
-}
-
 ext {
     supportLibVersion = '27.1.1'
     wearableVersion = '2.3.0'
