@@ -419,6 +419,9 @@ public class PlayerActivity extends BasePlayerActivity {
         updateDuration(metadata);
 
         setSubTitleJson();
+
+        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+            getwebPlayerInfo().getCname()[getContentId()]);
       }
     }
   };
@@ -696,6 +699,9 @@ public class PlayerActivity extends BasePlayerActivity {
       }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
+
+      initialize();
+
     } else {
       String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
       Gson gson = new Gson();
@@ -715,12 +721,17 @@ public class PlayerActivity extends BasePlayerActivity {
       }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
+      if(simpleExoPlayerView.getPlayer()!=null){
+        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+            getwebPlayerInfo().getCname()[getContentId()]);
+
+      }else{
+        initialize();
+      }
     }
 
     LogHelper.e(TAG, "sendData : fromMediaSession " + fromMediaSession);
     LogHelper.e(TAG, "sendData : cId " + cId);
-
-    initialize();
 
     playFromUri(uri, extras);
   }
@@ -2926,8 +2937,12 @@ public class PlayerActivity extends BasePlayerActivity {
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
 
-        textFullView.addView(highlightView);
-        textFullTimeView.addView(highlightTimeView);
+        try{
+          textFullView.addView(highlightView);
+          textFullTimeView.addView(highlightTimeView);
+        }catch (Exception e){
+          e.printStackTrace();
+        }
 
         int position = 0;
 
@@ -3836,6 +3851,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
     try {
       if (methodName.equals("video-course")) {
+
         mPlaylistGroupLayout.setVisibility(View.VISIBLE);
         mPlaylistGroupLayout.startAnimation(mAniSlideShow);
 
@@ -3914,6 +3930,11 @@ public class PlayerActivity extends BasePlayerActivity {
 //        });
 
 //        lecturListView.setSelection(Integer.parseInt(currentPosition));
+
+        TextView list_grop_title = findViewById(R.id.list_group_title);
+        String gTitle = getwebPlayerInfo().getGroupTitle();
+        list_grop_title.setText(gTitle);
+
         Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
 
       } else if (methodName.equals("audiobook")) {
@@ -4517,8 +4538,6 @@ public class PlayerActivity extends BasePlayerActivity {
       case PlaybackStateCompat.STATE_PAUSED:
         boolean isCompleted = LocalPlayback.getInstance(this).isCompleted();
 
-        LogHelper.e(TAG, " isCompleted " + isCompleted);
-
         if (isCompleted) {
           if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
 //            doAutoPlay();
@@ -4568,7 +4587,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void doNextPlay(Boolean type) {
     // Left -- , Right ++
-    //
 
     if (type) {
       int id = getContentId();
