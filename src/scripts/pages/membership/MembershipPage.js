@@ -480,8 +480,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 2 ? (
               <View style={styles.membershipPremiumBox}>
@@ -523,8 +523,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 3 ? (
               <View style={styles.membershipBox}>
@@ -555,8 +555,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 4 ? (
               <View style={styles.membershipAudioBookBox}>
@@ -595,32 +595,32 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
             {MembershipRule}
 
             {Platform.OS === 'android' &&
-            globalStore.currentMembership.stop_payment === true ? (
-              <View style={styles.cancelButton} borderRadius={5}>
-                <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
-              </View>
-            ) : (
-              <TouchableOpacity
-                onPress={() => this.cancel_membership_confirm()}
-              >
+              globalStore.currentMembership.stop_payment === true ? (
                 <View style={styles.cancelButton} borderRadius={5}>
-                  {Platform.OS === 'ios' ? (
-                    <Text style={styles.cancelButtonText}>
-                      Apple 구독 취소 또는 변경
-                    </Text>
-                  ) : (
-                    <Text style={styles.cancelButtonText}>
-                      멤버십 구독 해지
-                    </Text>
-                  )}
+                  <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
                 </View>
-              </TouchableOpacity>
-            )}
+              ) : (
+                <TouchableOpacity
+                  onPress={() => this.cancel_membership_confirm()}
+                >
+                  <View style={styles.cancelButton} borderRadius={5}>
+                    {Platform.OS === 'ios' ? (
+                      <Text style={styles.cancelButtonText}>
+                        Apple 구독 취소 또는 변경
+                    </Text>
+                    ) : (
+                        <Text style={styles.cancelButtonText}>
+                          멤버십 구독 해지
+                    </Text>
+                      )}
+                  </View>
+                </TouchableOpacity>
+              )}
           </View>
         </ScrollView>
       </SafeAreaView>

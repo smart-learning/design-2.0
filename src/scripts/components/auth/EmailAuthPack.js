@@ -185,7 +185,7 @@ class EmailAuthPack extends Component {
               activeOpacity={0.9}
               onPress={() => this.props.onNavigate('SignUpPage')}
             >
-              <Text style={styles.btnLinkText}>무료 계정만들기</Text>
+              <Text style={styles.btnLinkText}>윌라 계정만들기</Text>
             </TouchableOpacity>
           </View>
         </View>

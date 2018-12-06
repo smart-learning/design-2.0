@@ -147,7 +147,7 @@ class SignUpLandingPage extends React.Component {
     });
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   onAccessToken(type, token) {
     let { navigation } = this.props;
@@ -276,7 +276,7 @@ class SignUpLandingPage extends React.Component {
 
           <View style={styles.ruleWrap}>
             <View style={styles.ruleTextContainer}>
-              <Text style={styles.ruleText}>무료 계정을 생성하시면 월라</Text>
+              <Text style={styles.ruleText}>윌라 계정을 생성하시면 월라</Text>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => this.props.navigation.navigate('PolicyPage')}
