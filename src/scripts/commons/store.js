@@ -16,6 +16,7 @@ class Store {
 
   @observable
   homeTabStatus = 'video';
+
   @observable
   initialRoute = {
     // initialRouteName: 'AuthCheck',
@@ -93,8 +94,10 @@ class Store {
 
   @observable
   currentMembership = {};
+
   @observable
   voucherStatus = {};
+
   @observable
   profile = {};
 
@@ -124,6 +127,9 @@ class Store {
 
   @observable
   inAppWebViewUrl = null;
+
+  @observable
+  cartItemCount = 0;
 }
 
 const store = new Store();

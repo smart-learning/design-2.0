@@ -533,8 +533,14 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   }
 
                 } else {
-                  if (contentCid.equals(json.getString("cid"))) {
+                  if(Utils.checkCidAudioChapter(contentCid)){
                     contentId = i;
+                  }else{
+                    if (i == 0) {
+                      contentCid = json.getString("cid");
+                      contentName = json.getString("title");
+                      contentId = i;
+                    }
                   }
                 }
               }
@@ -567,9 +573,16 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String group_title = dataObject.getString("title");
 //        String group_memo = json.getString("group_memo");
               String group_memo = "";
+              String group_teachername = "";
+              String group_teachermemo = "";
 
-              String group_teachername = dataObject.getJSONObject("teacher").getString("name");
-              String group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
+              if (!json.isNull("group_teachername")) {
+                group_teachername = dataObject.getJSONObject("teacher").getString("name");
+              }
+
+              if (!json.isNull("group_teachermemo")) {
+                group_teachermemo = dataObject.getJSONObject("teacher").getString("memo");
+              }
 
               String group_img = dataObject.getJSONObject("images").getString("background");
               String download_img = dataObject.getJSONObject("images").getString("list");

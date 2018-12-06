@@ -93,14 +93,30 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         NSInteger indexOfCurrentContent = 0;
       
         // 재생 권한이 없는 오디오북이라면 프리뷰챕터의 인덱스를 검색합니다.
+        // 프리뷰챕터가 여러개있는 오디오북이 있으므로 무조건 처음부터 루프를 돌려서 검색되는 첫번째 프리뷰콘텐츠 재생은 수정되어야 합니다.
         if ( !_isAuthor )
         {
+            // RN -> N 으로 넘겨받은 args의 cid가 preview인지 확인해봐야 할것 같습니다.
+            // 우선 cid가 배열의 몇번째인지 파악부터 합니다.
             for ( int i=0; i<contentsListArray.count; i++ )
             {
-                if ( [[contentsListArray[i][@"is_preview"] stringValue] isEqualToString : @"1"] )
+                if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
                 {
                     indexOfCurrentContent = i;
                     break;
+                }
+            }
+          
+            // 넘겨받은 args가 프리뷰챕터가 아니라면 프리뷰챕터를 검색해야합니다. 프리뷰챕터라면 검색과정없이 'indexOfCurrentContent'값을 가지고 다음으로 이동합니다.
+            if ( ![[contentsListArray[indexOfCurrentContent][@"is_preview"] stringValue] isEqualToString : @"1"] )
+            {
+                for ( int i=0; i<contentsListArray.count; i++ )
+                {
+                    if ( [[contentsListArray[i][@"is_preview"] stringValue] isEqualToString : @"1"] )
+                    {
+                        indexOfCurrentContent = i;
+                        break;
+                    }
                 }
             }
         }
@@ -167,6 +183,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                   forKey : @"uri"];
         // ~ 2018.10.24
+        if ( [[_args objectForKey:@"uri"] isEqualToString:@"NULL"] )
+        {
+            [common presentAlertWithTitle:@"윌라" andMessage:@"콘텐츠 URI가 NULL입니다."];
+            return [self closePlayer];
+        }
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];  // 챕터 이동과 상관없이 일단 소챕터명을 세팅합니다.
     }
@@ -245,12 +266,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         }
         else if ( _isAuthor )
         {
-          // 2018.10.23 ~
-          // cid 를 검색해서 다운받은 콘텐츠가 있으면 그 콘텐츠로 셋팅(버튼도 다운로드 완료된 상태로 업데이트)
-          // 다운로드 대기중일 때 상태도 체크해서 버튼 반영
-          [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
-                    forKey : @"uri"];
-          // ~ 2018.10.24
+            [_args setObject : [self getContentUri:[_args objectForKey:@"cid"]]
+                      forKey : @"uri"];
+          
+            if ( [[_args objectForKey:@"uri"] isEqualToString:@"NULL"] )
+            {
+                [common presentAlertWithTitle:@"윌라" andMessage:@"콘텐츠 URI가 NULL입니다."];
+                return [self closePlayer];
+            }
         }
       
         _currentLectureTitle = contentsListArray[indexOfCurrentContent][@"title"];
@@ -1264,6 +1287,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == 0 )
             {
                 NSLog(@"  This is the very first track!");
+                [self showToast : @"맨 처음 챕터입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent > 0 )
@@ -1322,6 +1347,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == 0 )
             {
                 NSLog(@"  This is the very first track!");
+                [self showToast : @"맨 처음 클립입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent > 0 )
@@ -1382,6 +1409,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == contentsListArray.count-1 )
             {
                 NSLog(@"  This is the last track!");
+                [self showToast : @"마지막 챕터입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent < contentsListArray.count-1 )
@@ -1435,6 +1464,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             if ( indexOfCurrentContent == contentsListArray.count-1 )
             {
                 NSLog(@"  This is the last track!");
+                [self showToast : @"마지막 클립입니다."];
+              
                 return ;
             }
             else if ( indexOfCurrentContent < contentsListArray.count-1 )
@@ -1517,12 +1548,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
+        [_player setRate : _playbackRate];
     }
     else if ( _startSeconds || _startSeconds > 0 )
     {
         NSLog(@"  Player starts the last point. %f", _startSeconds);
         [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, CMTimeGetSeconds(_urlAsset.duration))];
         [_player play];
+        [_player setRate : _playbackRate];
         // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
         [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
     }
@@ -1530,6 +1563,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         NSLog(@"  Player starts at 0 because of uncatchable situation.");
         [_player play];
+        [_player setRate : _playbackRate];
     }
     _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
   
@@ -1540,7 +1574,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
                                                 Minute : YES];
-    [self setPreparedToPlay];
+  //[self setPreparedToPlay];
+    if ( _slider )
+    {
+        _slider.minimumValue = 0.f;
+        _slider.maximumValue = CMTimeGetSeconds(_urlAsset.duration);
+    }
+  
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
     [self setPlayState : YES];
     _lectureTitleLabel.text = _currentLectureTitle;
@@ -3322,11 +3362,38 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                                                       andHeaderInfo : [_args objectForKey : @"token"]];
       
         if ( _isAuthor )
-            return playDataDics[@"media_urls"][@"HLS"];
+        {
+            if ( nil == playDataDics[@"media_urls"][@"HLS"] )
+            {
+                [self closePlayer];
+                [common presentAlertWithTitle:@"알림" andMessage:@"콘텐츠 로딩에 실패하였습니다."];
+                return @"NULL";
+            }
+            else
+                return playDataDics[@"media_urls"][@"HLS"];
+        }
         else if ( !_isAuthor && _isAudioContent )
-            return playDataDics[@"media_urls"][@"HLS"];
+        {
+            if ( nil == playDataDics[@"media_urls"][@"HLS"] )
+            {
+                [self closePlayer];
+                [common presentAlertWithTitle:@"알림" andMessage:@"콘텐츠 로딩에 실패하였습니다."];
+                return @"NULL";
+            }
+            else
+                return playDataDics[@"media_urls"][@"HLS"];
+        }
         else
-            return playDataDics[@"preview_urls"][@"HLS"];
+        {
+            if ( nil == playDataDics[@"preview_urls"][@"HLS"] )
+            {
+                [self closePlayer];
+                [common presentAlertWithTitle:@"알림" andMessage:@"콘텐츠 로딩에 실패하였습니다."];
+                return @"NULL";
+            }
+            else
+                return playDataDics[@"preview_urls"][@"HLS"];
+        }
     }
 }
 

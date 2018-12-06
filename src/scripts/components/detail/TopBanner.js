@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Platform
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-detail.png';
@@ -181,6 +182,16 @@ export default class TopBanner extends React.Component {
     }
   }
 
+  tryNativePlayerCall() {
+    if (Platform.OS === 'ios') {
+      Native.play(this.props.store.itemData.cid)
+    } else if (Platform.OS === 'android') {
+      // [Android/IOS][이어듣기] 상세화면 상단 재생 버튼 클릭시 첫 클립 제외 이어듣기 불가 #562
+      // '001' 로 고정 되어서 들어오는 케이스
+      Native.play(this.props.store.itemData.cid)
+    }
+  }
+
   render() {
     return (
       <ImageBackground
@@ -325,12 +336,13 @@ export default class TopBanner extends React.Component {
             </ImageBackground>
           </View>
         )}
+
         {this.props.learnType === 'class' && (
           <View style={styles.classPlayButtonContainer}>
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() =>
-                Native.play(this.props.store.itemData.cid + '_001')
+                this.tryNativePlayerCall()
               }
             >
               <Image source={IcPlay} style={styles.playButton} />

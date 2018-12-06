@@ -267,16 +267,28 @@ export default class DownloadContentPage extends React.Component {
             activeOptacity={0.9}
             style={styles.downloadItemPlayButton}
             onPress={() => {
-              Native.deleteDownload(
-                [{ ...item }],
-                result => {
-                  var removedDownloadList = globalStore.downloadItems.filter(
-                    item => item.cid !== result
-                  );
-                  globalStore.downloadItems.replace(removedDownloadList);
-                },
-                error => console.error(error)
-              );
+              Alert.alert(
+                '알림',
+                '삭제 하시겠습니까?', [{
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel'
+                }, {
+                  text: 'OK',
+                  onPress: () => Native.deleteDownload(
+                    [{ ...item }],
+                    result => {
+                      var removedDownloadList = globalStore.downloadItems.filter(
+                        item => item.cid !== result
+                      );
+                      globalStore.downloadItems.replace(removedDownloadList);
+                    },
+                    error => console.error(error)
+                  )
+                },], {
+                  cancelable: false
+                }
+              )
             }}
           >
             <Image source={IcTrash} style={{ width: 24, height: 24 }} />

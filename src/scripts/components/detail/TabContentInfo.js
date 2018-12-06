@@ -228,9 +228,11 @@ class TabContentInfo extends React.Component {
     }
 
     try {
-      if (!_.isNull(this.props.store.itemData.teacher.memo)) {
-        teacherMemo = this.props.store.itemData.teacher.memo;
-        teacherMemo = teacherMemo.split('<br>').join('\n');
+      if (!_.isNull(this.props.store.itemData.teacher)) {
+        if (!_.isNull(this.props.store.itemData.teacher.memo)) {
+          teacherMemo = this.props.store.itemData.teacher.memo;
+          teacherMemo = teacherMemo.split('<br>').join('\n');
+        }
       }
     } catch (error) {
       console.log(error);
@@ -311,14 +313,17 @@ class TabContentInfo extends React.Component {
 
         <View style={styles.author}>
           <View style={{ position: 'relative' }}>
-            <Image
-              source={{
-                uri: this.props.store.itemData.teacher
-                  ? this.props.store.itemData.teacher.images.default
-                  : DummyTeacher
-              }}
-              style={styles.teacherThumbnail}
-            />
+            {this.props.store.itemData.teacher !== null && (
+              <Image
+                source={{
+                  uri: this.props.store.itemData.teacher
+                    ? this.props.store.itemData.teacher.images.default
+                    : DummyTeacher
+                }}
+                style={styles.teacherThumbnail}
+              />
+            )}
+
             <View style={{ width: '100%', paddingLeft: 100 }}>
               {this.props.learnType === 'audioBook' && (
                 <Text style={styles.teacherTitle}>저자</Text>
@@ -326,20 +331,29 @@ class TabContentInfo extends React.Component {
               {this.props.learnType === 'class' && (
                 <Text style={styles.teacherTitle}>강사</Text>
               )}
-              <Text style={styles.teacherHeadline}>
-                {this.props.store.itemData.teacher.headline}
-              </Text>
-              <Text style={styles.teacherName}>
-                {this.props.store.itemData.teacher.name}
-              </Text>
+
+              {this.props.store.itemData.teacher !== null && (
+                <View>
+                  <Text style={styles.teacherHeadline}>
+                    {this.props.store.itemData.teacher.headline}
+                  </Text>
+                  <Text style={styles.teacherName}>
+                    {this.props.store.itemData.teacher.name}
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
           <View style={styles.teacherMemo}>
             <Text style={styles.teacherMemoText}>{teacherMemo}</Text>
           </View>
-          {this.props.store.itemData.teacher.memo !== null && (
+          {this.props.store.itemData.teacher !== null && (
             <View style={{ width: '100%' }} />
           )}
+
+          {/* {this.props.store.itemData.teacher.memo !== null && (
+            <View style={{ width: '100%' }} />
+          )} */}
         </View>
 
         {1 === 2 && (
