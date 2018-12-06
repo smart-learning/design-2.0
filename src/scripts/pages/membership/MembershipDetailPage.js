@@ -160,7 +160,7 @@ export default class MembershipDetailPage extends React.Component {
                           : styles.tabItemText
                       }
                     >
-                      오디오북클럽
+                      오디오북
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -186,7 +186,7 @@ export default class MembershipDetailPage extends React.Component {
                           : styles.tabItemText
                       }
                     >
-                      캠퍼스
+                      클래스
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -490,7 +490,7 @@ export default class MembershipDetailPage extends React.Component {
               <View>
                 <View style={styles.sectionHr} />
                 <Text style={styles.sectionTitle}>
-                  오디오북클럽 멤버십 권한
+                  오디오북 멤버십 권한
                 </Text>
                 <View style={styles.sectionList}>
                   <View style={styles.sectionListItem}>
@@ -744,7 +744,7 @@ export default class MembershipDetailPage extends React.Component {
             {this.tabStatus === 'campus' && (
               <View>
                 <View style={styles.sectionHr} />
-                <Text style={styles.sectionTitle}>캠퍼스 멤버십의 권한</Text>
+                <Text style={styles.sectionTitle}>클래스 멤버십의 권한</Text>
                 <View style={styles.sectionList}>
                   <View style={styles.sectionListItem}>
                     <View

@@ -478,7 +478,7 @@ class EmailSignUpForm extends Component {
               <View style={styles.ruleWrap}>
                 <View style={styles.ruleTextContainer}>
                   <Text style={styles.ruleText}>
-                    무료 계정을 생성하시면 월라
+                    윌라 계정을 생성하시면 월라
                   </Text>
                   <TouchableOpacity
                     activeOpacity={0.9}
