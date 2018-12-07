@@ -519,6 +519,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 }
 
                 if (historyObject != null) {
+
                   if (historyObject.getString("id").equals(json.getString("id"))) {
 
                     historyObject.getString("id");
@@ -533,8 +534,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   }
 
                 } else {
+
                   if(Utils.checkCidAudioChapter(contentCid)){
-                    contentId = i;
+
+                    if(contentCid.equals(json.getString("cid"))){
+                      contentId = i;
+                      contentCid = json.getString("cid");
+                      contentName = json.getString("title");
+                    }
+
                   }else{
                     if (i == 0) {
                       contentCid = json.getString("cid");
@@ -550,6 +558,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               }
 
               mWebPlayerInfo = new WebPlayerInfo(sb.toString());
+
             } else if (contentType.equals("audiobook")) {
 
               JSONObject dataObject = json.getJSONObject("data");
