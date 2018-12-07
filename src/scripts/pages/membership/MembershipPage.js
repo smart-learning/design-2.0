@@ -480,8 +480,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-                undefined
-              )}
+              undefined
+            )}
 
             {globalStore.currentMembership.type === 2 ? (
               <View style={styles.membershipPremiumBox}>
@@ -523,8 +523,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-                undefined
-              )}
+              undefined
+            )}
 
             {globalStore.currentMembership.type === 3 ? (
               <View style={styles.membershipBox}>
@@ -555,8 +555,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-                undefined
-              )}
+              undefined
+            )}
 
             {globalStore.currentMembership.type === 4 ? (
               <View style={styles.membershipAudioBookBox}>
@@ -595,32 +595,32 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-                undefined
-              )}
+              undefined
+            )}
             {MembershipRule}
 
             {Platform.OS === 'android' &&
-              globalStore.currentMembership.stop_payment === true ? (
+            globalStore.currentMembership.stop_payment === true ? (
+              <View style={styles.cancelButton} borderRadius={5}>
+                <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
+              </View>
+            ) : (
+              <TouchableOpacity
+                onPress={() => this.cancel_membership_confirm()}
+              >
                 <View style={styles.cancelButton} borderRadius={5}>
-                  <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
+                  {Platform.OS === 'ios' ? (
+                    <Text style={styles.cancelButtonText}>
+                      Apple 구독 취소 또는 변경
+                    </Text>
+                  ) : (
+                    <Text style={styles.cancelButtonText}>
+                      멤버십 구독 해지
+                    </Text>
+                  )}
                 </View>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => this.cancel_membership_confirm()}
-                >
-                  <View style={styles.cancelButton} borderRadius={5}>
-                    {Platform.OS === 'ios' ? (
-                      <Text style={styles.cancelButtonText}>
-                        Apple 구독 취소 또는 변경
-                    </Text>
-                    ) : (
-                        <Text style={styles.cancelButtonText}>
-                          멤버십 구독 해지
-                    </Text>
-                      )}
-                  </View>
-                </TouchableOpacity>
-              )}
+              </TouchableOpacity>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -1035,8 +1035,8 @@ export default class MembershipPage extends React.Component {
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  top: 116 * aspectRatio,
-                  left: 60 * aspectRatio
+                  top: 80 * aspectRatio,
+                  left: 50 * aspectRatio
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
@@ -1059,7 +1059,7 @@ export default class MembershipPage extends React.Component {
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  top: 116 * aspectRatio,
+                  top: 80 * aspectRatio,
                   left:
                     (windowWidth -
                       membership_btn_2_source.width * aspectRatio) /
@@ -1087,8 +1087,8 @@ export default class MembershipPage extends React.Component {
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  top: 116 * aspectRatio,
-                  right: 60 * aspectRatio
+                  top: 80 * aspectRatio,
+                  right: 50 * aspectRatio
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
@@ -1112,10 +1112,10 @@ export default class MembershipPage extends React.Component {
                 onResponderRelease={e => {
                   const x = e.nativeEvent.locationX;
                   const y = e.nativeEvent.locationY;
-                  const side = 60 * aspectRatio;
-                  const top = 116 * aspectRatio;
-                  const boxWidth = 424 * aspectRatio;
-                  const boxHeight = 880 * aspectRatio;
+                  const side = 50 * aspectRatio;
+                  const top = 80 * aspectRatio;
+                  const boxWidth = 330 * aspectRatio;
+                  const boxHeight = 654 * aspectRatio;
                   const center =
                     (windowWidth -
                       membership_btn_2_source.width * aspectRatio) /
@@ -1161,20 +1161,37 @@ export default class MembershipPage extends React.Component {
                 const x = e.nativeEvent.locationX;
                 const y = e.nativeEvent.locationY;
 
+                console.log('x ->', x);
+                console.log('y ->', y);
+
                 if (
-                  x > 240 * aspectRatio &&
-                  x < 360 * aspectRatio &&
-                  y > 1240 * aspectRatio &&
-                  y < 1360 * aspectRatio
+                  x > 50 * aspectRatio &&
+                  x < 600 * aspectRatio &&
+                  y > 1200 * aspectRatio &&
+                  y < 1430 * aspectRatio
                 ) {
                   this.props.navigation.navigate('InquireListScreen');
                 } else if (
-                  x > 60 * aspectRatio &&
-                  x < 180 * aspectRatio &&
-                  y > 1400 * aspectRatio &&
-                  y < 1520 * aspectRatio
+                  x > 50 * aspectRatio &&
+                  x < 340 * aspectRatio &&
+                  y > 1430 * aspectRatio &&
+                  y < 1540 * aspectRatio
                 ) {
                   this.props.navigation.navigate('MembershipDetailPage');
+                } else if (
+                  x > 340 * aspectRatio &&
+                  x < 640 * aspectRatio &&
+                  y > 1430 * aspectRatio &&
+                  y < 1540 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('PolicyPage');
+                } else if (
+                  x > 640 * aspectRatio &&
+                  x < 1000 * aspectRatio &&
+                  y > 1430 * aspectRatio &&
+                  y < 1540 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('PrivacyPage');
                 }
               }}
               onStartShouldSetResponder={e => true}
@@ -1192,10 +1209,10 @@ export default class MembershipPage extends React.Component {
               <View
                 style={{
                   position: 'absolute',
-                  top: 270 * aspectRatio,
+                  top: 300 * aspectRatio,
                   left: 0,
                   width: '100%',
-                  height: 470 * aspectRatio
+                  height: 450 * aspectRatio
                 }}
               >
                 <Swiper
@@ -1210,7 +1227,7 @@ export default class MembershipPage extends React.Component {
                         key={key}
                         style={{
                           width: 1125 * aspectRatio,
-                          height: 800 * aspectRatio
+                          height: 405 * aspectRatio
                         }}
                         source={review}
                       />

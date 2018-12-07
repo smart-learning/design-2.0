@@ -234,7 +234,9 @@ class App extends React.Component {
       paymentManagerEmitter.addListener('buyResult', async arg => {
         const result = await Native.buyResult(arg);
         if (result) {
-          this.props.navigation.navigate('HomeScreen');
+          this.props.navigation.navigate('HomeScreen', {
+            popup_mbs: true
+          });
         } else {
           console.log('Native.buyResult error.');
         }

@@ -81,7 +81,7 @@ class AdvertisingSection extends Component {
   }
 
   componentDidMount = async () => {
-    let data = await net.getMainPopup();
+    let data = await net.getMainPopup(this.props.popup_type);
     if (data.length === 0) return;
 
     // 안보기로 한 팝업은 아닌지 날짜 확인
