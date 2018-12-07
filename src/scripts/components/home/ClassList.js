@@ -1,95 +1,54 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  FlatList
-} from 'react-native';
-import CommonStyles from '../../../styles/common';
-import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import ClassListItem from './ClassListItem';
 import { observer } from 'mobx-react';
-import createStore from '../../commons/createStore';
-import _ from 'underscore';
+import Carousel from 'react-native-snap-carousel';
 
 const styles = StyleSheet.create({
   classContainer: {
     marginTop: 20,
-    marginBottom: 50
+    marginBottom: 30
   },
-  viewMoreContainer: {
-    alignItems: 'center'
+  slide: {
+    width: Dimensions.get('window').width * 0.84,
+    paddingHorizontal: 10
   },
-  viewMore: {
-    width: 50,
-    height: 36,
-    justifyContent: 'center'
-  },
-  viewMoreText: {
-    fontSize: 12,
-    color: '#888888'
-  },
-  viewMoreIcon: {
-    position: 'relative',
-    top: 2
-  },
-  classList: {
-    marginBottom: 20
+  slideInnerContainer: {
+    flex: 1,
+    width: Dimensions.get('window').width
   }
 });
 
 @observer
 class ClassList extends React.Component {
-  store = createStore({
-    isOpen: false
-  });
+  _renderItem({ item }) {
+    return (
+      <View style={styles.slide}>
+        <ClassListItem
+          id={item.id}
+          itemData={item}
+          style={styles.slideInnerContainer}
+        />
+      </View>
+    );
+  }
+
   render() {
-    let list = _.toArray(this.props.itemData);
-    let itemLength;
+    let windowWidth = Dimensions.get('window').width;
+    let itemWidth = windowWidth * 0.84;
 
-    if (this.props.classType === 'new') {
-      itemLength = 7;
-    } else if (this.props.classType === 'hot') {
-      itemLength = 7;
-    } else {
-      itemLength = 3;
-    }
-
-    if (!this.store.isOpen) {
-      list = list.slice(0, itemLength);
-    }
     return (
       <View style={styles.classContainer}>
-        <View style={styles.classList}>
-          <FlatList
-            style={{ width: '100%' }}
-            data={list}
-            renderItem={({ item }) => (
-              <ClassListItem
-                id={item.id}
-                itemData={item}
-                classType={this.props.classType}
-              />
-            )}
-          />
-        </View>
-
-        {!this.store.isOpen && (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            style={styles.viewMoreContainer}
-            onPress={() => (this.store.isOpen = true)}
-          >
-            <View
-              style={[styles.viewMore, CommonStyles.alignJustifyContentBetween]}
-            >
-              <Text style={styles.viewMoreText}>더보기</Text>
-              <Image source={IcAngleDownGrey} style={styles.viewMoreIcon} />
-            </View>
-          </TouchableOpacity>
-        )}
+        <Carousel
+          data={this.props.itemData}
+          renderItem={this._renderItem}
+          sliderWidth={windowWidth}
+          itemWidth={itemWidth}
+          layout={'default'}
+          activeSlideAlignment={'start'}
+          inactiveSlideOpacity={1}
+          inactiveSlideScale={1}
+        />
       </View>
     );
   }

@@ -14,8 +14,6 @@ import numeral from 'numeral';
 import IcHeart from '../../../images/ic-heart-dark.png';
 import IcComment from '../../../images/ic-commenting-dark.png';
 import IcClip from '../../../images/ic-clip-dark.png';
-import Device from '../../commons/device';
-import _ from 'underscore';
 
 const styles = StyleSheet.create({
   classList: {
@@ -60,16 +58,16 @@ const styles = StyleSheet.create({
     opacity: 0
   },
   classLabelNew: {
-    backgroundColor: '#5f45b4'
+    backgroundColor: '#FD7E14'
   },
   classLabelFeatured: {
     backgroundColor: 'black'
   },
   classLabelExclusive: {
-    backgroundColor: '#ff761b'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   classLabelFree: {
-    backgroundColor: '#00afba'
+    backgroundColor: '#E8D815'
   },
   thumbnail: {
     position: 'relative',
@@ -137,7 +135,7 @@ class ClassListItem extends React.Component {
               {this.props.itemData.title}
             </Text>
           </ImageBackground>
-          <View>
+          <View style={{height: 80}}>
             <Text
               style={styles.classTitle}
               ellipsizeMode={'tail'}
@@ -175,6 +173,9 @@ class ClassListItem extends React.Component {
                 <Text style={styles.classLabelText}>무료</Text>
               </View>
             )}
+            <View style={[styles.classLabel, styles.classLabelBlank]}>
+              <Text style={styles.classLabelText} />
+            </View>
           </View>
         </TouchableOpacity>
         <View style={styles.countHr} />
@@ -210,7 +211,7 @@ class ClassListItem extends React.Component {
             source={IcClip}
             style={[styles.btnSetSmall, { marginLeft: 'auto' }]}
           />
-          <Text style={styles.clipCount}>
+          <Text style={styles.countText}>
             {this.props.itemData.clip_count}개 강의
           </Text>
         </View>

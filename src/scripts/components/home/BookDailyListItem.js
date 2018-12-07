@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   bookLabelFree: {
-    backgroundColor: '#00afba'
+    backgroundColor: '#E8D815'
   },
   bookLabelText: {
     fontSize: 12,

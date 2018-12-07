@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
     opacity: 0
   },
   bookLabelNew: {
-    backgroundColor: '#5f45b4'
+    backgroundColor: '#FD7E14'
   },
   bookLabelExclusive: {
-    backgroundColor: '#ff761b'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   bookLabelFree: {
-    backgroundColor: '#00afba'
+    backgroundColor: '#E8D815'
   },
   bookLabelDefault: {
     backgroundColor: CommonStyles.COLOR_PRIMARY

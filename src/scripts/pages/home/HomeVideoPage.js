@@ -80,8 +80,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 36,
     marginLeft: 'auto',
-    marginRight: 'auto',
-    backgroundColor: '#dddddd'
+    marginRight: 'auto'
   },
   classLinkViewAll: {
     marginTop: 15,
@@ -107,6 +106,10 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 30
   },
+  clipRankContainer: {
+    paddingTop: 30,
+    paddingBottom: 30
+  },
   classCategory: {
     marginBottom: 25
   },
@@ -121,6 +124,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'flex-end'
   },
+  showAllText: {
+    color: CommonStyles.COLOR_PRIMARY,
+    fontSize: 15
+  },
   showMore: {
     borderColor: CommonStyles.COLOR_PRIMARY,
     borderWidth: 1,
@@ -128,7 +135,9 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     paddingRight: 10,
     paddingBottom: 2,
-    paddingLeft: 10
+    paddingLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   showMoreText: {
     color: CommonStyles.COLOR_PRIMARY,
@@ -190,7 +199,6 @@ class HomeVideoPage extends React.Component {
       >
         <ScrollView style={{ flex: 1 }}>
           {/* 이미지 스와이퍼 */}
-
           <View
             style={{ height: this.props.store.slideHeight, background: '#ff0' }}
           >
@@ -295,17 +303,17 @@ class HomeVideoPage extends React.Component {
                   </View>
                 </View>
 
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}
-                >
-                  <CircularCarousel
-                    onFullScreenToggle={this.onFullScreenToggle}
-                  />
-                </View>
+                {/*<View*/}
+                {/*style={{*/}
+                {/*flex: 1,*/}
+                {/*justifyContent: 'center',*/}
+                {/*alignItems: 'center'*/}
+                {/*}}*/}
+                {/*>*/}
+                {/*<CircularCarousel*/}
+                {/*onFullScreenToggle={this.onFullScreenToggle}*/}
+                {/*/>*/}
+                {/*</View>*/}
 
                 {1 === 2 && (
                   <View style={styles.seriesComponent}>
@@ -393,6 +401,12 @@ class HomeVideoPage extends React.Component {
               />
 
               <View style={CommonStyles.alignJustifyContentBetween}>
+                <Text style={styles.titleH3}>오늘의 인기 클래스</Text>
+              </View>
+
+              <ClipRank itemData={this.props.store.clipRankData} />
+
+              <View style={CommonStyles.alignJustifyContentBetween}>
                 <Text style={styles.titleH3}>
                   회원들이 열심히 듣고 있는 클래스
                 </Text>
@@ -409,21 +423,18 @@ class HomeVideoPage extends React.Component {
 
               <ClassList itemData={this.props.store.classRecommendData} />
 
-              {1 === 2 && (
-                <View>
-                  <View style={CommonStyles.alignJustifyContentBetween}>
-                    <Text style={styles.titleH3}>
-                      지금 많이 듣고 있는 강의클립
-                    </Text>
-                  </View>
-                  <View style={styles.titleHr} />
-
-                  <ClipRank
-                    itemData={this.props.store.clipRankData}
-                    clipRankContentSize={this.props.store.clipRankContentSize}
-                  />
-                </View>
-              )}
+              <View
+                style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}
+              >
+                <TouchableOpacity
+                  style={[styles.showMore, { height: 36 }]}
+                  onPress={() => {
+                    this.props.navigation.navigate('ClassListPage');
+                  }}
+                >
+                  <Text style={styles.showAllText}>클래스 전체보기</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
         </ScrollView>

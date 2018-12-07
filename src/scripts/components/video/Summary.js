@@ -138,13 +138,13 @@ const styles = StyleSheet.create({
     opacity: 0
   },
   classLabelNew: {
-    backgroundColor: '#5f45b4'
+    backgroundColor: '#FD7E14'
   },
   classLabelExclusive: {
-    backgroundColor: '#ff761b'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   classLabelFree: {
-    backgroundColor: '#00afba'
+    backgroundColor: '#E8D815'
   }
 });
 
