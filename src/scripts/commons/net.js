@@ -380,10 +380,15 @@ export default {
     });
   },
 
-  getMainPopup() {
+  getMainPopup(popup_type) {
+    //popup_type
+    //공백 - 기존과 동일
+    //membership - 멤버십 가입 후
+
     const url = API_PREFIX + 'v1.0/users/popup';
     const params = {
       platform: Platform.OS,
+      popup_type: popup_type,
     };
     return axios
       .get(url, { params: params })

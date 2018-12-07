@@ -9,7 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Platform
+  Platform,
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -33,27 +33,27 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: 40,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabFlex: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   tabItemContainer: {
-    width: '50%'
+    width: '50%',
   },
   tabItem: {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    height: 40
+    height: 40,
   },
   tabText: {
     fontSize: 14,
-    color: '#a4a4a4'
+    color: '#a4a4a4',
   },
   tabTextActive: {
     fontSize: 14,
-    color: '#000000'
+    color: '#000000',
   },
   tabHr: {
     position: 'absolute',
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 3,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabHrActive: {
     position: 'absolute',
@@ -69,17 +69,18 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 3,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   tabContentContainer: {
-    paddingTop: 40
-  }
+    paddingTop: 40,
+  },
 });
 
 @observer
 class HomePage extends React.Component {
   state = {
-    show_popup: false
+    show_popup: false,
+    show_popup_mbs: false,
   };
 
   @observable
@@ -107,9 +108,9 @@ class HomePage extends React.Component {
     test: {
       hot: [],
       new: [],
-      recommend: []
+      recommend: [],
     },
-    contentDataInfo: []
+    contentDataInfo: [],
 
     // audioPlayRecentData: [],
   });
@@ -276,7 +277,7 @@ class HomePage extends React.Component {
         miniPlayerGroupTitle: miniPlayerGroupTitle,
         miniPlayercurrentPlayTime: miniPlayercurrentPlayTime,
         userId: userId.toString(),
-        accessToken: accessToken
+        accessToken: accessToken,
       };
 
       Native.mainToggleMiniPlayer(true, config);
@@ -308,14 +309,27 @@ class HomePage extends React.Component {
             }
           }
         },
-        error => console.error(e)
+        error => console.error(e),
       );
     }
   };
 
   showPopup() {
     if (globalStore.welaaaAuth) {
-      return <AdvertisingSection show_popup={this.state.show_popup} />;
+      return (
+        <AdvertisingSection show_popup={this.state.show_popup} popup_type="" />
+      );
+    }
+  }
+
+  showMbsPopup() {
+    if (globalStore.welaaaAuth) {
+      return (
+        <AdvertisingSection
+          show_popup={this.state.show_popup_mbs}
+          popup_type="membership"
+        />
+      );
     }
   }
 
@@ -372,6 +386,13 @@ class HomePage extends React.Component {
       // 멤버십 화면에서 돌아왔을 경우에 팝업 띄워주도록 state변경
       this.props.navigation.state.params.show_popup = undefined;
       this.setState({ show_popup: true });
+    }
+
+    if ('ios' === Platform.OS && params && true === params.popup_mbs) {
+      this.props.navigation.state.params.popup_mbs = undefined;
+      // 멤버십 구매한 직후의 사용자 대상으로 별도 팝업(프로모션 등)을 띄워주고자 할 때 여기에서.
+      // TODO: 팝업이 있는 경우와 없는 경우 혹은 네트워크 실패시의 예외처리.
+      this.setState({ show_popup_mbs: true });
     }
   }
 
@@ -491,6 +512,7 @@ class HomePage extends React.Component {
             </View>
           </View>
           {this.showPopup()}
+          {this.showMbsPopup()}
         </SafeAreaView>
       </View>
     );
