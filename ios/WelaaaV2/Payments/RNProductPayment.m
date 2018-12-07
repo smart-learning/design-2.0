@@ -387,7 +387,7 @@ RCT_EXPORT_MODULE();
 #endif
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   
-    NSString *apiVerifyReceipt = @"/api/v1.0/ios/restore";
+    NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/restore";
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
