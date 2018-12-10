@@ -362,9 +362,15 @@ export default class MembershipPage extends React.Component {
     super(props);
 
     this.props.navigation.setParams({ title: '윌라 멤버십 안내' });
+
+    this.state = {
+      ads: [],
+      bannerWidth: 0,
+      bannerHeight: 0,
+    };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this.disposer = observe(globalStore.buyResult, change => {
       if ('success' === change.name && change.newValue) {
         globalStore.buyResult.success = false;
@@ -375,7 +381,16 @@ export default class MembershipPage extends React.Component {
         });
       }
     });
-  }
+
+    let data = await net.getMembershipBanner();
+    if (data === null || data.length === 0) return;
+
+    let ads = [];
+    data.forEach((ad, idx) => {
+      ads.push(ad);
+    });
+    this.setState({ ads: ads });
+  };
 
   componentWillUnmount() {
     this.disposer();
@@ -966,8 +981,9 @@ export default class MembershipPage extends React.Component {
 
     // Image resources.
     // Top background.
-    const membership_bg_1 = require('../../../images/mbs_top_back_ios.png');
-    const membership_bg_1_source = Image.resolveAssetSource(membership_bg_1);
+    //const membership_bg_1 = require('../../../images/mbs_top_back_ios.png');
+    //const membership_bg_1_source = Image.resolveAssetSource(membership_bg_1);
+    // -> 서버에서 내려받는 방식으로 변경중. 우선은 url 를 받는것까지 구현. 추후 필요에 따라 유효기간 설정 등 구현예정.
 
     // Middle background.
     const membership_bg_2 = require('../../../images/mbs_middle_back_ios.png');
@@ -1001,6 +1017,19 @@ export default class MembershipPage extends React.Component {
       require('../../../images/mbs_review_3_ios.png'),
     ];
 
+    let banner_url; // banner 에 들어갈 image url 을 저장
+    const cnt = this.state.ads.length;
+    if (cnt > 0) {
+      banner_url = this.state.ads[0];
+      Image.getSize(banner_url, (width, height) => {
+        const bannerAspectRatio = windowWidth / width;
+        this.setState({
+          bannerWidth: width * bannerAspectRatio,
+          bannerHeight: height * bannerAspectRatio,
+        });
+      });
+    }
+
     return (
       <SafeAreaView
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
@@ -1013,11 +1042,13 @@ export default class MembershipPage extends React.Component {
           >
             <Image
               style={{
-                width: membership_bg_1_source.width * aspectRatio,
-                height: membership_bg_1_source.height * aspectRatio,
+                width: this.state.bannerWidth,
+                height: this.state.bannerHeight,
               }}
               resizeMode="stretch"
-              source={membership_bg_1}
+              source={{
+                uri: banner_url,
+              }}
             />
 
             <View
@@ -1158,7 +1189,6 @@ export default class MembershipPage extends React.Component {
                 source={membership_free}
               />
             </View>
-
             <View
               onResponderRelease={e => {
                 const x = e.nativeEvent.locationX;

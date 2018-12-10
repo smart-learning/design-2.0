@@ -380,6 +380,23 @@ export default {
     });
   },
 
+  getMembershipBanner() {
+    const url = API_PREFIX + 'v1.0/cms/banner/membership-top';
+    const params = {
+      platform: Platform.OS,
+    };
+    return axios
+      .get(url, { params: params })
+      .then(resp => {
+        console.log('membership_banner', resp);
+        return resp.data;
+      })
+      .catch(error => {
+        console.log(error);
+        return null;
+      });
+  },
+
   getMainPopup(popup_type) {
     //popup_type
     //공백 - 기존과 동일
