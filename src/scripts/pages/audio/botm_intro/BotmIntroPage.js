@@ -5,13 +5,13 @@ import {
   ScrollView,
   TouchableOpacity,
   View,
-  Linking
+  Linking,
 } from 'react-native';
 
 let navigation = null;
 export default class BotmIntroPage extends React.Component {
   static navigationOptions = {
-    title: '이달의 책'
+    title: '이달의 책',
   };
 
   windowWidth = null;
@@ -28,7 +28,7 @@ export default class BotmIntroPage extends React.Component {
       month: month,
       img_A: `${imageBase}/${month}_A.jpg`,
       img_A_button: `${imageBase}/${month}_A_button.jpg`,
-      img_B: `${imageBase}/${month}_B.jpg`
+      img_B: `${imageBase}/${month}_B.jpg`,
     };
   }
 
@@ -37,7 +37,7 @@ export default class BotmIntroPage extends React.Component {
       if (this.windowWidth != null) {
         this.setState({
           botm_A_width: this.windowWidth,
-          botm_A_height: (this.windowWidth * height) / width
+          botm_A_height: (this.windowWidth * height) / width,
         });
       } else {
         this.setState({ botm_A_width: width, botm_A_height: height });
@@ -47,7 +47,7 @@ export default class BotmIntroPage extends React.Component {
       if (this.windowWidth != null) {
         this.setState({
           botm_B_width: this.windowWidth,
-          botm_B_height: (this.windowWidth * height) / width
+          botm_B_height: (this.windowWidth * height) / width,
         });
       } else {
         this.setState({ botm_B_width: width, botm_B_height: height });
@@ -62,35 +62,27 @@ export default class BotmIntroPage extends React.Component {
           if (this.windowWidth != null) {
             this.setState({
               botm_A_button_width: this.windowWidth,
-              botm_A_button_height: (this.windowWidth * height) / width
+              botm_A_button_height: (this.windowWidth * height) / width,
             });
           } else {
             this.setState({
               botm_A_button_width: width,
-              botm_A_button_height: height
+              botm_A_button_height: height,
             });
           }
         },
         error => {
           console.log(error);
-        }
+        },
       );
     }
   }
-
-  handleBackPress = () => {
-    if (this.props.navigation.isFocused()) {
-      navigation.commonBack();
-    }
-
-    return true;
-  };
 
   gotoBotm_A = () => {
     this.props.navigation.navigate('HomeMonthlyReviewPage', {
       month: this.props.navigation.state.params.info,
       sort: 'A',
-      title: '이달의 책 북리뷰'
+      title: '이달의 책 북리뷰',
     });
   };
 
@@ -98,7 +90,7 @@ export default class BotmIntroPage extends React.Component {
     this.props.navigation.navigate('HomeMonthlyReviewPage', {
       month: this.props.navigation.state.params.info,
       sort: 'B',
-      title: '이달의 책 북리뷰'
+      title: '이달의 책 북리뷰',
     });
   };
 
@@ -118,7 +110,7 @@ export default class BotmIntroPage extends React.Component {
                 resizeMode="cover"
                 style={{
                   width: this.state.botm_A_width,
-                  height: this.state.botm_A_height
+                  height: this.state.botm_A_height,
                 }}
               />
             </TouchableOpacity>
@@ -131,7 +123,7 @@ export default class BotmIntroPage extends React.Component {
                   resizeMode="cover"
                   style={{
                     width: this.state.botm_A_button_width,
-                    height: this.state.botm_A_button_height
+                    height: this.state.botm_A_button_height,
                   }}
                 />
               </TouchableOpacity>
@@ -144,7 +136,7 @@ export default class BotmIntroPage extends React.Component {
                 resizeMode="cover"
                 style={{
                   width: this.state.botm_B_width,
-                  height: this.state.botm_B_height
+                  height: this.state.botm_B_height,
                 }}
               />
             </TouchableOpacity>
