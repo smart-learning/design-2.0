@@ -11,7 +11,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import Swiper from 'react-native-swiper';
@@ -27,38 +27,38 @@ import globalStore from '../../commons/store';
 const styles = StyleSheet.create({
   membershipHeader: {
     width: '100%',
-    height: 140
+    height: 140,
   },
   membershipDescription: {
     width: '100%',
-    height: 108
+    height: 108,
   },
   membershipButton: {
     width: '100%',
     height: 34,
-    marginBottom: 11
+    marginBottom: 11,
   },
   membershipBody: {
     width: '100%',
-    height: 403
+    height: 403,
   },
   sectionTitle: {
     paddingTop: 20,
     paddingBottom: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#333333',
   },
   sectionSubTitle: {
     paddingBottom: 7,
     fontSize: 14,
-    color: '#333333'
+    color: '#333333',
   },
   sectionList: {
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   sectionListItem: {
-    position: 'relative'
+    position: 'relative',
   },
   sectionListItemBullet: {
     position: 'absolute',
@@ -66,16 +66,16 @@ const styles = StyleSheet.create({
     top: 8,
     width: 4,
     height: 4,
-    backgroundColor: '#333333'
+    backgroundColor: '#333333',
   },
   sectionListItemText: {
     paddingLeft: 15,
     fontSize: 14,
-    color: '#333333'
+    color: '#333333',
   },
   sectionListItemTextImportant: {
     fontSize: 14,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   ruleButton: {
     justifyContent: 'center',
@@ -84,98 +84,98 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     width: '100%',
     height: 40,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   ruleButtonText: {
     fontSize: 14,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   pageTitle: {
     paddingTop: 24,
     marginBottom: 30,
     textAlign: 'center',
     fontSize: 24,
-    color: '#333333'
+    color: '#333333',
   },
   paragraphBox: {
-    marginBottom: 30
+    marginBottom: 30,
   },
   paragraphText: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#333333'
+    color: '#333333',
   },
   paragraphImportantText: {
     textAlign: 'center',
     fontSize: 18,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   membershipBox: {
     position: 'relative',
     paddingTop: 25,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: CommonStyles.COLOR_PRIMARY
+    borderColor: CommonStyles.COLOR_PRIMARY,
   },
   membershipCampusBox: {
     position: 'relative',
     paddingTop: 25,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#49ac41'
+    borderColor: '#49ac41',
   },
   membershipAudioBookBox: {
     position: 'relative',
     paddingTop: 25,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#afca0b'
+    borderColor: '#afca0b',
   },
   membershipPremiumBox: {
     position: 'relative',
     paddingTop: 25,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#a88050'
+    borderColor: '#a88050',
   },
   membershipIcon: {
     position: 'absolute',
     top: 18,
     right: 20,
     width: 65,
-    height: 50
+    height: 50,
   },
   membershipTitle: {
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   membershipCampusTitle: {
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: '#49ac41'
+    color: '#49ac41',
   },
   membershipAudioBookClubTitle: {
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: '#afca0b'
+    color: '#afca0b',
   },
   membershipPremiumTitle: {
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: '#a88050'
+    color: '#a88050',
   },
   membershipParagraphBox: {
     marginBottom: 20,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   membershipParagraph: {
     fontSize: 15,
-    color: '#666666'
+    color: '#666666',
   },
   memberShipButton: {
     alignItems: 'center',
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   memberShipCampusButton: {
     alignItems: 'center',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: '#49ac41'
+    backgroundColor: '#49ac41',
   },
   memberShipAudioBookButton: {
     alignItems: 'center',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: '#afca0b'
+    backgroundColor: '#afca0b',
   },
   memberShipPremiumButton: {
     alignItems: 'center',
@@ -207,47 +207,47 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: '#a88050'
+    backgroundColor: '#a88050',
   },
   memberShipButtonTitle: {
     fontSize: 18,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   memberShipButtonParagraph: {
     fontSize: 12,
-    color: '#f0f0f0'
+    color: '#f0f0f0',
   },
   priceBox: {
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   membershipPrice: {
     fontSize: 16,
-    color: '#333333'
+    color: '#333333',
   },
   membershipSalePrice: {
     fontSize: 14,
     color: '#dddddd',
-    textDecorationLine: 'line-through'
+    textDecorationLine: 'line-through',
   },
   cancelButton: {
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
     backgroundColor: '#00c73c',
-    marginTop: 15
+    marginTop: 15,
   },
   cancelButtonText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   tripAroundButton: {
     width: '100%',
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 const renderRuleIOS = () => {
@@ -353,7 +353,7 @@ const renderRuleAndroid = () => {
 
 const MembershipRule = Platform.select({
   ios: renderRuleIOS(),
-  android: renderRuleAndroid()
+  android: renderRuleAndroid(),
 });
 
 @observer
@@ -371,7 +371,7 @@ export default class MembershipPage extends React.Component {
         // HomeScreen.js 로 이동 혹은 Back
         // -> 이전 화면으로 돌아갔을 때 멤버십 갱신되도록 아래와 같이 수정. 2018.11.22
         this.props.navigation.navigate('HomeScreen', {
-          reload_mbs: true
+          reload_mbs: true,
         });
       }
     });
@@ -394,10 +394,10 @@ export default class MembershipPage extends React.Component {
           onPress: () => {
             if (Platform.OS === 'ios') native.unsubscribe();
             else this.cancel_membership_proc();
-          }
-        }
+          },
+        },
       ],
-      { cancelable: false }
+      { cancelable: false },
     );
   }
 
@@ -412,16 +412,16 @@ export default class MembershipPage extends React.Component {
         [
           {
             text: '확인',
-            onPress: () => this.props.navigation.navigate('HomeScreen')
-          }
-        ]
+            onPress: () => this.props.navigation.navigate('HomeScreen'),
+          },
+        ],
       );
     } else {
       Alert.alert('안내', '이미 멤버십 정기 구독이 해지되었습니다.', [
         {
           text: '확인',
-          onPress: () => this.props.navigation.navigate('HomeScreen')
-        }
+          onPress: () => this.props.navigation.navigate('HomeScreen'),
+        },
       ]);
     }
   };
@@ -466,14 +466,14 @@ export default class MembershipPage extends React.Component {
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipCampusButton,
-                    { height: 40 }
+                    { height: 40 },
                   ]}
                 >
                   <View>
                     <Text style={styles.memberShipButtonParagraph}>
                       가입일:{' '}
                       {moment(globalStore.currentMembership.start_at).format(
-                        'YYYY-MM-DD'
+                        'YYYY-MM-DD',
                       )}
                     </Text>
                   </View>
@@ -509,14 +509,14 @@ export default class MembershipPage extends React.Component {
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipPremiumButton,
-                    { height: 40 }
+                    { height: 40 },
                   ]}
                 >
                   <View>
                     <Text style={styles.memberShipButtonParagraph}>
                       가입일:{' '}
                       {moment(globalStore.currentMembership.start_at).format(
-                        'YYYY-MM-DD'
+                        'YYYY-MM-DD',
                       )}
                     </Text>
                   </View>
@@ -541,14 +541,14 @@ export default class MembershipPage extends React.Component {
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipButton,
-                    { height: 40 }
+                    { height: 40 },
                   ]}
                 >
                   <View>
                     <Text style={styles.memberShipButtonParagraph}>
                       가입일:{' '}
                       {moment(globalStore.currentMembership.start_at).format(
-                        'YYYY-MM-DD'
+                        'YYYY-MM-DD',
                       )}
                     </Text>
                   </View>
@@ -581,14 +581,14 @@ export default class MembershipPage extends React.Component {
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipAudioBookButton,
-                    { height: 40 }
+                    { height: 40 },
                   ]}
                 >
                   <View>
                     <Text style={styles.memberShipButtonParagraph}>
                       가입일:{' '}
                       {moment(globalStore.currentMembership.start_at).format(
-                        'YYYY-MM-DD'
+                        'YYYY-MM-DD',
                       )}
                     </Text>
                   </View>
@@ -636,21 +636,21 @@ export default class MembershipPage extends React.Component {
           native.buy({
             type: 'membership',
             product_id: 'm_01',
-            token: globalStore.accessToken
+            token: globalStore.accessToken,
           });
           break;
         case 'bookclub':
           native.buy({
             type: 'membership',
             product_id: 'm_04',
-            token: globalStore.accessToken
+            token: globalStore.accessToken,
           });
           break;
         case 'premium':
           native.buy({
             type: 'membership',
             product_id: 'm_02',
-            token: globalStore.accessToken
+            token: globalStore.accessToken,
           });
           break;
       }
@@ -696,7 +696,7 @@ export default class MembershipPage extends React.Component {
     const membership_review_array = [
       require('../../../images/membership_review_1.png'),
       require('../../../images/membership_review_2.png'),
-      require('../../../images/membership_review_3.png')
+      require('../../../images/membership_review_3.png'),
     ];
 
     return (
@@ -706,13 +706,13 @@ export default class MembershipPage extends React.Component {
         <ScrollView style={{ width: '100%' }}>
           <View
             style={{
-              backgroundColor: '#DDEEE2'
+              backgroundColor: '#DDEEE2',
             }}
           >
             <Image
               style={{
                 width: membership_bg_1_source.width * aspectRatio,
-                height: membership_bg_1_source.height * aspectRatio
+                height: membership_bg_1_source.height * aspectRatio,
               }}
               resizeMode="stretch"
               source={membership_bg_1}
@@ -721,13 +721,13 @@ export default class MembershipPage extends React.Component {
             <View
               style={{
                 width: membership_bg_2_source.width * aspectRatio,
-                height: membership_bg_2_source.height * aspectRatio
+                height: membership_bg_2_source.height * aspectRatio,
               }}
             >
               <Image
                 style={{
                   width: membership_bg_2_source.width * aspectRatio,
-                  height: membership_bg_2_source.height * aspectRatio
+                  height: membership_bg_2_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
                 source={membership_bg_2}
@@ -737,20 +737,20 @@ export default class MembershipPage extends React.Component {
                 style={{
                   position: 'absolute',
                   top: 116 * aspectRatio,
-                  left: 60 * aspectRatio
+                  left: 60 * aspectRatio,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
                     title: '오디오북 멤버십 결제',
-                    type: 'bookclub'
+                    type: 'bookclub',
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_1_source.width * aspectRatio,
-                    height: membership_btn_1_source.height * aspectRatio
+                    height: membership_btn_1_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn_1}
@@ -765,20 +765,20 @@ export default class MembershipPage extends React.Component {
                     (windowWidth -
                       membership_btn_2_source.width * aspectRatio) /
                     2,
-                  justifyContent: 'center'
+                  justifyContent: 'center',
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
                     title: '클래스 멤버십 결제',
-                    type: 'campus'
+                    type: 'campus',
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_2_source.width * aspectRatio,
-                    height: membership_btn_2_source.height * aspectRatio
+                    height: membership_btn_2_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn_2}
@@ -789,20 +789,20 @@ export default class MembershipPage extends React.Component {
                 style={{
                   position: 'absolute',
                   top: 116 * aspectRatio,
-                  right: 60 * aspectRatio
+                  right: 60 * aspectRatio,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
                     title: '프리미엄 멤버십 결제',
-                    type: 'premium'
+                    type: 'premium',
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_3_source.width * aspectRatio,
-                    height: membership_btn_3_source.height * aspectRatio
+                    height: membership_btn_3_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn_3}
@@ -826,12 +826,12 @@ export default class MembershipPage extends React.Component {
                     if (x > side && x < side + boxWidth) {
                       this.buyMembership({
                         title: '오디오북 멤버십 결제',
-                        type: 'bookclub'
+                        type: 'bookclub',
                       });
                     } else if (x > center && x < center + boxWidth) {
                       this.buyMembership({
                         title: '클래스 멤버십 결제',
-                        type: 'campus'
+                        type: 'campus',
                       });
                     } else if (
                       x > windowWidth - side - boxWidth &&
@@ -839,7 +839,7 @@ export default class MembershipPage extends React.Component {
                     ) {
                       this.buyMembership({
                         title: '프리미엄 멤버십 결제',
-                        type: 'premium'
+                        type: 'premium',
                       });
                     }
                   }
@@ -850,7 +850,7 @@ export default class MembershipPage extends React.Component {
                   top: 0,
                   left: 0,
                   width: membership_free_source.width * aspectRatio,
-                  height: membership_free_source.height * aspectRatio
+                  height: membership_free_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
                 source={membership_free}
@@ -861,6 +861,9 @@ export default class MembershipPage extends React.Component {
               onResponderRelease={e => {
                 const x = e.nativeEvent.locationX;
                 const y = e.nativeEvent.locationY;
+                /* 포인터 값 -> 좌표 값: pointer / aspectRatio
+                 * 좌표 값 -> 포인터 값: coord * aspectRatio
+                 */
                 if (
                   x > 1046 * aspectRatio &&
                   x < 1140 * aspectRatio &&
@@ -869,10 +872,10 @@ export default class MembershipPage extends React.Component {
                 ) {
                   this.props.navigation.navigate('InquireListScreen');
                 } else if (
-                  x > 826 * aspectRatio &&
-                  x < 1160 * aspectRatio &&
-                  y > 1391 * aspectRatio &&
-                  y < 1425 * aspectRatio
+                  x > 77 * aspectRatio &&
+                  x < 393 * aspectRatio &&
+                  y > 1440 * aspectRatio &&
+                  y < 1473 * aspectRatio
                 ) {
                   this.props.navigation.navigate('MembershipDetailPage');
                 }
@@ -883,7 +886,7 @@ export default class MembershipPage extends React.Component {
               <Image
                 style={{
                   width: membership_bg_3_source.width * aspectRatio,
-                  height: membership_bg_3_source.height * aspectRatio
+                  height: membership_bg_3_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
                 source={membership_bg_3}
@@ -895,7 +898,7 @@ export default class MembershipPage extends React.Component {
                   top: 410 * aspectRatio,
                   left: 0,
                   width: '100%',
-                  height: 510 * aspectRatio
+                  height: 510 * aspectRatio,
                 }}
               >
                 <Swiper
@@ -910,7 +913,7 @@ export default class MembershipPage extends React.Component {
                         key={key}
                         style={{
                           width: 1440 * aspectRatio,
-                          height: 480 * aspectRatio
+                          height: 480 * aspectRatio,
                         }}
                         source={review}
                       />
@@ -927,19 +930,19 @@ export default class MembershipPage extends React.Component {
                     2,
                   bottom: 122 * aspectRatio,
                   width: '100%',
-                  height: membership_btn_source.height * aspectRatio
+                  height: membership_btn_source.height * aspectRatio,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.props.navigation.navigate('HomeScreen', {
-                    show_popup: true
+                    show_popup: true,
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_source.width * aspectRatio,
-                    height: membership_btn_source.height * aspectRatio
+                    height: membership_btn_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn}
@@ -995,7 +998,7 @@ export default class MembershipPage extends React.Component {
     const membership_review_array = [
       require('../../../images/mbs_review_1_ios.png'),
       require('../../../images/mbs_review_2_ios.png'),
-      require('../../../images/mbs_review_3_ios.png')
+      require('../../../images/mbs_review_3_ios.png'),
     ];
 
     return (
@@ -1005,13 +1008,13 @@ export default class MembershipPage extends React.Component {
         <ScrollView style={{ width: '100%' }}>
           <View
             style={{
-              backgroundColor: '#DDEEE2'
+              backgroundColor: '#DDEEE2',
             }}
           >
             <Image
               style={{
                 width: membership_bg_1_source.width * aspectRatio,
-                height: membership_bg_1_source.height * aspectRatio
+                height: membership_bg_1_source.height * aspectRatio,
               }}
               resizeMode="stretch"
               source={membership_bg_1}
@@ -1020,13 +1023,13 @@ export default class MembershipPage extends React.Component {
             <View
               style={{
                 width: membership_bg_2_source.width * aspectRatio,
-                height: membership_bg_2_source.height * aspectRatio
+                height: membership_bg_2_source.height * aspectRatio,
               }}
             >
               <Image
                 style={{
                   width: membership_bg_2_source.width * aspectRatio,
-                  height: membership_bg_2_source.height * aspectRatio
+                  height: membership_bg_2_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
                 source={membership_bg_2}
@@ -1036,20 +1039,20 @@ export default class MembershipPage extends React.Component {
                 style={{
                   position: 'absolute',
                   top: 80 * aspectRatio,
-                  left: 50 * aspectRatio
+                  left: 50 * aspectRatio,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
                     title: '오디오북 멤버십 결제',
-                    type: 'bookclub'
+                    type: 'bookclub',
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_1_source.width * aspectRatio,
-                    height: membership_btn_1_source.height * aspectRatio
+                    height: membership_btn_1_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn_1}
@@ -1064,20 +1067,20 @@ export default class MembershipPage extends React.Component {
                     (windowWidth -
                       membership_btn_2_source.width * aspectRatio) /
                     2,
-                  justifyContent: 'center'
+                  justifyContent: 'center',
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
                     title: '클래스 멤버십 결제',
-                    type: 'campus'
+                    type: 'campus',
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_2_source.width * aspectRatio,
-                    height: membership_btn_2_source.height * aspectRatio
+                    height: membership_btn_2_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn_2}
@@ -1088,20 +1091,20 @@ export default class MembershipPage extends React.Component {
                 style={{
                   position: 'absolute',
                   top: 80 * aspectRatio,
-                  right: 50 * aspectRatio
+                  right: 50 * aspectRatio,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
                     title: '프리미엄 멤버십 결제',
-                    type: 'premium'
+                    type: 'premium',
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_3_source.width * aspectRatio,
-                    height: membership_btn_3_source.height * aspectRatio
+                    height: membership_btn_3_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn_3}
@@ -1125,12 +1128,12 @@ export default class MembershipPage extends React.Component {
                     if (x > side && x < side + boxWidth) {
                       this.buyMembership({
                         title: '오디오북 멤버십 결제',
-                        type: 'bookclub'
+                        type: 'bookclub',
                       });
                     } else if (x > center && x < center + boxWidth) {
                       this.buyMembership({
                         title: '클래스 멤버십 결제',
-                        type: 'campus'
+                        type: 'campus',
                       });
                     } else if (
                       x > windowWidth - side - boxWidth &&
@@ -1138,7 +1141,7 @@ export default class MembershipPage extends React.Component {
                     ) {
                       this.buyMembership({
                         title: '프리미엄 멤버십 결제',
-                        type: 'premium'
+                        type: 'premium',
                       });
                     }
                   }
@@ -1149,7 +1152,7 @@ export default class MembershipPage extends React.Component {
                   top: 0,
                   left: 0,
                   width: membership_free_source.width * aspectRatio,
-                  height: membership_free_source.height * aspectRatio
+                  height: membership_free_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
                 source={membership_free}
@@ -1200,7 +1203,7 @@ export default class MembershipPage extends React.Component {
               <Image
                 style={{
                   width: membership_bg_3_source.width * aspectRatio,
-                  height: membership_bg_3_source.height * aspectRatio
+                  height: membership_bg_3_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
                 source={membership_bg_3}
@@ -1212,7 +1215,7 @@ export default class MembershipPage extends React.Component {
                   top: 300 * aspectRatio,
                   left: 0,
                   width: '100%',
-                  height: 450 * aspectRatio
+                  height: 450 * aspectRatio,
                 }}
               >
                 <Swiper
@@ -1227,7 +1230,7 @@ export default class MembershipPage extends React.Component {
                         key={key}
                         style={{
                           width: 1125 * aspectRatio,
-                          height: 405 * aspectRatio
+                          height: 405 * aspectRatio,
                         }}
                         source={review}
                       />
@@ -1244,19 +1247,19 @@ export default class MembershipPage extends React.Component {
                     2,
                   bottom: 122 * aspectRatio,
                   width: '100%',
-                  height: membership_btn_source.height * aspectRatio
+                  height: membership_btn_source.height * aspectRatio,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.props.navigation.navigate('HomeScreen', {
-                    show_popup: true
+                    show_popup: true,
                   })
                 }
               >
                 <Image
                   style={{
                     width: membership_btn_source.width * aspectRatio,
-                    height: membership_btn_source.height * aspectRatio
+                    height: membership_btn_source.height * aspectRatio,
                   }}
                   resizeMode="stretch"
                   source={membership_btn}
@@ -1272,5 +1275,5 @@ export default class MembershipPage extends React.Component {
 
 MembershipPage.defaultProps = {
   membership_price_prefix: '이후 매월 ',
-  membership_price_suffix: ' 결제하기 / 해지는 언제든지 쉽게!'
+  membership_price_suffix: ' 결제하기 / 해지는 언제든지 쉽게!',
 };
