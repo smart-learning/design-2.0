@@ -26,6 +26,7 @@ import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import HomeBanner from '../../components/home/HomeBanner';
 import globalStore from '../../commons/store';
+import BookNewList from '../../components/home/BookNewList';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -75,17 +76,17 @@ const styles = StyleSheet.create({
     paddingBottom: 30
   },
   monthContainer: {
-	  paddingTop: 30,
+    paddingTop: 30,
     paddingBottom: 30,
     backgroundColor: '#8cd8b1'
   },
   dailyContainer: {
-	  paddingTop: 30,
-	  paddingBottom: 30,
+    paddingTop: 30,
+    paddingBottom: 30
   },
   audioBookContainer: {
-	  paddingTop: 30,
-	  paddingBottom: 30,
+    paddingTop: 30,
+    paddingBottom: 30
   },
   audioCategory: {
     marginTop: 20,
@@ -281,16 +282,13 @@ class HomeAudioPage extends React.Component {
               <Text style={styles.titleH3}>새로 나온 오디오북</Text>
             </View>
 
-            {/* {(this.props.store.audioNewData.items !== undefined) && ( */}
-            <BookList
-              itemType={'new'}
+            <BookNewList
               itemData={
                 this.props.store.audioNewData.items
                   ? this.props.store.audioNewData.items
                   : this.props.store.audioNewData
               }
             />
-            {/* )} */}
 
             <View style={CommonStyles.alignJustifyContentBetween}>
               <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
