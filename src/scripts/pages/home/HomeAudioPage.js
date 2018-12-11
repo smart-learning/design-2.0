@@ -25,6 +25,7 @@ import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import HomeBanner from '../../components/home/HomeBanner';
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -69,18 +70,22 @@ const styles = StyleSheet.create({
     marginTop: 7,
     backgroundColor: '#cecece'
   },
+  continueContainer: {
+    paddingTop: 30,
+    paddingBottom: 30
+  },
   monthContainer: {
-    paddingTop: 50,
+	  paddingTop: 30,
     paddingBottom: 30,
     backgroundColor: '#8cd8b1'
   },
   dailyContainer: {
-    paddingTop: 50,
-    paddingBottom: 50
+	  paddingTop: 30,
+	  paddingBottom: 30,
   },
   audioBookContainer: {
-    paddingTop: 50,
-    paddingBottom: 50
+	  paddingTop: 30,
+	  paddingBottom: 30,
   },
   audioCategory: {
     marginTop: 20,
@@ -200,17 +205,35 @@ class HomeAudioPage extends React.Component {
           </View>
           {/* /이미지 스와이퍼 */}
 
-          <View>
-            {this.props.store.audioUseData &&
-              this.props.store.audioUseData.length > 0 && (
-                <View>
-                  <View style={CommonStyles.alignJustifyItemCenter}>
-                    <Text style={styles.titleH3}>최근재생 오디오북</Text>
-                  </View>
-                  <BookContinueList itemData={this.props.store.audioUseData} />
-                </View>
-              )}
-          </View>
+          {globalStore.welaaaAuth && (
+            <View>
+              <View
+                style={[
+                  CommonStyles.contentContainer,
+                  styles.continueContainer
+                ]}
+              >
+                {this.props.store.audioUseData &&
+                  this.props.store.audioUseData.length > 0 && (
+                    <View>
+                      <View style={CommonStyles.alignJustifyItemCenter}>
+                        <Text style={styles.titleH2}>최근재생 오디오북</Text>
+                      </View>
+                      <BookContinueList
+                        itemData={this.props.store.audioUseData}
+                      />
+                    </View>
+                  )}
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  height: 8,
+                  backgroundColor: '#F0F0F4'
+                }}
+              />
+            </View>
+          )}
 
           {/*<View style={styles.monthContainer}>*/}
           {/*<BookMonthly itemData={this.props.store.audioMonth} />*/}
