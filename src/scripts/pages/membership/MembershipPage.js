@@ -250,112 +250,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const renderRuleIOS = () => {
-  return (
-    <View style={styles.sectionList}>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          유료 멤버십 구독 후 1개월은 무료로 이용 하실 수 있습니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          유료 멤버십 구매 시 이미 무료 멤버십 기간이 남아 있다면 무료 멤버십
-          기간이 끝난 후 구매하실 수 있습니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          구매는 회원님의 iTunes 계정으로 비용이 청구됩니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          구매가격에는 부가세와 결제수수료가 포함되어 있습니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          각 멤버십은 1개월마다 자동으로 결제됩니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          이용권 관리는 App Store 앱에서 로그인 후 "계정 > 구독" 에서 관리하실
-          수 있습니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          현 구독기간 종료시점으로부터 최소 24시간전에 자동 갱신을 해지하지 않는
-          한, 현 구독기간 종료시 구독이 자동으로 갱신되고 회원님의
-          iTunes계정으로 다시 청구가 이루어집니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          구매 후 언제든 Apple ID계정 설정에서 자동갱신을 관리 또는 해지 하실 수
-          있습니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          도움이 필요하시면
-          <Text style={styles.sectionListItemTextImportant}>1:1문의</Text>를
-          이용해주세요.
-        </Text>
-      </View>
-    </View>
-  );
-};
-
-const renderRuleAndroid = () => {
-  return (
-    <View style={styles.sectionList}>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          멤버십 비용은 매월 자동결제 됩니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          무약정으로 언제든지 해지하실 수 있습니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          해당 금액은 세금 포함 금액입니다.
-        </Text>
-      </View>
-      <View style={styles.sectionListItem}>
-        <View style={styles.sectionListItemBullet} borderRadius={3} />
-        <Text style={styles.sectionListItemText}>
-          도움이 필요하시면
-          <Text style={styles.sectionListItemTextImportant}>1:1문의</Text>를
-          이용해주세요.
-        </Text>
-      </View>
-    </View>
-  );
-};
-
-const MembershipRule = Platform.select({
-  ios: renderRuleIOS(),
-  android: renderRuleAndroid(),
-});
-
 @observer
 export default class MembershipPage extends React.Component {
   constructor(props) {
@@ -449,17 +343,19 @@ export default class MembershipPage extends React.Component {
       globalStore.currentMembership &&
       globalStore.currentMembership.type_text
     ) {
-      return this.renderMembership();
+      return this._renderMembership();
     } else {
       if ('android' === Platform.OS) {
-        return this.renderNonMembership_android();
+        return this._renderNonMembershipAndroid();
       } else {
-        return this.renderNonMembership_ios();
+        return this._renderNonMembershipIOS();
       }
     }
   }
 
-  renderMembership() {
+  _renderMembership() {
+    const { paid_membership: paidMembership } = globalStore.currentMembership;
+
     return (
       <SafeAreaView
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
@@ -612,30 +508,10 @@ export default class MembershipPage extends React.Component {
             ) : (
               undefined
             )}
-            {MembershipRule}
 
-            {Platform.OS === 'android' &&
-            globalStore.currentMembership.stop_payment === true ? (
-              <View style={styles.cancelButton} borderRadius={5}>
-                <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
-              </View>
-            ) : (
-              <TouchableOpacity
-                onPress={() => this.cancel_membership_confirm()}
-              >
-                <View style={styles.cancelButton} borderRadius={5}>
-                  {Platform.OS === 'ios' ? (
-                    <Text style={styles.cancelButtonText}>
-                      Apple 구독 취소 또는 변경
-                    </Text>
-                  ) : (
-                    <Text style={styles.cancelButtonText}>
-                      멤버십 구독 해지
-                    </Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-            )}
+            {paidMembership
+              ? this._renderUnsubscribe()
+              : this._renderFreeMembershipInfo()}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -672,7 +548,7 @@ export default class MembershipPage extends React.Component {
     }
   };
 
-  renderNonMembership_android() {
+  _renderNonMembershipAndroid() {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const aspectRatio = windowWidth / 1440;
@@ -970,7 +846,7 @@ export default class MembershipPage extends React.Component {
     );
   }
 
-  renderNonMembership_ios() {
+  _renderNonMembershipIOS() {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const aspectRatio = windowWidth / 1125;
@@ -1299,6 +1175,208 @@ export default class MembershipPage extends React.Component {
           </View>
         </ScrollView>
       </SafeAreaView>
+    );
+  }
+
+  _renderUnsubscribe() {
+    const { stop_payment: stopPayment } = globalStore.currentMembership;
+    if (Platform.OS === 'android' && stopPayment === true) {
+      return (
+        <View>
+          {this._renderMembershipRule()}
+          <View style={styles.cancelButton} borderRadius={5}>
+            <Text style={styles.cancelButtonText}>멤버십 구독 해지됨</Text>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <View>
+        {this._renderMembershipRule()}
+        <TouchableOpacity onPress={() => this.cancel_membership_confirm()}>
+          <View style={styles.cancelButton} borderRadius={5}>
+            {Platform.OS === 'ios' ? (
+              <Text style={styles.cancelButtonText}>
+                Apple 구독 취소 또는 변경
+              </Text>
+            ) : (
+              <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  _renderFreeMembershipInfo() {
+    const {
+      type_memo: typeMemo,
+      start_at: startAt,
+      expire_at: expireAt,
+    } = globalStore.currentMembership;
+
+    return (
+      <View>
+        <View style={{ marginBottom: 16 }}>
+          <Text>쿠폰 내용: {typeMemo}</Text>
+          <Text>
+            사용 기간: {moment(startAt).format('YYYY년 MM월 DD일')} ~{' '}
+            {moment(expireAt).format('YYYY년 MM월 DD일')}
+          </Text>
+        </View>
+        <View style={styles.sectionList}>
+          <View style={styles.sectionListItem}>
+            <View style={styles.sectionListItemBullet} borderRadius={3} />
+            <Text style={styles.sectionListItemText}>
+              현재 멤버십은 {moment(expireAt).format('YYYY년 MM월 DD일')} 까지
+              유효하며, 자동연장 및 결제되지 않습니다.
+            </Text>
+          </View>
+          <View style={styles.sectionListItem}>
+            <View style={styles.sectionListItemBullet} borderRadius={3} />
+            <Text style={styles.sectionListItemText}>
+              멤버십 혜택은 사용기간 동안 이용 가능합니다.
+            </Text>
+          </View>
+          <View style={styles.sectionListItem}>
+            <View style={styles.sectionListItemBullet} borderRadius={3} />
+
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('InquireListScreen');
+              }}
+            >
+              <Text style={styles.sectionListItemText}>
+                도움이 필요하시면{' '}
+                <Text style={styles.sectionListItemTextImportant}>1:1문의</Text>
+                를 이용해주세요.
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  _renderMembershipRule() {
+    return Platform.select({
+      ios: this._renderRuleIOS(),
+      android: this._renderRuleAndroid(),
+    });
+  }
+
+  _renderRuleIOS() {
+    return (
+      <View style={styles.sectionList}>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            유료 멤버십 구독 후 1개월은 무료로 이용 하실 수 있습니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            유료 멤버십 구매 시 이미 무료 멤버십 기간이 남아 있다면 무료 멤버십
+            기간이 끝난 후 구매하실 수 있습니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            구매는 회원님의 iTunes 계정으로 비용이 청구됩니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            구매가격에는 부가세와 결제수수료가 포함되어 있습니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            각 멤버십은 1개월마다 자동으로 결제됩니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            이용권 관리는 App Store 앱에서 로그인 후 "계정 > 구독" 에서 관리하실
+            수 있습니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            현 구독기간 종료시점으로부터 최소 24시간전에 자동 갱신을 해지하지
+            않는 한, 현 구독기간 종료시 구독이 자동으로 갱신되고 회원님의
+            iTunes계정으로 다시 청구가 이루어집니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            구매 후 언제든 Apple ID계정 설정에서 자동갱신을 관리 또는 해지 하실
+            수 있습니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('InquireListScreen');
+            }}
+          >
+            <Text style={styles.sectionListItemText}>
+              도움이 필요하시면
+              <Text style={styles.sectionListItemTextImportant}>1:1문의</Text>를
+              이용해주세요.
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  _renderRuleAndroid() {
+    return (
+      <View style={styles.sectionList}>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            멤버십 비용은 매월 자동결제 됩니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            무약정으로 언제든지 해지하실 수 있습니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <Text style={styles.sectionListItemText}>
+            해당 금액은 세금 포함 금액입니다.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('InquireListScreen');
+            }}
+          >
+            <Text style={styles.sectionListItemText}>
+              도움이 필요하시면{' '}
+              <Text style={styles.sectionListItemTextImportant}>1:1문의</Text>를
+              이용해주세요.
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   }
 }
