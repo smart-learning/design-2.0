@@ -17,7 +17,7 @@ const clientSecret = 'IcQUptRiZBe3mqLbx8BIB7dqfySP52J4He6TmMXnnzupUNIj';
 const authBasicCode = Base64.btoa(`${clientId}:${clientSecret}`);
 
 // 데이터 캐시 기본 유효시간 (초)
-const DEFAULT_EXPIRED = 300;
+const DEFAULT_EXPIRED = 0;
 
 function encodeParams(obj) {
   let params = [];
@@ -90,7 +90,7 @@ export default {
       expired = 1;
     }
     return cacheOrLoad(
-      API_PREFIX + 'v1.0/contents/video-courses/categories',
+      API_PREFIX + 'v1.0/contents/video-courses-admin/categories',
       expired,
     )
       .then(data => {
@@ -114,7 +114,7 @@ export default {
       expired = 1;
     }
     return cacheOrLoad(
-      API_PREFIX + 'v1.0/contents/audiobooks/categories',
+      API_PREFIX + 'v1.0/contents/audiobooks-admin/categories',
       expired,
     )
       .then(data => {
@@ -151,7 +151,7 @@ export default {
   },
 
   getClassList(ccode = null, page = 1, sort = 'hot') {
-    let url = API_PREFIX + 'v1.1/contents/video-courses';
+    let url = API_PREFIX + 'v1.1/contents/video-courses-admin';
     const params = {};
     if (ccode) {
       params.ccode = ccode;
@@ -196,7 +196,8 @@ export default {
 
   getLectureListByCategories() {
     return cacheOrLoad(
-      API_PREFIX + 'v1.0/contents/video-courses/promotion-with-categories',
+      API_PREFIX +
+        'v1.0/contents/video-courses-admin/promotion-with-categories',
       DEFAULT_EXPIRED,
     )
       .then(data => {
@@ -208,7 +209,7 @@ export default {
   },
 
   getAudioBookList(ccode = null, page = 1, sort = 'hot') {
-    let url = API_PREFIX + 'v1.1/contents/audiobooks';
+    let url = API_PREFIX + 'v1.1/contents/audiobooks-admin';
 
     // default 신규 'new' , sort=new
     // 인기 , sort=hot
@@ -244,7 +245,7 @@ export default {
 
   getAudioBookByCategories() {
     return cacheOrLoad(
-      API_PREFIX + 'v1.0/contents/audiobooks/group-by/categories',
+      API_PREFIX + 'v1.0/contents/audiobooks-admin/group-by/categories',
       DEFAULT_EXPIRED,
     )
       .then(data => {
@@ -258,7 +259,7 @@ export default {
   getLectureItem(id) {
     return new Promise((resolve, reject) => {
       axios
-        .get(API_PREFIX + 'v1.0/contents/video-courses/' + id)
+        .get(API_PREFIX + 'v1.0/contents/video-courses-admin/' + id)
         .then(response => {
           resolve(response.data);
         })
@@ -272,7 +273,12 @@ export default {
   getLectureClipList(id) {
     return new Promise((resolve, reject) => {
       axios
-        .get(API_PREFIX + 'v1.0/contents/video-courses/' + id + '/video-clips')
+        .get(
+          API_PREFIX +
+            'v1.0/contents/video-courses-admin/' +
+            id +
+            '/video-clips',
+        )
         .then(response => {
           let itemNumber = 1;
           response.data.forEach(element => {
@@ -291,7 +297,7 @@ export default {
   getBookChapterList(id) {
     return new Promise((resolve, reject) => {
       axios
-        .get(API_PREFIX + 'v1.0/contents/audiobooks/' + id + '/chapters')
+        .get(API_PREFIX + 'v1.0/contents/audiobooks-admin/' + id + '/chapters')
         .then(response => {
           let itemNumber = 1;
           response.data.forEach(element => {
@@ -406,7 +412,7 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/video', expired)
+    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/video-admin', expired)
       .then(data => {
         return data;
       })
@@ -421,7 +427,7 @@ export default {
       expired = 1;
     }
     return cacheOrLoad(
-      API_PREFIX + 'v1.0/contents/video-clips/realtime-chart',
+      API_PREFIX + 'v1.0/contents/video-clips-admin/realtime-chart',
       expired,
     )
       .then(data => {
@@ -446,7 +452,7 @@ export default {
   getBookItem(id) {
     return new Promise((resolve, reject) => {
       axios
-        .get(API_PREFIX + 'v1.0/contents/audiobooks/' + id)
+        .get(API_PREFIX + 'v1.0/contents/audiobooks-admin/' + id)
         .then(response => {
           resolve(response.data);
         })
@@ -481,7 +487,10 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/contents/audiobooks/botm', expired)
+    return cacheOrLoad(
+      API_PREFIX + 'v1.0/contents/audiobooks-admin/botm',
+      expired,
+    )
       .then(data => {
         return data.reverse();
       })
@@ -633,7 +642,7 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/audiobook', expired)
+    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/audiobook-admin', expired)
       .then(data => {
         return data;
       })
@@ -691,9 +700,11 @@ export default {
   },
 
   getSeriesContents() {
-    return axios.get(API_PREFIX + 'v1.0/contents/video-series').then(resp => {
-      return resp.data;
-    });
+    return axios
+      .get(API_PREFIX + 'v1.0/contents/video-series-admin')
+      .then(resp => {
+        return resp.data;
+      });
   },
 
   getDailyBookList(isRefresh = false) {
@@ -764,7 +775,7 @@ export default {
 
   getBotmData(month, sort) {
     return axios
-      .get(API_PREFIX + `v1.0/contents/audiobooks/botm/${month}/${sort}`)
+      .get(API_PREFIX + `v1.0/contents/audiobooks-admin/botm/${month}/${sort}`)
       .then(resp => {
         return resp.data;
       });
