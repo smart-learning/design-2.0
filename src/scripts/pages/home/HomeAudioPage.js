@@ -42,9 +42,9 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   titleH2: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#353A3C'
   },
   titleH4: {
     paddingTop: 10,
@@ -52,9 +52,8 @@ const styles = StyleSheet.create({
     color: '#888888'
   },
   titleH3: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: '#333333'
+    fontSize: 16,
+    color: '#353A3C'
   },
   titleParagraph: {
     paddingLeft: 15,
@@ -163,7 +162,7 @@ class HomeAudioPage extends React.Component {
                 height={window.width}
                 dotColor={'#888888'}
                 activeDotColor={'#ffffff'}
-				paginationStyle={{ left: '-65%', bottom: 10 }}
+                paginationStyle={{ left: '-65%', bottom: 10 }}
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';
@@ -195,37 +194,50 @@ class HomeAudioPage extends React.Component {
           </View>
           {/* /이미지 스와이퍼 */}
 
-          <View style={styles.monthContainer}>
-            {/*<BookMonthly itemData={this.props.store.audioMonth} />*/}
+          <View>
+            {this.props.store.audioUseData &&
+              this.props.store.audioUseData.length > 0 && (
+                <View>
+                  <View style={CommonStyles.alignJustifyItemCenter}>
+                    <Text style={styles.titleH3}>최근재생 오디오북</Text>
+                  </View>
+                  <BookContinueList itemData={this.props.store.audioUseData} />
+                </View>
+              )}
           </View>
 
+          {/*<View style={styles.monthContainer}>*/}
+          {/*<BookMonthly itemData={this.props.store.audioMonth} />*/}
+          {/*</View>*/}
+
           {/*매일 책 한 권*/}
-          <View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
-            <BookDaily itemData={this.props.store.audioDaily} />
-          </View>
+          {/*<View style={[CommonStyles.contentContainer, styles.dailyContainer]}>*/}
+            {/*<BookDaily itemData={this.props.store.audioDaily} />*/}
+          {/*</View>*/}
 
           <View
             style={[CommonStyles.contentContainer, styles.audioBookContainer]}
           >
-            <View>
-              <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                윌라 오디오북
-              </Text>
-              <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                4차 산업혁명 시대의 새로운 책 읽기
-              </Text>
+            <View
+              style={[
+                CommonStyles.alignJustifyContentBetween,
+                styles.titleContainer
+              ]}
+            >
+              <View>
+                <Text style={styles.titleH2}>윌라 오디오북</Text>
+              </View>
+              <View style={styles.showMoreWrapper}>
+                <TouchableOpacity
+                  style={styles.showMore}
+                  onPress={() => {
+                    this.props.navigation.navigate('AudioBookPage');
+                  }}
+                >
+                  <Text style={styles.showMoreText}>전체보기</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.showMoreWrapper}>
-              <TouchableOpacity
-                style={styles.showMore}
-                onPress={() => {
-                  this.props.navigation.navigate('AudioBookPage');
-                }}
-              >
-                <Text style={styles.showMoreText}>전체보기</Text>
-              </TouchableOpacity>
-            </View>
-
             <View style={styles.audioCategory}>
               <View style={styles.audioCategoryHr} />
               <PageCategory
@@ -252,10 +264,7 @@ class HomeAudioPage extends React.Component {
             {/* )} */}
 
             <View style={CommonStyles.alignJustifyContentBetween}>
-              <Text style={styles.titleH3}>많이 듣고있는 오디오북</Text>
-              <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                {updatedAt} 업데이트
-              </Text>
+              <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
             </View>
             {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
             <BookList
@@ -268,76 +277,20 @@ class HomeAudioPage extends React.Component {
             />
             {/* )} */}
 
-            {1 === 2 && (
-              <View>
-                <View style={CommonStyles.alignJustifyContentBetween}>
-                  <Text style={styles.titleH3}>윌라 추천 오디오북</Text>
-                </View>
-
-                <BookList
-                  itemType={'new'}
-                  itemData={
-                    this.props.store.audioRecommendData.items
-                      ? this.props.store.audioRecommendData.items
-                      : this.props.store.audioRecommendData
-                  }
-                />
+            <View>
+              <View style={CommonStyles.alignJustifyContentBetween}>
+                <Text style={styles.titleH3}>000님의 추천 오디오북</Text>
               </View>
-            )}
 
-            {1 === 2 && (
-              <View>
-                <View style={CommonStyles.alignJustifyItemCenter}>
-                  <Text style={styles.titleH3}>구매한 오디오북</Text>
-                </View>
-                <View style={styles.titleHr} />
-
-                {this.props.store.audioBuyData &&
-                  this.props.store.audioBuyData.length === 0 && (
-                    <Text
-                      style={{
-                        paddingTop: 20,
-                        paddingBottom: 20,
-                        textAlign: 'center'
-                      }}
-                    >
-                      구매한 내역이 없습니다
-                    </Text>
-                  )}
-
-                {this.props.store.audioBuyData &&
-                  this.props.store.audioBuyData.length > 0 && (
-                    <BookContinueList
-                      itemData={this.props.store.audioBuyData}
-                    />
-                  )}
-
-                <View style={CommonStyles.alignJustifyItemCenter}>
-                  <Text style={styles.titleH3}>최근재생 오디오북</Text>
-                </View>
-                <View style={styles.titleHr} />
-
-                {this.props.store.audioUseData &&
-                  this.props.store.audioUseData.length === 0 && (
-                    <Text
-                      style={{
-                        paddingTop: 20,
-                        paddingBottom: 20,
-                        textAlign: 'center'
-                      }}
-                    >
-                      재생 내역이 없습니다
-                    </Text>
-                  )}
-
-                {this.props.store.audioUseData &&
-                  this.props.store.audioUseData.length > 0 && (
-                    <BookContinueList
-                      itemData={this.props.store.audioUseData}
-                    />
-                  )}
-              </View>
-            )}
+              <BookList
+                itemType={'new'}
+                itemData={
+                  this.props.store.audioRecommendData.items
+                    ? this.props.store.audioRecommendData.items
+                    : this.props.store.audioRecommendData
+                }
+              />
+            </View>
           </View>
         </ScrollView>
       </PTRView>
