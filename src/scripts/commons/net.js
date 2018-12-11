@@ -595,7 +595,7 @@ export default {
     return axios.get(API_PREFIX + 'v1.0/membership/current');
   },
 
-  getVouchersStatus() {
+  async getVouchersStatus() {
     return axios
       .get(API_PREFIX + 'v1.0/membership/vouchers/status')
       .then(resp => {
