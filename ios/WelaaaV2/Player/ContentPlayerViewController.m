@@ -405,8 +405,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                afterDelay : 3.0f];
   
     // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
-    if ( !_isAuthor )
-        [self showToast : @"프리뷰 모드로 재생합니다."];
+    [self showToastAboutPlaybackAuthority];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -1694,8 +1693,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_miniPlayerUiView setTitleLabel00 : [_args objectForKey:@"name"]];
     [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
   
-    if ( !_isAuthor )
-        [self showToast : @"프리뷰 모드로 재생됩니다."];
+    [self showToastAboutPlaybackAuthority];
 }
 
 //
@@ -2393,7 +2391,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         if ( isToast )
         {
-            [_contentView makeToast : @"프리뷰 이용 중입니다."];
+            [self showToastAboutPlaybackAuthority];
           
             return ;
         }
@@ -2598,6 +2596,17 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self.view makeToast : text];
 }
 
+- (void) showToastAboutPlaybackAuthority
+{
+    // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
+    if ( _isDailyBook )
+        ;//[self showToast : @"미리 듣기로 제공됩니다."];
+    else if ( !_isAuthor && _isAudioContent )
+        [self showToast : @"미리 듣기로 제공됩니다."];
+    else if ( !_isAuthor && !_isAudioContent )
+        [self showToast : @"1분30초 미리 보기 입니다."];
+}
+
 #pragma mark - Time Control
 
 //
@@ -2799,7 +2808,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_listView removeFromSuperview];
         _listView = nil;
       
-        return [self showToast : @"프리뷰 이용 중입니다."];
+        return [self showToastAboutPlaybackAuthority];
     }
   
     // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
