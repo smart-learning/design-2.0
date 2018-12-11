@@ -291,7 +291,7 @@ export default class MembershipPage extends React.Component {
   }
 
   //멤버십 해지
-  cancel_membership_confirm() {
+  cancelMembershipConfirm() {
     let _this = this;
     Alert.alert(
       '멤버십 구독 해지',
@@ -302,7 +302,7 @@ export default class MembershipPage extends React.Component {
           text: '네',
           onPress: () => {
             if (Platform.OS === 'ios') native.unsubscribe();
-            else this.cancel_membership_proc();
+            else this.cancelMembershipProc();
           },
         },
       ],
@@ -310,7 +310,7 @@ export default class MembershipPage extends React.Component {
     );
   }
 
-  cancel_membership_proc = async () => {
+  cancelMembershipProc = async () => {
     const membership_info = await net.cancelMembership();
 
     if (membership_info.status === true) {
@@ -1194,7 +1194,7 @@ export default class MembershipPage extends React.Component {
     return (
       <View>
         {this._renderMembershipRule()}
-        <TouchableOpacity onPress={() => this.cancel_membership_confirm()}>
+        <TouchableOpacity onPress={() => this.cancelMembershipConfirm()}>
           <View style={styles.cancelButton} borderRadius={5}>
             {Platform.OS === 'ios' ? (
               <Text style={styles.cancelButtonText}>
