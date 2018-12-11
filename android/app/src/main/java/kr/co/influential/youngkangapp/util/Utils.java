@@ -7,6 +7,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
@@ -17,6 +19,7 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -481,5 +484,68 @@ public class Utils {
         }
 
         return checkCidAudioChapter;
+    }
+
+    public static String getyyyyMMddHHmmss(){
+        /** yyyyMMddHHmmss Date Format */
+        SimpleDateFormat yyyyMMddHHmmss = new SimpleDateFormat("yyyyMMddHHmmss");
+        return yyyyMMddHHmmss.format(new Date());
+    }
+
+
+    public static String encrypt(String strData) { // 암호화 시킬 데이터
+        String strOUTData = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5"); // "MD5 형식으로 암호화"
+
+            md.reset();
+            //byte[] bytData = strData.getBytes();
+            //md.update(bytData);
+            md.update(strData.getBytes());
+            byte[] digest = md.digest();
+
+            StringBuffer hashedpasswd = new StringBuffer();
+            String hx;
+
+            for (int i=0;i<digest.length;i++){
+                hx =  Integer.toHexString(0xFF & digest[i]);
+                //0x03 is equal to 0x3, but we need 0x03 for our md5sum
+                if(hx.length() == 1){hx = "0" + hx;}
+                hashedpasswd.append(hx);
+
+            }
+            strOUTData = hashedpasswd.toString();
+            byte[] raw = strOUTData.getBytes();
+            byte[] encodedBytes = Base64.encode(raw, 0);
+            strOUTData = new String(encodedBytes);
+            //strOUTData = new String(raw);
+        }
+        catch (NoSuchAlgorithmException e) {
+
+        }
+        return strOUTData;  // 암호화된 데이터를 리턴...
+    }
+
+    public static void AlertDialog(String title,String message,Context context)
+    {
+        AlertDialog.Builder ab = null;
+        ab = new AlertDialog.Builder( context );
+        ab.setMessage(message);
+        ab.setPositiveButton(android.R.string.ok, null);
+        ab.setTitle(title);
+        ab.show();
+    }
+
+
+    public static boolean isPackageInstalled(Context ctx, String pkgName) {
+
+
+        try {
+            ctx.getPackageManager().getPackageInfo(pkgName, PackageManager.GET_ACTIVITIES);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

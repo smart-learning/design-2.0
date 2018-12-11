@@ -38,4 +38,6 @@ target 'WelaaaV2' do
 
   #pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-appsflyer', :path => '../node_modules/react-native-appsflyer'
+
 end

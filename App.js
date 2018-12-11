@@ -43,6 +43,8 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
 import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 
+import appsFlyer from 'react-native-appsflyer';
+
 class Data {
   @observable
   welaaaAuthLoaded = false;
@@ -220,6 +222,26 @@ class App extends React.Component {
 
   async componentDidMount() {
     this.addNetInfoEvent();
+
+    const options = {
+      devKey: "cV7GxoAwtL5YWigvJmtPXg",
+      isDebug: true
+    };
+
+    if (Platform.OS === 'ios') {
+      options.appId = "123456789";
+      //Apple Application ID (for iOS only)
+    }
+
+    appsFlyer.initSdk(options,
+      (result) => {
+        console.log('appsFlyer.initSdk OK ', result);
+      },
+      (error) => {
+        console.error('appsFlyer.initSdk Error', error);
+      }
+    )
+
     if ('ios' === Platform.OS) {
       console.log('======', Native.getPlayerManager());
       const playerManager = Native.getPlayerManager();
@@ -260,6 +282,8 @@ class App extends React.Component {
           Native.downloadState(arg),
         ),
       );
+
+
     }
 
     Linking.addEventListener('url', this._handleOpenURL);
