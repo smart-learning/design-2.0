@@ -271,7 +271,8 @@ public class MediaNotificationManager extends BroadcastReceiver {
   private void setNotificationLayout(RemoteViews remoteViews) {
     MediaDescriptionCompat description = mMetadata.getDescription();
 
-    remoteViews.setTextViewText(R.id.text_title, description.getTitle());
+    remoteViews.setTextViewText(R.id.sub_title, description.getSubtitle());
+    remoteViews.setTextViewText(R.id.title, description.getTitle());
     remoteViews.setOnClickPendingIntent(R.id.btn_remote_play, mPlayIntent);
     remoteViews.setOnClickPendingIntent(R.id.btn_remote_pause, mPauseIntent);
     remoteViews.setOnClickPendingIntent(R.id.btn_remote_close, mStopIntent);

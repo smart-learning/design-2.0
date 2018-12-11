@@ -10,7 +10,6 @@
   <RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
     android:padding="10dp">
 
     <ImageView
@@ -20,35 +19,43 @@
       android:src="@drawable/notify_logo_player"/>
   </RelativeLayout>
 
-  <RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_weight="1">
-    <TextView
-      android:id="@+id/text_title"
-      style="@style/TextAppearance.Compat.Notification.Title"
-      android:layout_width="180dp"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:ellipsize="marquee"
-      android:lineSpacingExtra="7sp"
-      android:maxLines="2"
-      android:text="mini_control_title"
-      android:textColor="#efefef"
-      android:textSize="13sp"/>
-  </RelativeLayout>
-
-  <RelativeLayout
-    android:layout_width="wrap_content"
+  <LinearLayout
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="1"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/sub_title"
+      style="@style/TextAppearance.Compat.Notification.Title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:text="최근 재생 이력이 없습니다. "
+      android:textColor="@color/colorWhite"
+      android:textSize="13dp"/>
+
+    <TextView
+      android:id="@+id/title"
+      style="@style/TextAppearance.Compat.Notification.Title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:textColor="#efefef"
+      android:textSize="13dp"/>
+  </LinearLayout>
+
+  <RelativeLayout
+    android:layout_width="55dp"
+    android:layout_height="55dp"
     android:gravity="center_vertical|center_horizontal">
 
     <Button
       android:id="@+id/btn_remote_play"
       android:layout_width="30dp"
       android:layout_height="30dp"
-      android:layout_weight="1"
       android:background="@drawable/notify_ico_play"
       android:visibility="invisible"/>
 
@@ -56,14 +63,12 @@
       android:id="@+id/btn_remote_pause"
       android:layout_width="30dp"
       android:layout_height="30dp"
-      android:layout_weight="1"
       android:background="@drawable/notify_ico_pause"
       android:visibility="visible"/>
   </RelativeLayout>
   <RelativeLayout
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:layout_weight="1"
+    android:layout_width="55dp"
+    android:layout_height="55dp"
     android:gravity="center_vertical|center_horizontal">
 
     <Button
