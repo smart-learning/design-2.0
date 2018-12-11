@@ -405,8 +405,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                afterDelay : 3.0f];
   
     // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
-    if ( !_isAuthor )
-        [self showToast : @"프리뷰 모드로 재생합니다."];
+    [self showToastAboutPlaybackAuthority];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -1032,6 +1031,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_playButton setImage : [[UIImage imageNamed : @"icon_play"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _playButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _playButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _playButton.layer.shadowRadius = 5;
+    _playButton.layer.shadowOpacity = 0.5;
     [_playButton addTarget : self
                     action : @selector(pressedPlayButton)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1043,6 +1046,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                    forState : UIControlStateNormal];
     [_pauseButton setImage : [[UIImage imageNamed : @"icon_pause"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                    forState : UIControlStateHighlighted];
+    _pauseButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _pauseButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _pauseButton.layer.shadowRadius = 5;
+    _pauseButton.layer.shadowOpacity = 0.5;
     [_pauseButton addTarget : self
                       action : @selector(pressedPauseButton)
             forControlEvents : UIControlEventTouchUpInside];
@@ -1054,6 +1061,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                forState : UIControlStateNormal];
     [_rwButton setImage : [[UIImage imageNamed : @"icon_rw"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                forState : UIControlStateHighlighted];
+    _rwButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _rwButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _rwButton.layer.shadowRadius = 5;
+    _rwButton.layer.shadowOpacity = 0.5;
     [_rwButton addTarget : self
                   action : @selector(pressedRwButton)
         forControlEvents : UIControlEventTouchUpInside];
@@ -1065,6 +1076,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                forState : UIControlStateNormal];
     [_ffButton setImage : [[UIImage imageNamed : @"icon_ff"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                forState : UIControlStateHighlighted];
+    _ffButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _ffButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _ffButton.layer.shadowRadius = 5;
+    _ffButton.layer.shadowOpacity = 0.5;
     [_ffButton addTarget : self
                   action : @selector(pressedFfButton)
         forControlEvents : UIControlEventTouchUpInside];
@@ -1072,6 +1087,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _speedButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _speedButton.frame = CGRectMake(CGRectGetMinX(_rwButton.frame) - 50.f, 10.f, 50.f, 50.f);
+    _speedButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _speedButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _speedButton.layer.shadowRadius = 5;
+    _speedButton.layer.shadowOpacity = 0.5;
     [_speedButton addTarget : self
                      action : @selector(pressedSpeedButton)
            forControlEvents : UIControlEventTouchUpInside];
@@ -1083,6 +1102,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_listButton setImage : [[UIImage imageNamed : @"icon_list"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _listButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _listButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _listButton.layer.shadowRadius = 5;
+    _listButton.layer.shadowOpacity = 0.5;
     [_listButton addTarget : self
                     action : @selector(pressedListButton)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1144,6 +1167,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_moveBackButton setImage : [[UIImage imageNamed : @"icon_move_back"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _moveBackButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _moveBackButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _moveBackButton.layer.shadowRadius = 5;
+    _moveBackButton.layer.shadowOpacity = 0.5;
     [_moveBackButton addTarget : self
                     action : @selector(setPreviousContent)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1155,6 +1182,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_moveNextButton setImage : [[UIImage imageNamed : @"icon_move_next"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _moveNextButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _moveNextButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _moveNextButton.layer.shadowRadius = 5;
+    _moveNextButton.layer.shadowOpacity = 0.5;
     [_moveNextButton addTarget : self
                     action : @selector(setNextContent)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1187,6 +1218,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     [_speedButton setImage : [image tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                   forState : UIControlStateHighlighted];
+    _speedButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _speedButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _speedButton.layer.shadowRadius = 5;
+    _speedButton.layer.shadowOpacity = 0.5;
 }
 
 - (void) setAudioContentBackgroundImageUrl : (NSString *) url
@@ -1658,8 +1693,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_miniPlayerUiView setTitleLabel00 : [_args objectForKey:@"name"]];
     [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
   
-    if ( !_isAuthor )
-        [self showToast : @"프리뷰 모드로 재생됩니다."];
+    [self showToastAboutPlaybackAuthority];
 }
 
 //
@@ -2357,7 +2391,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         if ( isToast )
         {
-            [_contentView makeToast : @"프리뷰 이용 중입니다."];
+            [self showToastAboutPlaybackAuthority];
           
             return ;
         }
@@ -2562,6 +2596,17 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self.view makeToast : text];
 }
 
+- (void) showToastAboutPlaybackAuthority
+{
+    // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
+    if ( _isDailyBook )
+        ;//[self showToast : @"미리 듣기로 제공됩니다."];
+    else if ( !_isAuthor && _isAudioContent )
+        [self showToast : @"미리 듣기로 제공됩니다."];
+    else if ( !_isAuthor && !_isAudioContent )
+        [self showToast : @"1분30초 미리 보기 입니다."];
+}
+
 #pragma mark - Time Control
 
 //
@@ -2763,7 +2808,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_listView removeFromSuperview];
         _listView = nil;
       
-        return [self showToast : @"프리뷰 이용 중입니다."];
+        return [self showToastAboutPlaybackAuthority];
     }
   
     // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
