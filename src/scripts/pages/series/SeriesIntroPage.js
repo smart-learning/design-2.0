@@ -58,7 +58,7 @@ class SeriesIntroPage extends React.Component {
         id: id,
       });
     } else {
-      Alert.alert('오픈전 콘텐츠', '아직 공개되지 않은 콘텐츠 입니다.');
+      Alert.alert('Coming Soon', '곧 공개 될 예정이니 기대해주세요!');
     }
   };
 
