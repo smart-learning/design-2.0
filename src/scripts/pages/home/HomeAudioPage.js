@@ -115,6 +115,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'flex-end'
   },
+  showAllText: {
+    color: CommonStyles.COLOR_PRIMARY,
+    fontSize: 15
+  },
   showMore: {
     borderColor: CommonStyles.COLOR_PRIMARY,
     borderWidth: 1,
@@ -122,7 +126,9 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     paddingRight: 10,
     paddingBottom: 2,
-    paddingLeft: 10
+    paddingLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   showMoreText: {
     color: CommonStyles.COLOR_PRIMARY,
@@ -212,7 +218,7 @@ class HomeAudioPage extends React.Component {
 
           {/*매일 책 한 권*/}
           {/*<View style={[CommonStyles.contentContainer, styles.dailyContainer]}>*/}
-            {/*<BookDaily itemData={this.props.store.audioDaily} />*/}
+          {/*<BookDaily itemData={this.props.store.audioDaily} />*/}
           {/*</View>*/}
 
           <View
@@ -291,6 +297,16 @@ class HomeAudioPage extends React.Component {
                 }
               />
             </View>
+          </View>
+          <View style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}>
+            <TouchableOpacity
+              style={[styles.showMore, { height: 36 }]}
+              onPress={() => {
+                this.props.navigation.navigate('AudioBookPage');
+              }}
+            >
+              <Text style={styles.showAllText}>오디오북 전체보기</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </PTRView>
