@@ -92,7 +92,7 @@ export default {
 
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
-      userId: userId.toString()
+      userId: userId.toString(),
     };
 
     console.log('native.js::getDownloadList', config);
@@ -102,7 +102,7 @@ export default {
         .then(success)
         .catch(failed);
     } else {
-      RNNativePlayer.getDownloadList()
+      RNNativePlayer.getDownloadList(config)
         .then(success)
         .catch(failed);
     }
@@ -112,19 +112,27 @@ export default {
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
       cid: cid,
-      userId: userId.toString()
+      userId: userId.toString(),
     };
 
     console.log('native.js::getDownloadList Cid');
-    RNNativePlayer.getDownloadCidList(config)
-      .then(success)
-      .catch(failed);
+
+    if (Platform.OS === 'android') {
+      RNNativePlayer.getDownloadCidList(config)
+        .then(success)
+        .catch(failed);
+    } else {
+      // iOS 의 경우엔 getDownloadList 하나에서 모두 처리하는 방식으로 구현.
+      RNNativePlayer.getDownloadList(config)
+        .then(success)
+        .catch(failed);
+    }
   },
 
   getProgressDatabase(success, failed) {
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
-      userId: userId.toString()
+      userId: userId.toString(),
     };
 
     try {
@@ -166,8 +174,8 @@ export default {
 
   /* 내정보 > 설정 메뉴에서 호출 */
   /* Native 담당: cellularDataUsePlay: bool, cellularDataUseDownload: bool
-	*  ReactN 담당: autologin: bool, notification: bool
-	* */
+   *  ReactN 담당: autologin: bool, notification: bool
+   * */
   // isAutoLogin: false,
   // isWifiPlay: false,
   // isWifiDownload: false,
@@ -178,7 +186,7 @@ export default {
     let config = {
       token: globalStore.accessToken,
       cellularDataUsePlay: isWifiPlay,
-      cellularDataUseDownload: isWifiDownload
+      cellularDataUseDownload: isWifiDownload,
     };
 
     console.log('updateSetting:', config);
@@ -240,5 +248,5 @@ export default {
 
   unsubscribe() {
     return RNProductPayment.unsubscribe();
-  }
+  },
 };

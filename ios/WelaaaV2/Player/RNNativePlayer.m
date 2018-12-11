@@ -358,7 +358,7 @@ RCT_EXPORT_MODULE();
     }
 }
 
-- (void) selectDownloadedList : (NSString *)option
+- (void) selectDownloadedList : (NSDictionary *)option
                      resolver : (RCTPromiseResolveBlock)resolve
                      rejecter : (RCTPromiseRejectBlock)reject
 {
@@ -367,7 +367,23 @@ RCT_EXPORT_MODULE();
   // 다운로드 목록 띄울 때마다 파일과 DB 간 동기화를 수행하기 위해 추가(트랙킹 안되는 파일 삭제).
   [[FPSDownloadManager sharedInstance] synchronizeLocalFilesWithDB];
   
-  NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+  NSMutableArray *allRecords;
+  if(option){
+    NSString* userId = [option objectForKey:@"userId"];
+    NSString* cid = [option objectForKey:@"cid"];
+    NSLog(@"selectDownloadedList - userId : %@, cid : %@",userId,cid);
+    if(userId==nil || userId.length==0){
+      NSLog(@"No UserId to Select!");
+      return;
+    }
+    if (cid==nil || cid.length==0) {
+      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsUserId:userId];
+    }else{
+      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsUserId:userId groupKey:cid];
+    }
+  }else{
+    allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+  }
   
   NSError *error;
   NSData *jsonData = [NSJSONSerialization dataWithJSONObject : allRecords
@@ -436,7 +452,6 @@ RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
 
 RCT_EXPORT_METHOD( download : (NSArray *) argsFromReactNative )
 {
-    //[self downloadContent : argsFromReactNative]; // argsFromReactNative 가 Dictionary 일 때
     [self downloadContents : argsFromReactNative];  // argsFromReactNative 가 Array 일 때(여러개의 Dictionary)
 }
 
@@ -456,6 +471,13 @@ RCT_EXPORT_METHOD( getDownloadList : (RCTPromiseResolveBlock)resolve
                           rejecter : (RCTPromiseRejectBlock)reject )
 {
   [self selectDownloadedList:nil resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD( getDownloadList : (NSDictionary *)option
+                  resolver : (RCTPromiseResolveBlock)resolve
+                  rejecter : (RCTPromiseRejectBlock)reject )
+{
+  [self selectDownloadedList:option resolver:resolve rejecter:reject];
 }
 
 @end
