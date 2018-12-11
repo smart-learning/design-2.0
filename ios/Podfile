@@ -36,8 +36,6 @@ target 'WelaaaV2' do
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
 
-  #pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
-  pod 'react-native-appsflyer', :path => '../node_modules/react-native-appsflyer'
+  pod 'AppsFlyerFramework'
 
 end

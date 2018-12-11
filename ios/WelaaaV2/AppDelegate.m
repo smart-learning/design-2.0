@@ -111,7 +111,16 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     NSLog(@"  [DeviceInfo] Cellular Type :  %@", [common getCellularType]);
     NSLog(@"  [DeviceInfo] Device Name   :  %@", [[UIDevice currentDevice] name]);
     [common getNetInterfaceNames];
-    
+  
+    /** APPSFLYER INIT **/
+    [AppsFlyerTracker sharedTracker].appsFlyerDevKey = @"SPtkhKkwYTZZsqUwQUjBMV";
+    [AppsFlyerTracker sharedTracker].appleAppID = @"com.influential.smartlearning";
+  
+    [AppsFlyerTracker sharedTracker].delegate = self;
+  
+    /* Set isDebug to true to see AppsFlyer debug logs */
+    [AppsFlyerTracker sharedTracker].isDebug = true;
+  
     return YES;
 }
 
@@ -143,6 +152,9 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     {
         return [KOSession handleOpenURL : url];
     }
+  
+    // Reports app open from deep link for iOS 10
+    [[AppsFlyerTracker sharedTracker] handleOpenUrl:url options:options];
   
     // Add any custom logic here.
     return handled;
@@ -190,6 +202,9 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
   
     [KOSession handleDidBecomeActive];
   //[self connectToFcm];
+  
+    // Track Installs, updates & sessions(app opens) (You must include this API to enable tracking)
+    [[AppsFlyerTracker sharedTracker] trackAppLaunch];
 }
 
 #pragma mark - Firebase Cloud Messaging
@@ -397,6 +412,40 @@ didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
 - (NSManagedObjectContext *) managedObjectContext
 {
   return self.persistentContainer.viewContext;
+}
+
+#pragma mark - AppsFlyer: Tracking Deep Linking
+- (void) onConversionDataReceived : (NSDictionary *) installData
+{
+    //Handle Conversion Data (Deferred Deep Link)
+}
+
+- (void) onConversionDataRequestFailure : (NSError *) error
+{
+    NSLog(@"  AppsFlyer onConversionDataRequestFailure : %@", error);
+}
+
+
+- (void) onAppOpenAttribution : (NSDictionary *) attributionData
+{
+    //Handle Deep Link
+    NSLog(@"  AppsFlyer onAppOpenAttribution : %@", attributionData);
+}
+
+- (void) onAppOpenAttributionFailure : (NSError *) error
+{
+    NSLog(@"  AppsFlyer onAppOpenAttributionFailure : %@", error);
+}
+
+// Reports app open from a Universal Link for iOS 9 or above
+- (BOOL) application : (UIApplication *) application
+continueUserActivity : (NSUserActivity *) userActivity
+  restorationHandler : (void (^)(NSArray<id<UIUserActivityRestoring>> *restorableObjects)) restorationHandler
+{
+    [[AppsFlyerTracker sharedTracker] continueUserActivity : userActivity
+                                        restorationHandler : restorationHandler];
+  
+    return YES;
 }
 
 @end
