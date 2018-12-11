@@ -4,7 +4,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
@@ -13,12 +13,12 @@ const styles = StyleSheet.create({
   seriesItemSm: {
     width: '48%',
     marginBottom: 13,
-    backgroundColor: '#efefef'
+    backgroundColor: '#efefef',
   },
   seriesItemLg: {
     width: '100%',
     marginBottom: 13,
-    backgroundColor: '#dddddd'
+    backgroundColor: '#dddddd',
   },
   thumbnail: {
     justifyContent: 'center',
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: '29.8245614035%',
     paddingBottom: '29.8245614035%',
-    backgroundColor: '#efefef'
+    backgroundColor: '#efefef',
   },
   title: {
     position: 'absolute',
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#ffffff',
     textAlign: 'center',
-    lineHeight: 24
-  }
+    lineHeight: 24,
+  },
 });
 
 class Series extends React.Component {
@@ -56,16 +56,24 @@ class Series extends React.Component {
     return (
       <View>
         {itemData.map((item, key) => {
+          console.log(key);
           return (
             <View style={styles.seriesItemLg} key={key}>
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() =>
-                  this.props.navigation.navigate('HomeSeriesPage', {
-                    title: '윌라 추천 시리즈',
-                    focus: item.category
-                  })
-                }
+                onPress={() => {
+                  if (item.category === '035') {
+                    this.props.navigation.navigate('Series_4genScreen', {
+                      title: '4차 산업 혁명 시리즈',
+                      focus: item.category,
+                    });
+                  } else {
+                    this.props.navigation.navigate('HomeSeriesPage', {
+                      title: '윌라 추천 시리즈',
+                      focus: item.category,
+                    });
+                  }
+                }}
               >
                 <ImageBackground
                   source={{ uri: item.image }}
