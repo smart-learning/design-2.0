@@ -9,7 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Platform
+  Platform,
 } from 'react-native';
 import ViewPager from 'react-native-view-pager';
 import { SafeAreaView, withNavigation } from 'react-navigation';
@@ -33,27 +33,27 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: 40,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabFlex: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   tabItemContainer: {
-    width: '50%'
+    width: '50%',
   },
   tabItem: {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    height: 40
+    height: 40,
   },
   tabText: {
     fontSize: 14,
-    color: '#a4a4a4'
+    color: '#a4a4a4',
   },
   tabTextActive: {
     fontSize: 14,
-    color: '#000000'
+    color: '#000000',
   },
   tabHr: {
     position: 'absolute',
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 3,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabHrActive: {
     position: 'absolute',
@@ -69,17 +69,18 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 3,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   tabContentContainer: {
-    paddingTop: 40
-  }
+    paddingTop: 40,
+  },
 });
 
 @observer
 class HomePage extends React.Component {
   state = {
-    show_popup: false
+    show_popup: false,
+    show_popup_mbs: false,
   };
 
   @observable
@@ -107,9 +108,9 @@ class HomePage extends React.Component {
     test: {
       hot: [],
       new: [],
-      recommend: []
+      recommend: [],
     },
-    contentDataInfo: []
+    contentDataInfo: [],
 
     // audioPlayRecentData: [],
   });
@@ -241,9 +242,9 @@ class HomePage extends React.Component {
       let videoClips = [];
       let audioChapters = [];
       let miniPlayerCid = cid;
-      let miniPlayerTitle = "";
+      let miniPlayerTitle = '';
       let miniPlayerGroupTitle = contentDataInfo.data.data.title;
-      let miniPlayerTotalPlayTime = "";
+      let miniPlayerTotalPlayTime = '';
       let miniPlayercurrentPlayTime = duration;
 
       if (contentDataInfo.data.type === 'video-course') {
@@ -254,7 +255,7 @@ class HomePage extends React.Component {
             miniPlayerTitle = item.title;
             miniPlayerTotalPlayTime = item.play_time;
           }
-        })
+        });
       } else if (contentDataInfo.data.type === 'audiobook') {
         audioChapters = contentDataInfo.data.data.chapters;
         audioChapters.map((item, key) => {
@@ -263,7 +264,7 @@ class HomePage extends React.Component {
             miniPlayerTitle = item.title;
             miniPlayerTotalPlayTime = item.play_time;
           }
-        })
+        });
       }
 
       let userId = globalStore.welaaaAuth.profile.id;
@@ -276,24 +277,22 @@ class HomePage extends React.Component {
         miniPlayerGroupTitle: miniPlayerGroupTitle,
         miniPlayercurrentPlayTime: miniPlayercurrentPlayTime,
         userId: userId.toString(),
-        accessToken: accessToken
+        accessToken: accessToken,
       };
 
       Native.mainToggleMiniPlayer(true, config);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
-
   getProgressList = async () => {
-
     if (Platform.OS === 'android') {
       // SQLite 저장된 정보 베이스로 마지막 재생 콘텐츠 첫번째를 로드합니다. (desc)
-      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고 
-      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid) 
-      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가 
-      // 쉽지가 않네요 ... 
+      // 미니 플레이어 셋팅에 필요한 정보는 다시 /contents-info/cid 로 받고
+      // 재생을 클릭하거나 , 플레이어로 진입하려고 할때 Native.play(cid)
+      // 프로세스로 진행됩니다 ... 플레이어 진입 없이 처리하고 싶은데 그렇게 하기가
+      // 쉽지가 않네요 ...
 
       Native.getProgressDatabase(
         result => {
@@ -310,19 +309,31 @@ class HomePage extends React.Component {
             }
           }
         },
-        error => console.error(e)
+        error => console.error(e),
+      );
+    }
+  };
+
+  showPopup() {
+    if (globalStore.welaaaAuth) {
+      return (
+        <AdvertisingSection show_popup={this.state.show_popup} popup_type="" />
       );
     }
   }
 
-  showPopup() {
+  showMbsPopup() {
     if (globalStore.welaaaAuth) {
-      return <AdvertisingSection show_popup={this.state.show_popup} />;
+      return (
+        <AdvertisingSection
+          show_popup={this.state.show_popup_mbs}
+          popup_type="membership"
+        />
+      );
     }
   }
 
   componentDidMount = async () => {
-
     this.getProgressList();
 
     if (globalStore.welaaaAuth) {
@@ -365,6 +376,7 @@ class HomePage extends React.Component {
       this.props.navigation.state.params.page = undefined;
       this.goPage('audioBook');
     } else if (params && true === params.reload_mbs) {
+      this.props.navigation.state.params.reload_mbs = undefined;
       // 멤버쉽 가져오기
       globalStore.currentMembership = async () =>
         await net.getMembershipCurrent();
@@ -375,6 +387,13 @@ class HomePage extends React.Component {
       this.props.navigation.state.params.show_popup = undefined;
       this.setState({ show_popup: true });
     }
+
+    if ('ios' === Platform.OS && params && true === params.popup_mbs) {
+      this.props.navigation.state.params.popup_mbs = undefined;
+      // 멤버십 구매한 직후의 사용자 대상으로 별도 팝업(프로모션 등)을 띄워주고자 할 때 여기에서.
+      // TODO: 팝업이 있는 경우와 없는 경우 혹은 네트워크 실패시의 예외처리.
+      this.setState({ show_popup_mbs: true });
+    }
   }
 
   componentWillUnmount() {
@@ -383,30 +402,8 @@ class HomePage extends React.Component {
 
   handleBackPress = () => {
     console.log('back press:');
-    // if (this.props.navigation.isFocused()) {
-    //   Alert.alert(
-    //     'Exit App',
-    //     'Exiting the application?', [{
-    //         text: 'Cancel',
-    //         onPress: () => console.log('Cancel Pressed'),
-    //         style: 'cancel'
-    //     }, {
-    //         text: 'OK',
-    //         onPress: () => this.checkMemberShip()
-    //     }, ], {
-    //         cancelable: false
-    //     }
-    //  )
-    //  return true;
-    // } else {
-    //   this.props.navigation.goBack();
-    // }
-
-    console.log('back press:');
     if (this.props.navigation.isFocused()) {
       BackHandler.exitApp();
-    } else {
-      this.props.navigation.goBack();
     }
   };
 
@@ -515,6 +512,7 @@ class HomePage extends React.Component {
             </View>
           </View>
           {this.showPopup()}
+          {this.showMbsPopup()}
         </SafeAreaView>
       </View>
     );

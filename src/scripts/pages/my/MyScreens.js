@@ -34,6 +34,7 @@ import MyLogPage from './MyLogPage';
 import SetAppPage from './SetAppPage';
 import SetTagPage from './SetTagPage';
 import UserHeartContentsPage from './UserHeartContentsPage';
+import CouponInputPage from './CouponInputPage';
 
 const MyScreens = createStackNavigator(
   {
@@ -159,6 +160,10 @@ const MyScreens = createStackNavigator(
     },
     EventDetailPage: {
       screen: EventDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
+    },
+    CouponInputPage: {
+      screen: CouponInputPage,
       navigationOptions: NAV_OPTS_STACK_HISTORY_BACK
     }
   },

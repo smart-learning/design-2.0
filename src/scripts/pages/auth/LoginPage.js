@@ -82,7 +82,6 @@ class Data {
   isAppFirstLoadLoginPage = false;
 }
 
-@observer
 class LoginPage extends React.Component {
   data = createStore({
     windowHeight: null
@@ -111,9 +110,9 @@ class LoginPage extends React.Component {
   };
 
   /*
-	* @params email: 이메일이나 소셜 타입
-	* @params password: 이메일비번이나 소셜 토큰
-	* */
+   * @params email: 이메일이나 소셜 타입
+   * @params password: 이메일비번이나 소셜 토큰
+   * */
   login = (email, password, callback) => {
     let { navigation } = this.props;
     const resultAuthToken = net.getAuthToken(email, password);
@@ -122,7 +121,9 @@ class LoginPage extends React.Component {
       .then(data => {
         store.socialType = email;
         store.welaaaAuth = data;
-        navigation.navigate(navigation.getParam('requestScreenName', 'Main'));
+        navigation.navigate(navigation.getParam('requestScreenName', 'Main'), {
+          reload_mbs: true
+        });
 
         // 로그인이 완료 되면 loginCompleted를 보내 App.js의
         // 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
@@ -224,4 +225,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default observer(LoginPage);

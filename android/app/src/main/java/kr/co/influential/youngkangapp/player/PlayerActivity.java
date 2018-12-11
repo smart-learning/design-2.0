@@ -419,6 +419,9 @@ public class PlayerActivity extends BasePlayerActivity {
         updateDuration(metadata);
 
         setSubTitleJson();
+
+        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+            getwebPlayerInfo().getCname()[getContentId()]);
       }
     }
   };
@@ -641,6 +644,60 @@ public class PlayerActivity extends BasePlayerActivity {
       listPopClipAdapter = null;
     }
 
+    audioModeBackgroundLayout = null;
+    audioModeIconHeadset = null;
+    mLayout = null;
+    mButtonGroupLayout = null;
+    mPlaylistGroupLayout = null;
+    mAniSlideShow = null;
+    mAniSlideHide = null;
+
+    mblank_speed_view = null;
+    msubtitls_view = null;
+    msubtitls_view_long = null;
+    mblank_sleeper_view = null;
+    msleep_view = null;
+
+    mMovingspace = null;
+    mfullSmiLayout = null;
+    mshortSmiLayout = null;
+    mscrollview = null;
+
+    mSubtitlsmemo = null;
+    mSubtitlstime = null;
+    subTitlsLineNum = null;
+
+    mBtnIconBtnSpeed = null;
+    mBtnIconBtnList = null;
+
+    mBtnSubtitleTextSmall = null;
+    mBtnSubtitleTextNormal = null;
+    mBtnSubtitleTextBig = null;
+
+    mBtnlistClose = null;
+    mMyRepuBoxLinear = null;
+
+    mSleeperHandler = null;
+
+    longSubTitlesTextView = null;
+    longSubTitlesTextTimeView = null;
+
+    mgestureScanner = null;
+    mGestureListener = null;
+
+    mButtonGroupLayout = null;
+
+    mRelatedListGroupLayout = null;
+
+    mRelatedListGroupLayout = null;
+
+    mscrollRelatedView = null;
+
+    mscrollview = null;
+
+    mfullSmiLayout = null;
+
+
     getContentResolver().unregisterContentObserver(settingsContentObserver);
 
   }
@@ -696,6 +753,9 @@ public class PlayerActivity extends BasePlayerActivity {
       }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
+
+      initialize();
+
     } else {
       String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
       Gson gson = new Gson();
@@ -715,12 +775,17 @@ public class PlayerActivity extends BasePlayerActivity {
       }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
+      if(simpleExoPlayerView.getPlayer()!=null){
+        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+            getwebPlayerInfo().getCname()[getContentId()]);
+
+      }else{
+        initialize();
+      }
     }
 
     LogHelper.e(TAG, "sendData : fromMediaSession " + fromMediaSession);
     LogHelper.e(TAG, "sendData : cId " + cId);
-
-    initialize();
 
     playFromUri(uri, extras);
   }
@@ -1143,7 +1208,6 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   private String getIdleReasonString(int idleReason) {
-    LogHelper.e(TAG, " getIdleReasonString " + idleReason);
     switch (idleReason) {
       case MediaStatus.IDLE_REASON_FINISHED:    // 1
         return "Finish";
@@ -2926,8 +2990,12 @@ public class PlayerActivity extends BasePlayerActivity {
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
 
-        textFullView.addView(highlightView);
-        textFullTimeView.addView(highlightTimeView);
+        try{
+          textFullView.addView(highlightView);
+          textFullTimeView.addView(highlightTimeView);
+        }catch (Exception e){
+          e.printStackTrace();
+        }
 
         int position = 0;
 
@@ -3836,12 +3904,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
     try {
       if (methodName.equals("video-course")) {
-        mPlaylistGroupLayout.setVisibility(View.VISIBLE);
-        mPlaylistGroupLayout.startAnimation(mAniSlideShow);
-
-        mButtonGroupLayout.setVisibility(View.INVISIBLE);
-
-        ListView lecturListView = findViewById(R.id.weleanplaylistview);
 
         if (lectureListItemdapter != null) {
           lectureListItemdapter = null;
@@ -3849,72 +3911,103 @@ public class PlayerActivity extends BasePlayerActivity {
 
         lectureListItemdapter = new PlayerListAdapter(getApplicationContext(), this);
 
-        for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            mPlaylistGroupLayout.setVisibility(View.VISIBLE);
+            mPlaylistGroupLayout.startAnimation(mAniSlideShow);
 
-          String playListType = "1";
+            mButtonGroupLayout.setVisibility(View.INVISIBLE);
 
-          MediaControllerCompat mediaController = MediaControllerCompat
-              .getMediaController(PlayerActivity.this);
+            ListView lecturListView = findViewById(R.id.weleanplaylistview);
 
-          Bundle BeforeExtras;
+            for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
 
-          try {
-            if (mediaController.getMetadata().getBundle() != null) {
-              BeforeExtras = mediaController.getMetadata().getBundle();
+              String playListType = "1";
 
-              String beforeCid = BeforeExtras.getString("drm_cid");
-              if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
-                playListType = "6";
+              MediaControllerCompat mediaController = MediaControllerCompat
+                  .getMediaController(PlayerActivity.this);
+
+              Bundle BeforeExtras;
+
+              try {
+                if (mediaController.getMetadata().getBundle() != null) {
+                  BeforeExtras = mediaController.getMetadata().getBundle();
+
+                  String beforeCid = BeforeExtras.getString("drm_cid");
+                  if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
+                    playListType = "6";
+                  }
+                }
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+
+              if (getwebPlayerInfo().getCplayTime()[i] != null) {
+                if (!getwebPlayerInfo().getCplayTime()[i].equals("00:00:00")) {
+                  lectureListItemdapter
+                      .add(getwebPlayerInfo().getCplayTime()[i], getwebPlayerInfo().getCkey()[i],
+                          getwebPlayerInfo().getCname()[i],
+                          getwebPlayerInfo().getGroupTitle(),
+                          getwebPlayerInfo().getGroupTeachername(),
+                          getwebPlayerInfo().getHistory_endtime()[i],
+                          playListType);
+                }
               }
             }
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
 
-          if (getwebPlayerInfo().getCplayTime()[i] != null) {
-            if (!getwebPlayerInfo().getCplayTime()[i].equals("00:00:00")) {
-              lectureListItemdapter
-                  .add(getwebPlayerInfo().getCplayTime()[i], getwebPlayerInfo().getCkey()[i],
-                      getwebPlayerInfo().getCname()[i],
-                      getwebPlayerInfo().getGroupTitle(),
-                      getwebPlayerInfo().getGroupTeachername(),
-                      getwebPlayerInfo().getHistory_endtime()[i],
-                      playListType);
-            }
-          }
-        }
+            lecturListView.setAdapter(lectureListItemdapter);
 
-        lecturListView.setAdapter(lectureListItemdapter);
+            lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+              @Override
+              public void onScrollStateChanged(AbsListView absListView, int i) {
+              }
 
-//        lecturListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//          @Override
-//          public void onScrollStateChanged(AbsListView absListView, int i) {
-//          }
-//
-//          @Override
-//          public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-//
-//            audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
-//            audioItemProgressBar.setProgressDrawable(Utils.getDrawable(getApplicationContext(),
-//                R.drawable.progress_horizontal_custom_movie_bar));
-//            audioItemProgressBar.setVisibility(View.VISIBLE);
-//
-//            if (i == 0) {
-//              audioItemProgressBar.setProgress(1);
-//            }
-//
-//            if (i > 0 && i < 30) {
-//              audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
-//            }
-//
-//            if (i > 30) {
-//              audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
-//            }
-//          }
-//        });
+              @Override
+              public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+                audioItemProgressBar = findViewById(R.id.audioItemProgressBar);
+                audioItemProgressBar.setProgressDrawable(Utils.getDrawable(getApplicationContext(),
+                    R.drawable.progress_horizontal_custom_movie_bar));
+                audioItemProgressBar.setVisibility(View.VISIBLE);
+
+                if (i == 0) {
+                  audioItemProgressBar.setProgress(1);
+                }
+
+                if (i > 0 && i < 30) {
+                  audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
+                }
+
+                if (i > 30) {
+                  audioItemProgressBar.setProgress(((i + i1) * 100 / i2));
+                }
+              }
+            });
 
 //        lecturListView.setSelection(Integer.parseInt(currentPosition));
-        Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
+
+            TextView list_grop_title = findViewById(R.id.list_group_title);
+            String gTitle = getwebPlayerInfo().getGroupTitle();
+            list_grop_title.setText(gTitle);
+
+            for(int i=0; i <lectureListItemdapter.getCount(); i++){
+              LogHelper.e(TAG , "send lectureListItemdapter getItem " + lectureListItemdapter.getItem(i) );
+              // 값은 보이는데 .. 보이지는 않구나 ..
+            }
+
+            LogHelper.e(TAG , "lecturListView.getVisibility() " + lecturListView.getVisibility() );
+            LogHelper.e(TAG , "VISIBLE " + View.VISIBLE );
+            LogHelper.e(TAG , "INVISIBLE " + View.INVISIBLE );
+            LogHelper.e(TAG , "GONE " + View.GONE );
+
+            LogHelper.e(TAG , "send lectureListItemdapter getCount " +lectureListItemdapter.getCount() );
+
+            Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
+          }
+        });
+
+
 
       } else if (methodName.equals("audiobook")) {
 
@@ -4154,9 +4247,7 @@ public class PlayerActivity extends BasePlayerActivity {
         Preferences.setWelaaaPlayAudioUsed(getApplication(), false);
 
         if (getTransportControls() != null) {
-
-          getTransportControls().stop();
-
+          getTransportControls().pause();
         }
 
       } catch (Exception e) {
@@ -4331,6 +4422,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
         callbackMethodName);
+
+    setContentId(getContentId());
 
   }
 
@@ -4517,8 +4610,6 @@ public class PlayerActivity extends BasePlayerActivity {
       case PlaybackStateCompat.STATE_PAUSED:
         boolean isCompleted = LocalPlayback.getInstance(this).isCompleted();
 
-        LogHelper.e(TAG, " isCompleted " + isCompleted);
-
         if (isCompleted) {
           if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
 //            doAutoPlay();
@@ -4568,7 +4659,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void doNextPlay(Boolean type) {
     // Left -- , Right ++
-    //
 
     if (type) {
       int id = getContentId();
@@ -5385,6 +5475,9 @@ public class PlayerActivity extends BasePlayerActivity {
     setContentId(currentPosition);
 
     Preferences.setWelaaaPlayerOnClickPos(getApplicationContext(), currentPosition);
+
+//    플레이어 화면에서 목차 변경 시 이어듣기 되지 않음 #469
+    Preferences.setSQLiteDuration(getApplicationContext(), true);
 
     sendData(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[currentPosition],
         callbackMethodName);

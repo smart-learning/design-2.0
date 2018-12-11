@@ -11,7 +11,7 @@ import {
   NativeEventEmitter,
   NetInfo,
   Platform,
-  View
+  View,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
@@ -20,11 +20,12 @@ import {
   createStackNavigator,
   createSwitchNavigator,
   DrawerItems,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-navigation';
 import Native from './src/scripts/commons/native';
 import nav from './src/scripts/commons/nav';
 import net from './src/scripts/commons/net';
+import utils from './src/scripts/commons/utils';
 import store from './src/scripts/commons/store';
 import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
@@ -36,7 +37,6 @@ import Policy from './src/scripts/pages/auth/PolicyPage';
 import Privacy from './src/scripts/pages/auth/PrivacyPage';
 import SignUpLandingPage from './src/scripts/pages/auth/SignUpLandingPage';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
-import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
@@ -59,52 +59,30 @@ class Hidden extends React.Component {
 
 const AppDrawer = createDrawerNavigator(
   {
-    // SampleScreen: {
-    // 	screen: SampleScreen,
-    // },
-
     HomeScreen: {
-      screen: HomeScreen
+      screen: HomeScreen,
     },
-
     VideoScreen: {
-      screen: VideoScreen
+      screen: VideoScreen,
       // path: 'video_list',
     },
-
     AudioScreen: {
-      screen: AudioScreen
+      screen: AudioScreen,
     },
-
     MyScreen: {
-      screen: MyScreens
+      screen: MyScreens,
     },
-
     InquireListScreen: {
-      screen: InquireListScreen
+      screen: InquireListScreen,
     },
     SetAppScreen: {
       screen: SetAppScreen,
       navigationOptions: {
         drawerIcon: <Hidden />,
-        drawerLabel: <Hidden />
-      }
-    }
-
-    // Playground: {
-    // 	screen: Playground,
-    // },
-    // June: {
-    // 	screen: PlaygroundJune,
-    // },
-    // BottomControllerTEST: {
-    // 	screen: BottomControllerPage,
-    // },
-    // AndroidNativeCall: {
-    // 	screen: PlaygroundJune,
-    // }
+        drawerLabel: <Hidden />,
+      },
+    },
   },
-
   {
     contentComponent: props => (
       <SafeAreaView
@@ -115,8 +93,8 @@ const AppDrawer = createDrawerNavigator(
         <DrawerItems {...props} />
         {}
       </SafeAreaView>
-    )
-  }
+    ),
+  },
 );
 
 @observer
@@ -144,8 +122,10 @@ class App extends React.Component {
       store.profile = await net.getProfile();
       // 멤버쉽 가져오기
       store.currentMembership = await net.getMembershipCurrent();
+
       // 이용권 가져오기
       store.voucherStatus = await net.getVouchersStatus();
+      await utils.updateCartStatus();
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
@@ -164,7 +144,7 @@ class App extends React.Component {
       'config::isWifiPlay',
       'config::isWifiDownload',
       'config::isAlert',
-      'config::isEmail'
+      'config::isEmail',
     ]);
 
     settings.forEach(setting => {
@@ -227,14 +207,14 @@ class App extends React.Component {
   addNetInfoEvent = () => {
     NetInfo.addEventListener(
       'connectionChange',
-      this.handleFirstConnectivityChange
+      this.handleFirstConnectivityChange,
     );
   };
 
   removeNetInfoEvent = () => {
     NetInfo.removeEventListener(
       'connectionChange',
-      this.handleFirstConnectivityChange
+      this.handleFirstConnectivityChange,
     );
   };
 
@@ -245,7 +225,7 @@ class App extends React.Component {
       const playerManager = Native.getPlayerManager();
       const playerManagerEmitter = new NativeEventEmitter(playerManager);
       playerManagerEmitter.addListener('downloadState', arg =>
-        Native.downloadState(arg)
+        Native.downloadState(arg),
       );
 
       console.log('======', Native.getPaymentManager());
@@ -254,7 +234,9 @@ class App extends React.Component {
       paymentManagerEmitter.addListener('buyResult', async arg => {
         const result = await Native.buyResult(arg);
         if (result) {
-          this.props.navigation.navigate('HomeScreen');
+          this.props.navigation.navigate('HomeScreen', {
+            popup_mbs: true
+          });
         } else {
           console.log('Native.buyResult error.');
         }
@@ -263,20 +245,20 @@ class App extends React.Component {
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayer', params => {
           Native.toggleMiniPlayer(params.visible);
-        })
+        }),
       );
 
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayerCallPlayer', params => {
           console.log('miniPlayerCallPlayer DeviceEventEmitter ', params);
           Native.play(params.cid);
-        })
+        }),
       );
 
       this.subscription.push(
         DeviceEventEmitter.addListener('downloadState', arg =>
-          Native.downloadState(arg)
-        )
+          Native.downloadState(arg),
+        ),
       );
     }
 
@@ -388,11 +370,11 @@ class App extends React.Component {
     // 키보드 이벤트 할당
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      this.keyboardDidShow
+      this.keyboardDidShow,
     );
     this.keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
-      this.keyboardDidHide
+      this.keyboardDidHide,
     );
   }
 
@@ -441,7 +423,7 @@ class App extends React.Component {
         {store.miniPlayerVisible &&
           Platform.select({
             android: <BottomController arg={store.miniPlayerArg} />,
-            ios: null
+            ios: null,
           })}
         <NotificationUI
           style={{ zIndex: 999999 }}
@@ -503,75 +485,75 @@ class AuthLoadingScreen extends React.Component {
 const SignupStack = createStackNavigator(
   {
     SignUpPage: {
-      screen: SignUpLandingPage
+      screen: SignUpLandingPage,
     },
     EmailSignUpForm: {
-      screen: EmailSignUpForm
+      screen: EmailSignUpForm,
     },
     Login: {
       screen: LoginPage,
       navigationOptions: {
         header: null,
-        gesturesEnabled: false
-      }
+        gesturesEnabled: false,
+      },
     },
     PrivacyPage: {
-      screen: Privacy
+      screen: Privacy,
     },
     PolicyPage: {
-      screen: Policy
-    }
+      screen: Policy,
+    },
   },
   {
-    initialRouteName: 'SignUpPage'
-  }
+    initialRouteName: 'SignUpPage',
+  },
 );
 
 const SigninStack = createStackNavigator(
   {
     SignUpPage: {
-      screen: SignUpLandingPage
+      screen: SignUpLandingPage,
     },
     EmailSignUpForm: {
-      screen: EmailSignUpForm
+      screen: EmailSignUpForm,
     },
     Login: {
       screen: LoginPage,
       navigationOptions: {
         header: null,
-        gesturesEnabled: false
-      }
+        gesturesEnabled: false,
+      },
     },
     PrivacyPage: {
-      screen: Privacy
+      screen: Privacy,
     },
     PolicyPage: {
-      screen: Policy
-    }
+      screen: Policy,
+    },
   },
   {
-    initialRouteName: 'Login'
-  }
+    initialRouteName: 'Login',
+  },
 );
 
 const AppNavigator = createSwitchNavigator(
   {
     AuthLoading: {
-      screen: AuthLoadingScreen
+      screen: AuthLoadingScreen,
     },
     Main: {
-      screen: App
+      screen: App,
     },
     Signup: {
-      screen: SignupStack
+      screen: SignupStack,
     },
     Signin: {
-      screen: SigninStack
-    }
+      screen: SigninStack,
+    },
   },
   {
-    initialRouteName: 'AuthLoading'
-  }
+    initialRouteName: 'AuthLoading',
+  },
 );
 
 export default () => (
@@ -590,7 +572,7 @@ export default () => (
           'App.js::onNavigationStateChange',
           prevScreen,
           '-->',
-          currentScreen
+          currentScreen,
         );
 
         firebase.analytics().setCurrentScreen(currentScreen, currentScreen);

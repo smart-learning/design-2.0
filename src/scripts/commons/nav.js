@@ -6,25 +6,25 @@ import CommonStyle from '../../styles/common';
 import HistoryBackButton from '../components/header/HistoryBackButton';
 import HomeButton from '../components/header/HomeButton';
 import HomeWelaaaButton from '../components/header/HomeWelaaaButton';
-import SearchButton from '../components/header/SearchButton';
 import Native from './native';
 import globalStore from './store';
+import SearchAndCartButton from '../components/header/SearchAndCart';
 
 export const NAV_OPTS_COMMON = {
   headerStyle: {
-    backgroundColor: CommonStyle.COLOR_PRIMARY
+    backgroundColor: CommonStyle.COLOR_PRIMARY,
   },
   headerTintColor: '#fff',
   headerTitleStyle: {
     fontSize: 16,
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 };
 
 export const NAV_OPTS_MAIN = ({ navigation, navigationOptions }) => ({
   headerLeft: <HomeButton />,
   headerTitle: <HomeWelaaaButton />,
-  headerRight: <SearchButton navigation={navigation} />
+  headerRight: <SearchAndCartButton navigation={navigation} />,
 });
 
 export const NAV_OPTS_STACK = ({ navigation, navigationOptions }) => {
@@ -32,33 +32,33 @@ export const NAV_OPTS_STACK = ({ navigation, navigationOptions }) => {
     ...NAV_OPTS_COMMON,
     title:
       (navigation.state.params && navigation.state.params.title) ||
-      navigation.state.routeName
+      navigation.state.routeName,
   };
 };
 
 export const NAV_OPTS_STACK_WITH_SEARCH = ({
   navigation,
-  navigationOptions
+  navigationOptions,
 }) => {
   return {
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    headerRight: <SearchButton navigation={navigation} />,
-    headerLeft: <HomeButton />
+    headerRight: <SearchAndCartButton navigation={navigation} />,
+    headerLeft: <HomeButton />,
   };
 };
 
 export const NAV_OPTS_STACK_HISTORY_BACK = ({
   navigation,
-  navigationOptions
+  navigationOptions,
 }) => {
   return {
     ...NAV_OPTS_COMMON,
     title:
       (navigation.state.params && navigation.state.params.title) ||
       navigation.state.routeName,
-    headerLeft: <HistoryBackButton />
+    headerLeft: <HistoryBackButton />,
   };
 };
 
@@ -71,46 +71,46 @@ export const NAV_OPTS_MY_HOME = ({ navigation, navigationOptions }) => {
       backgroundColor: 'transparent',
       paddingLeft: 0,
       paddingRight: 0,
-      borderBottomWidth: 0
+      borderBottomWidth: 0,
     },
     headerLeft: <HomeButton />,
     headerTitle: <HomeWelaaaButton />,
     headerRight: <Button title="설정버튼" onPress={() => alert('설쩡')} />,
-    gesturesEnabled: false
+    gesturesEnabled: false,
   };
 };
 
 const DRAWER_LABEL = {
   HomeScreen: {
     label: '홈',
-    icon: require('../../images/chats-icon.png')
+    icon: require('../../images/chats-icon.png'),
   },
 
   VideoScreen: {
     label: '동영상 강의',
-    icon: require('../../images/chats-icon.png')
+    icon: require('../../images/chats-icon.png'),
   },
 
   AudioScreen: {
     label: '오디오북',
-    icon: require('../../images/chats-icon.png')
+    icon: require('../../images/chats-icon.png'),
   },
 
   MyScreen: {
     label: '마이윌라',
-    icon: require('../../images/chats-icon.png')
+    icon: require('../../images/chats-icon.png'),
   },
 
   InquireListScreen: {
     label: '1:1 문의',
-    icon: require('../../images/chats-icon.png')
-  }
+    icon: require('../../images/chats-icon.png'),
+  },
 };
 
 export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
   let { label, icon } = DRAWER_LABEL[navigation.state.key] || {
     label: navigation.state.key,
-    icon: require('../../images/chats-icon.png')
+    icon: require('../../images/chats-icon.png'),
   };
 
   let option = {
@@ -120,7 +120,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
         source={icon}
         style={[CommonStyle.size24, { tintColor: tintColor }]}
       />
-    )
+    ),
   };
 
   // TODO: Custom Drawer 메뉴 구현( June으로 샘플구현해둠 ) drawLabel 에 react element 를 반환하는함수를 재정의
@@ -146,7 +146,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             alignItems: 'center',
             position: 'relative',
             height: 65,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
@@ -163,11 +163,11 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
               bottom: 0,
               width: '100%',
               height: 1,
-              backgroundColor: '#dddddd'
+              backgroundColor: '#dddddd',
             }}
           />
         </View>
-      )
+      ),
     };
   }
   if (label === '동영상 강의') {
@@ -181,7 +181,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             alignItems: 'center',
             position: 'relative',
             height: 65,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
@@ -198,11 +198,11 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
               bottom: 0,
               width: '100%',
               height: 1,
-              backgroundColor: '#dddddd'
+              backgroundColor: '#dddddd',
             }}
           />
         </View>
-      )
+      ),
     };
   }
   if (label === '오디오북') {
@@ -216,7 +216,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             alignItems: 'center',
             position: 'relative',
             height: 65,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
@@ -233,11 +233,11 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
               bottom: 0,
               width: '100%',
               height: 1,
-              backgroundColor: '#dddddd'
+              backgroundColor: '#dddddd',
             }}
           />
         </View>
-      )
+      ),
     };
   }
   if (label === '마이윌라') {
@@ -251,7 +251,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             alignItems: 'center',
             position: 'relative',
             height: 65,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
@@ -268,11 +268,11 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
               bottom: 0,
               width: '100%',
               height: 1,
-              backgroundColor: '#dddddd'
+              backgroundColor: '#dddddd',
             }}
           />
         </View>
-      )
+      ),
     };
   }
   if (label === '1:1 문의') {
@@ -286,7 +286,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             alignItems: 'center',
             position: 'relative',
             height: 65,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
           }}
         >
           <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
@@ -303,11 +303,11 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
               bottom: 0,
               width: '100%',
               height: 1,
-              backgroundColor: '#dddddd'
+              backgroundColor: '#dddddd',
             }}
           />
         </View>
-      )
+      ),
     };
   }
 
@@ -355,7 +355,7 @@ export default {
           if (paramsLen === 2)
             navigation.navigate('ClassListPage', {
               category: schemes[0],
-              index: schemes[1]
+              index: schemes[1],
             });
           else navigation.navigate('ClassListPage');
           break;
@@ -368,7 +368,7 @@ export default {
           if (paramsLen === 2)
             navigation.navigate('AudioBookPage', {
               category: schemes[0],
-              index: schemes[1]
+              index: schemes[1],
             });
           else navigation.navigate('AudioBookPage');
           break;
@@ -393,7 +393,7 @@ export default {
           navigation.navigate('HomeMonthlyReviewPage', {
             month: params[0],
             sort: params[1],
-            title: '이달의 책 북리뷰'
+            title: '이달의 책 북리뷰',
           });
           break;
 
@@ -401,7 +401,7 @@ export default {
         case 'botm_intro':
           navigation.navigate('BotmIntroPage', {
             title: '이달의 책',
-            info: schemes[0]
+            info: schemes[0],
           });
           break;
 
@@ -424,20 +424,20 @@ export default {
         case 'app_setting':
           navigation.navigate('AuthCheck', {
             requestScreenName: 'SetAppPage',
-            title: '설정'
+            title: '설정',
           });
           break;
 
         case 'event':
           navigation.navigate('EventDetailPage', {
             title: '공지사항 및 이벤트',
-            id: schemes[0]
+            id: schemes[0],
           });
           break;
 
         case 'download_page':
           navigation.navigate('DownloadContentPage', {
-            title: '다운로드 콘텐츠'
+            title: '다운로드 콘텐츠',
           });
           break;
 
@@ -450,38 +450,10 @@ export default {
   },
 
   goBack: () => {
-    navigation.goBack();
-  },
-
-  commonBack: () => {
-    console.log('commonBack start:', globalStore.prevLocations);
-    if (globalStore.prevLocations.length === 0) navigation.goBack();
-    else {
-      const screen = globalStore.prevLocations.pop();
-      navigation.navigate(screen);
-      console.log('commonBack end:', globalStore.prevLocations);
-
-      //
-      setTimeout(() => {
-        const locs = globalStore.prevLocations;
-        const locsLen = locs.length;
-        if (locsLen > 0) globalStore.prevLocations.pop();
-        console.log('정리:', globalStore.prevLocations);
-      }, 0);
+    console.log('nav.js::navigation', navigation);
+    if (!navigation.goBack()) {
+      console.log('nav.js::no previous route', navigation);
+      navigation.dismiss();
     }
   },
-
-  commonMainHomeBack: () => {
-    console.log('commonMainHomeBack start:', globalStore.prevLocations);
-
-    globalStore.prevLocations = ['HomeScreen'];
-    // 실행하는데 시간이 필요한 것일까 .. 동일한 현상이 왜 또 안나오는기야 .
-    console.log(
-      'commonMainHomeBack start: length ',
-      globalStore.prevLocations.length
-    );
-
-    const screen = globalStore.prevLocations.pop();
-    navigation.navigate(screen);
-  }
 };

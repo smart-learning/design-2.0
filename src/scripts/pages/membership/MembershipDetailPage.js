@@ -6,7 +6,7 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import CommonStyles from '../../../styles/common';
@@ -19,10 +19,10 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     textAlign: 'center',
     fontSize: 17,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   tabContainer: {
-    width: '33.333333333%'
+    width: '33.333333333%',
   },
   tabItem: {
     justifyContent: 'center',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     height: 35,
     borderWidth: 1,
     borderColor: '#cccccc',
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabItemActive: {
     justifyContent: 'center',
@@ -38,33 +38,33 @@ const styles = StyleSheet.create({
     height: 35,
     borderWidth: 1,
     borderColor: CommonStyles.COLOR_PRIMARY,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   tabItemText: {
     fontSize: 14,
-    color: '#333333'
+    color: '#333333',
   },
   tabItemTextActive: {
     fontSize: 14,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   sectionTitle: {
     paddingTop: 20,
     paddingBottom: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#333333',
   },
   sectionSubTitle: {
     paddingBottom: 7,
     fontSize: 14,
-    color: '#333333'
+    color: '#333333',
   },
   sectionList: {
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   sectionListItem: {
-    position: 'relative'
+    position: 'relative',
   },
   sectionListItemBullet: {
     position: 'absolute',
@@ -72,23 +72,23 @@ const styles = StyleSheet.create({
     top: 8,
     width: 4,
     height: 4,
-    backgroundColor: '#333333'
+    backgroundColor: '#333333',
   },
   sectionListItemText: {
     paddingLeft: 15,
     fontSize: 14,
-    color: '#333333'
+    color: '#333333',
   },
   sectionListItemTextImportant: {
     fontSize: 14,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   sectionHr: {
     width: '100%',
     height: 1,
     marginTop: 20,
-    backgroundColor: '#eeeeee'
-  }
+    backgroundColor: '#eeeeee',
+  },
 });
 
 @observer
@@ -160,7 +160,7 @@ export default class MembershipDetailPage extends React.Component {
                           : styles.tabItemText
                       }
                     >
-                      오디오북클럽
+                      오디오북
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -186,7 +186,7 @@ export default class MembershipDetailPage extends React.Component {
                           : styles.tabItemText
                       }
                     >
-                      캠퍼스
+                      클래스
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -489,9 +489,7 @@ export default class MembershipDetailPage extends React.Component {
             {this.tabStatus === 'audioBook' && (
               <View>
                 <View style={styles.sectionHr} />
-                <Text style={styles.sectionTitle}>
-                  오디오북클럽 멤버십 권한
-                </Text>
+                <Text style={styles.sectionTitle}>오디오북 멤버십 권한</Text>
                 <View style={styles.sectionList}>
                   <View style={styles.sectionListItem}>
                     <View
@@ -744,7 +742,7 @@ export default class MembershipDetailPage extends React.Component {
             {this.tabStatus === 'campus' && (
               <View>
                 <View style={styles.sectionHr} />
-                <Text style={styles.sectionTitle}>캠퍼스 멤버십의 권한</Text>
+                <Text style={styles.sectionTitle}>클래스 멤버십의 권한</Text>
                 <View style={styles.sectionList}>
                   <View style={styles.sectionListItem}>
                     <View
