@@ -666,23 +666,26 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
     {
         NSLog(@"  Pausing for audio session interruption");
+      /*
         if ( _playButton.hidden )
             _shouldContinuePlaying = true;
         else
             _shouldContinuePlaying = false;
-      
+      */
         [self pressedPauseButton];
     }
     else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
     {
         NSLog(@"  Resuming after audio session interruption");
         // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
+      /*
         if ( _shouldContinuePlaying )
             [self pressedPlayButton];
         else
             NSLog(@"  [audioSessionInterrupted] do nothing..");
       
         _shouldContinuePlaying = nil;
+      */
     }
 }
 
