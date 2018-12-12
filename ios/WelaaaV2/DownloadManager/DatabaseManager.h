@@ -25,6 +25,7 @@
 
 - (NSMutableArray *)searchDownloadedContentsUserId:(NSString *)userId;
 - (NSMutableArray *)searchDownloadedContentsUserId:(NSString *)userId groupKey:(NSString *)cid;
+- (NSMutableArray *)searchDownloadedContentsGroupKey:(NSString *)gid;
 
 // DB 에서 cid 로 목록을 조회해서 리턴(동기식, 비동기식)
 - (NSMutableArray *)searchDownloadedContentsId:(NSString *)cid;

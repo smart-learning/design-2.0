@@ -374,12 +374,11 @@ RCT_EXPORT_MODULE();
     NSLog(@"selectDownloadedList - userId : %@, cid : %@",userId,cid);
     if(userId==nil || userId.length==0){
       NSLog(@"No UserId to Select!");
-      return;
     }
     if (cid==nil || cid.length==0) {
-      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsUserId:userId];
+      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
     }else{
-      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsUserId:userId groupKey:cid];
+      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsGroupKey:cid];
     }
   }else{
     allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
