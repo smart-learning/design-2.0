@@ -666,23 +666,26 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
     {
         NSLog(@"  Pausing for audio session interruption");
+      /*
         if ( _playButton.hidden )
             _shouldContinuePlaying = true;
         else
             _shouldContinuePlaying = false;
-      
+      */
         [self pressedPauseButton];
     }
     else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
     {
         NSLog(@"  Resuming after audio session interruption");
         // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
+      /*
         if ( _shouldContinuePlaying )
             [self pressedPlayButton];
         else
             NSLog(@"  [audioSessionInterrupted] do nothing..");
       
         _shouldContinuePlaying = nil;
+      */
     }
 }
 
@@ -3551,8 +3554,12 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       
         [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
                      forKey : MPMediaItemPropertyTitle];
-        [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
-                     forKey : MPMediaItemPropertyArtist];
+      // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
+        if ( [_currentContentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
+            [songInfo setObject:_currentContentsInfo[@"data"][@"teacher"][@"name"] forKey:MPMediaItemPropertyArtist];
+        else
+            [songInfo setObject:@"미상" forKey:MPMediaItemPropertyArtist];
+      
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*
