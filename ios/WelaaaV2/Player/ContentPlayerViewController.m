@@ -406,6 +406,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
     [self showToastAboutPlaybackAuthority];
+  
+    // 저전력모드 여부를 확인합니다.
+    [self checkLowPowerModeEnabled];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -1697,6 +1700,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
   
     [self showToastAboutPlaybackAuthority];
+  
+    // 저전력모드 여부를 확인합니다.
+    [self checkLowPowerModeEnabled];
 }
 
 //
@@ -2608,6 +2614,26 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [self showToast : @"미리 듣기로 제공됩니다."];
     else if ( !_isAuthor && !_isAudioContent )
         [self showToast : @"1분30초 미리 보기 입니다."];
+}
+
+//
+// 저전력모드인지 확인합니다.
+// https://useyourloaf.com/blog/detecting-low-power-mode/
+// - Stop location updates
+// - Limit the use of animations
+// - Stop background activities such as networking
+// - Disable motion effects
+//
+- (void) checkLowPowerModeEnabled
+{
+    if ( [[NSProcessInfo processInfo] isLowPowerModeEnabled] )
+    {
+        NSLog(@"  저젼력모드를 감지하였습니다.");
+      //[common presentAlertWithTitle:@"윌라" andMessage:@"저전력모드일 경우 백그라운드 재생이 원활하지 않을 수 있다는 점을 안내드립니다.\n감사합니다!"];
+        [self showToast:@"저전력모드에서는 백그라운드 재생이 원활하지 않을 수 있습니다."];
+    }
+    else
+        NSLog(@"  저젼력모드가 아닙니다.");
 }
 
 #pragma mark - Time Control
