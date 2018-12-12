@@ -3551,8 +3551,12 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       
         [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
                      forKey : MPMediaItemPropertyTitle];
-        [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
-                     forKey : MPMediaItemPropertyArtist];
+      // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
+        if ( [_currentContentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
+            [songInfo setObject:_currentContentsInfo[@"data"][@"teacher"][@"name"] forKey:MPMediaItemPropertyArtist];
+        else
+            [songInfo setObject:@"미상" forKey:MPMediaItemPropertyArtist];
+      
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*
