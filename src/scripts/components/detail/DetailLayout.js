@@ -67,6 +67,8 @@ class DetailLayout extends React.Component {
   componentDidMount() {
     // iOS 의 경우 구매 완료 시점에 상세 페이지를 갱신하기 위해 이벤트 리스너를 준비. 2018.11.5.
     if (Platform.OS === 'ios') {
+      this.checkDownloadContent();
+
       this.disposer = observe(globalStore.buyResult, change => {
         if ('success' === change.name && change.newValue) {
           // 구매 완료 이벤트를 받으면 화면을 갱신 -> 우선 back 으로 가는 시나리오로 구현.
@@ -143,6 +145,22 @@ class DetailLayout extends React.Component {
     // let accessToken = globalStore.welaaaAuth.access_token;
 
     if ('ios' === Platform.OS) {
+      Native.getDownloadListCid(
+        this.props.itemData.cid,
+        result => {
+          if ('null' !== result.trim()) {
+            try {
+              let jsonData = JSON.parse(result);
+              globalStore.downloadItems = jsonData;
+
+              console.log('DownloadItem', globalStore.downloadItems);
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        },
+        error => console.error(error),
+      );
     } else if ('android' === Platform.OS) {
       Native.getDownloadListCid(
         this.props.itemData.cid,
@@ -228,9 +246,9 @@ class DetailLayout extends React.Component {
       }
     });
 
-    console.log(downloadItems.length, itemClipData.length)
-    console.log(downloadItems.cid, this.props.itemData.cid)
-    console.log(realLength, realLength)
+    console.log(downloadItems.length, itemClipData.length);
+    console.log(downloadItems.cid, this.props.itemData.cid);
+    console.log(realLength, realLength);
 
     let vcontent = (
       <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>
@@ -276,7 +294,7 @@ class DetailLayout extends React.Component {
           {this.props.learnType === 'audioBook' ? (
             <AudiobookPaymentStatus
               addToCart={this.props.addToCart}
-			  iosBuy={this.props.iosBuy}
+              iosBuy={this.props.iosBuy}
               useVoucher={this.props.useVoucher}
               voucherStatus={this.props.voucherStatus}
               // permissions={this.props.permissions}

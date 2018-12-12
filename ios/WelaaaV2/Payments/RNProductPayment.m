@@ -42,6 +42,8 @@ RCT_EXPORT_MODULE();
 #else
     paymentMode = @"live";//live
 #endif
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라QA"] )
+        paymentMode = @"sandbox";
     NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
     if ( nullStr(productCode) )
@@ -385,6 +387,8 @@ RCT_EXPORT_MODULE();
 #else
     paymentMode = @"live";//live
 #endif
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라QA"] )
+        paymentMode = @"sandbox";
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   
     NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/restore";
