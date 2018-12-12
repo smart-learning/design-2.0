@@ -77,6 +77,8 @@
 		EFAEBDCB213D33050070F10E /* ContentMiniPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB1213D33050070F10E /* ContentMiniPlayerView.m */; };
 		EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB4213D33050070F10E /* PlayerSleepTimerView.m */; };
 		EFAEBDCD213D33050070F10E /* PlayerSleepTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB5213D33050070F10E /* PlayerSleepTimerButton.m */; };
+		EFB7D72D21C0FBC8009486BF /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */; };
+		EFB7D72E21C0FBC8009486BF /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EFD50319214A3D3500FA72D3 /* RNReceiptEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD50318214A3D3500FA72D3 /* RNReceiptEventEmitter.m */; };
 		EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */; };
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
@@ -88,8 +90,6 @@
 		EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */; };
 		EFE0835921144239006D3F6C /* IAPShare.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832E21144239006D3F6C /* IAPShare.m */; };
 		EFE5F19D219A8951008E10B7 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE5F19C219A8951008E10B7 /* SplashView.m */; };
-		EFFAAF7D212D533C0061C889 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */; };
-		EFFAAF7E212D533C0061C889 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FEB4A0A1AA6341EE8ED27C0B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC83BF071F44EB699826325 /* libRCTFBSDK.a */; };
 /* End PBXBuildFile section */
 
@@ -377,13 +377,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		EFFAAF7F212D533C0061C889 /* Embed Frameworks */ = {
+		EFB7D72B21C0F9DB009486BF /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				EFFAAF7E212D533C0061C889 /* PallyConFPSSDK.framework in Embed Frameworks */,
+				EFB7D72E21C0FBC8009486BF /* PallyConFPSSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,6 +502,7 @@
 		EFAEBDB5213D33050070F10E /* PlayerSleepTimerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerSleepTimerButton.m; sourceTree = "<group>"; };
 		EFAEBDB6213D33050070F10E /* PlayerSleepTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerView.h; sourceTree = "<group>"; };
 		EFAEBDB7213D33050070F10E /* PlayerSleepTimerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerButton.h; sourceTree = "<group>"; };
+		EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 		EFD388172138DD4900AC5C39 /* WelaaaV2_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WelaaaV2_Prefix.pch; path = WelaaaV2/WelaaaV2_Prefix.pch; sourceTree = "<group>"; };
 		EFD50317214A3D3500FA72D3 /* RNReceiptEventEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNReceiptEventEmitter.h; sourceTree = "<group>"; };
 		EFD50318214A3D3500FA72D3 /* RNReceiptEventEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNReceiptEventEmitter.m; sourceTree = "<group>"; };
@@ -526,7 +527,6 @@
 		EFE0F3B22117E5F900D4558B /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		EFE5F19B219A8951008E10B7 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashView.h; sourceTree = "<group>"; };
 		EFE5F19C219A8951008E10B7 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashView.m; sourceTree = "<group>"; };
-		EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -535,6 +535,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */,
+				EFB7D72D21C0FBC8009486BF /* PallyConFPSSDK.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				EF23D7532175A1A40023DE2D /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -545,7 +546,6 @@
 				EF056AB921267EFD00F3178B /* StoreKit.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
-				EFFAAF7D212D533C0061C889 /* PallyConFPSSDK.framework in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
@@ -673,8 +673,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */,
 				EF671AD3213E4BA100767E01 /* libsqlite3.tbd */,
-				EFFAAF7C212D533C0061C889 /* PallyConFPSSDK.framework */,
 				EF056AB821267EFD00F3178B /* StoreKit.framework */,
 				EFE0F3B22117E5F900D4558B /* Contacts.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
@@ -1044,8 +1044,8 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				EF9A98AC2111458C00EA3A8E /* ShellScript */,
-				EFFAAF7F212D533C0061C889 /* Embed Frameworks */,
 				A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */,
+				EFB7D72B21C0F9DB009486BF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
