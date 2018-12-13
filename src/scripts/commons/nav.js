@@ -456,4 +456,9 @@ export default {
       navigation.dismiss();
     }
   },
+
+  goHome: () => {
+    console.log('nav.js::navigation', navigation);
+    navigation.navigate('HomeScreen');
+  },
 };
