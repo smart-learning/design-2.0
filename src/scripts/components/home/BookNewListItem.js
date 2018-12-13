@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: 85,
-    height: 130,
+    height: 136,
     marginTop: 15,
     marginLeft: 'auto',
     marginRight: 'auto',

@@ -27,6 +27,7 @@ import _ from 'underscore';
 import HomeBanner from '../../components/home/HomeBanner';
 import globalStore from '../../commons/store';
 import BookNewList from '../../components/home/BookNewList';
+import BookRankList from '../../components/home/BookRankList';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -294,8 +295,7 @@ class HomeAudioPage extends React.Component {
               <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
             </View>
             {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
-            <BookList
-              itemType="hot"
+            <BookRankList
               itemData={
                 this.props.store.audioHotData.items
                   ? this.props.store.audioHotData.items
