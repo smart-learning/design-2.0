@@ -15,12 +15,10 @@ import Swiper from 'react-native-swiper';
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
 import BookMonthly from '../../components/home/BookMonthly';
 import PageCategory from '../../components/PageCategory';
-import BookList from '../../components/home/BookList';
 import BookFreeList from '../../components/home/BookFreeList';
 import BookContinueList from '../../components/home/BookCoutinueList';
 import PTRView from 'react-native-pull-to-refresh';
 import moment from 'moment';
-import ClassContinueList from '../../components/home/ClassContinueList';
 import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
@@ -28,6 +26,7 @@ import HomeBanner from '../../components/home/HomeBanner';
 import globalStore from '../../commons/store';
 import BookNewList from '../../components/home/BookNewList';
 import BookRankList from '../../components/home/BookRankList';
+import BookRecommendList from '../../components/home/BookRecommendList';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -303,21 +302,25 @@ class HomeAudioPage extends React.Component {
               }
             />
             {/* )} */}
+            <View
+              style={{
+                width: '100%',
+                height: 8,
+                backgroundColor: '#F0F0F4',
+                marginBottom: 30
+              }}
+            />
 
-            <View>
-              <View style={CommonStyles.alignJustifyContentBetween}>
-                <Text style={styles.titleH3}>000님의 추천 오디오북</Text>
-              </View>
-
-              <BookList
-                itemType={'new'}
-                itemData={
-                  this.props.store.audioRecommendData.items
-                    ? this.props.store.audioRecommendData.items
-                    : this.props.store.audioRecommendData
-                }
-              />
+            <View style={CommonStyles.alignJustifyContentBetween}>
+              <Text style={styles.titleH3}>000님의 추천 오디오북</Text>
             </View>
+            <BookRecommendList
+              itemData={
+                this.props.store.audioRecommendData.items
+                  ? this.props.store.audioRecommendData.items
+                  : this.props.store.audioRecommendData
+              }
+            />
           </View>
           <View style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}>
             <TouchableOpacity
