@@ -63,9 +63,8 @@ class Series extends React.Component {
                 activeOpacity={0.9}
                 onPress={() => {
                   if (item.category === '035') {
-                    this.props.navigation.navigate('Series_4genScreen', {
+                    this.props.navigation.navigate('Series_4genPage', {
                       title: '4차 산업 혁명 시리즈',
-                      focus: item.category,
                     });
                   } else {
                     this.props.navigation.navigate('HomeSeriesPage', {

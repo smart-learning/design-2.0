@@ -90,7 +90,7 @@ const HomeScreen = createStackNavigator(
     CartScreen: {
       screen: CartScreen,
     },
-    Series_4genScreen: {
+    Series_4genPage: {
       screen: SerieseIntro,
       navigationOptions: NAV_OPTS_STACK,
     },
