@@ -77,7 +77,7 @@ class BookRankListItem extends React.Component {
 
   render() {
     return (
-      <TouchableOpacity onPress={this.gotoAudioPage}>
+      <TouchableOpacity onPress={this.gotoAudioPage} activeOpacity={0.9}>
         <View style={styles.rankGridItem}>
           <View style={styles.contentHr} />
           <View style={CommonStyles.alignJustifyItemCenter}>

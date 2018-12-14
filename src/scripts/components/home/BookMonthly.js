@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     height: 30,
     paddingLeft: 25,
     paddingRight: 35,
-    backgroundColor: '#1c9165'
+    backgroundColor: '#A6AC53'
   },
   couponIcon: {
     width: 19,
@@ -58,7 +58,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20
   },
   bookItemContainer: {
-    marginTop: 10
+    marginTop: 20
+  },
+  bookItem: {
+    width: '42%'
   },
   bullet: {
     position: 'absolute',
@@ -87,7 +90,7 @@ class BookMonthly extends React.Component {
   render() {
     let itemData = [];
     if (_.isObject(this.props.itemData)) {
-      itemData = this.props.itemData;
+      itemData = this.props.itemData.slice(0, 3);
     }
 
     return (
@@ -97,8 +100,8 @@ class BookMonthly extends React.Component {
             <Swiper
               showsButtons={false}
               height={520}
-              dotColor={'#9bcdba'}
-              activeDotColor={CommonStyles.COLOR_PRIMARY}
+              dotColor={'#ADB08B'}
+              activeDotColor={'#34342C'}
               paginationStyle={{ bottom: 10 }}
             >
               {itemData.map((item, key) => {
@@ -108,9 +111,6 @@ class BookMonthly extends React.Component {
                     <View>
                       <Text style={[styles.mainTitleCenter, styles.titleH2]}>
                         {MonthData}월 이달의 책
-                      </Text>
-                      <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                        이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
                       </Text>
                     </View>
 
@@ -150,34 +150,49 @@ class BookMonthly extends React.Component {
                       ))}
 
                     <View style={styles.bookItemContainer}>
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={() =>
-                          this.props.navigation.navigate(
-                            'HomeMonthlyReviewPage',
-                            {
-                              itemData: item.book_a,
-                              title: '이달의 책 북리뷰'
-                            }
-                          )
-                        }
+                      <View
+                        style={[
+                          CommonStyles.alignJustifyContentBetween,
+                          {
+                            width: '75%',
+                            marginLeft: 'auto',
+                            marginRight: 'auto'
+                          }
+                        ]}
                       >
-                        <BookMonthlyItem itemData={item.book_a} />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={() =>
-                          this.props.navigation.navigate(
-                            'HomeMonthlyReviewPage',
-                            {
-                              itemData: item.book_b,
-                              title: '이달의 책 북리뷰'
+                        <View style={styles.bookItem}>
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              this.props.navigation.navigate(
+                                'HomeMonthlyReviewPage',
+                                {
+                                  itemData: item.book_a,
+                                  title: '이달의 책 북리뷰'
+                                }
+                              )
                             }
-                          )
-                        }
-                      >
-                        <BookMonthlyItem itemData={item.book_b} />
-                      </TouchableOpacity>
+                          >
+                            <BookMonthlyItem itemData={item.book_a} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.bookItem}>
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              this.props.navigation.navigate(
+                                'HomeMonthlyReviewPage',
+                                {
+                                  itemData: item.book_b,
+                                  title: '이달의 책 북리뷰'
+                                }
+                              )
+                            }
+                          >
+                            <BookMonthlyItem itemData={item.book_b} />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </View>
                   </View>
                 );

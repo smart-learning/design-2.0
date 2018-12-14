@@ -76,9 +76,9 @@ const styles = StyleSheet.create({
     paddingBottom: 30
   },
   monthContainer: {
-    paddingTop: 30,
-    paddingBottom: 30,
-    backgroundColor: '#8cd8b1'
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: '#CDD0A4'
   },
   dailyContainer: {
     paddingTop: 30,
@@ -153,7 +153,6 @@ class HomeAudioPage extends React.Component {
   };
 
   render() {
-    let updatedAt = moment().format('YYYY. MM. DD');
     let homeBannerData = [];
     try {
       if (_.isObject(this.props.store.homeBannerData)) {
@@ -162,20 +161,11 @@ class HomeAudioPage extends React.Component {
     } catch (error) {
       console.log(error);
     }
-    return (
-      <PTRView onRefresh={() => this.props.onRefresh()}>
+    return <PTRView onRefresh={() => this.props.onRefresh()}>
         <ScrollView style={{ flex: 1 }}>
           {/* 이미지 스와이퍼 */}
           <View style={{ height: this.props.store.slideHeight }}>
-            {homeBannerData.length > 0 && (
-              <Swiper
-                style={styles.wrapper}
-                showsButtons={false}
-                height={window.width}
-                dotColor={'#888888'}
-                activeDotColor={'#ffffff'}
-                paginationStyle={{ left: '-65%', bottom: 10 }}
-              >
+            {homeBannerData.length > 0 && <Swiper style={styles.wrapper} showsButtons={false} height={window.width} dotColor={'#888888'} activeDotColor={'#ffffff'} paginationStyle={{ left: '-65%', bottom: 10 }}>
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';
                   const { action_type, action_param } = item;
@@ -183,61 +173,29 @@ class HomeAudioPage extends React.Component {
                     bannerImageUrl = item.images.default;
                   } catch (e) {}
 
-                  return (
-                    <HomeBanner
-                      key={key}
-                      action_type={action_type}
-                      action_param={action_param}
-                      bannerImageUrl={bannerImageUrl}
-                      navigation={this.props.navigation}
-                    />
-                  );
+                  return <HomeBanner key={key} action_type={action_type} action_param={action_param} bannerImageUrl={bannerImageUrl} navigation={this.props.navigation} />;
                 })}
-              </Swiper>
-            )}
-            {homeBannerData.length === 0 && (
-              <View style={{ marginTop: '20%' }}>
-                <ActivityIndicator
-                  size="large"
-                  color={CommonStyles.COLOR_PRIMARY}
-                />
-              </View>
-            )}
+              </Swiper>}
+            {homeBannerData.length === 0 && <View style={{ marginTop: '20%' }}>
+                <ActivityIndicator size="large" color={CommonStyles.COLOR_PRIMARY} />
+              </View>}
           </View>
           {/* /이미지 스와이퍼 */}
 
-          {globalStore.welaaaAuth && (
-            <View>
-              <View
-                style={[
-                  CommonStyles.contentContainer,
-                  styles.continueContainer
-                ]}
-              >
-                {this.props.store.audioUseData &&
-                  this.props.store.audioUseData.length > 0 && (
-                    <View>
-                      <View style={CommonStyles.alignJustifyItemCenter}>
-                        <Text style={styles.titleH2}>최근재생 오디오북</Text>
-                      </View>
-                      <BookContinueList
-                        itemData={this.props.store.audioUseData}
-                      />
+          {globalStore.welaaaAuth && <View>
+              <View style={[CommonStyles.contentContainer, styles.continueContainer]}>
+                {this.props.store.audioUseData && this.props.store.audioUseData.length > 0 && <View>
+                    <View style={CommonStyles.alignJustifyItemCenter}>
+                      <Text style={styles.titleH2}>최근재생 오디오북</Text>
                     </View>
-                  )}
+                    <BookContinueList itemData={this.props.store.audioUseData} />
+                  </View>}
               </View>
-              <View
-                style={{
-                  width: '100%',
-                  height: 8,
-                  backgroundColor: '#F0F0F4'
-                }}
-              />
-            </View>
-          )}
+              <View style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }} />
+            </View>}
 
           {/*<View style={styles.monthContainer}>*/}
-          {/*<BookMonthly itemData={this.props.store.audioMonth} />*/}
+            {/*<BookMonthly itemData={this.props.store.audioMonth} />*/}
           {/*</View>*/}
 
           {/*매일 책 한 권*/}
@@ -245,36 +203,22 @@ class HomeAudioPage extends React.Component {
           {/*<BookDaily itemData={this.props.store.audioDaily} />*/}
           {/*</View>*/}
 
-          <View
-            style={[CommonStyles.contentContainer, styles.audioBookContainer]}
-          >
-            <View
-              style={[
-                CommonStyles.alignJustifyContentBetween,
-                styles.titleContainer
-              ]}
-            >
+          <View style={[CommonStyles.contentContainer, styles.audioBookContainer]}>
+            <View style={[CommonStyles.alignJustifyContentBetween, styles.titleContainer]}>
               <View>
                 <Text style={styles.titleH2}>윌라 오디오북</Text>
               </View>
               <View style={styles.showMoreWrapper}>
-                <TouchableOpacity
-                  style={styles.showMore}
-                  onPress={() => {
+                <TouchableOpacity style={styles.showMore} onPress={() => {
                     this.props.navigation.navigate('AudioBookPage');
-                  }}
-                >
+                  }}>
                   <Text style={styles.showMoreText}>전체보기</Text>
                 </TouchableOpacity>
               </View>
             </View>
             <View style={styles.audioCategory}>
               <View style={styles.audioCategoryHr} />
-              <PageCategory
-                data={this.props.store.audioBookCategoryData}
-                selectedCategory={0}
-                onCategorySelect={this.premiumCategorySelect}
-              />
+              <PageCategory data={this.props.store.audioBookCategoryData} selectedCategory={0} onCategorySelect={this.premiumCategorySelect} />
               <View style={styles.audioCategoryHr} />
             </View>
 
@@ -282,59 +226,30 @@ class HomeAudioPage extends React.Component {
               <Text style={styles.titleH3}>새로 나온 오디오북</Text>
             </View>
 
-            <BookNewList
-              itemData={
-                this.props.store.audioNewData.items
-                  ? this.props.store.audioNewData.items
-                  : this.props.store.audioNewData
-              }
-            />
+            <BookNewList itemData={this.props.store.audioNewData.items ? this.props.store.audioNewData.items : this.props.store.audioNewData} />
 
             <View style={CommonStyles.alignJustifyContentBetween}>
               <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
             </View>
             {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
-            <BookRankList
-              itemData={
-                this.props.store.audioHotData.items
-                  ? this.props.store.audioHotData.items
-                  : this.props.store.audioHotData
-              }
-            />
+            <BookRankList itemData={this.props.store.audioHotData.items ? this.props.store.audioHotData.items : this.props.store.audioHotData} />
             {/* )} */}
-            <View
-              style={{
-                width: '100%',
-                height: 8,
-                backgroundColor: '#F0F0F4',
-                marginBottom: 30
-              }}
-            />
+            <View style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4', marginBottom: 30 }} />
 
             <View style={CommonStyles.alignJustifyContentBetween}>
-              <Text style={styles.titleH3}>000님의 추천 오디오북</Text>
+              <Text style={styles.titleH3}>추천 오디오북</Text>
             </View>
-            <BookRecommendList
-              itemData={
-                this.props.store.audioRecommendData.items
-                  ? this.props.store.audioRecommendData.items
-                  : this.props.store.audioRecommendData
-              }
-            />
+            <BookRecommendList itemData={this.props.store.audioRecommendData.items ? this.props.store.audioRecommendData.items : this.props.store.audioRecommendData} />
           </View>
           <View style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}>
-            <TouchableOpacity
-              style={[styles.showMore, { height: 36 }]}
-              onPress={() => {
+            <TouchableOpacity style={[styles.showMore, { height: 36 }]} onPress={() => {
                 this.props.navigation.navigate('AudioBookPage');
-              }}
-            >
+              }}>
               <Text style={styles.showAllText}>오디오북 전체보기</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
-      </PTRView>
-    );
+      </PTRView>;
   }
 }
 
