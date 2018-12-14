@@ -233,9 +233,13 @@ class App extends React.Component {
       const paymentManagerEmitter = new NativeEventEmitter(paymentManager);
       paymentManagerEmitter.addListener('buyResult', async arg => {
         const result = await Native.buyResult(arg);
-        if (result) {
+
+        //console.log('result->', result); // true
+        //console.log('arg->', arg); // {success: true, buy_type: "membership" or "audiobook"}
+
+        if (result && arg.buy_type === 'membership') {
           this.props.navigation.navigate('HomeScreen', {
-            popup_mbs: true
+            popup_mbs: true,
           });
         } else {
           console.log('Native.buyResult error.');
