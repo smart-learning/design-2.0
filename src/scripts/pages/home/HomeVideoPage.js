@@ -266,7 +266,8 @@ class HomeVideoPage extends React.Component {
             )}
           </View>
 
-          {homeSeriesData &&
+          {1 === 2 &&
+            homeSeriesData &&
             homeSeriesData.length &&
             (homeSeriesData.length <= 6 ? (
               <View style={{ marginTop: 12 }}>
@@ -314,12 +315,9 @@ class HomeVideoPage extends React.Component {
                 {/*onFullScreenToggle={this.onFullScreenToggle}*/}
                 {/*/>*/}
                 {/*</View>*/}
-
-                {1 === 2 && (
-                  <View style={styles.seriesComponent}>
-                    <Series itemData={this.props.store.homeSeriesData} />
-                  </View>
-                )}
+                <View style={styles.seriesComponent}>
+                  <Series itemData={this.props.store.homeSeriesData} />
+                </View>
               </View>
             ))}
           <View
