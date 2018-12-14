@@ -223,24 +223,38 @@ class App extends React.Component {
   async componentDidMount() {
     this.addNetInfoEvent();
 
+    // Handle DeepLink URL
+    Linking.getInitialURL()
+      .then(url => {
+        if (appsFlyer) {
+          // Additional Deep Link Logic Here ...
+          if (url) {
+            console.log('App.js::deeplink:', url);
+            nav.parseDeepLink(this.parseDeepLinkUrl(url));
+          }
+        }
+      })
+      .catch(err => console.error('An error occurred', err));
+
     const options = {
-      devKey: "cV7GxoAwtL5YWigvJmtPXg",
-      isDebug: true
+      devKey: 'cV7GxoAwtL5YWigvJmtPXg',
+      isDebug: true,
     };
 
     if (Platform.OS === 'ios') {
-      options.appId = "123456789";
+      options.appId = '123456789';
       //Apple Application ID (for iOS only)
     }
 
-    appsFlyer.initSdk(options,
-      (result) => {
+    appsFlyer.initSdk(
+      options,
+      result => {
         console.log('appsFlyer.initSdk OK ', result);
       },
-      (error) => {
+      error => {
         console.error('appsFlyer.initSdk Error', error);
-      }
-    )
+      },
+    );
 
     if ('ios' === Platform.OS) {
       console.log('======', Native.getPlayerManager());
@@ -257,7 +271,7 @@ class App extends React.Component {
         const result = await Native.buyResult(arg);
         if (result) {
           this.props.navigation.navigate('HomeScreen', {
-            popup_mbs: true
+            popup_mbs: true,
           });
         } else {
           console.log('Native.buyResult error.');
@@ -282,8 +296,6 @@ class App extends React.Component {
           Native.downloadState(arg),
         ),
       );
-
-
     }
 
     Linking.addEventListener('url', this._handleOpenURL);
@@ -421,7 +433,21 @@ class App extends React.Component {
 
   _handleOpenURL = event => {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', event.url);
-    nav.parseDeepLink(event.url);
+    nav.parseDeepLink(this.parseDeepLinkUrl(event.url));
+  };
+
+  parseDeepLinkUrl = url => {
+    if (url && url.startsWith('https:')) {
+      if (appsFlyer) {
+        appsFlyer.sendDeepLinkData(url); // Report Deep Link to AppsFlyer
+      }
+
+      let pathIndex = url.indexOf('/', 'https://welaaa.onelink.me/'.length);
+      let parameterIndex = url.indexOf('?');
+      let pathName = url.substring(pathIndex, parameterIndex);
+      return pathName;
+    }
+    return url;
   };
 
   render() {
