@@ -36,6 +36,4 @@ target 'WelaaaV2' do
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
 
-  #pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
 end
