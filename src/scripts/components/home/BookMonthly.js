@@ -58,18 +58,14 @@ const styles = StyleSheet.create({
     paddingBottom: 20
   },
   bookItemContainer: {
+    width: '75%',
+    height: 200,
+    marginLeft: 'auto',
+    marginRight: 'auto',
     marginTop: 20
   },
   bookItem: {
     width: '42%'
-  },
-  bullet: {
-    position: 'absolute',
-    zIndex: -9,
-    left: 0,
-    bottom: 40,
-    width: '100%',
-    height: 200
   },
   mainTitleCenter: {
     textAlign: 'center'
@@ -99,7 +95,7 @@ class BookMonthly extends React.Component {
           {this.props.itemData.length > 0 && (
             <Swiper
               showsButtons={false}
-              height={520}
+              height={450}
               dotColor={'#ADB08B'}
               activeDotColor={'#34342C'}
               paginationStyle={{ bottom: 10 }}
@@ -114,7 +110,8 @@ class BookMonthly extends React.Component {
                       </Text>
                     </View>
 
-                    {globalStore.currentMembership !== undefined &&
+                    {1 === 2 &&
+                      globalStore.currentMembership !== undefined &&
                       ((globalStore.currentMembership.type === 2 ||
                         globalStore.currentMembership.type === 4) && (
                         <View>
@@ -150,47 +147,12 @@ class BookMonthly extends React.Component {
                       ))}
 
                     <View style={styles.bookItemContainer}>
-                      <View
-                        style={[
-                          CommonStyles.alignJustifyContentBetween,
-                          {
-                            width: '75%',
-                            marginLeft: 'auto',
-                            marginRight: 'auto'
-                          }
-                        ]}
-                      >
+                      <View style={CommonStyles.alignJustifyContentBetween}>
                         <View style={styles.bookItem}>
-                          <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() =>
-                              this.props.navigation.navigate(
-                                'HomeMonthlyReviewPage',
-                                {
-                                  itemData: item.book_a,
-                                  title: '이달의 책 북리뷰'
-                                }
-                              )
-                            }
-                          >
-                            <BookMonthlyItem itemData={item.book_a} />
-                          </TouchableOpacity>
+                          <BookMonthlyItem itemData={item.book_a} />
                         </View>
                         <View style={styles.bookItem}>
-                          <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() =>
-                              this.props.navigation.navigate(
-                                'HomeMonthlyReviewPage',
-                                {
-                                  itemData: item.book_b,
-                                  title: '이달의 책 북리뷰'
-                                }
-                              )
-                            }
-                          >
-                            <BookMonthlyItem itemData={item.book_b} />
-                          </TouchableOpacity>
+                          <BookMonthlyItem itemData={item.book_b} />
                         </View>
                       </View>
                     </View>
