@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     fontSize: 16,
-    color: '#333333',
+    color: '#34342C',
     marginTop: 14
   },
   summaryDim: {

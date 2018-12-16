@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   sectionSubTitle: {
     paddingBottom: 7,
     fontSize: 14,
-    color: '#333333'
+    color: '#34342C'
   },
   sectionList: {
     paddingBottom: 10
@@ -65,12 +65,12 @@ const styles = StyleSheet.create({
     top: 8,
     width: 4,
     height: 4,
-    backgroundColor: '#333333'
+    backgroundColor: '#34342C'
   },
   sectionListItemText: {
     paddingLeft: 15,
     fontSize: 14,
-    color: '#333333'
+    color: '#34342C'
   },
   sectionListItemTextImportant: {
     fontSize: 14,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
     fontSize: 24,
-    color: '#333333'
+    color: '#34342C'
   },
   paragraphBox: {
     marginBottom: 30
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   paragraphText: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#333333'
+    color: '#34342C'
   },
   paragraphImportantText: {
     textAlign: 'center',
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   },
   membershipPrice: {
     fontSize: 16,
-    color: '#333333'
+    color: '#34342C'
   },
   membershipSalePrice: {
     fontSize: 14,

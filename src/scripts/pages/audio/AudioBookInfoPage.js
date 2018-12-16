@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
   teacherHeadline: {
     fontSize: 15,
     fontWeight: 'normal',
-    color: '#333333'
+    color: '#34342C'
   },
   teacherName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   teacherMemo: {
     paddingTop: 25,

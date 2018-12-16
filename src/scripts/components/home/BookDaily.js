@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   titleH2: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   titleH4: {
     paddingTop: 10,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     fontSize: 16,
-    color: '#333333'
+    color: '#34342C'
   },
   dailyBookContentHeadline: {},
   showMoreWrapper: {

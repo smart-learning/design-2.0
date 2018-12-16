@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingBottom: 15,
     fontSize: 17,
-    color: '#333333'
+    color: '#34342C'
   },
   membershipItem: {
     flexDirection: 'row',

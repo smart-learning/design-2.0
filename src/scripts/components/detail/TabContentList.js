@@ -27,13 +27,13 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 15,
     fontSize: 13,
-    color: '#333333'
+    color: '#34342C'
   },
   notReadyText: {
     marginTop: 30,
     marginBottom: 15,
     fontSize: 13,
-    color: '#333333',
+    color: '#34342C',
     borderWidth: 1,
     borderColor: '#bbbbbe',
     padding: 15

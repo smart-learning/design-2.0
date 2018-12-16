@@ -11,7 +11,7 @@ const styles = StyleSheet.create( {
 		paddingBottom: 30,
 		fontSize: 18,
 		fontWeight: 'bold',
-		color: '#333333',
+		color: '#34342C',
 	},
 	sectionTitleBullet: {
 		fontSize: 15,
@@ -36,7 +36,7 @@ export default class TabContentReview extends React.Component {
 					marginLeft: 15,
 					marginRight: 15,
                     fontSize: 13,
-                    color: '#333333',
+                    color: '#34342C',
                     borderWidth: 1,
                     borderColor: '#bbbbbe',
                     padding: 15

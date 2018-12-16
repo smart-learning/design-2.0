@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   infoTextNormal: {
     fontSize: 13,
@@ -109,12 +109,12 @@ const styles = StyleSheet.create({
   teacherHeadline: {
     fontSize: 15,
     fontWeight: 'normal',
-    color: '#333333'
+    color: '#34342C'
   },
   teacherName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   teacherMemo: {
     paddingTop: 25,

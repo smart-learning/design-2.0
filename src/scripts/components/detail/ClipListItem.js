@@ -16,13 +16,13 @@ const styles = StyleSheet.create({
 		width: 30,
 		fontWeight: 'bold',
 		fontSize: 18,
-		color: '#333333',
+		color: '#34342C',
 	},
 	clipTitle: {
 		marginRight: 15,
 		marginBottom: 15,
 		fontSize: 18,
-		color: '#333333',
+		color: '#34342C',
 	},
 	clipParagraph: {
 		marginBottom: 15,

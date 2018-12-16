@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   titleH2: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   titleH4: {
     paddingTop: 10,

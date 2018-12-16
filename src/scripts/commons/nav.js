@@ -156,7 +156,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff'
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             홈
           </Text>
           <Image
@@ -191,7 +191,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff'
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             클래스 전체목록
           </Text>
           <Image
@@ -226,7 +226,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff'
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             오디오북 전체목록
           </Text>
           <Image
@@ -261,7 +261,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff'
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             마이윌라
           </Text>
           <Image
@@ -296,7 +296,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff'
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             1:1 문의
           </Text>
           <Image

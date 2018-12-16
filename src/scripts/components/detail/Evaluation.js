@@ -10,7 +10,7 @@ const styles = StyleSheet.create( {
 	evaluation: {},
 	starCount: {
 		fontSize: 30,
-		color: '#333333',
+		color: '#34342C',
 	},
 	evaluationItem: {
 		alignItems: 'center',

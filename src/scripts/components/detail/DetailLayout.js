@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   tabActiveText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   tabNormalHr: {
     position: 'absolute',

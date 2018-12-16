@@ -31,14 +31,14 @@ const styles = StyleSheet.create({
     minHeight: 30,
     fontWeight: 'bold',
     fontSize: 13,
-    color: '#333333'
+    color: '#34342C'
   },
   itemTitleText: {
     width: '75%',
     minHeight: 30,
     fontSize: 13,
     // paddingLeft: 10,
-    color: '#333333'
+    color: '#34342C'
   },
   itemTime: {
     fontSize: 11,
