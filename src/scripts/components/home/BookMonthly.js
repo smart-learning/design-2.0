@@ -149,10 +149,36 @@ class BookMonthly extends React.Component {
                     <View style={styles.bookItemContainer}>
                       <View style={CommonStyles.alignJustifyContentBetween}>
                         <View style={styles.bookItem}>
-                          <BookMonthlyItem itemData={item.book_a} />
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              this.props.navigation.navigate(
+                                'HomeMonthlyReviewPage',
+                                {
+                                  itemData: item.book_a,
+                                  title: '이달의 책 북리뷰'
+                                }
+                              )
+                            }
+                          >
+                            <BookMonthlyItem itemData={item.book_a} />
+                          </TouchableOpacity>
                         </View>
                         <View style={styles.bookItem}>
-                          <BookMonthlyItem itemData={item.book_b} />
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              this.props.navigation.navigate(
+                                'HomeMonthlyReviewPage',
+                                {
+                                  itemData: item.book_b,
+                                  title: '이달의 책 북리뷰'
+                                }
+                              )
+                            }
+                          >
+                            <BookMonthlyItem itemData={item.book_b} />
+                          </TouchableOpacity>
                         </View>
                       </View>
                     </View>
