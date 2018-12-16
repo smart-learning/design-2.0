@@ -24,10 +24,9 @@ import ClassContinueList from '../../components/home/ClassContinueList';
 import ClassList from '../../components/home/ClassList';
 import ClipRank from '../../components/home/ClipRank';
 import HomeBanner from '../../components/home/HomeBanner';
-import Series from '../../components/home/Series';
+import SeriesSwiper from '../../components/home/SeriesSwiper';
 import PageCategory from '../../components/PageCategory';
 import Native from '../../commons/native';
-import CircularCarousel from '../../components/CircularCarousel';
 
 const styles = StyleSheet.create({
   slide: {
@@ -266,8 +265,7 @@ class HomeVideoPage extends React.Component {
             )}
           </View>
 
-          {1 === 2 &&
-            homeSeriesData &&
+          {homeSeriesData &&
             homeSeriesData.length &&
             (homeSeriesData.length <= 6 ? (
               <View style={{ marginTop: 12 }}>
@@ -304,19 +302,8 @@ class HomeVideoPage extends React.Component {
                   </View>
                 </View>
 
-                {/*<View*/}
-                {/*style={{*/}
-                {/*flex: 1,*/}
-                {/*justifyContent: 'center',*/}
-                {/*alignItems: 'center'*/}
-                {/*}}*/}
-                {/*>*/}
-                {/*<CircularCarousel*/}
-                {/*onFullScreenToggle={this.onFullScreenToggle}*/}
-                {/*/>*/}
-                {/*</View>*/}
                 <View style={styles.seriesComponent}>
-                  <Series itemData={this.props.store.homeSeriesData} />
+                  <SeriesSwiper itemData={this.props.store.homeSeriesData} />
                 </View>
               </View>
             ))}
