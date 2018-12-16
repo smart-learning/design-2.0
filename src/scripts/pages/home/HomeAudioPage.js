@@ -27,6 +27,8 @@ import globalStore from '../../commons/store';
 import BookNewList from '../../components/home/BookNewList';
 import BookRankList from '../../components/home/BookRankList';
 import BookRecommendList from '../../components/home/BookRecommendList';
+import DailySwiper from '../../components/home/DailySwiper';
+import BulletFree from '../../../images/badge-free.png';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -81,7 +83,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#CDD0A4'
   },
   dailyContainer: {
-    paddingTop: 30,
+    position: 'relative',
+    paddingTop: 50,
     paddingBottom: 30
   },
   audioBookContainer: {
@@ -139,6 +142,13 @@ const styles = StyleSheet.create({
   showMoreText: {
     color: CommonStyles.COLOR_PRIMARY,
     fontSize: 12
+  },
+  dailyBullet: {
+    position: 'absolute',
+    top: -15,
+    right: 15,
+    width: 60,
+    height: 60
   }
 });
 
@@ -236,9 +246,23 @@ class HomeAudioPage extends React.Component {
           </View>
 
           {/*매일 책 한 권*/}
-          {/*<View style={[CommonStyles.contentContainer, styles.dailyContainer]}>*/}
-          {/*<BookDaily itemData={this.props.store.audioDaily} />*/}
-          {/*</View>*/}
+          <View>
+            <View
+              style={[CommonStyles.contentContainer, styles.dailyContainer]}
+            >
+              <View>
+                <Image source={BulletFree} style={styles.dailyBullet} />
+                <View style={CommonStyles.alignJustifyItemCenter}>
+                  <Text style={styles.titleH2}>매일 책 한권</Text>
+                </View>
+                {/*<BookDaily itemData={this.props.store.audioDaily} />*/}
+                <DailySwiper itemData={this.props.store.homeSeriesData} />
+              </View>
+            </View>
+            <View
+              style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+            />
+          </View>
 
           <View
             style={[CommonStyles.contentContainer, styles.audioBookContainer]}

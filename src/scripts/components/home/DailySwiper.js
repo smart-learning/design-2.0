@@ -10,9 +10,12 @@ import {
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import Carousel from 'react-native-snap-carousel';
-import Dummy from '../../../images/dummy-series.png';
+import Dummy from '../../../images/dummy-today-1.png';
 
 const styles = StyleSheet.create({
+  dailyContainer: {
+    paddingTop: 30
+  },
   slide: {
     width: Dimensions.get('window').width * 0.8
   },
@@ -27,7 +30,7 @@ const styles = StyleSheet.create({
   }
 });
 
-class SeriesSwiper extends React.Component {
+class DailySwiper extends React.Component {
   _renderItem({ item }) {
     return (
       <View style={styles.slide}>
@@ -52,7 +55,7 @@ class SeriesSwiper extends React.Component {
     let itemWidth = windowWidth * 0.8;
 
     return (
-      <View>
+      <View style={styles.dailyContainer}>
         <Carousel
           data={itemData}
           renderItem={this._renderItem}
@@ -69,4 +72,4 @@ class SeriesSwiper extends React.Component {
   }
 }
 
-export default withNavigation(SeriesSwiper);
+export default withNavigation(DailySwiper);
