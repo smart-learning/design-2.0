@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '80%',
-    marginLeft: '10%',
   },
   headline: {
     paddingBottom: 60,
@@ -72,7 +71,8 @@ const styles = StyleSheet.create({
   },
   inputContentWrap: {
     position: 'absolute',
-    bottom: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '90%',
     marginLeft: '5%',
   },

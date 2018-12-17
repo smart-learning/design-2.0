@@ -12,6 +12,7 @@ import {
   NetInfo,
   Platform,
   View,
+  ScrollView,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
@@ -89,9 +90,11 @@ const AppDrawer = createDrawerNavigator(
         style={{ flex: 1 }}
         forceInset={{ top: 'always', horizontal: 'never' }}
       >
-        <SidebarUserInfo {...props} />
-        <DrawerItems {...props} />
-        {}
+        <ScrollView style={{ width: '100%' }}>
+          <SidebarUserInfo {...props} />
+          <DrawerItems {...props} />
+          {}
+        </ScrollView>
       </SafeAreaView>
     ),
   },
