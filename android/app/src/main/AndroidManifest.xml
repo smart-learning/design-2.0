@@ -61,7 +61,7 @@
 
         <data
           android:host="welaaa.onelink.me"
-          android:pathPrefix="/APnI"
+          android:pathPrefix="/HY49"
           android:scheme="https"/>
       </intent-filter>
       <intent-filter>

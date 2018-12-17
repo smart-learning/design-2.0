@@ -5,6 +5,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   AsyncStorage,
+  AppState,
   DeviceEventEmitter,
   Keyboard,
   Linking,
@@ -104,6 +105,10 @@ class App extends React.Component {
   static router = AppDrawer.router;
 
   data = new Data();
+
+  state = {
+    appState: AppState.currentState,
+  };
 
   // 키보드 제어 상태를 store에 기록해서 관리
   keyboardDidShow = () => {
@@ -223,6 +228,9 @@ class App extends React.Component {
   async componentDidMount() {
     this.addNetInfoEvent();
 
+    // For AppsFlyer.
+    AppState.addEventListener('change', this._handleAppStateChange);
+
     // Handle DeepLink URL
     Linking.getInitialURL()
       .then(url => {
@@ -237,7 +245,7 @@ class App extends React.Component {
       .catch(err => console.error('An error occurred', err));
 
     const options = {
-      devKey: 'cV7GxoAwtL5YWigvJmtPXg',
+      devKey: 'SPtkhKkwYTZZsqUwQUjBMV',
       isDebug: true,
     };
 
@@ -429,7 +437,37 @@ class App extends React.Component {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
     this.removeNetInfoEvent();
+
+    // Remove event listener Using AppsFlyer.
+    if (this.onInstallConversionDataCanceller) {
+      this.onInstallConversionDataCanceller();
+    }
+
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
+
+  // For AppsFlyer.
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      if (Platform.OS === 'ios') {
+        appsFlyer.trackAppLaunch();
+      }
+    }
+
+    if (
+      this.state.appState.match(/active|foreground/) &&
+      nextAppState === 'background'
+    ) {
+      if (this.onInstallConversionDataCanceller) {
+        this.onInstallConversionDataCanceller();
+      }
+    }
+
+    this.setState({ appState: nextAppState });
+  };
 
   _handleOpenURL = event => {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', event.url);
