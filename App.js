@@ -231,6 +231,12 @@ class App extends React.Component {
     // For AppsFlyer.
     AppState.addEventListener('change', this._handleAppStateChange);
 
+    this.onInstallConversionDataCanceller = appsFlyer.onInstallConversionData(
+      data => {
+        console.log('App.js::onInstallConversionData:', data);
+      },
+    );
+
     // Handle DeepLink URL
     Linking.getInitialURL()
       .then(url => {
@@ -475,6 +481,7 @@ class App extends React.Component {
   };
 
   parseDeepLinkUrl = url => {
+    console.log('App.js::parseDeepLinkUrl:url', url);
     if (url && url.startsWith('https:')) {
       if (appsFlyer) {
         appsFlyer.sendDeepLinkData(url); // Report Deep Link to AppsFlyer
@@ -483,6 +490,8 @@ class App extends React.Component {
       let pathIndex = url.indexOf('/', 'https://welaaa.onelink.me/'.length);
       let parameterIndex = url.indexOf('?');
       let pathName = url.substring(pathIndex, parameterIndex);
+      console.log('App.js::parseDeepLinkUrl:pathName', pathName);
+
       return pathName;
     }
     return url;
