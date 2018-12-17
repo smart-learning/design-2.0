@@ -443,6 +443,10 @@ export default {
 
         case 'membership':
           navigation.navigate('MembershipPage', {});
+          break;
+
+        default:
+          break;
       }
     } catch (error) {
       console.log(error);

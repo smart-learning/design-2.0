@@ -481,17 +481,21 @@ class App extends React.Component {
   };
 
   parseDeepLinkUrl = url => {
-    console.log('App.js::parseDeepLinkUrl:url', url);
     if (url && url.startsWith('https:')) {
       if (appsFlyer) {
         appsFlyer.sendDeepLinkData(url); // Report Deep Link to AppsFlyer
       }
 
-      let pathIndex = url.indexOf('/', 'https://welaaa.onelink.me/'.length);
+      let schemeIndex = 'https://welaaa.onelink.me/'.length;
+      let pathIndex = url.indexOf('/', schemeIndex);
+      if (pathIndex < schemeIndex) {
+        return '';
+      }
+      console.log('App.js::pathIndex:', pathIndex);
       let parameterIndex = url.indexOf('?');
-      let pathName = url.substring(pathIndex, parameterIndex);
+      console.log('App.js::parameterIndex:', parameterIndex);
+      let pathName = url.substring(pathIndex + 1, parameterIndex);
       console.log('App.js::parseDeepLinkUrl:pathName', pathName);
-
       return pathName;
     }
     return url;
