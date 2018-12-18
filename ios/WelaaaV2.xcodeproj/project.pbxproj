@@ -32,6 +32,8 @@
 		63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387762140C95500E61CB0 /* FPSDownloadManager.m */; };
 		63A3877A2140C97A00E61CB0 /* QueryService.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387792140C97A00E61CB0 /* QueryService.m */; };
 		63A3877D2140D2E800E61CB0 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A3877C2140D2E800E61CB0 /* DatabaseManager.m */; };
+		63BB3A8621C8BE8700619717 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */; };
+		63BB3A8721C8BE8700619717 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		68931B4ED4004A27854559A0 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */; };
 		690094A28FD049639582D397 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25C098E5927A47DBA78CF23A /* Octicons.ttf */; };
 		7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */; };
@@ -77,8 +79,6 @@
 		EFAEBDCB213D33050070F10E /* ContentMiniPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB1213D33050070F10E /* ContentMiniPlayerView.m */; };
 		EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB4213D33050070F10E /* PlayerSleepTimerView.m */; };
 		EFAEBDCD213D33050070F10E /* PlayerSleepTimerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = EFAEBDB5213D33050070F10E /* PlayerSleepTimerButton.m */; };
-		EFB7D72D21C0FBC8009486BF /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */; };
-		EFB7D72E21C0FBC8009486BF /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EFD50319214A3D3500FA72D3 /* RNReceiptEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = EFD50318214A3D3500FA72D3 /* RNReceiptEventEmitter.m */; };
 		EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081822113EB0C006D3F6C /* NSError+LocalizedError.m */; };
 		EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE081BA2113ED84006D3F6C /* NSTimer+Blocks.m */; };
@@ -377,13 +377,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		EFB7D72B21C0F9DB009486BF /* Embed Frameworks */ = {
+		63BB3A8821C8BE8700619717 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				EFB7D72E21C0FBC8009486BF /* PallyConFPSSDK.framework in Embed Frameworks */,
+				63BB3A8721C8BE8700619717 /* PallyConFPSSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,6 +433,7 @@
 		63A387792140C97A00E61CB0 /* QueryService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QueryService.m; sourceTree = "<group>"; };
 		63A3877B2140D2E800E61CB0 /* DatabaseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
 		63A3877C2140D2E800E61CB0 /* DatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
+		63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 		786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		801AC0D92C074BDBB6EC7D3E /* RNKaKaoSignin.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNKaKaoSignin.xcodeproj; path = "../node_modules/react-native-kakao-signin/ios/RNKaKaoSignin.xcodeproj"; sourceTree = "<group>"; };
@@ -502,7 +503,6 @@
 		EFAEBDB5213D33050070F10E /* PlayerSleepTimerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerSleepTimerButton.m; sourceTree = "<group>"; };
 		EFAEBDB6213D33050070F10E /* PlayerSleepTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerView.h; sourceTree = "<group>"; };
 		EFAEBDB7213D33050070F10E /* PlayerSleepTimerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSleepTimerButton.h; sourceTree = "<group>"; };
-		EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 		EFD388172138DD4900AC5C39 /* WelaaaV2_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WelaaaV2_Prefix.pch; path = WelaaaV2/WelaaaV2_Prefix.pch; sourceTree = "<group>"; };
 		EFD50317214A3D3500FA72D3 /* RNReceiptEventEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNReceiptEventEmitter.h; sourceTree = "<group>"; };
 		EFD50318214A3D3500FA72D3 /* RNReceiptEventEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNReceiptEventEmitter.m; sourceTree = "<group>"; };
@@ -535,7 +535,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */,
-				EFB7D72D21C0FBC8009486BF /* PallyConFPSSDK.framework in Frameworks */,
+				63BB3A8621C8BE8700619717 /* PallyConFPSSDK.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				EF23D7532175A1A40023DE2D /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -673,7 +673,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EFB7D72C21C0FBC8009486BF /* PallyConFPSSDK.framework */,
+				63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */,
 				EF671AD3213E4BA100767E01 /* libsqlite3.tbd */,
 				EF056AB821267EFD00F3178B /* StoreKit.framework */,
 				EFE0F3B22117E5F900D4558B /* Contacts.framework */,
@@ -1045,7 +1045,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				EF9A98AC2111458C00EA3A8E /* ShellScript */,
 				A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */,
-				EFB7D72B21C0F9DB009486BF /* Embed Frameworks */,
+				63BB3A8821C8BE8700619717 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1494,7 +1494,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1545,7 +1545,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "${PODS_ROOT}/Fabric/run 34f42c07ec889a3a9e3fabb2c478cc9af1001fa6 c0e631de5644afc6eaca594d5913c3ce407be23c7e416edb746109ba6757abb3";
+			shellScript = "${PODS_ROOT}/Fabric/run 34f42c07ec889a3a9e3fabb2c478cc9af1001fa6 c0e631de5644afc6eaca594d5913c3ce407be23c7e416edb746109ba6757abb3\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
