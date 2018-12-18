@@ -293,13 +293,17 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     while (keys.hasNext()) {
       String key = keys.next();
       String value = licenseInfo.get(key);
-      try {
-        if (Long.parseLong(value) == 0x7fffffffffffffffL) {
-          value = "Unlimited";
+
+      if(key.equals("PlaybackDurationRemaining") || key.equals("LicenseDurationRemaining")){
+        try {
+          if (Long.parseLong(value) == 0x7fffffffffffffffL) {
+            value = "Unlimited";
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-      } catch (Exception e) {
-        e.printStackTrace();
       }
+
       stringBuilder.append(key).append(" : ").append(value);
       if (keys.hasNext()) {
         stringBuilder.append("\n");

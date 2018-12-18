@@ -1043,20 +1043,18 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
 
-  @Override
-  protected void onUserLeaveHint() {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
-      try {
-        PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-        builder.setAspectRatio(new Rational(16, 9));
-        enterPictureInPictureMode(builder.build());
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-
-
-  }
+//  @Override
+//  protected void onUserLeaveHint() {
+//    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
+//      try {
+//        PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+//        builder.setAspectRatio(new Rational(16, 9));
+//        enterPictureInPictureMode(builder.build());
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//      }
+//    }
+//  }
 
   @Override
   public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
