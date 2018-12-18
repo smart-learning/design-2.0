@@ -851,49 +851,40 @@ export default class MembershipPage extends React.Component {
     const windowHeight = Dimensions.get('window').height;
     const aspectRatio = windowWidth / 1125;
 
-    console.log('windowWidth ->', windowWidth);
-    console.log('windowHeight ->', windowHeight);
-    console.log('aspectRatio ->', aspectRatio);
+    // Back1
+    const membership_bg_1 = require('../../../images/Back1.png');
+    const membership_bg_1_source = Image.resolveAssetSource(membership_bg_1);
 
-    // Image resources.
-    // Top background.
-    //const membership_bg_1 = require('../../../images/mbs_top_back_ios.png');
-    //const membership_bg_1_source = Image.resolveAssetSource(membership_bg_1);
-    // -> 서버에서 내려받는 방식으로 변경중. 우선은 url 를 받는것까지 구현. 추후 필요에 따라 유효기간 설정 등 구현예정.
-
-    // Middle background.
-    const membership_bg_2 = require('../../../images/mbs_middle_back_ios.png');
-    const membership_bg_2_source = Image.resolveAssetSource(membership_bg_2);
-
-    // Membership.
-    const membership_btn_1 = require('../../../images/mbs_button_1_ios.png');
+    // Back1 - Membership Buttons
+    const membership_btn_1 = require('../../../images/Back1_1.png');
     const membership_btn_1_source = Image.resolveAssetSource(membership_btn_1);
 
-    const membership_btn_2 = require('../../../images/mbs_button_2_ios.png');
+    const membership_btn_2 = require('../../../images/Back1_2.png');
     const membership_btn_2_source = Image.resolveAssetSource(membership_btn_2);
 
-    const membership_btn_3 = require('../../../images/mbs_button_3_ios.png');
+    const membership_btn_3 = require('../../../images/Back1_3.png');
     const membership_btn_3_source = Image.resolveAssetSource(membership_btn_3);
 
-    // Free.
-    const membership_free = require('../../../images/mbs_free_mask_ios.png');
-    const membership_free_source = Image.resolveAssetSource(membership_free);
+    // Back2
+    const membership_bg_2 = require('../../../images/Back2.png');
+    const membership_bg_2_source = Image.resolveAssetSource(membership_bg_2);
 
-    // Bottom background.
-    const membership_bg_3 = require('../../../images/mbs_bottom_back_ios.png');
-    const membership_bg_3_source = Image.resolveAssetSource(membership_bg_3);
-
-    const membership_btn = require('../../../images/mbs_button_go_ios.png');
-    const membership_btn_source = Image.resolveAssetSource(membership_btn);
-
-    // Reviews.
+    // Back2 - Review Images
     const membership_review_array = [
-      require('../../../images/mbs_review_1_ios.png'),
-      require('../../../images/mbs_review_2_ios.png'),
-      require('../../../images/mbs_review_3_ios.png'),
+      require('../../../images/Back2_1.png'),
+      require('../../../images/Back2_2.png'),
+      require('../../../images/Back2_3.png'),
     ];
 
-    let banner_url; // banner 에 들어갈 image url 을 저장
+    // Back3
+    const membership_bg_3 = require('../../../images/Back3.png');
+    const membership_bg_3_source = Image.resolveAssetSource(membership_bg_3);
+
+    // Back3 - Go Button
+    const membership_btn = require('../../../images/Back3_1.png');
+    const membership_btn_source = Image.resolveAssetSource(membership_btn);
+
+    let banner_url; // 최상단 banner 에 들어갈 image url 을 저장
     const cnt = this.state.ads.length;
     if (cnt > 0) {
       banner_url = this.state.ads[0];
@@ -929,24 +920,27 @@ export default class MembershipPage extends React.Component {
 
             <View
               style={{
-                width: membership_bg_2_source.width * aspectRatio,
-                height: membership_bg_2_source.height * aspectRatio,
+                width: membership_bg_1_source.width * aspectRatio,
+                height: membership_bg_1_source.height * aspectRatio,
               }}
             >
               <Image
                 style={{
-                  width: membership_bg_2_source.width * aspectRatio,
-                  height: membership_bg_2_source.height * aspectRatio,
+                  width: membership_bg_1_source.width * aspectRatio,
+                  height: membership_bg_1_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
-                source={membership_bg_2}
+                source={membership_bg_1}
               />
 
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  top: 80 * aspectRatio,
-                  left: 50 * aspectRatio,
+                  top: 490 * aspectRatio,
+                  left:
+                    (windowWidth -
+                      membership_btn_1_source.width * aspectRatio) /
+                    2,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
@@ -969,12 +963,11 @@ export default class MembershipPage extends React.Component {
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  top: 80 * aspectRatio,
+                  top: 964 * aspectRatio,
                   left:
                     (windowWidth -
                       membership_btn_2_source.width * aspectRatio) /
                     2,
-                  justifyContent: 'center',
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
@@ -997,8 +990,11 @@ export default class MembershipPage extends React.Component {
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  top: 80 * aspectRatio,
-                  right: 50 * aspectRatio,
+                  top: 1438 * aspectRatio,
+                  left:
+                    (windowWidth -
+                      membership_btn_2_source.width * aspectRatio) /
+                    2,
                 }}
                 onActiveOpacity={0.9}
                 onPress={() =>
@@ -1017,111 +1013,29 @@ export default class MembershipPage extends React.Component {
                   source={membership_btn_3}
                 />
               </TouchableOpacity>
-
-              <Image
-                onResponderRelease={e => {
-                  const x = e.nativeEvent.locationX;
-                  const y = e.nativeEvent.locationY;
-                  const side = 50 * aspectRatio;
-                  const top = 80 * aspectRatio;
-                  const boxWidth = 330 * aspectRatio;
-                  const boxHeight = 654 * aspectRatio;
-                  const center =
-                    (windowWidth -
-                      membership_btn_2_source.width * aspectRatio) /
-                    2;
-
-                  if (y > top && y < top + boxHeight) {
-                    if (x > side && x < side + boxWidth) {
-                      this.buyMembership({
-                        title: '오디오북 멤버십 결제',
-                        type: 'bookclub',
-                      });
-                    } else if (x > center && x < center + boxWidth) {
-                      this.buyMembership({
-                        title: '클래스 멤버십 결제',
-                        type: 'campus',
-                      });
-                    } else if (
-                      x > windowWidth - side - boxWidth &&
-                      x < windowWidth - side
-                    ) {
-                      this.buyMembership({
-                        title: '프리미엄 멤버십 결제',
-                        type: 'premium',
-                      });
-                    }
-                  }
-                }}
-                onStartShouldSetResponder={e => true}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: membership_free_source.width * aspectRatio,
-                  height: membership_free_source.height * aspectRatio,
-                }}
-                resizeMode="stretch"
-                source={membership_free}
-              />
             </View>
+
             <View
-              onResponderRelease={e => {
-                const x = e.nativeEvent.locationX;
-                const y = e.nativeEvent.locationY;
-
-                console.log('x ->', x);
-                console.log('y ->', y);
-
-                if (
-                  x > 50 * aspectRatio &&
-                  x < 600 * aspectRatio &&
-                  y > 1200 * aspectRatio &&
-                  y < 1430 * aspectRatio
-                ) {
-                  this.props.navigation.navigate('InquireListScreen');
-                } else if (
-                  x > 50 * aspectRatio &&
-                  x < 340 * aspectRatio &&
-                  y > 1430 * aspectRatio &&
-                  y < 1540 * aspectRatio
-                ) {
-                  this.props.navigation.navigate('MembershipDetailPage');
-                } else if (
-                  x > 340 * aspectRatio &&
-                  x < 640 * aspectRatio &&
-                  y > 1430 * aspectRatio &&
-                  y < 1540 * aspectRatio
-                ) {
-                  this.props.navigation.navigate('PolicyPage');
-                } else if (
-                  x > 640 * aspectRatio &&
-                  x < 1000 * aspectRatio &&
-                  y > 1430 * aspectRatio &&
-                  y < 1540 * aspectRatio
-                ) {
-                  this.props.navigation.navigate('PrivacyPage');
-                }
+              style={{
+                width: membership_bg_2_source.width * aspectRatio,
+                height: membership_bg_2_source.height * aspectRatio,
               }}
-              onStartShouldSetResponder={e => true}
-              style={{ flex: 1, flexDirection: 'row', width: '100%' }}
             >
               <Image
                 style={{
-                  width: membership_bg_3_source.width * aspectRatio,
-                  height: membership_bg_3_source.height * aspectRatio,
+                  width: membership_bg_2_source.width * aspectRatio,
+                  height: membership_bg_2_source.height * aspectRatio,
                 }}
                 resizeMode="stretch"
-                source={membership_bg_3}
+                source={membership_bg_2}
               />
-
               <View
                 style={{
                   position: 'absolute',
-                  top: 300 * aspectRatio,
+                  top: 320 * aspectRatio,
                   left: 0,
                   width: '100%',
-                  height: 450 * aspectRatio,
+                  height: 430 * aspectRatio,
                 }}
               >
                 <Swiper
@@ -1135,16 +1049,69 @@ export default class MembershipPage extends React.Component {
                       <Image
                         key={key}
                         style={{
-                          width: 1125 * aspectRatio,
-                          height: 405 * aspectRatio,
+                          marginLeft: '5%',
+                          marginRight: '5%',
+                          width: '90%',
+                          height: 345 * aspectRatio,
                         }}
+                        resizeMode="stretch"
                         source={review}
                       />
                     );
                   })}
                 </Swiper>
               </View>
+            </View>
 
+            <View
+              onResponderRelease={e => {
+                const x = e.nativeEvent.locationX;
+                const y = e.nativeEvent.locationY;
+
+                if (
+                  x > 50 * aspectRatio &&
+                  x < 600 * aspectRatio &&
+                  y > 300 * aspectRatio &&
+                  y < 400 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('InquireListScreen');
+                } else if (
+                  x > 50 * aspectRatio &&
+                  x < 340 * aspectRatio &&
+                  y > 400 * aspectRatio &&
+                  y < 470 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('MembershipDetailPage');
+                } else if (
+                  x > 340 * aspectRatio &&
+                  x < 640 * aspectRatio &&
+                  y > 400 * aspectRatio &&
+                  y < 470 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('PolicyPage');
+                } else if (
+                  x > 640 * aspectRatio &&
+                  x < 1000 * aspectRatio &&
+                  y > 400 * aspectRatio &&
+                  y < 470 * aspectRatio
+                ) {
+                  this.props.navigation.navigate('PrivacyPage');
+                }
+              }}
+              onStartShouldSetResponder={e => true}
+              style={{
+                width: membership_bg_3_source.width * aspectRatio,
+                height: membership_bg_3_source.height * aspectRatio,
+              }}
+            >
+              <Image
+                style={{
+                  width: membership_bg_3_source.width * aspectRatio,
+                  height: membership_bg_3_source.height * aspectRatio,
+                }}
+                resizeMode="stretch"
+                source={membership_bg_3}
+              />
               <TouchableOpacity
                 style={{
                   position: 'absolute',
