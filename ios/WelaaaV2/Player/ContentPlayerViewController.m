@@ -1657,11 +1657,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     NSString *netStatus = [self updateNetStatusLabel];
     [self updateDownloadState];
   
+    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+  
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"START"             // START / ING / END / FORWARD / BACK
-                             startSecond : [self getCurrentPlaybackTime]
-                               endSecond : [self getCurrentPlaybackTime] + 30
-                                duration : 30 - [self getCurrentPlaybackTime]
+                             startSecond : currentTime
+                               endSecond : currentTime + 30
+                                duration : 30 - currentTime
                                netStatus : netStatus
                                authToken : [_args objectForKey : @"token"]];
     // NSTimer를 통해 30초마다 로그내역을 전송
@@ -1672,7 +1674,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                 repeats : YES];
   
     // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
-    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+    currentTime = [self getCurrentPlaybackTime];
     // 전체 재생시간을 구합니다.
   /*
     NSArray *contentsListArray;
@@ -1696,8 +1698,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
   */
     NSTimeInterval totalTime = [common convertStringToTime : contentsListArray[indexOfCurrentContent][@"play_time"]];//[self getDuration];
-  //NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
-  //NSLog(@"  mini Player Duration double : %f", totalTime);
+    NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
+    NSLog(@"  mini Player Duration double : %f", totalTime);
+    NSLog(@"  mini Player CurrentT double : %f", currentTime);  // Not a Number issue occurs....
     NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
     playInfo[@"currentTime"] = @(currentTime);
     playInfo[@"totalTime"] = @(totalTime);
@@ -2661,7 +2664,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
     else
     {
-        return (CMTimeGetSeconds(kCMTimeInvalid));
+      //return (CMTimeGetSeconds(kCMTimeInvalid));
+        double loadedDuration = CMTimeGetSeconds(item.duration);
+      
+        return (NSTimeInterval) loadedDuration;
     }
 }
 
@@ -2675,13 +2681,15 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( item.status == AVPlayerItemStatusReadyToPlay )
     {
         double currentTime = CMTimeGetSeconds(item.currentTime);
-      //NSLog(@"  Current time : %f", currentTime);
       
         return (NSTimeInterval) currentTime;
     }
     else
     {
-        return (CMTimeGetSeconds(kCMTimeInvalid));
+      //return (CMTimeGetSeconds(kCMTimeInvalid));
+        double currentTime = CMTimeGetSeconds(item.currentTime);
+      
+        return (NSTimeInterval) currentTime;
     }
 }
 
