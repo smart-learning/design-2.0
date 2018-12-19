@@ -1,18 +1,19 @@
 import React from 'react';
+import nav from '../../commons/nav';
 import {
   ImageBackground,
   Linking,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 
 const styles = StyleSheet.create({
   thumbnail: {
     width: '100%',
     paddingTop: '17.3571428572%',
-    paddingBottom: '17.3571428572%'
-  }
+    paddingBottom: '17.3571428572%',
+  },
 });
 
 export default class HomeBanner extends React.Component {
@@ -22,21 +23,21 @@ export default class HomeBanner extends React.Component {
     if (action_type === 'event') {
       this.props.navigation.push('EventDetailPage', {
         title: '공지사항 및 이벤트',
-        id: action_param
+        id: action_param,
       });
     } else if (action_type === 'membershippage') {
       this.props.navigation.navigate('MembershipScreen', {
-        title: '멤버십'
+        title: '멤버십',
       });
     } else if (action_type === 'videocourse') {
       this.props.navigation.navigate('ClassDetail', {
         id: action_param,
-        title: '강좌'
+        title: '강좌',
       });
     } else if (action_type === 'audiobook') {
       this.props.navigation.navigate('AudioBookDetail', {
         id: action_param,
-        title: '오디오북'
+        title: '오디오북',
       });
     } else if (action_type === 'outlink') {
       Linking.openURL(action_param);
@@ -46,8 +47,10 @@ export default class HomeBanner extends React.Component {
       this.props.navigation.navigate('HomeMonthlyReviewPage', {
         month: params[0],
         sort: params[1],
-        title: '이달의 책 북리뷰'
+        title: '이달의 책 북리뷰',
       });
+    } else {
+      nav.parseDeepLink('welaaa://' + action_type + '/' + action_param);
     }
   };
 
