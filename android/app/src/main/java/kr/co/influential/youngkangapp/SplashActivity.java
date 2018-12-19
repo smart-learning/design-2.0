@@ -124,14 +124,17 @@ public class SplashActivity extends AppCompatActivity implements SurfaceHolder.C
   }
 
   private void updateDialog(String url) {
-    BaseAlertDialog.Builder builder = new BaseAlertDialog.Builder(this);
-    builder.setTitle(R.string.notice_dialog_update_title);
-    builder.setMessage(R.string.notice_dialog_update_message);
-    builder.setNegativeButton(R.string.info_dial_cancel,
-        v -> launchMain());
-    builder.setPositiveButton(R.string.info_dial_ok,
-        v -> launchMarket(url));
-    runOnUiThread(() -> builder.build().show());
+
+    if(!isFinishing()){
+      BaseAlertDialog.Builder builder = new BaseAlertDialog.Builder(this);
+      builder.setTitle(R.string.notice_dialog_update_title);
+      builder.setMessage(R.string.notice_dialog_update_message);
+      builder.setNegativeButton(R.string.info_dial_cancel,
+          v -> launchMain());
+      builder.setPositiveButton(R.string.info_dial_ok,
+          v -> launchMarket(url));
+      runOnUiThread(() -> builder.build().show());
+    }
   }
 
   private void launchMarket(String url) {

@@ -143,6 +143,10 @@ public class MediaService extends MediaBrowserServiceCompat implements
     mMediaRouter = MediaRouter.getInstance(getApplicationContext());
 
     registerCarConnectionReceiver();
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      registerReceiver(receiver, IdleReceiver.Filter);
+    }
   }
 
   /**
@@ -165,11 +169,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
         // Try to handle the intent as a media button event wrapped by MediaButtonReceiver
         MediaButtonReceiver.handleIntent(mSession, startIntent);
       }
-
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        registerReceiver(receiver, IdleReceiver.Filter);
-      }
-
     }
     // Reset the delay handler to enqueue a message to stop the service if
     // nothing is playing.
@@ -197,8 +196,12 @@ public class MediaService extends MediaBrowserServiceCompat implements
     LogHelper.d(TAG, "onDestroy");
     unregisterCarConnectionReceiver();
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      unregisterReceiver(receiver);
+    try{
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        unregisterReceiver(receiver);
+      }
+    }catch (Exception e){
+      e.printStackTrace();
     }
 
     network_try_counter = MAX_NETWORK_TRY;

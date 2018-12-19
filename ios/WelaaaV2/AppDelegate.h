@@ -18,13 +18,15 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+#import <AppsFlyerLib/AppsFlyerTracker.h>
+
 #import "common.h"
 
 
 @import UserNotifications;
 @import Firebase;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate, FIRMessagingDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate, FIRMessagingDelegate, AppsFlyerTrackerDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 @property (strong, nonatomic) UINavigationController *navigationController;
