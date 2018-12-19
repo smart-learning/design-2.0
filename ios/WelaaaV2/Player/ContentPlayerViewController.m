@@ -12,8 +12,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     _args = args;
     NSLog(@"  Arguments : %@", [_args description]);
-  
-    // download 일 경우 API서버와 통신하면 안됩니다.
 }
 
 // 해당 뷰컨트롤러 클래스가 생성될 때(ViewWillAppear전에 실행) 실행됩니다.
@@ -25,10 +23,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self.view setBackgroundColor : [UIColor blackColor]];
   
     // PallyConFPS SDK 객체를 생성합니다.
-    _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
-                                              siteKey : PALLYCON_SITE_KEY
-                                   fpsLicenseDelegate : self
-                                                error : nil             ];
+    _fpsSDK = [[PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
+                                             siteKey : PALLYCON_SITE_KEY
+                                  fpsLicenseDelegate : self
+                                               error : nil];
   
     // 오디오 콘텐츠인지 구분.
     if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
@@ -295,9 +293,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 오디오북 콘텐츠일 경우 Player Layer를 숨깁니다.
     if ( _isAudioContent )
-    {
         _playerLayer.hidden = YES;
-    }
 }
 
 // 뷰 컨트롤러가 화면에 나타난 직후에 실행됩니다.
@@ -316,9 +312,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
     [self updateDownloadState];
-  
-    // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
-    //CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
   
     [self setPreparedToPlay];
     [self initScriptUi];
@@ -475,20 +468,23 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  liveKeyRotation : NO];
 }
 
-- (void) startCheckNetworkPlay  // 재생전에 네트워크 상태를 체크(비동기 콜백)
+//
+// 재생 전에 네트워크 상태를 체크(비동기 콜백)
+//
+- (void) startCheckNetworkPlay
 {
-  [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-  [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock : ^(AFNetworkReachabilityStatus status)
-   {
-     recentNetStatus = status;
-     [self networkStatusChanged:nil];
-   }];
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock : ^(AFNetworkReachabilityStatus status)
+                                                                                     {
+                                                                                         recentNetStatus = status;
+                                                                                         [self networkStatusChanged:nil];
+                                                                                     }];
 }
 
 //
 // 네트워크 상태에 따른 처리를 실행합니다.
 //
-- (void) networkStatusChanged : (NSNotification *) noti
+- (void) networkStatusChanged : (NSNotification *) notification
 {
     BOOL isPlayableOnWiFi = false;
     isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
@@ -585,6 +581,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
         {
             indexOfCurrentContent = i;
+          // break ?
         }
     }
   
