@@ -1,5 +1,6 @@
-﻿import { Alert, NativeModules } from 'react-native';
+﻿import { Alert, NativeModules, Platform } from 'react-native';
 import globalStore from '../commons/store';
+import net from '../commons/net';
 
 const { RNNativePlayer, RNNativeBase, RNProductPayment } = NativeModules;
 
@@ -72,7 +73,11 @@ export default {
   },
 
   toggleMiniPlayer(bool) {
-    console.log('toggleMiniPlayer:', bool);
+    globalStore.miniPlayerVisible = bool;
+  },
+
+  mainToggleMiniPlayer(bool, arg) {
+    globalStore.miniPlayerArg = arg;
     globalStore.miniPlayerVisible = bool;
   },
 
@@ -84,27 +89,56 @@ export default {
 
   getDownloadList(success, failed) {
     console.log('native.js::getDownloadList');
-    RNNativePlayer.getDownloadList()
-      .then(success)
-      .catch(failed);
+
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {
+      userId: userId.toString(),
+    };
+
+    console.log('native.js::getDownloadList', config);
+
+    if (Platform.OS === 'android') {
+      RNNativePlayer.getDownloadList(config)
+        .then(success)
+        .catch(failed);
+    } else {
+      RNNativePlayer.getDownloadList(config)
+        .then(success)
+        .catch(failed);
+    }
   },
 
-  getDownloadListCid(cid , success, failed) {
+  getDownloadListCid(cid, success, failed) {
     let userId = globalStore.welaaaAuth.profile.id;
     let config = {
       cid: cid,
-      userId: userId.toString()
+      userId: userId.toString(),
     };
 
     console.log('native.js::getDownloadList Cid');
-    RNNativePlayer.getDownloadCidList(config)
-      .then(success)
-      .catch(failed);
+
+    if (Platform.OS === 'android') {
+      RNNativePlayer.getDownloadCidList(config)
+        .then(success)
+        .catch(failed);
+    } else {
+      // iOS 의 경우엔 getDownloadList 하나에서 모두 처리하는 방식으로 구현.
+      RNNativePlayer.getDownloadList(config)
+        .then(success)
+        .catch(failed);
+    }
   },
 
-  getProgressDatabase() {
+  getProgressDatabase(success, failed) {
+    let userId = globalStore.welaaaAuth.profile.id;
+    let config = {
+      userId: userId.toString(),
+    };
+
     try {
-      RNNativePlayer.selectProgressDatabase({});
+      RNNativePlayer.selectProgressDatabase(config)
+        .then(success)
+        .catch(failed);
     } catch (error) {
       console.log(error);
     }
@@ -140,8 +174,8 @@ export default {
 
   /* 내정보 > 설정 메뉴에서 호출 */
   /* Native 담당: cellularDataUsePlay: bool, cellularDataUseDownload: bool
-	*  ReactN 담당: autologin: bool, notification: bool
-	* */
+   *  ReactN 담당: autologin: bool, notification: bool
+   * */
   // isAutoLogin: false,
   // isWifiPlay: false,
   // isWifiDownload: false,
@@ -152,7 +186,7 @@ export default {
     let config = {
       token: globalStore.accessToken,
       cellularDataUsePlay: isWifiPlay,
-      cellularDataUseDownload: isWifiDownload
+      cellularDataUseDownload: isWifiDownload,
     };
 
     console.log('updateSetting:', config);
@@ -196,8 +230,23 @@ export default {
     }
   },
 
-  buyResult(arg) {
-    console.log('native.js::buyResult(arg)', arg);
-    globalStore.buyResult.success = arg.success;
-  }
+  async buyResult(arg) {
+    try {
+      // 멤버십 정보
+      const respMembership = await net.getMembershipCurrentFresh();
+      console.log('buyResult > respMembership', respMembership);
+      globalStore.currentMembership = respMembership.data;
+      // 이용권 정보
+      globalStore.voucherStatus = await net.getVouchersStatus();
+      console.log('buyResult > voucherStatus', globalStore.voucherStatus);
+    } catch (error) {
+      console.log('buyResult > error', error);
+      return false;
+    }
+    return true;
+  },
+
+  unsubscribe() {
+    return RNProductPayment.unsubscribe();
+  },
 };

@@ -229,10 +229,6 @@ class AudioBookInfoPage extends React.Component {
     this._isMount = false;
   }
 
-  shouldComponentUpdate() {
-    return this._isMount;
-  }
-
   async initialize() {
     if (this.state.itemData) {
       return;

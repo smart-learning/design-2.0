@@ -10,7 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  UIManager
+  UIManager,
 } from 'react-native';
 import PTRView from 'react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
@@ -32,46 +32,46 @@ const styles = StyleSheet.create({
   slide: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   thumbnail: {
     width: '100%',
     paddingTop: '17.3571428572%',
-    paddingBottom: '17.3571428572%'
+    paddingBottom: '17.3571428572%',
   },
   mainTitleCenter: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   titleContainer: {
-    marginBottom: 15
+    marginBottom: 15,
   },
   titleH2: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#353A3C'
+    color: '#353A3C',
   },
   titleH4: {
     paddingTop: 10,
     fontSize: 13,
-    color: '#888888'
+    color: '#888888',
   },
   titleH3: {
     fontSize: 16,
-    color: '#353A3C'
+    color: '#353A3C',
   },
   titleParagraph: {
     paddingLeft: 15,
     fontSize: 11,
-    color: '#b7b7b7'
+    color: '#b7b7b7',
   },
   titleLink: {
     fontSize: 13,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   titleHr: {
     height: 1,
     marginTop: 7,
-    backgroundColor: '#cecece'
+    backgroundColor: '#cecece',
   },
   linkViewAll: {
     alignItems: 'center',
@@ -79,53 +79,54 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 36,
     marginLeft: 'auto',
-    marginRight: 'auto'
+    marginRight: 'auto',
   },
   classLinkViewAll: {
     marginTop: 15,
-    marginBottom: 30
+    marginBottom: 30,
   },
   linkViewAllText: {
     fontSize: 14,
-    color: '#888888'
+    color: '#888888',
   },
   linkViewAllIcon: {
     paddingLeft: 7,
-    height: 13
+    height: 13,
   },
   continueContainer: {
     paddingTop: 30,
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   seriesContainer: {
     paddingTop: 30,
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   classContainer: {
     paddingTop: 30,
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   clipRankContainer: {
     paddingTop: 30,
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   classCategory: {
-    marginBottom: 25
+    marginBottom: 25,
+    marginTop: 0,
   },
   classCategoryHr: {
     height: 1,
-    backgroundColor: '#cecece'
+    backgroundColor: '#cecece',
   },
   seriesComponent: {
-    paddingTop: 30
+    paddingTop: 30,
   },
   showMoreWrapper: {
     marginBottom: 10,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   showAllText: {
     color: CommonStyles.COLOR_PRIMARY,
-    fontSize: 15
+    fontSize: 15,
   },
   showMore: {
     borderColor: CommonStyles.COLOR_PRIMARY,
@@ -136,17 +137,17 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
     paddingLeft: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   showMoreText: {
     color: CommonStyles.COLOR_PRIMARY,
-    fontSize: 12
+    fontSize: 12,
   },
   imageMainBanner: {
     width: '100%',
     paddingTop: '12%',
-    paddingBottom: '12%'
-  }
+    paddingBottom: '12%',
+  },
 });
 
 @observer
@@ -157,7 +158,7 @@ class HomeVideoPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      forceScrollValue: null
+      forceScrollValue: null,
     };
   }
 
@@ -165,7 +166,7 @@ class HomeVideoPage extends React.Component {
   onFullScreenToggle = bool => {
     if (bool) {
       this.setState({
-        forceScrollValue: 430 // 컨덴츠의 y값 + 헤더 영역뺀 값
+        forceScrollValue: 430, // 컨덴츠의 y값 + 헤더 영역뺀 값
       });
     }
   };
@@ -174,7 +175,7 @@ class HomeVideoPage extends React.Component {
   premiumCategorySelect = data => {
     this.props.navigation.navigate(
       'ClassListPage',
-      { action: 'category', data: data } // 전달할 데이터
+      { action: 'category', data: data }, // 전달할 데이터
     );
   };
 
@@ -238,7 +239,7 @@ class HomeVideoPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.contentContainer,
-                    styles.continueContainer
+                    styles.continueContainer,
                   ]}
                 >
                   {this.props.store.classUseData &&
@@ -258,7 +259,7 @@ class HomeVideoPage extends React.Component {
                   style={{
                     width: '100%',
                     height: 8,
-                    backgroundColor: '#F0F0F4'
+                    backgroundColor: '#F0F0F4',
                   }}
                 />
               </View>
@@ -282,7 +283,7 @@ class HomeVideoPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.titleContainer
+                    styles.titleContainer,
                   ]}
                 >
                   <View>
@@ -293,7 +294,7 @@ class HomeVideoPage extends React.Component {
                       style={styles.showMore}
                       onPress={() => {
                         this.props.navigation.navigate('HomeSeriesPage', {
-                          title: '윌라 추천 시리즈'
+                          title: '윌라 추천 시리즈',
                         });
                       }}
                     >
@@ -348,7 +349,7 @@ class HomeVideoPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.titleContainer
+                  styles.titleContainer,
                 ]}
               >
                 <View>
@@ -365,7 +366,6 @@ class HomeVideoPage extends React.Component {
                   </TouchableOpacity>
                 </View>
               </View>
-
               <View style={styles.classCategory}>
                 <View style={styles.classCategoryHr} />
                 <PageCategory

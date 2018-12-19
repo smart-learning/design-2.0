@@ -58,7 +58,7 @@
     </style>
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/action_button_background</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 </resources>

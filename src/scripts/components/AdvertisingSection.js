@@ -8,8 +8,9 @@ import {
   Dimensions,
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import Image from 'react-native-scalable-image';
 import { COLOR_PRIMARY } from '../../styles/common';
 import moment from 'moment';
@@ -26,21 +27,21 @@ class AdvertisingSection extends Component {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#00000099'
+        backgroundColor: '#00000099',
       },
 
       frame: {
         width: Dimensions.get('window').width - 30,
         borderRadius: 20,
         overflow: 'hidden',
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
       },
 
       popupInfo: {
         flex: 1,
         position: 'absolute',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
       },
 
       img: {
@@ -53,12 +54,12 @@ class AdvertisingSection extends Component {
         backgroundColor: COLOR_PRIMARY,
         flexDirection: 'row',
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
       },
 
       hideOption: {
         padding: 10,
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
       },
 
       footerText: {
@@ -66,26 +67,22 @@ class AdvertisingSection extends Component {
         padding: 15,
         fontSize: 18,
         color: '#FFFFFF',
-        textAlign: 'center'
-      }
+        textAlign: 'center',
+      },
     });
 
     this.state = {
-      ads: []
+      ads: [],
+      show_popup: true,
+      three_days_checked: false,
     };
 
     this.now = moment();
   }
 
   componentDidMount = async () => {
-    let data = await net.getMainPopup();
+    let data = await net.getMainPopup(this.props.popup_type);
     if (data.length === 0) return;
-
-    //메인화면이 아닐경우 팝업 뜨지 않게 설정
-    //console.log(globalStore);
-    if (globalStore.lastLocation != 'HomeScreen') {
-      return;
-    }
 
     // 안보기로 한 팝업은 아닌지 날짜 확인
     const adsIds = data.map(item => `pop-${item.id}`);
@@ -111,18 +108,13 @@ class AdvertisingSection extends Component {
     let closedAd = ads.shift();
     this.setState({ ads: ads });
 
+    if (this.state.three_days_checked) {
+      this.hide3Days(closedAd);
+    }
     return closedAd;
   };
 
-  onCancel = () => {
-    // this.setState({ modalId:null });
-  };
-
-  hide3Days = () => {
-    let closedAd = this.onConfirm();
-
-    //console.log(closedAd);
-
+  hide3Days = closedAd => {
     const after3Days = moment()
       .add(3, 'd')
       .format()
@@ -130,7 +122,12 @@ class AdvertisingSection extends Component {
     AsyncStorage.setItem(`pop-${closedAd.id}`, after3Days);
   };
 
+  onCancel = () => {
+    // this.setState({ modalId:null });
+  };
+
   goEvent = info => {
+    this.setState({ show_popup: false });
     nav.parseDeepLink('welaaa://' + info.action_type + '/' + info.action_param);
   };
 
@@ -149,7 +146,7 @@ class AdvertisingSection extends Component {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={cnt > 0}
+        visible={cnt > 0 && this.props.show_popup && this.state.show_popup}
         onRequestClose={() => {}}
       >
         <View style={this.style.container}>
@@ -168,13 +165,19 @@ class AdvertisingSection extends Component {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.9}
-              style={this.style.hideOption}
-              onPress={this.hide3Days}
-            >
-              <Text>3일동안 보지 않기</Text>
-            </TouchableOpacity>
+            <CheckBox
+              title="3일동안 보지 않기"
+              checked={this.state.three_days_checked}
+              onPress={() =>
+                this.setState(previousState => ({
+                  three_days_checked: !previousState.three_days_checked,
+                }))
+              }
+              containerStyle={{
+                backgroundColor: 'transparent',
+                borderWidth: 0,
+              }}
+            />
 
             <TouchableOpacity
               activeOpacity={0.9}

@@ -1,91 +1,169 @@
 import React from 'react';
-import {observer} from 'mobx-react';
-import {ActivityIndicator, BackHandler, Text, View} from 'react-native';
+import { observer } from 'mobx-react';
+import { withNavigation } from 'react-navigation';
+import { ActivityIndicator, Alert, Text, View } from 'react-native';
 import net from '../../commons/net';
 import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
 import DetailLayout from '../../components/detail/DetailLayout';
-import Store from "../../commons/store";
-import nav from "../../commons/nav";
+import globalStore from '../../commons/store';
+import utils from '../../commons/utils';
 
 @observer
 class ClassDetailPage extends React.Component {
-	store = createStore({
-		isLoading: true,
-		itemData: null,
-		itemClipData: [],
-		tabStatus: 'info',
-		lectureView: false,
-		teacherView: false,
-		slideHeight: null,
-		reviewText: '',
-		reviewStar: 0,
-		permissions: {
-			permission: false,
-			expire_at: null
-		},
-		voucherStatus: {}
-	});
+  data = createStore({
+    isLoading: true,
+    itemData: null,
+    itemClipData: [],
+    tabStatus: 'info',
+    lectureView: false,
+    teacherView: false,
+    slideHeight: null,
+    reviewText: '',
+    reviewStar: 0,
+    voucherStatus: {},
+  });
 
-	getData = async () => {
-		const resultLectureData = await net.getLectureItem(
-			this.props.navigation.state.params.id
-		);
-		const resultLectureClipData = await net.getLectureClipList(
-			this.props.navigation.state.params.id
-		);
+  constructor(props) {
+    super(props);
 
-		this.props.navigation.setParams({
-			title: resultLectureData.title
-		})
-		
-		this.store.itemData = resultLectureData;
-		this.store.itemClipData = resultLectureClipData;
+    this.state = {
+      id: this.props.navigation.state.params.id,
+      paymentType: 1,
+      expire: null,
+      permissionLoading: true,
+      permission: {
+        type: null,
+      },
+    };
+  }
 
-		this.store.isLoading = false;
-	};
+  addToCart = async () => {
+    const itemId = this.state.id;
+    const { navigation } = this.props;
+    let errorMessage = '장바구니에 담는 중 오류가 발생하였습니다.';
 
-	componentDidMount() {
-		this.getData();
-		BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-	}
+    try {
+      await net.addToCart('video-course', itemId);
+      await utils.updateCartStatus();
+      Alert.alert(
+        '장바구니',
+        `클래스를 장바구니에 담았습니다. 장바구니로 이동하시겠습니까?`,
+        [
+          { text: '취소' },
+          {
+            text: '이동하기',
+            onPress: () => navigation.navigate('CartScreen'),
+          },
+        ],
+      );
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
 
-	componentWillUnmount() {
-		BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-	}
+        if (error.response.data.msg) {
+          errorMessage = error.response.data.msg;
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
 
-	handleBackPress = () => {
-		console.log('cdp back button:', this.props.navigation.isFocused(), Store.prevLocations );
-		// if (this.props.navigation.isFocused()) {
-			nav.commonBack();
-		// }
-		return true;
-	};
+      Alert.alert('오류', errorMessage, [{ text: '확인' }]);
+    }
+  };
 
-	render() {
-		return (
-			<View style={[CommonStyles.container, {backgroundColor: '#ffffff'}]}>
-				{this.store.isLoading ? (
-					<View style={{marginTop: 12}}>
-						<ActivityIndicator
-							size="large"
-							color={CommonStyles.COLOR_PRIMARY}
-						/>
-					</View>
-				) : this.store.itemData !== null ? (
-					<DetailLayout
-						learnType={'class'}
-						itemData={this.store.itemData}
-						store={this.store}
-					/>
-				) : (
-					<View>
-						<Text> </Text>
-					</View>
-				)}
-			</View>
-		);
-	}
+  getData = async () => {
+    const resultLectureData = await net.getLectureItem(this.state.id);
+    const resultLectureClipData = await net.getLectureClipList(this.state.id);
+
+    this.props.navigation.setParams({
+      title: resultLectureData.title,
+    });
+
+    this.data.itemData = resultLectureData;
+    this.data.itemClipData = resultLectureClipData;
+    this.data.isLoading = false;
+
+    await this.getPlayPermissions();
+
+    //조회수 증가
+    await net.postAddContentViewCount(resultLectureData.cid);
+  };
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  componentWillUnmount() {}
+
+  async getPlayPermissions() {
+    const userLoggedIn = globalStore.welaaaAuth !== undefined;
+    let permissionLoading = true;
+    let permission = null;
+    let { cid, orig_price: origPrice } = this.data.itemData;
+
+    this.setState({ permissionLoading });
+
+    if (!userLoggedIn) {
+      permission = {
+        type: null,
+        canPlay: false,
+        origPrice: origPrice,
+        userPrice: origPrice,
+      };
+      this.setState({
+        permission,
+        permissionLoading: false,
+      });
+
+      return;
+    }
+
+    const permissionData = await net.getPlayPermissionByCid(cid);
+    this.setState({
+      permission: permissionData,
+      permissionLoading: false,
+    });
+  }
+
+  render() {
+    const { permission, permissionLoading } = this.state;
+    return (
+      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
+        {this.data.isLoading ? (
+          <View style={{ marginTop: 12 }}>
+            <ActivityIndicator
+              size="large"
+              color={CommonStyles.COLOR_PRIMARY}
+            />
+          </View>
+        ) : this.data.itemData !== null ? (
+          <DetailLayout
+            learnType={'class'}
+            addToCart={this.addToCart}
+            itemData={this.data.itemData}
+            store={this.data}
+            permissionLoading={permissionLoading}
+            permission={permission}
+          />
+        ) : (
+          <View>
+            <Text>데이터를 가져오는 중 오류가 발생하였습니다.</Text>
+          </View>
+        )}
+      </View>
+    );
+  }
 }
 
-export default ClassDetailPage;
+export default withNavigation(ClassDetailPage);

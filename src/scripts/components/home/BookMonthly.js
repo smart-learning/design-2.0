@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ImageBackground,
   Image,
-  BackHandler
 } from 'react-native';
 import IcHeadphone from '../../../images/ic-headphones.png';
 import Dummy from '../../../images/dummy-audioBook.png';
@@ -20,16 +19,15 @@ import nav from '../../commons/nav';
 import BookMonthlyItem from './BookMonthlyItem';
 
 const styles = StyleSheet.create({
-  bookMonthly: {},
   bookMonthlyItem: {
     justifyContent: 'center',
-    position: 'relative'
+    position: 'relative',
   },
   couponContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 30
+    marginBottom: 10,
   },
   coupon: {
     flexDirection: 'row',
@@ -39,47 +37,47 @@ const styles = StyleSheet.create({
     height: 30,
     paddingLeft: 25,
     paddingRight: 35,
-    backgroundColor: '#A6AC53'
+    backgroundColor: '#A6AC53',
   },
   couponIcon: {
     width: 19,
     height: 19,
-    marginRight: 7
+    marginRight: 7,
   },
   couponText: {
     fontSize: 13,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   couponCountText: {
-    color: '#fff1b2'
+    color: '#fff1b2',
   },
   wrapper: {
     width: '100%',
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   bookItemContainer: {
     width: '75%',
     height: 200,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: 20
+    marginTop: 20,
   },
   bookItem: {
-    width: '42%'
+    width: '42%',
   },
   mainTitleCenter: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   titleH2: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#34342C'
+    color: '#34342C',
   },
   titleH4: {
     paddingTop: 10,
     fontSize: 13,
-    color: '#888888'
-  }
+    color: '#888888',
+  },
 });
 
 class BookMonthly extends React.Component {
@@ -88,7 +86,6 @@ class BookMonthly extends React.Component {
     if (_.isObject(this.props.itemData)) {
       itemData = this.props.itemData.slice(0, 3);
     }
-
     return (
       <View style={styles.bookMonthly}>
         <View style={styles.swiper}>
@@ -120,7 +117,7 @@ class BookMonthly extends React.Component {
                             onPress={() =>
                               this.props.navigation.navigate('AuthCheck', {
                                 requestScreenName: 'AudioBookTicketPage',
-                                title: '내 오디오북 이용권'
+                                title: '내 오디오북 이용권',
                               })
                             }
                           >
@@ -133,7 +130,6 @@ class BookMonthly extends React.Component {
                                 <Text style={styles.couponText}>
                                   보유한 오디오북 이용권
                                   <Text style={styles.couponCountText}>
-                                    {' '}
                                     {globalStore.voucherStatus !== null
                                       ? globalStore.voucherStatus.total
                                       : '0'}
@@ -156,8 +152,8 @@ class BookMonthly extends React.Component {
                                 'HomeMonthlyReviewPage',
                                 {
                                   itemData: item.book_a,
-                                  title: '이달의 책 북리뷰'
-                                }
+                                  title: '이달의 책 북리뷰',
+                                },
                               )
                             }
                           >
@@ -172,8 +168,8 @@ class BookMonthly extends React.Component {
                                 'HomeMonthlyReviewPage',
                                 {
                                   itemData: item.book_b,
-                                  title: '이달의 책 북리뷰'
-                                }
+                                  title: '이달의 책 북리뷰',
+                                },
                               )
                             }
                           >

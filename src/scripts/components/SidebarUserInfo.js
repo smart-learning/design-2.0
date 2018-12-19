@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import IcFree from '../../images/ic-stamp-free.png';
 import DummyUser from '../../images/dummy-my-profile-2.png';
@@ -27,47 +27,47 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 110,
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
   },
   userInfo: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   thumbnail: {
     width: 50,
     height: 50,
-    marginRight: 15
+    marginRight: 15,
   },
   loginText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#555555'
+    color: '#555555',
   },
   afterLogin: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   userName: {
     fontSize: 13,
     fontWeight: 'bold',
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   userNameImportant: {
-    fontSize: 15
+    fontSize: 15,
   },
   userEmail: {
     fontSize: 13,
-    color: '#888888'
+    color: '#888888',
   },
   memberShipContainerNoMembership: {
     justifyContent: 'center',
     height: 106,
-    backgroundColor: '#f0f0f0'
+    backgroundColor: '#f0f0f0',
   },
   memberShipContainer: {
     justifyContent: 'center',
     height: 220,
-    backgroundColor: '#f0f0f0'
+    backgroundColor: '#f0f0f0',
   },
   membershipButton: {
     flexDirection: 'row',
@@ -78,53 +78,53 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: '#c5c5c5',
-    backgroundColor: '#F8F8F8'
+    backgroundColor: '#F8F8F8',
   },
   membershipButtonBullet: {
     width: 35,
     height: 35,
-    marginRight: 7
+    marginRight: 7,
   },
   membershipButtonText: {
     fontSize: 13,
-    color: '#555555'
+    color: '#555555',
   },
   membershipButtonIcon: {
     width: 7,
     height: 13,
-    marginLeft: 'auto'
+    marginLeft: 'auto',
   },
   membershipTitle: {
     paddingLeft: 15,
     paddingBottom: 15,
     fontSize: 17,
-    color: '#34342C'
+    color: '#34342C',
   },
   membershipItem: {
     flexDirection: 'row',
-    marginBottom: 7
+    marginBottom: 7,
   },
   membershipItemLabel: {
     width: '40%',
     paddingLeft: 15,
     fontSize: 13,
     fontWeight: 'bold',
-    color: '#888888'
+    color: '#888888',
   },
   membershipItemText: {
     fontSize: 13,
-    color: '#555555'
+    color: '#555555',
   },
   cogIcon: {
     width: 18,
-    height: 18
-  }
+    height: 18,
+  },
 });
 
 @observer
 class SidebarUserInfo extends React.Component {
   data = createStore({
-    voucherStatus: null
+    voucherStatus: null,
   });
 
   getData = async () => {
@@ -143,7 +143,7 @@ class SidebarUserInfo extends React.Component {
             activeOpacity={0.9}
             onPress={() =>
               this.props.navigation.navigate('Login', {
-                title: '회원 가입'
+                title: '회원 가입',
               })
             }
           >
@@ -173,13 +173,14 @@ class SidebarUserInfo extends React.Component {
       let expireAtData = globalStore.currentMembership.expire_at;
       let startAt = moment(startAtData).format('YYYY-MM-DD');
       let expireAt = moment(expireAtData).format('YYYY-MM-DD');
+      const { paid_membership: paidMembership } = globalStore.currentMembership;
       return (
         <View style={styles.memberShipContainer}>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => this.props.navigation.navigate('MembershipScreen')}
           >
-            <Text style={styles.membershipTitle}>나의멤버십</Text>
+            <Text style={styles.membershipTitle}>나의 멤버십</Text>
             <View>
               <View style={styles.membershipItem}>
                 <Text style={styles.membershipItemLabel}>가입한 멤버십</Text>
@@ -197,10 +198,17 @@ class SidebarUserInfo extends React.Component {
                 <Text style={styles.membershipItemLabel}>가입일</Text>
                 <Text style={styles.membershipItemText}>{startAt}</Text>
               </View>
-              <View style={styles.membershipItem}>
-                <Text style={styles.membershipItemLabel}>다음 결제일</Text>
-                <Text style={styles.membershipItemText}>{expireAt}</Text>
-              </View>
+              {paidMembership ? (
+                <View style={styles.membershipItem}>
+                  <Text style={styles.membershipItemLabel}>다음 결제일</Text>
+                  <Text style={styles.membershipItemText}>{expireAt}</Text>
+                </View>
+              ) : (
+                <View style={styles.membershipItem}>
+                  <Text style={styles.membershipItemLabel}>멤버십 만료일</Text>
+                  <Text style={styles.membershipItemText}>{expireAt}</Text>
+                </View>
+              )}
               <View style={styles.membershipItem}>
                 <Text style={styles.membershipItemLabel}>이용권한</Text>
                 <View>
@@ -285,10 +293,10 @@ class SidebarUserInfo extends React.Component {
               paddingRight: 20,
               fontSize: 10,
               textAlign: 'right',
-              color: CommonStyles.COLOR_PRIMARY
+              color: CommonStyles.COLOR_PRIMARY,
             }}
           >
-            윕라 멤버쉽 소개
+            윌라 멤버십 소개
           </Text>
         </TouchableOpacity>
       </View>
@@ -326,28 +334,28 @@ class SidebarUserInfo extends React.Component {
                 <View
                   style={{
                     height: 50,
-                    width: '100%'
+                    width: '100%',
                   }}
                 >
                   <View
                     style={{
                       position: 'absolute',
                       right: 0,
-                      top: 0
+                      top: 0,
                     }}
                   >
                     <TouchableOpacity
                       activeOpacity={0.9}
                       onPress={() =>
                         this.props.navigation.navigate('SetAppPage', {
-                          title: '설정'
+                          title: '설정',
                         })
                       }
                     >
                       <View
                         style={{
                           width: 50,
-                          height: 50
+                          height: 50,
                         }}
                       >
                         <Image
@@ -357,8 +365,8 @@ class SidebarUserInfo extends React.Component {
                             {
                               position: 'absolute',
                               top: 0,
-                              right: 0
-                            }
+                              right: 0,
+                            },
                           ]}
                         />
                       </View>
@@ -370,7 +378,7 @@ class SidebarUserInfo extends React.Component {
                       position: 'absolute',
                       left: 0,
                       width: '80%',
-                      height: 50
+                      height: 50,
                     }}
                   >
                     <TouchableOpacity

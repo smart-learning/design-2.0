@@ -17,6 +17,7 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
   
     UILabel *_timeLabel;
     UILabel *_totalTimeLabel;
+    UILabel *_mainTitleLabel;
     UILabel *_titleLabel;
   
     UIView *_slider;
@@ -96,6 +97,16 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
     _totalTimeLabel.text = @"/ 00:00";
     [_playerView addSubview : _totalTimeLabel];
   
+    _mainTitleLabel = [[UILabel alloc] initWithFrame : CGRectZero];
+    _mainTitleLabel.backgroundColor = [UIColor clearColor];
+    _mainTitleLabel.font = [UIFont fontWithName:@"SpoqaHanSans" size:13];
+    _mainTitleLabel.textColor = [UIColor whiteColor];
+    _mainTitleLabel.textAlignment = NSTextAlignmentLeft;
+    _mainTitleLabel.numberOfLines = 1;
+    _mainTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    _mainTitleLabel.adjustsFontSizeToFitWidth = NO;
+    [_playerView addSubview : _mainTitleLabel];
+  
     _titleLabel = [[UILabel alloc] initWithFrame : CGRectZero];
     _titleLabel.backgroundColor = [UIColor clearColor];
     _titleLabel.font = [UIFont fontWithName:@"SpoqaHanSans" size:13];
@@ -147,12 +158,20 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
                                       _timeLabel.frame.size.height);
     }
   
+    if ( _mainTitleLabel )
+    {
+        _mainTitleLabel.frame = CGRectMake(CGRectGetMaxX(_playBtn.frame) + 10.f,
+                                           0,
+                                           (CGRectGetMinX(_timeLabel.frame) - 5.f) - (CGRectGetMaxX(_playBtn.frame) + 10.f),
+                                           _playerView.frame.size.height / 2);
+    }
+  
     if ( _titleLabel )
     {
         _titleLabel.frame = CGRectMake(CGRectGetMaxX(_playBtn.frame) + 10.f,
-                                       0,
+                                       _playerView.frame.size.height / 2,
                                        (CGRectGetMinX(_timeLabel.frame) - 5.f) - (CGRectGetMaxX(_playBtn.frame) + 10.f),
-                                       _playerView.frame.size.height);
+                                       _playerView.frame.size.height / 2);
     }
   
     if ( _slider && _totalTime > 0 )
@@ -177,6 +196,13 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
                forState : UIControlStateNormal];
   
     _timeLabel.textColor = isAudioMode ? UIColorFromRGB(0xff4f72, 1.f) : UIColorFromRGB(0x09b774, 1.f);
+}
+
+- (void) setTitleLabel00 : (NSString *) text
+{
+    _mainTitleLabel.text = text;
+  
+    [self resizeTimeLabel];
 }
 
 - (void) setTitleLabel01 : (NSString *) text
@@ -372,21 +398,3 @@ typedef NS_ENUM (NSInteger, ContentMiniPlayerViewMoveToPage)
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

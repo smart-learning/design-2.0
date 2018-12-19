@@ -40,8 +40,10 @@ RCT_EXPORT_MODULE();
 #if DEBUG
     paymentMode = @"sandbox";//
 #else
-    paymentMode = @"sandbox";//live
+    paymentMode = @"live";//live
 #endif
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라QA"] )
+        paymentMode = @"sandbox";
     NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
     if ( nullStr(productCode) )
@@ -121,6 +123,8 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
+                                [params setObject : @"audiobook"
+                                           forKey : @"buy_type"];
                                 if ( self->_hasListeners )
                                 {
                                   [self sendEventWithName : @"buyResult"
@@ -139,6 +143,8 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
+                                [params setObject : @"membership"
+                                           forKey : @"buy_type"];
                                 if ( self->_hasListeners )
                                 {
                                     [self sendEventWithName : @"buyResult"
@@ -383,11 +389,13 @@ RCT_EXPORT_MODULE();
 #if DEBUG
     paymentMode = @"sandbox";
 #else
-    paymentMode = @"sandbox";//live
+    paymentMode = @"live";//live
 #endif
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라QA"] )
+        paymentMode = @"sandbox";
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   
-    NSString *apiVerifyReceipt = @"/api/v1.0/ios/restore";
+    NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/restore";
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiVerifyReceipt];
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
@@ -448,6 +456,18 @@ RCT_EXPORT_MODULE();
     }
 }
 
+- (void) moveToManageSubscriptions
+{
+    // AlertView로 안내 후에 이동?
+    NSString *urlStr = @"itms-apps://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions";
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] openURL : [NSURL URLWithString: urlStr]
+                                           options : @{}
+                                 completionHandler : ^(BOOL success) { }];
+    });
+    // 참고 : https://stackoverflow.com/questions/15530794/link-to-app-manage-subscriptions-in-app-store
+}
+
 
 #pragma mark - RCT_EXPORT
 
@@ -459,6 +479,11 @@ RCT_EXPORT_METHOD( buy : (NSDictionary *) args )
 RCT_EXPORT_METHOD( restore : (NSDictionary *) args )
 {
     [self restoreProduct : args];
+}
+
+RCT_EXPORT_METHOD( unsubscribe )
+{
+    [self moveToManageSubscriptions];
 }
 
 @end

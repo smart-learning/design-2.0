@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#34342C'
   },
-  dailyBookContentHeadline: {},
   showMoreWrapper: {
     marginBottom: 10,
     alignItems: 'flex-end'
@@ -133,16 +132,6 @@ class BookDaily extends React.Component {
           <Text style={[styles.mainTitleCenter, styles.titleH4]}>
             책 좀 아는 사람들이 요약해 주는 읽은 척 매뉴얼
           </Text>
-        </View>
-        <View style={styles.showMoreWrapper}>
-          <TouchableOpacity
-            style={styles.showMore}
-            onPress={() => {
-              this.props.navigation.navigate('AudioBookPage');
-            }}
-          >
-            <Text>전체보기</Text>
-          </TouchableOpacity>
         </View>
 
         {/*카테고리*/}

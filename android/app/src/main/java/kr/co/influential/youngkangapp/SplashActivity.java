@@ -46,15 +46,16 @@ public class SplashActivity extends AppCompatActivity implements SurfaceHolder.C
     msplashSurfaceHolder = msplashSurfaceView.getHolder();
     msplashSurfaceHolder.addCallback(SplashActivity.this);
 
-    LogHelper.e(TAG , "SplashActivity onCreate ");
+    if(BuildConfig.BUILD_TYPE.equals("debug")){
+      Utils.logToast(this , "DEBUG APP SKIP SPLASH VERSION CHECK");
+      launchMain();
+    }
 
   }
 
   @Override
   protected void onPostCreate(@Nullable Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
-
-
   }
 
   @Override

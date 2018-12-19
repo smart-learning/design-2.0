@@ -16,6 +16,7 @@ class Store {
 
   @observable
   homeTabStatus = 'video';
+
   @observable
   initialRoute = {
     // initialRouteName: 'AuthCheck',
@@ -36,7 +37,7 @@ class Store {
 
   get accessToken() {
     if (welaaaAuth === undefined) return '';
-    
+
     if (welaaaAuth === null) return '';
     return welaaaAuth.access_token;
   }
@@ -67,11 +68,21 @@ class Store {
   /* 미니 플레이어 전환여부 결정 */
   @observable
   miniPlayerVisible = false;
+  /* 미니 플레이어 전환여부 결정 */
+  @observable
+  miniPlayerArg = {};
 
   clearTokens = () => {
     socialType = null;
     socialToken = null;
     welaaaAuth = null;
+    /**
+     * 2018.12.4
+     * jungon
+     * Initialize membership.
+     */
+    currentMembership = null;
+
     delete axios.defaults.headers.common['authorization'];
 
     AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
@@ -83,8 +94,10 @@ class Store {
 
   @observable
   currentMembership = {};
+
   @observable
   voucherStatus = {};
+
   @observable
   profile = {};
 
@@ -114,6 +127,9 @@ class Store {
 
   @observable
   inAppWebViewUrl = null;
+
+  @observable
+  cartItemCount = 0;
 }
 
 const store = new Store();

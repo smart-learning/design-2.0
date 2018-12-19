@@ -389,7 +389,12 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     if ( playList.count > indexPath.row )
     {
         cell.itemDict = playList[indexPath.row];
-        cell.teacherName = _contentsInfoDictionary[@"data"][@"teacher"][@"name"];
+      // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
+        if ( [_contentsInfoDictionary[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
+            cell.teacherName = _contentsInfoDictionary[@"data"][@"teacher"][@"name"];
+        else
+            cell.teacherName = @"미상";
+      
         cell.groupTitle = _contentsInfoDictionary[@"data"][@"title"];
     }
     else
@@ -401,6 +406,7 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     cell.index = indexPath.row;
     cell.isAudioContentType = _isAudioContentType;
     cell.isPreviewMode = (_isAudioContentType && !self.isAuthor && cell.isSelected);
+    cell.hasPermission = self.isAuthor;
     
     [cell updateCell];
     

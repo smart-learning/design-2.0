@@ -72,8 +72,9 @@ export default class ChapterListItem extends React.Component {
       }
     } else if ('audioBook' === this.props.learnType) {
       const { paymentType } = this.props;
-      if (0 === paymentType || 3 === paymentType) {
+      if (0 === paymentType || 1 === paymentType || 3 === paymentType) {
         // 무료(0) 이거나 소장중(3)일 경우.
+        // 2018.12.06 단품구매 케이스 paymentType 1 추가 
         renderView = true;
       } else if (globalStore && globalStore.currentMembership) {
         const { type } = globalStore.currentMembership;

@@ -68,6 +68,7 @@ captures/
 # IntelliJ
 *.iml
 android/.idea/
+android/.settings/
 #.idea/workspace.xml
 #.idea/tasks.xml
 #.idea/gradle.xml
@@ -164,3 +165,20 @@ ios/WelaaaV2Tests
 ios/PallyConFPSSDK.framework/
 ios/WelaaaV2Tests/
 ios/WelaaaV2.xcodeproj/project.pbxproj
+android/app/src/main/assets/fonts/AntDesign.ttf
+android/app/src/main/assets/fonts/Entypo.ttf
+android/app/src/main/assets/fonts/EvilIcons.ttf
+android/app/src/main/assets/fonts/Feather.ttf
+android/app/src/main/assets/fonts/FontAwesome.ttf
+android/app/src/main/assets/fonts/FontAwesome5_Brands.ttf
+android/app/src/main/assets/fonts/FontAwesome5_Regular.ttf
+android/app/src/main/assets/fonts/FontAwesome5_Solid.ttf
+android/app/src/main/assets/fonts/Foundation.ttf
+android/app/src/main/assets/fonts/Ionicons.ttf
+android/app/src/main/assets/fonts/MaterialCommunityIcons.ttf
+android/app/src/main/assets/fonts/MaterialIcons.ttf
+android/app/src/main/assets/fonts/Octicons.ttf
+android/app/src/main/assets/fonts/SimpleLineIcons.ttf
+android/app/src/main/assets/fonts/Zocial.ttf
+
+android/app/*

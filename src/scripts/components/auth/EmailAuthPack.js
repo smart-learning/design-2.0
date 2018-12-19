@@ -1,3 +1,4 @@
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
@@ -7,7 +8,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { COLOR_PRIMARY } from '../../../styles/common';
 import createStore from '../../commons/createStore';
@@ -15,27 +16,27 @@ import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   contentContainer: {
-    width: '100%'
+    width: '100%',
   },
   inputWrap: {
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   inputBr: {
     width: '100%',
     height: 1,
-    backgroundColor: '#d8d8d8'
+    backgroundColor: '#d8d8d8',
   },
   input: {
     width: '100%',
     height: 40,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   btnSubmit: {
     width: '100%',
     height: 48,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: COLOR_PRIMARY
+    backgroundColor: COLOR_PRIMARY,
   },
   textSubmit: {
     flex: 1,
@@ -45,24 +46,22 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   linkWrap: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   btnLinkText: {
     fontSize: 14,
-    color: COLOR_PRIMARY
-  }
+    color: COLOR_PRIMARY,
+  },
 });
 
-@observer
 class EmailAuthPack extends Component {
-
   constructor(props) {
     super(props);
-    
+
     this.login_id = React.createRef();
     this.login_pw = React.createRef();
   }
@@ -70,10 +69,36 @@ class EmailAuthPack extends Component {
   data = createStore({
     email: '',
     password: '',
-    loginButtonDisabled: false
   });
 
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide,
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = () => {
+    console.log('_keyboardDidShow');
+    this.props.onKeyboardStatus(true);
+  };
+
+  _keyboardDidHide = () => {
+    console.log('_keyboardDidHide');
+    this.props.onKeyboardStatus(false);
+  };
+
   handleLogin = () => {
+    // 밸리데이션
     if (this.data.email === '') {
       Alert.alert('오류', '이메일은 필수 입력항목입니다.');
       return;
@@ -83,18 +108,14 @@ class EmailAuthPack extends Component {
       return;
     }
 
-    this.setState({ loginButtonDisabled: true });
-    this.props.onAccess(this.data.email, this.data.password, () => {
-      this.data.loginButtonDisabled = false;
-    });
+    this.props.onAccess(this.data.email, this.data.password, () => {});
   };
-  
+
   render() {
     return (
       <View style={styles.contentContainer}>
         <View borderRadius={4} style={styles.inputWrap}>
           <TextInput
-            
             ref={this.login_id}
             style={styles.input}
             keyboardType="email-address"
@@ -116,22 +137,18 @@ class EmailAuthPack extends Component {
             value={this.data.password}
             placeholder="비밀번호"
             autoCapitalize={'none'}
-            onSubmitEditing={() => { Keyboard.dismiss; this.handleLogin()}}
+            onSubmitEditing={() => {
+              this.handleLogin();
+            }}
             onChangeText={text => {
               this.data.password = text;
             }}
           />
         </View>
 
-        <TouchableOpacity
-          activeOpacity={0.9}
-          disabled={this.data.loginButtonDisabled}
-          onPress={this.handleLogin}
-        >
+        <TouchableOpacity activeOpacity={0.9} onPress={this.handleLogin}>
           <View borderRadius={4} style={styles.btnSubmit}>
-            <Text style={styles.textSubmit}>
-              {this.data.loginButtonDisabled ? '로그인 중' : '이메일로  로그인'}
-            </Text>
+            <Text style={styles.textSubmit}>이메일로 로그인</Text>
           </View>
         </TouchableOpacity>
 
@@ -150,14 +167,13 @@ class EmailAuthPack extends Component {
               activeOpacity={0.9}
               onPress={() => this.props.onNavigate('SignUpPage')}
             >
-              <Text style={styles.btnLinkText}>무료 계정만들기</Text>
+              <Text style={styles.btnLinkText}>윌라 계정만들기</Text>
             </TouchableOpacity>
           </View>
         </View>
-        {!!globalStore.isKeyboardOn && <View style={{ height: 200 }} />}
       </View>
     );
   }
 }
 
-export default EmailAuthPack;
+export default observer(EmailAuthPack);

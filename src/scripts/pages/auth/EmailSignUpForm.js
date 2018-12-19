@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import {
   Alert,
-  CheckBox,
   Dimensions,
   Image,
   ImageBackground,
@@ -16,9 +15,11 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import Swiper from 'react-native-swiper';
+import Spinner from 'react-native-loading-spinner-overlay';
 import bgSignUp from '../../../images/bg-join.png';
 import logo from '../../../images/logo-en-primary.png';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
@@ -178,14 +179,14 @@ class Data {
   isAgree = false;
   @observable
   windowHeight = null;
+  @observable
+  email_vailidate = false;
 }
 
-@observer
 class EmailSignUpForm extends Component {
   data = new Data();
 
   state = {
-    signupButtonDisabled: false,
     agreeReceiveMarketing: true
   };
 
@@ -219,30 +220,48 @@ class EmailSignUpForm extends Component {
     }
   };
 
+  @observable loading = false
+
   handleJoin = () => {
-    this.setState({ signupButtonDisabled: true });
+
+    // 로딩 보이기
+    this.loading = true
+
+    // 시간 한계 주기
+    setTimeout(() => {
+      // 10초 후에 로딩이 아직도 떠 있다면
+      if (this.loading) {
+        // TODO: 확인이 필요 합니다. 
+        // Alert.alert('오류', '관리자에게 문의 하거나 잠시 후 다시 시도해 주세요.')
+        this.loading = false
+      }
+    }, 10000)
 
     if (this.data.name === null) {
-      Alert.alert('이름은 필수 입력항목입니다.');
-      this.setState({ signupButtonDisabled: false });
+      Alert.alert('오류', '이름은 필수 입력항목입니다.');
+      this.loading = false
       return false;
     } else if (this.data.email === null) {
-      Alert.alert('이메일은 필수 입력항목입니다.');
-      this.setState({ signupButtonDisabled: false });
+      Alert.alert('오류', '이메일은 필수 입력항목입니다.');
+      this.loading = false
       return false;
     } else if (!this.data.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-      this.setState({ signupButtonDisabled: false });
-      Alert.alert('이메일 형식이 맞지 않습니다.');
+      Alert.alert('오류', '이메일 형식이 맞지 않습니다.');
+      this.loading = false
+      return false;
+    } else if (this.data.email_vailidate === false) {
+      Alert.alert('오류', '다른 이메일을 사용해주세요.');
+      this.loading = false
       return false;
     } else if (this.data.password === null) {
-      this.setState({ signupButtonDisabled: false });
-      Alert.alert('비밀번호는 필수 입력항목입니다.');
+      Alert.alert('오류', '비밀번호는 필수 입력항목입니다.');
+      this.loading = false
       return false;
     }
 
     if (this.data.passconf !== this.data.password) {
-      Alert.alert('비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
-      this.setState({ signupButtonDisabled: false });
+      Alert.alert('오류', '비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
+      this.loading = false
       return false;
     }
 
@@ -275,9 +294,20 @@ class EmailSignUpForm extends Component {
       })
       .catch(e => {
         alert(e);
-        this.setState({ signupButtonDisabled: false });
+        this.loading = false
       });
   };
+
+  email_vailidate = async () => {
+    let vailidate_info = await Net.email_vailidate(this.data.email);
+
+    if (vailidate_info.success !== '1') {
+      Alert.alert("오류", vailidate_info.msg);
+      this.data.email_vailidate = false;
+    } else {
+      this.data.email_vailidate = true;
+    }
+  }
 
   agreeStatus = () => {
     this.data.isAgree = !this.data.isAgree;
@@ -289,6 +319,9 @@ class EmailSignUpForm extends Component {
         style={[CommonStyles.container, styles.loginContainer]}
         behavior="padding"
       >
+        <Spinner // 로딩 인디케이터
+          visible={this.loading}
+        />
         <View style={{ width: '100%', height: this.data.windowHeight }}>
           <Swiper
             style={styles.wrapper}
@@ -313,7 +346,7 @@ class EmailSignUpForm extends Component {
           </View>
           <View style={styles.contentWrap}>
             <View style={styles.content}>
-              <Text style={styles.headline}>무료계정만들기</Text>
+              <Text style={styles.headline}>이메일 간편가입</Text>
 
               <View borderRadius={4} style={styles.inputWrap}>
                 <View style={styles.inputBr} />
@@ -346,6 +379,7 @@ class EmailSignUpForm extends Component {
                   onChangeText={text => {
                     this.data.email = text;
                   }}
+                  onBlur={() => this.email_vailidate()}
                 />
                 <View style={styles.inputBr} />
                 <TextInput
@@ -381,46 +415,31 @@ class EmailSignUpForm extends Component {
               </View>
 
               {/* 마케팅 수신 동의 체크 박스 */}
-              <TouchableOpacity
-                activeOpacity={0.9}
+              <CheckBox
+                title="새로운 콘텐츠 및 이벤트 정보 받기"
+                checked={this.state.agreeReceiveMarketing}
                 onPress={() =>
                   this.setState(previousState => ({
                     agreeReceiveMarketing: !previousState.agreeReceiveMarketing
                   }))
                 }
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    paddingTop: 20,
-                    paddingBottom: 20,
-                    alignItems: 'center'
-                  }}
-                >
-                  <CheckBox
-                    value={this.state.agreeReceiveMarketing}
-                    onValueChange={() =>
-                      this.setState(previousState => ({
-                        agreeReceiveMarketing: !previousState.agreeReceiveMarketing
-                      }))
-                    }
-                  />
-                  <Text
-                    style={[
-                      styles.agreeReceiveMarketingStyle,
-                      { textAlign: 'left' }
-                    ]}
-                  >
-                    마케팅 수신 동의
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                textStyle={[
+                  styles.agreeReceiveMarketingStyle,
+                  { textAlign: 'left' }
+                ]}
+                containerStyle={{
+                  backgroundColor: '#0000',
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  paddingLeft: 0,
+                  borderWidth: 0
+                }}
+              />
 
               <View style={styles.submitContainer}>
                 <TouchableOpacity
                   activeOpacity={0.9}
-                  onPress={this.handleJoin}
+                  onPress={() => { Keyboard.dismiss(); this.handleJoin() }}
                   disabled={!this.state.agreeReceiveMarketing}
                 >
                   <View
@@ -432,9 +451,7 @@ class EmailSignUpForm extends Component {
                     }
                   >
                     <Text style={styles.textSubmit}>
-                      {this.state.signupButtonDisabled
-                        ? '처리중입니다.'
-                        : '가입하기'}
+                      가입하기
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -461,7 +478,7 @@ class EmailSignUpForm extends Component {
               <View style={styles.ruleWrap}>
                 <View style={styles.ruleTextContainer}>
                   <Text style={styles.ruleText}>
-                    무료 계정을 생성하시면 월라
+                    윌라 계정을 생성하시면 월라
                   </Text>
                   <TouchableOpacity
                     activeOpacity={0.9}
@@ -511,4 +528,4 @@ EmailSignUpForm.navigationOptions = () => {
   };
 };
 
-export default EmailSignUpForm;
+export default observer(EmailSignUpForm);

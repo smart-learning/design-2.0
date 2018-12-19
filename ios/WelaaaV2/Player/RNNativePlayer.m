@@ -38,6 +38,10 @@ RCT_EXPORT_MODULE();
 
 - (void) showMediaPlayer : (NSDictionary *) argsFromReactNative
 {
+    if ( [[common getModel] isEqualToString : @"iPhone 5s"] )
+    {
+        return [common presentAlertWithTitle:@"윌라" andMessage:@"iPhone 5s에서는 성능 이슈로 콘텐츠 이용이 불가합니다.\n윌라웹에서 이용해 주세요."];
+    }
     /*
      현재 네트워크 상태값과 RN 마이윌라 설정값을 비교하고 맞지 않으면 얼럿창을 리턴합니다.
      Wi-Fi에서만 재생허용인데 연결상태가 Wi-Fi가 아닌 경우는 얼럿창을 보여주고 재생을 하지 않습니다.
@@ -354,7 +358,7 @@ RCT_EXPORT_MODULE();
     }
 }
 
-- (void) selectDownloadedList : (NSString *)option
+- (void) selectDownloadedList : (NSDictionary *)option
                      resolver : (RCTPromiseResolveBlock)resolve
                      rejecter : (RCTPromiseRejectBlock)reject
 {
@@ -363,7 +367,22 @@ RCT_EXPORT_MODULE();
   // 다운로드 목록 띄울 때마다 파일과 DB 간 동기화를 수행하기 위해 추가(트랙킹 안되는 파일 삭제).
   [[FPSDownloadManager sharedInstance] synchronizeLocalFilesWithDB];
   
-  NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+  NSMutableArray *allRecords;
+  if(option){
+    NSString* userId = [option objectForKey:@"userId"];
+    NSString* cid = [option objectForKey:@"cid"];
+    NSLog(@"selectDownloadedList - userId : %@, cid : %@",userId,cid);
+    if(userId==nil || userId.length==0){
+      NSLog(@"No UserId to Select!");
+    }
+    if (cid==nil || cid.length==0) {
+      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+    }else{
+      allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsGroupKey:cid];
+    }
+  }else{
+    allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+  }
   
   NSError *error;
   NSData *jsonData = [NSJSONSerialization dataWithJSONObject : allRecords
@@ -432,7 +451,6 @@ RCT_EXPORT_METHOD( setting : (NSDictionary *) argsFromReactNative )
 
 RCT_EXPORT_METHOD( download : (NSArray *) argsFromReactNative )
 {
-    //[self downloadContent : argsFromReactNative]; // argsFromReactNative 가 Dictionary 일 때
     [self downloadContents : argsFromReactNative];  // argsFromReactNative 가 Array 일 때(여러개의 Dictionary)
 }
 
@@ -452,6 +470,13 @@ RCT_EXPORT_METHOD( getDownloadList : (RCTPromiseResolveBlock)resolve
                           rejecter : (RCTPromiseRejectBlock)reject )
 {
   [self selectDownloadedList:nil resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD( getDownloadList : (NSDictionary *)option
+                  resolver : (RCTPromiseResolveBlock)resolve
+                  rejecter : (RCTPromiseRejectBlock)reject )
+{
+  [self selectDownloadedList:option resolver:resolve rejecter:reject];
 }
 
 @end

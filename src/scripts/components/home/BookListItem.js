@@ -78,9 +78,9 @@ const styles = StyleSheet.create({
     marginTop: 9,
     marginRight: 3,
     paddingTop: 3,
-    paddingRight: 10,
+    paddingRight: 5,
     paddingBottom: 3,
-    paddingLeft: 10
+    paddingLeft: 5
   },
   bookLabelText: {
     fontSize: 12,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     minHeight: 100,
-    padding: 7,
+    padding: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.8)'
   },
   thumbnailTitle: {
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
   },
   bookLabelContainer: {
     flexDirection: 'row',
-    marginLeft: 2,
-    marginRight: 2,
+    marginLeft: 0,
+    marginRight: 0,
     marginBottom: 4
   }
 });
@@ -173,11 +173,13 @@ class BookListItem extends React.Component {
             })
           }
         >
-        
-        <Text style={styles.bookTitle} ellipsizeMode={'tail'} numberOfLines={2}>
-          {this.props.itemData.subtitle}
-        </Text>
-        
+          <Text
+            style={styles.bookTitle}
+            ellipsizeMode={'tail'}
+            numberOfLines={2}
+          >
+            {this.props.itemData.subtitle}
+          </Text>
           <View>
             <ImageBackground
               source={{ uri: this.props.itemData.images.list }}
@@ -192,7 +194,7 @@ class BookListItem extends React.Component {
                   {!!this.props.itemData.is_new && (
                     <View
                       style={[styles.bookLabel, styles.bookLabelNew]}
-                      borderRadius={10}
+                      borderRadius={7}
                     >
                       <Text style={[styles.bookLabelText]}>New</Text>
                     </View>
@@ -200,7 +202,7 @@ class BookListItem extends React.Component {
                   {!!this.props.itemData.is_exclusive && (
                     <View
                       style={[styles.bookLabel, styles.bookLabelExclusive]}
-                      borderRadius={10}
+                      borderRadius={7}
                     >
                       <Text style={[styles.bookLabelText]}>독점</Text>
                     </View>
@@ -208,7 +210,7 @@ class BookListItem extends React.Component {
                   {this.props.itemData.is_botm && (
                     <View
                       style={[styles.bookLabel, styles.bookLabelExclusive]}
-                      borderRadius={10}
+                      borderRadius={7}
                     >
                       <Text style={[styles.bookLabelText]}>이달의책</Text>
                     </View>
@@ -216,7 +218,7 @@ class BookListItem extends React.Component {
                   {!!this.props.itemData.is_free && (
                     <View
                       style={[styles.bookLabel, styles.bookLabelFree]}
-                      borderRadius={10}
+                      borderRadius={7}
                     >
                       <Text style={[styles.bookLabelText]}>무료</Text>
                     </View>
@@ -224,7 +226,7 @@ class BookListItem extends React.Component {
                   {this.props.itemData.audiobook_type === '완독' && (
                     <View
                       style={[styles.bookLabel, styles.bookLabelDefault]}
-                      borderRadius={10}
+                      borderRadius={7}
                     >
                       <Text style={[styles.bookLabelText]}>완독</Text>
                     </View>
@@ -232,7 +234,7 @@ class BookListItem extends React.Component {
                   {this.props.itemData.audiobook_type === '요약' && (
                     <View
                       style={[styles.bookLabel, styles.bookLabelDefault]}
-                      borderRadius={10}
+                      borderRadius={7}
                     >
                       <Text style={[styles.bookLabelText]}>요약</Text>
                     </View>
@@ -246,13 +248,21 @@ class BookListItem extends React.Component {
           <Image source={IcView} style={styles.btnSetSmall} />
           <Text style={styles.countText}>
             {/* 조회수 */}
-            {numeral(this.props.itemData.meta?this.props.itemData.meta.play_count:this.props.itemData.hit_count).format('0a')}
+            {numeral(
+              this.props.itemData.meta
+                ? this.props.itemData.meta.play_count
+                : this.props.itemData.hit_count
+            ).format('0a')}
           </Text>
-          
+
           <Image source={IcComment} style={styles.btnSetSmall} />
           <Text style={styles.countText}>
             {/* 댓글수 */}
-            {numeral(this.props.itemData.meta?this.props.itemData.meta.comment_count:this.props.itemData.review_count).format('0a')}
+            {numeral(
+              this.props.itemData.meta
+                ? this.props.itemData.meta.comment_count
+                : this.props.itemData.review_count
+            ).format('0a')}
           </Text>
         </View>
       </View>

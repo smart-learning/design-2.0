@@ -261,7 +261,7 @@ class AudioBookPage extends React.Component {
           { backgroundColor: '#ecf0f1', justifyContent: 'flex-start' }
         ]}
       >
-        {this._renderHeader()}
+        
         <View style={{ width: '100%', paddingTop: 82 }}>
           {this.store.displayData !== null ? (
             <FlatList
@@ -307,6 +307,9 @@ class AudioBookPage extends React.Component {
             </View>
           )}
         </View>
+
+        {this._renderHeader()}
+        
       </SafeAreaView>
     );
   }

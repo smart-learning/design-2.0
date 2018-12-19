@@ -508,6 +508,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, title);
     builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
         Utils.webTimeToSec(duration));
+    builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE , title);
 
     // drm information.
     builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
