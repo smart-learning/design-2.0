@@ -244,6 +244,8 @@ class App extends React.Component {
           this.props.navigation.navigate('HomeScreen', {
             popup_mbs: true,
           });
+        } else if (result && arg.buy_type === 'audiobook') {
+          nav.goBack(); // 오디오북 구매에 성공하면 뒤로 가게 처리해두었으나 추후엔 해당화면 갱신되는 방식으로 수정해야 한다.
         } else {
           console.log('Native.buyResult error.');
         }
