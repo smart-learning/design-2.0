@@ -406,6 +406,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
     [self showToastAboutPlaybackAuthority];
+  
+    // 저전력모드 여부를 확인합니다.
+    [self checkLowPowerModeEnabled];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -666,23 +669,26 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
     {
         NSLog(@"  Pausing for audio session interruption");
+      /*
         if ( _playButton.hidden )
             _shouldContinuePlaying = true;
         else
             _shouldContinuePlaying = false;
-      
+      */
         [self pressedPauseButton];
     }
     else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
     {
         NSLog(@"  Resuming after audio session interruption");
         // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
+      /*
         if ( _shouldContinuePlaying )
             [self pressedPlayButton];
         else
             NSLog(@"  [audioSessionInterrupted] do nothing..");
       
         _shouldContinuePlaying = nil;
+      */
     }
 }
 
@@ -1610,6 +1616,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
                                                 Minute : YES];
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
   //[self setPreparedToPlay];
     if ( _slider )
     {
@@ -1644,11 +1657,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     NSString *netStatus = [self updateNetStatusLabel];
     [self updateDownloadState];
   
+    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+  
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"START"             // START / ING / END / FORWARD / BACK
-                             startSecond : [self getCurrentPlaybackTime]
-                               endSecond : [self getCurrentPlaybackTime] + 30
-                                duration : 30 - [self getCurrentPlaybackTime]
+                             startSecond : currentTime
+                               endSecond : currentTime + 30
+                                duration : 30 - currentTime
                                netStatus : netStatus
                                authToken : [_args objectForKey : @"token"]];
     // NSTimer를 통해 30초마다 로그내역을 전송
@@ -1659,7 +1674,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                 repeats : YES];
   
     // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
-    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+    currentTime = [self getCurrentPlaybackTime];
     // 전체 재생시간을 구합니다.
   /*
     NSArray *contentsListArray;
@@ -1683,8 +1698,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
   */
     NSTimeInterval totalTime = [common convertStringToTime : contentsListArray[indexOfCurrentContent][@"play_time"]];//[self getDuration];
-  //NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
-  //NSLog(@"  mini Player Duration double : %f", totalTime);
+    NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
+    NSLog(@"  mini Player Duration double : %f", totalTime);
+    NSLog(@"  mini Player CurrentT double : %f", currentTime);  // Not a Number issue occurs....
     NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
     playInfo[@"currentTime"] = @(currentTime);
     playInfo[@"totalTime"] = @(totalTime);
@@ -1694,6 +1710,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
   
     [self showToastAboutPlaybackAuthority];
+  
+    // 저전력모드 여부를 확인합니다.
+    [self checkLowPowerModeEnabled];
 }
 
 //
@@ -1891,16 +1910,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
   
+    NSTimeInterval cTime = [self getCurrentPlaybackTime];
+    NSTimeInterval tTime = [self getDuration];
+  
     // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    if ( CMTimeGetSeconds(kCMTimeInvalid) == tTime )
     {
         [self closePlayer];
       
         return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
     }
-  
-    NSTimeInterval cTime = [self getCurrentPlaybackTime];
-    NSTimeInterval tTime = [self getDuration];
   
     if ( cTime > 10.f )
     {
@@ -1947,16 +1966,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
   
-    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
-    {
-        [self closePlayer];
-    
-        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
-    }
-  
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
+  
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( CMTimeGetSeconds(kCMTimeInvalid) == tTime )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
   
     if ( cTime + 10.f < tTime )
     {
@@ -2141,7 +2160,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 - (void) seekbarDragging : (NSTimeInterval) time
 {
     // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    if ( CMTimeGetSeconds(kCMTimeInvalid) == time )
     {
         [self closePlayer];
       
@@ -2607,6 +2626,26 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [self showToast : @"1분30초 미리 보기 입니다."];
 }
 
+//
+// 저전력모드인지 확인합니다.
+// https://useyourloaf.com/blog/detecting-low-power-mode/
+// - Stop location updates
+// - Limit the use of animations
+// - Stop background activities such as networking
+// - Disable motion effects
+//
+- (void) checkLowPowerModeEnabled
+{
+    if ( [[NSProcessInfo processInfo] isLowPowerModeEnabled] )
+    {
+        NSLog(@"  저젼력모드를 감지하였습니다.");
+      //[common presentAlertWithTitle:@"윌라" andMessage:@"저전력모드일 경우 백그라운드 재생이 원활하지 않을 수 있다는 점을 안내드립니다.\n감사합니다!"];
+        [self showToast:@"저전력모드에서는 백그라운드 재생이 원활하지 않을 수 있습니다."];
+    }
+    else
+        NSLog(@"  저젼력모드가 아닙니다.");
+}
+
 #pragma mark - Time Control
 
 //
@@ -2625,7 +2664,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
     else
     {
-        return (CMTimeGetSeconds(kCMTimeInvalid));
+      //return (CMTimeGetSeconds(kCMTimeInvalid));
+        double loadedDuration = CMTimeGetSeconds(item.duration);
+      
+        return (NSTimeInterval) loadedDuration;
     }
 }
 
@@ -2639,13 +2681,15 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( item.status == AVPlayerItemStatusReadyToPlay )
     {
         double currentTime = CMTimeGetSeconds(item.currentTime);
-      //NSLog(@"  Current time : %f", currentTime);
       
         return (NSTimeInterval) currentTime;
     }
     else
     {
-        return (CMTimeGetSeconds(kCMTimeInvalid));
+      //return (CMTimeGetSeconds(kCMTimeInvalid));
+        double currentTime = CMTimeGetSeconds(item.currentTime);
+      
+        return (NSTimeInterval) currentTime;
     }
 }
 
@@ -3551,8 +3595,12 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       
         [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
                      forKey : MPMediaItemPropertyTitle];
-        [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
-                     forKey : MPMediaItemPropertyArtist];
+      // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
+        if ( [_currentContentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
+            [songInfo setObject:_currentContentsInfo[@"data"][@"teacher"][@"name"] forKey:MPMediaItemPropertyArtist];
+        else
+            [songInfo setObject:@"미상" forKey:MPMediaItemPropertyArtist];
+      
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*

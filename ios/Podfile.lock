@@ -14,6 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
+  - AppsFlyerFramework (4.8.9)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
     - Bolts/Tasks (= 1.9.0)
@@ -112,6 +113,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 3.0)
+  - AppsFlyerFramework
   - Bolts
   - Crashlytics
   - Fabric
@@ -128,6 +130,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AFNetworking
+    - AppsFlyerFramework
     - Bolts
     - Crashlytics
     - Fabric
@@ -150,6 +153,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  AppsFlyerFramework: 0fc823ec9b77f913e4108caa82c969be033058b1
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Crashlytics: 1448070c1d2731ab71ea7c3faf84ac0f69657287
   Fabric: 4ac1cdfef3004ccd83ce0959b91eda8a6e37df72
@@ -170,6 +174,6 @@ SPEC CHECKSUMS:
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: 789fef51b7b5a508594a7e0243451c5ef77ed647
+PODFILE CHECKSUM: b78c2aea194e8768bd2e9d84652b3ebcfcca9545
 
 COCOAPODS: 1.5.3

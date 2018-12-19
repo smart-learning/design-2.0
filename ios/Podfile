@@ -35,5 +35,8 @@ target 'WelaaaV2' do
 
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
+  
+  # AppsFlyer
+  pod 'AppsFlyerFramework'
 
 end

@@ -180,3 +180,5 @@ android/app/src/main/assets/fonts/MaterialIcons.ttf
 android/app/src/main/assets/fonts/Octicons.ttf
 android/app/src/main/assets/fonts/SimpleLineIcons.ttf
 android/app/src/main/assets/fonts/Zocial.ttf
+
+android/app/*
