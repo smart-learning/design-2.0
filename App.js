@@ -568,9 +568,8 @@ const AppNavigator = createSwitchNavigator(
 export default () => (
   <AppNavigator
     ref={navigatorRef => {
-      store.drawer = navigatorRef;
-      // 플래이어 크래시 때문에 코드 추가
-      nav.setNav(navigatorRef);
+      // Navigating without the navigation prop
+      nav.setTopLevelNavigator(navigatorRef);
     }}
     onNavigationStateChange={(prevState, currentState) => {
       const currentScreen = getActiveRouteName(currentState);
