@@ -112,8 +112,8 @@ class BookMonthly extends React.Component {
                 ];
               }
               return (
-                <View style={(styles.swiper, styles.swiper_margin)}>
-                  <View style={bg_color} key={key}>
+                <View style={(styles.swiper, styles.swiper_margin)} key={key}>
+                  <View style={bg_color}>
                     <View style={styles.botm_top_title}>
                       <Text style={[styles.mainTitleCenter, styles.titleH2]}>
                         {MonthData}월 이달의 책
