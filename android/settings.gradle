@@ -9,7 +9,5 @@ include ':react-native-kakao-signin'
 project(':react-native-kakao-signin').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-kakao-signin/android')
 include ':react-native-fbsdk'
 project(':react-native-fbsdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fbsdk/android')
-include ':react-native-localizable'
-project(':react-native-localizable').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-localizable/android')
 
 include ':app'

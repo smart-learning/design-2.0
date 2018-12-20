@@ -42,6 +42,8 @@ RCT_EXPORT_MODULE();
 #else
     paymentMode = @"live";//live
 #endif
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라QA"] )
+        paymentMode = @"sandbox";
     NSLog(@"  [-buyProduct:] Current payment mode : %@", paymentMode);
   
     if ( nullStr(productCode) )
@@ -121,6 +123,8 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
+                                [params setObject : @"audiobook"
+                                           forKey : @"buy_type"];
                                 if ( self->_hasListeners )
                                 {
                                   [self sendEventWithName : @"buyResult"
@@ -139,6 +143,8 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
+                                [params setObject : @"membership"
+                                           forKey : @"buy_type"];
                                 if ( self->_hasListeners )
                                 {
                                     [self sendEventWithName : @"buyResult"
@@ -385,6 +391,8 @@ RCT_EXPORT_MODULE();
 #else
     paymentMode = @"live";//live
 #endif
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라QA"] )
+        paymentMode = @"sandbox";
     NSLog(@"  [sendReceiptToRestore] Current payment mode : %@", paymentMode);
   
     NSString *apiVerifyReceipt = @"/api/v1.0/payment/ios/restore";

@@ -12,8 +12,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     _args = args;
     NSLog(@"  Arguments : %@", [_args description]);
-  
-    // download 일 경우 API서버와 통신하면 안됩니다.
 }
 
 // 해당 뷰컨트롤러 클래스가 생성될 때(ViewWillAppear전에 실행) 실행됩니다.
@@ -25,10 +23,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self.view setBackgroundColor : [UIColor blackColor]];
   
     // PallyConFPS SDK 객체를 생성합니다.
-    _fpsSDK = [ [PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
-                                              siteKey : PALLYCON_SITE_KEY
-                                   fpsLicenseDelegate : self
-                                                error : nil             ];
+    _fpsSDK = [[PallyConFPSSDK alloc] initWithSiteId : PALLYCON_SITE_ID
+                                             siteKey : PALLYCON_SITE_KEY
+                                  fpsLicenseDelegate : self
+                                               error : nil];
   
     // 오디오 콘텐츠인지 구분.
     if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] )
@@ -295,9 +293,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 오디오북 콘텐츠일 경우 Player Layer를 숨깁니다.
     if ( _isAudioContent )
-    {
         _playerLayer.hidden = YES;
-    }
 }
 
 // 뷰 컨트롤러가 화면에 나타난 직후에 실행됩니다.
@@ -316,9 +312,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
     [self updateDownloadState];
-  
-    // URL Asset에서 duration을 가져올 수 있지만 setContentData에서 API를 통한 세팅도 고려해 볼 수 있습니다.
-    //CGFloat totalTime = CMTimeGetSeconds(_urlAsset.duration);// + 1; 추후에 +1초 할 수 있습니다.
   
     [self setPreparedToPlay];
     [self initScriptUi];
@@ -405,8 +398,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                afterDelay : 3.0f];
   
     // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
-    if ( !_isAuthor )
-        [self showToast : @"프리뷰 모드로 재생합니다."];
+    [self showToastAboutPlaybackAuthority];
+  
+    // 저전력모드 여부를 확인합니다.
+    [self checkLowPowerModeEnabled];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -473,20 +468,23 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  liveKeyRotation : NO];
 }
 
-- (void) startCheckNetworkPlay  // 재생전에 네트워크 상태를 체크(비동기 콜백)
+//
+// 재생 전에 네트워크 상태를 체크(비동기 콜백)
+//
+- (void) startCheckNetworkPlay
 {
-  [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-  [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock : ^(AFNetworkReachabilityStatus status)
-   {
-     recentNetStatus = status;
-     [self networkStatusChanged:nil];
-   }];
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock : ^(AFNetworkReachabilityStatus status)
+                                                                                     {
+                                                                                         recentNetStatus = status;
+                                                                                         [self networkStatusChanged:nil];
+                                                                                     }];
 }
 
 //
 // 네트워크 상태에 따른 처리를 실행합니다.
 //
-- (void) networkStatusChanged : (NSNotification *) noti
+- (void) networkStatusChanged : (NSNotification *) notification
 {
     BOOL isPlayableOnWiFi = false;
     isPlayableOnWiFi = [[[NSUserDefaults standardUserDefaults] stringForKey:@"cellularDataUsePlay"] isEqualToString:@"1"]; // true = 1, false = 0
@@ -583,6 +581,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         if ( [[_args objectForKey:@"cid"] isEqualToString : contentsListArray[i][@"cid"]] )
         {
             indexOfCurrentContent = i;
+          // break ?
         }
     }
   
@@ -667,23 +666,26 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( interruptionType == AVAudioSessionInterruptionTypeBegan )
     {
         NSLog(@"  Pausing for audio session interruption");
+      /*
         if ( _playButton.hidden )
             _shouldContinuePlaying = true;
         else
             _shouldContinuePlaying = false;
-      
+      */
         [self pressedPauseButton];
     }
     else if ( interruptionType == AVAudioSessionInterruptionTypeEnded )
     {
         NSLog(@"  Resuming after audio session interruption");
         // 통화전에 정지 상태였다면.. 통화후에도 정지상태여야 합니다.
+      /*
         if ( _shouldContinuePlaying )
             [self pressedPlayButton];
         else
             NSLog(@"  [audioSessionInterrupted] do nothing..");
       
         _shouldContinuePlaying = nil;
+      */
     }
 }
 
@@ -1032,6 +1034,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_playButton setImage : [[UIImage imageNamed : @"icon_play"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _playButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _playButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _playButton.layer.shadowRadius = 5;
+    _playButton.layer.shadowOpacity = 0.5;
     [_playButton addTarget : self
                     action : @selector(pressedPlayButton)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1043,6 +1049,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                    forState : UIControlStateNormal];
     [_pauseButton setImage : [[UIImage imageNamed : @"icon_pause"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                    forState : UIControlStateHighlighted];
+    _pauseButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _pauseButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _pauseButton.layer.shadowRadius = 5;
+    _pauseButton.layer.shadowOpacity = 0.5;
     [_pauseButton addTarget : self
                       action : @selector(pressedPauseButton)
             forControlEvents : UIControlEventTouchUpInside];
@@ -1054,6 +1064,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                forState : UIControlStateNormal];
     [_rwButton setImage : [[UIImage imageNamed : @"icon_rw"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                forState : UIControlStateHighlighted];
+    _rwButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _rwButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _rwButton.layer.shadowRadius = 5;
+    _rwButton.layer.shadowOpacity = 0.5;
     [_rwButton addTarget : self
                   action : @selector(pressedRwButton)
         forControlEvents : UIControlEventTouchUpInside];
@@ -1065,6 +1079,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                forState : UIControlStateNormal];
     [_ffButton setImage : [[UIImage imageNamed : @"icon_ff"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                forState : UIControlStateHighlighted];
+    _ffButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _ffButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _ffButton.layer.shadowRadius = 5;
+    _ffButton.layer.shadowOpacity = 0.5;
     [_ffButton addTarget : self
                   action : @selector(pressedFfButton)
         forControlEvents : UIControlEventTouchUpInside];
@@ -1072,6 +1090,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _speedButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _speedButton.frame = CGRectMake(CGRectGetMinX(_rwButton.frame) - 50.f, 10.f, 50.f, 50.f);
+    _speedButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _speedButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _speedButton.layer.shadowRadius = 5;
+    _speedButton.layer.shadowOpacity = 0.5;
     [_speedButton addTarget : self
                      action : @selector(pressedSpeedButton)
            forControlEvents : UIControlEventTouchUpInside];
@@ -1083,6 +1105,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_listButton setImage : [[UIImage imageNamed : @"icon_list"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _listButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _listButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _listButton.layer.shadowRadius = 5;
+    _listButton.layer.shadowOpacity = 0.5;
     [_listButton addTarget : self
                     action : @selector(pressedListButton)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1144,6 +1170,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_moveBackButton setImage : [[UIImage imageNamed : @"icon_move_back"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _moveBackButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _moveBackButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _moveBackButton.layer.shadowRadius = 5;
+    _moveBackButton.layer.shadowOpacity = 0.5;
     [_moveBackButton addTarget : self
                     action : @selector(setPreviousContent)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1155,6 +1185,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  forState : UIControlStateNormal];
     [_moveNextButton setImage : [[UIImage imageNamed : @"icon_move_next"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                  forState : UIControlStateHighlighted];
+    _moveNextButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _moveNextButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _moveNextButton.layer.shadowRadius = 5;
+    _moveNextButton.layer.shadowOpacity = 0.5;
     [_moveNextButton addTarget : self
                     action : @selector(setNextContent)
           forControlEvents : UIControlEventTouchUpInside];
@@ -1187,6 +1221,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     [_speedButton setImage : [image tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
                   forState : UIControlStateHighlighted];
+    _speedButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _speedButton.layer.shadowOffset = CGSizeMake(5, 5);
+    _speedButton.layer.shadowRadius = 5;
+    _speedButton.layer.shadowOpacity = 0.5;
 }
 
 - (void) setAudioContentBackgroundImageUrl : (NSString *) url
@@ -1575,6 +1613,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _totalTimeLabel.text = [common convertTimeToString : CMTimeGetSeconds(_urlAsset.duration) // +1은 소수점 이하를 포함합니다.
                                                 Minute : YES];
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
   //[self setPreparedToPlay];
     if ( _slider )
     {
@@ -1609,11 +1654,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     NSString *netStatus = [self updateNetStatusLabel];
     [self updateDownloadState];
   
+    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+  
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"START"             // START / ING / END / FORWARD / BACK
-                             startSecond : [self getCurrentPlaybackTime]
-                               endSecond : [self getCurrentPlaybackTime] + 30
-                                duration : 30 - [self getCurrentPlaybackTime]
+                             startSecond : currentTime
+                               endSecond : currentTime + 30
+                                duration : 30 - currentTime
                                netStatus : netStatus
                                authToken : [_args objectForKey : @"token"]];
     // NSTimer를 통해 30초마다 로그내역을 전송
@@ -1624,7 +1671,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                 repeats : YES];
   
     // 미니플레이어가 활성화된 상태라면 표시되는 데이터도 함께 업데이트 합니다.
-    NSTimeInterval currentTime = [self getCurrentPlaybackTime];
+    currentTime = [self getCurrentPlaybackTime];
     // 전체 재생시간을 구합니다.
   /*
     NSArray *contentsListArray;
@@ -1648,8 +1695,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
   */
     NSTimeInterval totalTime = [common convertStringToTime : contentsListArray[indexOfCurrentContent][@"play_time"]];//[self getDuration];
-  //NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
-  //NSLog(@"  mini Player Duration double : %f", totalTime);
+    NSLog(@"  mini Player Duration string : %@", contentsListArray[indexOfCurrentContent][@"play_time"]);
+    NSLog(@"  mini Player Duration double : %f", totalTime);
+    NSLog(@"  mini Player CurrentT double : %f", currentTime);  // Not a Number issue occurs....
     NSMutableDictionary *playInfo = [NSMutableDictionary dictionary];
     playInfo[@"currentTime"] = @(currentTime);
     playInfo[@"totalTime"] = @(totalTime);
@@ -1658,8 +1706,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_miniPlayerUiView setTitleLabel00 : [_args objectForKey:@"name"]];
     [_miniPlayerUiView setTitleLabel01 : _currentLectureTitle];
   
-    if ( !_isAuthor )
-        [self showToast : @"프리뷰 모드로 재생됩니다."];
+    [self showToastAboutPlaybackAuthority];
+  
+    // 저전력모드 여부를 확인합니다.
+    [self checkLowPowerModeEnabled];
 }
 
 //
@@ -1857,16 +1907,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
   
+    NSTimeInterval cTime = [self getCurrentPlaybackTime];
+    NSTimeInterval tTime = [self getDuration];
+  
     // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    if ( CMTimeGetSeconds(kCMTimeInvalid) == tTime )
     {
         [self closePlayer];
       
         return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
     }
-  
-    NSTimeInterval cTime = [self getCurrentPlaybackTime];
-    NSTimeInterval tTime = [self getDuration];
   
     if ( cTime > 10.f )
     {
@@ -1913,16 +1963,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
   
-    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
-    {
-        [self closePlayer];
-    
-        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
-    }
-  
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
+  
+    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
+    if ( CMTimeGetSeconds(kCMTimeInvalid) == tTime )
+    {
+        [self closePlayer];
+      
+        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+    }
   
     if ( cTime + 10.f < tTime )
     {
@@ -2107,7 +2157,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 - (void) seekbarDragging : (NSTimeInterval) time
 {
     // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
+    if ( CMTimeGetSeconds(kCMTimeInvalid) == time )
     {
         [self closePlayer];
       
@@ -2357,7 +2407,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         if ( isToast )
         {
-            [_contentView makeToast : @"프리뷰 이용 중입니다."];
+            [self showToastAboutPlaybackAuthority];
           
             return ;
         }
@@ -2562,6 +2612,37 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self.view makeToast : text];
 }
 
+- (void) showToastAboutPlaybackAuthority
+{
+    // 프리뷰 콘텐츠 재생이라면 토스트 메시지를 뿌려줍니다.
+    if ( _isDailyBook )
+        ;//[self showToast : @"미리 듣기로 제공됩니다."];
+    else if ( !_isAuthor && _isAudioContent )
+        [self showToast : @"미리 듣기로 제공됩니다."];
+    else if ( !_isAuthor && !_isAudioContent )
+        [self showToast : @"1분30초 미리 보기 입니다."];
+}
+
+//
+// 저전력모드인지 확인합니다.
+// https://useyourloaf.com/blog/detecting-low-power-mode/
+// - Stop location updates
+// - Limit the use of animations
+// - Stop background activities such as networking
+// - Disable motion effects
+//
+- (void) checkLowPowerModeEnabled
+{
+    if ( [[NSProcessInfo processInfo] isLowPowerModeEnabled] )
+    {
+        NSLog(@"  저젼력모드를 감지하였습니다.");
+      //[common presentAlertWithTitle:@"윌라" andMessage:@"저전력모드일 경우 백그라운드 재생이 원활하지 않을 수 있다는 점을 안내드립니다.\n감사합니다!"];
+        [self showToast:@"저전력모드에서는 백그라운드 재생이 원활하지 않을 수 있습니다."];
+    }
+    else
+        NSLog(@"  저젼력모드가 아닙니다.");
+}
+
 #pragma mark - Time Control
 
 //
@@ -2580,7 +2661,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
     else
     {
-        return (CMTimeGetSeconds(kCMTimeInvalid));
+      //return (CMTimeGetSeconds(kCMTimeInvalid));
+        double loadedDuration = CMTimeGetSeconds(item.duration);
+      
+        return (NSTimeInterval) loadedDuration;
     }
 }
 
@@ -2594,13 +2678,15 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( item.status == AVPlayerItemStatusReadyToPlay )
     {
         double currentTime = CMTimeGetSeconds(item.currentTime);
-      //NSLog(@"  Current time : %f", currentTime);
       
         return (NSTimeInterval) currentTime;
     }
     else
     {
-        return (CMTimeGetSeconds(kCMTimeInvalid));
+      //return (CMTimeGetSeconds(kCMTimeInvalid));
+        double currentTime = CMTimeGetSeconds(item.currentTime);
+      
+        return (NSTimeInterval) currentTime;
     }
 }
 
@@ -2763,7 +2849,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_listView removeFromSuperview];
         _listView = nil;
       
-        return [self showToast : @"프리뷰 이용 중입니다."];
+        return [self showToastAboutPlaybackAuthority];
     }
   
     // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
@@ -3252,8 +3338,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
-  // 다운로드 진행률에 따라 주기적으로 호출됨.
-  //  추후 진행률이나 프로그레스바로 UI 를 주기적으로 갱신해야 할 경우에 여기서 처리하면 된다.
+    // 다운로드 진행률에 따라 주기적으로 호출됨.
+    //  추후 진행률이나 프로그레스바로 UI 를 주기적으로 갱신해야 할 경우에 여기서 처리하면 된다.
 }
 
 //
@@ -3263,13 +3349,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       subtitleDisplayName : (NSString * _Nonnull) subtitleDisplayName
 {
-  NSLog(@"  downloadContent:didStartDownloadWithAsset:subtitleDisplayName -> %@", contentId);
+    NSLog(@"  downloadContent:didStartDownloadWithAsset:subtitleDisplayName -> %@", contentId);
   
-  if ([contentId isEqualToString:[_args objectForKey:@"cid"]]) {
-    [self updateDownloadState];
-    // ㄴ다운로드가 시작되었을 때 뿐만이 아니고 대기큐에 들어갔을 때에도 다운로드 버튼 상태가 바뀌어야 되기 때문에(다운로드 대기중 이미지)
-    // 여기서만 버튼 업데이트를 하면 안된다. -> 큐에 들어간 순간에도 업데이트 체크하도록 처리. 2018.10.30. 김요한.
-  }
+    if ([contentId isEqualToString:[_args objectForKey:@"cid"]])
+    {
+        [self updateDownloadState];
+        // ㄴ다운로드가 시작되었을 때 뿐만이 아니고 대기큐에 들어갔을 때에도 다운로드 버튼 상태가 바뀌어야 되기 때문에(다운로드 대기중 이미지)
+        // 여기서만 버튼 업데이트를 하면 안된다. -> 큐에 들어간 순간에도 업데이트 체크하도록 처리. 2018.10.30. 김요한.
+    }
 }
 
 
@@ -3286,9 +3373,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 - (void) fpsDownloadMsg : (NSString *) downloadMsg
 {
     if ( downloadMsg )
-    {
         [self showToast : downloadMsg]; // 다운로드 진행상황 관련 메시지
-    }
 }
 
 
@@ -3298,51 +3383,54 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 // 추후에는 보다 디테일한 다운로드 진행 상태 업데이트(프로그레스바) 등의 처리 고려
 - (void) updateDownloadState
 {  
-  [_downloadButton setImage:@"icon_download"];  // 기본상태
+    [_downloadButton setImage:@"icon_download"];  // 기본상태
   
-  NSMutableArray *savedContents = [[DatabaseManager sharedInstance] searchDownloadedContentsId:_args[@"cid"]];
+    NSMutableArray *savedContents = [[DatabaseManager sharedInstance] searchDownloadedContentsId : _args[@"cid"]];
   
-  if (savedContents && savedContents.count > 0){
-    [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
-  }else{
-    if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] ){
-      [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
-    }else{
-      [[[FPSDownloadManager sharedInstance] downloadingQueue] enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
-       {
-         FPSDownload *r = obj;
-         if ( [self->_args[@"cid"] isEqualToString : r.clip.cid] )
-         {
-           *stop = YES;
-           [self->_downloadButton setImage:@"icon_download_waiting"]; // 다운로드 대기중
-           return ;
-         }
-       }];
+    if ( savedContents && savedContents.count > 0 )
+        [_downloadButton setImage:@"icon_download_done"]; // 다운로드 완료
+    else
+    {
+        if ( [[[FPSDownloadManager sharedInstance] activeDownloads] objectForKey:_args[@"cid"]] )
+            [_downloadButton setImage:@"icon_download_ing"];  // 다운로드중
+        else
+        {
+            [[[FPSDownloadManager sharedInstance] downloadingQueue] enumerateObjectsUsingBlock : ^(id obj, NSUInteger idx, BOOL *stop)
+                                                                                                 {
+                                                                                                     FPSDownload *r = obj;
+                                                                                                     if ( [self->_args[@"cid"] isEqualToString : r.clip.cid] )
+                                                                                                     {
+                                                                                                         *stop = YES;
+                                                                                                         // 다운로드 대기중
+                                                                                                         [self->_downloadButton setImage:@"icon_download_waiting"];
+                                                                                                         return ;
+                                                                                                     }
+                                                                                                 }];
+        }
     }
-  }
 }
 
 // 재생모드 표시 업데이트(다운로드 파일이지만 사용자가 스트리밍 재생을 원할 경우도 있으므로 다운로드 버튼 상태 표시와 별도로 구분)
 - (NSString *) updateNetStatusLabel
 {
-  NSString *netStatus = @"no_network";
-  if ( _isDownloadFile )
-  {
-    netStatus = @"DOWNLOAD";
-    _networkStatusLabel.text = @"다운로드 재생";
-  }
-  else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-  {
-    netStatus = @"Wi-Fi";
-    _networkStatusLabel.text = @"Wi-Fi 재생";
-  }
-  else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-  {
-    netStatus = @"LTE/3G";
-    _networkStatusLabel.text = @"LTE/3G 재생";
-  }
+    NSString *netStatus = @"no_network";
+    if ( _isDownloadFile )
+    {
+        netStatus = @"DOWNLOAD";
+        _networkStatusLabel.text = @"다운로드 재생";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    {
+        netStatus = @"Wi-Fi";
+        _networkStatusLabel.text = @"Wi-Fi 재생";
+    }
+    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+    {
+        netStatus = @"LTE/3G";
+        _networkStatusLabel.text = @"LTE/3G 재생";
+    }
   
-  return netStatus;
+    return netStatus;
 }
 
 # pragma mark - Content URI Setting
@@ -3399,18 +3487,19 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 }
 
 // 로컬에 이미 다운로드된 콘텐츠가 있는지 확인하고 있을 경우 경로를 리턴해준다.
-- (NSString *) getDownloadedContentPath:(NSString *)cid
+- (NSString *) getDownloadedContentPath : (NSString *)cid
 {
-  NSString *contentPath = nil;
+    NSString *contentPath = nil;
   
-  NSMutableArray *downloaded = [[DatabaseManager sharedInstance] searchDownloadedContentsId:cid];
+    NSMutableArray *downloaded = [[DatabaseManager sharedInstance] searchDownloadedContentsId : cid];
   
-  if (downloaded && downloaded.count > 0) {
-    Clip* clip = downloaded[0];
-    contentPath = clip.contentPath;
-  }
+    if ( downloaded && downloaded.count > 0 )
+    {
+        Clip *clip = downloaded[0];
+        contentPath = clip.contentPath;
+    }
   
-  return contentPath;
+    return contentPath;
 }
 
 # pragma mark - Event Responder
@@ -3506,8 +3595,12 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       
         [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
                      forKey : MPMediaItemPropertyTitle];
-        [songInfo setObject : _currentContentsInfo[@"data"][@"teacher"][@"name"]
-                     forKey : MPMediaItemPropertyArtist];
+      // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
+        if ( [_currentContentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
+            [songInfo setObject:_currentContentsInfo[@"data"][@"teacher"][@"name"] forKey:MPMediaItemPropertyArtist];
+        else
+            [songInfo setObject:@"미상" forKey:MPMediaItemPropertyArtist];
+      
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
         /*

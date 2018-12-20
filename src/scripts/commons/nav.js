@@ -443,6 +443,22 @@ export default {
 
         case 'membership':
           navigation.navigate('MembershipPage', {});
+          break;
+
+        case 'series':
+          switch (schemes[0]) {
+            case '035':
+              navigation.navigate('Series_4genPage', {
+                title: '4차 산업 혁명 시리즈',
+              });
+              break;
+            default:
+              navigation.navigate('HomeSeriesPage', {
+                title: '윌라 추천 시리즈',
+              });
+          }
+
+          break;
       }
     } catch (error) {
       console.log(error);
@@ -455,5 +471,10 @@ export default {
       console.log('nav.js::no previous route', navigation);
       navigation.dismiss();
     }
+  },
+
+  goHome: () => {
+    console.log('nav.js::navigation', navigation);
+    navigation.navigate('HomeScreen');
   },
 };
