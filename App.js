@@ -234,6 +234,10 @@ class App extends React.Component {
     this.onInstallConversionDataCanceller = appsFlyer.onInstallConversionData(
       data => {
         console.log('App.js::onInstallConversionData:', data);
+        if (!!data && !!data.data && !!data.data.af_dp) {
+          console.log('App.js::onInstallConversionData:', data.data.af_dp);
+          nav.parseDeepLink(this.parseDeepLinkUrl(data.data.af_dp));
+        }
       },
     );
 
