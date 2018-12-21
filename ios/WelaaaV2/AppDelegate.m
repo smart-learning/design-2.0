@@ -38,24 +38,12 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                                   initialProperties : nil
                                                       launchOptions : launchOptions ];
   
-    rootView.backgroundColor = [ [UIColor alloc] initWithRed : 1.0f
-                                                       green : 1.0f
-                                                        blue : 1.0f
-                                                       alpha : 1   ];
-  
     self.window = [ [UIWindow alloc] initWithFrame : [UIScreen mainScreen].bounds ];
   
     UIViewController *rootViewController = [UIViewController new];
     rootViewController.view = rootView;
     self.window.rootViewController = rootViewController;
-  /*
-    // UINavigationView 방식을 다시 사용하려면 RNNativePlayer에서 pushViewController 부분을 주석해제하시기 바랍니다.
-    UIViewController *rootViewController = [UIViewController new];
-    UINavigationController *navigationController = [[UINavigationController alloc]initWithRootViewController:rootViewController];
-    navigationController.navigationBarHidden = YES;
-    rootViewController.view = rootView;
-    self.window.rootViewController = navigationController;
-  */
+  
     [self.window makeKeyAndVisible];
   
     [ [FBSDKApplicationDelegate sharedInstance] application : application
@@ -83,19 +71,8 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
           //[[UIApplication sharedApplication] registerForRemoteNotifications];
         }];
     }
-    else
-    {
-      // iOS 10 notifications aren't available; fall back to iOS 8-9 notifications.
-      /*
-      UIUserNotificationType allNotificationTypes = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-      UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
-      [application registerUserNotificationSettings:settings];
-      */
-    }
   
     [[UIApplication sharedApplication] registerForRemoteNotifications];
-  
-  
   
     NSString *fcmToken = [FIRMessaging messaging].FCMToken;
     NSLog(@"  FCM registration token: %@", fcmToken);
@@ -111,7 +88,6 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     [AppsFlyerTracker sharedTracker].appleAppID = @"com.influential.smartlearning";
   
     [AppsFlyerTracker sharedTracker].delegate = self;
-  
     /* Set isDebug to true to see AppsFlyer debug logs */
     [AppsFlyerTracker sharedTracker].isDebug = true;
   
@@ -119,20 +95,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 }
 
 #pragma mark - Open URL
-/*
-- (BOOL) application : (UIApplication *) application
-             openURL : (NSURL *) url
-   sourceApplication : (NSString *) sourceApplication
-          annotation : (id) annotation
-{
-    if ( [KOSession isKakaoAccountLoginCallback : url] )
-    {
-      return [KOSession handleOpenURL : url];
-    }
-  
-    return YES;
-}
-*/
+
 - (BOOL) application : (UIApplication *) application
              openURL : (NSURL *) url
              options : (NSDictionary<UIApplicationOpenURLOptionsKey, id> *) options
@@ -164,13 +127,9 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     imageView.tag = 9999;
     // // iPhone X일 경우 다른 사이즈의 이미지파일로 교체하도록 분기처리 해야합니다.
     if ( [common hasNotch] )
-    {
         [imageView setImage : [UIImage imageNamed : @"iPhoneXBackgroundImage"]];
-    }
     else
-    {
         [imageView setImage : [UIImage imageNamed : @"iPhoneBackgroundImage"]];
-    }
   
     [self.window addSubview : imageView];
 }
@@ -202,34 +161,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 }
 
 #pragma mark - Firebase Cloud Messaging
-/*
- * https://github.com/firebase/quickstart-ios/blob/master/messaging/MessagingExample/ViewController.m
- * 정상적인 구현 및 테스트가 완료되면 불필요한 코드를 추후에 제거해야 합니다.
- */
 
-//
-// Start receive message
-//
-/*
-- (void)         application : (UIApplication *) application
-didReceiveRemoteNotification : (NSDictionary *) userInfo
-{
-    // If you are receiving a notification message while your app is in the background,
-    // this callback will not be fired till the user taps on the notification launching the application.
-    // TODO: Handle data of notification
-  
-    // With swizzling disabled you must let Messaging know about the message, for Analytics
-    // [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
-  
-    // Print message ID.
-    if ( userInfo[kGCMMessageIDKey] )
-    {
-        NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
-    }
-  
-    // Print full message.
-    NSLog(@"  %@", userInfo);
-}*/
 - (void)         application : (UIApplication *) application
 didReceiveRemoteNotification : (NSDictionary *) userInfo
       fetchCompletionHandler : (void (^) (UIBackgroundFetchResult)) completionHandler
@@ -244,7 +176,7 @@ didReceiveRemoteNotification : (NSDictionary *) userInfo
     // Print message ID.
     if ( userInfo[kGCMMessageIDKey] )
     {
-      NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+        NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
     }
   
     // Print full message.
@@ -289,7 +221,7 @@ didReceiveRemoteNotification : (NSDictionary *) userInfo
   
     if ( userInfo[kGCMMessageIDKey] )
     {
-      NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+        NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
     }
   
     // Print full message.
@@ -409,6 +341,7 @@ didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
 }
 
 #pragma mark - AppsFlyer: Tracking Deep Linking
+
 - (void) onConversionDataReceived : (NSDictionary *) installData
 {
     //Handle Conversion Data (Deferred Deep Link)
@@ -443,12 +376,3 @@ continueUserActivity : (NSUserActivity *) userActivity
 }
 
 @end
-
-
-
-
-
-
-
-
-

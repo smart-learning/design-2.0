@@ -210,7 +210,8 @@ class App extends React.Component {
   // 오프라인 상태 체크
   handleFirstConnectivityChange = connectionInfo => {
     if (connectionInfo.type === 'none') {
-      nav.parseDeepLink('welaaa://download_page');
+      // nav.parseDeepLink('welaaa://download_page');
+      // #758 네트워크 리트라이 , 네트워크 유실시 정책 수립이 필요합니다. 
     }
   };
 
