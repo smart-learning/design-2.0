@@ -84,14 +84,12 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     [common getNetInterfaceNames];
   
     /** APPSFLYER INIT **/
-  /*
     [AppsFlyerTracker sharedTracker].appsFlyerDevKey = @"SPtkhKkwYTZZsqUwQUjBMV";
     [AppsFlyerTracker sharedTracker].appleAppID = @"1250319483";
   
     [AppsFlyerTracker sharedTracker].delegate = self;
-  */
     /* Set isDebug to true to see AppsFlyer debug logs */
-  //[AppsFlyerTracker sharedTracker].isDebug = true;
+    [AppsFlyerTracker sharedTracker].isDebug = true;
   
     return YES;
 }
@@ -113,7 +111,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     }
   
     // Reports app open from deep link for iOS 10
-  //[[AppsFlyerTracker sharedTracker] handleOpenUrl:url options:options];
+    [[AppsFlyerTracker sharedTracker] handleOpenUrl:url options:options];
   
     // Add any custom logic here.
     return handled;
@@ -159,7 +157,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
   //[self connectToFcm];
   
     // Track Installs, updates & sessions(app opens) (You must include this API to enable tracking)
-  //[[AppsFlyerTracker sharedTracker] trackAppLaunch];
+    [[AppsFlyerTracker sharedTracker] trackAppLaunch];
 }
 
 #pragma mark - Firebase Cloud Messaging
@@ -343,7 +341,7 @@ didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
 }
 
 #pragma mark - AppsFlyer: Tracking Deep Linking
-/*
+
 - (void) onConversionDataReceived : (NSDictionary *) installData
 {
     //Handle Conversion Data (Deferred Deep Link)
@@ -376,5 +374,5 @@ continueUserActivity : (NSUserActivity *) userActivity
   
     return YES;
 }
-*/
+
 @end
