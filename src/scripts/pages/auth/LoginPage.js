@@ -123,7 +123,7 @@ class LoginPage extends React.Component {
     const resultAuthToken = net.getAuthToken(email, password);
 
     // 로딩 보이기
-    this.setState({ loading: true });
+    this.setState({ loading: false }); // 페이스북 로그인 후 로딩뷰 사라지지 않는 문제 때문에 임시로 막아둠.
 
     resultAuthToken
       .then(data => {
