@@ -489,8 +489,11 @@ export default {
               navigate('HomeSeriesPage', {
                 title: '윌라 추천 시리즈',
               });
+              break;
           }
+          break;
 
+        default:
           break;
       }
     } catch (error) {

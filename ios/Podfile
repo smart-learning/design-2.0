@@ -39,4 +39,6 @@ target 'WelaaaV2' do
   # AppsFlyer
   pod 'AppsFlyerFramework'
 
+  pod 'AppsFlyerFramework'
+
 end
