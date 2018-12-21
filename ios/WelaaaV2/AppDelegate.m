@@ -85,7 +85,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
   
     /** APPSFLYER INIT **/
     [AppsFlyerTracker sharedTracker].appsFlyerDevKey = @"SPtkhKkwYTZZsqUwQUjBMV";
-    [AppsFlyerTracker sharedTracker].appleAppID = @"com.influential.smartlearning";
+    [AppsFlyerTracker sharedTracker].appleAppID = @"1250319483";
   
     [AppsFlyerTracker sharedTracker].delegate = self;
     /* Set isDebug to true to see AppsFlyer debug logs */
