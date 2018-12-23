@@ -24,6 +24,7 @@ import SummaryVO from '../../vo/SummaryVO';
 import HomeAudioPage from './HomeAudioPage';
 import HomeVideoPage from './HomeVideoPage';
 import Native from '../../commons/native';
+import SeriesTransition from '../../components/SeriesTransition';
 
 const styles = StyleSheet.create({
   tabContainer: {
@@ -111,7 +112,6 @@ class HomePage extends React.Component {
       recommend: [],
     },
     contentDataInfo: [],
-
     // audioPlayRecentData: [],
   });
 
@@ -517,6 +517,7 @@ class HomePage extends React.Component {
           </View>
           {this.showPopup()}
           {this.showMbsPopup()}
+          {/*{globalStore.isSeriesTransition && <SeriesTransition />}*/}
         </SafeAreaView>
       </View>
     );

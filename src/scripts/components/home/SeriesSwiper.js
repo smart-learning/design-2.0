@@ -11,6 +11,7 @@ import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import Carousel from 'react-native-snap-carousel';
 import SeriesSwiperItem from './SeriesSwiperItem';
+import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create({
   slide: {
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
   },
 });
 
+@observer
 class SeriesSwiper extends React.Component {
   _renderItem({ item }) {
     return (

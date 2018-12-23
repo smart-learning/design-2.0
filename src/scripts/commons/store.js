@@ -20,7 +20,7 @@ class Store {
   @observable
   initialRoute = {
     // initialRouteName: 'AuthCheck',
-    gesturesEnabled: false
+    gesturesEnabled: false,
   };
 
   // 사용권한이 있는 페이지 정리
@@ -53,7 +53,7 @@ class Store {
       'Bearer ' + auth.access_token;
 
     this.initialRoute = {
-      gesturesEnabled: false
+      gesturesEnabled: false,
     };
   }
 
@@ -88,7 +88,7 @@ class Store {
     AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
     this.initialRoute = {
       initialRouteName: 'AuthCheck',
-      gesturesEnabled: false
+      gesturesEnabled: false,
     };
   };
 
@@ -119,7 +119,7 @@ class Store {
     isWifiPlay: true,
     isWifiDownload: true,
     isAlert: false,
-    isEmail: false
+    isEmail: false,
   };
 
   @observable
@@ -130,6 +130,15 @@ class Store {
 
   @observable
   cartItemCount = 0;
+
+  @observable
+  isSeriesTransition = false;
+
+  @observable
+  seriesItemMeasurements = {};
+
+  @observable
+  seriesItemThumbnail = '';
 }
 
 const store = new Store();

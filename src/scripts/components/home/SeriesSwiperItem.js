@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Dummy from '../../../images/dummy-series.png';
+import globalStore from '../../commons/store';
+import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create({
   thumbnail: {
@@ -18,6 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
+@observer
 class SeriesSwiperItem extends React.Component {
   render() {
     let itemData = this.props.itemData;
@@ -25,21 +28,37 @@ class SeriesSwiperItem extends React.Component {
       itemData = itemData[0];
     }
     return (
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => {
-          this.props.navigation.navigate('HomeSeriesDetailPage', {
-            itemData: itemData,
-            title: '윌라 추천시리즈',
-          });
-        }}
-      >
-        <ImageBackground
-          source={Dummy}
-          resizeMode="contain"
-          style={styles.thumbnail}
-        />
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          ref={ref => (this.view = ref)}
+          activeOpacity={0.9}
+          onPress={() => {
+            globalStore.isSeriesTransition = true;
+            globalStore.seriesItemThumbnail = '../../images/dummy-series.png';
+
+            this.view.measure((x, y, width, height, pageX, pageY) => {
+              globalStore.seriesItemMeasurements = {
+                x,
+                y,
+                width,
+                height,
+                pageX,
+                pageY,
+              };
+            });
+            this.props.navigation.navigate('HomeSeriesDetailPage', {
+              itemData: itemData,
+              title: '윌라 추천시리즈',
+            });
+          }}
+        >
+          <ImageBackground
+            source={Dummy}
+            resizeMode="contain"
+            style={styles.thumbnail}
+          />
+        </TouchableOpacity>
+      </View>
     );
   }
 }

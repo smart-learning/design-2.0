@@ -20,6 +20,7 @@ import createStore from '../../commons/createStore';
 import _ from 'underscore';
 import ClassListItem from '../../components/home/ClassListItem';
 import Dummy from '../../../images/dummy-series.png';
+import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -58,7 +59,10 @@ class HomeSeriesDetailPage extends React.Component {
     super(props);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+	  globalStore.isSeriesTransition = false;
+	  globalStore.seriesItemThumbnail = '';
+  }
 
   render() {
     const itemData = this.props.navigation.state.params.itemData.item;
