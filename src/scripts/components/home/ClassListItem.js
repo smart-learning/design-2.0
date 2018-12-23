@@ -127,7 +127,12 @@ class ClassListItem extends React.Component {
       <View style={styles.classItem}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.gotoClassPage}>
           <ImageBackground
-            source={{ uri: this.props.itemData.thumbnail }}
+            source={{
+              uri:
+                this.props.itemType === 'series'
+                  ? this.props.itemData.images.wide
+                  : this.props.itemData.thumbnail,
+            }}
             resizeMode="cover"
             style={styles.thumbnail}
           >
