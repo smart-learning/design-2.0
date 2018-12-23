@@ -120,7 +120,7 @@ class HomePage extends React.Component {
     // AppEventsLogger.logEvent('welaaaRN_Main_getData');
 
     // 시리즈는 제일 먼저 읽어온다
-    this.store.homeSeriesData = await net.getHomeSeries();
+    this.store.homeSeriesData = await net.getVideoSeries();
 
     // 데이터 가져와서
     const videoCategoryData = await net.getLectureCategory(isRefresh);

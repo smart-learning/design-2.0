@@ -23,6 +23,7 @@ import MembershipScreens from '../membership/MembershipScreen';
 import CartScreen from '../cart/CartScreen';
 import SerieseIntro from '../series/SeriesIntroPage';
 import HomeSeriesListPage from './HomeSeriesListPage';
+import HomeSeriesDetailPage from './HomeSeriesDetailPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -97,6 +98,10 @@ const HomeScreen = createStackNavigator(
     },
     HomeSeriesListPage: {
       screen: HomeSeriesListPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+    },
+    HomeSeriesDetailPage: {
+      screen: HomeSeriesDetailPage,
       navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
     },
   },

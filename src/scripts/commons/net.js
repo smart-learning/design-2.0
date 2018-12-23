@@ -460,6 +460,18 @@ export default {
         console.log(error);
       });
   },
+  getVideoSeries() {
+    return cacheOrLoad(
+      API_PREFIX + 'v1.0/contents/video-series',
+      DEFAULT_EXPIRED,
+    )
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
   getBookItem(id) {
     return new Promise((resolve, reject) => {
       axios

@@ -293,7 +293,7 @@ class HomeVideoPage extends React.Component {
                     <TouchableOpacity
                       style={styles.showMore}
                       onPress={() => {
-                        this.props.navigation.navigate('HomeSeriesPage', {
+                        this.props.navigation.navigate('HomeSeriesListPage', {
                           title: '윌라 추천 시리즈',
                         });
                       }}
@@ -304,7 +304,7 @@ class HomeVideoPage extends React.Component {
                 </View>
 
                 <View style={styles.seriesComponent}>
-                  <SeriesSwiper itemData={this.props.store.homeSeriesData} />
+                  <SeriesSwiper itemData={this.props.store.homeSeriesData}/>
                 </View>
               </View>
             ))}

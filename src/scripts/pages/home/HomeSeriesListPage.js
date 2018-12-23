@@ -16,6 +16,7 @@ import { observable } from 'mobx';
 import createStore from '../../commons/createStore';
 import net from '../../commons/net';
 import _ from 'underscore';
+import Dummy from '../../../images/dummy-series.png';
 
 const styles = StyleSheet.create({
   contentWrap: {
@@ -38,7 +39,7 @@ class HomeSeriesListPage extends React.Component {
   });
 
   getData = async () => {
-    this.store.homeSeriesData = await net.getHomeSeries();
+    this.store.homeSeriesData = await net.getVideoSeries();
   };
 
   constructor(props) {
@@ -55,8 +56,6 @@ class HomeSeriesListPage extends React.Component {
       itemData = this.store.homeSeriesData;
     }
 
-    console.log( itemData, 'itemData' );
-    
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
@@ -77,10 +76,19 @@ class HomeSeriesListPage extends React.Component {
                       <TouchableOpacity
                         activeOpacity={0.9}
                         key={key}
+                        onPress={() =>
+                          this.props.navigation.navigate(
+                            'HomeSeriesDetailPage',
+                            {
+                              itemData: item,
+                              title: '윌라 추천시리즈',
+                            },
+                          )
                         }
                       >
                         <ImageBackground
-                          source={{ uri: item.image }}
+                          // source={{ uri: item.item.list }}
+                          source={Dummy}
                           resizeMode="cover"
                           style={styles.thumbnail}
                           borderRadius={12}
