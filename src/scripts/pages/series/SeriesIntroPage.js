@@ -64,10 +64,12 @@ class SeriesIntroPage extends React.Component {
 
   render() {
     contents_img_width = this.windowWidth * 0.9;
-    console.log(contents_img_width);
     return (
       <ScrollView style={[styles.wrapper]}>
-        <ScaledImage uri="https://static.welaaa.co.kr/static/series/181210_4gen/BG1.png" />
+        <ScaledImage uri="https://static.welaaa.co.kr/static/series/181210_4gen/BG1_re_01.png" />
+        <ScaledImage uri="https://static.welaaa.co.kr/static/series/181210_4gen/BG1_re_02.png" />
+        <ScaledImage uri="https://static.welaaa.co.kr/static/series/181210_4gen/BG1_re_03.png" />
+
         <View style={[styles.img_center]}>
           <TouchableOpacity
             activeOpacity={0.9}
