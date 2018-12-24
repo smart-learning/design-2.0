@@ -1,122 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-		  package="kr.co.influential.youngkangapp">
+  package="kr.co.influential.youngkangapp">
 
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-	<uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <uses-permission android:name="android.permission.VIBRATE"/>
 
-
-	<application
-		android:allowBackup="false"
-		android:icon="@mipmap/ic_launcher"
-		android:label="@string/app_name"
-		android:name=".MainApplication"
-		android:theme="@style/AppTheme">
-
-		<activity
-			android:configChanges="orientation|keyboardHidden|screenSize"
-			android:label="@string/app_name"
-			android:name=".SplashActivity"
-			android:launchMode="singleTop"
-			android:screenOrientation="portrait"
-			android:theme="@style/SplashTheme">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
-
-		<activity
-			android:launchMode="singleTask"
-			android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-			android:exported="true"
-			android:label="@string/app_name"
-			android:name=".MainActivity"
-			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize">
-
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="welaaa" android:host="video_list" />
-				<data android:scheme="welaaa" android:host="video" />
-				<data android:scheme="welaaa" android:host="video_play" />
-				<data android:scheme="welaaa" android:host="audiobook_list" />
-				<data android:scheme="welaaa" android:host="audiobook" />
-				<data android:scheme="welaaa" android:host="audiobook_play" />
-				<data android:scheme="welaaa" android:host="in_browser" />
-				<data android:scheme="welaaa" android:host="out_browser" />
-				<data android:scheme="welaaa" android:host="sign_up" />
-				<data android:scheme="welaaa" android:host="sign_in" />
-				<data android:scheme="welaaa" android:host="mywela" />
-				<data android:scheme="welaaa" android:host="app_setting" />
-				<data android:scheme="welaaa" android:host="membership" />
-			</intent-filter>
-
-		</activity>
+  <!-- AppsFlyer -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <!-- Optional : -->
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
 
-		<activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
+  <application
+    android:allowBackup="false"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:name=".MainApplication"
+    android:theme="@style/AppTheme">
 
-		<!-- sample test -->
-		<activity
-			android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
-			android:name=".pallycon.PallyConMainActivity"/>
-		<activity
-			android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
-			android:launchMode="singleTop"
-			android:name=".player.PlayerActivity"
-			android:resizeableActivity="false"
-			android:supportsPictureInPicture="false"
-			android:theme="@style/Theme.AppCompat.NoActionBar">
-			<intent-filter>
-				<action android:name="android.intent.action.View"/>
+    <!-- AppsFlyer -->
+    <receiver
+      android:exported="true"
+      android:name="com.appsflyer.SingleInstallBroadcastReceiver">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER"/>
+      </intent-filter>
+    </receiver>
 
-				<category android:name="android.intent.category.DEFAULT"/>
-			</intent-filter>
-		</activity>
-		<activity
-			android:label="@string/app_name"
-			android:launchMode="singleInstance"
-			android:name=".cast.CastControllerActivity">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-			</intent-filter>
-		</activity>
 
-		<service android:name=".download.DownloadService"/>
+    <activity
+      android:configChanges="orientation|keyboardHidden|screenSize"
+      android:label="@string/app_name"
+      android:launchMode="singleTop"
+      android:name=".SplashActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/SplashTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
 
-		<receiver
-			android:enabled="true"
-			android:name=".util.WelaaaBroadcastReceiver"/>
+    <activity
+      android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+      android:exported="true"
+      android:label="@string/app_name"
+      android:launchMode="singleTask"
+      android:name=".MainActivity"
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustResize">
 
-		<meta-data
-			android:name="io.fabric.ApiKey"
-			android:value="1d5ac13b6c753ebfaa1f3f3859e8ca98b29cc75f"/>
-		<meta-data
-			android:name="com.facebook.sdk.ApplicationId"
-			android:value="@string/facebook_app_id"/>
-		<meta-data
-			android:name="com.kakao.sdk.AppKey"
-			android:value="@string/kakao_app_key"/>
-		<meta-data
-			android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-			android:value="kr.co.influential.youngkangapp.cast.CastOptionsProvider"/>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW"/>
 
-		<!-- service -->
-		<service
-			android:enabled="true"
-			android:exported="true"
-			android:name=".player.service.MediaService">
-			<intent-filter>
-				<action android:name="android.media.browse.MediaBrowserService"/>
-			</intent-filter>
-		</service>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-		<!--
+        <data
+          android:host="welaaa.onelink.me"
+          android:pathPrefix="/HY49"
+          android:scheme="https"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+
+        <data
+          android:scheme="welaaa"
+          android:host="video_list"/>
+        <data
+          android:scheme="welaaa"
+          android:host="video"/>
+        <data
+          android:scheme="welaaa"
+          android:host="video_play"/>
+        <data
+          android:scheme="welaaa"
+          android:host="audiobook_list"/>
+        <data
+          android:scheme="welaaa"
+          android:host="audiobook"/>
+        <data
+          android:scheme="welaaa"
+          android:host="audiobook_play"/>
+        <data
+          android:scheme="welaaa"
+          android:host="in_browser"/>
+        <data
+          android:scheme="welaaa"
+          android:host="out_browser"/>
+        <data
+          android:scheme="welaaa"
+          android:host="sign_up"/>
+        <data
+          android:scheme="welaaa"
+          android:host="sign_in"/>
+        <data
+          android:scheme="welaaa"
+          android:host="mywela"/>
+        <data
+          android:scheme="welaaa"
+          android:host="app_setting"/>
+        <data
+          android:scheme="welaaa"
+          android:host="membership"/>
+
+      </intent-filter>
+    </activity>
+
+
+    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
+
+    <!-- sample test -->
+    <activity
+      android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+      android:name=".pallycon.PallyConMainActivity"/>
+    <activity
+      android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
+      android:launchMode="singleTop"
+      android:name=".player.PlayerActivity"
+      android:resizeableActivity="false"
+      android:supportsPictureInPicture="false"
+      android:theme="@style/Theme.AppCompat.NoActionBar">
+      <intent-filter>
+        <action android:name="android.intent.action.View"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity
+      android:label="@string/app_name"
+      android:launchMode="singleInstance"
+      android:name=".cast.CastControllerActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+      </intent-filter>
+    </activity>
+
+    <service android:name=".download.DownloadService"/>
+
+    <receiver
+      android:enabled="true"
+      android:name=".util.WelaaaBroadcastReceiver"/>
+
+    <meta-data
+      android:name="io.fabric.ApiKey"
+      android:value="1d5ac13b6c753ebfaa1f3f3859e8ca98b29cc75f"/>
+    <meta-data
+      android:name="com.facebook.sdk.ApplicationId"
+      android:value="@string/facebook_app_id"/>
+    <meta-data
+      android:name="com.kakao.sdk.AppKey"
+      android:value="@string/kakao_app_key"/>
+    <meta-data
+      android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+      android:value="kr.co.influential.youngkangapp.cast.CastOptionsProvider"/>
+
+    <!-- service -->
+    <service
+      android:enabled="true"
+      android:exported="true"
+      android:name=".player.service.MediaService">
+      <intent-filter>
+        <action android:name="android.media.browse.MediaBrowserService"/>
+      </intent-filter>
+    </service>
+
+    <!--
              MediaSession, prior to API 21, uses a broadcast receiver to communicate with a
              media session. It does not have to be this broadcast receiver, but it must
              handle the action "android.intent.action.MEDIA_BUTTON".
@@ -124,37 +179,40 @@
              Additionally, this is used to resume the service from an inactive state upon
              receiving a media button event (such as "play").
         -->
-		<receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
-			<intent-filter>
-				<action android:name="android.intent.action.MEDIA_BUTTON"/>
-			</intent-filter>
-		</receiver>
+    <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
+      <intent-filter>
+        <action android:name="android.intent.action.MEDIA_BUTTON"/>
+      </intent-filter>
+    </receiver>
 
-		<!-- Firebase Cloud Messaging. -->
-		<service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
-			<intent-filter>
-				<action android:name="com.google.firebase.MESSAGING_EVENT"/>
-			</intent-filter>
-		</service>
-		<service android:name="io.invertase.firebase.messaging.RNFirebaseInstanceIdService">
-			<intent-filter>
-				<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-			</intent-filter>
-		</service>
-		<service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService"/>
+    <!-- Firebase Cloud Messaging. -->
+    <service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+      </intent-filter>
+    </service>
+    <service android:name="io.invertase.firebase.messaging.RNFirebaseInstanceIdService">
+      <intent-filter>
+        <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+      </intent-filter>
+    </service>
+    <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService"/>
 
-		<receiver android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionReceiver" android:exported="true">
-			<intent-filter>
-				<action android:name="io.invertase.firebase.notifications.BackgroundAction"/>
-			</intent-filter>
-		</receiver>
-		<service android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionsService"/>
+    <receiver
+      android:exported="true"
+      android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionReceiver">
+      <intent-filter>
+        <action android:name="io.invertase.firebase.notifications.BackgroundAction"/>
+      </intent-filter>
+    </receiver>
+    <service android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionsService"/>
 
-		<!-- decalre process atrribute to use a seperate process for a mask activity -->
-		<activity android:name=".MaskActivity"
-			android:process="kr.co.influential.youngkangapp.empty"/>
+    <!-- decalre process atrribute to use a seperate process for a mask activity -->
+    <activity
+      android:name=".MaskActivity"
+      android:process="kr.co.influential.youngkangapp.empty"/>
 
-	</application>
+  </application>
 
 </manifest>
 

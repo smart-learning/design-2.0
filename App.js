@@ -5,6 +5,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   AsyncStorage,
+  AppState,
   DeviceEventEmitter,
   Keyboard,
   Linking,
@@ -43,6 +44,8 @@ import MyScreens from './src/scripts/pages/my/MyScreens';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
 import SetAppScreen from './src/scripts/pages/my/SetAppPage';
+
+import appsFlyer from 'react-native-appsflyer';
 
 class Data {
   @observable
@@ -105,6 +108,10 @@ class App extends React.Component {
   static router = AppDrawer.router;
 
   data = new Data();
+
+  state = {
+    appState: AppState.currentState,
+  };
 
   // 키보드 제어 상태를 store에 기록해서 관리
   keyboardDidShow = () => {
@@ -203,7 +210,8 @@ class App extends React.Component {
   // 오프라인 상태 체크
   handleFirstConnectivityChange = connectionInfo => {
     if (connectionInfo.type === 'none') {
-      nav.parseDeepLink('welaaa://download_page');
+      // nav.parseDeepLink('welaaa://download_page');
+      // #758 네트워크 리트라이 , 네트워크 유실시 정책 수립이 필요합니다. 
     }
   };
 
@@ -223,6 +231,53 @@ class App extends React.Component {
 
   async componentDidMount() {
     this.addNetInfoEvent();
+
+    // For AppsFlyer.
+    AppState.addEventListener('change', this._handleAppStateChange);
+
+    this.onInstallConversionDataCanceller = appsFlyer.onInstallConversionData(
+      data => {
+        console.log('App.js::onInstallConversionData:', data);
+        if (!!data && !!data.data && !!data.data.af_dp) {
+          console.log('App.js::onInstallConversionData:', data.data.af_dp);
+          nav.parseDeepLink(this.parseDeepLinkUrl(data.data.af_dp));
+        }
+      },
+    );
+
+    // Handle DeepLink URL
+    Linking.getInitialURL()
+      .then(url => {
+        if (appsFlyer) {
+          // Additional Deep Link Logic Here ...
+          if (url) {
+            console.log('App.js::deeplink:', url);
+            nav.parseDeepLink(this.parseDeepLinkUrl(url));
+          }
+        }
+      })
+      .catch(err => console.error('An error occurred', err));
+
+    const options = {
+      devKey: 'SPtkhKkwYTZZsqUwQUjBMV',
+      isDebug: true,
+    };
+
+    if (Platform.OS === 'ios') {
+      options.appId = '123456789';
+      //Apple Application ID (for iOS only)
+    }
+
+    appsFlyer.initSdk(
+      options,
+      result => {
+        console.log('appsFlyer.initSdk OK ', result);
+      },
+      error => {
+        console.error('appsFlyer.initSdk Error', error);
+      },
+    );
+
     if ('ios' === Platform.OS) {
       console.log('======', Native.getPlayerManager());
       const playerManager = Native.getPlayerManager();
@@ -402,11 +457,53 @@ class App extends React.Component {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
     this.removeNetInfoEvent();
+
+    // Remove event listener Using AppsFlyer.
+    if (this.onInstallConversionDataCanceller) {
+      this.onInstallConversionDataCanceller();
+    }
+
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
+
+  // For AppsFlyer.
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      if (Platform.OS === 'ios') {
+        appsFlyer.trackAppLaunch();
+      }
+    }
+
+    if (
+      this.state.appState.match(/active|foreground/) &&
+      nextAppState === 'background'
+    ) {
+      if (this.onInstallConversionDataCanceller) {
+        this.onInstallConversionDataCanceller();
+      }
+    }
+
+    this.setState({ appState: nextAppState });
+  };
 
   _handleOpenURL = event => {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', event.url);
-    nav.parseDeepLink(event.url);
+    nav.parseDeepLink(this.parseDeepLinkUrl(event.url));
+  };
+
+  parseDeepLinkUrl = url => {
+    if (url) {
+      let deeplinkUrl = url;
+      let parameterIndex = url.indexOf('?');
+      if (parameterIndex > 0) {
+        deeplinkUrl = url.substring(0, parameterIndex);
+      }
+      console.log('App.js::parseDeepLinkUrl:', deeplinkUrl);
+      return deeplinkUrl;
+    }
   };
 
   render() {
@@ -568,9 +665,8 @@ const AppNavigator = createSwitchNavigator(
 export default () => (
   <AppNavigator
     ref={navigatorRef => {
-      store.drawer = navigatorRef;
-      // 플래이어 크래시 때문에 코드 추가
-      nav.setNav(navigatorRef);
+      // Navigating without the navigation prop
+      nav.setTopLevelNavigator(navigatorRef);
     }}
     onNavigationStateChange={(prevState, currentState) => {
       const currentScreen = getActiveRouteName(currentState);

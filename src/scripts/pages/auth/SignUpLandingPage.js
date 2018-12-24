@@ -25,6 +25,7 @@ import net from '../../commons/net';
 import store from '../../commons/store';
 import FBLoginButton from '../../components/auth/FBLoginButton';
 import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
+import appsFlyer from 'react-native-appsflyer';
 
 const styles = StyleSheet.create({
   landingContainer: {
@@ -172,6 +173,22 @@ class SignUpLandingPage extends React.Component {
             EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
             OS_TYPE: Platform.OS
           });
+
+          // 2018.12.11 appsFlyer 마케팅 요청  
+          const eventName = "EVENT_NAME_COMPLETED_REGISTRATION";
+          const eventValues = {
+            EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
+            OS_TYPE: Platform.OS,
+          };
+
+          appsFlyer.trackEvent(eventName, eventValues,
+            (result) => {
+              console.log('appsFlyer.trackEvent', result);
+            },
+            (error) => {
+              console.error('appsFlyer.trackEvent error ', error);
+            }
+          )
         }
 
         store.welaaaAuth = data;
