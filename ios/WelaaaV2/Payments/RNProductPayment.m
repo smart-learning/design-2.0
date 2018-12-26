@@ -123,6 +123,8 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
+                                [params setObject : @"audiobook"
+                                           forKey : @"buy_type"];
                                 if ( self->_hasListeners )
                                 {
                                   [self sendEventWithName : @"buyResult"
@@ -141,6 +143,8 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
+                                [params setObject : @"membership"
+                                           forKey : @"buy_type"];
                                 if ( self->_hasListeners )
                                 {
                                     [self sendEventWithName : @"buyResult"

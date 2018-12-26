@@ -1,14 +1,14 @@
 // 네비게이션 기본 속성 옵션
 import React from 'react';
 import { Button, Image, Linking, Text, View } from 'react-native';
+import { DrawerActions, NavigationActions } from 'react-navigation';
 import IcAngleRight from '../../images/ic-angle-right-primary.png';
 import CommonStyle from '../../styles/common';
 import HistoryBackButton from '../components/header/HistoryBackButton';
 import HomeButton from '../components/header/HomeButton';
 import HomeWelaaaButton from '../components/header/HomeWelaaaButton';
-import Native from './native';
-import globalStore from './store';
 import SearchAndCartButton from '../components/header/SearchAndCart';
+import Native from './native';
 
 export const NAV_OPTS_COMMON = {
   headerStyle: {
@@ -314,14 +314,48 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
   return option;
 };
 
-let navigation = null;
+let _navigator;
+
+function setTopLevelNavigator(navigatorRef) {
+  console.log('nav.js::setTopLevelNavigator');
+  _navigator = navigatorRef;
+}
+
+function navigate(routeName, params) {
+  console.log('nav.js::navigate:', routeName, params);
+  _navigator.dispatch(
+    NavigationActions.navigate({
+      routeName,
+      params,
+    }),
+  );
+}
+
+function goBack() {
+  console.log('nav.js::goBack');
+  _navigator.dispatch(NavigationActions.back());
+}
+
+function goHome() {
+  console.log('nav.js::goHome');
+  navigate('HomeScreen', {});
+}
+
+function toggleDrawer() {
+  _navigator.dispatch(DrawerActions.toggleDrawer());
+}
+
 export default {
-  setNav: nav => {
-    if (nav && navigation === null) {
-      navigation = nav._navigation;
-      console.log('set global nav:', navigation);
-    }
-  },
+  setTopLevelNavigator,
+
+  navigate,
+
+  goBack,
+
+  goHome,
+
+  toggleDrawer,
+
   // welaaa://video_list 동영상 리스트
   // welaaa://video_list/{category}/{index} 동영상 특정 카테고리 특정 순서로 이동
   // welaaa://video/{cid} 동영상 상세
@@ -353,28 +387,28 @@ export default {
       switch (action) {
         case 'video_list':
           if (paramsLen === 2)
-            navigation.navigate('ClassListPage', {
+            navigate('ClassListPage', {
               category: schemes[0],
               index: schemes[1],
             });
-          else navigation.navigate('ClassListPage');
+          else navigate('ClassListPage');
           break;
 
         case 'video':
-          navigation.navigate('ClassDetailPage', { id: schemes[0] });
+          navigate('ClassDetailPage', { id: schemes[0] });
           break;
 
         case 'audiobook_list':
           if (paramsLen === 2)
-            navigation.navigate('AudioBookPage', {
+            navigate('AudioBookPage', {
               category: schemes[0],
               index: schemes[1],
             });
-          else navigation.navigate('AudioBookPage');
+          else navigate('AudioBookPage');
           break;
 
         case 'audiobook':
-          navigation.navigate('AudioBookDetailPage', { id: schemes[0] });
+          navigate('AudioBookDetailPage', { id: schemes[0] });
           break;
 
         case 'video_play':
@@ -383,14 +417,14 @@ export default {
           break;
 
         case 'in_browser':
-          navigation.navigate('WebView', { url: schemes[0] });
+          navigate('WebView', { url: schemes[0] });
           break;
 
         //이달의 책 바로가기
         case 'botm':
           const params = schemes[0].split(',');
 
-          navigation.navigate('HomeMonthlyReviewPage', {
+          navigate('HomeMonthlyReviewPage', {
             month: params[0],
             sort: params[1],
             title: '이달의 책 북리뷰',
@@ -399,7 +433,7 @@ export default {
 
         //이달의 책 소개용 페이지
         case 'botm_intro':
-          navigation.navigate('BotmIntroPage', {
+          navigate('BotmIntroPage', {
             title: '이달의 책',
             info: schemes[0],
           });
@@ -410,50 +444,61 @@ export default {
           break;
 
         case 'sign_up':
-          navigation.navigate('SignUpPage');
+          navigate('SignUpPage');
           break;
 
         case 'sign_in':
-          navigation.navigate('Login');
+          navigate('Login');
           break;
 
         case 'mywela':
-          navigation.navigate('MyScreen');
+          navigate('MyScreen');
           break;
 
         case 'app_setting':
-          navigation.navigate('AuthCheck', {
+          navigate('AuthCheck', {
             requestScreenName: 'SetAppPage',
             title: '설정',
           });
           break;
 
         case 'event':
-          navigation.navigate('EventDetailPage', {
+          navigate('EventDetailPage', {
             title: '공지사항 및 이벤트',
             id: schemes[0],
           });
           break;
 
         case 'download_page':
-          navigation.navigate('DownloadContentPage', {
+          navigate('DownloadContentPage', {
             title: '다운로드 콘텐츠',
           });
           break;
 
         case 'membership':
-          navigation.navigate('MembershipPage', {});
+          navigate('MembershipPage', {});
+          break;
+
+        case 'series':
+          switch (schemes[0]) {
+            case '035':
+              navigate('Series_4genPage', {
+                title: '4차 산업 혁명 시리즈',
+              });
+              break;
+            default:
+              navigate('HomeSeriesPage', {
+                title: '윌라 추천 시리즈',
+              });
+              break;
+          }
+          break;
+
+        default:
+          break;
       }
     } catch (error) {
       console.log(error);
-    }
-  },
-
-  goBack: () => {
-    console.log('nav.js::navigation', navigation);
-    if (!navigation.goBack()) {
-      console.log('nav.js::no previous route', navigation);
-      navigation.dismiss();
     }
   },
 };

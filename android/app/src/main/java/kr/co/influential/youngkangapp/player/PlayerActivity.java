@@ -10,7 +10,6 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,7 +24,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -43,7 +41,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Rational;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -697,7 +694,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
     mfullSmiLayout = null;
 
-
     getContentResolver().unregisterContentObserver(settingsContentObserver);
 
   }
@@ -775,11 +771,11 @@ public class PlayerActivity extends BasePlayerActivity {
       }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
-      if(simpleExoPlayerView.getPlayer()!=null){
+      if (simpleExoPlayerView.getPlayer() != null) {
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
 
-      }else{
+      } else {
         initialize();
       }
     }
@@ -1042,21 +1038,18 @@ public class PlayerActivity extends BasePlayerActivity {
     return true;
   }
 
-
-  @Override
-  protected void onUserLeaveHint() {
-    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
-      try {
-        PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
-        builder.setAspectRatio(new Rational(16, 9));
-        enterPictureInPictureMode(builder.build());
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-
-
-  }
+//  @Override
+//  protected void onUserLeaveHint() {
+//    if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
+//      try {
+//        PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder();
+//        builder.setAspectRatio(new Rational(16, 9));
+//        enterPictureInPictureMode(builder.build());
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//      }
+//    }
+//  }
 
   @Override
   public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
@@ -2913,6 +2906,10 @@ public class PlayerActivity extends BasePlayerActivity {
    *  긴 자막 UI
    *******************************************************************/
   public void setFullText() {
+    if (mSubtitlsmemo == null || mSubtitlsmemo.length <= 2) {
+      return;
+    }
+
     final LinearLayout textFullView = findViewById(R.id.fullTextTimeView);
     LinearLayout textFullTimeView = findViewById(R.id.fullTextView);
     LinearLayout longScroll_font = findViewById(R.id.longScroll_font);
@@ -2990,10 +2987,10 @@ public class PlayerActivity extends BasePlayerActivity {
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
 
-        try{
+        try {
           textFullView.addView(highlightView);
           textFullTimeView.addView(highlightTimeView);
-        }catch (Exception e){
+        } catch (Exception e) {
           e.printStackTrace();
         }
 
@@ -3991,22 +3988,23 @@ public class PlayerActivity extends BasePlayerActivity {
             String gTitle = getwebPlayerInfo().getGroupTitle();
             list_grop_title.setText(gTitle);
 
-            for(int i=0; i <lectureListItemdapter.getCount(); i++){
-              LogHelper.e(TAG , "send lectureListItemdapter getItem " + lectureListItemdapter.getItem(i) );
+            for (int i = 0; i < lectureListItemdapter.getCount(); i++) {
+              LogHelper
+                  .e(TAG, "send lectureListItemdapter getItem " + lectureListItemdapter.getItem(i));
               // 값은 보이는데 .. 보이지는 않구나 ..
             }
 
-            LogHelper.e(TAG , "lecturListView.getVisibility() " + lecturListView.getVisibility() );
-            LogHelper.e(TAG , "VISIBLE " + View.VISIBLE );
-            LogHelper.e(TAG , "INVISIBLE " + View.INVISIBLE );
-            LogHelper.e(TAG , "GONE " + View.GONE );
+            LogHelper.e(TAG, "lecturListView.getVisibility() " + lecturListView.getVisibility());
+            LogHelper.e(TAG, "VISIBLE " + View.VISIBLE);
+            LogHelper.e(TAG, "INVISIBLE " + View.INVISIBLE);
+            LogHelper.e(TAG, "GONE " + View.GONE);
 
-            LogHelper.e(TAG , "send lectureListItemdapter getCount " +lectureListItemdapter.getCount() );
+            LogHelper
+                .e(TAG, "send lectureListItemdapter getCount " + lectureListItemdapter.getCount());
 
             Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
           }
         });
-
 
 
       } else if (methodName.equals("audiobook")) {

@@ -8,36 +8,35 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { COLOR_PRIMARY } from '../../../styles/common';
 import createStore from '../../commons/createStore';
 import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
   contentContainer: {
-    width: '100%'
+    width: '100%',
   },
   inputWrap: {
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   inputBr: {
     width: '100%',
     height: 1,
-    backgroundColor: '#d8d8d8'
+    backgroundColor: '#d8d8d8',
   },
   input: {
     width: '100%',
     height: 40,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   btnSubmit: {
     width: '100%',
     height: 48,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: COLOR_PRIMARY
+    backgroundColor: COLOR_PRIMARY,
   },
   textSubmit: {
     flex: 1,
@@ -47,20 +46,19 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   linkWrap: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   btnLinkText: {
     fontSize: 14,
-    color: COLOR_PRIMARY
-  }
+    color: COLOR_PRIMARY,
+  },
 });
 
 class EmailAuthPack extends Component {
-
   constructor(props) {
     super(props);
 
@@ -74,8 +72,14 @@ class EmailAuthPack extends Component {
   });
 
   componentDidMount() {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide,
+    );
   }
 
   componentWillUnmount() {
@@ -93,8 +97,6 @@ class EmailAuthPack extends Component {
     this.props.onKeyboardStatus(false);
   };
 
-  @observable loading = false
-
   handleLogin = () => {
     // 밸리데이션
     if (this.data.email === '') {
@@ -106,29 +108,12 @@ class EmailAuthPack extends Component {
       return;
     }
 
-    // 로딩 보이기
-    this.loading = true
-
-    // 시간 한계 주기
-    setTimeout(() => {
-      // 10초 후에 로딩이 아직도 떠 있다면
-      if (this.loading) {
-        // TODO: 확인이 필요 합니다. 
-        // Alert.alert('오류', '관리자에게 문의 하거나 잠시 후 다시 시도해 주세요.')
-        this.loading = false
-      }
-    }, 10000)
-    this.props.onAccess(this.data.email, this.data.password, () => {
-      this.loading = false
-    });
+    this.props.onAccess(this.data.email, this.data.password, () => {});
   };
 
   render() {
     return (
       <View style={styles.contentContainer}>
-        <Spinner // 로딩 인디케이터
-          visible={this.loading}
-        />
         <View borderRadius={4} style={styles.inputWrap}>
           <TextInput
             ref={this.login_id}
@@ -152,21 +137,18 @@ class EmailAuthPack extends Component {
             value={this.data.password}
             placeholder="비밀번호"
             autoCapitalize={'none'}
-            onSubmitEditing={() => { this.handleLogin() }}
+            onSubmitEditing={() => {
+              this.handleLogin();
+            }}
             onChangeText={text => {
               this.data.password = text;
             }}
           />
         </View>
 
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={this.handleLogin}
-        >
+        <TouchableOpacity activeOpacity={0.9} onPress={this.handleLogin}>
           <View borderRadius={4} style={styles.btnSubmit}>
-            <Text style={styles.textSubmit}>
-              이메일로 로그인
-            </Text>
+            <Text style={styles.textSubmit}>이메일로 로그인</Text>
           </View>
         </TouchableOpacity>
 
