@@ -37,21 +37,21 @@ function encodeParams(obj) {
  */
 function cacheOrLoad(uri, expired = 0) {
   return new Promise(async (resolve, reject) => {
-    try {
-      const dataset = await AsyncStorage.multiGet(['timestamp::' + uri, uri]);
-      const timestamp = dataset[0][1];
-      let data = dataset[1][1];
-      data = JSON.parse(data);
-      if (data && timestamp) {
-        const diff = moment().diff(Number(timestamp), 'seconds');
-        if (diff <= expired) {
-          resolve(data);
-          return;
-        }
-      }
-    } catch (error) {
-      console.log('AsyncStorage Error: ', error);
-    }
+    // try {
+    //   const dataset = await AsyncStorage.multiGet(['timestamp::' + uri, uri]);
+    //   const timestamp = dataset[0][1];
+    //   let data = dataset[1][1];
+    //   data = JSON.parse(data);
+    //   if (data && timestamp) {
+    //     const diff = moment().diff(Number(timestamp), 'seconds');
+    //     if (diff <= expired) {
+    //       resolve(data);
+    //       return;
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log('AsyncStorage Error: ', error);
+    // }
 
     axios
       .get(uri)
