@@ -56,7 +56,6 @@ class Series extends React.Component {
     return (
       <View>
         {itemData.map((item, key) => {
-          console.log(key);
           return (
             <View style={styles.seriesItemLg} key={key}>
               <TouchableOpacity
@@ -64,7 +63,7 @@ class Series extends React.Component {
                 onPress={() => {
                   if (item.category === '035') {
                     this.props.navigation.navigate('Series_4genPage', {
-                      title: '4차 산업 혁명 시리즈',
+                      title: '윌라 추천 시리즈',
                     });
                   } else {
                     this.props.navigation.navigate('HomeSeriesPage', {
