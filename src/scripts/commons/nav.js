@@ -317,11 +317,12 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
 let _navigator;
 
 function setTopLevelNavigator(navigatorRef) {
-  console.log('setTopLevelNavigator');
+  console.log('nav.js::setTopLevelNavigator');
   _navigator = navigatorRef;
 }
 
 function navigate(routeName, params) {
+  console.log('nav.js::navigate:', routeName, params);
   _navigator.dispatch(
     NavigationActions.navigate({
       routeName,
@@ -331,12 +332,12 @@ function navigate(routeName, params) {
 }
 
 function goBack() {
-  console.log('nav.js::goBack', _navigator);
+  console.log('nav.js::goBack');
   _navigator.dispatch(NavigationActions.back());
 }
 
 function goHome() {
-  console.log('nav.js::goHome', _navigator);
+  console.log('nav.js::goHome');
   navigate('HomeScreen', {});
 }
 
