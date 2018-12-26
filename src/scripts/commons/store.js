@@ -130,15 +130,6 @@ class Store {
 
   @observable
   cartItemCount = 0;
-
-  @observable
-  isSeriesTransition = false;
-
-  @observable
-  seriesItemMeasurements = {};
-
-  @observable
-  seriesItemThumbnail = '';
 }
 
 const store = new Store();

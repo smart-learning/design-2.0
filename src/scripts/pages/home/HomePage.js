@@ -517,7 +517,6 @@ class HomePage extends React.Component {
           </View>
           {this.showPopup()}
           {this.showMbsPopup()}
-          {/*{globalStore.isSeriesTransition && <SeriesTransition />}*/}
         </SafeAreaView>
       </View>
     );

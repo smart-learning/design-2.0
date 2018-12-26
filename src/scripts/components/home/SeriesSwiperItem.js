@@ -33,19 +33,6 @@ class SeriesSwiperItem extends React.Component {
           ref={ref => (this.view = ref)}
           activeOpacity={0.9}
           onPress={() => {
-            globalStore.isSeriesTransition = true;
-            globalStore.seriesItemThumbnail = '../../images/dummy-series.png';
-
-            this.view.measure((x, y, width, height, pageX, pageY) => {
-              globalStore.seriesItemMeasurements = {
-                x,
-                y,
-                width,
-                height,
-                pageX,
-                pageY,
-              };
-            });
             this.props.navigation.navigate('HomeSeriesDetailPage', {
               itemData: itemData,
               title: '윌라 추천시리즈',
