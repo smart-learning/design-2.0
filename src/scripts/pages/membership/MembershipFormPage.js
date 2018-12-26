@@ -18,6 +18,7 @@ import CommonStyles from '../../../styles/common';
 import native from '../../commons/native';
 import net from '../../commons/net';
 import globalStore from '../../commons/store';
+import appsFlyer from 'react-native-appsflyer';
 
 const productItem = {
   campus: {
@@ -348,6 +349,27 @@ class MembershipFormPage extends React.Component {
         EVENT_PARAM_CURRENCY: 'KRW',
         OS_TYPE: Platform.OS
       });
+
+      // 2018.12.11 appsFlyer 마케팅 요청  
+      const eventName = "EVENT_NAME_INITIATED_CHECKOUT";
+      const eventValues = {
+        EVENT_PARAM_CONTENT: params.title,
+        EVENT_PARAM_CONTENT_ID: 'membership',
+        EVENT_PARAM_CONTENT_TYPE: params.type,
+        EVENT_PARAM_NUM_ITEMS: 1,
+        EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
+        EVENT_PARAM_CURRENCY: 'KRW',
+        OS_TYPE: Platform.OS
+      };
+
+      appsFlyer.trackEvent(eventName, eventValues,
+        (result) => {
+          console.log('appsFlyer.trackEvent', result);
+        },
+        (error) => {
+          console.error('appsFlyer.trackEvent error ', error);
+        }
+      )
 
       // 멤버쉽 화면으로 이동.
       // this.props.navigation.goBack();

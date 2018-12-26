@@ -5,6 +5,7 @@
 #import <PallyConFPSSDK/PallyConFPSSDK-Swift.h>
 #import <Toast/UIView+Toast.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <AVFoundation/AVFoundation.h> // To detect headsets plugged in/out
 
 #import "common.h"
 #import "UIImage+TintColor.h"

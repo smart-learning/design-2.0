@@ -61,6 +61,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                              selector : @selector(applicationDidEnterBackground:)
                                                  name : UIApplicationDidEnterBackgroundNotification
                                                object : nil];
+  //[AVAudioSession sharedInstance];
+    [[NSNotificationCenter defaultCenter] addObserver : self
+                                             selector : @selector(audioRouteChangeListenerCallback:)
+                                                 name : AVAudioSessionRouteChangeNotification
+                                               object : nil];
 }
 
 // 뷰 컨트롤러가 화면에 나타나기 직전에 실행됩니다.
@@ -420,6 +425,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                                   object : nil];
     [[NSNotificationCenter defaultCenter] removeObserver : self
                                                     name : UIApplicationDidEnterBackgroundNotification
+                                                  object : nil];
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : AVAudioSessionRouteChangeNotification
                                                   object : nil];
   
     [common showStatusBar];
@@ -1736,6 +1744,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [[NSNotificationCenter defaultCenter] removeObserver : self
                                                     name : AVPlayerItemDidPlayToEndTimeNotification
                                                   object : [_player currentItem]];
+    [[NSNotificationCenter defaultCenter] removeObserver : self
+                                                    name : AVAudioSessionRouteChangeNotification
+                                                  object : nil];
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [common showStatusBar];
 }
@@ -3571,6 +3582,48 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             default:
                 return;
         }
+    }
+}
+//
+// 헤드폰이 언플러그일 경우 아래와 같이 처리됩니다.
+//
+- (void) audioRouteChangeListenerCallback : (NSNotification *) notification
+{
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSInteger routeChangeReason = [[interuptionDict valueForKey : AVAudioSessionRouteChangeReasonKey] integerValue];
+    NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
+
+    AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
+    AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
+    NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
+    if ( [info.portType isEqualToString : @"Speaker"] )
+        NSLog(@"  Speaker type");
+    else
+        NSLog(@"  Non-Speaker type");
+    
+    switch (routeChangeReason)
+    {
+        case AVAudioSessionRouteChangeReasonUnknown:
+            NSLog(@"  [audioRouteChangeListenerCallback] The reason is unknown.");
+            break;
+        
+        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+            NSLog(@"  [audioRouteChangeListenerCallback] A new device became available (e.g. headphones have been plugged in).");
+            break;
+      
+        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+            NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                if ( self->_playButton.hidden ) [self pressedPauseButton];
+            });
+            break;
+        /*
+         AVAudioSessionRouteChangeReasonCategoryChange = 3,
+         AVAudioSessionRouteChangeReasonOverride = 4,
+         AVAudioSessionRouteChangeReasonWakeFromSleep = 6,
+         AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory = 7,
+         AVAudioSessionRouteChangeReasonRouteConfigurationChange NS_ENUM_AVAILABLE_IOS(7_0) = 8
+        */
     }
 }
 
