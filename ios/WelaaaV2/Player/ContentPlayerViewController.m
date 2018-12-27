@@ -1921,12 +1921,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
   
-    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( CMTimeGetSeconds(kCMTimeInvalid) == tTime )
+    if ( isnan(cTime) || isnan(tTime) )
     {
-        [self closePlayer];
-      
-        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+        NSLog(@"  [pressedRwButton] NaN found!!");
+        return;
     }
   
     if ( cTime > 10.f )
@@ -1977,12 +1975,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
   
-    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( CMTimeGetSeconds(kCMTimeInvalid) == tTime )
+    if ( isnan(cTime) || isnan(tTime) )
     {
-        [self closePlayer];
-      
-        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+        NSLog(@"  [pressedFfButton] NaN found!!");
+        return;
     }
   
     if ( cTime + 10.f < tTime )
