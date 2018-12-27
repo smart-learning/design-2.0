@@ -9,7 +9,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
@@ -24,49 +24,49 @@ const productItem = {
   campus: {
     name: '클래스',
     ios: {
-      price: '11,000원'
+      price: '11,000원',
     },
     android: {
       price: '7,700원',
-      originPrice: '30,000원'
-    }
+      originPrice: '30,000원',
+    },
   },
   bookclub: {
     name: '오디오북',
     ios: {
-      price: '9,500원'
+      price: '9,500원',
     },
     android: {
       price: '6,600원',
-      originPrice: '15,000원'
-    }
+      originPrice: '15,000원',
+    },
   },
   premium: {
     name: '프리미엄',
     ios: {
-      price: '20,500원'
+      price: '20,500원',
     },
     android: {
       price: '14,300원',
-      originPrice: '40,000원'
-    }
+      originPrice: '40,000원',
+    },
   },
   none: {
     name: '',
     ios: {
-      price: ''
+      price: '',
     },
     android: {
       price: '',
-      originPrice: ''
-    }
-  }
+      originPrice: '',
+    },
+  },
 };
 
 const styles = StyleSheet.create({
   itemInfoContainer: {
     position: 'relative',
-    marginTop: 20
+    marginTop: 20,
   },
   itemInfoHrTop: {
     position: 'absolute',
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: 3,
-    backgroundColor: '#d3d3d3'
+    backgroundColor: '#d3d3d3',
   },
   itemInfoHrBottom: {
     position: 'absolute',
@@ -82,142 +82,142 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: 3,
-    backgroundColor: '#d3d3d3'
+    backgroundColor: '#d3d3d3',
   },
   itemInfo: {
     justifyContent: 'center',
     alignItems: 'center',
     height: 90,
-    backgroundColor: '#f7f5fb'
+    backgroundColor: '#f7f5fb',
   },
   itemMonthlyPrice: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   itemText: {
     fontSize: 16,
-    color: '#4a4a4a'
+    color: '#4a4a4a',
   },
   itemTextSm: {
     paddingTop: 3,
     fontSize: 12,
-    color: '#4a4a4a'
+    color: '#4a4a4a',
   },
   itemTextImportant: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#5f45b4'
+    color: '#5f45b4',
   },
   itemPriceOrigin: {
     fontSize: 16,
     color: '#4a4a4a',
-    textDecorationLine: 'line-through'
+    textDecorationLine: 'line-through',
   },
   sectionTitleContainer: {
-    marginTop: 40
+    marginTop: 40,
   },
   sectionHr: {
     height: 3,
     marginTop: 10,
-    backgroundColor: '#d3d3d3'
+    backgroundColor: '#d3d3d3',
   },
   formItem: {
     paddingTop: 15,
     paddingBottom: 15,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   formLabel: {
     fontSize: 16,
-    color: '#4a4a4a'
+    color: '#4a4a4a',
   },
   formInputContainer: {
-    width: '55%'
+    width: '55%',
   },
   formInput: {
     width: '100%',
     height: 50,
     borderWidth: 1,
-    borderColor: '#dbdbdb'
+    borderColor: '#dbdbdb',
   },
   formHr: {
     width: '100%',
     height: 1,
-    backgroundColor: '#efefef'
+    backgroundColor: '#efefef',
   },
   formValidityPeriod: {
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   validityPeriodInput: {
     width: 60,
     height: 50,
     borderWidth: 1,
-    borderColor: '#dbdbdb'
+    borderColor: '#dbdbdb',
   },
   validityPeriodBullet: {
     paddingLeft: 7,
     paddingRight: 7,
     fontSize: 16,
-    color: '#4a4a4a'
+    color: '#4a4a4a',
   },
   birthInput: {
     width: 100,
     height: 50,
     borderWidth: 1,
-    borderColor: '#dbdbdb'
+    borderColor: '#dbdbdb',
   },
   genderInput: {
     width: 30,
     height: 50,
     borderWidth: 1,
-    borderColor: '#dbdbdb'
+    borderColor: '#dbdbdb',
   },
   total: {
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
   totalHr: {
     width: '100%',
     height: 1,
-    backgroundColor: '#4a4a4a'
+    backgroundColor: '#4a4a4a',
   },
   totalContent: {
     alignItems: 'center',
     paddingTop: 15,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   totalPrice: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#ff4f72'
+    color: '#ff4f72',
   },
   submitButton: {
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
     width: '100%',
-    height: 60
+    height: 60,
   },
   submitButtonText: {
     fontSize: 16,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   checkboxContainer: {
-    position: 'relative'
+    position: 'relative',
   },
   checkbox: {
     position: 'absolute',
     top: 0,
-    left: 0
+    left: 0,
   },
   checkBoxImage: {
     width: 17,
-    height: 17
+    height: 17,
   },
   agreeText: {
     paddingLeft: 25,
     fontSize: 12,
-    color: '#626262'
+    color: '#626262',
   },
   ruleButton: {
     justifyContent: 'center',
@@ -225,12 +225,12 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: '100%',
     height: 40,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   ruleButtonText: {
     fontSize: 14,
-    color: '#ffffff'
-  }
+    color: '#ffffff',
+  },
 });
 
 @observer
@@ -249,7 +249,7 @@ class MembershipFormPage extends React.Component {
     expire_y: '',
     birth: '',
     gender: '',
-    card_pass: ''
+    card_pass: '',
   };
 
   constructor(props) {
@@ -291,7 +291,7 @@ class MembershipFormPage extends React.Component {
 
     const payload = {
       ...this.state,
-      membership: this.formType
+      membership: this.formType,
     };
     delete payload.submitButtonDisabled;
     console.log(payload);
@@ -309,7 +309,7 @@ class MembershipFormPage extends React.Component {
       this.setState({ submitButtonDisabled: false });
 
       AppEventsLogger.logEvent(
-        'WELAAARN_MEMBERSHIP_REGISTER_' + globalStore.currentMembership
+        'WELAAARN_MEMBERSHIP_REGISTER_' + globalStore.currentMembership,
       );
 
       // 2018.10.29 facebook event: 마케팅 요청.
@@ -337,7 +337,7 @@ class MembershipFormPage extends React.Component {
         [EVENT_PARAM_CONTENT_TYPE]: params.type,
         [EVENT_PARAM_NUM_ITEMS]: 1,
         [EVENT_PARAM_PAYMENT_INFO_AVAILABLE]: 0,
-        [EVENT_PARAM_CURRENCY]: 'KRW'
+        [EVENT_PARAM_CURRENCY]: 'KRW',
       });
 
       firebase.analytics().logEvent('EVENT_NAME_INITIATED_CHECKOUT', {
@@ -347,11 +347,11 @@ class MembershipFormPage extends React.Component {
         EVENT_PARAM_NUM_ITEMS: 1,
         EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
         EVENT_PARAM_CURRENCY: 'KRW',
-        OS_TYPE: Platform.OS
+        OS_TYPE: Platform.OS,
       });
 
-      // 2018.12.11 appsFlyer 마케팅 요청  
-      const eventName = "EVENT_NAME_INITIATED_CHECKOUT";
+      // 2018.12.11 appsFlyer 마케팅 요청
+      const eventName = 'af_initiated_checkout';
       const eventValues = {
         EVENT_PARAM_CONTENT: params.title,
         EVENT_PARAM_CONTENT_ID: 'membership',
@@ -359,17 +359,19 @@ class MembershipFormPage extends React.Component {
         EVENT_PARAM_NUM_ITEMS: 1,
         EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
         EVENT_PARAM_CURRENCY: 'KRW',
-        OS_TYPE: Platform.OS
+        OS_TYPE: Platform.OS,
       };
 
-      appsFlyer.trackEvent(eventName, eventValues,
-        (result) => {
+      appsFlyer.trackEvent(
+        eventName,
+        eventValues,
+        result => {
           console.log('appsFlyer.trackEvent', result);
         },
-        (error) => {
+        error => {
           console.error('appsFlyer.trackEvent error ', error);
-        }
-      )
+        },
+      );
 
       // 멤버쉽 화면으로 이동.
       // this.props.navigation.goBack();
@@ -377,7 +379,7 @@ class MembershipFormPage extends React.Component {
       if (this.formType === 'bookclub') {
         // 오디오북 멤버쉽 -> 오디오북 메인 페이지
         this.props.navigation.navigate('HomeScreen', {
-          page: 'audioBook'
+          page: 'audioBook',
         });
       } else {
         // 클래스 멤버쉽, 프리미엄 멤버쉽 -> 클래스 메인 페이지
@@ -403,7 +405,7 @@ class MembershipFormPage extends React.Component {
       birth,
       gender,
       card_pass,
-      isAgree
+      isAgree,
     } = this.state;
 
     return (
@@ -445,7 +447,7 @@ class MembershipFormPage extends React.Component {
                                 {data.android.originPrice}
                               </Text>
                             </Text>
-                          )
+                          ),
                         })}
                       </View>
                     </View>
@@ -466,7 +468,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.formItem
+                  styles.formItem,
                 ]}
               >
                 <Text style={styles.formLabel}>이름</Text>
@@ -485,7 +487,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.formItem
+                  styles.formItem,
                 ]}
               >
                 <Text style={styles.formLabel}>휴대폰</Text>
@@ -505,7 +507,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.formItem
+                  styles.formItem,
                 ]}
               >
                 <Text style={styles.formLabel}>이메일</Text>
@@ -532,7 +534,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.formItem
+                  styles.formItem,
                 ]}
               >
                 <Text style={styles.formLabel}>카드번호</Text>
@@ -553,7 +555,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.formItem
+                  styles.formItem,
                 ]}
               >
                 <Text style={styles.formLabel}>유효기간</Text>
@@ -589,7 +591,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.formItem
+                  styles.formItem,
                 ]}
               >
                 <Text style={styles.formLabel}>생년월일</Text>
@@ -624,7 +626,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.formItem
+                  styles.formItem,
                 ]}
               >
                 <Text style={styles.formLabel}>비밀번호 앞 두자리</Text>
@@ -652,7 +654,7 @@ class MembershipFormPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.totalContent
+                  styles.totalContent,
                 ]}
               >
                 <Text style={styles.itemText}>총 결제 예정금액</Text>
@@ -664,7 +666,7 @@ class MembershipFormPage extends React.Component {
                         <Text style={styles.totalPrice}>
                           7,700 <Text style={styles.itemText}>원</Text>
                         </Text>
-                      )
+                      ),
                     })}
                   </View>
                 )}
@@ -676,7 +678,7 @@ class MembershipFormPage extends React.Component {
                         <Text style={styles.totalPrice}>
                           6,600 <Text style={styles.itemText}>원</Text>
                         </Text>
-                      )
+                      ),
                     })}
                   </View>
                 )}
@@ -688,7 +690,7 @@ class MembershipFormPage extends React.Component {
                         <Text style={styles.totalPrice}>
                           14,300 <Text style={styles.itemText}>원</Text>
                         </Text>
-                      )
+                      ),
                     })}
                   </View>
                 )}
