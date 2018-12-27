@@ -483,7 +483,7 @@ export default {
           switch (schemes[0]) {
             case '035':
               navigate('Series_4genPage', {
-                title: '4차 산업 혁명 시리즈',
+                title: '윌라 추천 시리즈',
               });
               break;
             default:
