@@ -10,8 +10,9 @@ import {
   StyleSheet,
   Text,
   View,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Swiper from 'react-native-swiper';
 import _ from 'underscore';
 import bgLogin from '../../../images/bg-signup.jpg';
@@ -27,35 +28,34 @@ import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
 
 const styles = StyleSheet.create({
   loginContainer: {
-    position: 'relative'
+    position: 'relative',
   },
   background: {
-    width: '100%'
+    width: '100%',
   },
   logoWrap: {
     alignItems: 'center',
     height: 50,
     marginTop: 0,
     marginBottom: 50,
-    paddingTop: 50
+    paddingTop: 50,
   },
   logo: {
     width: 110,
-    height: 28
+    height: 28,
   },
   contentWrap: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '80%',
-    marginLeft: '10%'
   },
   headline: {
     paddingBottom: 60,
     textAlign: 'center',
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   bulletText: {
     marginTop: 15,
@@ -63,18 +63,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   thumbnail: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   inputContentWrap: {
     position: 'absolute',
-    bottom: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '90%',
-    marginLeft: '5%'
-  }
+    marginLeft: '5%',
+  },
 });
 
 class Data {
@@ -82,16 +83,19 @@ class Data {
   isAppFirstLoadLoginPage = false;
 }
 
-@observer
 class LoginPage extends React.Component {
   data = createStore({
-    windowHeight: null
+    windowHeight: null,
   });
 
   constructor(props) {
     super(props);
 
     this.windowHeight = Dimensions.get('window').height;
+
+    this.state = {
+      loading: false,
+    };
   }
 
   componentDidMount() {}
@@ -111,22 +115,29 @@ class LoginPage extends React.Component {
   };
 
   /*
-	* @params email: 이메일이나 소셜 타입
-	* @params password: 이메일비번이나 소셜 토큰
-	* */
+   * @params email: 이메일이나 소셜 타입
+   * @params password: 이메일비번이나 소셜 토큰
+   * */
   login = (email, password, callback) => {
     let { navigation } = this.props;
     const resultAuthToken = net.getAuthToken(email, password);
+
+    // 로딩 보이기
+    this.setState({ loading: false }); // 페이스북 로그인 후 로딩뷰 사라지지 않는 문제 때문에 임시로 막아둠.
 
     resultAuthToken
       .then(data => {
         store.socialType = email;
         store.welaaaAuth = data;
-        navigation.navigate(navigation.getParam('requestScreenName', 'Main'));
+        navigation.navigate(navigation.getParam('requestScreenName', 'Main'), {
+          reload_mbs: true,
+        });
 
         // 로그인이 완료 되면 loginCompleted를 보내 App.js의
         // 프로필 및 현재멤버십을 가져오는 루틴을 실행하도록 함
         globalStore.emitter.emit('loginCompleted');
+
+        this.setState({ loading: false });
 
         if (_.isFunction(callback)) {
           callback();
@@ -144,11 +155,24 @@ class LoginPage extends React.Component {
             message = '관리자에게 문의해 주세요.';
             break;
         }
-        Alert.alert('로그인에 실패하였습니다.', message);
 
-        if (_.isFunction(callback)) {
-          callback();
-        }
+        Alert.alert(
+          '로그인에 실패하였습니다.',
+          message,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                console.log('loading set to false');
+                this.setState({ loading: false });
+                if (_.isFunction(callback)) {
+                  callback();
+                }
+              },
+            },
+          ],
+          { cancelable: false },
+        );
       });
   };
 
@@ -158,7 +182,7 @@ class LoginPage extends React.Component {
         style={[
           CommonStyles.container,
           styles.loginContainer,
-          { height: this.windowHeight }
+          { height: this.windowHeight },
         ]}
       >
         <ScrollView
@@ -194,6 +218,9 @@ class LoginPage extends React.Component {
                 <Image source={logo} style={styles.logo} />
               </View>
               <View style={styles.contentWrap}>
+                <Spinner // 로딩 인디케이터
+                  visible={this.state.loading}
+                />
                 <Text style={styles.headline}>LOGIN</Text>
 
                 <FBLoginButton
@@ -224,4 +251,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default observer(LoginPage);

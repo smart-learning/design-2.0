@@ -9,10 +9,14 @@ class HomeWelaaaButton extends Component {
     nav.goBack();
   };
 
+  onTitlePress = () => {
+    nav.goHome();
+  };
+
   render() {
     return (
       <View style={[CommonStyles.container]}>
-        <TouchableOpacity activeOpacity={0.9} onPress={this.onBackPress}>
+        <TouchableOpacity activeOpacity={0.9} onPress={this.onTitlePress}>
           <Image source={logo} style={[CommonStyles.headerLogo]} />
         </TouchableOpacity>
       </View>

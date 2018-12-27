@@ -115,15 +115,15 @@ android {
             storePassword props['debug_storePassword']
         }
     }
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 141
-        versionName "1.50.041"
+        versionCode 144
+        versionName "1.50.044"
         archivesBaseName = "welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -185,8 +185,13 @@ buildscript {
 
 apply plugin: 'io.fabric'
 
+repositories {
+    mavenCentral()
+}
 
 dependencies {
+    implementation project(':react-native-appsflyer')
+    compile project(':react-native-iamport')
     compile project(':react-native-vector-icons')
     implementation project(':react-native-firebase')
     implementation project(':react-native-kakao-signin')
@@ -207,6 +212,10 @@ dependencies {
     implementation "com.google.android.support:wearable:$wearableVersion"
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.facebook.react:react-native:+'
+
+    // AppsFlyer
+    implementation 'com.appsflyer:af-android-sdk:4+@aar'
+    implementation 'com.android.installreferrer:installreferrer:1.0'
 
     // facebook
     implementation 'com.facebook.android:facebook-android-sdk:4.36.0'

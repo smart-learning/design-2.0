@@ -3,17 +3,9 @@ import Base64 from 'Base64';
 import moment from 'moment';
 import { AsyncStorage, Platform, Alert } from 'react-native';
 import firebase from 'react-native-firebase';
-// import Localizable from 'react-native-localizable';
 import Native from './native';
 
-// 빌드모드가 Debug/Release인지에 따라 각 프로젝트 strings변수를 가져와서 HOST를 사용. 없을경우 기본값 사용
-// let host = 'https://8xwgb17lt1.execute-api.ap-northeast-2.amazonaws.com/dev';
-// TODO: iOS에서 Localizable 이 undefined인 상황이 발견되었음. 원인 미상. 확인 필요.
 let host = 'https://api-prod.welaaa.com';
-// if (Localizable) {
-//   if (__DEV__) host = Localizable.host_debug || host;
-//   else host = Localizable.host_release || host;
-// }
 
 const HOST = host;
 const TYPE = 'api';
@@ -25,7 +17,7 @@ const clientSecret = 'IcQUptRiZBe3mqLbx8BIB7dqfySP52J4He6TmMXnnzupUNIj';
 const authBasicCode = Base64.btoa(`${clientId}:${clientSecret}`);
 
 // 데이터 캐시 기본 유효시간 (초)
-const DEFAULT_EXPIRED = 300;
+const DEFAULT_EXPIRED = 0;
 
 function encodeParams(obj) {
   let params = [];
@@ -45,21 +37,21 @@ function encodeParams(obj) {
  */
 function cacheOrLoad(uri, expired = 0) {
   return new Promise(async (resolve, reject) => {
-    try {
-      const dataset = await AsyncStorage.multiGet(['timestamp::' + uri, uri]);
-      const timestamp = dataset[0][1];
-      let data = dataset[1][1];
-      data = JSON.parse(data);
-      if (data && timestamp) {
-        const diff = moment().diff(Number(timestamp), 'seconds');
-        if (diff <= expired) {
-          resolve(data);
-          return;
-        }
-      }
-    } catch (error) {
-      console.log('AsyncStorage Error: ', error);
-    }
+    // try {
+    //   const dataset = await AsyncStorage.multiGet(['timestamp::' + uri, uri]);
+    //   const timestamp = dataset[0][1];
+    //   let data = dataset[1][1];
+    //   data = JSON.parse(data);
+    //   if (data && timestamp) {
+    //     const diff = moment().diff(Number(timestamp), 'seconds');
+    //     if (diff <= expired) {
+    //       resolve(data);
+    //       return;
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log('AsyncStorage Error: ', error);
+    // }
 
     axios
       .get(uri)
@@ -67,7 +59,7 @@ function cacheOrLoad(uri, expired = 0) {
         response.data.__cache_timestamp = Number(moment().format('x'));
         AsyncStorage.multiSet([
           ['timestamp::' + uri, moment().format('x')],
-          [uri, JSON.stringify(response.data)]
+          [uri, JSON.stringify(response.data)],
         ]);
         resolve(response.data);
       })
@@ -99,12 +91,12 @@ export default {
     }
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/video-courses/categories',
-      expired
+      expired,
     )
       .then(data => {
         data = [
           { ccode: null, id: 0, title: '전체', images: {}, url: '' },
-          ...data
+          ...data,
         ];
         data.forEach(element => {
           element.key = element.id.toString();
@@ -123,12 +115,12 @@ export default {
     }
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/audiobooks/categories',
-      expired
+      expired,
     )
       .then(data => {
         return [
           { ccode: null, id: 0, title: '전체', images: {}, url: '' },
-          ...data
+          ...data,
         ];
       })
       .catch(error => {
@@ -178,9 +170,9 @@ export default {
         return {
           items: response.data.map(element => ({
             ...element,
-            key: element.id.toString()
+            key: element.id.toString(),
           })),
-          pagination: this.parsePaginationHeaders(response.headers)
+          pagination: this.parsePaginationHeaders(response.headers),
         };
       })
       .catch(error => {
@@ -194,7 +186,7 @@ export default {
       if (key.indexOf('pagination-') === 0) {
         try {
           pagination[key.replace('pagination-', '')] = eval(
-            headers[key].toLowerCase()
+            headers[key].toLowerCase(),
           );
         } catch (e) {}
       }
@@ -205,7 +197,7 @@ export default {
   getLectureListByCategories() {
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/video-courses/promotion-with-categories',
-      DEFAULT_EXPIRED
+      DEFAULT_EXPIRED,
     )
       .then(data => {
         return data;
@@ -240,9 +232,9 @@ export default {
         return {
           items: response.data.map(element => ({
             ...element,
-            key: element.id.toString()
+            key: element.id.toString(),
           })),
-          pagination: this.parsePaginationHeaders(response.headers)
+          pagination: this.parsePaginationHeaders(response.headers),
         };
       })
       .catch(error => {
@@ -253,7 +245,7 @@ export default {
   getAudioBookByCategories() {
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/audiobooks/group-by/categories',
-      DEFAULT_EXPIRED
+      DEFAULT_EXPIRED,
     )
       .then(data => {
         return data;
@@ -337,7 +329,7 @@ export default {
       username: email,
       password: password,
       scope: 'profile',
-      grant_type: 'password'
+      grant_type: 'password',
     });
     // console.log('getAuthToken:', HOS + 'oauth/token', email, password);
     // console.log('encodedParams:', params);
@@ -347,8 +339,8 @@ export default {
         .post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token', params, {
           headers: {
             Authorization: 'Basic ' + authBasicCode,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
         })
         .then(response => {
           resolve(response.data);
@@ -367,7 +359,7 @@ export default {
       username: 'f_token',
       password: f_token,
       scope: 'profile',
-      grant_type: 'password'
+      grant_type: 'password',
     });
     console.log('encodedParams:', params);
 
@@ -376,8 +368,8 @@ export default {
         .post(API_PREFIX_FOR_AUTH_TOKEN + '/oauth/token', params, {
           headers: {
             Authorization: 'Basic ' + authBasicCode,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
         })
         .then(response => {
           resolve(response.data);
@@ -388,10 +380,32 @@ export default {
     });
   },
 
-  getMainPopup() {
+  getMembershipBanner() {
+    const url = API_PREFIX + 'v1.0/cms/banner/membership-top';
+    const params = {
+      platform: Platform.OS,
+    };
+    return axios
+      .get(url, { params: params })
+      .then(resp => {
+        console.log('membership_banner', resp);
+        return resp.data;
+      })
+      .catch(error => {
+        console.log(error);
+        return null;
+      });
+  },
+
+  getMainPopup(popup_type) {
+    //popup_type
+    //공백 - 기존과 동일
+    //membership - 멤버십 가입 후
+
     const url = API_PREFIX + 'v1.0/users/popup';
     const params = {
-      platform: Platform.OS
+      platform: Platform.OS,
+      popup_type: popup_type,
     };
     return axios
       .get(url, { params: params })
@@ -425,7 +439,7 @@ export default {
     }
     return cacheOrLoad(
       API_PREFIX + 'v1.0/contents/video-clips/realtime-chart',
-      expired
+      expired,
     )
       .then(data => {
         data.forEach(element => {
@@ -466,7 +480,7 @@ export default {
     }
     return cacheOrLoad(
       API_PREFIX + 'v1.0/cms/main/banner?platform=' + Platform.OS,
-      expired
+      expired,
     )
       .then(data => {
         data.forEach(element => {
@@ -521,7 +535,7 @@ export default {
     const expired = 1;
     return cacheOrLoad(
       API_PREFIX + 'v1.0/play/purchased/video-courses',
-      expired
+      expired,
     )
       .then(data => {
         return data;
@@ -545,7 +559,7 @@ export default {
   getUserHeartContent: function(contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
-      videoCourses: 'video-courses'
+      videoCourses: 'video-courses',
     };
 
     if (!(contentType in urlMappings)) {
@@ -560,9 +574,9 @@ export default {
         return {
           items: resp.data.map(element => ({
             ...element,
-            key: element.id.toString()
+            key: element.id.toString(),
           })),
-          pagination: this.parsePaginationHeaders(resp.headers)
+          pagination: this.parsePaginationHeaders(resp.headers),
         };
       })
       .catch(error => {
@@ -582,11 +596,12 @@ export default {
   },
 
   getMembershipCurrent() {
-    const expired = 1;
-    return cacheOrLoad(API_PREFIX + 'v1.0/membership/current', expired)
-      .then(data => {
-        console.log('now_current_membership', data);
-        return data;
+    const url = API_PREFIX + 'v1.0/membership/current';
+
+    return axios
+      .get(url)
+      .then(res => {
+        return res.data;
       })
       .catch(error => {
         console.log(error);
@@ -597,7 +612,7 @@ export default {
     return axios.get(API_PREFIX + 'v1.0/membership/current');
   },
 
-  getVouchersStatus() {
+  async getVouchersStatus() {
     return axios
       .get(API_PREFIX + 'v1.0/membership/vouchers/status')
       .then(resp => {
@@ -647,7 +662,7 @@ export default {
     return axios
       .post(
         API_PREFIX + 'v1.0/payment/import/subscriptions/issue-billing',
-        data
+        data,
       )
       .then(resp => resp.data);
   },
@@ -672,7 +687,7 @@ export default {
         device_id: deviceId,
         device_model: model,
         fcm_token: fcmToken,
-        push_receive: bool
+        push_receive: bool,
       };
 
       console.log('registerFcmToken params', params);
@@ -717,8 +732,8 @@ export default {
     return axios
       .get(API_PREFIX + 'v1.0/email-validation', {
         params: {
-          email: email
-        }
+          email: email,
+        },
       })
       .then(resp => {
         return resp.data;
@@ -732,7 +747,7 @@ export default {
       username: email,
       password: password,
       grant_type: 'password',
-      source: Platform.OS
+      source: Platform.OS,
     };
     params = encodeParams(params);
 
@@ -740,8 +755,8 @@ export default {
       .post(API_PREFIX + 'v1.0/signup', params, {
         headers: {
           Authorization: 'Basic ' + authBasicCode,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       })
       .then(response => {
         return response.data;
@@ -755,6 +770,13 @@ export default {
     return axios
       .get(`${API_PREFIX}v1.0/membership/permissions/${type}/${id}`)
       .then(resp => resp.data);
+  },
+
+  async getPlayPermissionByCid(cid) {
+    const { data } = await axios.get(
+      `${API_PREFIX}v1.0/play/permissions/${cid}`,
+    );
+    return data;
   },
 
   getBotmData(month, sort) {
@@ -782,8 +804,8 @@ export default {
         return {
           items: response.data.map(element => ({
             ...element,
-            key: element.id.toString()
-          }))
+            key: element.id.toString(),
+          })),
         };
       })
       .catch(error => {
@@ -802,10 +824,38 @@ export default {
         Alert.alert(
           '안내',
           '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
-          [{ text: '확인' }]
+          [{ text: '확인' }],
         );
         console.log(error);
       });
+  },
+
+  async getCartItems() {
+    return axios.get(`${API_PREFIX}v1.0/payment/cart-items`);
+  },
+
+  async addToCart(contentType, itemId) {
+    const data = {
+      id: itemId,
+      type: contentType,
+    };
+    return axios.post(`${API_PREFIX}v1.0/payment/cart-items`, data);
+  },
+
+  async removeCartItem(cartItemId) {
+    return axios.delete(`${API_PREFIX}v1.0/payment/cart-items/${cartItemId}`);
+  },
+
+  async getCartStatus() {
+    return axios.get(`${API_PREFIX}v1.0/payment/cart-items/status`);
+  },
+
+  async postPurchaseCallback(imp_uid, merchant_uid) {
+    const data = {
+      imp_uid,
+      merchant_uid,
+    };
+    return axios.post(`${API_PREFIX}v1.0/payment/import/callback`, data);
   },
 
   getContentInfo(cid) {
@@ -829,7 +879,7 @@ export default {
         Alert.alert(
           '안내',
           '일시적인 오류가 발생하였습니다. 잠시후 다시 시도해주세요.',
-          [{ text: '확인' }]
+          [{ text: '확인' }],
         );
         console.log(error);
       });
@@ -842,5 +892,27 @@ export default {
         console.log('addContentView', data);
         return data;
       });
-  }
+  },
+
+  registerCoupon(coupon_num) {
+    // 테스트 케이스
+    // return new Promise((resolve, reject) => {
+    //   if (coupon_num.toLowerCase() === 'qwer1234') {
+    //     resolve(({ message: '등록되었습니다.' }))
+    //   }
+    //   reject({ message: '쿠폰 번호가 일치하지 않습니다. 확인 후 다시 등록해주세요.' })
+    // })
+
+    let params = {
+      coupon_num: coupon_num.toLowerCase(),
+    };
+    return axios
+      .post(API_PREFIX + 'v1.0/membership/coupon-register', params)
+      .then(response => response.data)
+      .catch(error => {
+        if (error.response.status === 400)
+          throw new Error(error.response.data.msg);
+        throw new Error('오류가 발생했습니다. 잠시후에 다시 시도해 주세요.');
+      });
+  },
 };

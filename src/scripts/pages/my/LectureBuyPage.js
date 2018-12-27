@@ -7,7 +7,6 @@ import { observer } from 'mobx-react';
 import createStore from '../../commons/createStore';
 import net from '../../commons/net';
 
-@observer
 class LectureBuyPage extends React.Component {
   store = createStore({
     isLoading: true,
@@ -27,10 +26,10 @@ class LectureBuyPage extends React.Component {
     this.load();
   }
 
-  goLecture = item => {
+  gotoClassDetail = item => {
     this.props.navigation.navigate('ClassDetail', {
-      id: this.props.id,
-      title: this.props.title
+      id: item.data.id,
+      title: item.data.title
     });
   };
 
@@ -61,13 +60,13 @@ class LectureBuyPage extends React.Component {
                   <SummaryListItem
                     key={key}
                     thumbnail={item.data.images ? item.data.images.list : null}
-                    title={item.data.headline}
+                    title={item.data.title}
                     author={item.data.teacher ? item.data.teacher.name : ''}
                     likeCount={item.data.like_count}
                     reviewCount={item.data.review_count}
                     isLike={false}
                     navigation={this.props.navigation}
-                    onPress={() => this.goLecture(item)}
+                    onPress={() => this.gotoClassDetail(item)}
                   />
                 );
               })}
@@ -78,4 +77,4 @@ class LectureBuyPage extends React.Component {
   }
 }
 
-export default LectureBuyPage;
+export default observer(LectureBuyPage);

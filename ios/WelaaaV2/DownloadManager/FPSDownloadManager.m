@@ -988,7 +988,12 @@
   clip.ckey = args[@"cid"];
   clip.contentPath = @""; // 다운로드 완료 후에 결정되는 로컬경로.
   clip.totalSize = @"";
-  clip.groupTeacherName = contentsInfo[@"data"][@"teacher"][@"name"];
+  // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
+  if ( [contentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
+      clip.groupTeacherName = contentsInfo[@"data"][@"teacher"][@"name"];
+  else
+      clip.groupTeacherName = @"미상";
+
   clip.cTitle = @"";  // 아래에서 개별 클립 정보를 통해 다시 구한다.
   clip.cid = args[@"cid"];
   

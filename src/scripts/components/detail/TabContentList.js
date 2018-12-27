@@ -63,6 +63,14 @@ export default class TabContentList extends React.Component {
 
   render() {
     const playTime = moment.duration(this.props.store.itemData.play_time);
+    const itemClipData = this.props.store.itemClipData.toJS();
+    let realLength = 0;
+
+    itemClipData.forEach((ad, idx) => {
+      if (itemClipData[idx].play_time !== '00:00:00') {
+        realLength++;
+      }
+    });
 
     return (
       <View>
@@ -96,7 +104,8 @@ export default class TabContentList extends React.Component {
               <View style={CommonStyles.contentContainer}>
                 <Text style={styles.chapterInfoText}>
                   <Text style={styles.clipInfoTextImportant}>
-                    {this.props.store.itemClipData.length}개
+                    {/* {this.props.store.itemClipData.length} */}
+                    {realLength}개
                   </Text>
                   챕터, 전체 재생시간
                   <Text

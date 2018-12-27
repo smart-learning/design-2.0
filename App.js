@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import {
   ActivityIndicator,
+  AppState,
   AsyncStorage,
   DeviceEventEmitter,
   Keyboard,
@@ -11,8 +12,10 @@ import {
   NativeEventEmitter,
   NetInfo,
   Platform,
-  View
+  ScrollView,
+  View,
 } from 'react-native';
+import appsFlyer from 'react-native-appsflyer';
 import firebase from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
 import {
@@ -20,12 +23,13 @@ import {
   createStackNavigator,
   createSwitchNavigator,
   DrawerItems,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-navigation';
 import Native from './src/scripts/commons/native';
 import nav from './src/scripts/commons/nav';
 import net from './src/scripts/commons/net';
 import store from './src/scripts/commons/store';
+import utils from './src/scripts/commons/utils';
 import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
 import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
@@ -36,12 +40,11 @@ import Policy from './src/scripts/pages/auth/PolicyPage';
 import Privacy from './src/scripts/pages/auth/PrivacyPage';
 import SignUpLandingPage from './src/scripts/pages/auth/SignUpLandingPage';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
-import MembershipScreens from './src/scripts/pages/membership/MembershipScreen';
 import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
+import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
-import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 
 class Data {
   @observable
@@ -59,64 +62,44 @@ class Hidden extends React.Component {
 
 const AppDrawer = createDrawerNavigator(
   {
-    // SampleScreen: {
-    // 	screen: SampleScreen,
-    // },
-
     HomeScreen: {
-      screen: HomeScreen
+      screen: HomeScreen,
     },
-
     VideoScreen: {
-      screen: VideoScreen
+      screen: VideoScreen,
       // path: 'video_list',
     },
-
     AudioScreen: {
-      screen: AudioScreen
+      screen: AudioScreen,
     },
-
     MyScreen: {
-      screen: MyScreens
+      screen: MyScreens,
     },
-
     InquireListScreen: {
-      screen: InquireListScreen
+      screen: InquireListScreen,
     },
     SetAppScreen: {
       screen: SetAppScreen,
       navigationOptions: {
         drawerIcon: <Hidden />,
-        drawerLabel: <Hidden />
-      }
-    }
-
-    // Playground: {
-    // 	screen: Playground,
-    // },
-    // June: {
-    // 	screen: PlaygroundJune,
-    // },
-    // BottomControllerTEST: {
-    // 	screen: BottomControllerPage,
-    // },
-    // AndroidNativeCall: {
-    // 	screen: PlaygroundJune,
-    // }
+        drawerLabel: <Hidden />,
+      },
+    },
   },
-
   {
     contentComponent: props => (
       <SafeAreaView
         style={{ flex: 1 }}
         forceInset={{ top: 'always', horizontal: 'never' }}
       >
-        <SidebarUserInfo {...props} />
-        <DrawerItems {...props} />
-        {}
+        <ScrollView style={{ width: '100%' }}>
+          <SidebarUserInfo {...props} />
+          <DrawerItems {...props} />
+          {}
+        </ScrollView>
       </SafeAreaView>
-    )
-  }
+    ),
+  },
 );
 
 @observer
@@ -124,6 +107,10 @@ class App extends React.Component {
   static router = AppDrawer.router;
 
   data = new Data();
+
+  state = {
+    appState: AppState.currentState,
+  };
 
   // 키보드 제어 상태를 store에 기록해서 관리
   keyboardDidShow = () => {
@@ -144,8 +131,10 @@ class App extends React.Component {
       store.profile = await net.getProfile();
       // 멤버쉽 가져오기
       store.currentMembership = await net.getMembershipCurrent();
+
       // 이용권 가져오기
       store.voucherStatus = await net.getVouchersStatus();
+      await utils.updateCartStatus();
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
@@ -164,7 +153,7 @@ class App extends React.Component {
       'config::isWifiPlay',
       'config::isWifiDownload',
       'config::isAlert',
-      'config::isEmail'
+      'config::isEmail',
     ]);
 
     settings.forEach(setting => {
@@ -220,32 +209,84 @@ class App extends React.Component {
   // 오프라인 상태 체크
   handleFirstConnectivityChange = connectionInfo => {
     if (connectionInfo.type === 'none') {
-      nav.parseDeepLink('welaaa://download_page');
+      // nav.parseDeepLink('welaaa://download_page');
+      // #758 네트워크 리트라이 , 네트워크 유실시 정책 수립이 필요합니다.
     }
   };
 
   addNetInfoEvent = () => {
     NetInfo.addEventListener(
       'connectionChange',
-      this.handleFirstConnectivityChange
+      this.handleFirstConnectivityChange,
     );
   };
 
   removeNetInfoEvent = () => {
     NetInfo.removeEventListener(
       'connectionChange',
-      this.handleFirstConnectivityChange
+      this.handleFirstConnectivityChange,
     );
   };
 
   async componentDidMount() {
     this.addNetInfoEvent();
+
+    // For AppsFlyer.
+    AppState.addEventListener('change', this._handleAppStateChange);
+
+    this.onInstallConversionDataCanceller = appsFlyer.onInstallConversionData(
+      data => {
+        console.log('AF::onInstallConversionData:', data);
+        if (!!data && !!data.data && !!data.data.af_dp) {
+          console.log('AF::onInstallConversionData:', data.data.af_dp);
+          nav.parseDeepLink(this.parseDeepLinkUrl(data.data.af_dp));
+        }
+      },
+    );
+
+    // Handle DeepLink URL
+    Linking.getInitialURL()
+      .then(url => {
+        if (appsFlyer) {
+          // Additional Deep Link Logic Here ...
+          if (url) {
+            console.log('AF::deeplink:', url);
+            nav.parseDeepLink(this.parseDeepLinkUrl(url));
+          }
+        }
+      })
+      .catch(err => console.error('An error occurred', err));
+
+    const options = {
+      devKey: 'SPtkhKkwYTZZsqUwQUjBMV',
+      isDebug: true,
+    };
+
+    if (Platform.OS === 'ios') {
+      options.appId = '1250319483';
+      //Apple Application ID (for iOS only)
+    }
+
+    if (Platform.OS === 'ios') {
+      // iOS 일 경우엔 appsFlyer.initSdk 가 undefined 이므로 막아둠.
+    } else {
+      appsFlyer.initSdk(
+        options,
+        result => {
+          console.log('AF::appsFlyer.initSdk OK ', result);
+        },
+        error => {
+          console.error('AF::appsFlyer.initSdk Error', error);
+        },
+      );
+    }
+
     if ('ios' === Platform.OS) {
       console.log('======', Native.getPlayerManager());
       const playerManager = Native.getPlayerManager();
       const playerManagerEmitter = new NativeEventEmitter(playerManager);
       playerManagerEmitter.addListener('downloadState', arg =>
-        Native.downloadState(arg)
+        Native.downloadState(arg),
       );
 
       console.log('======', Native.getPaymentManager());
@@ -253,8 +294,16 @@ class App extends React.Component {
       const paymentManagerEmitter = new NativeEventEmitter(paymentManager);
       paymentManagerEmitter.addListener('buyResult', async arg => {
         const result = await Native.buyResult(arg);
-        if (result) {
-          this.props.navigation.navigate('HomeScreen');
+
+        console.log('result->', result); // true
+        console.log('arg->', arg); // {success: true, buy_type: "membership" or "audiobook"}
+
+        if (result && arg.buy_type === 'membership') {
+          this.props.navigation.navigate('HomeScreen', {
+            popup_mbs: true,
+          });
+        } else if (result && arg.buy_type === 'audiobook') {
+          nav.goBack(); // 오디오북 구매에 성공하면 뒤로 가게 처리해두었으나 추후엔 해당화면 갱신되는 방식으로 수정해야 한다.
         } else {
           console.log('Native.buyResult error.');
         }
@@ -263,20 +312,20 @@ class App extends React.Component {
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayer', params => {
           Native.toggleMiniPlayer(params.visible);
-        })
+        }),
       );
 
       this.subscription.push(
         DeviceEventEmitter.addListener('miniPlayerCallPlayer', params => {
           console.log('miniPlayerCallPlayer DeviceEventEmitter ', params);
           Native.play(params.cid);
-        })
+        }),
       );
 
       this.subscription.push(
         DeviceEventEmitter.addListener('downloadState', arg =>
-          Native.downloadState(arg)
-        )
+          Native.downloadState(arg),
+        ),
       );
     }
 
@@ -388,11 +437,11 @@ class App extends React.Component {
     // 키보드 이벤트 할당
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      this.keyboardDidShow
+      this.keyboardDidShow,
     );
     this.keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
-      this.keyboardDidHide
+      this.keyboardDidHide,
     );
   }
 
@@ -411,11 +460,53 @@ class App extends React.Component {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
     this.removeNetInfoEvent();
+
+    // Remove event listener Using AppsFlyer.
+    if (this.onInstallConversionDataCanceller) {
+      this.onInstallConversionDataCanceller();
+    }
+
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
+
+  // For AppsFlyer.
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      if (Platform.OS === 'ios') {
+        //appsFlyer.trackAppLaunch(); // undefined 이라 막아둠.
+      }
+    }
+
+    if (
+      this.state.appState.match(/active|foreground/) &&
+      nextAppState === 'background'
+    ) {
+      if (this.onInstallConversionDataCanceller) {
+        this.onInstallConversionDataCanceller();
+      }
+    }
+
+    this.setState({ appState: nextAppState });
+  };
 
   _handleOpenURL = event => {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', event.url);
-    nav.parseDeepLink(event.url);
+    nav.parseDeepLink(this.parseDeepLinkUrl(event.url));
+  };
+
+  parseDeepLinkUrl = url => {
+    if (url) {
+      let deeplinkUrl = url;
+      let parameterIndex = url.indexOf('?');
+      if (parameterIndex > 0) {
+        deeplinkUrl = url.substring(0, parameterIndex);
+      }
+      console.log('App.js::parseDeepLinkUrl:', deeplinkUrl);
+      return deeplinkUrl;
+    }
   };
 
   render() {
@@ -441,7 +532,7 @@ class App extends React.Component {
         {store.miniPlayerVisible &&
           Platform.select({
             android: <BottomController arg={store.miniPlayerArg} />,
-            ios: null
+            ios: null,
           })}
         <NotificationUI
           style={{ zIndex: 999999 }}
@@ -503,83 +594,82 @@ class AuthLoadingScreen extends React.Component {
 const SignupStack = createStackNavigator(
   {
     SignUpPage: {
-      screen: SignUpLandingPage
+      screen: SignUpLandingPage,
     },
     EmailSignUpForm: {
-      screen: EmailSignUpForm
+      screen: EmailSignUpForm,
     },
     Login: {
       screen: LoginPage,
       navigationOptions: {
         header: null,
-        gesturesEnabled: false
-      }
+        gesturesEnabled: false,
+      },
     },
     PrivacyPage: {
-      screen: Privacy
+      screen: Privacy,
     },
     PolicyPage: {
-      screen: Policy
-    }
+      screen: Policy,
+    },
   },
   {
-    initialRouteName: 'SignUpPage'
-  }
+    initialRouteName: 'SignUpPage',
+  },
 );
 
 const SigninStack = createStackNavigator(
   {
     SignUpPage: {
-      screen: SignUpLandingPage
+      screen: SignUpLandingPage,
     },
     EmailSignUpForm: {
-      screen: EmailSignUpForm
+      screen: EmailSignUpForm,
     },
     Login: {
       screen: LoginPage,
       navigationOptions: {
         header: null,
-        gesturesEnabled: false
-      }
+        gesturesEnabled: false,
+      },
     },
     PrivacyPage: {
-      screen: Privacy
+      screen: Privacy,
     },
     PolicyPage: {
-      screen: Policy
-    }
+      screen: Policy,
+    },
   },
   {
-    initialRouteName: 'Login'
-  }
+    initialRouteName: 'Login',
+  },
 );
 
 const AppNavigator = createSwitchNavigator(
   {
     AuthLoading: {
-      screen: AuthLoadingScreen
+      screen: AuthLoadingScreen,
     },
     Main: {
-      screen: App
+      screen: App,
     },
     Signup: {
-      screen: SignupStack
+      screen: SignupStack,
     },
     Signin: {
-      screen: SigninStack
-    }
+      screen: SigninStack,
+    },
   },
   {
-    initialRouteName: 'AuthLoading'
-  }
+    initialRouteName: 'AuthLoading',
+  },
 );
 
 export default () => (
   <AppNavigator
     ref={navigatorRef => {
-      store.drawer = navigatorRef;
-      // 플래이어 크래시 때문에 코드 추가
-      nav.setNav(navigatorRef);
+      // Navigating without the navigation prop
+      nav.setTopLevelNavigator(navigatorRef);
     }}
     onNavigationStateChange={(prevState, currentState) => {
       const currentScreen = getActiveRouteName(currentState);
@@ -590,7 +680,7 @@ export default () => (
           'App.js::onNavigationStateChange',
           prevScreen,
           '-->',
-          currentScreen
+          currentScreen,
         );
 
         firebase.analytics().setCurrentScreen(currentScreen, currentScreen);

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
@@ -25,27 +25,28 @@ import net from '../../commons/net';
 import store from '../../commons/store';
 import FBLoginButton from '../../components/auth/FBLoginButton';
 import KakaoLoginButton from '../../components/auth/KakaoLoginButton';
+import appsFlyer from 'react-native-appsflyer';
 
 const styles = StyleSheet.create({
   landingContainer: {
-    position: 'relative'
+    position: 'relative',
   },
   background: {
     width: '100%',
     height: '100%',
-    paddingTop: 50
+    paddingTop: 50,
   },
   logoWrap: {
     position: 'absolute',
     top: 20,
     zIndex: 9,
     alignItems: 'center',
-    height: 50
+    height: 50,
   },
   logo: {
     width: 88,
     height: 22,
-    marginTop: 15
+    marginTop: 15,
   },
   contentWrap: {
     // flex: 1,
@@ -54,16 +55,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 60,
     width: '80%',
-    marginLeft: '10%'
+    marginLeft: '10%',
   },
   thumbnail: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   alignJustify: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   emailButton: {
     flexDirection: 'row',
@@ -71,52 +72,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: 40,
-    marginTop: 10
+    marginTop: 10,
   },
   emailImage: {
     width: 22,
     height: 20,
-    marginRight: 30
+    marginRight: 30,
   },
   emailText: {
     lineHeight: 40,
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   loginWrap: {
     width: '70%',
     marginLeft: '10%',
-    marginBottom: 10
+    marginBottom: 10,
   },
   loginButton: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   loginLabel: {
     fontSize: 15,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   loginImage: {
     width: 16,
     height: 14,
     marginRight: 5,
-    marginLeft: 15
+    marginLeft: 15,
   },
   loginText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   ruleWrap: {
     marginTop: 15,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   ruleTextContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   ruleText: {
     fontSize: 12,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   ruleButton: {
     position: 'relative',
@@ -126,8 +127,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#ffffff',
-    textDecorationLine: 'underline'
-  }
+    textDecorationLine: 'underline',
+  },
 });
 
 class SignUpLandingPage extends React.Component {
@@ -135,7 +136,7 @@ class SignUpLandingPage extends React.Component {
     super(props);
 
     this.state = {
-      slideHeight: null
+      slideHeight: null,
     };
   }
 
@@ -143,7 +144,7 @@ class SignUpLandingPage extends React.Component {
     let windowHeight = Dimensions.get('window').height;
 
     this.setState({
-      slideHeight: windowHeight
+      slideHeight: windowHeight,
     });
   }
 
@@ -165,19 +166,21 @@ class SignUpLandingPage extends React.Component {
           const EVENT_PARAM_REGISTRATION_METHOD =
             NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
           AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
-            [EVENT_PARAM_REGISTRATION_METHOD]: store.socialType
+            [EVENT_PARAM_REGISTRATION_METHOD]: store.socialType,
           });
 
           firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
             EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
-            OS_TYPE: Platform.OS
+            OS_TYPE: Platform.OS,
           });
         }
 
         store.welaaaAuth = data;
         // 2018. 11. 9. jungon
         // 회원가입 후 Membership 가입 촉진 페이지 노출.
-        navigation.navigate('MembershipScreen');
+        navigation.navigate('MembershipScreen', {
+          trackEvent: { af_registration_method: type, OS_TYPE: Platform.OS },
+        });
       })
       .catch(error => {
         const code = error.response.code;
@@ -276,7 +279,7 @@ class SignUpLandingPage extends React.Component {
 
           <View style={styles.ruleWrap}>
             <View style={styles.ruleTextContainer}>
-              <Text style={styles.ruleText}>무료 계정을 생성하시면 월라</Text>
+              <Text style={styles.ruleText}>윌라 계정을 생성하시면 월라</Text>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => this.props.navigation.navigate('PolicyPage')}
@@ -315,7 +318,7 @@ class SignUpLandingPage extends React.Component {
 
 SignUpLandingPage.navigationOptions = () => {
   return {
-    header: null
+    header: null,
   };
 };
 

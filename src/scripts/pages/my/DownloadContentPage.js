@@ -3,14 +3,14 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import {
   FlatList,
-  Alert,  
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ListView
+  ListView,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import IcTrash from '../../../images/ic-my-trash-xs.png';
@@ -26,27 +26,27 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: 40,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabFlex: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   tabItemContainer: {
-    width: '50%'
+    width: '50%',
   },
   tabItem: {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    height: 40
+    height: 40,
   },
   tabText: {
     fontSize: 14,
-    color: '#a4a4a4'
+    color: '#a4a4a4',
   },
   tabTextActive: {
     fontSize: 14,
-    color: '#000000'
+    color: '#000000',
   },
   tabHr: {
     position: 'absolute',
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 3,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   tabHrActive: {
     position: 'absolute',
@@ -62,22 +62,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: 3,
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   tabContentContainer: {
-    paddingTop: 40
+    paddingTop: 40,
   },
   noContent: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 50,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 
   flatList: {
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 20
+    paddingTop: 20,
   },
 
   downloadItem: {
@@ -87,27 +87,27 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     alignItems: 'flex-start',
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F3F3'
+    borderBottomColor: '#F3F3F3',
   },
 
   downloadItemImg: {
     width: 60,
-    height: 60
+    height: 60,
   },
 
   downloadItemInfo: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    paddingLeft: 20
+    paddingLeft: 20,
   },
 
   downloadItemPlayButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 'auto'
-  }
+    marginLeft: 'auto',
+  },
 });
 
 @observer
@@ -142,7 +142,7 @@ export default class DownloadContentPage extends React.Component {
           }
         }
       },
-      error => console.error(error)
+      error => console.error(error),
     );
   }
 
@@ -193,29 +193,36 @@ export default class DownloadContentPage extends React.Component {
             activeOptacity={0.9}
             style={styles.downloadItemPlayButton}
             onPress={() => {
-
               Alert.alert(
                 '알림',
-                '삭제 하시겠습니까?', [{
-                  text: 'Cancel',
-                  onPress: () => console.log('Cancel Pressed'),
-                  style: 'cancel'
-                }, {
-                  text: 'OK',
-                  onPress: () => Native.deleteDownload(
-                    [{ ...item }],
-                    result => {
-                      var removedDownloadList = globalStore.downloadItems.filter(
-                        item => item.cid !== result
-                      );
-                      globalStore.downloadItems.replace(removedDownloadList);
-                    },
-                    error => console.error(error)
-                  )
-                },], {
-                  cancelable: false
-                }
-              )
+                '삭제 하시겠습니까?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'OK',
+                    onPress: () =>
+                      Native.deleteDownload(
+                        [{ ...item }],
+                        result => {
+                          var removedDownloadList = globalStore.downloadItems.filter(
+                            item => item.cid !== result,
+                          );
+                          globalStore.downloadItems.replace(
+                            removedDownloadList,
+                          );
+                        },
+                        error => console.error(error),
+                      ),
+                  },
+                ],
+                {
+                  cancelable: false,
+                },
+              );
             }}
           >
             <Image source={IcTrash} style={{ width: 24, height: 24 }} />
@@ -267,15 +274,35 @@ export default class DownloadContentPage extends React.Component {
             activeOptacity={0.9}
             style={styles.downloadItemPlayButton}
             onPress={() => {
-              Native.deleteDownload(
-                [{ ...item }],
-                result => {
-                  var removedDownloadList = globalStore.downloadItems.filter(
-                    item => item.cid !== result
-                  );
-                  globalStore.downloadItems.replace(removedDownloadList);
+              Alert.alert(
+                '알림',
+                '삭제 하시겠습니까?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'OK',
+                    onPress: () =>
+                      Native.deleteDownload(
+                        [{ ...item }],
+                        result => {
+                          var removedDownloadList = globalStore.downloadItems.filter(
+                            item => item.cid !== result,
+                          );
+                          globalStore.downloadItems.replace(
+                            removedDownloadList,
+                          );
+                        },
+                        error => console.error(error),
+                      ),
+                  },
+                ],
+                {
+                  cancelable: false,
                 },
-                error => console.error(error)
               );
             }}
           >
@@ -291,8 +318,8 @@ export default class DownloadContentPage extends React.Component {
       <View style={styles.sectionHeader}>
         <Text style={styles.header}>{section.key}</Text>
       </View>
-    )
-  }
+    );
+  };
   render() {
     let vcontent = (
       <Text style={styles.noContent}>다운받은 항목이 없습니다.</Text>
@@ -303,7 +330,7 @@ export default class DownloadContentPage extends React.Component {
 
     let video = [];
     let audio = [];
-    let videoHeader = [{ name: "title" }];
+    let videoHeader = [{ name: 'title' }];
     let i;
     let initialValue = [];
     // store의 downloadItems이 변경되면..
@@ -312,20 +339,23 @@ export default class DownloadContentPage extends React.Component {
       downloadItems.reduce(
         (accumulator, item, index) => {
           if ('video-course' === item.audioVideoType) {
-            accumulator.video.push({ ...item, key: index.toString() });
+            if ('z' === item.cid[0]) {
+              // cid 가 소문자 z 로 시작하면 매일 책한권. ex) z100005_030
+              accumulator.audio.push({ ...item, key: index.toString() });
+            } else {
+              accumulator.video.push({ ...item, key: index.toString() });
+            }
           } else if ('audiobook' === item.audioVideoType) {
-
             accumulator.audio.push({ ...item, key: index.toString() });
           }
           return accumulator;
         },
-        { video: video, audio: audio }
+        { video: video, audio: audio },
       );
 
-      console.log(video)
+      console.log(video);
       // 데이터를 가지고 리스트를 생성
       if (video.length > 0) {
-
         vcontent = (
           <FlatList
             style={styles.flatList}

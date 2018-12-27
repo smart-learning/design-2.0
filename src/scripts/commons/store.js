@@ -16,6 +16,7 @@ class Store {
 
   @observable
   homeTabStatus = 'video';
+
   @observable
   initialRoute = {
     // initialRouteName: 'AuthCheck',
@@ -75,6 +76,13 @@ class Store {
     socialType = null;
     socialToken = null;
     welaaaAuth = null;
+    /**
+     * 2018.12.4
+     * jungon
+     * Initialize membership.
+     */
+    currentMembership = null;
+
     delete axios.defaults.headers.common['authorization'];
 
     AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
@@ -86,8 +94,10 @@ class Store {
 
   @observable
   currentMembership = {};
+
   @observable
   voucherStatus = {};
+
   @observable
   profile = {};
 
@@ -117,6 +127,9 @@ class Store {
 
   @observable
   inAppWebViewUrl = null;
+
+  @observable
+  cartItemCount = 0;
 }
 
 const store = new Store();

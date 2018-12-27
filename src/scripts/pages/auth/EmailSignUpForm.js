@@ -13,38 +13,40 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import Swiper from 'react-native-swiper';
+import Spinner from 'react-native-loading-spinner-overlay';
 import bgSignUp from '../../../images/bg-join.png';
 import logo from '../../../images/logo-en-primary.png';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
 import Net from '../../commons/net';
 import store from '../../commons/store';
+import appsFlyer from 'react-native-appsflyer';
 
 const styles = StyleSheet.create({
   landingContainer: {
-    position: 'relative'
+    position: 'relative',
   },
   background: {
     width: '100%',
     height: '100%',
-    paddingTop: 50
+    paddingTop: 50,
   },
   logoWrap: {
     alignItems: 'center',
     height: 50,
     marginTop: 0,
-    marginBottom: 20
+    marginBottom: 20,
   },
   logo: {
     width: 88,
     height: 22,
-    marginTop: 15
+    marginTop: 15,
   },
   contentWrap: {
     flex: 1,
@@ -52,48 +54,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '80%',
     marginLeft: '10%',
-    height: 100
+    height: 100,
   },
   content: {
-    width: '100%'
+    width: '100%',
   },
   headline: {
     paddingBottom: 60,
     textAlign: 'center',
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   inputWrap: {
     width: '100%',
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   inputBr: {
     width: '100%',
     height: 1,
-    backgroundColor: '#d8d8d8'
+    backgroundColor: '#d8d8d8',
   },
   input: {
     width: '100%',
     height: 40,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   submitContainer: {
-    width: '100%'
+    width: '100%',
   },
   btnSubmit: {
     width: '100%',
     height: 48,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: COLOR_PRIMARY
+    backgroundColor: COLOR_PRIMARY,
   },
   btnSubmitDisabled: {
     width: '100%',
     height: 48,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: '#d8d8d8'
+    backgroundColor: '#d8d8d8',
   },
   textSubmit: {
     flex: 1,
@@ -103,23 +105,23 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   agreeReceiveMarketingStyle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   ruleWrap: {
     marginTop: 15,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   ruleTextContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   ruleText: {
     fontSize: 12,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   ruleButton: {
     position: 'relative',
@@ -129,21 +131,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#ffffff',
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   checkboxContainer: {
     position: 'relative',
     width: '100%',
-    marginBottom: 15
+    marginBottom: 15,
   },
   checkbox: {
     position: 'absolute',
     top: 0,
-    left: 0
+    left: 0,
   },
   checkBoxImage: {
     width: 17,
-    height: 17
+    height: 17,
   },
   agreeText: {
     position: 'absolute',
@@ -151,18 +153,18 @@ const styles = StyleSheet.create({
     left: 25,
     width: 200,
     fontSize: 12,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   thumbnail: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   inputContentWrap: {
     position: 'absolute',
     bottom: '50%',
     width: '90%',
-    marginLeft: '5%'
-  }
+    marginLeft: '5%',
+  },
 });
 
 class Data {
@@ -182,13 +184,11 @@ class Data {
   email_vailidate = false;
 }
 
-@observer
 class EmailSignUpForm extends Component {
   data = new Data();
 
   state = {
-    signupButtonDisabled: false,
-    agreeReceiveMarketing: true
+    agreeReceiveMarketing: true,
   };
 
   constructor(props) {
@@ -221,35 +221,47 @@ class EmailSignUpForm extends Component {
     }
   };
 
+  @observable loading = false;
+
   handleJoin = () => {
-    
-    this.setState({ signupButtonDisabled: true });
+    // 로딩 보이기
+    this.loading = true;
+
+    // 시간 한계 주기
+    setTimeout(() => {
+      // 10초 후에 로딩이 아직도 떠 있다면
+      if (this.loading) {
+        // TODO: 확인이 필요 합니다.
+        // Alert.alert('오류', '관리자에게 문의 하거나 잠시 후 다시 시도해 주세요.')
+        this.loading = false;
+      }
+    }, 10000);
 
     if (this.data.name === null) {
       Alert.alert('오류', '이름은 필수 입력항목입니다.');
-      this.setState({ signupButtonDisabled: false });
+      this.loading = false;
       return false;
     } else if (this.data.email === null) {
       Alert.alert('오류', '이메일은 필수 입력항목입니다.');
-      this.setState({ signupButtonDisabled: false });
+      this.loading = false;
       return false;
     } else if (!this.data.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-      this.setState({ signupButtonDisabled: false });
       Alert.alert('오류', '이메일 형식이 맞지 않습니다.');
+      this.loading = false;
       return false;
     } else if (this.data.email_vailidate === false) {
-      this.setState({ signupButtonDisabled: false });
       Alert.alert('오류', '다른 이메일을 사용해주세요.');
+      this.loading = false;
       return false;
     } else if (this.data.password === null) {
-      this.setState({ signupButtonDisabled: false });
       Alert.alert('오류', '비밀번호는 필수 입력항목입니다.');
+      this.loading = false;
       return false;
     }
 
     if (this.data.passconf !== this.data.password) {
       Alert.alert('오류', '비밀번호와 비밀번호 확인이 일치 하지 않습니다.');
-      this.setState({ signupButtonDisabled: false });
+      this.loading = false;
       return false;
     }
 
@@ -264,12 +276,12 @@ class EmailSignUpForm extends Component {
           const EVENT_PARAM_REGISTRATION_METHOD =
             NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
           AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
-            [EVENT_PARAM_REGISTRATION_METHOD]: 'email'
+            [EVENT_PARAM_REGISTRATION_METHOD]: 'email',
           });
 
           firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
             EVENT_PARAM_REGISTRATION_METHOD: 'email',
-            OS_TYPE: Platform.OS
+            OS_TYPE: Platform.OS,
           });
         }
 
@@ -278,24 +290,26 @@ class EmailSignUpForm extends Component {
         // 2018. 11. 9
         // jungon
         // 회원가입 후 Membership 가입 촉진 페이지 노출.
-        this.props.navigation.navigate('MembershipScreen');
+        this.props.navigation.navigate('MembershipPage', {
+          trackEvent: { af_registration_method: 'email', OS_TYPE: Platform.OS },
+        });
       })
       .catch(e => {
         alert(e);
-        this.setState({ signupButtonDisabled: false });
+        this.loading = false;
       });
   };
 
   email_vailidate = async () => {
     let vailidate_info = await Net.email_vailidate(this.data.email);
-    
-    if(vailidate_info.success !== '1'){
-      Alert.alert("오류", vailidate_info.msg);
+
+    if (vailidate_info.success !== '1') {
+      Alert.alert('오류', vailidate_info.msg);
       this.data.email_vailidate = false;
-    }else{
+    } else {
       this.data.email_vailidate = true;
     }
-  }
+  };
 
   agreeStatus = () => {
     this.data.isAgree = !this.data.isAgree;
@@ -307,6 +321,9 @@ class EmailSignUpForm extends Component {
         style={[CommonStyles.container, styles.loginContainer]}
         behavior="padding"
       >
+        <Spinner // 로딩 인디케이터
+          visible={this.loading}
+        />
         <View style={{ width: '100%', height: this.data.windowHeight }}>
           <Swiper
             style={styles.wrapper}
@@ -405,26 +422,29 @@ class EmailSignUpForm extends Component {
                 checked={this.state.agreeReceiveMarketing}
                 onPress={() =>
                   this.setState(previousState => ({
-                    agreeReceiveMarketing: !previousState.agreeReceiveMarketing
+                    agreeReceiveMarketing: !previousState.agreeReceiveMarketing,
                   }))
                 }
                 textStyle={[
                   styles.agreeReceiveMarketingStyle,
-                  { textAlign: 'left' }
+                  { textAlign: 'left' },
                 ]}
                 containerStyle={{
                   backgroundColor: '#0000',
                   paddingTop: 10,
                   paddingBottom: 10,
                   paddingLeft: 0,
-                  borderWidth: 0
+                  borderWidth: 0,
                 }}
               />
 
               <View style={styles.submitContainer}>
                 <TouchableOpacity
                   activeOpacity={0.9}
-                  onPress={() => { Keyboard.dismiss();this.handleJoin() }}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    this.handleJoin();
+                  }}
                   disabled={!this.state.agreeReceiveMarketing}
                 >
                   <View
@@ -435,11 +455,7 @@ class EmailSignUpForm extends Component {
                         : styles.btnSubmitDisabled
                     }
                   >
-                    <Text style={styles.textSubmit}>
-                      {this.state.signupButtonDisabled
-                        ? '처리중입니다.'
-                        : '가입하기'}
-                    </Text>
+                    <Text style={styles.textSubmit}>가입하기</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -465,7 +481,7 @@ class EmailSignUpForm extends Component {
               <View style={styles.ruleWrap}>
                 <View style={styles.ruleTextContainer}>
                   <Text style={styles.ruleText}>
-                    무료 계정을 생성하시면 월라
+                    윌라 계정을 생성하시면 월라
                   </Text>
                   <TouchableOpacity
                     activeOpacity={0.9}
@@ -511,8 +527,8 @@ class EmailSignUpForm extends Component {
 
 EmailSignUpForm.navigationOptions = () => {
   return {
-    header: null
+    header: null,
   };
 };
 
-export default EmailSignUpForm;
+export default observer(EmailSignUpForm);

@@ -79,3 +79,6 @@
 
 -keep class org.bouncycastle.** { *; }
 -dontwarn org.bouncycastle.**
+
+# AppsFlyer
+-keep class com.appsflyer.** { *; }

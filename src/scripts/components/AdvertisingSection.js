@@ -8,7 +8,7 @@ import {
   Dimensions,
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Image from 'react-native-scalable-image';
@@ -27,21 +27,21 @@ class AdvertisingSection extends Component {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#00000099'
+        backgroundColor: '#00000099',
       },
 
       frame: {
         width: Dimensions.get('window').width - 30,
         borderRadius: 20,
         overflow: 'hidden',
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
       },
 
       popupInfo: {
         flex: 1,
         position: 'absolute',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
       },
 
       img: {
@@ -54,12 +54,12 @@ class AdvertisingSection extends Component {
         backgroundColor: COLOR_PRIMARY,
         flexDirection: 'row',
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
       },
 
       hideOption: {
         padding: 10,
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
       },
 
       footerText: {
@@ -67,21 +67,21 @@ class AdvertisingSection extends Component {
         padding: 15,
         fontSize: 18,
         color: '#FFFFFF',
-        textAlign: 'center'
-      }
+        textAlign: 'center',
+      },
     });
 
     this.state = {
       ads: [],
       show_popup: true,
-      three_days_checked: false
+      three_days_checked: false,
     };
 
     this.now = moment();
   }
 
   componentDidMount = async () => {
-    let data = await net.getMainPopup();
+    let data = await net.getMainPopup(this.props.popup_type);
     if (data.length === 0) return;
 
     // 안보기로 한 팝업은 아닌지 날짜 확인
@@ -127,6 +127,9 @@ class AdvertisingSection extends Component {
   };
 
   goEvent = info => {
+    if (info.action_type === '') {
+      return;
+    }
     this.setState({ show_popup: false });
     nav.parseDeepLink('welaaa://' + info.action_type + '/' + info.action_param);
   };
@@ -170,12 +173,12 @@ class AdvertisingSection extends Component {
               checked={this.state.three_days_checked}
               onPress={() =>
                 this.setState(previousState => ({
-                  three_days_checked: !previousState.three_days_checked
+                  three_days_checked: !previousState.three_days_checked,
                 }))
               }
               containerStyle={{
                 backgroundColor: 'transparent',
-                borderWidth: 0
+                borderWidth: 0,
               }}
             />
 
