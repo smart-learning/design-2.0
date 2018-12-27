@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
   downloadItemImg: {
     width: 60,
     height: 60,
+    resizeMode: 'contain',
   },
 
   downloadItemInfo: {
