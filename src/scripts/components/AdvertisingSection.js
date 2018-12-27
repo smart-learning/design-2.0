@@ -127,6 +127,9 @@ class AdvertisingSection extends Component {
   };
 
   goEvent = info => {
+    if (info.action_type === '') {
+      return;
+    }
     this.setState({ show_popup: false });
     nav.parseDeepLink('welaaa://' + info.action_type + '/' + info.action_param);
   };

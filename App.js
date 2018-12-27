@@ -4,17 +4,18 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import {
   ActivityIndicator,
-  AsyncStorage,
   AppState,
+  AsyncStorage,
   DeviceEventEmitter,
   Keyboard,
   Linking,
   NativeEventEmitter,
   NetInfo,
   Platform,
-  View,
   ScrollView,
+  View,
 } from 'react-native';
+import appsFlyer from 'react-native-appsflyer';
 import firebase from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
 import {
@@ -27,8 +28,8 @@ import {
 import Native from './src/scripts/commons/native';
 import nav from './src/scripts/commons/nav';
 import net from './src/scripts/commons/net';
-import utils from './src/scripts/commons/utils';
 import store from './src/scripts/commons/store';
+import utils from './src/scripts/commons/utils';
 import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
 import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
@@ -41,11 +42,9 @@ import SignUpLandingPage from './src/scripts/pages/auth/SignUpLandingPage';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
+import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
-import SetAppScreen from './src/scripts/pages/my/SetAppPage';
-
-import appsFlyer from 'react-native-appsflyer';
 
 class Data {
   @observable
@@ -237,9 +236,9 @@ class App extends React.Component {
 
     this.onInstallConversionDataCanceller = appsFlyer.onInstallConversionData(
       data => {
-        console.log('App.js::onInstallConversionData:', data);
+        console.log('AF::onInstallConversionData:', data);
         if (!!data && !!data.data && !!data.data.af_dp) {
-          console.log('App.js::onInstallConversionData:', data.data.af_dp);
+          console.log('AF::onInstallConversionData:', data.data.af_dp);
           nav.parseDeepLink(this.parseDeepLinkUrl(data.data.af_dp));
         }
       },
@@ -251,7 +250,7 @@ class App extends React.Component {
         if (appsFlyer) {
           // Additional Deep Link Logic Here ...
           if (url) {
-            console.log('App.js::deeplink:', url);
+            console.log('AF::deeplink:', url);
             nav.parseDeepLink(this.parseDeepLinkUrl(url));
           }
         }
@@ -274,10 +273,10 @@ class App extends React.Component {
       appsFlyer.initSdk(
         options,
         result => {
-          console.log('appsFlyer.initSdk OK ', result);
+          console.log('AF::appsFlyer.initSdk OK ', result);
         },
         error => {
-          console.error('appsFlyer.initSdk Error', error);
+          console.error('AF::appsFlyer.initSdk Error', error);
         },
       );
     }
