@@ -263,19 +263,23 @@ class App extends React.Component {
     };
 
     if (Platform.OS === 'ios') {
-      options.appId = '123456789';
+      options.appId = '1250319483';
       //Apple Application ID (for iOS only)
     }
 
-    appsFlyer.initSdk(
-      options,
-      result => {
-        console.log('AF::appsFlyer.initSdk OK ', result);
-      },
-      error => {
-        console.error('AF::ppsFlyer.initSdk Error', error);
-      },
-    );
+    if (Platform.OS === 'ios') {
+      // iOS 일 경우엔 appsFlyer.initSdk 가 undefined 이므로 막아둠.
+    } else {
+      appsFlyer.initSdk(
+        options,
+        result => {
+          console.log('AF::appsFlyer.initSdk OK ', result);
+        },
+        error => {
+          console.error('AF::appsFlyer.initSdk Error', error);
+        },
+      );
+    }
 
     if ('ios' === Platform.OS) {
       console.log('======', Native.getPlayerManager());
@@ -291,8 +295,8 @@ class App extends React.Component {
       paymentManagerEmitter.addListener('buyResult', async arg => {
         const result = await Native.buyResult(arg);
 
-        //console.log('result->', result); // true
-        //console.log('arg->', arg); // {success: true, buy_type: "membership" or "audiobook"}
+        console.log('result->', result); // true
+        console.log('arg->', arg); // {success: true, buy_type: "membership" or "audiobook"}
 
         if (result && arg.buy_type === 'membership') {
           this.props.navigation.navigate('HomeScreen', {
@@ -472,7 +476,7 @@ class App extends React.Component {
       nextAppState === 'active'
     ) {
       if (Platform.OS === 'ios') {
-        appsFlyer.trackAppLaunch();
+        //appsFlyer.trackAppLaunch(); // undefined 이라 막아둠.
       }
     }
 
