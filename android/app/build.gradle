@@ -122,8 +122,8 @@ android {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 144
-        versionName "1.50.044"
+        versionCode 145
+        versionName "1.50.045"
         archivesBaseName = "welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
