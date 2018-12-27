@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import appsFlyer from 'react-native-appsflyer';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import Swiper from 'react-native-swiper';
 import { SafeAreaView } from 'react-navigation';
@@ -266,6 +267,30 @@ export default class MembershipPage extends React.Component {
   }
 
   componentDidMount = async () => {
+    /* 2018.12.27
+     * appsFlyer 마케팅 요청
+     * 이메일 가입 시점
+     */
+    if (
+      !!this.props.navigation.state.params &&
+      !!this.props.navigation.state.params.trackEvent
+    ) {
+      appsFlyer.trackEvent(
+        'af_complete_registration',
+        this.props.navigation.getParam('trackEvent'),
+        result => {
+          console.log('AF::appsFlyer.trackEvent', result);
+        },
+        error => {
+          console.error('AF::appsFlyer.trackEvent error ', error);
+        },
+      );
+
+      const params = this.props.navigation.state.params;
+      delete params.trackEvent;
+      this.props.navigation.setParams(params);
+    }
+
     this.disposer = observe(globalStore.buyResult, change => {
       if ('success' === change.name && change.newValue) {
         globalStore.buyResult.success = false;

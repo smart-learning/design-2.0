@@ -351,7 +351,7 @@ class MembershipFormPage extends React.Component {
       });
 
       // 2018.12.11 appsFlyer 마케팅 요청
-      const eventName = 'EVENT_NAME_INITIATED_CHECKOUT';
+      const eventName = 'af_initiated_checkout';
       const eventValues = {
         EVENT_PARAM_CONTENT: params.title,
         EVENT_PARAM_CONTENT_ID: 'membership',
