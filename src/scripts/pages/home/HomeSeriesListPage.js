@@ -20,9 +20,12 @@ import Dummy from '../../../images/dummy-series.png';
 
 const styles = StyleSheet.create({
   contentWrap: {
-    width: '84%',
+    width: '98%',
     marginLeft: 'auto',
     marginRight: 'auto',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   thumbnail: {
     width: '100%',
@@ -73,27 +76,35 @@ class HomeSeriesListPage extends React.Component {
                 <View style={styles.contentWrap}>
                   {itemData.map((item, key) => {
                     return (
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        key={key}
-                        onPress={() =>
-                          this.props.navigation.navigate(
-                            'HomeSeriesDetailPage',
-                            {
-                              itemData: item,
-                              title: '윌라 추천시리즈',
-                            },
-                          )
-                        }
+                      <View
+                        style={{
+                          width: '50%',
+                          paddingLeft: 10,
+                          paddingRight: 10,
+                        }}
                       >
-                        <ImageBackground
-                          // source={{ uri: item.item.list }}
-                          source={Dummy}
-                          resizeMode="cover"
-                          style={styles.thumbnail}
-                          borderRadius={12}
-                        />
-                      </TouchableOpacity>
+                        <TouchableOpacity
+                          activeOpacity={0.9}
+                          key={key}
+                          onPress={() =>
+                            this.props.navigation.navigate(
+                              'HomeSeriesDetailPage',
+                              {
+                                itemData: item,
+                                title: '윌라 추천시리즈',
+                              },
+                            )
+                          }
+                        >
+                          <ImageBackground
+                            // source={{ uri: item.item.list }}
+                            source={Dummy}
+                            resizeMode="cover"
+                            style={styles.thumbnail}
+                            borderRadius={12}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     );
                   })}
                 </View>
