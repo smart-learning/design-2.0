@@ -334,11 +334,20 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
     else if ( _startSeconds || _startSeconds > 0 )
     {
-        NSLog(@"  Player starts the last point. %f", _startSeconds);
-        [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, CMTimeGetSeconds(_urlAsset.duration))];
-        [_player play];
-        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
-        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
+        NSTimeInterval tTime = [self getDuration];
+        if ( isnan(tTime) )
+        {
+            NSLog(@"  Player starts at 0 because of NaN duration.");
+            [_player play];
+        }
+        else
+        {
+            NSLog(@"  Player starts the last point. %f", _startSeconds);
+            [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, tTime)];
+            [_player play];
+            // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+            [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
+        }
     }
     else
     {
@@ -1601,12 +1610,22 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     }
     else if ( _startSeconds || _startSeconds > 0 )
     {
-        NSLog(@"  Player starts the last point. %f", _startSeconds);
-        [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, CMTimeGetSeconds(_urlAsset.duration))];
-        [_player play];
-        [_player setRate : _playbackRate];
-        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
-        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
+        NSTimeInterval tTime = [self getDuration];
+        if ( isnan(tTime) )
+        {
+            NSLog(@"  Player starts at 0 because of NaN duration.");
+            [_player play];
+            [_player setRate : _playbackRate];
+        }
+        else
+        {
+            NSLog(@"  Player starts the last point. %f", _startSeconds);
+            [_player seekToTime : CMTimeMakeWithSeconds(_startSeconds, tTime)];
+            [_player play];
+            [_player setRate : _playbackRate];
+            // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+            [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : _startSeconds];
+        }
     }
     else
     {
