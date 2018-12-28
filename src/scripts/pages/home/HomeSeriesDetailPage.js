@@ -60,7 +60,6 @@ class HomeSeriesDetailPage extends React.Component {
   }
 
   componentDidMount() {
-	  globalStore.isSeriesTransition = false;
 	  globalStore.seriesItemThumbnail = '';
   }
 
