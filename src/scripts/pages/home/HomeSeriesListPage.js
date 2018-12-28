@@ -78,6 +78,7 @@ class HomeSeriesListPage extends React.Component {
                   {itemData.map((item, key) => {
                     return (
                       <View
+                        key={key}
                         style={{
                           width: '50%',
                           paddingLeft: 10,
@@ -86,7 +87,6 @@ class HomeSeriesListPage extends React.Component {
                       >
                         <TouchableOpacity
                           activeOpacity={0.9}
-                          key={key}
                           onPress={() =>
                             this.props.navigation.navigate(
                               'HomeSeriesDetailPage',
