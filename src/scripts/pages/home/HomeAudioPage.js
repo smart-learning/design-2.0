@@ -96,9 +96,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   showMore: {
-    borderColor: '#efefef',
+    borderColor: CommonStyles.COLOR_PRIMARY,
     borderWidth: 1,
-    padding: 3,
+    borderRadius: 18,
+    paddingTop: 2,
+    paddingRight: 10,
+    paddingBottom: 2,
+    paddingLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   audioCategory: {
     marginTop: 0,
