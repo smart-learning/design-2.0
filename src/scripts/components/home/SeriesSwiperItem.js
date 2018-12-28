@@ -14,6 +14,7 @@ import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create({
   thumbnail: {
+    position: 'relative',
     width: '100%',
     paddingTop: '70%',
     paddingBottom: '70%',
@@ -43,7 +44,23 @@ class SeriesSwiperItem extends React.Component {
             source={Dummy}
             resizeMode="contain"
             style={styles.thumbnail}
-          />
+          >
+            <Text
+              ellipsizeMode={'tail'}
+              numberOfLines={2}
+              style={{
+                position: 'absolute',
+                bottom: 15,
+                width: '80%',
+                marginLeft: '10%',
+                fontSize: 13,
+                color: '#ffffff',
+                textAlign: 'center',
+              }}
+            >
+              두줄의 문구가 추가될 경우 이러한 위치에 들어갑니다
+            </Text>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     );
