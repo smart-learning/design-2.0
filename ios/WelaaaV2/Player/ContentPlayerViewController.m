@@ -176,8 +176,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                 _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
         }
       
-        [_args setObject : contentsListArray[indexOfCurrentContent][@"cid"]
-                  forKey : @"cid"];
+        NSString *tempCid = contentsListArray[indexOfCurrentContent][@"cid"];
+        if ( nullStr(tempCid) )
+        {
+            [common presentAlertWithTitle:@"윌라 오디오북" andMessage:@"콘텐츠 ID가 NULL입니다."];
+            return [self closePlayer];
+        }
+        else
+            [_args setObject:contentsListArray[indexOfCurrentContent][@"cid"] forKey:@"cid"];
       
         // 2018.10.23 ~
         // 로컬에 저장된 콘텐츠가 있는지 확인해서 있으면 uri 를 그 경로로 대체한다.
