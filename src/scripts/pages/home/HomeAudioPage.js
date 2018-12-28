@@ -331,7 +331,12 @@ class HomeAudioPage extends React.Component {
             />
 
             <View style={CommonStyles.alignJustifyContentBetween}>
-              <Text style={styles.titleH3}>추천 오디오북</Text>
+              <Text style={styles.titleH3}>
+                {globalStore.welaaaAuth.profile
+                  ? globalStore.welaaaAuth.profile.name || '<윌라회원님>'
+                  : '<윌라회원님>'}
+                님의 추천 오디오북
+              </Text>
             </View>
             <BookRecommendList
               itemData={

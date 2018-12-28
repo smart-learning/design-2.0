@@ -304,7 +304,7 @@ class HomeVideoPage extends React.Component {
                 </View>
 
                 <View style={styles.seriesComponent}>
-                  <SeriesSwiper itemData={this.props.store.homeSeriesData}/>
+                  <SeriesSwiper itemData={this.props.store.homeSeriesData} />
                 </View>
               </View>
             ))}
@@ -403,7 +403,12 @@ class HomeVideoPage extends React.Component {
               />
 
               <View style={CommonStyles.alignJustifyContentBetween}>
-                <Text style={styles.titleH3}>윌라 추천 클래스</Text>
+                <Text style={styles.titleH3}>
+                  {globalStore.welaaaAuth.profile
+                    ? globalStore.welaaaAuth.profile.name || '<윌라회원님>'
+                    : '<윌라회원님>'}
+                  님의 추천 클래스
+                </Text>
               </View>
 
               <ClassList itemData={this.props.store.classRecommendData} />
