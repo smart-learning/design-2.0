@@ -5,29 +5,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import Carousel from 'react-native-snap-carousel';
-import Dummy from '../../../images/dummy-today-1.png';
+import DailySwiperItem from './DailySwiperItem';
 
 const styles = StyleSheet.create({
   dailyContainer: {
-    paddingTop: 30
+    paddingTop: 30,
   },
   slide: {
-    width: Dimensions.get('window').width * 0.8
+    width: Dimensions.get('window').width * 0.8,
   },
   slideInnerContainer: {
     flex: 1,
-    width: Dimensions.get('window').width
+    width: Dimensions.get('window').width,
   },
   thumbnail: {
     width: '100%',
     paddingTop: '70%',
-    paddingBottom: '70%'
-  }
+    paddingBottom: '70%',
+  },
 });
 
 class DailySwiper extends React.Component {
@@ -35,11 +35,7 @@ class DailySwiper extends React.Component {
     return (
       <View style={styles.slide}>
         <TouchableOpacity activeOpacity={0.9}>
-          <ImageBackground
-            source={Dummy}
-            resizeMode="contain"
-            style={styles.thumbnail}
-          />
+          <DailySwiperItem itemData={item}/>
         </TouchableOpacity>
       </View>
     );
