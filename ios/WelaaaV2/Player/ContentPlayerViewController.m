@@ -310,9 +310,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [self becomeFirstResponder];
   
-    // title을 변경합니다. 추후에 사용하지 않을 수 도 있습니다.
-    [_args setObject : _currentContentsInfo[@"data"][@"title"]
-              forKey : @"name"];
+    NSString *mainTitleStr = _currentContentsInfo[@"data"][@"title"];
+    if ( nullStr(mainTitleStr) )
+        [_args setObject:@"" forKey:@"name"];
+    else
+        [_args setObject:mainTitleStr forKey:@"name"];
   
     [self drawPlayerControlHeader];
     [self drawPlayerControlBottom];
