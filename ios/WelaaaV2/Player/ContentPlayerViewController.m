@@ -2190,17 +2190,21 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
 - (void) seekbarDragging : (NSTimeInterval) time
 {
-    // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
-    if ( CMTimeGetSeconds(kCMTimeInvalid) == time )
+    NSLog(@"  [seekbarDragging] still dragging..");
+    NSTimeInterval tTime = [self getDuration];
+    if ( isnan(tTime) )
     {
-        [self closePlayer];
+        [_player pause];
+        [self invalidateTimerOnSlider];
       
-        return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+        return NSLog(@"  [seekbarDragging] Stopped dragging. Duration is NaN!");
     }
-  
-    [_player pause];
-    [self invalidateTimerOnSlider];
-    [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
+    else
+    {
+        [_player pause];
+        [self invalidateTimerOnSlider];
+        [_player seekToTime : CMTimeMakeWithSeconds(time, tTime)];
+    }
 }
 
 - (void) unlockDragging
