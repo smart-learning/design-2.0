@@ -217,6 +217,8 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
     mDelayedStopHandler.removeCallbacksAndMessages(null);
     mSession.release();
+
+    stopForeground(true);
   }
 
   @Override
@@ -254,14 +256,13 @@ public class MediaService extends MediaBrowserServiceCompat implements
    */
   @Override
   public void onPlaybackStart() {
-    mSession.setActive(true);
 
+    mSession.setActive(true);
     mDelayedStopHandler.removeCallbacksAndMessages(null);
 
     // The service needs to continue running even after the bound client (usually a
     // MediaController) disconnects, otherwise the media playback will stop.
     // Calling startService(Intent) will keep the service running until it is explicitly killed.
-
 
     network_try_counter = 0;
     new Thread() {
@@ -292,7 +293,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
     // potentially stopping the service.
     mDelayedStopHandler.removeCallbacksAndMessages(null);
     mDelayedStopHandler.sendEmptyMessageDelayed(0, STOP_DELAY);
-    stopForeground(true);
+//    stopForeground(true);
   }
 
   @Override
