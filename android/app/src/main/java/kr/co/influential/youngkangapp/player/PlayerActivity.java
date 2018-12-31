@@ -902,7 +902,7 @@ public class PlayerActivity extends BasePlayerActivity {
     //플레이어 타이틀
     setPlayerTitle();
     // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
-    setRelatedUI();
+//    setRelatedUI();
 
     // video-course , audiobook //
 //    callbackWebPlayerInfo(CONTENT_TYPE, "");
@@ -1811,13 +1811,13 @@ public class PlayerActivity extends BasePlayerActivity {
     mRelatedViewBtn.setVisibility(GONE);
 
     // 자동 재생 설정 여부에 따라 분기 처리 ..
-    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-      mBtnAutoplay.setVisibility(View.INVISIBLE);
-      mBtnAutoplayCancel.setVisibility(View.VISIBLE);
-    } else {
+//    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+//      mBtnAutoplay.setVisibility(View.INVISIBLE);
+//      mBtnAutoplayCancel.setVisibility(View.VISIBLE);
+//    } else {
       mBtnAutoplay.setVisibility(View.VISIBLE);
       mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
-    }
+//    }
 
     if (Preferences.getWelaaaPlayerSleepMode(getApplicationContext())) {
       mBtnSleeper.setVisibility(View.INVISIBLE);
@@ -2049,11 +2049,11 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.BTN_AUTOPLAY_CANCEL: {
-            Utils.logToast(getApplicationContext(), getString(R.string.auto_play_option));
-
-            mBtnAutoplay.setVisibility(View.VISIBLE);
-            mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
-            Preferences.setWelaaaPlayAutoPlay(getApplicationContext(), false);
+//            Utils.logToast(getApplicationContext(), getString(R.string.auto_play_option));
+//
+//            mBtnAutoplay.setVisibility(View.VISIBLE);
+//            mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
+//            Preferences.setWelaaaPlayAutoPlay(getApplicationContext(), false);
           }
           break;
 
@@ -4606,13 +4606,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
         break;
       case PlaybackStateCompat.STATE_PAUSED:
-        boolean isCompleted = LocalPlayback.getInstance(this).isCompleted();
-
-        if (isCompleted) {
-          if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-//            doAutoPlay();
-          }
-        }
         break;
       case PlaybackStateCompat.STATE_NONE:
       case PlaybackStateCompat.STATE_STOPPED:
@@ -4917,7 +4910,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
               } else {
                 // 자동 재생 여부를 참조하여 재생합니다.
-                if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+//                if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
                   if (getTransportControls() != null) {
                     Uri uri = Uri.parse(dashUrl);
 
@@ -4985,7 +4978,7 @@ public class PlayerActivity extends BasePlayerActivity {
                     playFromUri(uri, extras);
                     // Meta data update 정상 .
                   }
-                }
+//                }
               }
 
             } else if (callbackMethod.equals("download")) {

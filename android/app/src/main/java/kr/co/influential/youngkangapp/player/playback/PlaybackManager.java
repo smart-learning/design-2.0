@@ -816,7 +816,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
               Preferences.setWelaaaPreviewPlay(context, true);
             }
 
-            if (Preferences.getWelaaaPlayAutoPlay(context)) {
+//            if (Preferences.getWelaaaPlayAutoPlay(context)) {
               Uri uri = Uri.parse(dashUrl);
               if (!can_play) {
                 uri = Uri.parse(previewDashUrl);
@@ -912,7 +912,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
               }
 
               mMediaSessionCallback.onPlayFromUri(uri, intent.getExtras());
-            }
+//            }
 
           } catch (Exception e) {
             e.printStackTrace();
