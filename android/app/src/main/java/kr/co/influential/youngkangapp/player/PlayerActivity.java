@@ -902,7 +902,7 @@ public class PlayerActivity extends BasePlayerActivity {
     //플레이어 타이틀
     setPlayerTitle();
     // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
-    setRelatedUI();
+//    setRelatedUI();
 
     // video-course , audiobook //
 //    callbackWebPlayerInfo(CONTENT_TYPE, "");
