@@ -36,7 +36,6 @@
 		63BB3A8721C8BE8700619717 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63BB3AEE21D33F8600619717 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3AC521D33F8600619717 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		63BB3AF021D33F9200619717 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3AEF21D33F9200619717 /* iAd.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		63BB3C0C21D4D41F00619717 /* AppsFlyerLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3C0B21D4D41F00619717 /* AppsFlyerLib.framework */; };
 		63BB3C1221D4D63300619717 /* RNAppsFlyer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BB3C1121D4D63300619717 /* RNAppsFlyer.m */; };
 		68931B4ED4004A27854559A0 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */; };
 		690094A28FD049639582D397 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25C098E5927A47DBA78CF23A /* Octicons.ttf */; };
@@ -94,6 +93,7 @@
 		EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */; };
 		EFE0835921144239006D3F6C /* IAPShare.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832E21144239006D3F6C /* IAPShare.m */; };
 		EFE5F19D219A8951008E10B7 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE5F19C219A8951008E10B7 /* SplashView.m */; };
+		EFF53EE821DCB20100B52972 /* AppsFlyerLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */; };
 		FEB4A0A1AA6341EE8ED27C0B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC83BF071F44EB699826325 /* libRCTFBSDK.a */; };
 /* End PBXBuildFile section */
 
@@ -448,7 +448,6 @@
 		63BB3AC521D33F8600619717 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		63BB3AEF21D33F9200619717 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		63BB3BAF21D3881600619717 /* RNAppsFlyer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNAppsFlyer.xcodeproj; path = "../node_modules/react-native-appsflyer/ios/RNAppsFlyer.xcodeproj"; sourceTree = "<group>"; };
-		63BB3C0B21D4D41F00619717 /* AppsFlyerLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppsFlyerLib.framework; sourceTree = "<group>"; };
 		63BB3C1021D4D63300619717 /* RNAppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNAppsFlyer.h; path = WelaaaV2/RNAppsFlyer.h; sourceTree = "<group>"; };
 		63BB3C1121D4D63300619717 /* RNAppsFlyer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNAppsFlyer.m; path = WelaaaV2/RNAppsFlyer.m; sourceTree = "<group>"; };
 		786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -544,6 +543,7 @@
 		EFE0F3B22117E5F900D4558B /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		EFE5F19B219A8951008E10B7 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashView.h; sourceTree = "<group>"; };
 		EFE5F19C219A8951008E10B7 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashView.m; sourceTree = "<group>"; };
+		EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppsFlyerLib.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -551,6 +551,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFF53EE821DCB20100B52972 /* AppsFlyerLib.framework in Frameworks */,
 				63BB3AF021D33F9200619717 /* iAd.framework in Frameworks */,
 				63BB3AEE21D33F8600619717 /* AdSupport.framework in Frameworks */,
 				EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */,
@@ -562,7 +563,6 @@
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
-				63BB3C0C21D4D41F00619717 /* AppsFlyerLib.framework in Frameworks */,
 				EF056AB921267EFD00F3178B /* StoreKit.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
@@ -695,7 +695,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				63BB3C0B21D4D41F00619717 /* AppsFlyerLib.framework */,
+				EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */,
 				63BB3AEF21D33F9200619717 /* iAd.framework */,
 				63BB3AC521D33F8600619717 /* AdSupport.framework */,
 				63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */,
