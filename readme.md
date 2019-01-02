@@ -98,6 +98,19 @@ https://github.com/fabriciovergara/react-native-localizable
 ```
 
 
+###### AppsFlyerLib
+```
+사용자 이용 정보를 수집하기 위한 마케팅용 트랙킹 라이브러리 입니다.
+https://github.com/AppsFlyerSDK/react-native-appsflyer#appsflyeroninstallconversiondatacallback-functionunregister
+위의 메뉴얼에서 소개하는 Cocoa Pod 방식으로 설치할 경우 기존의 리액트 모듈과의 의존성 문제로 정상 동작하지 않으므로
+라이브러리를 프로젝트에 직접 추가하는 방식을 사용합니다.(관련내용 #630)
+https://support.appsflyer.com/hc/en-us/articles/207032066-AppsFlyer-SDK-Integration-iOS#2-quick-start
+위 링크의 페이지에서 Static Framework 메뉴를 선택해서 AppsFlyerLib.framework 파일을 다운로드 받아(Download 버튼 클릭) Xcode 프로젝트 패널의 Frameworks 그룹에 추가합니다.(Copy items if needed 가 체크되어 있어야 합니다.)
+Project > General 의 Linked Frameworks and Libraries 에 아래의 두 프레임워크를 추가하고 Status 는 Optional 로 설정합니다.
+AdSupport.framework
+iAd.framework
+브랜치로부터 업데이트 받은 프로젝트에 RNAppsFlyer.h 과 RNAppsFlyer.m 이 포함되어 있는지 확인합니다.
+```
 
 
 ### iOS Http 허용

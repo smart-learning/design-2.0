@@ -36,7 +36,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1514</string>
+	<string>1515</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -55,6 +55,8 @@
 	<string>918233258310348</string>
 	<key>FacebookDisplayName</key>
 	<string>smartLearning</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>KAKAO_APP_KEY</key>
 	<string>d24dd5fa11ebda6fc4bd29414eefc5ee</string>
 	<key>LSApplicationQueriesSchemes</key>

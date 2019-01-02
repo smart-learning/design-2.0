@@ -551,6 +551,7 @@ export default class MembershipPage extends React.Component {
       switch (args.type) {
         case 'campus':
           native.buy({
+            title: args.title,
             type: 'membership',
             product_id: 'm_01',
             token: globalStore.accessToken,
@@ -558,6 +559,7 @@ export default class MembershipPage extends React.Component {
           break;
         case 'bookclub':
           native.buy({
+            title: args.title,
             type: 'membership',
             product_id: 'm_04',
             token: globalStore.accessToken,
@@ -565,6 +567,7 @@ export default class MembershipPage extends React.Component {
           break;
         case 'premium':
           native.buy({
+            title: args.title,
             type: 'membership',
             product_id: 'm_02',
             token: globalStore.accessToken,

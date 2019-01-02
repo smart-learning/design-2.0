@@ -34,6 +34,10 @@
 		63A3877D2140D2E800E61CB0 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A3877C2140D2E800E61CB0 /* DatabaseManager.m */; };
 		63BB3A8621C8BE8700619717 /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */; };
 		63BB3A8721C8BE8700619717 /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		63BB3AEE21D33F8600619717 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3AC521D33F8600619717 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		63BB3AF021D33F9200619717 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3AEF21D33F9200619717 /* iAd.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		63BB3C0C21D4D41F00619717 /* AppsFlyerLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3C0B21D4D41F00619717 /* AppsFlyerLib.framework */; };
+		63BB3C1221D4D63300619717 /* RNAppsFlyer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BB3C1121D4D63300619717 /* RNAppsFlyer.m */; };
 		68931B4ED4004A27854559A0 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */; };
 		690094A28FD049639582D397 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25C098E5927A47DBA78CF23A /* Octicons.ttf */; };
 		7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */; };
@@ -332,6 +336,13 @@
 			remoteGlobalIDString = 2D2A28201D9B03D100D4039D;
 			remoteInfo = "RCTAnimation-tvOS";
 		};
+		63BB3BB321D3881700619717 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63BB3BAF21D3881600619717 /* RNAppsFlyer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNAppsFlyer;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -434,6 +445,12 @@
 		63A3877B2140D2E800E61CB0 /* DatabaseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
 		63A3877C2140D2E800E61CB0 /* DatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
 		63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
+		63BB3AC521D33F8600619717 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		63BB3AEF21D33F9200619717 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		63BB3BAF21D3881600619717 /* RNAppsFlyer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNAppsFlyer.xcodeproj; path = "../node_modules/react-native-appsflyer/ios/RNAppsFlyer.xcodeproj"; sourceTree = "<group>"; };
+		63BB3C0B21D4D41F00619717 /* AppsFlyerLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppsFlyerLib.framework; sourceTree = "<group>"; };
+		63BB3C1021D4D63300619717 /* RNAppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNAppsFlyer.h; path = WelaaaV2/RNAppsFlyer.h; sourceTree = "<group>"; };
+		63BB3C1121D4D63300619717 /* RNAppsFlyer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNAppsFlyer.m; path = WelaaaV2/RNAppsFlyer.m; sourceTree = "<group>"; };
 		786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		801AC0D92C074BDBB6EC7D3E /* RNKaKaoSignin.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNKaKaoSignin.xcodeproj; path = "../node_modules/react-native-kakao-signin/ios/RNKaKaoSignin.xcodeproj"; sourceTree = "<group>"; };
@@ -534,6 +551,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63BB3AF021D33F9200619717 /* iAd.framework in Frameworks */,
+				63BB3AEE21D33F8600619717 /* AdSupport.framework in Frameworks */,
 				EF671AFC213E4BA100767E01 /* libsqlite3.tbd in Frameworks */,
 				63BB3A8621C8BE8700619717 /* PallyConFPSSDK.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -543,6 +562,7 @@
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
+				63BB3C0C21D4D41F00619717 /* AppsFlyerLib.framework in Frameworks */,
 				EF056AB921267EFD00F3178B /* StoreKit.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
@@ -635,6 +655,8 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				EF7D07E22144DA5A00B5BCA9 /* RNNativeBase.h */,
 				EF7D07E32144DA5A00B5BCA9 /* RNNativeBase.m */,
+				63BB3C1021D4D63300619717 /* RNAppsFlyer.h */,
+				63BB3C1121D4D63300619717 /* RNAppsFlyer.m */,
 				EF9A9838211144A800EA3A8E /* GoogleService-Info.plist */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				EF8C2D20212B8EAD00140F8F /* WelaaaV2.entitlements */,
@@ -673,6 +695,9 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63BB3C0B21D4D41F00619717 /* AppsFlyerLib.framework */,
+				63BB3AEF21D33F9200619717 /* iAd.framework */,
+				63BB3AC521D33F8600619717 /* AdSupport.framework */,
 				63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */,
 				EF671AD3213E4BA100767E01 /* libsqlite3.tbd */,
 				EF056AB821267EFD00F3178B /* StoreKit.framework */,
@@ -721,6 +746,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		63BB3BB021D3881600619717 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				63BB3BB421D3881700619717 /* libRNAppsFlyer.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -733,6 +766,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				63BB3BAF21D3881600619717 /* RNAppsFlyer.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -1150,6 +1184,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 63BB3BB021D3881600619717 /* Products */;
+					ProjectRef = 63BB3BAF21D3881600619717 /* RNAppsFlyer.xcodeproj */;
+				},
+				{
 					ProductGroup = EF4C84D1213F8D4900699AF1 /* Products */;
 					ProjectRef = D58EAB0BBCFB456B9BC25B11 /* RNFirebase.xcodeproj */;
 				},
@@ -1404,6 +1442,13 @@
 			remoteRef = 5E9157341DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		63BB3BB421D3881700619717 /* libRNAppsFlyer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNAppsFlyer.a;
+			remoteRef = 63BB3BB321D3881700619717 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1558,6 +1603,7 @@
 				EFE081AB2113EB0C006D3F6C /* NSError+LocalizedError.m in Sources */,
 				EFAEBDC3213D33050070F10E /* ContentPlayerTouchView.m in Sources */,
 				EFE081E62113ED85006D3F6C /* NSString+GC.m in Sources */,
+				63BB3C1221D4D63300619717 /* RNAppsFlyer.m in Sources */,
 				EFAEBDB9213D33050070F10E /* UIAlertController+Showable.m in Sources */,
 				EFAEBDBE213D33050070F10E /* PlayerScriptCell.m in Sources */,
 				EF7D6F892113E6D600B71BEB /* ApiManager.m in Sources */,
@@ -1630,6 +1676,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/yohankim/influential/welaaaRN-develop/node_modules/react-native-appsflyer/ios",
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/WelaaaV2/WelaaaV2_Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1638,6 +1685,7 @@
 					"$(SRCROOT)/../node_modules/react-native-kakao-signin/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-localizable/ios/RNLocalizable",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-appsflyer/ios/RNAppsFlyer/**",
 				);
 				INFOPLIST_FILE = WelaaaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1676,6 +1724,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/yohankim/influential/welaaaRN-develop/node_modules/react-native-appsflyer/ios",
 				);
 				GCC_PREFIX_HEADER = "$(SRCROOT)/WelaaaV2/WelaaaV2_Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1684,6 +1733,7 @@
 					"$(SRCROOT)/../node_modules/react-native-kakao-signin/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-localizable/ios/RNLocalizable",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-appsflyer/ios/RNAppsFlyer/**",
 				);
 				INFOPLIST_FILE = WelaaaV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

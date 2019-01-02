@@ -207,7 +207,11 @@ export default {
   },
 
   getConstants() {
-    return RNNativeBase;
+    try {
+      return RNNativeBase;
+    } catch (error) {
+      console.log('native.getConstants() error >', error);
+    }
   },
 
   buy(args) {
