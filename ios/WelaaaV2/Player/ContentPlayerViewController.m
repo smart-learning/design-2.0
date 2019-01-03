@@ -1309,7 +1309,18 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     if ( _slider )
     {
         _slider.minimumValue = 0.f;
-        _slider.maximumValue = CMTimeGetSeconds(_urlAsset.duration);
+        // 여기에서 최초로 duration을 가져옵니다.
+        // 최초 duration 가져오기가 실패하면 일단 팝업안내와 함께 플레이어를 종료하도록 합니다.
+        // 해당 종료처리의 빈도수가 너무 높으면 다른 방안을 생각해봐야 합니다.
+        NSTimeInterval duration = CMTimeGetSeconds(_urlAsset.duration);
+        if ( isnan(duration) )
+        {
+            [self closePlayer];
+          
+            return [common presentAlertWithTitle:@"윌라_개발자" andMessage:@"콘텐츠 로딩이 원활하지 않네요.\n잠시 후 실행해 주세요."];
+        }
+        else
+            _slider.maximumValue = duration;//CMTimeGetSeconds(_urlAsset.duration);
     }
   
     _playbackRate = 1.f;
@@ -1655,7 +1666,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
       
         return [common presentAlertWithTitle:@"Oop...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
     }
-  //[self setPreparedToPlay];
+
     if ( _slider )
     {
         _slider.minimumValue = 0.f;
@@ -2910,8 +2921,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
                                                   andHeaderInfo : [_args objectForKey : @"token"]];
   
-    [_args setObject : playDataDics[@"media_urls"][@"HLS"]
-              forKey : @"uri"];
+    NSString *tempUri = playDataDics[@"media_urls"][@"HLS"];
+    if ( nullStr(tempUri) )
+    {
+        [_listView removeFromSuperview];
+        _listView = nil;
+      
+        return [self showToast : @"선택하신 콘텐츠를 일시적인 오류로 재생할 수 없습니다."];
+    }
+    else
+        [_args setObject:playDataDics[@"media_urls"][@"HLS"] forKey:@"uri"];
   
     if ( _listView )
     {

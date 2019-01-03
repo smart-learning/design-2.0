@@ -20,6 +20,27 @@ RCT_EXPORT_MODULE();
     return webToken;
 }
 
+//
+// Obj-C -> JS (Exporting Constants)
+// https://facebook.github.io/react-native/docs/native-modules-ios#exporting-constants
+//
+- (NSDictionary *) constantsToExport
+{
+  return @{ @"deviceId" : [common getUUID],
+            @"model" : [common getModel],
+            @"versionNumber" : [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"],
+            @"EVENT_PARAM_REGISTRATION_METHOD" : FBSDKAppEventParameterNameRegistrationMethod,
+            @"EVENT_PARAM_CONTENT" : FBSDKAppEventParameterNameContent,
+            @"EVENT_PARAM_CONTENT_ID" : FBSDKAppEventParameterNameContentID,
+            @"EVENT_PARAM_CONTENT_TYPE" : FBSDKAppEventParameterNameContentType,
+            @"EVENT_PARAM_NUM_ITEMS" : FBSDKAppEventParameterNameNumItems,
+            @"EVENT_PARAM_PAYMENT_INFO_AVAILABLE" : FBSDKAppEventParameterNamePaymentInfoAvailable,
+            @"EVENT_PARAM_CURRENCY" : FBSDKAppEventParameterNameCurrency,
+            @"EVENT_NAME_COMPLETED_REGISTRATION" : FBSDKAppEventNameCompletedRegistration,
+            @"EVENT_NAME_INITIATED_CHECKOUT" : FBSDKAppEventNameInitiatedCheckout
+            };
+}
+
 #pragma mark - RCT_EXPORT
 //
 // JS -> Obj-C -> JS callback method
@@ -34,15 +55,9 @@ RCT_EXPORT_METHOD( getF_TOKEN : (RCTResponseSenderBlock) resultCallback )
     resultCallback(@[f_token]); // (error, someData) in js
 }
 
-//
-// Obj-C -> JS (Exporting Constants)
-// https://facebook.github.io/react-native/docs/native-modules-ios#exporting-constants
-//
-- (NSDictionary *) constantsToExport
+RCT_EXPORT_METHOD( constants )
 {
-    return @{ @"deviceId" : [common getUUID],
-              @"model" : [common getModel],
-              @"versionNumber" : [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"] };
+  [self constantsToExport];
 }
 
 @end

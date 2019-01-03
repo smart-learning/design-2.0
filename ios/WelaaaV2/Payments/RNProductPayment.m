@@ -35,6 +35,7 @@ RCT_EXPORT_MODULE();
     NSLog(@"  [-buyProduct:] Product Type : %@", [args objectForKey : @"type"]);        // 'membership' or 'audio_book'.
     NSLog(@"  [-buyProduct:] Product Code : %@", [args objectForKey : @"product_id"]);  // AppStore Connect에 등록한 상품ID.
     NSLog(@"  [-buyProduct:] Access Token : %@", [args objectForKey : @"token"]);       // 윌라의 엑세스 토큰.
+    NSLog(@"  [-buyProduct:] Product Title : %@", [args objectForKey : @"title"]);      // AppsFlyer 이벤트 전송에 필요해서 추가. 2018.12.31.
     NSString *productCode = [args objectForKey : @"product_id"];
     NSString *paymentMode;
 #if DEBUG
@@ -123,9 +124,16 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
-                                [params setObject : @"audiobook"
+                                [params setObject : [args objectForKey : @"type"]
                                            forKey : @"buy_type"];
-                                if ( self->_hasListeners )
+                                [params setObject : [args objectForKey : @"title"]
+                                           forKey : @"buy_title"];
+                                [params setObject : [[IAPShare sharedHelper].iap getLocalePrice : product]
+                                           forKey : @"local_price"];
+                                [params setObject : productCode
+                                           forKey : @"product_id"];
+                              
+                              if ( self->_hasListeners )
                                 {
                                   [self sendEventWithName : @"buyResult"
                                                      body : params];
@@ -143,9 +151,11 @@ RCT_EXPORT_MODULE();
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
-                                [params setObject : @"membership"
-                                           forKey : @"buy_type"];
-                                if ( self->_hasListeners )
+                              [params setObject : [args objectForKey : @"type"]
+                                         forKey : @"buy_type"];
+                              [params setObject : [args objectForKey : @"title"]
+                                         forKey : @"buy_title"];
+                              if ( self->_hasListeners )
                                 {
                                     [self sendEventWithName : @"buyResult"
                                                        body : params];

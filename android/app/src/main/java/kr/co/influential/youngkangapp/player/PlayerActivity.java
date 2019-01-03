@@ -1812,11 +1812,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
     // 자동 재생 설정 여부에 따라 분기 처리 ..
 //    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-//      mBtnAutoplay.setVisibility(View.INVISIBLE);
-//      mBtnAutoplayCancel.setVisibility(View.VISIBLE);
+    mBtnAutoplay.setVisibility(View.INVISIBLE);
+    mBtnAutoplayCancel.setVisibility(View.VISIBLE);
 //    } else {
-    mBtnAutoplay.setVisibility(View.VISIBLE);
-    mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
+//      mBtnAutoplay.setVisibility(View.VISIBLE);
+//      mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
 //    }
 
     if (Preferences.getWelaaaPlayerSleepMode(getApplicationContext())) {

@@ -163,6 +163,7 @@ playground.xcworkspace
 ios/WelaaaV2Tests
 .idea/workspace.xml
 ios/PallyConFPSSDK.framework/
+ios/AppsFlyerLib.framework/
 ios/WelaaaV2Tests/
 ios/WelaaaV2.xcodeproj/project.pbxproj
 android/app/src/main/assets/fonts/AntDesign.ttf
