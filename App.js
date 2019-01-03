@@ -270,19 +270,15 @@ class App extends React.Component {
       //Apple Application ID (for iOS only)
     }
 
-    if (Platform.OS === 'ios') {
-      // iOS 일 경우엔 appsFlyer.initSdk 가 undefined 이므로 막아둠.
-    } else {
-      appsFlyer.initSdk(
-        options,
-        result => {
-          console.log('AF::appsFlyer.initSdk OK ', result);
-        },
-        error => {
-          console.error('AF::appsFlyer.initSdk Error', error);
-        },
-      );
-    }
+    appsFlyer.initSdk(
+      options,
+      result => {
+        console.log('AF::appsFlyer.initSdk OK ', result);
+      },
+      error => {
+        console.error('AF::appsFlyer.initSdk Error', error);
+      },
+    );
 
     if ('ios' === Platform.OS) {
       console.log('======', Native.getPlayerManager());
@@ -298,14 +294,64 @@ class App extends React.Component {
       paymentManagerEmitter.addListener('buyResult', async arg => {
         const result = await Native.buyResult(arg);
 
-        console.log('result->', result); // true
-        console.log('arg->', arg); // {success: true, buy_type: "membership" or "audiobook"}
+        console.log('arg->', arg); // {success: true, buy_type: "membership" or "audio_book", buy_title}
 
         if (result && arg.buy_type === 'membership') {
+          // ios 일 경우 멤버십 구매 이벤트 전송(AppsFlyer)
+          const NativeConstants = Native.getConstants();
+          const EVENT_NAME_INITIATED_CHECKOUT =
+            NativeConstants.EVENT_NAME_INITIATED_CHECKOUT;
+          const EVENT_PARAM_CONTENT = NativeConstants.EVENT_PARAM_CONTENT;
+          const EVENT_PARAM_CONTENT_ID = NativeConstants.EVENT_PARAM_CONTENT_ID;
+          const EVENT_PARAM_CONTENT_TYPE =
+            NativeConstants.EVENT_PARAM_CONTENT_TYPE;
+          const EVENT_PARAM_NUM_ITEMS = NativeConstants.EVENT_PARAM_NUM_ITEMS;
+          const EVENT_PARAM_PAYMENT_INFO_AVAILABLE =
+            NativeConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE;
+          const EVENT_PARAM_CURRENCY = NativeConstants.EVENT_PARAM_CURRENCY;
+
+          const { params } = this.props.navigation.state;
+          const eventName = 'af_initiated_checkout';
+          const eventValues = {
+            EVENT_PARAM_CONTENT: arg.buy_title,
+            EVENT_PARAM_CONTENT_ID: 'membership',
+            EVENT_PARAM_CONTENT_TYPE: arg.buy_type,
+            EVENT_PARAM_NUM_ITEMS: 1,
+            EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
+            EVENT_PARAM_CURRENCY: 'KRW',
+            OS_TYPE: Platform.OS,
+          };
+          appsFlyer.trackEvent(
+            eventName,
+            eventValues,
+            result => {
+              console.log('appsFlyer.trackEvent', result);
+            },
+            error => {
+              console.error('appsFlyer.trackEvent error ', error);
+            },
+          );
+
           this.props.navigation.navigate('HomeScreen', {
             popup_mbs: true,
           });
-        } else if (result && arg.buy_type === 'audiobook') {
+        } else if (result && arg.buy_type === 'audio_book') {
+          let eventValues = {
+            af_price: arg.local_price,
+            af_currency: 'KRW',
+            af_content_id: arg.product_id,
+            af_class: arg.buy_type,
+            af_customer_user_id: store.welaaaAuth.profile.id,
+            os_type: Platform.OS,
+          };
+
+          appsFlyer.trackEvent(
+            'af_purchase',
+            eventValues,
+            result => console.log('appsFlyer.trackEvent', result),
+            error => console.error('appsFlyer.trackEvent error', error),
+          );
+
           nav.goBack(); // 오디오북 구매에 성공하면 뒤로 가게 처리해두었으나 추후엔 해당화면 갱신되는 방식으로 수정해야 한다.
         } else {
           console.log('Native.buyResult error.');
@@ -479,7 +525,7 @@ class App extends React.Component {
       nextAppState === 'active'
     ) {
       if (Platform.OS === 'ios') {
-        //appsFlyer.trackAppLaunch(); // undefined 이라 막아둠.
+        appsFlyer.trackAppLaunch();
       }
     }
 
