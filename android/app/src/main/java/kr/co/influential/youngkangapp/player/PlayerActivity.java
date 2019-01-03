@@ -2296,13 +2296,11 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.WELAAA_ICON_LIST: {
-
-            callbackWebPlayerInfo(CONTENT_TYPE, "");
-            // 일시정지 였으나 대표님 의견에 따라 그냥 재생
-            // if (getTransportControls() != null) {
-            //   getTransportControls().pause();
-            // }
-
+            if (CAN_PLAY) {
+              callbackWebPlayerInfo(CONTENT_TYPE, "");
+            } else {
+              Utils.logToast(getApplicationContext(), getString(R.string.info_no_support));
+            }
           }
           break;
 
