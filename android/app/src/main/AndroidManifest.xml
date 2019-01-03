@@ -257,12 +257,12 @@
       android:screenOrientation="portrait"
       android:configChanges="orientation" />
 
-    <!-- apms push clickNotiReceiver -->
-    <!--<receiver android:name="${noti_receiver_class}" >-->
-      <!--<intent-filter>-->
-        <!--<action android:name="${noti_receiver}" />-->
-      <!--</intent-filter>-->
-    <!--</receiver>-->
+     apms push clickNotiReceiver
+    <receiver android:name="kr.co.influential.youngkangapp.util.TasCustomNotiReceiver" >
+      <intent-filter>
+        <action android:name=".TasCustomNotiReceiverClass" />
+      </intent-filter>
+    </receiver>
 
     <!-- APMS Private RestartReceiver -->
     <receiver android:name="com.apms.sdk.push.mqtt.RestartReceiver">
