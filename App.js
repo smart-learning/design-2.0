@@ -135,6 +135,9 @@ class App extends React.Component {
       // 이용권 가져오기
       store.voucherStatus = await net.getVouchersStatus();
       await utils.updateCartStatus();
+
+      Native.tasDeviceCert();
+
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;

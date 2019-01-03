@@ -249,4 +249,40 @@ export default {
   unsubscribe() {
     return RNProductPayment.unsubscribe();
   },
+
+  tasDeviceCert() {
+
+    const { welaaaAuth } = globalStore;
+
+    console.log('tasDeviceCert > welaaaAuth', welaaaAuth);
+
+    if (welaaaAuth === undefined ||
+      welaaaAuth.profile === undefined ||
+      welaaaAuth.profile.id === undefined) {
+    } else {
+
+      console.log('tasDeviceCert > welaaaAuth', welaaaAuth);
+
+      // DeviceCert (TAS admin 페이지에서 확인되는 단말 등록)
+      let userId = globalStore.welaaaAuth.profile.id;
+      let accessToken = globalStore.welaaaAuth.access_token;
+      let config = {
+        userId: userId.toString(),
+        accessToken: accessToken,
+        currentMembership: globalStore.currentMembership.toString(),
+      };
+
+      try {
+        if (Platform.OS === 'android') {
+          RNNativePlayer.tasDeviceCert(config);
+        } else {
+          // DeviceCert (TAS admin 페이지에서 확인되는 단말 등록)
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+  },
 };
