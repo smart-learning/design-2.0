@@ -1812,11 +1812,11 @@ public class PlayerActivity extends BasePlayerActivity {
 
     // 자동 재생 설정 여부에 따라 분기 처리 ..
 //    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-//      mBtnAutoplay.setVisibility(View.INVISIBLE);
-//      mBtnAutoplayCancel.setVisibility(View.VISIBLE);
+    mBtnAutoplay.setVisibility(View.INVISIBLE);
+    mBtnAutoplayCancel.setVisibility(View.VISIBLE);
 //    } else {
-      mBtnAutoplay.setVisibility(View.VISIBLE);
-      mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
+//      mBtnAutoplay.setVisibility(View.VISIBLE);
+//      mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
 //    }
 
     if (Preferences.getWelaaaPlayerSleepMode(getApplicationContext())) {
@@ -2296,13 +2296,11 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.WELAAA_ICON_LIST: {
-
-            callbackWebPlayerInfo(CONTENT_TYPE, "");
-            // 일시정지 였으나 대표님 의견에 따라 그냥 재생
-            // if (getTransportControls() != null) {
-            //   getTransportControls().pause();
-            // }
-
+            if (CAN_PLAY) {
+              callbackWebPlayerInfo(CONTENT_TYPE, "");
+            } else {
+              Utils.logToast(getApplicationContext(), getString(R.string.info_no_support));
+            }
           }
           break;
 
@@ -4911,73 +4909,73 @@ public class PlayerActivity extends BasePlayerActivity {
               } else {
                 // 자동 재생 여부를 참조하여 재생합니다.
 //                if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-                  if (getTransportControls() != null) {
-                    Uri uri = Uri.parse(dashUrl);
+                if (getTransportControls() != null) {
+                  Uri uri = Uri.parse(dashUrl);
 
-                    if (!can_play) {
-                      uri = Uri.parse(previewDashUrl);
-                      LogHelper.e(TAG, " can_play preview URI " + uri);
-                    }
+                  if (!can_play) {
+                    uri = Uri.parse(previewDashUrl);
+                    LogHelper.e(TAG, " can_play preview URI " + uri);
+                  }
 
-                    intent.setData(uri);
-                    intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                        getwebPlayerInfo().getCname()[getContentId()]);
-                    intent.putExtra(PlaybackManager.THUMB_URL, "");
-                    try {
+                  intent.setData(uri);
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                      getwebPlayerInfo().getCname()[getContentId()]);
+                  intent.putExtra(PlaybackManager.THUMB_URL, "");
+                  try {
 
-                      if ((getDrmUuid("widevine").toString()) != null) {
+                    if ((getDrmUuid("widevine").toString()) != null) {
 
-                        intent
-                            .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                                getDrmUuid("widevine").toString());
-                        intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
-                            "http://tokyo.pallycon.com/ri/licenseManager.do");
-                        intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                        intent.putExtra(PlaybackManager.DRM_USERID,
-                            Preferences.getWelaaaUserId(getApplicationContext()));
-                        intent.putExtra(PlaybackManager.DRM_CID,
-                            getwebPlayerInfo().getCkey()[getContentId()]);
-                        intent.putExtra(PlaybackManager.DRM_OID, "");
-                        intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-                        intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                        intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
-                            getwebPlayerInfo().getGroupTitle());
+                      intent
+                          .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                              getDrmUuid("widevine").toString());
+                      intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                          "http://tokyo.pallycon.com/ri/licenseManager.do");
+                      intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                      intent.putExtra(PlaybackManager.DRM_USERID,
+                          Preferences.getWelaaaUserId(getApplicationContext()));
+                      intent.putExtra(PlaybackManager.DRM_CID,
+                          getwebPlayerInfo().getCkey()[getContentId()]);
+                      intent.putExtra(PlaybackManager.DRM_OID, "");
+                      intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                      intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                      intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
+                          getwebPlayerInfo().getGroupTitle());
 
-                        // fromMediaSession 용도
-                        Gson gson = new Gson();
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
-                        jsonObject.addProperty("can_play", can_play);
-                        jsonObject.addProperty("is_free", is_free);
-                        jsonObject.addProperty("expire_at", expire_at);
-                        jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
-                        String playInfo = gson.toJson(jsonObject);
+                      // fromMediaSession 용도
+                      Gson gson = new Gson();
+                      JsonObject jsonObject = new JsonObject();
+                      jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
+                      jsonObject.addProperty("can_play", can_play);
+                      jsonObject.addProperty("is_free", is_free);
+                      jsonObject.addProperty("expire_at", expire_at);
+                      jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
+                      String playInfo = gson.toJson(jsonObject);
 
-                        intent.putExtra("play_info", playInfo);
+                      intent.putExtra("play_info", playInfo);
 
-                        if (!can_play) {
-                          // 미리 듣기 90초
-                          intent.putExtra("duration", "00:01:30");
-                        } else {
-                          intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
-                        }
-
+                      if (!can_play) {
+                        // 미리 듣기 90초
+                        intent.putExtra("duration", "00:01:30");
+                      } else {
+                        intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
                       }
 
-                    } catch (ParserException e) {
-                      e.printStackTrace();
                     }
 
-                    // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
-                    // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-                    Preferences.setWelaaaPlayListCKey(getApplicationContext(),
-                        getwebPlayerInfo().getCkey()[getContentId()]);
-
-                    Bundle extras = intent.getExtras();
-
-                    playFromUri(uri, extras);
-                    // Meta data update 정상 .
+                  } catch (ParserException e) {
+                    e.printStackTrace();
                   }
+
+                  // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+                  // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+                  Preferences.setWelaaaPlayListCKey(getApplicationContext(),
+                      getwebPlayerInfo().getCkey()[getContentId()]);
+
+                  Bundle extras = intent.getExtras();
+
+                  playFromUri(uri, extras);
+                  // Meta data update 정상 .
+                }
 //                }
               }
 
@@ -5026,18 +5024,22 @@ public class PlayerActivity extends BasePlayerActivity {
                 @Override
                 public void run() {
                   if (CAN_PLAY) {
-                    mBtnSubtitlesOff.setVisibility(View.VISIBLE);
-                    mBtnSubtitlesOn.setVisibility(View.INVISIBLE);
+                    try {
+                      mBtnSubtitlesOff.setVisibility(View.VISIBLE);
+                      mBtnSubtitlesOn.setVisibility(View.INVISIBLE);
 
-                    msubtitls_view.setVisibility(View.VISIBLE);
-                    msubtitls_view_long.setVisibility(View.INVISIBLE);
+                      msubtitls_view.setVisibility(View.VISIBLE);
+                      msubtitls_view_long.setVisibility(View.INVISIBLE);
 
-                    final int positoinY = getTextviewHeight() * getTextViewNumber();
+                      final int positoinY = getTextviewHeight() * getTextViewNumber();
 
-                    mscrollview.scrollTo(0, positoinY);
+                      mscrollview.scrollTo(0, positoinY);
 
-                    simpleExoPlayerView.setControllerShowTimeoutMs(0);
-                    simpleExoPlayerView.setControllerHideOnTouch(false);
+                      simpleExoPlayerView.setControllerShowTimeoutMs(0);
+                      simpleExoPlayerView.setControllerHideOnTouch(false);
+                    } catch (NullPointerException e) {
+                      e.printStackTrace();
+                    }
                   }
                 }
               });
