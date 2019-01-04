@@ -118,7 +118,7 @@ class ClassListItem extends React.Component {
   gotoClassPage = () => {
     this.props.navigation.navigate('ClassDetail', {
       id: this.props.itemData.id,
-      title: this.props.itemData.title,
+      title: ' ',
     });
   };
 

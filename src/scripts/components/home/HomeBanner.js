@@ -32,12 +32,12 @@ export default class HomeBanner extends React.Component {
     } else if (action_type === 'videocourse') {
       this.props.navigation.navigate('ClassDetail', {
         id: action_param,
-        title: '강좌',
+        title: ' ',
       });
     } else if (action_type === 'audiobook') {
       this.props.navigation.navigate('AudioBookDetail', {
         id: action_param,
-        title: '오디오북',
+        title: ' ',
       });
     } else if (action_type === 'outlink') {
       Linking.openURL(action_param);

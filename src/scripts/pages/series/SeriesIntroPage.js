@@ -51,10 +51,12 @@ class SeriesIntroPage extends React.Component {
   gotoDetail = (type, id) => {
     if (type === 'video') {
       this.props.navigation.navigate('ClassDetail', {
+      	title: ' ',
         id: id,
       });
     } else if (type === 'audiobook') {
       this.props.navigation.navigate('AudioBookDetail', {
+      	title: ' ',
         id: id,
       });
     } else {
