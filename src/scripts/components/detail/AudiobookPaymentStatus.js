@@ -15,44 +15,44 @@ const styles = StyleSheet.create({
   paymentContainer: {
     alignItems: 'center',
     position: 'relative',
-    height: 60,
-    paddingRight: 20,
-    paddingLeft: 20,
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
+    height: 45,
+    paddingRight: 25,
+    paddingLeft: 25,
+    backgroundColor: '#ffffff',
   },
   priceContainer: {
     alignItems: 'center',
   },
   priceOriginal: {
     paddingRight: 7,
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#000000',
   },
   priceText: {
     position: 'relative',
     top: 2,
     fontSize: 12,
-    color: '#ffffff',
+    color: '#000000',
   },
   stateText: {
     paddingRight: 7,
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#000000',
   },
   priceDiscount: {
     textDecorationLine: 'line-through',
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#000000',
   },
   buttonBuy: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
-    height: 40,
-    backgroundColor: '#008350',
+    height: 30,
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   buttonBuyText: {
     fontSize: 15,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   buttonAdd: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 40,
+    height: 30,
     paddingRight: 15,
     paddingLeft: 15,
     backgroundColor: '#ffffff',
@@ -92,10 +92,6 @@ const styles = StyleSheet.create({
     height: 11,
     marginRight: 5,
   },
-  bulletMyText: {
-    fontSize: 15,
-    color: '#ffffff',
-  },
   buyText: {
     fontSize: 13,
     color: '#ffffff',
@@ -108,11 +104,11 @@ const styles = StyleSheet.create({
   finishText: {
     paddingTop: 5,
     fontSize: 11,
-    color: '#ffffff',
+    color: '#000000',
   },
   membershipDescText: {
     fontSize: 13,
-    color: '#ffffff',
+    color: '#000000',
   },
 });
 
@@ -138,7 +134,7 @@ export default class AudiobookPaymentStatus extends React.Component {
         </View>
 
         <View>
-          <View style={styles.buttonBuy} borderRadius={5}>
+          <View style={styles.buttonBuy}>
             <Text style={styles.buttonBuyText}>무료</Text>
           </View>
         </View>
@@ -166,7 +162,6 @@ export default class AudiobookPaymentStatus extends React.Component {
               styles.buttonBuy,
               { width: 'auto', alignSelf: 'flex-start', paddingHorizontal: 12 },
             ]}
-            borderRadius={5}
           >
             <Text style={styles.buttonBuyText}>
               {globalStore.currentMembership.type_text}
@@ -191,7 +186,7 @@ export default class AudiobookPaymentStatus extends React.Component {
           </View>
         </View>
         <View>
-          <View style={styles.buttonBuy} borderRadius={5}>
+          <View style={styles.buttonBuy}>
             <Text style={styles.buttonBuyText}>소장중</Text>
           </View>
         </View>
@@ -215,7 +210,7 @@ export default class AudiobookPaymentStatus extends React.Component {
           </View>
         </View>
         <View>
-          <View style={styles.buttonBuy} borderRadius={5}>
+          <View style={styles.buttonBuy}>
             <Text style={styles.buttonBuyText}>소장중</Text>
           </View>
         </View>
@@ -268,7 +263,7 @@ export default class AudiobookPaymentStatus extends React.Component {
 
         <View>
           <TouchableOpacity onPress={this.props.useVoucher}>
-            <View style={[styles.buttonBuy, { width: 120 }]} borderRadius={5}>
+            <View style={[styles.buttonBuy, { width: 120 }]}>
               <Text style={styles.buttonBuyText}>이용권 사용</Text>
             </View>
           </TouchableOpacity>
@@ -317,14 +312,16 @@ export default class AudiobookPaymentStatus extends React.Component {
             ),
           })}
         </View>
-        <View><Text>{Platform.os}</Text></View>
+        <View>
+          <Text>{Platform.os}</Text>
+        </View>
         <View>
           <TouchableOpacity
             onPress={
               Platform.OS === 'ios' ? this.props.iosBuy : this.props.addToCart
             }
           >
-            <View style={styles.buttonBuy} borderRadius={5}>
+            <View style={styles.buttonBuy}>
               <Text style={styles.buttonBuyText}>구매</Text>
             </View>
           </TouchableOpacity>
