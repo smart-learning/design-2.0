@@ -376,6 +376,28 @@ class App extends React.Component {
           Native.downloadState(arg),
         ),
       );
+
+      this.subscription.push(
+        DeviceEventEmitter.addListener('tasLandingUrlHandler', params => {
+
+          console.log('tasLandingUrlHandler', params.TAS_CUSTOM_DATA);
+          // console.log('tasLandingUrlHandler', params);
+          // { TAS_CUSTOM_DATA: '{"l":"welaaa:\\/\\/membership"}' }
+
+          let tasLandingUrl = JSON.parse(params.TAS_CUSTOM_DATA)
+          console.log('tasLandingUrlHandler', tasLandingUrl.l);
+          // nav.parseDeepLink(tasLandingUrl.l);
+          try {
+            if (this.data.welaaaAuthLoaded) {
+              nav.parseDeepLink(tasLandingUrl.l);
+            } else {
+              this.data.queuePath = tasLandingUrl.l;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }),
+      );
     }
 
     Linking.addEventListener('url', this._handleOpenURL);
@@ -430,6 +452,21 @@ class App extends React.Component {
     const notificationOpen = await firebase
       .notifications()
       .getInitialNotification();
+
+
+    // Android 앱 종료 상태에서 TAS 노티로 들어 올때 
+    if (Platform.OS === 'android') {
+      Native.tasLandingUrl(tas_landing_url => {
+        if (undefined === tas_landing_url || '' === tas_landing_url) {
+          return;
+        }
+
+        let tasLandingUrl = JSON.parse(tas_landing_url)
+        nav.parseDeepLink(tasLandingUrl.l);
+
+      });
+    }
+
     if (notificationOpen) {
       // App was opened by a notification
       // Get the action triggered by the notification being opened
@@ -524,6 +561,9 @@ class App extends React.Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
+
+      console.log('nextAppState', 'active')
+
       if (Platform.OS === 'ios') {
         appsFlyer.trackAppLaunch();
       }
@@ -533,6 +573,8 @@ class App extends React.Component {
       this.state.appState.match(/active|foreground/) &&
       nextAppState === 'background'
     ) {
+
+      console.log('nextAppState', 'background')
       if (this.onInstallConversionDataCanceller) {
         this.onInstallConversionDataCanceller();
       }

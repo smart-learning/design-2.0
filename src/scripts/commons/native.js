@@ -287,6 +287,18 @@ export default {
         console.log(error);
       }
     }
+  },
 
+  tasLandingUrl(callback) {
+    try {
+      if (Platform.OS === 'android') {
+        RNNativePlayer.tasLandingUrl(callback);
+      } else {
+
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
   },
 };

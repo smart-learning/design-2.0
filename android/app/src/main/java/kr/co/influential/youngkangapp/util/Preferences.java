@@ -93,6 +93,8 @@ public class Preferences {
 
     private static String WELAAA_PLAY_CLICK = "WELAAA_PLAY_CLICK";
 
+    private static String TAS_LANDING_URL = "TAS_LANDING_URL";
+
     /************************************************************************
      * FOR SETTING : MAIN ACTIVITY 자동로그인
      ************************************************************************/
@@ -1037,5 +1039,21 @@ public class Preferences {
         SharedPreferences.Editor edit = pref.edit();
         edit.putBoolean(WELAAA_PLAY_CLICK, value);
         edit.commit();
+    }
+
+    /************************************************************************
+     * FOR TAS_LANDING_URL : welaaa://custom
+     ************************************************************************/
+    public static void setWelaaaTasLandingUrl(Context context, String landingUrl){
+        SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString(TAS_LANDING_URL, landingUrl );
+        edit.commit();
+
+    }
+
+    public static String getWelaaaTasLandingUrl(Context context){
+        SharedPreferences pref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return pref.getString(TAS_LANDING_URL, "");
     }
 }

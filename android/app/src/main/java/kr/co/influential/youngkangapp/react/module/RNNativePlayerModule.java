@@ -1477,21 +1477,19 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       String preferToken = Preferences.getWelaaaOauthToken(getReactApplicationContext());
 
-      LogHelper.e(TAG , "TAS DeviceCert preferToken " + preferToken);
-      LogHelper.e(TAG , "TAS DeviceCert accessToken " + accessToken);
+      LogHelper.d(TAG , "TAS DeviceCert preferToken " + preferToken);
+      LogHelper.d(TAG , "TAS DeviceCert accessToken " + accessToken);
 
       new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
         public void response(String code, JSONObject json) {
-          //
-          LogHelper.e(TAG , "TAS DeviceCert response " + code + " json " + json);
+          LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
         }
       });
 
       if(!preferToken.equals(accessToken)){
         new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
           public void response(String code, JSONObject json) {
-
-            LogHelper.e(TAG , "TAS LoginPms response " + code + " json " + json);
+            LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
           }
         });
       }
@@ -1503,5 +1501,17 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         e.printStackTrace();
     }
   }
-}
 
+  @ReactMethod
+  public void tasLandingUrl(com.facebook.react.bridge.Callback resultCallback) {
+    try {
+      String landingUrl = Preferences.getWelaaaTasLandingUrl(getReactApplicationContext());
+      
+      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext() , "");
+
+      resultCallback.invoke(landingUrl);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+}
