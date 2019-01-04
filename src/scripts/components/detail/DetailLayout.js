@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 	},
 	tabBorder: {
 		position: 'absolute',
-		top: 7,
+		top: 10,
 		left: '50%',
 		width: 1,
 		height: 14,
