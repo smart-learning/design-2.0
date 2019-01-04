@@ -21,17 +21,18 @@ import TopBanner from './TopBanner';
 import VideoPaymentStatus from './VideoPaymentStatus';
 
 const styles = StyleSheet.create({
-	tab: {
-		position: 'relative',
-	},
-	tabBorder: {
-		position: 'absolute',
-		top: 10,
-		left: '50%',
-		width: 1,
-		height: 14,
-		backgroundColor: '#BEBEBE'
-	},
+  tab: {
+    position: 'relative',
+    marginTop: 35,
+  },
+  tabBorder: {
+    position: 'absolute',
+    top: 10,
+    left: '50%',
+    width: 1,
+    height: 14,
+    backgroundColor: '#BEBEBE',
+  },
   tabContainer: {
     // width: '33.3%',
     width: '50%',

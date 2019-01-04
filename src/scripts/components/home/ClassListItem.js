@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   },
   classTitle: {
     paddingLeft: 12,
+    paddingRight: 12,
     paddingTop: 8,
     fontSize: 14,
     color: '#353A3C',
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 8,
     paddingLeft: 12,
+    paddingRight: 12,
   },
   classLabels: {
     paddingLeft: 12,
