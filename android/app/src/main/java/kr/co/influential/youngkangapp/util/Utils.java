@@ -3,6 +3,8 @@ package kr.co.influential.youngkangapp.util;
 import static android.R.style.Theme_Material_Light_Dialog_Alert;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -32,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import kr.co.influential.youngkangapp.common.Gateway;
 
 /**
@@ -539,7 +542,6 @@ public class Utils {
 
     public static boolean isPackageInstalled(Context ctx, String pkgName) {
 
-
         try {
             ctx.getPackageManager().getPackageInfo(pkgName, PackageManager.GET_ACTIVITIES);
         } catch (NameNotFoundException e) {
@@ -547,5 +549,25 @@ public class Utils {
             return false;
         }
         return true;
+    }
+
+    public static boolean isAppInForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager == null) return false;
+
+        List<RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null) return false;
+
+        final String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (
+                appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                    && appProcess.processName.equals(packageName)
+                ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
