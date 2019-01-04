@@ -403,6 +403,8 @@ public class PlayerActivity extends BasePlayerActivity {
   private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
   public Boolean playOnClickPlayTry = false;
 
+  private long mLastClickTime = 0L;
+
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
@@ -2034,6 +2036,11 @@ public class PlayerActivity extends BasePlayerActivity {
   final View.OnClickListener click_control = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
+      // Preventing multiple clicks, using threshold of 1 second
+      if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+        return;
+      }
+      mLastClickTime = SystemClock.elapsedRealtime();
 
       try {
         Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
