@@ -21,6 +21,17 @@ import TopBanner from './TopBanner';
 import VideoPaymentStatus from './VideoPaymentStatus';
 
 const styles = StyleSheet.create({
+	tab: {
+		position: 'relative',
+	},
+	tabBorder: {
+		position: 'absolute',
+		top: 7,
+		left: '50%',
+		width: 1,
+		height: 14,
+		backgroundColor: '#BEBEBE'
+	},
   tabContainer: {
     // width: '33.3%',
     width: '50%',
@@ -29,15 +40,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    height: 60,
+    height: 35,
     backgroundColor: '#ffffff',
   },
   tabNormalText: {
-    fontSize: 15,
-    color: '#555555',
+    fontSize: 13,
+    color: '#363636',
   },
   tabActiveText: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#34342C',
   },
@@ -45,7 +56,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     bottom: 0,
-    height: 3,
+    height: 2,
     backgroundColor: '#ffffff',
   },
   tabActiveHr: {
@@ -53,7 +64,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     width: '100%',
-    height: 3,
+    height: 2,
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
 });
@@ -326,7 +337,7 @@ class DetailLayout extends React.Component {
           {this.downloadContentsView(vcontent)}
 
           {1 === 2 && <CountView store={this.props.store} />}
-          <View style={CommonStyles.alignJustifyContentBetween}>
+          <View style={[CommonStyles.alignJustifyContentBetween, styles.tab]}>
             <View style={styles.tabContainer}>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -382,7 +393,7 @@ class DetailLayout extends React.Component {
                     )}
                     {this.props.learnType === 'class' && (
                       <Text>
-                        강의목차(
+                        목차(
                         {this.props.store.itemClipData.length})
                       </Text>
                     )}
@@ -397,6 +408,7 @@ class DetailLayout extends React.Component {
                 </View>
               </TouchableOpacity>
             </View>
+            <View style={styles.tabBorder} />
           </View>
           {this.props.store.tabStatus === 'info' && (
             <TabContentInfo
