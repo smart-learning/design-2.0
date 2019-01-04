@@ -174,7 +174,7 @@ export default class TopBanner extends React.Component {
           )}
           {!!this.props.store.itemData.is_exclusive && (
             <View style={[styles.bookLabel, styles.bookLabelExclusive]}>
-              <Text style={[styles.bookLabelText]}>독점</Text>
+              <Text style={[styles.bookLabelText]}>오리지널</Text>
             </View>
           )}
           {!!this.props.store.itemData.is_botm && (

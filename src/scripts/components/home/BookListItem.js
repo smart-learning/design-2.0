@@ -204,7 +204,7 @@ class BookListItem extends React.Component {
                       style={[styles.bookLabel, styles.bookLabelExclusive]}
                       borderRadius={7}
                     >
-                      <Text style={[styles.bookLabelText]}>독점</Text>
+                      <Text style={[styles.bookLabelText]}>오리지널</Text>
                     </View>
                   )}
                   {this.props.itemData.is_botm && (

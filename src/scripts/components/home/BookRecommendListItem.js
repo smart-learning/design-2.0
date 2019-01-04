@@ -148,7 +148,7 @@ class BookRecommendListItem extends React.Component {
                 )}
                 {!!this.props.itemData.is_exclusive && (
                   <View style={[styles.label, styles.labelExclusive]}>
-                    <Text style={styles.labelText}>독점</Text>
+                    <Text style={styles.labelText}>오리지널</Text>
                   </View>
                 )}
                 {!!this.props.itemData.is_free && (

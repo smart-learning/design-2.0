@@ -193,7 +193,7 @@ export default class Summary extends React.Component {
                 style={[styles.classLabel, styles.classLabelExclusive]}
                 borderRadius={10}
               >
-                <Text style={styles.classLabelText}>독점</Text>
+                <Text style={styles.classLabelText}>오리지널</Text>
               </View>
             )}
             {!!this.props.is_free && (

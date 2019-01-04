@@ -172,7 +172,7 @@ class ClassListItem extends React.Component {
             )}
             {!!this.props.itemData.is_exclusive && (
               <View style={[styles.classLabel, styles.classLabelExclusive]}>
-                <Text style={styles.classLabelText}>독점</Text>
+                <Text style={styles.classLabelText}>오리지널</Text>
               </View>
             )}
             {!!this.props.itemData.is_free && (
