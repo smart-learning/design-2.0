@@ -419,6 +419,7 @@ export default {
         case 'in_browser':
           navigate('WebView', { url: schemes[0] });
           break;
+
         case 'inner_browser':
           navigate('InnerWebViewPage', { url: schemes.join('/') });
           break;
