@@ -36,11 +36,9 @@ export default class InnerWebViewPage extends React.Component {
   componentDidMount() {}
 
   render() {
-    let title_json = 'window.postMessage({"func":"title","param":"123"});';
     return (
       <WebView
         onMessage={this.onWebViewMessage}
-        injectedJavaScript={title_json}
         source={{
           uri: this.props.navigation.state.params.url,
         }}
