@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlayPreview from '../../../images/ic-play-preview.png';
-import IcPlay from '../../../images/ic-audio-play.png';
+import IcPlay from '../../../images/ic-play-green.png';
 import moment from 'moment';
 import Native from '../../commons/native';
 import globalStore from '../../commons/store';
@@ -10,54 +10,50 @@ import globalStore from '../../commons/store';
 const styles = StyleSheet.create({
   chapterItem: {
     alignItems: 'center',
+    height: 70,
     paddingTop: 10,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   previewTitleText: {
     minHeight: 30,
     fontWeight: 'bold',
     fontSize: 13,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   itemDepthOneText: {
     width: '75%',
     minHeight: 35,
     fontWeight: 'bold',
     fontSize: 18,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   itemDepthTwoText: {
-    width: '75%',
-    minHeight: 30,
     fontWeight: 'bold',
-    fontSize: 13,
-    color: '#34342C'
+    fontSize: 12,
+    color: '#353A3C',
   },
   itemTitleText: {
-    width: '75%',
-    minHeight: 30,
-    fontSize: 13,
+    fontSize: 12,
     // paddingLeft: 10,
-    color: '#34342C'
+    color: '#353A3C',
   },
   itemTime: {
-    fontSize: 11,
-    color: '#555555'
+    fontSize: 12,
+    color: CommonStyles.COLOR_PRIMARY,
   },
   playButtonPreview: {
     width: 80,
-    height: 25
+    height: 25,
   },
   playButton: {
     width: 30,
-    height: 30
-  }
+    height: 30,
+  },
 });
 
 export default class ChapterListItem extends React.Component {
-
   renderChapterList() {
-    var renderView = false;
+    let renderView = false;
 
     if ('class' === this.props.learnType) {
       if (globalStore && globalStore.currentMembership) {
@@ -74,7 +70,7 @@ export default class ChapterListItem extends React.Component {
       const { paymentType } = this.props;
       if (0 === paymentType || 1 === paymentType || 3 === paymentType) {
         // 무료(0) 이거나 소장중(3)일 경우.
-        // 2018.12.06 단품구매 케이스 paymentType 1 추가 
+        // 2018.12.06 단품구매 케이스 paymentType 1 추가
         renderView = true;
       } else if (globalStore && globalStore.currentMembership) {
         const { type } = globalStore.currentMembership;
@@ -108,72 +104,95 @@ export default class ChapterListItem extends React.Component {
         return <View />;
       }
     }
+  }
 
-
-
+  iemDuration() {
+    const time = moment.duration(this.props.itemData.play_time);
+    return (
+      <Text style={styles.itemTime}>
+        {time.hours() === 0 && (
+          <Text style={styles.playTime}>
+            {time.minutes()}분 {time.seconds()}초
+          </Text>
+        )}
+        {time.hours() > 0 && (
+          <Text style={styles.playTime}>
+            {time.hours()}
+            시간 {time.minutes()}분
+          </Text>
+        )}
+      </Text>
+    );
   }
 
   renderChapterTitleText() {
-
     if (this.props.itemData.a_depth === 1) {
-
       if (this.props.itemData.is_preview) {
         return (
-          <Text style={styles.itemDepthTwoText}>
-            {this.props.itemData.title}
-            <Text style={styles.previewTitleText}>
-              {' '}미리듣기
+          <View style={{ width: '75%' }}>
+            <Text style={styles.itemDepthTwoText}>
+              {this.props.itemData.title}
+              <Text style={styles.previewTitleText}> 미리듣기</Text>
             </Text>
-          </Text>
+            {this.iemDuration()}
+          </View>
         );
       } else {
         return (
-          <Text style={styles.itemDepthTwoText}>
-            {this.props.itemData.title}
-          </Text>
+          <View style={{ width: '75%' }}>
+            <Text style={styles.itemDepthTwoText}>
+              {this.props.itemData.title}
+            </Text>
+            {this.iemDuration()}
+          </View>
         );
       }
     } else if (this.props.itemData.a_depth === 2) {
       if (this.props.itemData.is_preview) {
         return (
-          <Text style={styles.itemTitleText}>
-            {this.props.itemData.title}
-            <Text style={styles.previewTitleText}>
-              {' '}미리듣기
+          <View style={{ width: '75%' }}>
+            <Text style={styles.itemTitleText}>
+              {this.props.itemData.title}
+              <Text style={styles.previewTitleText}> 미리듣기</Text>
             </Text>
-          </Text>
+            {this.iemDuration()}
+          </View>
         );
       } else {
         return (
-          <Text style={styles.itemTitleText}>
-            {this.props.itemData.title}
-          </Text>
+          <View style={{ width: '75%' }}>
+            <Text style={styles.itemTitleText}>
+              {this.props.itemData.title}
+            </Text>
+            {this.iemDuration()}
+          </View>
         );
       }
     } else {
       if (this.props.itemData.is_preview) {
         return (
-          <Text style={styles.itemTitleText}>
-            > {this.props.itemData.title}
-            <Text style={styles.previewTitleText}>
-              {' '}미리듣기
+          <View style={{ width: '75%' }}>
+            <Text style={styles.itemTitleText}>
+              {this.props.itemData.title}
+              <Text style={styles.previewTitleText}> 미리듣기</Text>
             </Text>
-          </Text>
+            {this.iemDuration()}
+          </View>
         );
       } else {
         return (
-          <Text style={styles.itemTitleText}>
-            {'  >'} {this.props.itemData.title}
-          </Text>
+          <View style={{ width: '75%' }}>
+            <Text style={styles.itemTitleText}>
+              {'  >'} {this.props.itemData.title}
+            </Text>
+            {this.iemDuration()}
+          </View>
         );
       }
     }
-
   }
 
   render() {
-    const time = moment.duration(this.props.itemData.play_time);
-
     return (
       <View>
         <View>
@@ -181,28 +200,10 @@ export default class ChapterListItem extends React.Component {
             <View
               style={[
                 CommonStyles.alignJustifyContentBetween,
-                styles.chapterItem
+                styles.chapterItem,
               ]}
             >
-
               {this.renderChapterTitleText()}
-
-              {/* <Text style={styles.itemTitleText}>
-                {this.props.itemData.title}
-              </Text> */}
-              <Text style={styles.itemTime}>
-                {time.hours() === 0 && (
-                  <Text style={styles.playTime}>
-                    {time.minutes()}분 {time.seconds()}초
-                  </Text>
-                )}
-                {time.hours() > 0 && (
-                  <Text style={styles.playTime}>
-                    {time.hours()}
-                    시간 {time.minutes()}분
-                  </Text>
-                )}
-              </Text>
 
               {this.renderChapterList()}
             </View>
@@ -212,7 +213,7 @@ export default class ChapterListItem extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.chapterItem
+                  styles.chapterItem,
                 ]}
               >
                 {this.props.itemData.a_depth === 1 ? (
@@ -224,10 +225,10 @@ export default class ChapterListItem extends React.Component {
                     {this.props.itemData.title}
                   </Text>
                 ) : (
-                      <Text style={styles.itemDepthTwoText}>
-                        > {this.props.itemData.title}
-                      </Text>
-                    )}
+                  <Text style={styles.itemDepthTwoText}>
+                    > {this.props.itemData.title}
+                  </Text>
+                )}
                 <View style={styles.chapterHr} />
               </View>
             </View>
