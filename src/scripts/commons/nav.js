@@ -419,6 +419,9 @@ export default {
         case 'in_browser':
           navigate('WebView', { url: schemes[0] });
           break;
+        case 'inner_browser':
+          navigate('InnerWebViewPage', { url: schemes.join('/') });
+          break;
 
         //이달의 책 바로가기
         case 'botm':
