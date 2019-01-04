@@ -6,7 +6,7 @@ export default class InnerWebViewPage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.props.navigation.setParams({ title: ' ' });
+    this.props.navigation.setParams({ title: 'WELAAA' });
   }
 
   onWebViewMessage = event => {
