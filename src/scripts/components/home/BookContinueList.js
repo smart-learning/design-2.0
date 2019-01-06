@@ -6,24 +6,25 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-green.png';
 import Native from '../../commons/native';
 import Carousel from 'react-native-snap-carousel';
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
   continueList: {
-    marginTop: 20
+    marginTop: 20,
   },
   slide: {
     width: Dimensions.get('window').width * 0.84,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   slideInnerContainer: {
     flex: 1,
-    width: Dimensions.get('window').width
+    width: Dimensions.get('window').width,
   },
   continueItem: {
     position: 'relative',
@@ -31,30 +32,30 @@ const styles = StyleSheet.create({
     height: 62,
     borderWidth: 1,
     borderColor: '#E2E2E2',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   thumbnail: {
     width: 60,
-    height: 60
+    height: 60,
   },
   play: {
     marginRight: 10,
     width: 30,
-    height: 30
+    height: 30,
   },
   continueText: {
     width: '60%',
-    paddingLeft: 12
+    paddingLeft: 12,
   },
   continueTitle: {
     marginBottom: 5,
     fontSize: 14,
-    color: '#353A3C'
+    color: '#353A3C',
   },
   continueName: {
     fontSize: 13,
-    color: '#767B80'
-  }
+    color: '#767B80',
+  },
 });
 
 export default class BookContinueList extends React.Component {
@@ -67,7 +68,7 @@ export default class BookContinueList extends React.Component {
               uri:
                 item.data.teacher && item.data.teacher.images
                   ? item.data.teacher.images.default
-                  : null
+                  : null,
             }}
             resizeMode={'cover'}
             style={styles.thumbnail}
@@ -105,10 +106,12 @@ export default class BookContinueList extends React.Component {
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = windowWidth * 0.84;
 
+    let itemData = _.map(this.props.itemData, item => item);
+
     return (
       <View style={styles.continueList}>
         <Carousel
-          data={this.props.itemData}
+          data={itemData}
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
           itemWidth={itemWidth}

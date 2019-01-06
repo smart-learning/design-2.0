@@ -16,7 +16,7 @@ import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
 import BookMonthly from '../../components/home/BookMonthly';
 import PageCategory from '../../components/PageCategory';
 import BookFreeList from '../../components/home/BookFreeList';
-import BookContinueList from '../../components/home/BookCoutinueList';
+import BookContinueList from '../../components/home/BookContinueList';
 import PTRView from 'react-native-pull-to-refresh';
 import moment from 'moment';
 import BookDaily from '../../components/home/BookDaily';

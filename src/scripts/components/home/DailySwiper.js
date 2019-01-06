@@ -35,7 +35,7 @@ class DailySwiper extends React.Component {
     return (
       <View style={styles.slide}>
         <TouchableOpacity activeOpacity={0.9}>
-          <DailySwiperItem itemData={item}/>
+          <DailySwiperItem itemData={item} />
         </TouchableOpacity>
       </View>
     );
@@ -44,8 +44,9 @@ class DailySwiper extends React.Component {
   render() {
     let itemData = [];
     if (_.isObject(this.props.itemData)) {
-      itemData = this.props.itemData;
+      itemData = _.map(this.props.itemData, item => item);
     }
+    console.log('itemData', itemData);
 
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = windowWidth * 0.8;

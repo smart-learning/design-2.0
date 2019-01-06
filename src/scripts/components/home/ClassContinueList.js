@@ -6,21 +6,22 @@ import {
   TouchableOpacity,
   ImageBackground,
   Image,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-class-continue-play.png';
 import Native from '../../commons/native';
 import Carousel from 'react-native-snap-carousel';
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
   continueGrid: {
-    marginTop: 20
+    marginTop: 20,
   },
   continueItem: {
     width: '48%',
     borderWidth: 1,
-    borderColor: '#dddddd'
+    borderColor: '#dddddd',
   },
   thumbnail: {
     position: 'relative',
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     paddingBottom: '20%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#efefef'
+    backgroundColor: '#efefef',
   },
   thumbnailTitle: {
     position: 'absolute',
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     width: '84%',
     fontSize: 14,
     fontWeight: '800',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   play: {
     position: 'absolute',
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     top: '45%',
     width: 44,
     height: 44,
-  }
+  },
 });
 
 export default class ClassContinueList extends React.Component {
@@ -87,11 +88,13 @@ export default class ClassContinueList extends React.Component {
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = 270;
 
+    let itemData = _.map(this.props.itemData, item => item);
+
     return (
       <View>
         {this.props.itemData && this.props.itemData.length > 0 && (
           <Carousel
-            data={this.props.itemData}
+            data={itemData}
             renderItem={this._renderItem}
             sliderWidth={windowWidth}
             itemWidth={itemWidth}

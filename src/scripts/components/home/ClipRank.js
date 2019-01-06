@@ -2,6 +2,7 @@ import React from 'react';
 import { Dimensions, View } from 'react-native';
 import ClipRankItem from './ClipRankItem';
 import Carousel from 'react-native-snap-carousel';
+import _ from 'underscore';
 
 export default class ClipRank extends React.Component {
   _renderItem({ item }) {
@@ -13,7 +14,7 @@ export default class ClipRank extends React.Component {
     let rankList = [];
 
     if (this.props.itemData && this.props.itemData.length > 0) {
-      list = this.props.itemData;
+      list = _.map(this.props.itemData, item => item);
 
       for (let i = 0; i < Math.ceil(list.length / 10); i++) {
         let rankObject = [];

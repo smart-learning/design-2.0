@@ -3,20 +3,21 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import ClassListItem from './ClassListItem';
 import { observer } from 'mobx-react';
 import Carousel from 'react-native-snap-carousel';
+import _ from 'underscore';
 
 const styles = StyleSheet.create({
   classContainer: {
     marginTop: 20,
-    marginBottom: 30
+    marginBottom: 30,
   },
   slide: {
     width: Dimensions.get('window').width * 0.84,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   slideInnerContainer: {
     flex: 1,
-    width: Dimensions.get('window').width
-  }
+    width: Dimensions.get('window').width,
+  },
 });
 
 @observer
@@ -37,10 +38,12 @@ class ClassList extends React.Component {
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = windowWidth * 0.84;
 
+    let itemData = _.map(this.props.itemData, item => item);
+
     return (
       <View style={styles.classContainer}>
         <Carousel
-          data={this.props.itemData}
+          data={itemData}
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
           itemWidth={itemWidth}

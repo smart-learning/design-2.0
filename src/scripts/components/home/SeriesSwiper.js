@@ -36,7 +36,7 @@ class SeriesSwiper extends React.Component {
   render() {
     let itemData = [];
     if (_.isObject(this.props.itemData)) {
-      itemData = this.props.itemData;
+      itemData = _.map(this.props.itemData, item => item);
     }
 
     let windowWidth = Dimensions.get('window').width;
@@ -52,9 +52,9 @@ class SeriesSwiper extends React.Component {
           layout={'stack'}
           inactiveSlideScal={0.8}
           inactiveSlideOpacity={0.8}
-		  firstItem={10}
-		  loopClonesPerSide={14}
-		  loop={true}
+          firstItem={10}
+          loopClonesPerSide={14}
+          loop={true}
         />
       </View>
     );
