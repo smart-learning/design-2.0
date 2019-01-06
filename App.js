@@ -4,17 +4,18 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import {
   ActivityIndicator,
-  AsyncStorage,
   AppState,
+  AsyncStorage,
   DeviceEventEmitter,
   Keyboard,
   Linking,
   NativeEventEmitter,
   NetInfo,
   Platform,
-  View,
   ScrollView,
+  View,
 } from 'react-native';
+import appsFlyer from 'react-native-appsflyer';
 import firebase from 'react-native-firebase';
 import NotificationUI from 'react-native-in-app-notification';
 import {
@@ -27,8 +28,8 @@ import {
 import Native from './src/scripts/commons/native';
 import nav from './src/scripts/commons/nav';
 import net from './src/scripts/commons/net';
-import utils from './src/scripts/commons/utils';
 import store from './src/scripts/commons/store';
+import utils from './src/scripts/commons/utils';
 import BottomController from './src/scripts/components/BottomController';
 import InAppWebView from './src/scripts/components/InAppWebView';
 import SidebarUserInfo from './src/scripts/components/SidebarUserInfo';
@@ -41,11 +42,9 @@ import SignUpLandingPage from './src/scripts/pages/auth/SignUpLandingPage';
 import HomeScreen from './src/scripts/pages/home/HomeScreen';
 import InquireListScreen from './src/scripts/pages/my/InquireListScreen';
 import MyScreens from './src/scripts/pages/my/MyScreens';
+import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
-import SetAppScreen from './src/scripts/pages/my/SetAppPage';
-
-import appsFlyer from 'react-native-appsflyer';
 
 class Data {
   @observable
@@ -211,7 +210,7 @@ class App extends React.Component {
   handleFirstConnectivityChange = connectionInfo => {
     if (connectionInfo.type === 'none') {
       // nav.parseDeepLink('welaaa://download_page');
-      // #758 네트워크 리트라이 , 네트워크 유실시 정책 수립이 필요합니다. 
+      // #758 네트워크 리트라이 , 네트워크 유실시 정책 수립이 필요합니다.
     }
   };
 
@@ -237,9 +236,9 @@ class App extends React.Component {
 
     this.onInstallConversionDataCanceller = appsFlyer.onInstallConversionData(
       data => {
-        console.log('App.js::onInstallConversionData:', data);
+        console.log('AF::onInstallConversionData:', data);
         if (!!data && !!data.data && !!data.data.af_dp) {
-          console.log('App.js::onInstallConversionData:', data.data.af_dp);
+          console.log('AF::onInstallConversionData:', data.data.af_dp);
           nav.parseDeepLink(this.parseDeepLinkUrl(data.data.af_dp));
         }
       },
@@ -251,7 +250,7 @@ class App extends React.Component {
         if (appsFlyer) {
           // Additional Deep Link Logic Here ...
           if (url) {
-            console.log('App.js::deeplink:', url);
+            console.log('AF::deeplink:', url);
             nav.parseDeepLink(this.parseDeepLinkUrl(url));
           }
         }
@@ -264,17 +263,17 @@ class App extends React.Component {
     };
 
     if (Platform.OS === 'ios') {
-      options.appId = '123456789';
+      options.appId = '1250319483';
       //Apple Application ID (for iOS only)
     }
 
     appsFlyer.initSdk(
       options,
       result => {
-        console.log('appsFlyer.initSdk OK ', result);
+        console.log('AF::appsFlyer.initSdk OK ', result);
       },
       error => {
-        console.error('appsFlyer.initSdk Error', error);
+        console.error('AF::appsFlyer.initSdk Error', error);
       },
     );
 
@@ -292,14 +291,64 @@ class App extends React.Component {
       paymentManagerEmitter.addListener('buyResult', async arg => {
         const result = await Native.buyResult(arg);
 
-        //console.log('result->', result); // true
-        //console.log('arg->', arg); // {success: true, buy_type: "membership" or "audiobook"}
+        console.log('arg->', arg); // {success: true, buy_type: "membership" or "audio_book", buy_title}
 
         if (result && arg.buy_type === 'membership') {
+          // ios 일 경우 멤버십 구매 이벤트 전송(AppsFlyer)
+          const NativeConstants = Native.getConstants();
+          const EVENT_NAME_INITIATED_CHECKOUT =
+            NativeConstants.EVENT_NAME_INITIATED_CHECKOUT;
+          const EVENT_PARAM_CONTENT = NativeConstants.EVENT_PARAM_CONTENT;
+          const EVENT_PARAM_CONTENT_ID = NativeConstants.EVENT_PARAM_CONTENT_ID;
+          const EVENT_PARAM_CONTENT_TYPE =
+            NativeConstants.EVENT_PARAM_CONTENT_TYPE;
+          const EVENT_PARAM_NUM_ITEMS = NativeConstants.EVENT_PARAM_NUM_ITEMS;
+          const EVENT_PARAM_PAYMENT_INFO_AVAILABLE =
+            NativeConstants.EVENT_PARAM_PAYMENT_INFO_AVAILABLE;
+          const EVENT_PARAM_CURRENCY = NativeConstants.EVENT_PARAM_CURRENCY;
+
+          const { params } = this.props.navigation.state;
+          const eventName = 'af_initiated_checkout';
+          const eventValues = {
+            EVENT_PARAM_CONTENT: arg.buy_title,
+            EVENT_PARAM_CONTENT_ID: 'membership',
+            EVENT_PARAM_CONTENT_TYPE: arg.buy_type,
+            EVENT_PARAM_NUM_ITEMS: 1,
+            EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
+            EVENT_PARAM_CURRENCY: 'KRW',
+            OS_TYPE: Platform.OS,
+          };
+          appsFlyer.trackEvent(
+            eventName,
+            eventValues,
+            result => {
+              console.log('appsFlyer.trackEvent', result);
+            },
+            error => {
+              console.error('appsFlyer.trackEvent error ', error);
+            },
+          );
+
           this.props.navigation.navigate('HomeScreen', {
             popup_mbs: true,
           });
-        } else if (result && arg.buy_type === 'audiobook') {
+        } else if (result && arg.buy_type === 'audio_book') {
+          let eventValues = {
+            af_price: arg.local_price,
+            af_currency: 'KRW',
+            af_content_id: arg.product_id,
+            af_class: arg.buy_type,
+            af_customer_user_id: store.welaaaAuth.profile.id,
+            os_type: Platform.OS,
+          };
+
+          appsFlyer.trackEvent(
+            'af_purchase',
+            eventValues,
+            result => console.log('appsFlyer.trackEvent', result),
+            error => console.error('appsFlyer.trackEvent error', error),
+          );
+
           nav.goBack(); // 오디오북 구매에 성공하면 뒤로 가게 처리해두었으나 추후엔 해당화면 갱신되는 방식으로 수정해야 한다.
         } else {
           console.log('Native.buyResult error.');

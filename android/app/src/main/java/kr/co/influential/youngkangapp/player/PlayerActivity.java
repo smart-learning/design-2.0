@@ -10,7 +10,6 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,7 +24,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -43,7 +41,6 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Rational;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -406,6 +403,8 @@ public class PlayerActivity extends BasePlayerActivity {
   private final int FLAG_DOWNLOAD_NETWORK_CHECK = 7;
   public Boolean playOnClickPlayTry = false;
 
+  private long mLastClickTime = 0L;
+
   private final MediaControllerCompat.Callback callback = new MediaControllerCompat.Callback() {
     @Override
     public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
@@ -697,7 +696,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
     mfullSmiLayout = null;
 
-
     getContentResolver().unregisterContentObserver(settingsContentObserver);
 
   }
@@ -775,11 +773,11 @@ public class PlayerActivity extends BasePlayerActivity {
       }
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
-      if(simpleExoPlayerView.getPlayer()!=null){
+      if (simpleExoPlayerView.getPlayer() != null) {
         setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
             getwebPlayerInfo().getCname()[getContentId()]);
 
-      }else{
+      } else {
         initialize();
       }
     }
@@ -906,7 +904,7 @@ public class PlayerActivity extends BasePlayerActivity {
     //플레이어 타이틀
     setPlayerTitle();
     // 지식영상 전용 , 추천 뷰 ,연관 컨텐츠 UI 구성 하기
-    setRelatedUI();
+//    setRelatedUI();
 
     // video-course , audiobook //
 //    callbackWebPlayerInfo(CONTENT_TYPE, "");
@@ -1041,7 +1039,6 @@ public class PlayerActivity extends BasePlayerActivity {
         .setUpMediaRouteButton(getApplicationContext(), menu, R.id.media_route_menu_item);
     return true;
   }
-
 
 //  @Override
 //  protected void onUserLeaveHint() {
@@ -1816,13 +1813,13 @@ public class PlayerActivity extends BasePlayerActivity {
     mRelatedViewBtn.setVisibility(GONE);
 
     // 자동 재생 설정 여부에 따라 분기 처리 ..
-    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-      mBtnAutoplay.setVisibility(View.INVISIBLE);
-      mBtnAutoplayCancel.setVisibility(View.VISIBLE);
-    } else {
-      mBtnAutoplay.setVisibility(View.VISIBLE);
-      mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
-    }
+//    if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+    mBtnAutoplay.setVisibility(View.INVISIBLE);
+    mBtnAutoplayCancel.setVisibility(View.VISIBLE);
+//    } else {
+//      mBtnAutoplay.setVisibility(View.VISIBLE);
+//      mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
+//    }
 
     if (Preferences.getWelaaaPlayerSleepMode(getApplicationContext())) {
       mBtnSleeper.setVisibility(View.INVISIBLE);
@@ -2039,6 +2036,11 @@ public class PlayerActivity extends BasePlayerActivity {
   final View.OnClickListener click_control = new View.OnClickListener() {
     @Override
     public void onClick(View v) {
+      // Preventing multiple clicks, using threshold of 1 second
+      if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+        return;
+      }
+      mLastClickTime = SystemClock.elapsedRealtime();
 
       try {
         Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
@@ -2054,11 +2056,11 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.BTN_AUTOPLAY_CANCEL: {
-            Utils.logToast(getApplicationContext(), getString(R.string.auto_play_option));
-
-            mBtnAutoplay.setVisibility(View.VISIBLE);
-            mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
-            Preferences.setWelaaaPlayAutoPlay(getApplicationContext(), false);
+//            Utils.logToast(getApplicationContext(), getString(R.string.auto_play_option));
+//
+//            mBtnAutoplay.setVisibility(View.VISIBLE);
+//            mBtnAutoplayCancel.setVisibility(View.INVISIBLE);
+//            Preferences.setWelaaaPlayAutoPlay(getApplicationContext(), false);
           }
           break;
 
@@ -2301,13 +2303,11 @@ public class PlayerActivity extends BasePlayerActivity {
           break;
 
           case R.id.WELAAA_ICON_LIST: {
-
-            callbackWebPlayerInfo(CONTENT_TYPE, "");
-            // 일시정지 였으나 대표님 의견에 따라 그냥 재생
-            // if (getTransportControls() != null) {
-            //   getTransportControls().pause();
-            // }
-
+            if (CAN_PLAY) {
+              callbackWebPlayerInfo(CONTENT_TYPE, "");
+            } else {
+              Utils.logToast(getApplicationContext(), getString(R.string.info_no_support));
+            }
           }
           break;
 
@@ -2911,6 +2911,10 @@ public class PlayerActivity extends BasePlayerActivity {
    *  긴 자막 UI
    *******************************************************************/
   public void setFullText() {
+    if (mSubtitlsmemo == null || mSubtitlsmemo.length <= 2) {
+      return;
+    }
+
     final LinearLayout textFullView = findViewById(R.id.fullTextTimeView);
     LinearLayout textFullTimeView = findViewById(R.id.fullTextView);
     LinearLayout longScroll_font = findViewById(R.id.longScroll_font);
@@ -2988,10 +2992,10 @@ public class PlayerActivity extends BasePlayerActivity {
         final TextView highlightView = longSubTitlesTextView[j];
         final TextView highlightTimeView = longSubTitlesTextTimeView[j];
 
-        try{
+        try {
           textFullView.addView(highlightView);
           textFullTimeView.addView(highlightTimeView);
-        }catch (Exception e){
+        } catch (Exception e) {
           e.printStackTrace();
         }
 
@@ -3989,22 +3993,23 @@ public class PlayerActivity extends BasePlayerActivity {
             String gTitle = getwebPlayerInfo().getGroupTitle();
             list_grop_title.setText(gTitle);
 
-            for(int i=0; i <lectureListItemdapter.getCount(); i++){
-              LogHelper.e(TAG , "send lectureListItemdapter getItem " + lectureListItemdapter.getItem(i) );
+            for (int i = 0; i < lectureListItemdapter.getCount(); i++) {
+              LogHelper
+                  .e(TAG, "send lectureListItemdapter getItem " + lectureListItemdapter.getItem(i));
               // 값은 보이는데 .. 보이지는 않구나 ..
             }
 
-            LogHelper.e(TAG , "lecturListView.getVisibility() " + lecturListView.getVisibility() );
-            LogHelper.e(TAG , "VISIBLE " + View.VISIBLE );
-            LogHelper.e(TAG , "INVISIBLE " + View.INVISIBLE );
-            LogHelper.e(TAG , "GONE " + View.GONE );
+            LogHelper.e(TAG, "lecturListView.getVisibility() " + lecturListView.getVisibility());
+            LogHelper.e(TAG, "VISIBLE " + View.VISIBLE);
+            LogHelper.e(TAG, "INVISIBLE " + View.INVISIBLE);
+            LogHelper.e(TAG, "GONE " + View.GONE);
 
-            LogHelper.e(TAG , "send lectureListItemdapter getCount " +lectureListItemdapter.getCount() );
+            LogHelper
+                .e(TAG, "send lectureListItemdapter getCount " + lectureListItemdapter.getCount());
 
             Preferences.setWelaaaRecentPlayListUse(getApplicationContext(), false, "0");
           }
         });
-
 
 
       } else if (methodName.equals("audiobook")) {
@@ -4606,13 +4611,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
         break;
       case PlaybackStateCompat.STATE_PAUSED:
-        boolean isCompleted = LocalPlayback.getInstance(this).isCompleted();
-
-        if (isCompleted) {
-          if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-//            doAutoPlay();
-          }
-        }
         break;
       case PlaybackStateCompat.STATE_NONE:
       case PlaybackStateCompat.STATE_STOPPED:
@@ -4917,75 +4915,75 @@ public class PlayerActivity extends BasePlayerActivity {
 
               } else {
                 // 자동 재생 여부를 참조하여 재생합니다.
-                if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
-                  if (getTransportControls() != null) {
-                    Uri uri = Uri.parse(dashUrl);
+//                if (Preferences.getWelaaaPlayAutoPlay(getApplicationContext())) {
+                if (getTransportControls() != null) {
+                  Uri uri = Uri.parse(dashUrl);
 
-                    if (!can_play) {
-                      uri = Uri.parse(previewDashUrl);
-                      LogHelper.e(TAG, " can_play preview URI " + uri);
-                    }
+                  if (!can_play) {
+                    uri = Uri.parse(previewDashUrl);
+                    LogHelper.e(TAG, " can_play preview URI " + uri);
+                  }
 
-                    intent.setData(uri);
-                    intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                        getwebPlayerInfo().getCname()[getContentId()]);
-                    intent.putExtra(PlaybackManager.THUMB_URL, "");
-                    try {
+                  intent.setData(uri);
+                  intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                      getwebPlayerInfo().getCname()[getContentId()]);
+                  intent.putExtra(PlaybackManager.THUMB_URL, "");
+                  try {
 
-                      if ((getDrmUuid("widevine").toString()) != null) {
+                    if ((getDrmUuid("widevine").toString()) != null) {
 
-                        intent
-                            .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                                getDrmUuid("widevine").toString());
-                        intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
-                            "http://tokyo.pallycon.com/ri/licenseManager.do");
-                        intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                        intent.putExtra(PlaybackManager.DRM_USERID,
-                            Preferences.getWelaaaUserId(getApplicationContext()));
-                        intent.putExtra(PlaybackManager.DRM_CID,
-                            getwebPlayerInfo().getCkey()[getContentId()]);
-                        intent.putExtra(PlaybackManager.DRM_OID, "");
-                        intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-                        intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                        intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
-                            getwebPlayerInfo().getGroupTitle());
+                      intent
+                          .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                              getDrmUuid("widevine").toString());
+                      intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                          "http://tokyo.pallycon.com/ri/licenseManager.do");
+                      intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                      intent.putExtra(PlaybackManager.DRM_USERID,
+                          Preferences.getWelaaaUserId(getApplicationContext()));
+                      intent.putExtra(PlaybackManager.DRM_CID,
+                          getwebPlayerInfo().getCkey()[getContentId()]);
+                      intent.putExtra(PlaybackManager.DRM_OID, "");
+                      intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                      intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                      intent.putExtra(PlaybackManager.DRM_CONTENT_TITLE,
+                          getwebPlayerInfo().getGroupTitle());
 
-                        // fromMediaSession 용도
-                        Gson gson = new Gson();
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
-                        jsonObject.addProperty("can_play", can_play);
-                        jsonObject.addProperty("is_free", is_free);
-                        jsonObject.addProperty("expire_at", expire_at);
-                        jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
-                        String playInfo = gson.toJson(jsonObject);
+                      // fromMediaSession 용도
+                      Gson gson = new Gson();
+                      JsonObject jsonObject = new JsonObject();
+                      jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
+                      jsonObject.addProperty("can_play", can_play);
+                      jsonObject.addProperty("is_free", is_free);
+                      jsonObject.addProperty("expire_at", expire_at);
+                      jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
+                      String playInfo = gson.toJson(jsonObject);
 
-                        intent.putExtra("play_info", playInfo);
+                      intent.putExtra("play_info", playInfo);
 
-                        if (!can_play) {
-                          // 미리 듣기 90초
-                          intent.putExtra("duration", "00:01:30");
-                        } else {
-                          intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
-                        }
-
+                      if (!can_play) {
+                        // 미리 듣기 90초
+                        intent.putExtra("duration", "00:01:30");
+                      } else {
+                        intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[contentId]);
                       }
 
-                    } catch (ParserException e) {
-                      e.printStackTrace();
                     }
 
-                    // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
-                    // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-                    Preferences.setWelaaaPlayListCKey(getApplicationContext(),
-                        getwebPlayerInfo().getCkey()[getContentId()]);
-
-                    Bundle extras = intent.getExtras();
-
-                    playFromUri(uri, extras);
-                    // Meta data update 정상 .
+                  } catch (ParserException e) {
+                    e.printStackTrace();
                   }
+
+                  // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+                  // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+                  Preferences.setWelaaaPlayListCKey(getApplicationContext(),
+                      getwebPlayerInfo().getCkey()[getContentId()]);
+
+                  Bundle extras = intent.getExtras();
+
+                  playFromUri(uri, extras);
+                  // Meta data update 정상 .
                 }
+//                }
               }
 
             } else if (callbackMethod.equals("download")) {
@@ -5033,18 +5031,22 @@ public class PlayerActivity extends BasePlayerActivity {
                 @Override
                 public void run() {
                   if (CAN_PLAY) {
-                    mBtnSubtitlesOff.setVisibility(View.VISIBLE);
-                    mBtnSubtitlesOn.setVisibility(View.INVISIBLE);
+                    try {
+                      mBtnSubtitlesOff.setVisibility(View.VISIBLE);
+                      mBtnSubtitlesOn.setVisibility(View.INVISIBLE);
 
-                    msubtitls_view.setVisibility(View.VISIBLE);
-                    msubtitls_view_long.setVisibility(View.INVISIBLE);
+                      msubtitls_view.setVisibility(View.VISIBLE);
+                      msubtitls_view_long.setVisibility(View.INVISIBLE);
 
-                    final int positoinY = getTextviewHeight() * getTextViewNumber();
+                      final int positoinY = getTextviewHeight() * getTextViewNumber();
 
-                    mscrollview.scrollTo(0, positoinY);
+                      mscrollview.scrollTo(0, positoinY);
 
-                    simpleExoPlayerView.setControllerShowTimeoutMs(0);
-                    simpleExoPlayerView.setControllerHideOnTouch(false);
+                      simpleExoPlayerView.setControllerShowTimeoutMs(0);
+                      simpleExoPlayerView.setControllerHideOnTouch(false);
+                    } catch (NullPointerException e) {
+                      e.printStackTrace();
+                    }
                   }
                 }
               });

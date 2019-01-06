@@ -324,11 +324,12 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
 let _navigator;
 
 function setTopLevelNavigator(navigatorRef) {
-  console.log('setTopLevelNavigator');
+  console.log('nav.js::setTopLevelNavigator');
   _navigator = navigatorRef;
 }
 
 function navigate(routeName, params) {
+  console.log('nav.js::navigate:', routeName, params);
   _navigator.dispatch(
     NavigationActions.navigate({
       routeName,
@@ -338,12 +339,12 @@ function navigate(routeName, params) {
 }
 
 function goBack() {
-  console.log('nav.js::goBack', _navigator);
+  console.log('nav.js::goBack');
   _navigator.dispatch(NavigationActions.back());
 }
 
 function goHome() {
-  console.log('nav.js::goHome', _navigator);
+  console.log('nav.js::goHome');
   navigate('HomeScreen', {});
 }
 
@@ -426,6 +427,10 @@ export default {
           navigate('WebView', { url: schemes[0] });
           break;
 
+        case 'inner_browser':
+          navigate('InnerWebViewPage', { url: schemes.join('/') });
+          break;
+
         //이달의 책 바로가기
         case 'botm':
           const params = schemes[0].split(',');
@@ -489,7 +494,7 @@ export default {
           switch (schemes[0]) {
             case '035':
               navigate('Series_4genPage', {
-                title: '4차 산업 혁명 시리즈',
+                title: '윌라 추천 시리즈',
               });
               break;
             default:

@@ -771,11 +771,11 @@ public final class LocalPlayback implements Playback,
           break;
         case Player.STATE_ENDED:
           if (mCallback != null) {
-            if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
+//            if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
               mCallback.doAutoPlay();
-            } else {
-              mCallback.onCompletion();
-            }
+//            } else {
+//              mCallback.onCompletion();
+//            }
           }
           break;
       }

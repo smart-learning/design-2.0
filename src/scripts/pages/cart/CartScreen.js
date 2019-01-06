@@ -1,22 +1,24 @@
+import numeral from 'numeral';
 import React from 'react';
 import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import appsFlyer from 'react-native-appsflyer';
 import { Header, SafeAreaView, withNavigation } from 'react-navigation';
-import numeral from 'numeral';
-import net from '../../commons/net';
-import { CartItem } from '../../components/cart/CartItem';
 import CommonStyles from '../../../styles/common';
-import utils from '../../commons/utils';
-import PurchaseView from '../../components/PurchaseView';
+import net from '../../commons/net';
 import globalStore from '../../commons/store';
+import utils from '../../commons/utils';
+import { CartItem } from '../../components/cart/CartItem';
+import PurchaseView from '../../components/PurchaseView';
 
 const styles = StyleSheet.create({
   loading: {
@@ -186,6 +188,28 @@ class CartScreen extends React.Component {
           },
         ],
       );
+
+      /* 2018.12.26
+       * appsFlyer 마케팅 요청
+       * 개별구매(장바구니)
+       */
+      this.state.cartItems.map(item => {
+        let eventValues = {
+          af_price: item.user_price,
+          af_currency: 'KRW',
+          af_content_id: item.id,
+          af_class: item.type,
+          af_customer_user_id: globalStore.welaaaAuth.profile.id,
+          os_type: Platform.OS,
+        };
+
+        appsFlyer.trackEvent(
+          'af_purchase',
+          eventValues,
+          result => console.log('appsFlyer.trackEvent', result),
+          error => console.error('appsFlyer.trackEvent error', error),
+        );
+      });
     } catch (e) {
       console.log('결제 실패', e);
       Alert.alert('결제 실패', JSON.stringify(resp.data));

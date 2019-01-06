@@ -391,7 +391,7 @@ class HomePage extends React.Component {
       this.setState({ show_popup: true });
     }
 
-    if ('ios' === Platform.OS && params && true === params.popup_mbs) {
+    if (params && true === params.popup_mbs) {
       this.props.navigation.state.params.popup_mbs = undefined;
       // 멤버십 구매한 직후의 사용자 대상으로 별도 팝업(프로모션 등)을 띄워주고자 할 때 여기에서.
       // TODO: 팝업이 있는 경우와 없는 경우 혹은 네트워크 실패시의 예외처리.

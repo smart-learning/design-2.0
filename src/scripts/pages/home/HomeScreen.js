@@ -24,6 +24,7 @@ import CartScreen from '../cart/CartScreen';
 import SerieseIntro from '../series/SeriesIntroPage';
 import HomeSeriesListPage from './HomeSeriesListPage';
 import HomeSeriesDetailPage from './HomeSeriesDetailPage';
+import InnerWebViewPage from '../in_web/InnerWebViewPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -103,6 +104,10 @@ const HomeScreen = createStackNavigator(
     HomeSeriesDetailPage: {
       screen: HomeSeriesDetailPage,
       navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+    },
+    InnerWebViewPage: {
+      screen: InnerWebViewPage,
+      navigationOptions: NAV_OPTS_STACK,
     },
   },
 

@@ -40,6 +40,7 @@ class AudioBookDetailPage extends React.Component {
 
   iosBuy = async () => {
     native.buy({
+      title: this.data.itemData.title,
       type: 'audio_book',
       product_id: this.data.itemData.pay_key_ios,
       token: globalStore.accessToken,
@@ -140,7 +141,11 @@ class AudioBookDetailPage extends React.Component {
     let permissionLoading = true;
     let permission = null;
 
-    let { cid, orig_price: origPrice, pay_money_ios: iosPrice } = this.data.itemData;
+    let {
+      cid,
+      orig_price: origPrice,
+      pay_money_ios: iosPrice,
+    } = this.data.itemData;
 
     this.setState({ permissionLoading });
 
@@ -151,7 +156,7 @@ class AudioBookDetailPage extends React.Component {
         canPlay: false,
         origPrice: origPrice,
         userPrice: origPrice,
-		iosPrice: iosPrice,
+        iosPrice: iosPrice,
       };
       this.setState({
         permission,

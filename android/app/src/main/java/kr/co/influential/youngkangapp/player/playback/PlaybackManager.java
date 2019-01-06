@@ -233,6 +233,11 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     String json = Preferences.getWelaaaWebPlayInfo(context);
     WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
 
+    if (mWebPlayerInfo != null && mWebPlayerInfo.getCkey() != null
+        && mWebPlayerInfo.getCkey().length <= currentId) {
+      currentId = 0;
+    }
+
     int currentPosition = 0;
     for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
       if (mWebPlayerInfo.getCkey()[i].equals(mWebPlayerInfo.getCkey()[currentId])) {
@@ -294,7 +299,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
       String key = keys.next();
       String value = licenseInfo.get(key);
 
-      if(key.equals("PlaybackDurationRemaining") || key.equals("LicenseDurationRemaining")){
+      if (key.equals("PlaybackDurationRemaining") || key.equals("LicenseDurationRemaining")) {
         try {
           if (Long.parseLong(value) == 0x7fffffffffffffffL) {
             value = "Unlimited";
@@ -512,7 +517,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     builder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, title);
     builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
         Utils.webTimeToSec(duration));
-    builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE , title);
+    builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, title);
 
     // drm information.
     builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
@@ -816,103 +821,103 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
               Preferences.setWelaaaPreviewPlay(context, true);
             }
 
-            if (Preferences.getWelaaaPlayAutoPlay(context)) {
-              Uri uri = Uri.parse(dashUrl);
-              if (!can_play) {
-                uri = Uri.parse(previewDashUrl);
-              } else {
-                uri = Uri.parse(dashUrl);
-              }
+//            if (Preferences.getWelaaaPlayAutoPlay(context)) {
+            Uri uri = Uri.parse(dashUrl);
+            if (!can_play) {
+              uri = Uri.parse(previewDashUrl);
+            } else {
+              uri = Uri.parse(dashUrl);
+            }
 
-              String name = mWebPlayerInfo.getCname()[currentId];
-              String drmSchemeUuid = Utils.welaaaAndroidDrmSchemeUuid();
-              String drmLicenseUrl = Utils.welaaaDrmLicenseUrl();
-              String userId = Preferences.getWelaaaUserId(context);
-              String cId = mWebPlayerInfo.getCkey()[currentId];
-              String oId = "";
-              String token = "";
-              String thumbUrl = "";
-              String customData = "";
+            String name = mWebPlayerInfo.getCname()[currentId];
+            String drmSchemeUuid = Utils.welaaaAndroidDrmSchemeUuid();
+            String drmLicenseUrl = Utils.welaaaDrmLicenseUrl();
+            String userId = Preferences.getWelaaaUserId(context);
+            String cId = mWebPlayerInfo.getCkey()[currentId];
+            String oId = "";
+            String token = "";
+            String thumbUrl = "";
+            String customData = "";
 
-              MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
-              builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
-              builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
-              builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
-                  Utils.webTimeToSec(mWebPlayerInfo.getCplayTime()[currentId]));
-              // drm information.
-              builder.putString(PlaybackManager.DRM_CONTENT_URI_EXTRA, uri.toString());
-              builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
-              builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                  DemoUtil.getDrmUuid(drmSchemeUuid).toString());
-              builder.putString(PlaybackManager.DRM_LICENSE_URL, drmLicenseUrl);
-              builder.putString(PlaybackManager.DRM_USERID, userId);
-              builder.putString(PlaybackManager.DRM_CID, cId);
-              builder.putString(PlaybackManager.DRM_OID, oId);
-              builder.putString(PlaybackManager.DRM_TOKEN, token);
-              builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
-              builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
+            MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
+            builder.putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString());
+            builder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, name);
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
+                Utils.webTimeToSec(mWebPlayerInfo.getCplayTime()[currentId]));
+            // drm information.
+            builder.putString(PlaybackManager.DRM_CONTENT_URI_EXTRA, uri.toString());
+            builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
+            builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                DemoUtil.getDrmUuid(drmSchemeUuid).toString());
+            builder.putString(PlaybackManager.DRM_LICENSE_URL, drmLicenseUrl);
+            builder.putString(PlaybackManager.DRM_USERID, userId);
+            builder.putString(PlaybackManager.DRM_CID, cId);
+            builder.putString(PlaybackManager.DRM_OID, oId);
+            builder.putString(PlaybackManager.DRM_TOKEN, token);
+            builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
+            builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
 
-              // fromMediaSession 용도
-              JsonObject jsonObject = new JsonObject();
-              jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
-              jsonObject.addProperty("can_play", can_play);
-              jsonObject.addProperty("is_free", is_free);
-              jsonObject.addProperty("expire_at", expire_at);
-              jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
-              String playInfo = gson.toJson(jsonObject);
+            // fromMediaSession 용도
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("type", mWebPlayerInfo.getCon_class());
+            jsonObject.addProperty("can_play", can_play);
+            jsonObject.addProperty("is_free", is_free);
+            jsonObject.addProperty("expire_at", expire_at);
+            jsonObject.addProperty("history_start_seconds", contentHistory_seconds);
+            String playInfo = gson.toJson(jsonObject);
 
-              LogHelper.e(TAG, " LocalPlayBack playInfo " + playInfo);
-              builder.putString("play_info", playInfo);
+            LogHelper.e(TAG, " LocalPlayBack playInfo " + playInfo);
+            builder.putString("play_info", playInfo);
 
-              currentMedia = builder.build();
+            currentMedia = builder.build();
 
-              Intent intent = new Intent(context, MediaService.class);
+            Intent intent = new Intent(context, MediaService.class);
 
-              intent.setData(uri);
-              intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
-                  mWebPlayerInfo.getCname()[currentId]);
-              intent.putExtra(PlaybackManager.THUMB_URL, "");
-              try {
+            intent.setData(uri);
+            intent.putExtra(PlaybackManager.DRM_CONTENT_NAME_EXTRA,
+                mWebPlayerInfo.getCname()[currentId]);
+            intent.putExtra(PlaybackManager.THUMB_URL, "");
+            try {
 
-                if ((DemoUtil.getDrmUuid("widevine").toString()) != null) {
+              if ((DemoUtil.getDrmUuid("widevine").toString()) != null) {
 
-                  intent
-                      .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
-                          DemoUtil.getDrmUuid("widevine").toString());
-                  intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
-                      "http://tokyo.pallycon.com/ri/licenseManager.do");
-                  intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
-                  intent.putExtra(PlaybackManager.DRM_USERID, userId);
-                  intent.putExtra(PlaybackManager.DRM_CID, cId);
-                  intent.putExtra(PlaybackManager.DRM_OID, "");
-                  intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
-                  intent.putExtra(PlaybackManager.DRM_TOKEN, "");
-                  intent
-                      .putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
-                  intent.putExtra("play_info", playInfo);
+                intent
+                    .putExtra(PlaybackManager.DRM_SCHEME_UUID_EXTRA,
+                        DemoUtil.getDrmUuid("widevine").toString());
+                intent.putExtra(PlaybackManager.DRM_LICENSE_URL,
+                    "http://tokyo.pallycon.com/ri/licenseManager.do");
+                intent.putExtra(PlaybackManager.DRM_MULTI_SESSION, "");
+                intent.putExtra(PlaybackManager.DRM_USERID, userId);
+                intent.putExtra(PlaybackManager.DRM_CID, cId);
+                intent.putExtra(PlaybackManager.DRM_OID, "");
+                intent.putExtra(PlaybackManager.DRM_CUSTOME_DATA, "");
+                intent.putExtra(PlaybackManager.DRM_TOKEN, "");
+                intent
+                    .putExtra(PlaybackManager.DRM_CONTENT_TITLE, mWebPlayerInfo.getGroupTitle());
+                intent.putExtra("play_info", playInfo);
 
-                  if (!can_play) {
-                    intent.putExtra("duration", "00:01:30");
-                  } else {
-                    intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
-                  }
-
+                if (!can_play) {
+                  intent.putExtra("duration", "00:01:30");
+                } else {
+                  intent.putExtra("duration", mWebPlayerInfo.getCplayTime()[currentId]);
                 }
 
-                // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
-                // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-                Preferences.setWelaaaPlayListCKey(context, cId);
-
-              } catch (UnsupportedDrmException e) {
-                e.printStackTrace();
               }
 
-              if (mCanPlayTimeHandler != null) {
-                mCanPlayTimeHandler.removeCallbacksAndMessages(null);
-              }
+              // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+              // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+              Preferences.setWelaaaPlayListCKey(context, cId);
 
-              mMediaSessionCallback.onPlayFromUri(uri, intent.getExtras());
+            } catch (UnsupportedDrmException e) {
+              e.printStackTrace();
             }
+
+            if (mCanPlayTimeHandler != null) {
+              mCanPlayTimeHandler.removeCallbacksAndMessages(null);
+            }
+
+            mMediaSessionCallback.onPlayFromUri(uri, intent.getExtras());
+//            }
 
           } catch (Exception e) {
             e.printStackTrace();
