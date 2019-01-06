@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { SafeAreaView, withNavigation } from 'react-navigation';
 import PageCategory from '../../components/PageCategory';
@@ -26,39 +26,39 @@ const styles = StyleSheet.create({
   toggleGroup: {
     width: '100%',
     padding: 12,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   alignJustify: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   sortWrap: {
-    width: 100
+    width: 100,
   },
   sortButton: {
     paddingLeft: 8,
-    paddingRight: 8
+    paddingRight: 8,
   },
   sortDot: {
     width: 6,
     height: 6,
     marginRight: 5,
-    backgroundColor: '#d7d7d7'
+    backgroundColor: '#d7d7d7',
   },
   sortText: {
     fontSize: 12,
-    color: '#4A4A4A'
+    color: '#4A4A4A',
   },
   sortTextActive: {
     fontSize: 12,
     color: '#000000',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   sortBar: {
     width: 1,
     height: 17,
-    backgroundColor: '#CFCFCF'
+    backgroundColor: '#CFCFCF',
   },
   myButton: {
     paddingTop: 3,
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     borderWidth: 1,
-    borderColor: '#CBCBCB'
+    borderColor: '#CBCBCB',
   },
   myButtonText: {
     fontSize: 12,
-    color: '#585858'
+    color: '#585858',
   },
   linkViewAll: {
     alignItems: 'center',
@@ -79,20 +79,20 @@ const styles = StyleSheet.create({
     height: 36,
     marginLeft: 'auto',
     marginRight: 'auto',
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   classLinkViewAll: {
     marginTop: 15,
-    marginBottom: 30
+    marginBottom: 30,
   },
   linkViewAllText: {
     fontSize: 14,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   linkViewAllIcon: {
     paddingLeft: 7,
-    height: 13
-  }
+    height: 13,
+  },
 });
 
 @observer
@@ -103,7 +103,7 @@ class AudioBookPage extends React.Component {
     displayData: null,
     selectedCategory: null,
     ccode: null,
-    pagination: {}
+    pagination: {},
   });
 
   // 인기 , 신규 조회 조건 , 'hot' , 'new'
@@ -240,7 +240,9 @@ class AudioBookPage extends React.Component {
         <View
           style={{
             width: '100%',
-            backgroundColor: '#FFFFFF'
+            backgroundColor: '#FFFFFF',
+            paddingLeft: 10,
+            paddingRight: 10,
           }}
         >
           <PageCategory
@@ -258,11 +260,10 @@ class AudioBookPage extends React.Component {
       <SafeAreaView
         style={[
           CommonStyles.container,
-          { backgroundColor: '#ecf0f1', justifyContent: 'flex-start' }
+          { backgroundColor: '#ecf0f1', justifyContent: 'flex-start' },
         ]}
       >
-        
-        <View style={{ width: '100%', paddingTop: 82 }}>
+        <View style={{ width: '100%', paddingTop: 182 }}>
           {this.store.displayData !== null ? (
             <FlatList
               data={this.store.displayData}
@@ -309,7 +310,6 @@ class AudioBookPage extends React.Component {
         </View>
 
         {this._renderHeader()}
-        
       </SafeAreaView>
     );
   }

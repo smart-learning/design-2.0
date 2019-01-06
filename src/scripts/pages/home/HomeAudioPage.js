@@ -45,6 +45,9 @@ const styles = StyleSheet.create({
   mainTitleCenter: {
     textAlign: 'center',
   },
+  titleContainer: {
+    marginBottom: 15,
+  },
   titleH2: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -107,8 +110,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   audioCategory: {
+    marginBottom: 25,
     marginTop: 0,
-    marginBottom: 20,
   },
   audioCategoryHr: {
     height: 1,
@@ -288,13 +291,11 @@ class HomeAudioPage extends React.Component {
               </View>
             </View>
             <View style={styles.audioCategory}>
-              <View style={styles.audioCategoryHr} />
               <PageCategory
                 data={this.props.store.audioBookCategoryData}
                 selectedCategory={0}
                 onCategorySelect={this.premiumCategorySelect}
               />
-              <View style={styles.audioCategoryHr} />
             </View>
 
             <View style={CommonStyles.alignJustifyContentBetween}>
