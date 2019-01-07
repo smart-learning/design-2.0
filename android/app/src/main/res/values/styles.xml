@@ -62,7 +62,7 @@
     </style>
 
     <!-- push popup theme -->
-    <style name="push_popup_theme" parent="android:Theme.Light">
+    <style name="push_popup_theme" parent="android:Theme.Light">  
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

@@ -1483,7 +1483,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         }
       });
 
-      // 로그인 없이는 진행 될 수 없습니다. 
+      // 로그인 없이는 진행 될 수 없습니다.
       new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
         public void response(String code, JSONObject json) {
           LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
