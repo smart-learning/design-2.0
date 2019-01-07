@@ -14,6 +14,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
+import com.apms.sdk.TAS;
+import com.apms.sdk.api.APIManager.APICallback;
+import com.apms.sdk.api.request.DeviceCert;
+import com.apms.sdk.api.request.LoginPms;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -49,6 +53,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RNNativePlayerModule extends ReactContextBaseJavaModule
@@ -1450,5 +1455,63 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     }
     return offlineContentData;
   }
-}
 
+  @ReactMethod
+  public void tasDeviceCert(ReadableMap content) {
+    try {
+      String userId = content.getString("userId");
+      String accessToken = content.getString("accessToken");
+      String currentMembership = content.getString("currentMembership");
+
+      // TAS PUSH 1.DeviceCert Class
+      // 디바이스 기본 정보 및 유저 정보를 DB 에 저장합니다.
+      // 앱을 실행시에 꼭 한번은 실행 시켜 주셔야 합니다.
+      JSONObject userData = new JSONObject();
+      try {
+        userData.put("userId", userId);
+        userData.put("accessToken", accessToken);
+        userData.put("currentMembership", currentMembership);
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+
+      String preferToken = Preferences.getWelaaaOauthToken(getReactApplicationContext());
+
+      LogHelper.d(TAG , "TAS DeviceCert preferToken " + preferToken);
+      LogHelper.d(TAG , "TAS DeviceCert accessToken " + accessToken);
+
+      new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
+        public void response(String code, JSONObject json) {
+          LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
+        }
+      });
+
+      if(!preferToken.equals(accessToken)){
+        new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
+          public void response(String code, JSONObject json) {
+            LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
+          }
+        });
+      }
+
+      // TAS 서비스 시작 자동 수집을 위한 TAS 서비스 시작
+      TAS.getInstance(getReactApplicationContext());
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+  }
+
+  @ReactMethod
+  public void tasLandingUrl(com.facebook.react.bridge.Callback resultCallback) {
+    try {
+      String landingUrl = Preferences.getWelaaaTasLandingUrl(getReactApplicationContext());
+      
+      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext() , "");
+
+      resultCallback.invoke(landingUrl);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+}

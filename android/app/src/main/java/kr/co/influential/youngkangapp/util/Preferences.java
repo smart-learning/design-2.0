@@ -1029,7 +1029,6 @@ public class Preferences {
    * 네이티브 플레이어 버튼 클릭하기
    * 나머지 구간에서는 00:00 부터 재생하기
    ************************************************************************/
-
   public static Boolean getSQLiteDuration(Context context){
     SharedPreferences pref = context.getSharedPreferences(WELAAA_PLAY_CLICK, Context.MODE_PRIVATE);
     return pref.getBoolean(WELAAA_PLAY_CLICK, true);
