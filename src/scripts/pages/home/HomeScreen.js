@@ -22,6 +22,7 @@ import SearchResultPage from './SearchResultPage';
 import MembershipScreens from '../membership/MembershipScreen';
 import CartScreen from '../cart/CartScreen';
 import SerieseIntro from '../series/SeriesIntroPage';
+import InnerWebViewPage from '../in_web/InnerWebViewPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -92,6 +93,11 @@ const HomeScreen = createStackNavigator(
     },
     Series_4genPage: {
       screen: SerieseIntro,
+      navigationOptions: NAV_OPTS_STACK,
+    },
+
+    InnerWebViewPage: {
+      screen: InnerWebViewPage,
       navigationOptions: NAV_OPTS_STACK,
     },
   },

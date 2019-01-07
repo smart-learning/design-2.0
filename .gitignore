@@ -163,8 +163,10 @@ playground.xcworkspace
 ios/WelaaaV2Tests
 .idea/workspace.xml
 ios/PallyConFPSSDK.framework/
+ios/AppsFlyerLib.framework/
 ios/WelaaaV2Tests/
 ios/WelaaaV2.xcodeproj/project.pbxproj
+
 android/app/src/main/assets/fonts/AntDesign.ttf
 android/app/src/main/assets/fonts/Entypo.ttf
 android/app/src/main/assets/fonts/EvilIcons.ttf
@@ -182,3 +184,6 @@ android/app/src/main/assets/fonts/SimpleLineIcons.ttf
 android/app/src/main/assets/fonts/Zocial.ttf
 
 android/app/*
+
+# Fastlane
+fastlane/*
