@@ -11,9 +11,6 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import com.apms.sdk.TAS;
-import com.apms.sdk.api.APIManager.APICallback;
-import com.apms.sdk.api.request.DeviceCert;
 import com.appsflyer.reactnative.RNAppsFlyerPackage;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -42,8 +39,6 @@ import kr.co.influential.youngkangapp.react.RNEventEmitter;
 import kr.co.influential.youngkangapp.react.pakcage.RNNativePlayerPackage;
 import kr.co.influential.youngkangapp.util.ONotificationManager;
 import kr.co.influential.youngkangapp.util.WeContentManager;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //import test.welaaa.WelaaaPackageManager;
 
@@ -172,38 +167,6 @@ public class MainApplication extends Application implements ReactApplication {
     mediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
         connectionCallback, null);
     mediaBrowser.connect();
-
-    LogHelper.e(TAG , "TAS start ");
-
-    // TAS PUSH 1.DeviceCert Class
-    // 디바이스 기본 정보 및 유저 정보를 DB 에 저장합니다.
-    // 앱을 실행시에 꼭 한번은 실행 시켜 주셔야 합니다.
-    JSONObject userData = new JSONObject();
-    try {
-      userData.put("custName", "user");
-      userData.put("phoneNumber", "010xxxxxxxx");
-    } catch (JSONException e) {
-
-      LogHelper.e(TAG , "TAS userData Exception " + e.toString());
-      e.printStackTrace();
-    }
-
-    new DeviceCert(this).request(null,  new APICallback() {
-      public void response(String code, JSONObject json) {
-        //
-        LogHelper.e(TAG , "TAS DeviceCert response " + code + " json " + json);
-      }
-    });
-
-    // TAS PUSH
-    // 1.2 LoginPms
-    // 로그인 (cust_id 저장) 를 수행합니다.
-    // 로그인 수행시 다른 ID 로 수행할 시에는 모든 DB 데이터를 삭제합니다.
-    // 앱에서 로그인 실행시 한번만 호출해주셔야 합니다. 자동 로그인일 때는 수행 안해도 됩니다.
-
-    // TAS 서비스 시작 자동 수집을 위한 TAS 서비스 시작
-    TAS.getInstance(this);
-
   }
 
   public WeContentManager initContentManager() {

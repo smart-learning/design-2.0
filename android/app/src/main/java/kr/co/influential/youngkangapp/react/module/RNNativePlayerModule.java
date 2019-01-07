@@ -1460,7 +1460,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void tasDeviceCert(ReadableMap content) {
     try {
       String userId = content.getString("userId");
-      String accessToken = content.getString("accessToken");
+//      String accessToken = content.getString("accessToken");
       String currentMembership = content.getString("currentMembership");
 
       // TAS PUSH 1.DeviceCert Class
@@ -1469,7 +1469,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       JSONObject userData = new JSONObject();
       try {
         userData.put("userId", userId);
-        userData.put("accessToken", accessToken);
+//        userData.put("accessToken", accessToken);
         userData.put("currentMembership", currentMembership);
       } catch (JSONException e) {
         e.printStackTrace();
@@ -1477,22 +1477,19 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       String preferToken = Preferences.getWelaaaOauthToken(getReactApplicationContext());
 
-      LogHelper.d(TAG , "TAS DeviceCert preferToken " + preferToken);
-      LogHelper.d(TAG , "TAS DeviceCert accessToken " + accessToken);
-
       new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
         public void response(String code, JSONObject json) {
           LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
         }
       });
 
-      if(!preferToken.equals(accessToken)){
-        new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
-          public void response(String code, JSONObject json) {
-            LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
-          }
-        });
-      }
+      // 로그인 없이는 진행 될 수 없습니다. 
+      new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
+        public void response(String code, JSONObject json) {
+          LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
+        }
+      });
+
 
       // TAS 서비스 시작 자동 수집을 위한 TAS 서비스 시작
       TAS.getInstance(getReactApplicationContext());
