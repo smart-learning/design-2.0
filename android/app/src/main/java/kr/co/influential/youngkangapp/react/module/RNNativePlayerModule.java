@@ -1474,8 +1474,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         e.printStackTrace();
       }
 
-      String preferToken = Preferences.getWelaaaOauthToken(getReactApplicationContext());
-
       new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
         public void response(String code, JSONObject json) {
           LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
