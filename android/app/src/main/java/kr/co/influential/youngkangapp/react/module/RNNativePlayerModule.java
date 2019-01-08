@@ -573,9 +573,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String history_start_seconds = "";
 
               if (!json.isNull("history")) {
-
                 historyObject = json.getJSONObject("history");
-
                 historyId = historyObject.getString("id");
                 historyPlayed_At = historyObject.getString("played_at");
                 history_start_seconds = historyObject.getString("start_seconds");
@@ -583,7 +581,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
-
               String group_title = dataObject.getString("title");
 //        String group_memo = json.getString("group_memo");
               String group_memo = "";
@@ -617,7 +614,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String con_class = json.getString("type");
 
               String downloadcnt = "";
-              String audiobookbuy = "";
+              String audiobookbuy = permissionObject.getString("can_play"); // 오디오북 구매 여부 확인 필드
               String audiobookbuy_limitdate = "";
 
               sb.append("group_title=" + group_title);
@@ -662,7 +659,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
                 String first_play = "";
                 String calign = json.getString("align");
-                String audio_preview = "";
+                String audio_preview = json.getString("is_preview");
 
                 sb.append("&ckey=" + ckey);
                 sb.append("&cname=" + cname);
