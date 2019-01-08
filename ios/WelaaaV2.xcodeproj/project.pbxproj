@@ -1538,7 +1538,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellScript = "~/.jenkins/workspace/welaaaRN/node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n$PROJECT_DIR/../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
