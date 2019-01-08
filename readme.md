@@ -154,9 +154,25 @@ SDK 다운로드 (Android SDK)
 app/assets/apms.properties 추가 확인이 필요합니다. 
 
 20190107 app/libs 추가 필요합니다. 
-SDK_Android_APMS_11676.jar
+// SDK_Android_APMS_11676.jar , 라이브러리 추가 후 모듈 추가하면 ./gradlew 진행시 
+// Program type already present: com.ams.sdk.BuildConfig 발생됩니다. 
 org.eclipse.paho.client.mqttv3-1.2.0(mlog).jar
 volley_20160608.jar
+
+Android Studio / New / New Module / Import .JAR/.AAR Package 
+SDK_Android_APMS_11676.jar
+
+Project structure / Dependencies / Add Module Dependency (SDK_Android_APMS_11676)
+
+TAS 어드민을 통해서 Push 발송 후 수신을 확인합니다. 
+./gradlew assembleRelease   를 확인합니다. 
+// 빌드는 잘 되지만 
+// 수신이 안되는 경우 아래 방법으로 다시 진행 
+수신이 안된 경우 Project structure / dependency 삭제 
+/libs/SDK_Android_APMS_11676.jar 추가 
+
+TAS 어드민을 통해서 Push 발송 후 수신을 확인합니다. 
+./gradlew assembleRelease   를 확인합니다. 
 
 ### iOS
 

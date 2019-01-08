@@ -1469,7 +1469,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       JSONObject userData = new JSONObject();
       try {
         userData.put("userId", userId);
-//        userData.put("accessToken", accessToken);
         userData.put("currentMembership", currentMembership);
       } catch (JSONException e) {
         e.printStackTrace();
