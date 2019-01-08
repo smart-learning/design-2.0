@@ -1469,13 +1469,10 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       JSONObject userData = new JSONObject();
       try {
         userData.put("userId", userId);
-//        userData.put("accessToken", accessToken);
         userData.put("currentMembership", currentMembership);
       } catch (JSONException e) {
         e.printStackTrace();
       }
-
-      String preferToken = Preferences.getWelaaaOauthToken(getReactApplicationContext());
 
       new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
         public void response(String code, JSONObject json) {

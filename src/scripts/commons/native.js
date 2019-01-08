@@ -273,7 +273,7 @@ export default {
       let config = {
         userId: userId.toString(),
         accessToken: accessToken,
-        currentMembership: globalStore.currentMembership.toString(),
+        currentMembership: globalStore.currentMembership.type.toString(),
       };
 
       try {
