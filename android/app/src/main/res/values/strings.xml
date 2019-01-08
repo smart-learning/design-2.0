@@ -222,4 +222,7 @@
     <!-- Splash Activity -->
     <string name="notice_dialog_update_title">업데이트</string>
     <string name="notice_dialog_update_message">새로운 버전이 있습니다.\n업데이트 하시겠습니까?</string>
+
+    <string name="finger_event">두손가락을 이용해 아래로 당겨주세요. </string>
+    <!--<string name="finger_event">To use two fingers under, to pull</string>-->
 </resources>

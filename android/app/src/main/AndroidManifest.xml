@@ -13,6 +13,14 @@
   <!-- Optional : -->
   <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
+  <!-- push -->
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+  <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+  <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.GET_TASKS" />
+  <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+  <!-- push -->
 
   <application
     android:allowBackup="false"
@@ -211,6 +219,87 @@
     <activity
       android:name=".MaskActivity"
       android:process="kr.co.influential.youngkangapp.empty"/>
+
+    <!-- FCM receiver service add -->
+    <service
+      android:name="com.apms.sdk.push.GetFCMInstanceID"
+      android:exported="false" >
+      <intent-filter>
+        <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+      </intent-filter>
+    </service>
+
+    <service
+      android:name="com.apms.sdk.push.FCMPushService"
+      android:exported="false" >
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+
+    <!-- Push receiver add -->
+    <receiver
+      android:name="com.apms.sdk.push.PushReceiver"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+        <action android:name="org.mosquitto.android.mqtt.MSGRECVD"/>
+        <category android:name="kr.co.influential.youngkangapp"/>
+      </intent-filter>
+    </receiver>
+
+    <!-- apms push popup activity -->
+    <activity
+      android:name="com.apms.sdk.push.PushPopupActivity"
+      android:theme="@style/push_popup_theme"
+      android:excludeFromRecents="true"
+      android:exported="false"
+      android:screenOrientation="portrait"
+      android:configChanges="orientation" />
+
+    <!--apms push clickNotiReceiver-->
+    <receiver android:name="kr.co.influential.youngkangapp.util.TasCustomNotiReceiver" >
+      <intent-filter>
+        <action android:name=".TasCustomNotiReceiverClass" />
+      </intent-filter>
+    </receiver>
+
+    <!-- APMS Private RestartReceiver -->
+    <receiver android:name="com.apms.sdk.push.mqtt.RestartReceiver">
+      <intent-filter>
+        <action android:name="MQTT.START"/>
+        <action android:name="MQTT.FORCE_START"/>
+      </intent-filter>
+    </receiver>
+
+    <!-- Private PUSH Service com.apms.sdk.pushService -->
+    <service
+      android:name="com.apms.sdk.push.mqtt.MQTTService"
+      android:enabled="true"
+      android:exported="true"
+      android:label="PushService"
+      android:process="com.apms.sdk.TestService"/>
+
+    <!-- APMS Data Sender Service -->
+    <service
+      android:name="com.apms.sdk.service.DataSenderService"
+      android:enabled="true"
+      android:exported="true"
+      android:label="SenderService"
+      android:process="com.apms.sdk.DataSenderService"/>
+
+    <!-- APMS Data Sender receiver -->
+    <receiver android:name="com.apms.sdk.service.SenderSeviceReceiver" >
+      <intent-filter>
+        <action android:name="SENDER.START" />
+        <action android:name="SENDER.STOP" />
+      </intent-filter>
+    </receiver>
+
+    <meta-data android:name="APMS_NOTI_CONTENT" android:value="@string/finger_event"/>
+    <meta-data android:name="APMS_SET_ICON" android:resource="@drawable/notify_logo_player"/>
+    <meta-data android:name="APMS_SET_LARGE_ICON" android:resource="@drawable/notify_logo_player"/>
+    <meta-data android:name="APMS_NOTI_BACK" android:value="\ #220022"/>
 
   </application>
 
