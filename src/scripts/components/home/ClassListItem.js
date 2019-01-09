@@ -143,8 +143,6 @@ class ClassListItem extends React.Component {
             imageStyle={{
               borderRadius: 4,
               borderBottomLeftRadius: 0,
-              borderBottomStartRadius: 0,
-              borderBottomEndRadius: 0,
               borderBottomRightRadius: 0,
             }}
           >
