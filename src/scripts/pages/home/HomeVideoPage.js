@@ -18,6 +18,7 @@ import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
 import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
 import IcMainWideBanner from '../../../images/main_wide_banner.png';
+import BannerMembership from '../../../images/banner-membership.png';
 import CommonStyles from '../../../styles/common';
 import globalStore from '../../commons/store';
 import ClassContinueList from '../../components/home/ClassContinueList';
@@ -145,8 +146,8 @@ const styles = StyleSheet.create({
   },
   imageMainBanner: {
     width: '100%',
-    paddingTop: '12%',
-    paddingBottom: '12%',
+    paddingTop: '8.3333%',
+    paddingBottom: '8.3333%',
   },
 });
 
@@ -207,7 +208,7 @@ class HomeVideoPage extends React.Component {
                 style={styles.wrapper}
                 showsButtons={false}
                 height={this.props.store.slideHeight}
-				dotColor={'rgba(255,255,255,.3)'}
+                dotColor={'rgba(255,255,255,.3)'}
                 activeDotColor={'#ffffff'}
                 paginationStyle={{ left: '-65%', bottom: 10 }}
               >
@@ -311,20 +312,35 @@ class HomeVideoPage extends React.Component {
           <View
             style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
           />
-          <View>
+          {1 === 2 && (
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  // this.props.navigation.navigate('VideoPack', {
+                  //   title: '윌라 홍보 영상'
+                  // })
+                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                  Native.play('v300001_001')
+                }
+              >
+                <ImageBackground
+                  source={IcMainWideBanner}
+                  resizeMode="contain"
+                  style={styles.imageMainBanner}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={{ backgroundColor: '#f0f0f4' }}>
             <TouchableOpacity
               activeOpacity={0.9}
-              onPress={() =>
-                // this.props.navigation.navigate('VideoPack', {
-                //   title: '윌라 홍보 영상'
-                // })
-                // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
-                // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
-                Native.play('v300001_001')
-              }
+              onPress={() => this.props.navigation.navigate('MembershipScreen')}
             >
               <ImageBackground
-                source={IcMainWideBanner}
+                source={BannerMembership}
                 resizeMode="contain"
                 style={styles.imageMainBanner}
               />
@@ -425,6 +441,18 @@ class HomeVideoPage extends React.Component {
               </View>
             </View>
           )}
+          <View style={{ backgroundColor: '#f0f0f4' }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => this.props.navigation.navigate('MembershipScreen')}
+            >
+              <ImageBackground
+                source={BannerMembership}
+                resizeMode="contain"
+                style={styles.imageMainBanner}
+              />
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </PTRView>
     );
