@@ -19,6 +19,13 @@ export default {
 
   doThingAfterLogout() {
     RNNativePlayer.stop();
+
+    if (Platform.OS === 'android') {
+      // 로그아웃 할때 tas logout 을 진행합니다. 
+      RNNativePlayer.tasLogout();
+    } else {
+
+    }
   },
 
   play(item, oid = '') {
@@ -182,11 +189,12 @@ export default {
   // isAlert: false,
   // isEmail: false,
   updateSettings() {
-    const { isWifiPlay, isWifiDownload } = globalStore.appSettings;
+    const { isWifiPlay, isWifiDownload, isAlert } = globalStore.appSettings;
     let config = {
       token: globalStore.accessToken,
       cellularDataUsePlay: isWifiPlay,
       cellularDataUseDownload: isWifiDownload,
+      fcmFlag: isAlert
     };
 
     console.log('updateSetting:', config);
@@ -196,10 +204,6 @@ export default {
 
   updateSetting(key, bool) {
     switch (key) {
-      case 'alert':
-        // this.setFirebase(bool);
-        break;
-
       case 'email':
         Alert.alert('준비중입니다.');
         break;

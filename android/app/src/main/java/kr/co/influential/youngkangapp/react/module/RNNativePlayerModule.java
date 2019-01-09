@@ -18,6 +18,8 @@ import com.apms.sdk.TAS;
 import com.apms.sdk.api.APIManager.APICallback;
 import com.apms.sdk.api.request.DeviceCert;
 import com.apms.sdk.api.request.LoginPms;
+import com.apms.sdk.api.request.LogoutPms;
+import com.apms.sdk.api.request.SetConfig;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -235,12 +237,35 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       boolean cellularDataUseDownload = content.getBoolean("cellularDataUseDownload");
       String token = content.getString("token");
 
+      boolean fcmFlag = content.getBoolean("fcmFlag");
+
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
 
       Preferences.setOnlyWifiView(getReactApplicationContext(), cellularDataUsePlay);
       Preferences.setOnlyWifiDownload(getReactApplicationContext(), cellularDataUseDownload);
 
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
+
+      if(fcmFlag){
+        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "0800", "2100", new APICallback() {
+          @Override
+          public void response (String code, JSONObject json) {
+            //
+            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
+          }
+        });
+      }else{
+        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "0800", "2100", new APICallback() {
+          @Override
+          public void response (String code, JSONObject json) {
+            //
+            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
+          }
+        });
+      }
+
+
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -1505,4 +1530,16 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       e.printStackTrace();
     }
   }
+
+  @ReactMethod
+  public void tasLogout() {
+    new LogoutPms(getReactApplicationContext()).request(new APICallback() {
+      @Override
+      public void response (String code, JSONObject json) {
+        LogHelper.d(TAG , "TAS LogoutPms response " + code + " json " + json);
+      }
+    });
+  }
+
+
 }
