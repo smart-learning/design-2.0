@@ -24,19 +24,21 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderColor: '#dddddd',
+    borderRadius: 4,
   },
   classTitle: {
     paddingLeft: 12,
     paddingRight: 12,
-    paddingTop: 8,
+    paddingTop: 10,
     fontSize: 14,
+    lineHeight: 19,
     color: '#353A3C',
   },
   classAuthor: {
     fontSize: 13,
     color: '#767B80',
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingTop: 10,
+    paddingBottom: 12,
     paddingLeft: 12,
     paddingRight: 12,
   },
@@ -74,8 +76,8 @@ const styles = StyleSheet.create({
   thumbnail: {
     position: 'relative',
     width: '100%',
-    paddingTop: '21.75%',
-    paddingBottom: '21.75%',
+    paddingTop: '20.75%',
+    paddingBottom: '20.75%',
   },
   thumbnailTitle: {
     position: 'absolute',
@@ -84,6 +86,7 @@ const styles = StyleSheet.create({
     width: '90%',
     fontSize: 14,
     fontWeight: '800',
+    lineHeight: 20,
     color: '#ffffff',
   },
   btnSetSmall: {
@@ -91,8 +94,8 @@ const styles = StyleSheet.create({
     height: 14,
   },
   countText: {
-    paddingLeft: 4,
-    paddingRight: 10,
+    paddingLeft: 6,
+    paddingRight: 15,
     fontSize: 12,
     color: '#353A3C',
   },
@@ -137,12 +140,19 @@ class ClassListItem extends React.Component {
             }}
             resizeMode="cover"
             style={styles.thumbnail}
+            imageStyle={{
+              borderRadius: 4,
+              borderBottomLeftRadius: 0,
+              borderBottomStartRadius: 0,
+              borderBottomEndRadius: 0,
+              borderBottomRightRadius: 0,
+            }}
           >
             <Text style={styles.thumbnailTitle}>
               {this.props.itemData.title}
             </Text>
           </ImageBackground>
-          <View style={{ height: 80 }}>
+          <View style={{ height: 90 }}>
             <Text
               style={styles.classTitle}
               ellipsizeMode={'tail'}
