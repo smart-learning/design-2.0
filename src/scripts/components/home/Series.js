@@ -63,11 +63,11 @@ class Series extends React.Component {
                 onPress={() => {
                   if (item.category === '035') {
                     this.props.navigation.navigate('Series_4genPage', {
-                      title: '윌라 추천 시리즈',
+                      title: '윌라 추천시리즈',
                     });
                   } else {
                     this.props.navigation.navigate('HomeSeriesPage', {
-                      title: '윌라 추천 시리즈',
+                      title: '윌라 추천시리즈',
                       focus: item.category,
                     });
                   }

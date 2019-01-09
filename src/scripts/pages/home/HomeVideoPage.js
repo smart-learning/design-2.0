@@ -287,14 +287,14 @@ class HomeVideoPage extends React.Component {
                   ]}
                 >
                   <View>
-                    <Text style={styles.titleH2}>윌라 추천 시리즈</Text>
+                    <Text style={styles.titleH2}>윌라 추천시리즈</Text>
                   </View>
                   <View style={styles.showMoreWrapper}>
                     <TouchableOpacity
                       style={styles.showMore}
                       onPress={() => {
                         this.props.navigation.navigate('HomeSeriesListPage', {
-                          title: '윌라 추천 시리즈',
+                          title: '윌라 추천시리즈',
                         });
                       }}
                     >
