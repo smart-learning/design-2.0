@@ -184,7 +184,7 @@ class HomeAudioPage extends React.Component {
                 style={styles.wrapper}
                 showsButtons={false}
                 height={window.width}
-                dotColor={'#888888'}
+                dotColor={'rgba(255,255,255,.3)'}
                 activeDotColor={'#ffffff'}
                 paginationStyle={{ left: '-65%', bottom: 10 }}
               >
