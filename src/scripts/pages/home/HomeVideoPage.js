@@ -421,7 +421,7 @@ class HomeVideoPage extends React.Component {
                   {globalStore.welaaaAuth.profile
                     ? globalStore.welaaaAuth.profile.name || '<윌라회원님>'
                     : '<윌라회원님>'}
-                  님의 추천 클래스
+                  님을 위한 추천 클래스
                 </Text>
               </View>
 

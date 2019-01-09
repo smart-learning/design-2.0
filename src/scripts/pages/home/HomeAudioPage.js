@@ -336,7 +336,7 @@ class HomeAudioPage extends React.Component {
                 {globalStore.welaaaAuth.profile
                   ? globalStore.welaaaAuth.profile.name || '<윌라회원님>'
                   : '<윌라회원님>'}
-                님의 추천 오디오북
+                님을 위한 추천 오디오북
               </Text>
             </View>
             <BookRecommendList
