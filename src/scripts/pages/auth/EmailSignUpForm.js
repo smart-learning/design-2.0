@@ -253,7 +253,7 @@ class EmailSignUpForm extends Component {
       Alert.alert('오류', '다른 이메일을 사용해주세요.');
       this.loading = false;
       return false;
-    } else if (this.data.password === null) {
+    } else if (this.data.password === null || this.data.password.length === 0) {
       Alert.alert('오류', '비밀번호는 필수 입력항목입니다.');
       this.loading = false;
       return false;

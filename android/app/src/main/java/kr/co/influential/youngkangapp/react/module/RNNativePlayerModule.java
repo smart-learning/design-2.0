@@ -14,6 +14,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
+import com.apms.sdk.TAS;
+import com.apms.sdk.api.APIManager.APICallback;
+import com.apms.sdk.api.request.DeviceCert;
+import com.apms.sdk.api.request.LoginPms;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -49,6 +53,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RNNativePlayerModule extends ReactContextBaseJavaModule
@@ -568,9 +573,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String history_start_seconds = "";
 
               if (!json.isNull("history")) {
-
                 historyObject = json.getJSONObject("history");
-
                 historyId = historyObject.getString("id");
                 historyPlayed_At = historyObject.getString("played_at");
                 history_start_seconds = historyObject.getString("start_seconds");
@@ -578,7 +581,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
-
               String group_title = dataObject.getString("title");
 //        String group_memo = json.getString("group_memo");
               String group_memo = "";
@@ -612,7 +614,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String con_class = json.getString("type");
 
               String downloadcnt = "";
-              String audiobookbuy = "";
+              String audiobookbuy = permissionObject.getString("can_play"); // 오디오북 구매 여부 확인 필드
               String audiobookbuy_limitdate = "";
 
               sb.append("group_title=" + group_title);
@@ -657,7 +659,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
                 String first_play = "";
                 String calign = json.getString("align");
-                String audio_preview = "";
+                String audio_preview = json.getString("is_preview");
 
                 sb.append("&ckey=" + ckey);
                 sb.append("&cname=" + cname);
@@ -1450,5 +1452,57 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     }
     return offlineContentData;
   }
-}
 
+  @ReactMethod
+  public void tasDeviceCert(ReadableMap content) {
+    try {
+      String userId = content.getString("userId");
+//      String accessToken = content.getString("accessToken");
+      String currentMembership = content.getString("currentMembership");
+
+      // TAS PUSH 1.DeviceCert Class
+      // 디바이스 기본 정보 및 유저 정보를 DB 에 저장합니다.
+      // 앱을 실행시에 꼭 한번은 실행 시켜 주셔야 합니다.
+      JSONObject userData = new JSONObject();
+      try {
+        userData.put("userId", userId);
+        userData.put("currentMembership", currentMembership);
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+
+      new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
+        public void response(String code, JSONObject json) {
+          LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
+        }
+      });
+
+      // 로그인 없이는 진행 될 수 없습니다.
+      new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
+        public void response(String code, JSONObject json) {
+          LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
+        }
+      });
+
+
+      // TAS 서비스 시작 자동 수집을 위한 TAS 서비스 시작
+      TAS.getInstance(getReactApplicationContext());
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+  }
+
+  @ReactMethod
+  public void tasLandingUrl(com.facebook.react.bridge.Callback resultCallback) {
+    try {
+      String landingUrl = Preferences.getWelaaaTasLandingUrl(getReactApplicationContext());
+      
+      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext() , "");
+
+      resultCallback.invoke(landingUrl);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+}

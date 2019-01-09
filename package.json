@@ -13,6 +13,7 @@
 		"react-test-renderer": "^16.6.1"
 	},
 	"scripts": {
+		"build.android": "cd android; ./gradlew assembleRelease; open ./app/build/outputs/apk/release/",
 		"eject": "react-native eject",
 		"link": "react-native link",
 		"start": "react-native start",

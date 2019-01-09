@@ -4030,6 +4030,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
         for (int i = 0; i < getwebPlayerInfo().getCkey().length; i++) {
           if (getwebPlayerInfo().getA_depth()[i].equals("1")) {
+
             if (getwebPlayerInfo().getCurl()[i].equals("0") || getwebPlayerInfo().getCurl()[i]
                 .equals("0.0")) {
 
@@ -4047,16 +4048,38 @@ public class PlayerActivity extends BasePlayerActivity {
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
-                  if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
-                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
-                        "",
-                        "7");
-                  } else {
-                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
-                        "",
-                        "2");
+
+                  // 오디오북을 구매 한 경우
+                  if(getwebPlayerInfo().getAudiobookbuy().equals("true")){
+                    if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
+                      lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                          getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                          "",
+                          "7");
+                    } else {
+                      lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                          getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                          "",
+                          "2");
+                    }
+                  }else{
+                    // 오디오북을 구매 하지 않은 경우는 preview 확인
+                    if(getwebPlayerInfo().getAudio_preview()[i].equals("true")){
+                      if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
+                        lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            "",
+                            "31");
+                      } else {
+                        lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            "",
+                            "32");
+                      }
+                    }else{
+                      lectureAudioBookListItemdapter.add("",
+                          "", getwebPlayerInfo().getCname()[i], "", "", "", "1");
+                    }
                   }
                 }
               } catch (Exception e) {
@@ -4080,17 +4103,38 @@ public class PlayerActivity extends BasePlayerActivity {
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
-                  if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
-                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
-                        "",
-                        "9");
-                  } else {
-                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
-                        "",
-                        "4");
+
+                  if(getwebPlayerInfo().getAudiobookbuy().equals("true")){
+                    if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
+                      lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                          getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                          "",
+                          "9");
+                    } else {
+                      lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                          getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                          "",
+                          "4");
+                    }
+                  }else{
+                    if(getwebPlayerInfo().getAudio_preview()[i].equals("true")){
+                      if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
+                        lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            "",
+                            "24");
+                      } else {
+                        lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            "",
+                            "23");
+                      }
+                    }else{
+                      lectureAudioBookListItemdapter.add("",
+                          "", getwebPlayerInfo().getCname()[i], "", "", "", "3");
+                    }
                   }
+
                 }
               } catch (Exception e) {
                 e.printStackTrace();
@@ -4114,16 +4158,36 @@ public class PlayerActivity extends BasePlayerActivity {
                   BeforeExtras = mediaController.getMetadata().getBundle();
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
-                  if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
-                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
-                        "",
-                        "11");
-                  } else {
-                    lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                        getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
-                        "",
-                        "6");
+
+                  if(getwebPlayerInfo().getAudiobookbuy().equals("true")){
+                    if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
+                      lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                          getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                          "",
+                          "11");
+                    } else {
+                      lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                          getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                          "",
+                          "6");
+                    }
+                  }else{
+                    if(getwebPlayerInfo().getAudio_preview()[i].equals("true")){
+                      if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
+                        lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            "",
+                            "28");
+                      } else {
+                        lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            "",
+                            "29");
+                      }
+                    }else{
+                      lectureAudioBookListItemdapter.add("",
+                          "", getwebPlayerInfo().getCname()[i], "", "", "", "5");
+                    }
                   }
                 }
               } catch (Exception e) {
