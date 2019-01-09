@@ -46,7 +46,6 @@ class DailySwiper extends React.Component {
     if (_.isObject(this.props.itemData)) {
       itemData = _.map(this.props.itemData, item => item);
     }
-    console.log('itemData', itemData);
 
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = windowWidth * 0.8;
