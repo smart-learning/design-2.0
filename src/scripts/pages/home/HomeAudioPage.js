@@ -29,6 +29,9 @@ import BookRankList from '../../components/home/BookRankList';
 import BookRecommendList from '../../components/home/BookRecommendList';
 import DailySwiper from '../../components/home/DailySwiper';
 import BulletFree from '../../../images/badge-free.png';
+import Native from '../../commons/native';
+import IcMainWideBanner from '../../../images/main_wide_banner.png';
+import BannerMembership from '../../../images/banner-membership.png';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -153,6 +156,11 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
   },
+  imageMainBanner: {
+    width: '100%',
+    paddingTop: '8.3333%',
+    paddingBottom: '8.3333%',
+  },
 });
 
 @observer
@@ -262,10 +270,26 @@ class HomeAudioPage extends React.Component {
                 <DailySwiper itemData={this.props.store.homeSeriesData} />
               </View>
             </View>
-            <View
-              style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
-            />
           </View>
+
+          <View
+            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+          />
+          <View style={{ backgroundColor: '#f0f0f4' }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => this.props.navigation.navigate('MembershipScreen')}
+            >
+              <ImageBackground
+                source={BannerMembership}
+                resizeMode="contain"
+                style={styles.imageMainBanner}
+              />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+          />
 
           <View
             style={[CommonStyles.contentContainer, styles.audioBookContainer]}
@@ -355,6 +379,18 @@ class HomeAudioPage extends React.Component {
               }}
             >
               <Text style={styles.showAllText}>오디오북 전체보기</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ backgroundColor: '#f0f0f4' }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => this.props.navigation.navigate('MembershipScreen')}
+            >
+              <ImageBackground
+                source={BannerMembership}
+                resizeMode="contain"
+                style={styles.imageMainBanner}
+              />
             </TouchableOpacity>
           </View>
         </ScrollView>
