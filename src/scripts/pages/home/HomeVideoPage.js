@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#cecece',
   },
   seriesComponent: {
-    paddingTop: 30,
+    paddingTop: 10,
   },
   showMoreWrapper: {
     marginBottom: 10,
