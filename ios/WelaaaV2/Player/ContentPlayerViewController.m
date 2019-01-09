@@ -551,8 +551,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                 didFailWithError : (NSError * _Nonnull) error
 {
     NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] : %@", error.localizedDescription);
-    // 종료 메시지와 함께 뷰를 종료시킵니다.
-    return [common presentAlertWithTitle:[_args objectForKey : @"cid"] andMessage:error.localizedDescription];
 }
 
 //
