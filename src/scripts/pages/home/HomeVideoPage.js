@@ -28,6 +28,7 @@ import HomeBanner from '../../components/home/HomeBanner';
 import SeriesSwiper from '../../components/home/SeriesSwiper';
 import PageCategory from '../../components/PageCategory';
 import Native from '../../commons/native';
+import Footer from '../../components/home/Footer';
 
 const styles = StyleSheet.create({
   slide: {
@@ -453,6 +454,8 @@ class HomeVideoPage extends React.Component {
               />
             </TouchableOpacity>
           </View>
+
+          <Footer />
         </ScrollView>
       </PTRView>
     );

@@ -32,6 +32,7 @@ import BulletFree from '../../../images/badge-free.png';
 import Native from '../../commons/native';
 import IcMainWideBanner from '../../../images/main_wide_banner.png';
 import BannerMembership from '../../../images/banner-membership.png';
+import Footer from '../../components/home/Footer';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -393,6 +394,8 @@ class HomeAudioPage extends React.Component {
               />
             </TouchableOpacity>
           </View>
+
+          <Footer />
         </ScrollView>
       </PTRView>
     );
