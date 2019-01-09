@@ -36,7 +36,6 @@ class BookNewList extends React.Component {
 
   render() {
     let windowWidth = Dimensions.get('window').width;
-    let itemWidth = windowWidth * 0.37;
 
     let itemData = _.map(this.props.itemData, item => item);
 
@@ -47,7 +46,7 @@ class BookNewList extends React.Component {
           data={itemData}
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
-          itemWidth={itemWidth}
+          itemWidth={150}
           layout={'default'}
           activeSlideAlignment={'start'}
           inactiveSlideOpacity={1}

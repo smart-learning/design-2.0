@@ -12,29 +12,31 @@ const styles = StyleSheet.create({
   bookItem: {
     backgroundColor: '#F5F5F5',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: 10,
   },
   thumbnail: {
     width: 85,
     height: 136,
-    marginTop: 15,
     marginLeft: 'auto',
     marginRight: 'auto',
   },
   bookTitle: {
-  	height: 40,
-    margin: 15,
+    width: 113,
+    height: 40,
+    marginLeft: 10,
+    marginRight: 10,
     fontSize: 12,
     color: '#353A3C',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 class BookNewListItem extends React.Component {
   gotoAudioPage = () => {
     this.props.navigation.navigate('AudioBookDetailPage', {
       id: this.props.itemData.id,
-      title: this.props.itemData.title
+      title: this.props.itemData.title,
     });
   };
 
