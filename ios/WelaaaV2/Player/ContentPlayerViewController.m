@@ -550,9 +550,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 - (void) fpsLicenseWithContentId : (NSString * _Nonnull) contentId
                 didFailWithError : (NSError * _Nonnull) error
 {
-    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] : %@", error.localizedDescription);
-    // 종료 메시지와 함께 뷰를 종료시킵니다.
-    return [common presentAlertWithTitle:[_args objectForKey : @"cid"] andMessage:error.localizedDescription];
+    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] error.localizedDescription : { %@ }", error.localizedDescription);
+    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] error.description : { %@ }", error.description);
 }
 
 //
@@ -1756,6 +1755,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 저전력모드 여부를 확인합니다.
     [self checkLowPowerModeEnabled];
+  
+    // 리스트뷰가 활성화된 상태라면 일단 내립니다.
+    if ( _listView )
+    {
+        [_listView removeFromSuperview];
+        _listView = nil;
+    }
 }
 
 //

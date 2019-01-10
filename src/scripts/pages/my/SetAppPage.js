@@ -78,7 +78,7 @@ class SetAppPage extends React.Component {
   setIsAlertChange = value => {
     AsyncStorage.setItem('config::isAlert', value.toString());
     globalStore.appSettings.isAlert = value;
-    Native.updateSetting('alert', value);
+    Native.updateSettings();
   };
   setIsEmailChange = value => {
     AsyncStorage.setItem('config::isEmail', value.toString());

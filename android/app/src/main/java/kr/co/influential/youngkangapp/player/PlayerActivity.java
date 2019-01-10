@@ -10,9 +10,11 @@ package kr.co.influential.youngkangapp.player;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -752,6 +754,12 @@ public class PlayerActivity extends BasePlayerActivity {
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
 
+      for(int i=0; i<mWebPlayerInfo.getCkey().length ; i++){
+        if(cId.equals(mWebPlayerInfo.getCkey()[i])){
+          setContentId(i);
+        }
+      }
+
       initialize();
 
     } else {
@@ -759,6 +767,8 @@ public class PlayerActivity extends BasePlayerActivity {
       Gson gson = new Gson();
       WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
       mWebPlayerInfo = mWebPlayerInfoFromJson;
+
+      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
 
       try {
         JsonElement jsonElement = new JsonParser().parse(extras.getString("play_info"));
@@ -791,11 +801,6 @@ public class PlayerActivity extends BasePlayerActivity {
   private void initialize() {
     if (!CAN_PLAY) {
       Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
-
-      // 윌라 기존 버전 ,
-      // 1) seekbar 핸들링 못함
-      // 2) duration Total Time 90 초로 고정 됨 .
-      // 차선 책으로 타이머라도 돌릴까요 ???
     }
 
     if (CONTENT_TYPE != null) {
@@ -4327,20 +4332,13 @@ public class PlayerActivity extends BasePlayerActivity {
    * 컨트롤러의 상단 타이틀부분 텍스트 set
    ****************************************************************************/
   public void setPlayerTitle() {
-    if (mNewWebPlayerInfo != null) {
+    if (mWebPlayerInfo != null) {
 
-      String groupTitle = mNewWebPlayerInfo.getGroup_title()[getContentId()];
-      String clipTitle = mNewWebPlayerInfo.getCname()[getContentId()];
+      LogHelper.e(TAG , " setPlayerTitle getContentID is " + getContentId());
 
-      setVideoGroupTitle(groupTitle, clipTitle);
-    } else {
-
-      if (mWebPlayerInfo != null) {
-        setVideoGroupTitle(mWebPlayerInfo.getGroupTitle(),
-            mWebPlayerInfo.getCname()[getContentId()]);
-      }
+      setVideoGroupTitle(mWebPlayerInfo.getGroupTitle(),
+          mWebPlayerInfo.getCname()[getContentId()]);
     }
-
   }
 
   @Override
@@ -4610,11 +4608,22 @@ public class PlayerActivity extends BasePlayerActivity {
               }
             }
           }
+
+          setData(fromMediaSession, extras, uri);
+
         } catch (Exception e) {
           e.printStackTrace();
+
+          // 앱 구동 후 처음 껍데기 미니 플레이어가 있는 상태에서
+          // 미니 플레이어 말고 다른 콘텐츠를 재생하려고 할 때
+          LogHelper.e(TAG , " Exception " + e.toString());
+          // ContentId 다시 셋팅 ?
+
+          setData(fromMediaSession, extras, uri);
+//          finish();
         }
 
-        setData(fromMediaSession, extras, uri);
+
       } else {
         try {
           extras = mediaController.getMetadata().getBundle();
@@ -4773,50 +4782,6 @@ public class PlayerActivity extends BasePlayerActivity {
             getwebPlayerInfo().getCname()[getContentId()]);
       }
     }
-  }
-
-  /********************************************************
-   * autoplay mode
-   ********************************************************/
-  public void doAutoPlay() {
-
-    int currentId = Preferences.getWelaaaPlayListCId(getApplicationContext());
-
-    Gson gson = new Gson();
-    String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
-    WebPlayerInfo mWebPlayerInfo = gson.fromJson(json, WebPlayerInfo.class);
-
-    int currentPosition = 0;
-    for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
-      if (mWebPlayerInfo.getCkey()[i].equals(mWebPlayerInfo.getCkey()[currentId])) {
-        currentPosition = i;
-      }
-    }
-
-    if (mWebPlayerInfo.getCkey().length == currentPosition + 1) {
-      return;
-    }
-
-    int nextPosition = 0;
-
-    nextPosition = currentPosition + 1;
-    setContentId(nextPosition);
-
-    if (mWebPlayerInfo.getCon_class().equals("audiobook")) {
-      // next chapters , play_seconds 값이 0 , 0.0 이라면 다시 ++
-      if (mWebPlayerInfo.getCurl()[nextPosition].equals("0") ||
-          mWebPlayerInfo.getCurl()[nextPosition].equals("0.0")) {
-
-        doAutoPlay();
-        return;
-      }
-    }
-
-    callbackMethodName = "play/play-data/";
-    callbackMethod = "play";
-
-    sendData(API_BASE_URL + callbackMethodName + mWebPlayerInfo.getCkey()[nextPosition],
-        callbackMethodName);
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
@@ -5461,33 +5426,34 @@ public class PlayerActivity extends BasePlayerActivity {
               mWebPlayerInfo = new WebPlayerInfo(sb.toString());
             }
 
+
+            callbackMethodName = "play/play-data/";
+
+            sendData(API_BASE_URL + callbackMethodName + contentCid, callbackMethodName);
+
           } catch (Exception e) {
 
             e.printStackTrace();
 
-//            UiThreadUtil.runOnUiThread(new Runnable() {
-//              @Override
-//              public void run() {
-//
-//                new AlertDialog.Builder(getApplicationContext())
-//                    .setTitle("알림")
-//                    .setMessage(
-//                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
-//                            + " \n Exception Msg " + e
-//                            .getMessage())
-//                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                      @Override
-//                      public void onClick(DialogInterface arg0, int arg1) {
-//                      }
-//                    }).show();
-//              }
-//            });
+            UiThreadUtil.runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+
+                new AlertDialog.Builder(getApplicationContext())
+                    .setTitle("알림")
+                    .setMessage(
+                        "서비스 이용에 장애가 발생하였습니다. \n Exception cause " + e.getCause()
+                            + " \n Exception Msg " + e
+                            .getMessage())
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface arg0, int arg1) {
+                      }
+                    }).show();
+              }
+            });
 
           }
-
-          callbackMethodName = "play/play-data/";
-
-          sendData(API_BASE_URL + callbackMethodName + contentCid, callbackMethodName);
 
 //          setContentId(contentId);
 
@@ -5573,9 +5539,7 @@ public class PlayerActivity extends BasePlayerActivity {
             isNetworkTypeHandler.sendEmptyMessageDelayed(0, 500);
           }
         });
-
       }
-
     });
   }
 

@@ -186,4 +186,5 @@ android/app/src/main/assets/fonts/Zocial.ttf
 android/app/*
 
 # Fastlane
-fastlane/*
+fastlane/README.md
+fastlane/report.xml
