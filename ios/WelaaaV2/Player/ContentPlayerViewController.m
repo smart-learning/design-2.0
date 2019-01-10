@@ -550,7 +550,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 - (void) fpsLicenseWithContentId : (NSString * _Nonnull) contentId
                 didFailWithError : (NSError * _Nonnull) error
 {
-    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] : %@", error.localizedDescription);
+    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] error.localizedDescription : { %@ }", error.localizedDescription);
+    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] error.description : { %@ }", error.description);
 }
 
 //
