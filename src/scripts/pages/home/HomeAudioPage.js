@@ -267,8 +267,7 @@ class HomeAudioPage extends React.Component {
                 <View style={CommonStyles.alignJustifyItemCenter}>
                   <Text style={styles.titleH2}>매일 책 한권</Text>
                 </View>
-                {/*<BookDaily itemData={this.props.store.audioDaily} />*/}
-                <DailySwiper itemData={this.props.store.homeSeriesData} />
+                <DailySwiper itemData={this.props.store.audioDaily} />
               </View>
             </View>
           </View>

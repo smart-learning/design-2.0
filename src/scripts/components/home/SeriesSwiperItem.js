@@ -35,15 +35,17 @@ class SeriesSwiperItem extends React.Component {
           activeOpacity={0.9}
           onPress={() => {
             this.props.navigation.navigate('HomeSeriesDetailPage', {
-              itemData: itemData,
+              itemData: itemData.category,
+              thumbnail: itemData.image,
               title: '윌라 추천시리즈',
             });
           }}
         >
           <ImageBackground
-            source={Dummy}
+            source={{ uri: itemData.image }}
             resizeMode="contain"
             style={styles.thumbnail}
+            borderRadius={12}
           >
             <Text
               ellipsizeMode={'tail'}
@@ -58,7 +60,7 @@ class SeriesSwiperItem extends React.Component {
                 textAlign: 'center',
               }}
             >
-              두줄의 문구가 추가될 경우 이러한 위치에 들어갑니다
+              {itemData.description}
             </Text>
           </ImageBackground>
         </TouchableOpacity>

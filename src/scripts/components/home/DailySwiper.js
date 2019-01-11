@@ -43,7 +43,13 @@ class DailySwiper extends React.Component {
 
   render() {
     let itemData = [];
-    if (_.isObject(this.props.itemData)) {
+    const origin = this.props.itemData;
+    if (origin.category) {
+      const filtered = _.map(origin.category, day => origin[day][0]);
+      const sorted = _.sortBy(filtered, 'open_date').reverse();
+      itemData = sorted;
+    }
+    if (_.isArray(this.props.itemData)) {
       itemData = _.map(this.props.itemData, item => item);
     }
 
