@@ -43,7 +43,7 @@ class HomeSeriesListPage extends React.Component {
   });
 
   getData = async () => {
-    this.store.homeSeriesData = await net.getVideoSeries();
+    this.store.homeSeriesData = await net.getHomeSeries();
   };
 
   constructor(props) {
@@ -91,15 +91,15 @@ class HomeSeriesListPage extends React.Component {
                             this.props.navigation.navigate(
                               'HomeSeriesDetailPage',
                               {
-                                itemData: item,
+                                itemData: item.category,
+                                thumbnail: item.image,
                                 title: '윌라 추천시리즈',
                               },
                             )
                           }
                         >
                           <ImageBackground
-                            // source={{ uri: item.item.list }}
-                            source={Dummy}
+                            source={{ uri: item.image }}
                             resizeMode="cover"
                             style={styles.thumbnail}
                             borderRadius={12}
@@ -117,7 +117,7 @@ class HomeSeriesListPage extends React.Component {
                                 textAlign: 'center',
                               }}
                             >
-                              두줄의 문구가 추가될 경우 이러한 위치에 들어갑니다
+                              {item.description}
                             </Text>
                           </ImageBackground>
                         </TouchableOpacity>
