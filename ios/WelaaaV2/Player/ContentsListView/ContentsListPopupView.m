@@ -405,7 +405,7 @@ heightForRowAtIndexPath : (NSIndexPath *) indexPath
     cell.isSelected = (indexPath.row == self.currentPlayIndex);
     cell.index = indexPath.row;
     cell.isAudioContentType = _isAudioContentType;
-    cell.isPreviewMode = (_isAudioContentType && !self.isAuthor && cell.isSelected);
+    cell.isPreviewMode = (_isAudioContentType && !self.isAuthor && [[cell.itemDict[@"is_preview"] stringValue] isEqualToString:@"1"]);
     cell.hasPermission = self.isAuthor;
     
     [cell updateCell];

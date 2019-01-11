@@ -151,12 +151,15 @@ USB 연결을 해제한 후 다시 연결한다.
 https://mkt.tason.com/help/help_push_guide.jsp 
 SDK 다운로드 (Android SDK)
 
-app/assets/apms.properties 추가 확인이 필요합니다. 
-
 20190107 app/libs 추가 필요합니다. 
 SDK_Android_APMS_11676.jar
 org.eclipse.paho.client.mqttv3-1.2.0(mlog).jar
 volley_20160608.jar
+
+Android Studio / New / New Module / Import .JAR/.AAR Package 
+Remove original file 체크 확인 해주세요 . 
+
+Project structure / Dependencies / Add Module Dependency (SDK_Android_APMS_11676)
 
 ### iOS
 
