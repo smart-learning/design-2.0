@@ -333,6 +333,10 @@ class HomePage extends React.Component {
     }
   }
 
+  showFullModal() {
+    this.props.navigation.navigate('FullModalView');
+  }
+
   componentDidMount = async () => {
     this.getProgressList();
 
@@ -402,9 +406,29 @@ class HomePage extends React.Component {
 
   handleBackPress = () => {
     console.log('back press:');
+    // if (this.props.navigation.isFocused()) {
+    //   BackHandler.exitApp();
+    // }
+
+    // Alert.alert(
+    //   'Exit App',
+    //   'Exiting the application?', [{
+    //     text: 'Cancel',
+    //     onPress: () => console.log('Cancel Pressed'),
+    //     style: 'cancel'
+    //   }, {
+    //     text: 'OK',
+    //     onPress: () => BackHandler.exitApp()
+    //   },], {
+    //     cancelable: false
+    //   }
+    // )
+
     if (this.props.navigation.isFocused()) {
-      BackHandler.exitApp();
+      this.showFullModal();
+      return true;
     }
+
   };
 
   checkMemberShip = () => {
