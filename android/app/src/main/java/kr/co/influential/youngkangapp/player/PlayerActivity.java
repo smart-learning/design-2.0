@@ -4639,8 +4639,25 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   private void playFromUri(Uri uri, Bundle extras) {
-    getTransportControls().playFromUri(uri, extras);
-    attachPlayerView();
+
+    Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
+
+    boolean playWhenReady = true;
+    if (player != null) {
+      mPlayStatus.mPosition = player.getCurrentPosition();
+      playWhenReady = player.getPlayWhenReady();
+
+      if (!playWhenReady) {
+        attachPlayerView();
+      } else {
+        getTransportControls().playFromUri(uri, extras);
+        attachPlayerView();
+      }
+
+    }else{
+      getTransportControls().playFromUri(uri, extras);
+      attachPlayerView();
+    }
   }
 
   private void setPlayerView(PlayerView playerView) {
