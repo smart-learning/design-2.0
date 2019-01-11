@@ -309,6 +309,10 @@ public final class LocalPlayback implements Playback,
     registerAudioNoisyReceiver();
     Uri uri = item.getDescription().getMediaUri();
 
+    if (uri == null) {
+      return;
+    }
+
     boolean mediaHasChanged = currentMedia == null ||
         !uri.equals(currentMedia.getDescription().getMediaUri());
     if (mediaHasChanged) {
