@@ -1,9 +1,45 @@
 
 #import "AppDelegate.h"
 
+#import <PMS/PMS.h>
+#import <PMS/PMSConfig.h>
+#import <PMS/PMSMaster.h>
+#import <PMS/TAS.h>
+
+#define SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESSTHAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+
 @implementation AppDelegate
 
 NSString *const kGCMMessageIDKey = @"gcm.message_id";
+
+//Called when a notification is delivered to a foreground app.
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
+  NSLog(@"User Info : %@",notification.request.content.userInfo);
+  
+  completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
+  
+  [self handleRemoteNotification:[UIApplication sharedApplication] userInfo:notification.request.content.userInfo];
+}
+
+//Called to let your app know which action was selected by the user for a given notification.
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler{
+  NSLog(@"User Info : %@",response.notification.request.content.userInfo);
+  
+  completionHandler();
+  
+  [self handleRemoteNotification:[UIApplication sharedApplication] userInfo:response.notification.request.content.userInfo];
+}
+
+- (void)handleRemoteNotification:(UIApplication *)application   userInfo:(NSDictionary *)remoteNotif {
+  NSLog(@"handleRemoteNotification");
+  NSLog(@"Handle Remote Notification Dictionary: %@", remoteNotif);
+  
+  [PMS receivePush:remoteNotif tagString:@"didReceive"]; // TAS
+  
+  // Handle Click of the Push Notification From Here...
+  // You can write a code to redirect user to specific screen of the app here.
+}
 
 - (BOOL)          application : (UIApplication *) application
 didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
@@ -22,6 +58,56 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     //https://stackoverflow.com/questions/4771105/how-do-i-get-my-avplayer-to-play-while-app-is-in-background
     [[AVAudioSession sharedInstance] setCategory : AVAudioSessionCategoryPlayback
                                            error : nil];
+
+    /** TAS **/
+    [PMS setDelegate:self];
+    [PMSConfig logEnable:YES];
+    [PMSConfig apiLogEnable:YES];
+  
+    // noToken인 사용자를 수집하지 않을때 아래 함수 사용
+    //    [PMSConfig noTokenBlocking:YES];
+    if(SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(@"10.0")){
+      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+      center.delegate = self;
+      [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
+        if(!error){
+          [[UIApplication sharedApplication] registerForRemoteNotifications];
+          NSLog( @"Push registration success greater than or equals to 10.0" );
+        }else {
+          NSLog( @"Push registration FAILED" );
+          NSLog( @"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
+          NSLog( @"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
+        }
+      }];
+    } else {
+      if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)]) {
+        // Xcode5.x 이하에서 빌드 안됨
+        UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+                                                        UIUserNotificationTypeBadge |
+                                                        UIUserNotificationTypeSound);
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+                                                                                 categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+        NSLog(@"Push registration success less than 10.0");
+        
+        if([UIApplication sharedApplication].currentUserNotificationSettings.types == UIUserNotificationTypeNone){
+          // 시스템 알림 설정 == OFF
+        }
+      }else {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
+        
+        if([UIApplication sharedApplication].enabledRemoteNotificationTypes == UIRemoteNotificationTypeNone){
+          // 시스템 알림 설정 == OFF
+        }
+      }
+    }
+  
+    // 푸시에 의해 앱이 구동
+    if(launchOptions && [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]){
+      NSLog(@"App has launched by Push");
+      [PMS receivePush:launchOptions tagString:@"didFinish"];
+    }
   
     NSURL *jsCodeLocation;
 
@@ -57,23 +143,6 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     // Set messaging delegate
     [FIRMessaging messaging].delegate = self;
   
-    // Register for remote notifications.
-    // This shows a permission dialog on first run, to show the dialog at a more appropriate time move this registration accordingly.
-    if ( [UNUserNotificationCenter class] != nil )
-    {
-        // iOS 10 or later
-        // For iOS 10 display notification (sent via APNS)
-        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-        UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
-        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions : authOptions
-                                                                            completionHandler : ^(BOOL granted, NSError * _Nullable error)
-        {
-          //[[UIApplication sharedApplication] registerForRemoteNotifications];
-        }];
-    }
-  
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-  
     NSString *fcmToken = [FIRMessaging messaging].FCMToken;
     NSLog(@"  FCM registration token: %@", fcmToken);
   
@@ -91,6 +160,9 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     /* Set isDebug to true to see AppsFlyer debug logs */
     [AppsFlyerTracker sharedTracker].isDebug = true;
   
+    // APMS 트래킹 시작
+    [TAS serviceStart]; // TAS 자동 수집 및 이벤트 수집 기능 사용(관련 함수 호출 필요-가이드 참고).
+
     return YES;
 }
 
@@ -154,7 +226,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     [FBSDKAppEvents activateApp];
   
     [KOSession handleDidBecomeActive];
-  //[self connectToFcm];
+    //[self connectToFcm];
   
     // Track Installs, updates & sessions(app opens) (You must include this API to enable tracking)
     [[AppsFlyerTracker sharedTracker] trackAppLaunch];
@@ -173,63 +245,43 @@ didReceiveRemoteNotification : (NSDictionary *) userInfo
     // With swizzling disabled you must let Messaging know about the message, for Analytics
     // [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
   
+    NSLog(@"userInfo : %@",userInfo);
+
     // Print message ID.
     if ( userInfo[kGCMMessageIDKey] )
     {
         NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
     }
   
-    // Print full message.
-    NSLog(@"  %@", userInfo);
-  
-    completionHandler(UIBackgroundFetchResultNewData);
-}
-
-//
-// START ios_10_message_handling
-// Receive displayed notifications for iOS 10 devices.
-// Handle incoming notification messages while app is in the foreground.
-//
-- (void) userNotificationCenter : (UNUserNotificationCenter *) center
-        willPresentNotification : (UNNotification *) notification
-          withCompletionHandler : (void (^) (UNNotificationPresentationOptions)) completionHandler
-{
-    NSDictionary *userInfo = notification.request.content.userInfo;
-  
-    // With swizzling disabled you must let Messaging know about the message, for Analytics
-    // [[FIRMessaging messaging] appDidReceiveMessage:userInfo];
-  
-    // Print message ID.
-    if ( userInfo[kGCMMessageIDKey] )
+    // iOS 10 will handle notifications through other methods
+    if(SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(@"10.0"))
     {
-        NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+      NSLog( @"iOS version >= 10. Let NotificationCenter handle this one." );
+      // set a member variable to tell the new delegate that this is background
+      return;
     }
+    NSLog( @"HANDLE PUSH, didReceiveRemoteNotification: %@", userInfo );
   
-    // Print full message.
-    NSLog(@"  %@", userInfo);
+    [PMS receivePush:userInfo tagString:@"didReceive"]; // TAS
   
-    // Change this to your preferred presentation option
-    completionHandler(UNNotificationPresentationOptionNone);
-}
-
-// Handle notification messages after display notification is tapped by the user.
-- (void) userNotificationCenter : (UNUserNotificationCenter *) center
- didReceiveNotificationResponse : (UNNotificationResponse *) response
-          withCompletionHandler : (void(^) (void)) completionHandler
-{
-    NSDictionary *userInfo = response.notification.request.content.userInfo;
+    // custom code to handle notification content
   
-    if ( userInfo[kGCMMessageIDKey] )
+    if( [UIApplication sharedApplication].applicationState == UIApplicationStateInactive )
     {
-        NSLog(@"  Message ID: %@", userInfo[kGCMMessageIDKey]);
+      NSLog( @"INACTIVE" );
+      completionHandler( UIBackgroundFetchResultNewData );
     }
-  
-    // Print full message.
-    NSLog(@"  %@", userInfo);
-  
-    completionHandler();
+    else if( [UIApplication sharedApplication].applicationState == UIApplicationStateBackground )
+    {
+      NSLog( @"BACKGROUND" );
+      completionHandler( UIBackgroundFetchResultNewData );
+    }
+    else
+    {
+      NSLog( @"FOREGROUND" );
+      completionHandler( UIBackgroundFetchResultNewData );
+    }
 }
-// [END ios_10_message_handling]
 
 //
 // Refresh token
@@ -263,6 +315,8 @@ didReceiveRegistrationToken : (NSString *) fcmToken
 didFailToRegisterForRemoteNotificationsWithError : (NSError *) error
 {
     NSLog(@"  Unable to register for remote notifications: %@", error);
+  
+    [PMS deviceCert]; //  TAS
 }
 
 //
@@ -275,7 +329,9 @@ didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
     NSLog(@"  APNs device token retrieved: %@", deviceToken);
   
     // With swizzling disabled you must set the APNs device token here.
-    // [FIRMessaging messaging].APNSToken = deviceToken;
+    //[FIRMessaging messaging].APNSToken = deviceToken;
+  
+    [PMS setPushToken:deviceToken]; // TAS
 }
 
 #pragma mark - Core Data stack
@@ -373,6 +429,51 @@ continueUserActivity : (NSUserActivity *) userActivity
                                         restorationHandler : restorationHandler];
   
     return YES;
+}
+
+#pragma mark - PMS Delegate implements
+
+-(void)pmsDidReceivePush:(PMSModelMessage *)resultModel Payload:(NSDictionary *)payload Tag:(NSString *)tag
+{
+  // 이 함수는 호출되지 않을 수도 있다고 한다. 그래도 푸시 메시지는 나타난다고. 결국 Firebase 에서 보내주는 거기 때문에.(TAS 업체측의 설명)
+  NSLog(@"pmsDidReceivePush : %@ %@", resultModel, tag);
+  NSLog(@"payload : %@", payload);
+  
+  if(resultModel && [resultModel isSuccess]){
+    // 메시지 읽음처리
+    [PMS sendReadMsgEventWithMsgId:resultModel.msgId CompleteBlock:^(PMSResult *result) {
+      if([result isSuccess]){
+        NSLog(@"sendReadMsgEventWithMsgId Complete %@",resultModel.msgId);
+      }else{
+        NSLog(@"sendReadMsgEventWithMsgId Fail %@",resultModel.msgId);
+      }
+    }];
+  }else{
+    // 메시지 읽음처리
+    NSString *msgId = [NSString stringWithFormat:@"%@",[payload objectForKey:@"i"]];
+    [PMS sendReadMsgEventWithMsgId:msgId CompleteBlock:^(PMSResult *result) {
+      if([result isSuccess]){
+        NSLog(@"sendReadMsgEventWithMsgId Complete %@",msgId);
+      }else{
+        NSLog(@"sendReadMsgEventWithMsgId Fail %@",msgId);
+      }
+    }];
+  }
+}
+
+-(void)pmsSetPushTokenComplete:(PMSResult*)result
+{
+  NSLog(@"pmsSetPushTokenComplete : %@", result);
+}
+
+-(void)pmsSendClickMsgComplete:(PMSResult *)result
+{
+  NSLog(@"pmsSendClickMsgComplete : %@", result);
+}
+
+-(void)pmsSendReadMsgComplete:(PMSResult *)result
+{
+  NSLog(@"pmsSendReadMsgComplete : %@", result);
 }
 
 @end
