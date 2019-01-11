@@ -173,6 +173,22 @@ class SignUpLandingPage extends React.Component {
             EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
             OS_TYPE: Platform.OS,
           });
+        } else if (Platform.OS === 'ios') {
+          // 2019.1.11 facebook event: 마케팅 요청.
+          // Android 와 동일한 내용이지만 일단 분기 해서 별도로 관리.
+          const NativeConstants = Native.getConstants();
+          const EVENT_NAME_COMPLETED_REGISTRATION =
+            NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;
+          const EVENT_PARAM_REGISTRATION_METHOD =
+            NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
+          AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
+            [EVENT_PARAM_REGISTRATION_METHOD]: store.socialType,
+          });
+
+          firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+            EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
+            OS_TYPE: Platform.OS,
+          });
         }
 
         store.welaaaAuth = data;
