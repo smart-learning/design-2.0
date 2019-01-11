@@ -452,7 +452,19 @@ export default {
       });
   },
   getHomeSeries() {
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/series', DEFAULT_EXPIRED)
+    return cacheOrLoad(API_PREFIX + 'v1.1/cms/main/series', DEFAULT_EXPIRED)
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
+  getHomeSeriesDetail(cate) {
+    return cacheOrLoad(
+      API_PREFIX + '/v1.0/contents/video-series/' + cate,
+      DEFAULT_EXPIRED,
+    )
       .then(data => {
         return data;
       })
@@ -730,7 +742,7 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/a-book-a-day', expired)
+    return cacheOrLoad(API_PREFIX + 'v1.1/cms/main/a-book-a-day', expired)
       .then(data => {
         return data;
       })
