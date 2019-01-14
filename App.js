@@ -45,6 +45,7 @@ import MyScreens from './src/scripts/pages/my/MyScreens';
 import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
+import FullModalSectionPage from './src/scripts/pages/auth/FullModalSectionPage';
 
 class Data {
   @observable
@@ -812,6 +813,9 @@ const AppNavigator = createSwitchNavigator(
     },
     Signin: {
       screen: SigninStack,
+    },
+    FullModalSectionPageCall: {
+      screen: FullModalSectionPage,
     },
   },
   {
