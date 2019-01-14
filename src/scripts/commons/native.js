@@ -21,10 +21,11 @@ export default {
     RNNativePlayer.stop();
 
     if (Platform.OS === 'android') {
-      // 로그아웃 할때 tas logout 을 진행합니다. 
+      // 로그아웃 할때 tas logout 을 진행합니다.
+      RNNativePlayer.tasLogout();
+    } else if (Platform.OS === 'ios') {
       RNNativePlayer.tasLogout();
     } else {
-
     }
   },
 
@@ -194,7 +195,7 @@ export default {
       token: globalStore.accessToken,
       cellularDataUsePlay: isWifiPlay,
       cellularDataUseDownload: isWifiDownload,
-      fcmFlag: isAlert
+      fcmFlag: isAlert,
     };
 
     console.log('updateSetting:', config);
@@ -259,16 +260,16 @@ export default {
   },
 
   tasDeviceCert() {
-
     const { welaaaAuth } = globalStore;
 
     console.log('tasDeviceCert > welaaaAuth', welaaaAuth);
 
-    if (welaaaAuth === undefined ||
+    if (
+      welaaaAuth === undefined ||
       welaaaAuth.profile === undefined ||
-      welaaaAuth.profile.id === undefined) {
+      welaaaAuth.profile.id === undefined
+    ) {
     } else {
-
       console.log('tasDeviceCert > welaaaAuth', welaaaAuth);
 
       // DeviceCert (TAS admin 페이지에서 확인되는 단말 등록)
@@ -283,10 +284,12 @@ export default {
       try {
         if (Platform.OS === 'android') {
           RNNativePlayer.tasDeviceCert(config);
+        } else if (Platform.OS === 'ios') {
+          // TAS 로그인 처리는 네이티브에서 TAS 함수 이용
+          RNNativePlayer.tasDeviceCert(config);
         } else {
           // DeviceCert (TAS admin 페이지에서 확인되는 단말 등록)
         }
-
       } catch (error) {
         console.log(error);
       }
@@ -298,9 +301,7 @@ export default {
       if (Platform.OS === 'android') {
         RNNativePlayer.tasLandingUrl(callback);
       } else {
-
       }
-
     } catch (error) {
       console.log(error);
     }

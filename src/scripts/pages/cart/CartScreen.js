@@ -195,6 +195,7 @@ class CartScreen extends React.Component {
        */
       this.state.cartItems.map(item => {
         let eventValues = {
+          af_revenue: item.user_price,
           af_price: item.user_price,
           af_currency: 'KRW',
           af_content_id: item.id,

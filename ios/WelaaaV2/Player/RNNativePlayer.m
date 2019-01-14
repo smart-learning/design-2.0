@@ -9,6 +9,9 @@
 #import "RNNativePlayer.h"
 #import "AFNetworkReachabilityManager.h"
 
+#import <PMS/PMS.h>
+#import <PMS/TAS.h>
+
 @implementation RNNativePlayer
 {
     BOOL _hasListeners;
@@ -402,6 +405,65 @@ RCT_EXPORT_MODULE();
   }
 }
 
+- (void) tasDeviceCertPmsCustId : (NSDictionary *) args
+{
+  @try {
+    if(args){
+      NSLog(@"tasDeviceCertWithCustId args -> %@",args);
+      NSString* userId = [args objectForKey:@"userId"];
+      NSString* currentMembership = [args objectForKey:@"currentMembership"];
+      
+      NSMutableDictionary *dict = [NSMutableDictionary new];
+      [dict setValue:userId forKey:@"custId"];
+      [dict setValue:currentMembership forKey:@"currentMembership"];
+
+      NSLog(@"tasDeviceCertWithCustId - userId : %@, currentMembership : %@",userId,currentMembership);
+      if(userId==nil || userId.length==0){
+        NSLog(@"No UserId to Select!");
+      }
+      
+      // deviceCert + Login
+      [PMS deviceCertWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
+        if([result isSuccess]){
+          NSLog(@"TAS DeviceCert and Login Success with UserId %@",userId);
+        }else{
+          NSLog(@"TAS Login Fail %@ %@", result.code, result.msg);
+        }
+      }];
+      
+      // Login only
+      /*
+      [PMS loginWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
+        if([result isSuccess]){
+          NSMutableDictionary *dict = [NSMutableDictionary new];
+          [dict setValue:userId forKey:@"custId"];
+          [dict setValue:currentMembership forKey:@"currentMembership"];
+          [TAS identifyUser:userId userProp:dict];
+          NSLog(@"TAS Login Success with UserId %@",userId);
+        }else{
+          NSLog(@"TAS Login Fail %@ %@", result.code, result.msg);
+        }
+      }];
+       */
+    }else{
+      NSLog(@"tasDeviceCertWithCustId No args!");
+    }
+  }
+  @catch (NSException *exception) {
+    NSLog(@"tasDeviceCertWithCustId Exception -> %@",exception.description);
+  }
+}
+
+- (void) tasLogoutPms
+{
+  [PMS logoutWithCompleteBlock:^(PMSResult *result) {
+    if([result isSuccess]){
+      NSLog(@"TAS logout Success");
+    }else{
+      NSLog(@"TAS logout Failed");
+    }
+  }];
+}
 
 #pragma mark - Alert and Popup (TODO : 추후 한곳에 모아둘 필요 있음. 중복되는 부분들.)
 
@@ -477,6 +539,16 @@ RCT_EXPORT_METHOD( getDownloadList : (NSDictionary *)option
                   rejecter : (RCTPromiseRejectBlock)reject )
 {
   [self selectDownloadedList:option resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD( tasDeviceCert : (NSDictionary *) argsFromReactNative )
+{
+  [self tasDeviceCertPmsCustId:argsFromReactNative];
+}
+
+RCT_EXPORT_METHOD( tasLogout )
+{
+  [self tasLogoutPms];
 }
 
 @end
