@@ -60,7 +60,7 @@ export default class ClassContinueList extends React.Component {
       <View borderRadius={10}>
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => Native.play(item.data.id)}
+          onPress={() => Native.play(item.data.cid)}
         >
           <ImageBackground
             source={{ uri: item.data.images ? item.data.images.wide : null }}
