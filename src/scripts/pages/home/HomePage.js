@@ -334,7 +334,10 @@ class HomePage extends React.Component {
   }
 
   showFullModal() {
-    this.props.navigation.navigate('FullModalView');
+    this.props.navigation.navigate('FullModalView', {
+      popup_type: 'AndroidMainExit',
+      preview_page: 'HomePage',
+    });
   }
 
   componentDidMount = async () => {
@@ -410,25 +413,15 @@ class HomePage extends React.Component {
     //   BackHandler.exitApp();
     // }
 
-    // Alert.alert(
-    //   'Exit App',
-    //   'Exiting the application?', [{
-    //     text: 'Cancel',
-    //     onPress: () => console.log('Cancel Pressed'),
-    //     style: 'cancel'
-    //   }, {
-    //     text: 'OK',
-    //     onPress: () => BackHandler.exitApp()
-    //   },], {
-    //     cancelable: false
-    //   }
-    // )
-
     if (this.props.navigation.isFocused()) {
-      this.showFullModal();
-      return true;
+      if (globalStore.currentMembership !== undefined
+        && globalStore.currentMembership.type === undefined) {
+        this.showFullModal();
+        return true;
+      } else {
+        BackHandler.exitApp();
+      }
     }
-
   };
 
   checkMemberShip = () => {

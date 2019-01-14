@@ -15,18 +15,18 @@ import {
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Image from 'react-native-scalable-image';
-import { COLOR_PRIMARY } from '../../styles/common';
+import { COLOR_PRIMARY } from '../../../styles/common';
 import moment from 'moment';
-import net from '../commons/net';
-import nav from '../commons/nav';
-import globalStore from '../commons/store';
+import net from '../../commons/net';
+import nav from '../../commons/nav';
+import globalStore from '../../commons/store';
 
 class Data {
   @observable
   windowHeight = null;
 }
 
-class FullModalSection extends Component {
+class FullModalSectionPage extends Component {
   data = new Data();
 
   constructor() {
@@ -99,6 +99,8 @@ class FullModalSection extends Component {
 
     let data = await net.getMainPopup(this.props.navigation.state.params.popup_type);
 
+    if (data.length === 0) return;
+
     let ads = [];
     data.forEach((ad, idx) => {
       ads.push(ad);
@@ -130,9 +132,7 @@ class FullModalSection extends Component {
     }
 
     return (
-
       <View style={this.style.container}>
-
         <View style={this.style.textFrame}>
           <Text style={this.style.PopupText}>
             뒤로가기를 한 번 더 누르면 앱이 종료됩니다
@@ -141,21 +141,23 @@ class FullModalSection extends Component {
         <TouchableOpacity
           activeOpacity={0.9}
           style={this.style.hideOption}
-          onPress={() => this.props.navigation.navigate('MembershipPage', {})}
+          onPress={() => this.props.navigation.navigate('AuthLoading')}
         >
           <View style={this.style.frame}>
+
             <View style={[{ height: ad.img_height * img_ratio }]} />
             <Image
               source={{ uri: ad.img_url }}
               width={device_size.width - 30}
               height={device_size.height}
               style={this.style.popupInfo}
-              resizeMode={"contain"}
+              resizeMode={'cover'}
             />
-          </View >
+
+          </View>
         </TouchableOpacity>
       </View>
     );
   }
 }
-export default FullModalSection;
+export default FullModalSectionPage;
