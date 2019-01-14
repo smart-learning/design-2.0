@@ -76,16 +76,20 @@ class HomeSeriesDetailPage extends React.Component {
 
   render() {
     let itemData = {};
-    let itemMemo = '';
+    let itemContent = '';
     let itemClipData = [];
 
     if (_.isObject(this.store.homeSeriesDetailData)) {
       itemData = this.store.homeSeriesDetailData;
 
       if (itemData.series) {
-        itemMemo = itemData.series.memo;
+        if (itemData.series.description) {
+          itemContent = itemData.series.description.split('<br>').join('\n');
+        } else {
+          itemContent = itemData.series.memo.split('<br>').join('\n');
+        }
       } else {
-        itemMemo = '';
+        itemContent = '';
       }
 
       if (itemData.item) {
@@ -108,7 +112,7 @@ class HomeSeriesDetailPage extends React.Component {
             </View>
             <View style={styles.contentContainer}>
               <Text style={styles.title}>윌라 추천시리즈 소개</Text>
-              <Text style={styles.paragraph}>{itemMemo}</Text>
+              <Text style={styles.paragraph}>{itemContent}</Text>
               <Text style={styles.title}>강의 클립</Text>
               {itemClipData.map((item, key) => {
                 return (
