@@ -63,7 +63,7 @@ export default class ClassContinueList extends React.Component {
           onPress={() => Native.play(item.data.id)}
         >
           <ImageBackground
-            source={{ uri: item.data.images ? item.data.images.list : null }}
+            source={{ uri: item.data.images ? item.data.images.wide : null }}
             resizeMode="cover"
             style={styles.thumbnail}
             borderRadius={10}
