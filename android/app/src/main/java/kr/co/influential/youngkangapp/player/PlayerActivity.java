@@ -4358,7 +4358,11 @@ public class PlayerActivity extends BasePlayerActivity {
         }
 
         if (player != null) {
-          player.setPlayWhenReady(true);
+
+          if(player.getPlayWhenReady()){
+            player.setPlayWhenReady(true);
+          }
+
         }
 
         // 추천 뷰 콘텐츠 뷰가 활성화 인 경우

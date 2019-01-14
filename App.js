@@ -137,7 +137,6 @@ class App extends React.Component {
       await utils.updateCartStatus();
 
       Native.tasDeviceCert();
-
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
@@ -379,12 +378,11 @@ class App extends React.Component {
 
       this.subscription.push(
         DeviceEventEmitter.addListener('tasLandingUrlHandler', params => {
-
           console.log('tasLandingUrlHandler', params.TAS_CUSTOM_DATA);
           // console.log('tasLandingUrlHandler', params);
           // { TAS_CUSTOM_DATA: '{"l":"welaaa:\\/\\/membership"}' }
 
-          let tasLandingUrl = JSON.parse(params.TAS_CUSTOM_DATA)
+          let tasLandingUrl = JSON.parse(params.TAS_CUSTOM_DATA);
           console.log('tasLandingUrlHandler', tasLandingUrl.l);
           // nav.parseDeepLink(tasLandingUrl.l);
           try {
@@ -418,7 +416,25 @@ class App extends React.Component {
           params.message = notification._body;
           params.onPress = () => {
             try {
-              nav.parseDeepLink(notification._data.path);
+              if (Platform.OS == 'android') {
+                nav.parseDeepLink(notification._data.path);
+              } else if (Platform.OS == 'ios') {
+                if (
+                  notification._data.l &&
+                  notification._data.l.length > 0 &&
+                  notification._data.l.startsWith('welaaa://')
+                ) {
+                  // TAS 에서 보낸 푸시일 경우
+                  nav.parseDeepLink(notification._data.l);
+                } else if (
+                  notification._data.path &&
+                  notification._data.path.length > 0 &&
+                  notification._data.path.startsWith('welaaa://')
+                ) {
+                  // Firebase 에서 보낸 푸시일 경우
+                  nav.parseDeepLink(notification._data.path);
+                }
+              }
             } catch (error) {
               console.log(error);
             }
@@ -438,10 +454,36 @@ class App extends React.Component {
         const notification = notificationOpen.notification;
 
         try {
-          if (this.data.welaaaAuthLoaded) {
-            nav.parseDeepLink(notification._data.path);
-          } else {
-            this.data.queuePath = notification._data.path;
+          if (Platform.OS == 'android') {
+            if (this.data.welaaaAuthLoaded) {
+              nav.parseDeepLink(notification._data.path);
+            } else {
+              this.data.queuePath = notification._data.path;
+            }
+          } else if (Platform.OS == 'ios') {
+            if (
+              notification._data.l &&
+              notification._data.l.length > 0 &&
+              notification._data.l.startsWith('welaaa://')
+            ) {
+              // TAS 에서 보낸 푸시일 경우
+              if (this.data.welaaaAuthLoaded) {
+                nav.parseDeepLink(notification._data.l);
+              } else {
+                this.data.queuePath = notification._data.l;
+              }
+            } else if (
+              notification._data.path &&
+              notification._data.path.length > 0 &&
+              notification._data.path.startsWith('welaaa://')
+            ) {
+              // Firebase 에서 보낸 푸시일 경우
+              if (this.data.welaaaAuthLoaded) {
+                nav.parseDeepLink(notification._data.path);
+              } else {
+                this.data.queuePath = notification._data.path;
+              }
+            }
           }
         } catch (error) {
           console.log(error);
@@ -452,18 +494,15 @@ class App extends React.Component {
     const notificationOpen = await firebase
       .notifications()
       .getInitialNotification();
-
-
-    // Android 앱 종료 상태에서 TAS 노티로 들어 올때 
+    // Android 앱 종료 상태에서 TAS 노티로 들어 올때
     if (Platform.OS === 'android') {
       Native.tasLandingUrl(tas_landing_url => {
         if (undefined === tas_landing_url || '' === tas_landing_url) {
           return;
         }
 
-        let tasLandingUrl = JSON.parse(tas_landing_url)
+        let tasLandingUrl = JSON.parse(tas_landing_url);
         nav.parseDeepLink(tasLandingUrl.l);
-
       });
     }
 
@@ -475,10 +514,36 @@ class App extends React.Component {
       const notification = notificationOpen.notification;
 
       try {
-        if (this.data.welaaaAuthLoaded) {
-          nav.parseDeepLink(notification._data.path);
-        } else {
-          this.data.queuePath = notification._data.path;
+        if (Platform.OS == 'android') {
+          if (this.data.welaaaAuthLoaded) {
+            nav.parseDeepLink(notification._data.path);
+          } else {
+            this.data.queuePath = notification._data.path;
+          }
+        } else if (Platform.OS == 'ios') {
+          if (
+            notification._data.l &&
+            notification._data.l.length > 0 &&
+            notification._data.l.startsWith('welaaa://')
+          ) {
+            // TAS 에서 보낸 푸시일 경우
+            if (this.data.welaaaAuthLoaded) {
+              nav.parseDeepLink(notification._data.l);
+            } else {
+              this.data.queuePath = notification._data.l;
+            }
+          } else if (
+            notification._data.path &&
+            notification._data.path.length > 0 &&
+            notification._data.path.startsWith('welaaa://')
+          ) {
+            // Firebase 에서 보낸 푸시일 경우
+            if (this.data.welaaaAuthLoaded) {
+              nav.parseDeepLink(notification._data.path);
+            } else {
+              this.data.queuePath = notification._data.path;
+            }
+          }
         }
       } catch (error) {
         console.log(error);
@@ -561,8 +626,7 @@ class App extends React.Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-
-      console.log('nextAppState', 'active')
+      console.log('nextAppState', 'active');
 
       if (Platform.OS === 'ios') {
         appsFlyer.trackAppLaunch();
@@ -573,8 +637,7 @@ class App extends React.Component {
       this.state.appState.match(/active|foreground/) &&
       nextAppState === 'background'
     ) {
-
-      console.log('nextAppState', 'background')
+      console.log('nextAppState', 'background');
       if (this.onInstallConversionDataCanceller) {
         this.onInstallConversionDataCanceller();
       }
