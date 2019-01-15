@@ -422,14 +422,16 @@ RCT_EXPORT_MODULE();
         NSLog(@"No UserId to Select!");
       }
       
-      // deviceCert + Login
-      [PMS deviceCertWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
-        if([result isSuccess]){
-          NSLog(@"TAS DeviceCert and Login Success with UserId %@",userId);
-        }else{
-          NSLog(@"TAS Login Fail %@ %@", result.code, result.msg);
-        }
-      }];
+      // Device Certification + Login
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [PMS deviceCertWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
+          if([result isSuccess]){
+            NSLog(@"TAS DeviceCert and Login Success with UserId %@",userId);
+          }else{
+            NSLog(@"TAS Login Fail %@ %@", result.code, result.msg);
+          }
+        }];
+      });
       
       // Login only
       /*
@@ -463,6 +465,49 @@ RCT_EXPORT_MODULE();
       NSLog(@"TAS logout Failed");
     }
   }];
+}
+
+- (void) tasSettingPms : (NSDictionary *) args
+{
+  @try {
+    if(args){
+      NSLog(@"tasSetting args -> %@",args);
+      NSNumber* fcmFlag = [args objectForKey:@"fcmFlag"];
+      
+      NSLog(@"tasSetting - fcmFlag : %@",fcmFlag);  // 1 or 0
+      
+      BOOL notiFlag = NO;
+      BOOL mktFlag = NO;
+      BOOL msgFlag = NO;  // 알림(공지) 게시판이 없는 상태이므로 메시지 보관하지 않음
+      
+      // 수신동의 상태 설정(현재는 설정화면에 체크 항목이 하나뿐이므로 그 플래그 하나로 정보성푸시, 마케팅성푸시 동시에 적용함)
+      if([fcmFlag isEqualToNumber:[NSNumber numberWithInt:1]]){
+        notiFlag = YES;
+        mktFlag = YES;
+      }else{
+        notiFlag = NO;
+        mktFlag = NO;
+      }
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [PMS setConfigWithNotiFlag:notiFlag MsgFlag:msgFlag MktFlag:mktFlag CompleteBlock:^(PMSResult *result) {
+          NSLog(@"switchValueChanged is complete %@ %@", result.code, result.msg);
+          //// 최종 설정 상태 확인
+          // Push(정보성) 수신여부 확인
+          [PMS getNotiFlag]?NSLog(@"TAS getNotiFlag YES"):NSLog(@"TAS getNotiFlag NO");
+          // 메시지함 적재여부 확인
+          [PMS getMsgFlag]?NSLog(@"TAS getMsgFlag YES"):NSLog(@"TAS getMsgFlag NO");
+          // 마케팅 수신 동의여부 확인 (NotiFlag의 영향 받지 않음)
+          [PMS getMktFlag]?NSLog(@"TAS getMktFlag YES"):NSLog(@"TAS getMktFlag NO");
+        }];
+      });
+    }else{
+      NSLog(@"tasSetting No args!");
+    }
+  }
+  @catch (NSException *exception) {
+    NSLog(@"tasSetting Exception -> %@",exception.description);
+  }
 }
 
 #pragma mark - Alert and Popup (TODO : 추후 한곳에 모아둘 필요 있음. 중복되는 부분들.)
@@ -549,6 +594,11 @@ RCT_EXPORT_METHOD( tasDeviceCert : (NSDictionary *) argsFromReactNative )
 RCT_EXPORT_METHOD( tasLogout )
 {
   [self tasLogoutPms];
+}
+
+RCT_EXPORT_METHOD( tasSetting : (NSDictionary *) argsFromReactNative )
+{
+  [self tasSettingPms:argsFromReactNative];
 }
 
 @end

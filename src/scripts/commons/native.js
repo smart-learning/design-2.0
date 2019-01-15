@@ -200,7 +200,11 @@ export default {
 
     console.log('updateSetting:', config);
 
-    return RNNativePlayer.setting(config);
+    if (Platform.OS === 'ios') {
+      return RNNativePlayer.tasSetting(config);
+    } else {
+      return RNNativePlayer.setting(config);
+    }
   },
 
   updateSetting(key, bool) {
