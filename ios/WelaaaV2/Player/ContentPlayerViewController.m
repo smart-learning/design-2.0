@@ -173,7 +173,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
           
             // progress dictionary가 null이 아니면..
             if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+            {
                 _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+                _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+            }
         }
       
         NSString *tempCid = contentsListArray[indexOfCurrentContent][@"cid"];
@@ -228,7 +231,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
               
                 // progress dictionary가 null이 아니면..
                 if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+                {
                     _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+                    _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+                }
             }
             // history dictionary가 null이면..
             else
