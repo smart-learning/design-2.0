@@ -253,7 +253,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
           
             // progress dictionary가 null이 아니면..
             if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+            {
                 _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+                _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+            }
         }
       
         NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
@@ -333,7 +336,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
     [self setupNowPlayingInfoCenter];
   
-    if ( !_startSeconds || _startSeconds == 0 )
+    if ( !_startSeconds || _startSeconds == 0 || _progress == 100 ) // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
@@ -361,6 +364,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_player play];
     }
     _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
+    _progress = 0;        // 한번 사용되었으므로 0으로 초기화합니다.
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
@@ -1605,12 +1609,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         }
     }
   
-    NSInteger progress = 0;
     // progress dictionary가 null이 아니면..
     if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
     {
         _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
-        progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+        _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
     }
   
     [self fpsSetUrlAsset];
@@ -1618,7 +1621,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
     [self setupNowPlayingInfoCenter];
-    if ( !_startSeconds || _startSeconds == 0 || progress == 100 )  // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
+    if ( !_startSeconds || _startSeconds == 0 || _progress == 100 )  // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
@@ -1650,6 +1653,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_player setRate : _playbackRate];
     }
     _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
+    _progress = 0;        // 한번 사용되었으므로 0으로 초기화합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
