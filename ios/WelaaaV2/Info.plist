@@ -36,7 +36,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1516qa190111</string>
+	<string>1516qa190114</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -163,10 +163,10 @@
 	<string>https://api.pushpia.com:444</string>
 	<key>PMSAppKey</key>
 	<string>50a9ec2147f649c12613</string>
-	<key>TASServerURL</key>
-	<string></string>
 	<key>TASChannelKey</key>
 	<string>50a9ec2147f649c12613</string>
+	<key>TASServerURL</key>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Bold.ttf</string>
