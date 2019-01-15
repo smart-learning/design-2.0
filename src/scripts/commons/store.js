@@ -118,7 +118,7 @@ class Store {
     isAutoLogin: false,
     isWifiPlay: true,
     isWifiDownload: true,
-    isAlert: false,
+    isAlert: true,
     isEmail: false
   };
 
