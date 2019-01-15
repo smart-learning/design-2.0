@@ -24,7 +24,7 @@ export default {
       // 로그아웃 할때 tas logout 을 진행합니다.
       RNNativePlayer.tasLogout();
     } else if (Platform.OS === 'ios') {
-      RNNativePlayer.tasLogout();
+      //RNNativePlayer.tasLogout(); // 회원탈퇴 기능 구현될때까진 쓰지 않는걸로 결론. 2019.1.15
     } else {
     }
   },
