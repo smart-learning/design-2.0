@@ -20,6 +20,7 @@ import moment from 'moment';
 import net from '../../commons/net';
 import nav from '../../commons/nav';
 import globalStore from '../../commons/store';
+import LogoGreen from '../../../images/welaaa_logo_green.png'
 
 class Data {
   @observable
@@ -36,7 +37,7 @@ class FullModalSectionPage extends Component {
 
     this.style = StyleSheet.create({
       container: {
-
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#293648',
@@ -52,9 +53,8 @@ class FullModalSectionPage extends Component {
 
       frame: {
         width: Dimensions.get('window').width - 30,
-
         backgroundColor: '#293648',
-        height: this.data.windowHeight,
+        height: this.data.windowHeight - 130,
         marginTop: 15,
       },
 
@@ -71,10 +71,11 @@ class FullModalSectionPage extends Component {
       },
 
       footer: {
-        backgroundColor: COLOR_PRIMARY,
-        flexDirection: 'row',
+        backgroundColor: '#293648',
         width: '100%',
+        position: 'absolute',
         alignItems: 'center',
+        justifyContent: 'center',
       },
 
       hideOption: {
@@ -87,7 +88,21 @@ class FullModalSectionPage extends Component {
         fontWeight: 'bold',
         color: '#ffffff',
         textAlign: 'center',
-      }
+      },
+
+      footerframe: {
+        // width: Dimensions.get('window').width - 30,
+        // backgroundColor: '#293648',
+        flex: 1,
+        justifyContent: 'flex-end',
+        marginBottom: 36
+      },
+
+      footerImage: {
+        position: 'relative',
+        alignItems: 'stretch',
+        justifyContent: 'center',
+      },
     });
 
     this.state = {
@@ -149,13 +164,19 @@ class FullModalSectionPage extends Component {
             <Image
               source={{ uri: ad.img_url }}
               width={device_size.width - 30}
-              height={device_size.height}
               style={this.style.popupInfo}
               resizeMode={'cover'}
             />
 
           </View>
         </TouchableOpacity>
+        <View style={this.style.footerframe}>
+          <Image
+            source={LogoGreen}
+            width={181}
+            height={45}
+          />
+        </View>
       </View>
     );
   }
