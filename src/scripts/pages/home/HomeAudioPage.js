@@ -152,6 +152,8 @@ class HomeAudioPage extends React.Component {
                 dotColor={'#888888'}
                 activeDotColor={'#ffffff'}
                 paginationStyle={{ bottom: 10 }}
+                autoplay={true}
+                autoplayTimeout={3}
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';
