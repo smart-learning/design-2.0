@@ -1489,7 +1489,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             }
             else if ( indexOfCurrentContent < contentsListArray.count-1 )
             {
-                for (int i=(int)indexOfCurrentContent+1; i<contentsListArray.count-1; i++)
+                for (int i=(int)indexOfCurrentContent+1; i<=contentsListArray.count-1; i++)
                 {
                     if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
                     {
