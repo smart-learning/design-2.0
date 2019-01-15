@@ -279,10 +279,16 @@ export default {
       // DeviceCert (TAS admin 페이지에서 확인되는 단말 등록)
       let userId = globalStore.welaaaAuth.profile.id;
       let accessToken = globalStore.welaaaAuth.access_token;
+      let currentMembership = "";
+
+      if (globalStore.currentMembership.type !== undefined) {
+        currentMembership: globalStore.currentMembership.type.toString()
+      }
+
       let config = {
         userId: userId.toString(),
         accessToken: accessToken,
-        currentMembership: globalStore.currentMembership.type.toString(),
+        currentMembership: currentMembership,
       };
 
       try {

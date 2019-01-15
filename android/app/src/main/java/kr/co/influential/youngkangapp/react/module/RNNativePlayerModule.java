@@ -247,7 +247,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
 
       if(fcmFlag){
-        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "0800", "2100", new APICallback() {
+        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "2100", "0800", new APICallback() {
           @Override
           public void response (String code, JSONObject json) {
             //
@@ -255,7 +255,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           }
         });
       }else{
-        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "0800", "2100", new APICallback() {
+        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "2100", "0800", new APICallback() {
           @Override
           public void response (String code, JSONObject json) {
             //
