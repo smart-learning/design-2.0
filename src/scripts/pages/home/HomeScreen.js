@@ -23,6 +23,7 @@ import MembershipScreens from '../membership/MembershipScreen';
 import CartScreen from '../cart/CartScreen';
 import SerieseIntro from '../series/SeriesIntroPage';
 import InnerWebViewPage from '../in_web/InnerWebViewPage';
+import FullModalSection from '../../components/FullModalSection';
 
 const HomeScreen = createStackNavigator(
   {
@@ -77,6 +78,13 @@ const HomeScreen = createStackNavigator(
     },
     WebView: {
       screen: InAppWebView,
+    },
+
+    FullModalView: {
+      screen: FullModalSection,
+      navigationOptions: {
+        header: null,
+      },
     },
 
     PrivacyPage: {

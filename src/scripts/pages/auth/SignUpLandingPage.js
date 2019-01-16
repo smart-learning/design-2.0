@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  BackHandler,
   View,
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
@@ -146,9 +147,30 @@ class SignUpLandingPage extends React.Component {
     this.setState({
       slideHeight: windowHeight,
     });
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {}
+  showFullModal() {
+    this.props.navigation.navigate('FullModalSectionPageCall'
+      , {
+        popup_type: 'AndroidMainExit',
+        preview_page: 'SignUpLandingPage',
+      }
+    );
+
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    if (this.props.navigation.isFocused()) {
+      this.showFullModal();
+      return true;
+    }
+  };
 
   onAccessToken(type, token) {
     let { navigation } = this.props;

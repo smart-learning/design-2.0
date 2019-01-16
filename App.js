@@ -45,6 +45,7 @@ import MyScreens from './src/scripts/pages/my/MyScreens';
 import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
+import FullModalSectionPage from './src/scripts/pages/auth/FullModalSectionPage';
 
 class Data {
   @observable
@@ -161,6 +162,14 @@ class App extends React.Component {
     settings.forEach(setting => {
       const bool = setting[1] === 'true';
       store.appSettings[setting[0].split('::').pop()] = bool;
+      // if (Platform.OS === 'ios') {
+      if (setting[0] === 'config::isAlert' && setting[1] === null) {
+        // 알림설정값(isAlert)이 null 일 경우(최초실행) default 값을 true 로 설정.
+        // store 에서 설정한 디폴트 value 들이 제대로 넘어오지 않아 일단 이렇게 처리.
+        // (iOS는 최초 설치 후 실행시 true, false 로 설정했음에도 null 로 넘어옴)
+        store.appSettings[setting[0].split('::').pop()] = true;
+      }
+      // }
     });
 
     Native.updateSettings();
@@ -812,6 +821,9 @@ const AppNavigator = createSwitchNavigator(
     },
     Signin: {
       screen: SigninStack,
+    },
+    FullModalSectionPageCall: {
+      screen: FullModalSectionPage,
     },
   },
   {
