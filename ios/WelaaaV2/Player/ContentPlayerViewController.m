@@ -3656,28 +3656,39 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
 
     AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
-    AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
+  //AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
     NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
+  /*
     if ( [info.portType isEqualToString : @"Speaker"] )
-        NSLog(@"  Speaker type");
+        NSLog(@"  [audioRouteChangeListenerCallback] Speaker type");
     else
-        NSLog(@"  Non-Speaker type");
+        NSLog(@"  [audioRouteChangeListenerCallback] Non-Speaker type");
+  */
     
     switch (routeChangeReason)
     {
         case AVAudioSessionRouteChangeReasonUnknown:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] The reason is unknown.");
             break;
+        }
         
         case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] A new device became available (e.g. headphones have been plugged in).");
             break;
-      
+        }
+        
         case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
             dispatch_sync(dispatch_get_main_queue(), ^{
                 if ( self->_playButton.hidden ) [self pressedPauseButton];
             });
+            break;
+        }
+        
+        default:
             break;
         /*
          AVAudioSessionRouteChangeReasonCategoryChange = 3,
