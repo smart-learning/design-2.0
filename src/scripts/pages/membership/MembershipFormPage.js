@@ -48,7 +48,7 @@ const productItem = {
     },
     android: {
       price: '14,300원',
-      originPrice: '40,000원',
+      originPrice: '45,000원',
     },
   },
   none: {
