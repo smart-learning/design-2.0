@@ -3719,8 +3719,15 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                                                                                                                  scaledToSize : size];
                                                                                         }];
       
-        [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
-                     forKey : MPMediaItemPropertyTitle];
+        // 가끔 '강좌명'이 null로 세팅될 때가 있습니다.
+        if ( !nullStr(_currentLectureTitle) )
+        {
+            [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
+                         forKey : MPMediaItemPropertyTitle];
+        }
+        else
+            [songInfo setObject:@"" forKey:MPMediaItemPropertyTitle];
+      
       // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
         if ( [_currentContentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
             [songInfo setObject:_currentContentsInfo[@"data"][@"teacher"][@"name"] forKey:MPMediaItemPropertyArtist];
