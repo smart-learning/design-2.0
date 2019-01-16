@@ -108,18 +108,22 @@ class AdvertisingSection extends Component {
     let closedAd = ads.shift();
     this.setState({ ads: ads });
 
-    if (this.state.three_days_checked) {
-      this.hide3Days(closedAd);
-    }
     return closedAd;
   };
 
-  hide3Days = closedAd => {
-    const after3Days = moment()
-      .add(3, 'd')
-      .format()
-      .toString();
-    AsyncStorage.setItem(`pop-${closedAd.id}`, after3Days);
+  hide3Days = () => {
+    this.setState(previousState => ({
+      three_days_checked: !previousState.three_days_checked,
+    }));
+    if (this.state.three_days_checked) {
+      AsyncStorage.removeItem(`pop-${this.state.ads[0].id}`);
+    } else {
+      const after3Days = moment()
+        .add(3, 'd')
+        .format()
+        .toString();
+      AsyncStorage.setItem(`pop-${this.state.ads[0].id}`, after3Days);
+    }
   };
 
   onCancel = () => {
@@ -171,11 +175,7 @@ class AdvertisingSection extends Component {
             <CheckBox
               title="3일동안 보지 않기"
               checked={this.state.three_days_checked}
-              onPress={() =>
-                this.setState(previousState => ({
-                  three_days_checked: !previousState.three_days_checked,
-                }))
-              }
+              onPress={this.hide3Days}
               containerStyle={{
                 backgroundColor: 'transparent',
                 borderWidth: 0,
