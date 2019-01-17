@@ -4958,6 +4958,10 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   Bundle extras = intent.getExtras();
 
+                  if (getTransportControls() != null) {
+                    getTransportControls().play();
+                  }
+
                   playFromUri(uri, extras);
                   // Meta data update 정상 .
                 }
