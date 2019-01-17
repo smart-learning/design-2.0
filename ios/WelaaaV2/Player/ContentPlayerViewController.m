@@ -3223,20 +3223,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  openView : (id) sender
 {
     NSLog(@"  [-miniPlayerUiView:openView:] mini Player -> Full Screen Player");
-  /*
-  if ( [self.delegate respondsToSelector: @selector(player:openView:)] )
-  {
-    [self.delegate player: self openView: nil];
-  }
-  
-  //풀스크린 플레이어로 전환 : 영상 모드로 전환
-  //미니플레이어로 전환 : 오디오 모드로 전환
-  if ( _isTransperPlayModeFromScreen )
-  {
-    _isTransperPlayModeFromScreen = NO;
-    [self changePlayType: NO];
-  }*/
-  
+    
     [self changedPlayerMode : NO];
   
     [UIView animateWithDuration : 0.3f
@@ -3656,15 +3643,8 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
 
     AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
-  //AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
     NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
-  /*
-    if ( [info.portType isEqualToString : @"Speaker"] )
-        NSLog(@"  [audioRouteChangeListenerCallback] Speaker type");
-    else
-        NSLog(@"  [audioRouteChangeListenerCallback] Non-Speaker type");
-  */
-    
+  
     switch (routeChangeReason)
     {
         case AVAudioSessionRouteChangeReasonUnknown:
@@ -3683,7 +3663,9 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         {
             NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
             dispatch_sync(dispatch_get_main_queue(), ^{
-                if ( self->_playButton.hidden ) [self pressedPauseButton];
+                // 재생 중 헤드폰이 분리될 경우 일시정지 처리합니다.
+                if ( self->_playButton.hidden )
+                    [self pressedPauseButton];
             });
             break;
         }
