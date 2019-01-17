@@ -173,7 +173,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
           
             // progress dictionary가 null이 아니면..
             if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+            {
                 _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+                _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+            }
         }
       
         NSString *tempCid = contentsListArray[indexOfCurrentContent][@"cid"];
@@ -228,7 +231,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
               
                 // progress dictionary가 null이 아니면..
                 if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+                {
                     _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+                    _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+                }
             }
             // history dictionary가 null이면..
             else
@@ -253,7 +259,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
           
             // progress dictionary가 null이 아니면..
             if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
+            {
                 _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
+                _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+            }
         }
       
         NSDictionary *playDataDics = [ApiManager getPlayDataWithCid : [_args objectForKey : @"cid"]
@@ -333,7 +342,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playbackRate = 1.f;  // 재생 속도의 default는 항상 1입니다.
     [self setupNowPlayingInfoCenter];
   
-    if ( !_startSeconds || _startSeconds == 0 || _isDailyBook )
+    if ( !_startSeconds || _startSeconds == 0 || _progress == 100 ) // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
@@ -361,6 +370,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_player play];
     }
     _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
+    _progress = 0;        // 한번 사용되었으므로 0으로 초기화합니다.
     [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
@@ -550,9 +560,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 - (void) fpsLicenseWithContentId : (NSString * _Nonnull) contentId
                 didFailWithError : (NSError * _Nonnull) error
 {
-    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] : %@", error.localizedDescription);
-    // 종료 메시지와 함께 뷰를 종료시킵니다.
-    return [common presentAlertWithTitle:[_args objectForKey : @"cid"] andMessage:error.localizedDescription];
+    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] error.localizedDescription : { %@ }", error.localizedDescription);
+    NSLog(@"  [fpsLicenseWithContentId:didFailWithError:] error.description : { %@ }", error.description);
 }
 
 //
@@ -1490,7 +1499,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             }
             else if ( indexOfCurrentContent < contentsListArray.count-1 )
             {
-                for (int i=(int)indexOfCurrentContent+1; i<contentsListArray.count-1; i++)
+                for (int i=(int)indexOfCurrentContent+1; i<=contentsListArray.count-1; i++)
                 {
                     if ( ![[contentsListArray[i][@"play_seconds"] stringValue] isEqualToString : @"0"] )
                     {
@@ -1606,12 +1615,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         }
     }
   
-    NSInteger progress = 0;
     // progress dictionary가 null이 아니면..
     if ( [contentsListArray[indexOfCurrentContent][@"progress"] isKindOfClass : [NSDictionary class]] )
     {
         _startSeconds = [contentsListArray[indexOfCurrentContent][@"progress"][@"start_seconds"] floatValue];
-        progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
+        _progress = [contentsListArray[indexOfCurrentContent][@"progress"][@"percent"] integerValue];
     }
   
     [self fpsSetUrlAsset];
@@ -1619,7 +1627,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
     [self setupNowPlayingInfoCenter];
-    if ( !_startSeconds || _startSeconds == 0 || progress == 100 )  // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
+    if ( !_startSeconds || _startSeconds == 0 || _progress == 100 )  // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
     {
         NSLog(@"  Player starts at 0 because of no 'start_seconds'.");
         [_player play];
@@ -1651,6 +1659,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_player setRate : _playbackRate];
     }
     _startSeconds = 0.f;  // 한번 사용되었으므로 0으로 초기화합니다.
+    _progress = 0;        // 한번 사용되었으므로 0으로 초기화합니다.
   
     [ [NSNotificationCenter defaultCenter] addObserver : self
                                               selector : @selector(videoPlayBackDidFinish:)
@@ -1756,6 +1765,13 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 저전력모드 여부를 확인합니다.
     [self checkLowPowerModeEnabled];
+  
+    // 리스트뷰가 활성화된 상태라면 일단 내립니다.
+    if ( _listView )
+    {
+        [_listView removeFromSuperview];
+        _listView = nil;
+    }
 }
 
 //
@@ -3640,28 +3656,39 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
 
     AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
-    AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
+  //AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
     NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
+  /*
     if ( [info.portType isEqualToString : @"Speaker"] )
-        NSLog(@"  Speaker type");
+        NSLog(@"  [audioRouteChangeListenerCallback] Speaker type");
     else
-        NSLog(@"  Non-Speaker type");
+        NSLog(@"  [audioRouteChangeListenerCallback] Non-Speaker type");
+  */
     
     switch (routeChangeReason)
     {
         case AVAudioSessionRouteChangeReasonUnknown:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] The reason is unknown.");
             break;
+        }
         
         case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] A new device became available (e.g. headphones have been plugged in).");
             break;
-      
+        }
+        
         case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
             dispatch_sync(dispatch_get_main_queue(), ^{
                 if ( self->_playButton.hidden ) [self pressedPauseButton];
             });
+            break;
+        }
+        
+        default:
             break;
         /*
          AVAudioSessionRouteChangeReasonCategoryChange = 3,
@@ -3692,8 +3719,15 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                                                                                                                  scaledToSize : size];
                                                                                         }];
       
-        [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
-                     forKey : MPMediaItemPropertyTitle];
+        // 가끔 '강좌명'이 null로 세팅될 때가 있습니다.
+        if ( !nullStr(_currentLectureTitle) )
+        {
+            [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
+                         forKey : MPMediaItemPropertyTitle];
+        }
+        else
+            [songInfo setObject:@"" forKey:MPMediaItemPropertyTitle];
+      
       // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
         if ( [_currentContentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
             [songInfo setObject:_currentContentsInfo[@"data"][@"teacher"][@"name"] forKey:MPMediaItemPropertyArtist];

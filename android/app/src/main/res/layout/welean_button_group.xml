@@ -1109,7 +1109,7 @@
     <RelativeLayout
         android:id="@+id/VOLUME_CONTROL_BAR"
         android:orientation="horizontal"
-        android:background="#B3272230"
+        android:background="@color/subtitle_long_back_ground_color"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_above="@+id/SUB_TITLS_VIEW"

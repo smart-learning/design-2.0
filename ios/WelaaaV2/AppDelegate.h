@@ -20,13 +20,16 @@
 
 #import <AppsFlyerLib/AppsFlyerTracker.h>
 
+#import <PMS/PMS.h>
+#import <PMS/PMSConfig.h>
+
 #import "common.h"
 
+#import <UserNotifications/UserNotifications.h>
 
-@import UserNotifications;
 @import Firebase;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate, FIRMessagingDelegate, AppsFlyerTrackerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate, FIRMessagingDelegate, UNUserNotificationCenterDelegate, AppsFlyerTrackerDelegate, PMSDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 @property (strong, nonatomic) UINavigationController *navigationController;

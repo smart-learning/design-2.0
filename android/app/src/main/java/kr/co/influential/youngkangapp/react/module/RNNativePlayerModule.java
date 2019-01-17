@@ -14,6 +14,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.view.View;
+import com.apms.sdk.TAS;
+import com.apms.sdk.api.APIManager.APICallback;
+import com.apms.sdk.api.request.DeviceCert;
+import com.apms.sdk.api.request.LoginPms;
+import com.apms.sdk.api.request.LogoutPms;
+import com.apms.sdk.api.request.SetConfig;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -49,6 +55,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RNNativePlayerModule extends ReactContextBaseJavaModule
@@ -230,12 +237,35 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       boolean cellularDataUseDownload = content.getBoolean("cellularDataUseDownload");
       String token = content.getString("token");
 
+      boolean fcmFlag = content.getBoolean("fcmFlag");
+
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
 
       Preferences.setOnlyWifiView(getReactApplicationContext(), cellularDataUsePlay);
       Preferences.setOnlyWifiDownload(getReactApplicationContext(), cellularDataUseDownload);
 
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
+
+      if(fcmFlag){
+        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "2100", "0800", new APICallback() {
+          @Override
+          public void response (String code, JSONObject json) {
+            //
+            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
+          }
+        });
+      }else{
+        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "2100", "0800", new APICallback() {
+          @Override
+          public void response (String code, JSONObject json) {
+            //
+            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
+          }
+        });
+      }
+
+
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -568,9 +598,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String history_start_seconds = "";
 
               if (!json.isNull("history")) {
-
                 historyObject = json.getJSONObject("history");
-
                 historyId = historyObject.getString("id");
                 historyPlayed_At = historyObject.getString("played_at");
                 history_start_seconds = historyObject.getString("start_seconds");
@@ -578,7 +606,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               }
 
               JSONObject permissionObject = json.getJSONObject("permission");
-
               String group_title = dataObject.getString("title");
 //        String group_memo = json.getString("group_memo");
               String group_memo = "";
@@ -612,7 +639,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               String con_class = json.getString("type");
 
               String downloadcnt = "";
-              String audiobookbuy = "";
+              String audiobookbuy = permissionObject.getString("can_play"); // 오디오북 구매 여부 확인 필드
               String audiobookbuy_limitdate = "";
 
               sb.append("group_title=" + group_title);
@@ -657,7 +684,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
                 String first_play = "";
                 String calign = json.getString("align");
-                String audio_preview = "";
+                String audio_preview = json.getString("is_preview");
 
                 sb.append("&ckey=" + ckey);
                 sb.append("&cname=" + cname);
@@ -796,13 +823,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             }
 
             if (callbackMethod.equals("play")) {
-
-              Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
-
-              // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
-              // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-              Preferences.setWelaaaPlayListCKey(getReactApplicationContext(), contentCid);
-
               if (can_play) {
                 Preferences.setWelaaaPreviewPlay(getReactApplicationContext(), false);
               } else {
@@ -839,6 +859,11 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   });
 
                 } else {
+                  // #842 #895 #896 케이스 권한이 없는데 contentID , contentCid 값을 내부적으로 셋팅하고 있었습니다.
+                  Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
+                  // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+                  // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+                  Preferences.setWelaaaPlayListCKey(getReactApplicationContext(), contentCid);
 
                   if (mWebPlayerInfo.getCurl()[contentId].equals("0") ||
                       mWebPlayerInfo.getCurl()[contentId].equals("0.0")) {
@@ -1450,5 +1475,69 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     }
     return offlineContentData;
   }
-}
 
+  @ReactMethod
+  public void tasDeviceCert(ReadableMap content) {
+    try {
+      String userId = content.getString("userId");
+//      String accessToken = content.getString("accessToken");
+      String currentMembership = content.getString("currentMembership");
+
+      // TAS PUSH 1.DeviceCert Class
+      // 디바이스 기본 정보 및 유저 정보를 DB 에 저장합니다.
+      // 앱을 실행시에 꼭 한번은 실행 시켜 주셔야 합니다.
+      JSONObject userData = new JSONObject();
+      try {
+        userData.put("userId", userId);
+        userData.put("currentMembership", currentMembership);
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+
+      new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
+        public void response(String code, JSONObject json) {
+          LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
+        }
+      });
+
+      // 로그인 없이는 진행 될 수 없습니다.
+      new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
+        public void response(String code, JSONObject json) {
+          LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
+        }
+      });
+
+
+      // TAS 서비스 시작 자동 수집을 위한 TAS 서비스 시작
+      TAS.getInstance(getReactApplicationContext());
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+  }
+
+  @ReactMethod
+  public void tasLandingUrl(com.facebook.react.bridge.Callback resultCallback) {
+    try {
+      String landingUrl = Preferences.getWelaaaTasLandingUrl(getReactApplicationContext());
+      
+      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext() , "");
+
+      resultCallback.invoke(landingUrl);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @ReactMethod
+  public void tasLogout() {
+    new LogoutPms(getReactApplicationContext()).request(new APICallback() {
+      @Override
+      public void response (String code, JSONObject json) {
+        LogHelper.d(TAG , "TAS LogoutPms response " + code + " json " + json);
+      }
+    });
+  }
+
+
+}

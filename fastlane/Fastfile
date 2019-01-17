@@ -1,0 +1,72 @@
+# More documentation about how to customize your build
+# can be found here:
+# https://docs.fastlane.tools
+fastlane_version '2.113.0'
+
+# This value helps us track success metrics for Fastfiles
+# we automatically generate. Feel free to remove this line
+# once you get things running smoothly!
+#generated_fastfile_id "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+#before_all do
+#  ensure_git_branch(
+#    branch: 'develop'
+#  )
+#  ensure_git_status_clean
+  #git_pull
+#end
+
+default_platform :ios
+
+platform :ios do
+  lane :example do
+    puts("This is very first lane.")
+  end
+
+  lane :adhoc do
+    gym(
+      workspace: "ios/WelaaaV2.xcworkspace",
+      scheme: "WelaaaV2",
+      clean: true,
+      export_method: "ad-hoc",
+      export_options: {
+        provisioningProfiles: { 
+          "com.influential.smartlearning" => "welaaa ad-hoc"
+        }
+      }
+    )
+  end
+
+  lane :beta do
+    # build your iOS app
+    build_app(
+      workspace: "ios/WelaaaV2.xcworkspace",
+      scheme: "WelaaaV2",
+      clean: true,
+      export_method: "ad-hoc",
+      export_options: {
+        provisioningProfiles: { 
+          "com.influential.smartlearning" => "welaaa_provisioning_adhoc"
+        }
+      }
+    )
+
+    # upload to Beta by Crashlytics
+    crashlytics(
+      api_token: "34f42c07ec889a3a9e3fabb2c478cc9af1001fa6",
+      build_secret: "c0e631de5644afc6eaca594d5913c3ce407be23c7e416edb746109ba6757abb3"
+    )
+
+    # slack(
+    #   slack_url: "https://hooks.slack.com/services/IDS"
+    # )
+  end
+
+end
+
+platform :android do
+  # Android Lanes
+  lane :example do
+    puts("This is very first android lane.")
+  end
+end

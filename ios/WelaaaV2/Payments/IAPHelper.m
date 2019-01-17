@@ -57,14 +57,14 @@
     
     return self;
 }
-
+/*
 - (void) dealloc
 {
     if ( [SKPaymentQueue defaultQueue] )
     {
         [[SKPaymentQueue defaultQueue] removeTransactionObserver: self];
     }
-}
+}*/
 
 //
 // 구입한 상품인지 확인하는 메서드입니다. 키체인에 저장해서 꺼내오는 방식인데 쓰이는지는 잘 모르겠습니다. 쓰이지 않는다면 삭제되어야 합니다.

@@ -37,6 +37,12 @@
 		63BB3AEE21D33F8600619717 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3AC521D33F8600619717 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		63BB3AF021D33F9200619717 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BB3AEF21D33F9200619717 /* iAd.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		63BB3C1221D4D63300619717 /* RNAppsFlyer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BB3C1121D4D63300619717 /* RNAppsFlyer.m */; };
+		63D13EB821E346CA0035D0FC /* PMS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D13EB721E346C90035D0FC /* PMS.framework */; };
+		63D13EBA21E347460035D0FC /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D13EB921E347460035D0FC /* libz.tbd */; };
+		63D13EBC21E3475C0035D0FC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D13EBB21E3475B0035D0FC /* CoreLocation.framework */; };
+		63D13EBE21E347670035D0FC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D13EBD21E347670035D0FC /* MobileCoreServices.framework */; };
+		63D13EC021E347750035D0FC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D13EBF21E347750035D0FC /* SystemConfiguration.framework */; };
+		63D13EC221E739FF0035D0FC /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D13EC121E739FF0035D0FC /* UserNotifications.framework */; };
 		68931B4ED4004A27854559A0 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */; };
 		690094A28FD049639582D397 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25C098E5927A47DBA78CF23A /* Octicons.ttf */; };
 		7FE93BCCF1B24412BF30C2A3 /* libRNKaKaoSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0388C6BAF14B8084768720 /* libRNKaKaoSignin.a */; };
@@ -450,6 +456,12 @@
 		63BB3BAF21D3881600619717 /* RNAppsFlyer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNAppsFlyer.xcodeproj; path = "../node_modules/react-native-appsflyer/ios/RNAppsFlyer.xcodeproj"; sourceTree = "<group>"; };
 		63BB3C1021D4D63300619717 /* RNAppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNAppsFlyer.h; path = WelaaaV2/RNAppsFlyer.h; sourceTree = "<group>"; };
 		63BB3C1121D4D63300619717 /* RNAppsFlyer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNAppsFlyer.m; path = WelaaaV2/RNAppsFlyer.m; sourceTree = "<group>"; };
+		63D13EB721E346C90035D0FC /* PMS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PMS.framework; sourceTree = "<group>"; };
+		63D13EB921E347460035D0FC /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		63D13EBB21E3475B0035D0FC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		63D13EBD21E347670035D0FC /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		63D13EBF21E347750035D0FC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		63D13EC121E739FF0035D0FC /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		786BCFD798CC4105B4EC4E12 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		801AC0D92C074BDBB6EC7D3E /* RNKaKaoSignin.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNKaKaoSignin.xcodeproj; path = "../node_modules/react-native-kakao-signin/ios/RNKaKaoSignin.xcodeproj"; sourceTree = "<group>"; };
@@ -551,6 +563,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63D13EC221E739FF0035D0FC /* UserNotifications.framework in Frameworks */,
+				63D13EC021E347750035D0FC /* SystemConfiguration.framework in Frameworks */,
+				63D13EBE21E347670035D0FC /* MobileCoreServices.framework in Frameworks */,
+				63D13EBC21E3475C0035D0FC /* CoreLocation.framework in Frameworks */,
+				63D13EBA21E347460035D0FC /* libz.tbd in Frameworks */,
+				63D13EB821E346CA0035D0FC /* PMS.framework in Frameworks */,
 				EFF53EE821DCB20100B52972 /* AppsFlyerLib.framework in Frameworks */,
 				63BB3AF021D33F9200619717 /* iAd.framework in Frameworks */,
 				63BB3AEE21D33F8600619717 /* AdSupport.framework in Frameworks */,
@@ -695,6 +713,12 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63D13EC121E739FF0035D0FC /* UserNotifications.framework */,
+				63D13EBF21E347750035D0FC /* SystemConfiguration.framework */,
+				63D13EBD21E347670035D0FC /* MobileCoreServices.framework */,
+				63D13EBB21E3475B0035D0FC /* CoreLocation.framework */,
+				63D13EB921E347460035D0FC /* libz.tbd */,
+				63D13EB721E346C90035D0FC /* PMS.framework */,
 				EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */,
 				63BB3AEF21D33F9200619717 /* iAd.framework */,
 				63BB3AC521D33F8600619717 /* AdSupport.framework */,
@@ -1101,7 +1125,7 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = FB8NKK8CCR;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1529,7 +1553,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -1539,7 +1563,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "$PROJECT_DIR/../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1581,14 +1605,14 @@
 		};
 		EF9A98AC2111458C00EA3A8E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "${PODS_ROOT}/Fabric/run 34f42c07ec889a3a9e3fabb2c478cc9af1001fa6 c0e631de5644afc6eaca594d5913c3ce407be23c7e416edb746109ba6757abb3\n";
 		};
@@ -1668,7 +1692,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = WelaaaV2/WelaaaV2.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = FB8NKK8CCR;
@@ -1703,7 +1727,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.influential.smartlearning;
 				PRODUCT_NAME = WelaaaV2;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = welaaa_provisioning_dev;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1716,8 +1740,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = WelaaaV2/WelaaaV2.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FB8NKK8CCR;
 				ENABLE_BITCODE = NO;
@@ -1751,7 +1775,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.influential.smartlearning;
 				PRODUCT_NAME = WelaaaV2;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = welaaa_provisioning_adhoc;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

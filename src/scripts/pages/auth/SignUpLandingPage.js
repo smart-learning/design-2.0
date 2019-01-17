@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  BackHandler,
   View,
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
@@ -146,9 +147,30 @@ class SignUpLandingPage extends React.Component {
     this.setState({
       slideHeight: windowHeight,
     });
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
-  componentWillUnmount() {}
+  showFullModal() {
+    this.props.navigation.navigate('FullModalSectionPageCall'
+      , {
+        popup_type: 'AndroidMainExit',
+        preview_page: 'SignUpLandingPage',
+      }
+    );
+
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    if (this.props.navigation.isFocused()) {
+      this.showFullModal();
+      return true;
+    }
+  };
 
   onAccessToken(type, token) {
     let { navigation } = this.props;
@@ -160,6 +182,22 @@ class SignUpLandingPage extends React.Component {
 
         if (Platform.OS === 'android') {
           // 2018.10.29 facebook event: 마케팅 요청.
+          const NativeConstants = Native.getConstants();
+          const EVENT_NAME_COMPLETED_REGISTRATION =
+            NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;
+          const EVENT_PARAM_REGISTRATION_METHOD =
+            NativeConstants.EVENT_PARAM_REGISTRATION_METHOD;
+          AppEventsLogger.logEvent(EVENT_NAME_COMPLETED_REGISTRATION, {
+            [EVENT_PARAM_REGISTRATION_METHOD]: store.socialType,
+          });
+
+          firebase.analytics().logEvent('EVENT_NAME_COMPLETED_REGISTRATION', {
+            EVENT_PARAM_REGISTRATION_METHOD: store.socialType,
+            OS_TYPE: Platform.OS,
+          });
+        } else if (Platform.OS === 'ios') {
+          // 2019.1.11 facebook event: 마케팅 요청.
+          // Android 와 동일한 내용이지만 일단 분기 해서 별도로 관리.
           const NativeConstants = Native.getConstants();
           const EVENT_NAME_COMPLETED_REGISTRATION =
             NativeConstants.EVENT_NAME_COMPLETED_REGISTRATION;

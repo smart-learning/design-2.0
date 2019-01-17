@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>윌라</string>
+	<string>윌라QA</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -36,7 +36,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1515</string>
+	<string>1516qa190117</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -159,6 +159,14 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>PMSApiUrl</key>
+	<string>https://api.pushpia.com:444</string>
+	<key>PMSAppKey</key>
+	<string>50a9ec2147f649c12613</string>
+	<key>TASChannelKey</key>
+	<string>50a9ec2147f649c12613</string>
+	<key>TASServerURL</key>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Bold.ttf</string>
@@ -183,6 +191,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
