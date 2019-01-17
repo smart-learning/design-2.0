@@ -3656,28 +3656,39 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
 
     AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
-    AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
+  //AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
     NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
+  /*
     if ( [info.portType isEqualToString : @"Speaker"] )
-        NSLog(@"  Speaker type");
+        NSLog(@"  [audioRouteChangeListenerCallback] Speaker type");
     else
-        NSLog(@"  Non-Speaker type");
+        NSLog(@"  [audioRouteChangeListenerCallback] Non-Speaker type");
+  */
     
     switch (routeChangeReason)
     {
         case AVAudioSessionRouteChangeReasonUnknown:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] The reason is unknown.");
             break;
+        }
         
         case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] A new device became available (e.g. headphones have been plugged in).");
             break;
-      
+        }
+        
         case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+        {
             NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
             dispatch_sync(dispatch_get_main_queue(), ^{
                 if ( self->_playButton.hidden ) [self pressedPauseButton];
             });
+            break;
+        }
+        
+        default:
             break;
         /*
          AVAudioSessionRouteChangeReasonCategoryChange = 3,
@@ -3708,8 +3719,15 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
                                                                                                                  scaledToSize : size];
                                                                                         }];
       
-        [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
-                     forKey : MPMediaItemPropertyTitle];
+        // 가끔 '강좌명'이 null로 세팅될 때가 있습니다.
+        if ( !nullStr(_currentLectureTitle) )
+        {
+            [songInfo setObject : [_currentLectureTitle stringByReplacingOccurrencesOfString:@"\n" withString:@" "]
+                         forKey : MPMediaItemPropertyTitle];
+        }
+        else
+            [songInfo setObject:@"" forKey:MPMediaItemPropertyTitle];
+      
       // data.teacher가 NSDictionary인지 확인 -> null이면 '작가미상'으로 처리.
         if ( [_currentContentsInfo[@"data"][@"teacher"] isKindOfClass : [NSDictionary class]] ) // teacher dictionary가 null이 아니면..
             [songInfo setObject:_currentContentsInfo[@"data"][@"teacher"][@"name"] forKey:MPMediaItemPropertyArtist];
