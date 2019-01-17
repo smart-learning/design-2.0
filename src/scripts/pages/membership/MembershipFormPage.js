@@ -250,6 +250,7 @@ class MembershipFormPage extends React.Component {
     birth: '',
     gender: '',
     card_pass: '',
+    appsflyer_id: '',
   };
 
   constructor(props) {
@@ -258,6 +259,19 @@ class MembershipFormPage extends React.Component {
 
   componentDidMount() {
     this.formType = this.props.navigation.state.params.type;
+
+    /* 2019.01.16
+     * 김중온
+     * AppsFlyer Server-to-Server Events API 호출을 위한 appsflyer id 저장
+     */
+    appsFlyer.getAppsFlyerUID((error, appsFlyerUID) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('MembershipFormPage.js::getAppsFlyerUID: ' + appsFlyerUID);
+        this.setState({ appsflyer_id: appsFlyerUID });
+      }
+    });
   }
 
   validityPeriodMonthOnFocus = () => {
