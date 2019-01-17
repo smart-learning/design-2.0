@@ -61,6 +61,7 @@ import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
+import com.pallycon.widevinelibrary.UnAuthorizedDeviceException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -206,6 +207,8 @@ public final class LocalPlayback implements Playback,
       e.printStackTrace();
     } catch (PallyconDrmException e) {
       e.printStackTrace();
+    } catch (UnAuthorizedDeviceException e) {
+      e.printStackTrace();
     }
 
     this.mAudioManager =
@@ -233,7 +236,7 @@ public final class LocalPlayback implements Playback,
       // update
       if (ContentManager().isProgressExist(currentCkey) > 0) {
         ContentManager()
-            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()) , "UPDATE");
+            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()), "UPDATE");
         //insert
       } else {
         ContentManager().insertProgress(currentCkey,
@@ -536,7 +539,7 @@ public final class LocalPlayback implements Playback,
       // update duration 0 으로 셋팅합니다.
       if (ContentManager().isProgressExist(currentCkey) > 0) {
         ContentManager()
-            .updateProgress(currentCkey, "0" , "UPDATE");
+            .updateProgress(currentCkey, "0", "UPDATE");
         //insert duration 0 으로 셋팅합니다.
       } else {
         ContentManager().insertProgress(currentCkey, "0");
@@ -776,7 +779,7 @@ public final class LocalPlayback implements Playback,
         case Player.STATE_ENDED:
           if (mCallback != null) {
 //            if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
-              mCallback.doAutoPlay();
+            mCallback.doAutoPlay();
 //            } else {
 //              mCallback.onCompletion();
 //            }
@@ -1106,7 +1109,8 @@ public final class LocalPlayback implements Playback,
         // update
         if (ContentManager().isProgressExist(currentCkey) > 0) {
           ContentManager()
-              .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()) , "UPDATE");
+              .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()),
+                  "UPDATE");
           //insert
         } else {
           ContentManager().insertProgress(currentCkey,

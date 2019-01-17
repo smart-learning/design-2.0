@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.drm.KeysExpiredException;
 import com.google.android.exoplayer2.drm.UnsupportedDrmException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.pallycon.widevinelibrary.DatabaseDecryptException;
 import com.pallycon.widevinelibrary.DetectedDeviceTimeModifiedException;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
@@ -331,6 +332,8 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     } else if (e instanceof KeysExpiredException) {
       stringBuilder
           .append("license has been expired. please remove the license first and try again.");
+    } else if (e instanceof DatabaseDecryptException) {
+      stringBuilder.append("errorMsg: " + e.getMessage());
     } else if (e instanceof DetectedDeviceTimeModifiedException) {
       stringBuilder.append(
           "Device time has been changed. go to [Settings] > [Date & time] and use [Automatic date & time] and Connect Internet");
