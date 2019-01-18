@@ -158,6 +158,31 @@ android {
         }
     }
 
+    flavorDimensions "mode"
+
+    productFlavors {
+        welaaa {
+            applicationIdSuffix ""
+            dimension = "mode"
+            versionNameSuffix ""
+        }
+        welaaaQA {
+            applicationIdSuffix ".qa"
+            dimension = "mode"
+            versionNameSuffix ""
+        }
+        admin {
+            applicationIdSuffix ".admin"
+            dimension = "mode"
+            versionNameSuffix ""
+        }
+        design {
+            applicationIdSuffix ".design"
+            dimension = "mode"
+            versionNameSuffix ""
+        }
+    }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
