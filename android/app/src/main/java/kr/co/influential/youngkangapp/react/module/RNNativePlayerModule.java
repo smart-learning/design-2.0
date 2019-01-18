@@ -170,7 +170,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       callbackMethodName = "play/contents-info";
       callbackMethod = "play";
 
-      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+      sendData(WELEARN_WEB_URL + "play/contents-info/" + contentCid);
     }
 
     Preferences.setSQLiteDuration(getReactApplicationContext(), true);
