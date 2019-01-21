@@ -1094,6 +1094,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _rwButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _rwButton.frame = CGRectMake(CGRectGetMinX(_playButton.frame) - 60.f - 10.f, 0.f, 60.f, 60.f);
+    // 오디오북 & 매일책한권일 경우 icon_rw_30
     [_rwButton setImage : [UIImage imageNamed : @"icon_rw"]
                forState : UIControlStateNormal];
     [_rwButton setImage : [[UIImage imageNamed : @"icon_rw"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
@@ -1109,6 +1110,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _ffButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _ffButton.frame = CGRectMake(CGRectGetMaxX(_playButton.frame) + 10.f, 0.f, 60.f, 60.f);
+    // 오디오북 & 매일책한권일 경우 icon_ff_30
     [_ffButton setImage : [UIImage imageNamed : @"icon_ff"]
                forState : UIControlStateNormal];
     [_ffButton setImage : [[UIImage imageNamed : @"icon_ff"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
@@ -1968,6 +1970,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : [self getCurrentPlaybackTime]];
 }
 
+//
+// 클래스 : 10초 이동
+// 오디오북 & 매일책한권 : 30초 이동
 - (void) pressedRwButton
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
@@ -2022,6 +2027,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // 이용로그 전송 종료
 }
 
+//
+// 클래스 : 10초 이동
+// 오디오북 & 매일책한권 : 30초 이동
 - (void) pressedFfButton
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
