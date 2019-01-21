@@ -111,6 +111,7 @@ class App extends React.Component {
 
   state = {
     appState: AppState.currentState,
+    appsflyer_id: '',
   };
 
   // 키보드 제어 상태를 store에 기록해서 관리
@@ -289,6 +290,16 @@ class App extends React.Component {
     );
 
     if ('ios' === Platform.OS) {
+      // AppsFlyer 에서 Server to Server 이벤트 호출을 위해 필요한 appsflyer_id
+      appsFlyer.getAppsFlyerUID((error, appsFlyerUID) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('App.js::getAppsFlyerUID only for iOS : ' + appsFlyerUID);
+          this.setState({ appsflyer_id: appsFlyerUID });
+        }
+      });
+
       console.log('======', Native.getPlayerManager());
       const playerManager = Native.getPlayerManager();
       const playerManagerEmitter = new NativeEventEmitter(playerManager);
@@ -321,12 +332,7 @@ class App extends React.Component {
           const { params } = this.props.navigation.state;
           const eventName = 'af_initiated_checkout';
           const eventValues = {
-            EVENT_PARAM_CONTENT: arg.buy_title,
-            EVENT_PARAM_CONTENT_ID: 'membership',
-            EVENT_PARAM_CONTENT_TYPE: arg.buy_type,
-            EVENT_PARAM_NUM_ITEMS: 1,
-            EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
-            EVENT_PARAM_CURRENCY: 'KRW',
+            af_content_type: arg.buy_type,
             OS_TYPE: Platform.OS,
           };
           appsFlyer.trackEvent(
@@ -339,6 +345,20 @@ class App extends React.Component {
               console.error('appsFlyer.trackEvent error ', error);
             },
           );
+
+          // 멤버십 구매 이벤트 전송(Server to Server)
+          const payload = {
+            appsflyer_id: this.state.appsflyer_id,
+            membership: arg.buy_title,
+          };
+          console.log(payload); // {appsflyer_id: "1547564806442-9392845", membership: "클래스 멤버십 결제"}
+
+          try {
+            const data = await net.registerMembership(payload);
+          } catch (e) {
+            // register 실패
+            console.log(e);
+          }
 
           this.props.navigation.navigate('HomeScreen', {
             popup_mbs: true,
