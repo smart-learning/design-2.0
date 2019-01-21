@@ -2104,22 +2104,62 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case R.id.CDN_TAG_BTN_BACKWARD: {
 
-            if (player.getCurrentPosition() - 10000 < 0) {
-              //
-            } else {
-              player.seekTo(player.getCurrentPosition() - 10000);
+            if (CONTENT_TYPE.equals("video-course")) {
+
+              if (cId != null) {
+                if (cId.startsWith("z")) {
+                  if (player.getCurrentPosition() - 30000 < 0) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() - 30000);
+                  }
+                }else{
+                  if (player.getCurrentPosition() - 10000 < 0) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() - 10000);
+                  }
+                }
+              }
+
+            }else{
+              if (player.getCurrentPosition() - 30000 < 0) {
+                //
+              } else {
+                player.seekTo(player.getCurrentPosition() - 30000);
+              }
             }
 
           }
           break;
 
           case R.id.CDN_TAG_BTN_FORWARD: {
-            if (player.getCurrentPosition() + 10000 > player.getDuration()) {
-              //
-            } else {
-              player.seekTo(player.getCurrentPosition() + 10000);
-            }
 
+            if (CONTENT_TYPE.equals("video-course")) {
+
+              if (cId != null) {
+                if (cId.startsWith("z")) {
+                  if (player.getCurrentPosition() + 30000 > player.getDuration()) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() + 30000);
+                  }
+                }else{
+                  if (player.getCurrentPosition() + 10000 > player.getDuration()) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() + 10000);
+                  }
+                }
+              }
+
+            }else{
+              if (player.getCurrentPosition() + 30000 > player.getDuration()) {
+                //
+              } else {
+                player.seekTo(player.getCurrentPosition() + 30000);
+              }
+            }
           }
           break;
 
