@@ -464,6 +464,8 @@ class App extends React.Component {
                   // Firebase 에서 보낸 푸시일 경우
                   nav.parseDeepLink(notification._data.path);
                 }
+                // 읽음 처리
+                Native.tasSendReadMsg(notification._data.i);
               }
             } catch (error) {
               console.log(error);
@@ -514,6 +516,8 @@ class App extends React.Component {
                 this.data.queuePath = notification._data.path;
               }
             }
+            // 읽음 처리
+            Native.tasSendReadMsg(notification._data.i);
           }
         } catch (error) {
           console.log(error);
@@ -574,6 +578,8 @@ class App extends React.Component {
               this.data.queuePath = notification._data.path;
             }
           }
+          // 읽음 처리
+          Native.tasSendReadMsg(notification._data.i);
         }
       } catch (error) {
         console.log(error);
