@@ -22,6 +22,8 @@
 
 #import <PMS/PMS.h>
 #import <PMS/PMSConfig.h>
+#import <PMS/PMSMaster.h>
+#import <PMS/TAS.h>
 
 #import "common.h"
 
