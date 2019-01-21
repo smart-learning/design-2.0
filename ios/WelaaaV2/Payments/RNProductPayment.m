@@ -114,6 +114,8 @@ RCT_EXPORT_MODULE();
                             [[IAPShare sharedHelper].iap provideContentWithTransaction : transaction];  // 실효성이 있을까?
                             NSLog(@"  [IAP checkReceipt] SUCCESS IAP : %@", [IAPShare sharedHelper].iap.purchasedProducts);
                           
+                            NSString* localPrice = @"0";
+                          
                             // 상품 구입 완료 후 RN에게 결제 결과를 전달해야 합니다.
                             if ( [productCode hasPrefix : @"audiobook_"] )
                             {
@@ -121,6 +123,22 @@ RCT_EXPORT_MODULE();
                               
                                 // 결재 완료 이벤트를 RN 으로 보내 화면을 갱신. 2018.11.5. ~
                                 NSLog(@"RN 쪽에 결재 완료 이벤트 전달");
+                              
+                                @try{
+                                  // AppsFlyer 에서 구매 revenue 를 집계하기 위해선 순수한 숫자값만이 필요하므로 아래와 같이 변환한다.
+                                  NSLog(@"local_price : %@",[[IAPShare sharedHelper].iap getLocalePrice : product]);  // local_price : ₩19,000
+                                
+                                  NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                                  [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+                                  NSNumber *number = [numberFormatter numberFromString:[[IAPShare sharedHelper].iap getLocalePrice : product]];
+                                
+                                  localPrice = [number stringValue];
+                                  NSLog(@"local_price number only : %@", localPrice); // local_price number only : 19000
+                                }@catch (NSException *exception) {
+                                  NSLog(@"local_price exception : %@", exception.description);
+                                  localPrice = @"0";  // 변환간 예외 발생시 0 으로 셋팅
+                                }
+                              
                                 NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
                                 [params setObject : [NSNumber numberWithBool:true]
                                            forKey : @"success"];
@@ -128,12 +146,12 @@ RCT_EXPORT_MODULE();
                                            forKey : @"buy_type"];
                                 [params setObject : [args objectForKey : @"title"]
                                            forKey : @"buy_title"];
-                                [params setObject : [[IAPShare sharedHelper].iap getLocalePrice : product]
+                                [params setObject : localPrice
                                            forKey : @"local_price"];
                                 [params setObject : productCode
                                            forKey : @"product_id"];
                               
-                              if ( self->_hasListeners )
+                                if ( self->_hasListeners )
                                 {
                                   [self sendEventWithName : @"buyResult"
                                                      body : params];

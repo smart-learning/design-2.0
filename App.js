@@ -345,6 +345,7 @@ class App extends React.Component {
           });
         } else if (result && arg.buy_type === 'audio_book') {
           let eventValues = {
+            af_revenue: arg.local_price,
             af_price: arg.local_price,
             af_currency: 'KRW',
             af_content_id: arg.product_id,
