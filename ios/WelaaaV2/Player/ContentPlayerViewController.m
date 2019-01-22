@@ -1095,10 +1095,20 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _rwButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _rwButton.frame = CGRectMake(CGRectGetMinX(_playButton.frame) - 60.f - 10.f, 0.f, 60.f, 60.f);
     // 오디오북 & 매일책한권일 경우 icon_rw_30
-    [_rwButton setImage : [UIImage imageNamed : @"icon_rw"]
-               forState : UIControlStateNormal];
-    [_rwButton setImage : [[UIImage imageNamed : @"icon_rw"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
-               forState : UIControlStateHighlighted];
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] || [[_args objectForKey : @"cid"] hasPrefix : @"z"] )
+    {
+        [_rwButton setImage : [UIImage imageNamed : @"icon_rw_30"]
+                   forState : UIControlStateNormal];
+        [_rwButton setImage : [[UIImage imageNamed : @"icon_rw_30"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                   forState : UIControlStateHighlighted];
+    }
+    else
+    {
+        [_rwButton setImage : [UIImage imageNamed : @"icon_rw"]
+                   forState : UIControlStateNormal];
+        [_rwButton setImage : [[UIImage imageNamed : @"icon_rw"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                   forState : UIControlStateHighlighted];
+    }
     _rwButton.layer.shadowColor = [UIColor blackColor].CGColor;
     _rwButton.layer.shadowOffset = CGSizeMake(5, 5);
     _rwButton.layer.shadowRadius = 5;
@@ -1111,10 +1121,20 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _ffButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _ffButton.frame = CGRectMake(CGRectGetMaxX(_playButton.frame) + 10.f, 0.f, 60.f, 60.f);
     // 오디오북 & 매일책한권일 경우 icon_ff_30
-    [_ffButton setImage : [UIImage imageNamed : @"icon_ff"]
-               forState : UIControlStateNormal];
-    [_ffButton setImage : [[UIImage imageNamed : @"icon_ff"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
-               forState : UIControlStateHighlighted];
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] || [[_args objectForKey : @"cid"] hasPrefix : @"z"] )
+    {
+        [_ffButton setImage : [UIImage imageNamed : @"icon_ff_30"]
+                   forState : UIControlStateNormal];
+        [_ffButton setImage : [[UIImage imageNamed : @"icon_ff_30"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                   forState : UIControlStateHighlighted];
+    }
+    else
+    {
+        [_ffButton setImage : [UIImage imageNamed : @"icon_ff"]
+                   forState : UIControlStateNormal];
+        [_ffButton setImage : [[UIImage imageNamed : @"icon_ff"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
+                   forState : UIControlStateHighlighted];
+    }
     _ffButton.layer.shadowColor = [UIColor blackColor].CGColor;
     _ffButton.layer.shadowOffset = CGSizeMake(5, 5);
     _ffButton.layer.shadowRadius = 5;
@@ -1975,7 +1995,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 // 오디오북 & 매일책한권 : 30초 이동
 - (void) pressedRwButton
 {
-    NSLog(@"  플레이어 뒤로 가기 버튼!!");
+    float timeToMove;
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] || [[_args objectForKey : @"cid"] hasPrefix : @"z"] )
+        timeToMove = 30.f;
+    else
+        timeToMove = 10.f;
   
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
@@ -1986,14 +2010,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         return;
     }
   
-    if ( cTime > 10.f )
+    if ( cTime > timeToMove )
     {
-        CMTime newTime = CMTimeMakeWithSeconds(cTime - 10.f, tTime);
+        CMTime newTime = CMTimeMakeWithSeconds(cTime - timeToMove, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
       
         // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
-        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime - 10.f];
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime - timeToMove];
     }
     else
     {
@@ -2032,7 +2056,11 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 // 오디오북 & 매일책한권 : 30초 이동
 - (void) pressedFfButton
 {
-    NSLog(@"  플레이어 앞으로 가기 버튼!!");
+    float timeToMove;
+    if ( [[_args objectForKey : @"cid"] hasPrefix : @"b"] || [[_args objectForKey : @"cid"] hasPrefix : @"z"] )
+        timeToMove = 30.f;
+    else
+        timeToMove = 10.f;
   
     NSTimeInterval cTime = [self getCurrentPlaybackTime];
     NSTimeInterval tTime = [self getDuration];
@@ -2043,14 +2071,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         return;
     }
   
-    if ( cTime + 10.f < tTime )
+    if ( cTime + timeToMove < tTime )
     {
-        CMTime newTime = CMTimeMakeWithSeconds(cTime + 10.f, tTime);
+        CMTime newTime = CMTimeMakeWithSeconds(cTime + timeToMove, tTime);
         [_player seekToTime : newTime];
         [self setTimerOnSlider];  // 슬라이더 바의 타이머를 시작합니다.
       
         // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
-        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime + 10.f];
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : cTime + timeToMove];
     }
     else
     {
