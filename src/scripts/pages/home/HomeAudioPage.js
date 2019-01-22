@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   titleH2: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#353A3C',
   },
@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
     color: '#888888',
   },
   titleH3: {
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '400',
     color: '#353A3C',
   },
   titleParagraph: {
@@ -286,7 +287,7 @@ class HomeAudioPage extends React.Component {
                   this.props.store.audioUseData.length > 0 && (
                     <View>
                       <View style={CommonStyles.alignJustifyItemCenter}>
-                        <Text style={styles.titleH2}>최근재생 오디오북</Text>
+                        <Text style={styles.titleH3}>최근재생 오디오북</Text>
                       </View>
                       <BookContinueList
                         itemData={this.props.store.audioUseData}

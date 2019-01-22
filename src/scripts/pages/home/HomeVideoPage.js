@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   titleH2: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#353A3C',
   },
@@ -58,7 +58,8 @@ const styles = StyleSheet.create({
     color: '#888888',
   },
   titleH3: {
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '400',
     color: '#353A3C',
   },
   titleParagraph: {
@@ -294,7 +295,7 @@ class HomeVideoPage extends React.Component {
                     this.props.store.classUseData.length > 0 && (
                       <View>
                         <View style={styles.titleContainer}>
-                          <Text style={styles.titleH2}>최근재생클래스</Text>
+                          <Text style={styles.titleH3}>최근 재생 클래스</Text>
                         </View>
 
                         <ClassContinueList
