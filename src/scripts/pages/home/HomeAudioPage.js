@@ -383,30 +383,6 @@ class HomeAudioPage extends React.Component {
               }
             />
             {/* )} */}
-            <View
-              style={{
-                width: '100%',
-                height: 8,
-                backgroundColor: '#F0F0F4',
-                marginBottom: 30,
-              }}
-            />
-
-            <View style={CommonStyles.alignJustifyContentBetween}>
-              <Text style={styles.titleH3}>
-                {globalStore.welaaaAuth.profile
-                  ? globalStore.welaaaAuth.profile.name || '<윌라회원님>'
-                  : '<윌라회원님>'}
-                님을 위한 추천 오디오북
-              </Text>
-            </View>
-            <BookRecommendList
-              itemData={
-                this.props.store.audioRecommendData.items
-                  ? this.props.store.audioRecommendData.items
-                  : this.props.store.audioRecommendData
-              }
-            />
           </View>
           <View style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}>
             <TouchableOpacity
