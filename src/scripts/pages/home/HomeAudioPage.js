@@ -27,7 +27,6 @@ import globalStore from '../../commons/store';
 import BookNewList from '../../components/home/BookNewList';
 import BookRankList from '../../components/home/BookRankList';
 import BookRecommendList from '../../components/home/BookRecommendList';
-import DailySwiper from '../../components/home/DailySwiper';
 import BulletFree from '../../../images/badge-free.png';
 import Native from '../../commons/native';
 import IcMainWideBanner from '../../../images/main_wide_banner.png';
@@ -317,17 +316,13 @@ class HomeAudioPage extends React.Component {
           />
 
           {/*매일 책 한 권*/}
-          <View>
-            <View
-              style={[CommonStyles.contentContainer, styles.dailyContainer]}
-            >
-              <View>
-                <Image source={BulletFree} style={styles.dailyBullet} />
-                <View style={CommonStyles.alignJustifyItemCenter}>
-                  <Text style={styles.titleH2}>매일 책 한권</Text>
-                </View>
-                <DailySwiper itemData={this.props.store.audioDaily} />
+          <View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
+            <View>
+              <Image source={BulletFree} style={styles.dailyBullet} />
+              <View style={CommonStyles.alignJustifyItemCenter}>
+                <Text style={styles.titleH2}>매일 책 한권</Text>
               </View>
+              <BookDaily itemData={this.props.store.audioDaily} />
             </View>
           </View>
 
