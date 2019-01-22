@@ -106,7 +106,8 @@ export default class BookContinueList extends React.Component {
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = windowWidth * 0.84;
 
-    let itemData = _.map(this.props.itemData, item => item);
+    let originData = _.map(this.props.itemData, item => item);
+    let itemData = originData.slice(0, 5);
 
     return (
       <View style={styles.continueList}>

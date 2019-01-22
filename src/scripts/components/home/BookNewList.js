@@ -37,7 +37,8 @@ class BookNewList extends React.Component {
   render() {
     let windowWidth = Dimensions.get('window').width;
 
-    let itemData = _.map(this.props.itemData, item => item);
+    let originData = _.map(this.props.itemData, item => item);
+    let itemData = originData.slice(0, 10);
 
     return (
       <View style={styles.classContainer}>

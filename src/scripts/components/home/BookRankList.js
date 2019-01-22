@@ -41,7 +41,8 @@ class BookRankList extends React.Component {
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = windowWidth * 0.55;
 
-    let itemData = _.map(this.props.itemData, item => item);
+    let originData = _.map(this.props.itemData, item => item);
+    let itemData = originData.slice(0, 15);
 
     return (
       <View style={styles.classContainer}>
