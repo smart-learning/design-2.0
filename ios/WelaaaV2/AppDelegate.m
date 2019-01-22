@@ -1,44 +1,42 @@
 
 #import "AppDelegate.h"
 
-#import <PMS/PMS.h>
-#import <PMS/PMSConfig.h>
-#import <PMS/PMSMaster.h>
-#import <PMS/TAS.h>
-
-#define SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-#define SYSTEM_VERSION_LESSTHAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
-
 @implementation AppDelegate
 
 NSString *const kGCMMessageIDKey = @"gcm.message_id";
 
-//Called when a notification is delivered to a foreground app.
--(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
-  NSLog(@"User Info : %@",notification.request.content.userInfo);
+// Called when a notification is delivered to a foreground app.
+- (void) userNotificationCenter : (UNUserNotificationCenter *) center
+        willPresentNotification : (UNNotification *) notification
+          withCompletionHandler : (void (^)(UNNotificationPresentationOptions options)) completionHandler
+{
+    NSLog(@"User Info : %@",notification.request.content.userInfo);
+    completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
   
-  completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
-  
-  [self handleRemoteNotification:[UIApplication sharedApplication] userInfo:notification.request.content.userInfo];
+    [self handleRemoteNotification:[UIApplication sharedApplication] userInfo:notification.request.content.userInfo];
 }
 
-//Called to let your app know which action was selected by the user for a given notification.
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler{
-  NSLog(@"User Info : %@",response.notification.request.content.userInfo);
+// Called to let your app know which action was selected by the user for a given notification.
+- (void) userNotificationCenter : (UNUserNotificationCenter *) center
+ didReceiveNotificationResponse : (UNNotificationResponse *) response
+          withCompletionHandler : (void(^)(void)) completionHandler
+{
+    NSLog(@"  User Info : %@", response.notification.request.content.userInfo);
+    completionHandler();
   
-  completionHandler();
-  
-  [self handleRemoteNotification:[UIApplication sharedApplication] userInfo:response.notification.request.content.userInfo];
+    [self handleRemoteNotification:[UIApplication sharedApplication] userInfo:response.notification.request.content.userInfo];
 }
 
-- (void)handleRemoteNotification:(UIApplication *)application   userInfo:(NSDictionary *)remoteNotif {
-  NSLog(@"handleRemoteNotification");
-  NSLog(@"Handle Remote Notification Dictionary: %@", remoteNotif);
+- (void) handleRemoteNotification : (UIApplication *) application
+                         userInfo : (NSDictionary *) remoteNotif
+{
+    NSLog(@"  handleRemoteNotification");
+    NSLog(@"  Handle Remote Notification Dictionary: %@", remoteNotif);
   
-  [PMS receivePush:remoteNotif tagString:@"didReceive"]; // TAS
+    [PMS receivePush:remoteNotif tagString:@"didReceive"]; // TAS
   
-  // Handle Click of the Push Notification From Here...
-  // You can write a code to redirect user to specific screen of the app here.
+    // Handle Click of the Push Notification From Here...
+    // You can write a code to redirect user to specific screen of the app here.
 }
 
 - (BOOL)          application : (UIApplication *) application
@@ -60,54 +58,71 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
                                            error : nil];
 
     /** TAS **/
-    [PMS setDelegate:self];
-    [PMSConfig logEnable:YES];
-    [PMSConfig apiLogEnable:YES];
+    [PMS setDelegate : self];
+    [PMSConfig logEnable : YES];
+    [PMSConfig apiLogEnable : YES];
   
     // noToken인 사용자를 수집하지 않을때 아래 함수 사용
     //    [PMSConfig noTokenBlocking:YES];
-    if(SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(@"10.0")){
-      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-      center.delegate = self;
-      [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
-        if(!error){
-          [[UIApplication sharedApplication] registerForRemoteNotifications];
-          NSLog( @"Push registration success greater than or equals to 10.0" );
-        }else {
-          NSLog( @"Push registration FAILED" );
-          NSLog( @"ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
-          NSLog( @"SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
-        }
-      }];
-    } else {
-      if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)]) {
-        // Xcode5.x 이하에서 빌드 안됨
-        UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
-                                                        UIUserNotificationTypeBadge |
-                                                        UIUserNotificationTypeSound);
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
-                                                                                 categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-        NSLog(@"Push registration success less than 10.0");
+    if ( SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(@"10.0") )
+    {
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        center.delegate = self;
+        [center requestAuthorizationWithOptions : (UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge)
+                              completionHandler : ^(BOOL granted, NSError * _Nullable error)
+                                                  {
+                                                      if ( !error )
+                                                      {
+                                                          [[UIApplication sharedApplication] registerForRemoteNotifications];
+                                                          NSLog(@"  Push registration success greater than or equals to 10.0");
+                                                      }
+                                                      else
+                                                      {
+                                                          NSLog(@"  Push registration FAILED");
+                                                          NSLog(@"  ERROR: %@ - %@", error.localizedFailureReason, error.localizedDescription );
+                                                          NSLog(@"  SUGGESTIONS: %@ - %@", error.localizedRecoveryOptions, error.localizedRecoverySuggestion );
+                                                      }
+                                                  }];
+    }
+    else
+    {
+        if ( [[UIApplication sharedApplication] respondsToSelector : @selector(registerForRemoteNotifications)] )
+        {
+            // Xcode5.x 이하에서 빌드 안됨
+            UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+                                                            UIUserNotificationTypeBadge |
+                                                            UIUserNotificationTypeSound);
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes : userNotificationTypes
+                                                                                     categories : nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+            NSLog(@"  Push registration success less than 10.0");
         
-        if([UIApplication sharedApplication].currentUserNotificationSettings.types == UIUserNotificationTypeNone){
-          // 시스템 알림 설정 == OFF
+            if ( [UIApplication sharedApplication].currentUserNotificationSettings.types == UIUserNotificationTypeNone )
+            {
+                // 시스템 알림 설정 == OFF
+            }
         }
-      }else {
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
+        else
+        {
+            [[UIApplication sharedApplication] registerForRemoteNotificationTypes : (UIRemoteNotificationTypeAlert |
+                                                                                     UIRemoteNotificationTypeBadge |
+                                                                                     UIRemoteNotificationTypeSound)];
         
-        if([UIApplication sharedApplication].enabledRemoteNotificationTypes == UIRemoteNotificationTypeNone){
-          // 시스템 알림 설정 == OFF
+            if ( [UIApplication sharedApplication].enabledRemoteNotificationTypes == UIRemoteNotificationTypeNone )
+            {
+                // 시스템 알림 설정 == OFF
+            }
         }
-      }
     }
   
     // 푸시에 의해 앱이 구동
-    if(launchOptions && [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]){
-      NSLog(@"App has launched by Push");
-      [PMS receivePush:launchOptions tagString:@"didFinish"];
+    if ( launchOptions && [launchOptions objectForKey : UIApplicationLaunchOptionsRemoteNotificationKey] )
+    {
+        NSLog(@"  App has launched by Push");
+        [PMS receivePush:launchOptions tagString:@"didFinish"];
     }
+    /** TAS **/
   
     NSURL *jsCodeLocation;
 
@@ -254,32 +269,33 @@ didReceiveRemoteNotification : (NSDictionary *) userInfo
     }
   
     // iOS 10 will handle notifications through other methods
-    if(SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(@"10.0"))
+    if ( SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(@"10.0") )
     {
-      NSLog( @"iOS version >= 10. Let NotificationCenter handle this one." );
-      // set a member variable to tell the new delegate that this is background
-      return;
+        NSLog(@"  iOS version >= 10. Let NotificationCenter handle this one.");
+        // set a member variable to tell the new delegate that this is background
+        return ;
     }
-    NSLog( @"HANDLE PUSH, didReceiveRemoteNotification: %@", userInfo );
+  
+    NSLog(@"  HANDLE PUSH, didReceiveRemoteNotification: %@", userInfo);
   
     [PMS receivePush:userInfo tagString:@"didReceive"]; // TAS
   
     // custom code to handle notification content
   
-    if( [UIApplication sharedApplication].applicationState == UIApplicationStateInactive )
+    if ( [UIApplication sharedApplication].applicationState == UIApplicationStateInactive )
     {
-      NSLog( @"INACTIVE" );
-      completionHandler( UIBackgroundFetchResultNewData );
+        NSLog(@"  INACTIVE");
+        completionHandler( UIBackgroundFetchResultNewData );
     }
-    else if( [UIApplication sharedApplication].applicationState == UIApplicationStateBackground )
+    else if ( [UIApplication sharedApplication].applicationState == UIApplicationStateBackground )
     {
-      NSLog( @"BACKGROUND" );
-      completionHandler( UIBackgroundFetchResultNewData );
+        NSLog(@"  BACKGROUND");
+        completionHandler( UIBackgroundFetchResultNewData );
     }
     else
     {
-      NSLog( @"FOREGROUND" );
-      completionHandler( UIBackgroundFetchResultNewData );
+        NSLog(@"  FOREGROUND");
+        completionHandler( UIBackgroundFetchResultNewData );
     }
 }
 
@@ -289,7 +305,7 @@ didReceiveRemoteNotification : (NSDictionary *) userInfo
 - (void)          messaging : (FIRMessaging *) messaging
 didReceiveRegistrationToken : (NSString *) fcmToken
 {
-    NSLog(@"FCM registration token: %@", fcmToken);
+    NSLog(@"  FCM registration token: %@", fcmToken);
     // Notify about received token.
     NSDictionary *dataDict = [NSDictionary dictionaryWithObject : fcmToken
                                                          forKey : @"token"];
@@ -331,7 +347,7 @@ didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
     // With swizzling disabled you must set the APNs device token here.
     //[FIRMessaging messaging].APNSToken = deviceToken;
   
-    [PMS setPushToken:deviceToken]; // TAS
+    [PMS setPushToken : deviceToken]; // TAS
 }
 
 #pragma mark - Core Data stack
@@ -433,47 +449,54 @@ continueUserActivity : (NSUserActivity *) userActivity
 
 #pragma mark - PMS Delegate implements
 
--(void)pmsDidReceivePush:(PMSModelMessage *)resultModel Payload:(NSDictionary *)payload Tag:(NSString *)tag
+- (void) pmsDidReceivePush : (PMSModelMessage *) resultModel
+                   Payload : (NSDictionary *) payload
+                       Tag : (NSString *) tag
 {
-  // 이 함수는 호출되지 않을 수도 있다고 한다. 그래도 푸시 메시지는 나타난다고. 결국 Firebase 에서 보내주는 거기 때문에.(TAS 업체측의 설명)
-  NSLog(@"pmsDidReceivePush : %@ %@", resultModel, tag);
-  NSLog(@"payload : %@", payload);
+    // 이 함수는 호출되지 않을 수도 있다고 한다. 그래도 푸시 메시지는 나타난다고. 결국 Firebase 에서 보내주는 거기 때문에.(TAS 업체측의 설명)
+    NSLog(@"  pmsDidReceivePush : %@ %@", resultModel, tag);
+    NSLog(@"  payload : %@", payload);
   
-  if(resultModel && [resultModel isSuccess]){
-    // 메시지 읽음처리
-    [PMS sendReadMsgEventWithMsgId:resultModel.msgId CompleteBlock:^(PMSResult *result) {
-      if([result isSuccess]){
-        NSLog(@"sendReadMsgEventWithMsgId Complete %@",resultModel.msgId);
-      }else{
-        NSLog(@"sendReadMsgEventWithMsgId Fail %@",resultModel.msgId);
-      }
-    }];
-  }else{
-    // 메시지 읽음처리
-    NSString *msgId = [NSString stringWithFormat:@"%@",[payload objectForKey:@"i"]];
-    [PMS sendReadMsgEventWithMsgId:msgId CompleteBlock:^(PMSResult *result) {
-      if([result isSuccess]){
-        NSLog(@"sendReadMsgEventWithMsgId Complete %@",msgId);
-      }else{
-        NSLog(@"sendReadMsgEventWithMsgId Fail %@",msgId);
-      }
-    }];
-  }
+    if ( resultModel && [resultModel isSuccess] )
+    {
+        // 메시지 읽음처리
+        [PMS sendReadMsgEventWithMsgId : resultModel.msgId
+                         CompleteBlock : ^(PMSResult *result)
+                                         {
+                                            if ( [result isSuccess] )
+                                                NSLog(@"  sendReadMsgEventWithMsgId Complete: %@",resultModel.msgId);
+                                            else
+                                                NSLog(@"  sendReadMsgEventWithMsgId Fail: %@",resultModel.msgId);
+                                         }];
+    }
+    else
+    {
+        // 메시지 읽음처리
+        NSString *msgId = [NSString stringWithFormat : @"%@", [payload objectForKey : @"i"]];
+        [PMS sendReadMsgEventWithMsgId : msgId
+                         CompleteBlock : ^(PMSResult *result)
+                                         {
+                                            if ( [result isSuccess] )
+                                                NSLog(@"  sendReadMsgEventWithMsgId Complete %@", msgId);
+                                            else
+                                                NSLog(@"  sendReadMsgEventWithMsgId Fail %@", msgId);
+                                         }];
+    }
 }
 
--(void)pmsSetPushTokenComplete:(PMSResult*)result
+- (void) pmsSetPushTokenComplete : (PMSResult *) result
 {
-  NSLog(@"pmsSetPushTokenComplete : %@", result);
+    NSLog(@"  pmsSetPushTokenComplete : %@", result);
 }
 
--(void)pmsSendClickMsgComplete:(PMSResult *)result
+- (void) pmsSendClickMsgComplete : (PMSResult *) result
 {
-  NSLog(@"pmsSendClickMsgComplete : %@", result);
+    NSLog(@"  pmsSendClickMsgComplete : %@", result);
 }
 
--(void)pmsSendReadMsgComplete:(PMSResult *)result
+- (void) pmsSendReadMsgComplete : (PMSResult *) result
 {
-  NSLog(@"pmsSendReadMsgComplete : %@", result);
+    NSLog(@"  pmsSendReadMsgComplete : %@", result);
 }
 
 @end

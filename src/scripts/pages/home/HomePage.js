@@ -414,8 +414,10 @@ class HomePage extends React.Component {
     // }
 
     if (this.props.navigation.isFocused()) {
-      if (globalStore.currentMembership !== undefined
-        && globalStore.currentMembership.type === undefined) {
+      if (
+        globalStore.currentMembership !== undefined &&
+        globalStore.currentMembership.type === undefined
+      ) {
         this.showFullModal();
         return true;
       } else {

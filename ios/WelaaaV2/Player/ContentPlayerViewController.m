@@ -434,6 +434,16 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 저전력모드 여부를 확인합니다.
     [self checkLowPowerModeEnabled];
+  
+    // Status Bar의 변화를 감지하는 Observer를 추가합니다. 위치찾기나, 통화, 핫스팟 연결등으로 Notch없는 iOS단말에서 Status Bar의 높이가 변화가능하기 때문입니다.
+    [[NSNotificationCenter defaultCenter] addObserver : self
+                                             selector : @selector(statusBarFrameChanged:)
+                                                 name : UIApplicationDidChangeStatusBarFrameNotification
+                                               object : nil];
+    [[NSNotificationCenter defaultCenter] addObserver : self
+                                             selector : @selector(statusBarFrameWillChange:)
+                                                 name : UIApplicationWillChangeStatusBarFrameNotification
+                                               object : nil];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -1094,6 +1104,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _rwButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _rwButton.frame = CGRectMake(CGRectGetMinX(_playButton.frame) - 60.f - 10.f, 0.f, 60.f, 60.f);
+    // 오디오북 & 매일책한권일 경우 icon_rw_30
     [_rwButton setImage : [UIImage imageNamed : @"icon_rw"]
                forState : UIControlStateNormal];
     [_rwButton setImage : [[UIImage imageNamed : @"icon_rw"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
@@ -1109,6 +1120,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _ffButton = [UIButton buttonWithType : UIButtonTypeCustom];
     _ffButton.frame = CGRectMake(CGRectGetMaxX(_playButton.frame) + 10.f, 0.f, 60.f, 60.f);
+    // 오디오북 & 매일책한권일 경우 icon_ff_30
     [_ffButton setImage : [UIImage imageNamed : @"icon_ff"]
                forState : UIControlStateNormal];
     [_ffButton setImage : [[UIImage imageNamed : @"icon_ff"] tintImageWithColor : UIColorFromRGB(0x000000, 0.3f)]
@@ -1968,6 +1980,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : [self getCurrentPlaybackTime]];
 }
 
+//
+// 클래스 : 10초 이동
+// 오디오북 & 매일책한권 : 30초 이동
 - (void) pressedRwButton
 {
     NSLog(@"  플레이어 뒤로 가기 버튼!!");
@@ -2022,6 +2037,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // 이용로그 전송 종료
 }
 
+//
+// 클래스 : 10초 이동
+// 오디오북 & 매일책한권 : 30초 이동
 - (void) pressedFfButton
 {
     NSLog(@"  플레이어 앞으로 가기 버튼!!");
@@ -3223,20 +3241,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                  openView : (id) sender
 {
     NSLog(@"  [-miniPlayerUiView:openView:] mini Player -> Full Screen Player");
-  /*
-  if ( [self.delegate respondsToSelector: @selector(player:openView:)] )
-  {
-    [self.delegate player: self openView: nil];
-  }
-  
-  //풀스크린 플레이어로 전환 : 영상 모드로 전환
-  //미니플레이어로 전환 : 오디오 모드로 전환
-  if ( _isTransperPlayModeFromScreen )
-  {
-    _isTransperPlayModeFromScreen = NO;
-    [self changePlayType: NO];
-  }*/
-  
+    
     [self changedPlayerMode : NO];
   
     [UIView animateWithDuration : 0.3f
@@ -3656,15 +3661,8 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
 
     AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
-  //AVAudioSessionPortDescription *info = [desc.outputs objectAtIndex : 0];
     NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
-  /*
-    if ( [info.portType isEqualToString : @"Speaker"] )
-        NSLog(@"  [audioRouteChangeListenerCallback] Speaker type");
-    else
-        NSLog(@"  [audioRouteChangeListenerCallback] Non-Speaker type");
-  */
-    
+  
     switch (routeChangeReason)
     {
         case AVAudioSessionRouteChangeReasonUnknown:
@@ -3683,7 +3681,9 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         {
             NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
             dispatch_sync(dispatch_get_main_queue(), ^{
-                if ( self->_playButton.hidden ) [self pressedPauseButton];
+                // 재생 중 헤드폰이 분리될 경우 일시정지 처리합니다.
+                if ( self->_playButton.hidden )
+                    [self pressedPauseButton];
             });
             break;
         }
@@ -3767,4 +3767,27 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     center.nowPlayingInfo = playingInfo;
 }
 
+# pragma mark - Status Bar Height
+
+- (void) statusBarFrameWillChange : (NSNotification *) notification
+{
+    if ( [common hasNotch] )
+        return ;
+  
+    NSValue *rectValue = [[notification userInfo] valueForKey : UIApplicationStatusBarFrameUserInfoKey];
+    CGRect newFrame;
+    [rectValue getValue : &newFrame];
+    NSLog(@"  [statusBarFrameWillChange] new width: %f / new height: %f", newFrame.size.width, newFrame.size.height);
+}
+
+- (void) statusBarFrameChanged : (NSNotification *) notification
+{
+    if ( [common hasNotch] )
+        return ;
+  
+    NSValue *rectValue = [[notification userInfo] valueForKey : UIApplicationStatusBarFrameUserInfoKey];
+    CGRect oldFrame;
+    [rectValue getValue : &oldFrame];
+    NSLog(@"  [statusBarFrameChanged] old width: %f / old height: %f", oldFrame.size.width, oldFrame.size.height);
+}
 @end

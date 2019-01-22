@@ -225,6 +225,10 @@ public class PlayerActivity extends BasePlayerActivity {
   private Button mBtnSubtitleTextNormal = null;
   private Button mBtnSubtitleTextBig = null;
 
+  private Button mBtnSubtitleTextSmallOff = null;
+  private Button mBtnSubtitleTextNormalOff = null;
+  private Button mBtnSubtitleTextBigOff = null;
+
   private Animation mAniSlideShow = null;
   private Animation mAniSlideHide = null;
 
@@ -674,6 +678,10 @@ public class PlayerActivity extends BasePlayerActivity {
     mBtnSubtitleTextSmall = null;
     mBtnSubtitleTextNormal = null;
     mBtnSubtitleTextBig = null;
+
+    mBtnSubtitleTextSmallOff = null;
+    mBtnSubtitleTextNormalOff = null;
+    mBtnSubtitleTextBigOff = null;
 
     mBtnlistClose = null;
     mMyRepuBoxLinear = null;
@@ -1791,6 +1799,10 @@ public class PlayerActivity extends BasePlayerActivity {
     mBtnSubtitleTextNormal = findViewById(R.id.fontsize_normal);
     mBtnSubtitleTextBig = findViewById(R.id.fontsize_big);
 
+    mBtnSubtitleTextSmallOff = findViewById(R.id.fontsize_small_off);
+    mBtnSubtitleTextNormalOff = findViewById(R.id.fontsize_normal_off);
+    mBtnSubtitleTextBigOff = findViewById(R.id.fontsize_big_off);
+
     mBtnlistClose = findViewById(R.id.BUTTON_PLAYLIST_LIST);
 
     mButton_playlist_close_linear = findViewById(R.id.BUTTON_PLAYLIST_CLOSE_LINEAR);
@@ -1891,6 +1903,10 @@ public class PlayerActivity extends BasePlayerActivity {
     mBtnSubtitleTextSmall.setOnClickListener(click_control);
     mBtnSubtitleTextNormal.setOnClickListener(click_control);
     mBtnSubtitleTextBig.setOnClickListener(click_control);
+
+    mBtnSubtitleTextSmallOff.setOnClickListener(click_control);
+    mBtnSubtitleTextNormalOff.setOnClickListener(click_control);
+    mBtnSubtitleTextBigOff.setOnClickListener(click_control);
 
     mBtnSleep_title.setOnClickListener(click_control);
     mBtnSleep_15.setOnClickListener(click_control);
@@ -2104,22 +2120,62 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case R.id.CDN_TAG_BTN_BACKWARD: {
 
-            if (player.getCurrentPosition() - 10000 < 0) {
-              //
-            } else {
-              player.seekTo(player.getCurrentPosition() - 10000);
+            if (CONTENT_TYPE.equals("video-course")) {
+
+              if (cId != null) {
+                if (cId.startsWith("z")) {
+                  if (player.getCurrentPosition() - 30000 < 0) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() - 30000);
+                  }
+                }else{
+                  if (player.getCurrentPosition() - 10000 < 0) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() - 10000);
+                  }
+                }
+              }
+
+            }else{
+              if (player.getCurrentPosition() - 30000 < 0) {
+                //
+              } else {
+                player.seekTo(player.getCurrentPosition() - 30000);
+              }
             }
 
           }
           break;
 
           case R.id.CDN_TAG_BTN_FORWARD: {
-            if (player.getCurrentPosition() + 10000 > player.getDuration()) {
-              //
-            } else {
-              player.seekTo(player.getCurrentPosition() + 10000);
-            }
 
+            if (CONTENT_TYPE.equals("video-course")) {
+
+              if (cId != null) {
+                if (cId.startsWith("z")) {
+                  if (player.getCurrentPosition() + 30000 > player.getDuration()) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() + 30000);
+                  }
+                }else{
+                  if (player.getCurrentPosition() + 10000 > player.getDuration()) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() + 10000);
+                  }
+                }
+              }
+
+            }else{
+              if (player.getCurrentPosition() + 30000 > player.getDuration()) {
+                //
+              } else {
+                player.seekTo(player.getCurrentPosition() + 30000);
+              }
+            }
           }
           break;
 
@@ -2669,6 +2725,153 @@ public class PlayerActivity extends BasePlayerActivity {
           case R.id.rightArrowButton:
             doNextPlay(true);
             break;
+
+          case R.id.fontsize_small: {
+            fontSize = "small";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.VISIBLE);
+            fontsize_small_off.setVisibility(View.GONE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+
+            setFullText("small");
+
+          }
+
+          break;
+          case R.id.fontsize_small_off: {
+            fontSize = "small";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.VISIBLE);
+            fontsize_small_off.setVisibility(View.GONE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+
+            setFullText("small");
+
+          }
+
+          break;
+          case R.id.fontsize_normal: {
+            fontSize = "normal";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.VISIBLE);
+            fontsize_normal_off.setVisibility(View.GONE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+            setFullText("normal");
+          }
+          break;
+          case R.id.fontsize_normal_off: {
+            fontSize = "normal";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.VISIBLE);
+            fontsize_normal_off.setVisibility(View.GONE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+            setFullText("normal");
+          }
+          break;
+          case R.id.fontsize_big: {
+            fontSize = "big";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.VISIBLE);
+            fontsize_big_off.setVisibility(View.GONE);
+
+            setFullText("big");
+          }
+          break;
+          case R.id.fontsize_big_off: {
+            fontSize = "big";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.VISIBLE);
+            fontsize_big_off.setVisibility(View.GONE);
+
+            setFullText("big");
+          }
+          break;
         }
 
       } catch (Exception e) {
@@ -3069,6 +3272,172 @@ public class PlayerActivity extends BasePlayerActivity {
       }
     });
 
+    textFullView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        Animation an = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
+        mfullSmiLayout.startAnimation(an);
+
+        an.setAnimationListener(new Animation.AnimationListener() {
+          @Override
+          public void onAnimationStart(Animation animation) {
+
+          }
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+            msubtitls_view.setVisibility(View.VISIBLE);
+            msubtitls_view_long.setVisibility(View.GONE);
+            setBlankSpaceParams(msubtitls_view.getWidth(), 0);
+
+            RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+            RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+            RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
+            RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+            RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+            RelativeLayout welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+            RelativeLayout welean_blank_line = findViewById(R.id.welean_blank_line);
+            RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+            RelativeLayout play_network_type_text = findViewById(
+                R.id.wrap_welean_play_network_type);
+
+            play_button_group.setVisibility(View.VISIBLE);
+            general_button_group.setVisibility(View.VISIBLE);
+            myrepu_button_group.setVisibility(View.VISIBLE);
+            control_wrap_bg.setVisibility(View.VISIBLE);
+            smart_button_wrap.setVisibility(View.VISIBLE);
+            welean_blank_line2.setVisibility(View.VISIBLE);
+            welean_blank_line.setVisibility(View.VISIBLE);
+            welean_wrap_bg.setVisibility(View.VISIBLE);
+            play_network_type_text.setVisibility(View.VISIBLE);
+
+          }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {
+
+          }
+        });
+      }
+    });
+  }
+
+
+  public void setFullText(String fontSize) {
+
+    LinearLayout textFullView = findViewById(R.id.fullTextTimeView);
+    LinearLayout textFullTimeView = findViewById(R.id.fullTextView);
+    LinearLayout fontView = findViewById(R.id.longScroll_font);
+
+    if (textFullView != null) textFullView.removeAllViews();
+    if (textFullTimeView != null) textFullTimeView.removeAllViews();
+
+    if (longSubTitlesTextView != null) longSubTitlesTextView = null;
+    if (longSubTitlesTextTimeView != null) longSubTitlesTextTimeView = null;
+
+    ScrollView longView = findViewById(R.id.longScroll);
+    ScrollView longScrollTime = findViewById(R.id.longScrollTime);
+
+    int fontcolor = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long);
+    int fontcolorWhite = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long_white);
+
+    longSubTitlesTextView = new TextView[mSubtitlsmemo.length - 2];
+    longSubTitlesTextTimeView = new TextView[mSubtitlsmemo.length - 2];
+
+    for (int j = 0; j < mSubtitlsmemo.length - 2; j++) {
+
+      if (longSubTitlesTextView[j] != null) longSubTitlesTextView[j] = null;
+      if (longSubTitlesTextTimeView[j] != null) longSubTitlesTextTimeView[j] = null;
+
+      if (j == getTextViewNumber()) {
+
+        longSubTitlesTextView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextView[j].setText(mSubtitlsmemo[j]);
+        longSubTitlesTextView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextView[j].setTextColor(fontcolor);
+        //longSubTitlesTextView[j].setLineSpacing(0,1.7f);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextView[j].setTextSize(17);
+          longSubTitlesTextView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullView.addView(longSubTitlesTextView[j]);
+
+        longSubTitlesTextTimeView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextTimeView[j].setText(timeToString(mSubtitlstime[j]));
+        longSubTitlesTextTimeView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextTimeView[j].setTextColor(fontcolor);
+        //longSubTitlesTextTimeView[j].setLineSpacing(0,1.7f);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextTimeView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextTimeView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextTimeView[j].setTextSize(17);
+          longSubTitlesTextTimeView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullTimeView.addView(longSubTitlesTextTimeView[j]);
+
+        int position = 0;
+
+        position = getTextviewHeight() * getTextViewNumber();
+
+        if (fontSize.equals("small")) {
+
+        } else if (fontSize.equals("normal")) {
+
+        } else if (fontSize.equals("big")) {
+          position = getTextviewHeightNew() * getTextViewNumber();
+        }
+
+        longView.setScrollY(position);
+        longScrollTime.setScrollY(position);
+
+      } else {
+
+        longSubTitlesTextView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextView[j].setText(mSubtitlsmemo[j]);
+        longSubTitlesTextView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextView[j].setTextColor(fontcolorWhite);
+//                longSubTitlesTextView[j].setLineSpacing(7,0);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextView[j].setTextSize(17);
+          longSubTitlesTextView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullView.addView(longSubTitlesTextView[j]);
+
+        longSubTitlesTextTimeView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextTimeView[j].setText(timeToString(mSubtitlstime[j]));
+        longSubTitlesTextTimeView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextTimeView[j].setTextColor(fontcolorWhite);
+//                longSubTitlesTextTimeView[j].setLineSpacing(7,0);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextTimeView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextTimeView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextTimeView[j].setTextSize(17);
+          longSubTitlesTextTimeView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullTimeView.addView(longSubTitlesTextTimeView[j]);
+      }
+    }
     textFullView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -4957,6 +5326,10 @@ public class PlayerActivity extends BasePlayerActivity {
                       getwebPlayerInfo().getCkey()[getContentId()]);
 
                   Bundle extras = intent.getExtras();
+
+                  if (getTransportControls() != null) {
+                    getTransportControls().play();
+                  }
 
                   playFromUri(uri, extras);
                   // Meta data update 정상 .
