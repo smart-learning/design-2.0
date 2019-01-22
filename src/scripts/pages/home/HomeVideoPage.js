@@ -257,6 +257,10 @@ class HomeVideoPage extends React.Component {
           </View>
           {/* /이미지 스와이퍼 */}
 
+          <View
+            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+          />
+
           <View>
             {globalStore.welaaaAuth && (
               <View>
@@ -332,9 +336,6 @@ class HomeVideoPage extends React.Component {
                 </View>
               </View>
             ))}
-          <View
-            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
-          />
           {1 === 2 && (
             <View>
               <TouchableOpacity
