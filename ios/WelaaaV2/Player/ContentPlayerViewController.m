@@ -434,16 +434,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     // 저전력모드 여부를 확인합니다.
     [self checkLowPowerModeEnabled];
-  
-    // Status Bar의 변화를 감지하는 Observer를 추가합니다. 위치찾기나, 통화, 핫스팟 연결등으로 Notch없는 iOS단말에서 Status Bar의 높이가 변화가능하기 때문입니다.
-    [[NSNotificationCenter defaultCenter] addObserver : self
-                                             selector : @selector(statusBarFrameChanged:)
-                                                 name : UIApplicationDidChangeStatusBarFrameNotification
-                                               object : nil];
-    [[NSNotificationCenter defaultCenter] addObserver : self
-                                             selector : @selector(statusBarFrameWillChange:)
-                                                 name : UIApplicationWillChangeStatusBarFrameNotification
-                                               object : nil];
 }
 
 // View가 사라질 준비가 끝날을 때 호출되는 메서드
@@ -3767,27 +3757,4 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     center.nowPlayingInfo = playingInfo;
 }
 
-# pragma mark - Status Bar Height
-
-- (void) statusBarFrameWillChange : (NSNotification *) notification
-{
-    if ( [common hasNotch] )
-        return ;
-  
-    NSValue *rectValue = [[notification userInfo] valueForKey : UIApplicationStatusBarFrameUserInfoKey];
-    CGRect newFrame;
-    [rectValue getValue : &newFrame];
-    NSLog(@"  [statusBarFrameWillChange] new width: %f / new height: %f", newFrame.size.width, newFrame.size.height);
-}
-
-- (void) statusBarFrameChanged : (NSNotification *) notification
-{
-    if ( [common hasNotch] )
-        return ;
-  
-    NSValue *rectValue = [[notification userInfo] valueForKey : UIApplicationStatusBarFrameUserInfoKey];
-    CGRect oldFrame;
-    [rectValue getValue : &oldFrame];
-    NSLog(@"  [statusBarFrameChanged] old width: %f / old height: %f", oldFrame.size.width, oldFrame.size.height);
-}
 @end
