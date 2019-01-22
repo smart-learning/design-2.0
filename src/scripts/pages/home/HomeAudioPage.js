@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
   },
   imageMainBanner: {
     width: '100%',
-    paddingTop: '8.3333%',
-    paddingBottom: '8.3333%',
+    paddingTop: '10.069444444%',
+    paddingBottom: '10.069444444%',
   },
 });
 
@@ -254,6 +254,26 @@ class HomeAudioPage extends React.Component {
             style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
           />
 
+          <View>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() =>
+                // this.props.navigation.navigate('VideoPack', {
+                //   title: '윌라 홍보 영상'
+                // })
+                // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                Native.play('v300001_001')
+              }
+            >
+              <ImageBackground
+                source={IcMainWideBanner}
+                resizeMode="contain"
+                style={styles.imageMainBanner}
+              />
+            </TouchableOpacity>
+          </View>
+
           {globalStore.welaaaAuth && (
             <View>
               <View
@@ -274,6 +294,7 @@ class HomeAudioPage extends React.Component {
                     </View>
                   )}
               </View>
+
               <View
                 style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
               />
@@ -303,21 +324,6 @@ class HomeAudioPage extends React.Component {
             </View>
           </View>
 
-          <View
-            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
-          />
-          <View style={{ backgroundColor: '#f0f0f4' }}>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => this.props.navigation.navigate('MembershipScreen')}
-            >
-              <ImageBackground
-                source={BannerMembership}
-                resizeMode="contain"
-                style={styles.imageMainBanner}
-              />
-            </TouchableOpacity>
-          </View>
           <View
             style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
           />
@@ -412,13 +418,21 @@ class HomeAudioPage extends React.Component {
               <Text style={styles.showAllText}>오디오북 전체보기</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ backgroundColor: '#f0f0f4' }}>
+
+          <View>
             <TouchableOpacity
               activeOpacity={0.9}
-              onPress={() => this.props.navigation.navigate('MembershipScreen')}
+              onPress={() =>
+                // this.props.navigation.navigate('VideoPack', {
+                //   title: '윌라 홍보 영상'
+                // })
+                // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                Native.play('v300001_001')
+              }
             >
               <ImageBackground
-                source={BannerMembership}
+                source={IcMainWideBanner}
                 resizeMode="contain"
                 style={styles.imageMainBanner}
               />
