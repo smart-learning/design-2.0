@@ -510,6 +510,39 @@ RCT_EXPORT_MODULE();
   }
 }
 
+- (void) tasSendReadMsgEventPms : (NSDictionary *) args
+{
+  @try {
+    if(args){
+      NSLog(@"tasSendReadMsgEventPms args -> %@",args);
+      NSString* msgId = [args objectForKey:@"msgId"];
+      NSLog(@"tasSendReadMsgEventPms - msgId : %@",msgId);
+      if(msgId==nil || msgId.length==0){
+        NSLog(@"No msgId to Select!");
+        return;
+      }
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        // 메시지 읽음처리
+        [PMS sendReadMsgEventWithMsgId : msgId
+                         CompleteBlock : ^(PMSResult *result)
+         {
+           if ([result isSuccess])
+             NSLog(@"  TAS sendReadMsgEventWithMsgId Complete: %@",msgId);
+           else
+             NSLog(@"  TAS sendReadMsgEventWithMsgId Fail: %@",msgId);
+         }];
+      });
+      
+    }else{
+      NSLog(@"tasSendReadMsgEventPms No args!");
+    }
+  }
+  @catch (NSException *exception) {
+    NSLog(@"tasSendReadMsgEventPms Exception -> %@",exception.description);
+  }
+}
+
 #pragma mark - Alert and Popup (TODO : 추후 한곳에 모아둘 필요 있음. 중복되는 부분들.)
 
 - (void) showAlertOk : (NSString *) title message:(NSString *)msg
@@ -599,6 +632,11 @@ RCT_EXPORT_METHOD( tasLogout )
 RCT_EXPORT_METHOD( tasSetting : (NSDictionary *) argsFromReactNative )
 {
   [self tasSettingPms:argsFromReactNative];
+}
+
+RCT_EXPORT_METHOD( tasSendReadMsgEvent : (NSDictionary *) argsFromReactNative )
+{
+  [self tasSendReadMsgEventPms:argsFromReactNative];
 }
 
 @end
