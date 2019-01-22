@@ -148,11 +148,11 @@ class FullModalSectionPage extends Component {
 
     return (
       <View style={this.style.container}>
-        <View style={this.style.textFrame}>
+        {/* <View style={this.style.textFrame}>
           <Text style={this.style.PopupText}>
             뒤로가기를 한 번 더 누르면 앱이 종료됩니다
           </Text>
-        </View>
+        </View> */}
         <TouchableOpacity
           activeOpacity={0.9}
           style={this.style.hideOption}
@@ -170,13 +170,13 @@ class FullModalSectionPage extends Component {
 
           </View>
         </TouchableOpacity>
-        <View style={this.style.footerframe}>
+        {/* <View style={this.style.footerframe}>
           <Image
             source={LogoGreen}
             width={181}
             height={45}
           />
-        </View>
+        </View> */}
       </View>
     );
   }
