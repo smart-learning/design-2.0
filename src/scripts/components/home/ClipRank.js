@@ -10,6 +10,8 @@ export default class ClipRank extends React.Component {
   }
 
   render() {
+    let originData = _.map(this.props.itemData, item => item);
+    let itemData = originData.slice(0, 15);
     let list = [];
     let rankList = [];
 
@@ -43,7 +45,7 @@ export default class ClipRank extends React.Component {
     return (
       <View style={{ marginTop: 20, marginBottom: 30 }}>
         <Carousel
-          data={list}
+          data={itemData}
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
           itemWidth={itemWidth}

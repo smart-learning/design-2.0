@@ -448,7 +448,10 @@ class HomeVideoPage extends React.Component {
                 </Text>
               </View>
 
-              <ClassList itemData={this.props.store.classRecommendData} />
+              <ClassList
+                itemData={this.props.store.classRecommendData}
+                itemType={'recommend'}
+              />
 
               <View
                 style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}

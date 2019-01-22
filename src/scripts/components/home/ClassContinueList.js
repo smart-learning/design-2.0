@@ -88,7 +88,8 @@ export default class ClassContinueList extends React.Component {
     let windowWidth = Dimensions.get('window').width;
     let itemWidth = 270;
 
-    let itemData = _.map(this.props.itemData, item => item);
+    let originData = _.map(this.props.itemData, item => item);
+    let itemData = originData.slice(0, 5);
 
     return (
       <View>
