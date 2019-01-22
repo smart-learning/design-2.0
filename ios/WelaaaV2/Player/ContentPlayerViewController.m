@@ -2142,28 +2142,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) pressedListButton
 {
-  /*
-    if ( !_isAuthor )
-    {
-        [_contentView makeToast : @"프리뷰 이용중입니다."];
-      
-        return ;
-    }
-  */
     if ( _listView )
-    {
         return ;
-    }
   
     NSArray *playListArray;
     if ( [_currentContentsInfo[@"type"] hasPrefix : @"video"] )
-    {
         playListArray = _currentContentsInfo[@"data"][@"clips"];
-    }
     else if ( [_currentContentsInfo[@"type"] hasPrefix : @"audio"] )
-    {
         playListArray = _currentContentsInfo[@"data"][@"chapters"];
-    }
   
     int indexOfCurrentContent = 0;
     for ( int i=0; i<playListArray.count; i++ )
@@ -2197,9 +2183,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
     //오디오 콘텐츠 타이틀 삽입
     if ( !nullStr(groupTitle) )
-    {
         [_listView setTitle : groupTitle];
-    }
 }
 
 
@@ -2218,9 +2202,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
              forceChange : YES];
   
     if ( _holdTouchDragging )
-    {
         return ;
-    }
   
     if ( [self respondsToSelector : @selector(seekbarDragging:)] )
     {
