@@ -30,7 +30,6 @@ class BookDaily extends React.Component {
                 source={{ uri: todayItem.image }}
                 resizeMode="contain"
                 style={{ width: 78, height: 125, backgroundColor: '#efefef' }}
-                borderRadius={4}
               />
             </View>
             <View style={{ position: 'relative', width: 195, height: 125 }}>
@@ -54,6 +53,7 @@ class BookDaily extends React.Component {
                   onPress={() =>
                     this.props.navigation.navigate('HomeBookDailyDetailPage', {
                       title: '매일 책 한권',
+                      itemData: originData,
                     })
                   }
                 >
