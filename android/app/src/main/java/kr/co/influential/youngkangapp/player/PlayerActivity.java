@@ -4945,14 +4945,13 @@ public class PlayerActivity extends BasePlayerActivity {
           // player foreground 상태에서
           // 전화 통화 후 종료 , Power OFF 후 다시 Player 상태로 돌아오는 경우 .
           if (mediaController.getMetadata().getBundle() != null) {
-
             if (Preferences.getSQLiteDuration(getApplicationContext())) {
               // RN play 를 통해서 들어오는 경우는 그대로 재생 시도
               // 이 값은 LocalPlayBack 에서 다시 초기화 됩니다.
               // 이전에 재생 됐던 콘텐츠의 프로그래스 저장 합니다.
               Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+//                if (LocalPlayback.getInstance(this).isPlaying()) {
                   BeforeExtras = mediaController.getMetadata().getBundle();
                   String beforeCid = BeforeExtras.getString("drm_cid");
 
@@ -4966,12 +4965,15 @@ public class PlayerActivity extends BasePlayerActivity {
                     ContentManager().insertProgress(beforeCid,
                         String.valueOf(player.getCurrentPosition()));
                   }
-                }
+//                }
+
               } catch (Exception e) {
+                LogHelper.d(TAG, "4976 Exception " + e.toString());
                 e.printStackTrace();
               }
 
             } else {
+
               if (LocalPlayback.getInstance(this).isPlaying()) {
                 extras = mediaController.getMetadata().getBundle();
                 uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
@@ -4988,7 +4990,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
           // 앱 구동 후 처음 껍데기 미니 플레이어가 있는 상태에서
           // 미니 플레이어 말고 다른 콘텐츠를 재생하려고 할 때
-          LogHelper.e(TAG, " Exception " + e.toString());
+          LogHelper.d(TAG, " Exception " + e.toString());
           // ContentId 다시 셋팅 ?
 
           setData(fromMediaSession, extras, uri);
@@ -5020,9 +5022,21 @@ public class PlayerActivity extends BasePlayerActivity {
       mPlayStatus.mPosition = player.getCurrentPosition();
       playWhenReady = player.getPlayWhenReady();
 
-      if (!playWhenReady) {
-        attachPlayerView();
-      } else {
+      boolean fromMediaSession = false;
+      Intent intent = getIntent();
+
+      if (intent != null) {
+        fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
+      }
+
+      if(fromMediaSession){
+        if (!playWhenReady) {
+          attachPlayerView();
+        } else {
+          getTransportControls().playFromUri(uri, extras);
+          attachPlayerView();
+        }
+      }else{
         getTransportControls().playFromUri(uri, extras);
         attachPlayerView();
       }
