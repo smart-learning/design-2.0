@@ -194,6 +194,30 @@ class HomeVideoPage extends React.Component {
 
     const { homeSeriesData } = this.props.store;
 
+    const renderPagination = (index, total, context) => {
+      return (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 10,
+            right: 10,
+            paddingTop: 2,
+            paddingBottom: 2,
+            paddingRight: 10,
+            paddingLeft: 10,
+            borderWidth: 1,
+            borderColor: '#FFFFFF',
+            backgroundColor: 'rgba(0,0,0,.3)',
+          }}
+          borderRadius={10}
+        >
+          <Text style={{ color: 'white', fontSize: 10 }}>
+            {index + 1}/{total}
+          </Text>
+        </View>
+      );
+    };
+
     return (
       <PTRView
         forceScrollValue={this.state.forceScrollValue}
@@ -209,9 +233,7 @@ class HomeVideoPage extends React.Component {
                 style={styles.wrapper}
                 showsButtons={false}
                 height={this.props.store.slideHeight}
-                dotColor={'rgba(255,255,255,.3)'}
-                activeDotColor={'#ffffff'}
-                paginationStyle={{ left: '-65%', bottom: 10 }}
+                renderPagination={renderPagination}
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';
