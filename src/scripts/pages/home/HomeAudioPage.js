@@ -277,28 +277,34 @@ class HomeAudioPage extends React.Component {
 
           {globalStore.welaaaAuth && (
             <View>
-              <View
-                style={[
-                  CommonStyles.contentContainer,
-                  styles.continueContainer,
-                ]}
-              >
-                {this.props.store.audioUseData &&
-                  this.props.store.audioUseData.length > 0 && (
-                    <View>
-                      <View style={CommonStyles.alignJustifyItemCenter}>
-                        <Text style={styles.titleH3}>최근재생 오디오북</Text>
+              {this.props.store.audioUseData &&
+                this.props.store.audioUseData.length > 0 && (
+                  <View>
+                    <View
+                      style={[
+                        CommonStyles.contentContainer,
+                        styles.continueContainer,
+                      ]}
+                    >
+                      <View>
+                        <View style={CommonStyles.alignJustifyItemCenter}>
+                          <Text style={styles.titleH3}>최근 재생 오디오북</Text>
+                        </View>
+                        <BookContinueList
+                          itemData={this.props.store.audioUseData}
+                        />
                       </View>
-                      <BookContinueList
-                        itemData={this.props.store.audioUseData}
-                      />
                     </View>
-                  )}
-              </View>
 
-              <View
-                style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
-              />
+                    <View
+                      style={{
+                        width: '100%',
+                        height: 8,
+                        backgroundColor: '#F0F0F4',
+                      }}
+                    />
+                  </View>
+                )}
             </View>
           )}
 

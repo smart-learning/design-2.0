@@ -285,32 +285,34 @@ class HomeVideoPage extends React.Component {
           <View>
             {globalStore.welaaaAuth && (
               <View>
-                <View
-                  style={[
-                    CommonStyles.contentContainer,
-                    styles.continueContainer,
-                  ]}
-                >
-                  {this.props.store.classUseData &&
-                    this.props.store.classUseData.length > 0 && (
-                      <View>
-                        <View style={styles.titleContainer}>
-                          <Text style={styles.titleH3}>최근 재생 클래스</Text>
-                        </View>
+                {this.props.store.classUseData &&
+                  this.props.store.classUseData.length > 0 && (
+                    <View>
+                      <View
+                        style={[
+                          CommonStyles.contentContainer,
+                          styles.continueContainer,
+                        ]}
+                      >
+                        <View>
+                          <View style={styles.titleContainer}>
+                            <Text style={styles.titleH3}>최근 재생 클래스</Text>
+                          </View>
 
-                        <ClassContinueList
-                          itemData={this.props.store.classUseData}
-                        />
+                          <ClassContinueList
+                            itemData={this.props.store.classUseData}
+                          />
+                        </View>
                       </View>
-                    )}
-                </View>
-                <View
-                  style={{
-                    width: '100%',
-                    height: 8,
-                    backgroundColor: '#F0F0F4',
-                  }}
-                />
+                      <View
+                        style={{
+                          width: '100%',
+                          height: 8,
+                          backgroundColor: '#F0F0F4',
+                        }}
+                      />
+                    </View>
+                  )}
               </View>
             )}
           </View>
