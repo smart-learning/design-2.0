@@ -603,9 +603,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     // 다음 재생할 item이 있는지 검색하여 플레이할 것인지 추천영상뷰를 띄울것인지 결정해야합니다.
     NSArray *contentsListArray;
     if ( _isAudioContent )
-      contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
+        contentsListArray = _currentContentsInfo[@"data"][@"chapters"];
     else if ( !_isAudioContent )
-      contentsListArray = _currentContentsInfo[@"data"][@"clips"];
+        contentsListArray = _currentContentsInfo[@"data"][@"clips"];
   
     NSInteger indexOfCurrentContent = 0;
   
@@ -639,8 +639,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
             [self sendProgressWhenCurrentContentEnds];
           
-            [_args setObject : contentsListArray[i][@"cid"]
-                      forKey : @"cid"];
+            NSString *tempCid = contentsListArray[i][@"cid"];
+            if ( nullStr(tempCid) )
+            {
+                [common presentAlertWithTitle:@"윌라" andMessage:@"죄송합니다\n일시적인 문제로 다음 콘텐츠를 로딩할 수 없습니다."];
+                return [self closePlayer];
+            }
+            else
+                [_args setObject:contentsListArray[i][@"cid"] forKey:@"cid"];
           
             [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                       forKey : @"uri"];
@@ -654,8 +660,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
             // 현재 재생중이던 콘텐츠의 이용내역을 API서버로 put합니다.
             [self sendProgressWhenCurrentContentEnds];
           
-            [_args setObject : contentsListArray[indexOfCurrentContent+1][@"cid"]
-                      forKey : @"cid"];
+            NSString *tempCid = contentsListArray[indexOfCurrentContent+1][@"cid"];
+            if ( nullStr(tempCid) )
+            {
+                [common presentAlertWithTitle:@"윌라" andMessage:@"죄송합니다\n일시적인 문제로 다음 콘텐츠를 로딩할 수 없습니다."];
+                return [self closePlayer];
+            }
+            else
+                [_args setObject:contentsListArray[indexOfCurrentContent+1][@"cid"] forKey:@"cid"];
           
             [_args setObject : [self getContentUri : [_args objectForKey : @"cid"]]
                       forKey : @"uri"];
