@@ -45,6 +45,7 @@ import MyScreens from './src/scripts/pages/my/MyScreens';
 import SetAppScreen from './src/scripts/pages/my/SetAppPage';
 import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
+import FullModalSectionPage from './src/scripts/pages/auth/FullModalSectionPage';
 
 class Data {
   @observable
@@ -110,6 +111,7 @@ class App extends React.Component {
 
   state = {
     appState: AppState.currentState,
+    appsflyer_id: '',
   };
 
   // 키보드 제어 상태를 store에 기록해서 관리
@@ -137,7 +139,6 @@ class App extends React.Component {
       await utils.updateCartStatus();
 
       Native.tasDeviceCert();
-
     } else {
       // AsyncStorage에 저장된 값이 없어도 화면은 진행이 되어아 햠
       this.data.welaaaAuthLoaded = true;
@@ -162,6 +163,14 @@ class App extends React.Component {
     settings.forEach(setting => {
       const bool = setting[1] === 'true';
       store.appSettings[setting[0].split('::').pop()] = bool;
+      // if (Platform.OS === 'ios') {
+      if (setting[0] === 'config::isAlert' && setting[1] === null) {
+        // 알림설정값(isAlert)이 null 일 경우(최초실행) default 값을 true 로 설정.
+        // store 에서 설정한 디폴트 value 들이 제대로 넘어오지 않아 일단 이렇게 처리.
+        // (iOS는 최초 설치 후 실행시 true, false 로 설정했음에도 null 로 넘어옴)
+        store.appSettings[setting[0].split('::').pop()] = true;
+      }
+      // }
     });
 
     Native.updateSettings();
@@ -281,6 +290,16 @@ class App extends React.Component {
     );
 
     if ('ios' === Platform.OS) {
+      // AppsFlyer 에서 Server to Server 이벤트 호출을 위해 필요한 appsflyer_id
+      appsFlyer.getAppsFlyerUID((error, appsFlyerUID) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('App.js::getAppsFlyerUID only for iOS : ' + appsFlyerUID);
+          this.setState({ appsflyer_id: appsFlyerUID });
+        }
+      });
+
       console.log('======', Native.getPlayerManager());
       const playerManager = Native.getPlayerManager();
       const playerManagerEmitter = new NativeEventEmitter(playerManager);
@@ -313,12 +332,7 @@ class App extends React.Component {
           const { params } = this.props.navigation.state;
           const eventName = 'af_initiated_checkout';
           const eventValues = {
-            EVENT_PARAM_CONTENT: arg.buy_title,
-            EVENT_PARAM_CONTENT_ID: 'membership',
-            EVENT_PARAM_CONTENT_TYPE: arg.buy_type,
-            EVENT_PARAM_NUM_ITEMS: 1,
-            EVENT_PARAM_PAYMENT_INFO_AVAILABLE: 0,
-            EVENT_PARAM_CURRENCY: 'KRW',
+            af_content_type: arg.buy_type,
             OS_TYPE: Platform.OS,
           };
           appsFlyer.trackEvent(
@@ -332,11 +346,26 @@ class App extends React.Component {
             },
           );
 
+          // 멤버십 구매 이벤트 전송(Server to Server)
+          const payload = {
+            appsflyer_id: this.state.appsflyer_id,
+            membership: arg.buy_title,
+          };
+          console.log(payload); // {appsflyer_id: "1547564806442-9392845", membership: "클래스 멤버십 결제"}
+
+          try {
+            const data = await net.registerMembership(payload);
+          } catch (e) {
+            // register 실패
+            console.log(e);
+          }
+
           this.props.navigation.navigate('HomeScreen', {
             popup_mbs: true,
           });
         } else if (result && arg.buy_type === 'audio_book') {
           let eventValues = {
+            af_revenue: arg.local_price,
             af_price: arg.local_price,
             af_currency: 'KRW',
             af_content_id: arg.product_id,
@@ -379,12 +408,11 @@ class App extends React.Component {
 
       this.subscription.push(
         DeviceEventEmitter.addListener('tasLandingUrlHandler', params => {
-
           console.log('tasLandingUrlHandler', params.TAS_CUSTOM_DATA);
           // console.log('tasLandingUrlHandler', params);
           // { TAS_CUSTOM_DATA: '{"l":"welaaa:\\/\\/membership"}' }
 
-          let tasLandingUrl = JSON.parse(params.TAS_CUSTOM_DATA)
+          let tasLandingUrl = JSON.parse(params.TAS_CUSTOM_DATA);
           console.log('tasLandingUrlHandler', tasLandingUrl.l);
           // nav.parseDeepLink(tasLandingUrl.l);
           try {
@@ -418,7 +446,27 @@ class App extends React.Component {
           params.message = notification._body;
           params.onPress = () => {
             try {
-              nav.parseDeepLink(notification._data.path);
+              if (Platform.OS == 'android') {
+                nav.parseDeepLink(notification._data.path);
+              } else if (Platform.OS == 'ios') {
+                if (
+                  notification._data.l &&
+                  notification._data.l.length > 0 &&
+                  notification._data.l.startsWith('welaaa://')
+                ) {
+                  // TAS 에서 보낸 푸시일 경우
+                  nav.parseDeepLink(notification._data.l);
+                } else if (
+                  notification._data.path &&
+                  notification._data.path.length > 0 &&
+                  notification._data.path.startsWith('welaaa://')
+                ) {
+                  // Firebase 에서 보낸 푸시일 경우
+                  nav.parseDeepLink(notification._data.path);
+                }
+                // 읽음 처리
+                Native.tasSendReadMsg(notification._data.i);
+              }
             } catch (error) {
               console.log(error);
             }
@@ -438,10 +486,38 @@ class App extends React.Component {
         const notification = notificationOpen.notification;
 
         try {
-          if (this.data.welaaaAuthLoaded) {
-            nav.parseDeepLink(notification._data.path);
-          } else {
-            this.data.queuePath = notification._data.path;
+          if (Platform.OS == 'android') {
+            if (this.data.welaaaAuthLoaded) {
+              nav.parseDeepLink(notification._data.path);
+            } else {
+              this.data.queuePath = notification._data.path;
+            }
+          } else if (Platform.OS == 'ios') {
+            if (
+              notification._data.l &&
+              notification._data.l.length > 0 &&
+              notification._data.l.startsWith('welaaa://')
+            ) {
+              // TAS 에서 보낸 푸시일 경우
+              if (this.data.welaaaAuthLoaded) {
+                nav.parseDeepLink(notification._data.l);
+              } else {
+                this.data.queuePath = notification._data.l;
+              }
+            } else if (
+              notification._data.path &&
+              notification._data.path.length > 0 &&
+              notification._data.path.startsWith('welaaa://')
+            ) {
+              // Firebase 에서 보낸 푸시일 경우
+              if (this.data.welaaaAuthLoaded) {
+                nav.parseDeepLink(notification._data.path);
+              } else {
+                this.data.queuePath = notification._data.path;
+              }
+            }
+            // 읽음 처리
+            Native.tasSendReadMsg(notification._data.i);
           }
         } catch (error) {
           console.log(error);
@@ -452,18 +528,15 @@ class App extends React.Component {
     const notificationOpen = await firebase
       .notifications()
       .getInitialNotification();
-
-
-    // Android 앱 종료 상태에서 TAS 노티로 들어 올때 
+    // Android 앱 종료 상태에서 TAS 노티로 들어 올때
     if (Platform.OS === 'android') {
       Native.tasLandingUrl(tas_landing_url => {
         if (undefined === tas_landing_url || '' === tas_landing_url) {
           return;
         }
 
-        let tasLandingUrl = JSON.parse(tas_landing_url)
+        let tasLandingUrl = JSON.parse(tas_landing_url);
         nav.parseDeepLink(tasLandingUrl.l);
-
       });
     }
 
@@ -475,10 +548,38 @@ class App extends React.Component {
       const notification = notificationOpen.notification;
 
       try {
-        if (this.data.welaaaAuthLoaded) {
-          nav.parseDeepLink(notification._data.path);
-        } else {
-          this.data.queuePath = notification._data.path;
+        if (Platform.OS == 'android') {
+          if (this.data.welaaaAuthLoaded) {
+            nav.parseDeepLink(notification._data.path);
+          } else {
+            this.data.queuePath = notification._data.path;
+          }
+        } else if (Platform.OS == 'ios') {
+          if (
+            notification._data.l &&
+            notification._data.l.length > 0 &&
+            notification._data.l.startsWith('welaaa://')
+          ) {
+            // TAS 에서 보낸 푸시일 경우
+            if (this.data.welaaaAuthLoaded) {
+              nav.parseDeepLink(notification._data.l);
+            } else {
+              this.data.queuePath = notification._data.l;
+            }
+          } else if (
+            notification._data.path &&
+            notification._data.path.length > 0 &&
+            notification._data.path.startsWith('welaaa://')
+          ) {
+            // Firebase 에서 보낸 푸시일 경우
+            if (this.data.welaaaAuthLoaded) {
+              nav.parseDeepLink(notification._data.path);
+            } else {
+              this.data.queuePath = notification._data.path;
+            }
+          }
+          // 읽음 처리
+          Native.tasSendReadMsg(notification._data.i);
         }
       } catch (error) {
         console.log(error);
@@ -561,8 +662,7 @@ class App extends React.Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-
-      console.log('nextAppState', 'active')
+      console.log('nextAppState', 'active');
 
       if (Platform.OS === 'ios') {
         appsFlyer.trackAppLaunch();
@@ -573,8 +673,7 @@ class App extends React.Component {
       this.state.appState.match(/active|foreground/) &&
       nextAppState === 'background'
     ) {
-
-      console.log('nextAppState', 'background')
+      console.log('nextAppState', 'background');
       if (this.onInstallConversionDataCanceller) {
         this.onInstallConversionDataCanceller();
       }
@@ -749,6 +848,9 @@ const AppNavigator = createSwitchNavigator(
     },
     Signin: {
       screen: SigninStack,
+    },
+    FullModalSectionPageCall: {
+      screen: FullModalSectionPage,
     },
   },
   {

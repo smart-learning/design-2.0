@@ -336,6 +336,13 @@ class HomePage extends React.Component {
     }
   }
 
+  showFullModal() {
+    this.props.navigation.navigate('FullModalView', {
+      popup_type: 'AndroidMainExit',
+      preview_page: 'HomePage',
+    });
+  }
+
   componentDidMount = async () => {
     this.getProgressList();
 
@@ -405,8 +412,20 @@ class HomePage extends React.Component {
 
   handleBackPress = () => {
     console.log('back press:');
+    // if (this.props.navigation.isFocused()) {
+    //   BackHandler.exitApp();
+    // }
+
     if (this.props.navigation.isFocused()) {
-      BackHandler.exitApp();
+      if (
+        globalStore.currentMembership !== undefined &&
+        globalStore.currentMembership.type === undefined
+      ) {
+        this.showFullModal();
+        return true;
+      } else {
+        BackHandler.exitApp();
+      }
     }
   };
 

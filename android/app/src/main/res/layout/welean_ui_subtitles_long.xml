@@ -24,49 +24,103 @@
 
             android:gravity="right">
 
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/fontsize_small"
-                android:text="@string/subtitle_font"
-                android:textSize="13sp"
-                android:textColor="#706d76"
-                android:lineSpacingExtra="7sp"
-                android:layout_alignParentTop="true"
+            <RelativeLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:id="@+id/subtitle_font_small_btn_wrap">
+                <Button
+                  android:layout_width="40dp"
+                  android:layout_height="40dp"
+                  android:id="@+id/fontsize_small"
+                  android:text="@string/subtitle_font"
+                  android:textSize="13sp"
+                  android:textColor="#706d76"
+                  android:lineSpacingExtra="7sp"
+                  android:layout_alignParentTop="true"
+                  android:background="#130f1a"
+                  android:visibility="gone"
+                  />
+                <Button
+                  android:layout_width="40dp"
+                  android:layout_height="40dp"
+                  android:id="@+id/fontsize_small_off"
+                  android:text="@string/subtitle_font"
+                  android:textSize="13sp"
+                  android:textColor="#706d76"
+                  android:lineSpacingExtra="7sp"
+                  android:layout_alignParentTop="true"
+                  android:background="@color/action_button_background"
+                  />
+            </RelativeLayout>
 
-                />
 
-            <!--android:background="@drawable/item_border_font_button"-->
+            <RelativeLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:id="@+id/subtitle_font_normal_btn_wrap">
+                <Button
+                  android:layout_width="40dp"
+                  android:layout_height="40dp"
+                  android:id="@+id/fontsize_normal"
+                  android:text="@string/subtitle_font"
+                  android:textSize="15sp"
+                  android:textColor="#706d76"
+                  android:lineSpacingExtra="5sp"
+                  android:layout_marginLeft="10dp"
+                  android:layout_alignParentTop="true"
+                  android:background="#130f1a"
+                  />
+                <Button
+                  android:layout_width="40dp"
+                  android:layout_height="40dp"
+                  android:id="@+id/fontsize_normal_off"
+                  android:text="@string/subtitle_font"
+                  android:textSize="15sp"
+                  android:textColor="#706d76"
+                  android:lineSpacingExtra="5sp"
+                  android:layout_marginLeft="10dp"
+                  android:layout_alignParentTop="true"
+                  android:background="@color/action_button_background"
+                  android:visibility="gone"
+                  />
+            </RelativeLayout>
 
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/fontsize_normal"
-                android:text="@string/subtitle_font"
-                android:textSize="15sp"
-                android:textColor="#706d76"
-                android:lineSpacingExtra="5sp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignParentTop="true"
+            <RelativeLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:id="@+id/subtitle_font_big_btn_wrap">
+                <Button
+                  android:layout_width="40dp"
+                  android:layout_height="40dp"
+                  android:id="@+id/fontsize_big"
+                  android:text="@string/subtitle_font"
+                  android:textSize="17sp"
+                  android:textColor="#706d76"
+                  android:lineSpacingExtra="3sp"
+                  android:layout_marginLeft="10dp"
+                  android:layout_alignParentTop="true"
+                  android:background="#130f1a"
+                  android:visibility="gone"
+                  />
+                <Button
+                  android:layout_width="40dp"
+                  android:layout_height="40dp"
+                  android:id="@+id/fontsize_big_off"
+                  android:text="@string/subtitle_font"
+                  android:textSize="17sp"
+                  android:textColor="#706d76"
+                  android:lineSpacingExtra="3sp"
+                  android:layout_marginLeft="10dp"
+                  android:layout_alignParentTop="true"
+                  android:background="@color/action_button_background"
+                  />
+            </RelativeLayout>
 
-                />
 
-            <!--android:background="@drawable/item_border_font_button_press"-->
 
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/fontsize_big"
-                android:text="@string/subtitle_font"
-                android:textSize="17sp"
-                android:textColor="#706d76"
-                android:lineSpacingExtra="3sp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignParentTop="true"
-
-                />
-
-            <!--android:background="@drawable/item_border_font_button"-->
 
         </LinearLayout>
 

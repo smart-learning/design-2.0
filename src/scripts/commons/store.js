@@ -118,8 +118,8 @@ class Store {
     isAutoLogin: false,
     isWifiPlay: true,
     isWifiDownload: true,
-    isAlert: false,
-    isEmail: false,
+    isAlert: true,
+    isEmail: false
   };
 
   @observable

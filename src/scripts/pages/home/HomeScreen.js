@@ -27,6 +27,7 @@ import HomeSeriesDetailPage from './HomeSeriesDetailPage';
 import InnerWebViewPage from '../in_web/InnerWebViewPage';
 import HomeBookDailyDetailPage from './HomeBookDailyDetailPage';
 import HomeBookMonthlyDetailPage from './HomeBookMonthlyDetailPage';
+import FullModalSection from '../../components/FullModalSection';
 
 const HomeScreen = createStackNavigator(
   {
@@ -81,6 +82,13 @@ const HomeScreen = createStackNavigator(
     },
     WebView: {
       screen: InAppWebView,
+    },
+
+    FullModalView: {
+      screen: FullModalSection,
+      navigationOptions: {
+        header: null,
+      },
     },
 
     PrivacyPage: {

@@ -685,7 +685,7 @@ export default {
   registerMembership(data) {
     return axios
       .post(
-        API_PREFIX + 'v1.0/payment/import/subscriptions/issue-billing',
+        API_PREFIX + 'v1.1/payment/import/subscriptions/issue-billing',
         data,
       )
       .then(resp => resp.data);

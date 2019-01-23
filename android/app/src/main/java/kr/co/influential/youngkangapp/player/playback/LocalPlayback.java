@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -61,6 +63,7 @@ import com.pallycon.widevinelibrary.PallyconDrmException;
 import com.pallycon.widevinelibrary.PallyconEventListener;
 import com.pallycon.widevinelibrary.PallyconWVMSDK;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
+import com.pallycon.widevinelibrary.UnAuthorizedDeviceException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -77,6 +80,7 @@ import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Preferences;
+import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 
 /**
@@ -206,6 +210,8 @@ public final class LocalPlayback implements Playback,
       e.printStackTrace();
     } catch (PallyconDrmException e) {
       e.printStackTrace();
+    } catch (UnAuthorizedDeviceException e) {
+      e.printStackTrace();
     }
 
     this.mAudioManager =
@@ -233,7 +239,7 @@ public final class LocalPlayback implements Playback,
       // update
       if (ContentManager().isProgressExist(currentCkey) > 0) {
         ContentManager()
-            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()) , "UPDATE");
+            .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()), "UPDATE");
         //insert
       } else {
         ContentManager().insertProgress(currentCkey,
@@ -304,10 +310,40 @@ public final class LocalPlayback implements Playback,
 
   @Override
   public void play(MediaMetadataCompat item) {
+
+    try {
+
+      ConnectivityManager cmgr = (ConnectivityManager) mContext
+          .getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+
+      if(netInfo==null){
+
+        if (mExoPlayer != null) {
+          mExoPlayer.setPlayWhenReady(false);
+        }
+
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            Utils.logToast(mContext, mContext.getString(R.string.info_networkfail));
+          }
+        });
+
+        return;
+      }
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
     mPlayOnFocusGain = true;
     tryToGetAudioFocus();
     registerAudioNoisyReceiver();
     Uri uri = item.getDescription().getMediaUri();
+
+    if (uri == null) {
+      return;
+    }
 
     boolean mediaHasChanged = currentMedia == null ||
         !uri.equals(currentMedia.getDescription().getMediaUri());
@@ -501,7 +537,6 @@ public final class LocalPlayback implements Playback,
     configurePlayerState();
 
     if (Preferences.getSQLiteDuration(mContext)) {
-      // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ?
       mExoPlayer.seekTo(startSqlPosition);
 
       Preferences.setSQLiteDuration(mContext, false);
@@ -532,7 +567,7 @@ public final class LocalPlayback implements Playback,
       // update duration 0 으로 셋팅합니다.
       if (ContentManager().isProgressExist(currentCkey) > 0) {
         ContentManager()
-            .updateProgress(currentCkey, "0" , "UPDATE");
+            .updateProgress(currentCkey, "0", "UPDATE");
         //insert duration 0 으로 셋팅합니다.
       } else {
         ContentManager().insertProgress(currentCkey, "0");
@@ -772,7 +807,7 @@ public final class LocalPlayback implements Playback,
         case Player.STATE_ENDED:
           if (mCallback != null) {
 //            if (Preferences.getWelaaaPlayAutoPlay(mContext)) {
-              mCallback.doAutoPlay();
+            mCallback.doAutoPlay();
 //            } else {
 //              mCallback.onCompletion();
 //            }
@@ -1102,7 +1137,8 @@ public final class LocalPlayback implements Playback,
         // update
         if (ContentManager().isProgressExist(currentCkey) > 0) {
           ContentManager()
-              .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()) , "UPDATE");
+              .updateProgress(currentCkey, String.valueOf(mExoPlayer.getCurrentPosition()),
+                  "UPDATE");
           //insert
         } else {
           ContentManager().insertProgress(currentCkey,

@@ -4,12 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import com.apms.sdk.bean.PushMsg;
+import com.apms.sdk.api.APIManager.APICallback;
+import com.apms.sdk.api.request.ReadMsg;
+import com.apms.sdk.common.util.APMSUtil;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class TasCustomNotiReceiver extends BroadcastReceiver{
 
@@ -37,6 +43,16 @@ public class TasCustomNotiReceiver extends BroadcastReceiver{
 
 //    {"l":"welaaa:\/\/membership"}
 
+    JSONArray reads = new JSONArray();
+    reads.put(APMSUtil.getReadParam(pushMsg.msgId)); // MsgId -> 1212일떄
+
+    new ReadMsg(context).request(reads, new APICallback() {
+      @Override
+      public void response (String code, JSONObject json) {
+        LogHelper.d("ReadMsg" , " pushMsg.msgId " + pushMsg.msgId + " Read" + code + " json " + json  );
+      }
+    });
+
     if (Utils.isAppInForeground(context)) {
 
       WritableMap event = Arguments.createMap();
@@ -63,7 +79,7 @@ public class TasCustomNotiReceiver extends BroadcastReceiver{
       startIntent.putExtra("TAS_CUSTOM_DATA" , pushMsg.data);
 
       Preferences.setWelaaaTasLandingUrl(context , pushMsg.data);
-      LogHelper.e("notificationOpen" , "notificationOpen tas url " + Preferences.getWelaaaTasLandingUrl(context) );
+      LogHelper.d("notificationOpen" , "notificationOpen tas url " + Preferences.getWelaaaTasLandingUrl(context) );
 
       context.startActivity(startIntent);
     }

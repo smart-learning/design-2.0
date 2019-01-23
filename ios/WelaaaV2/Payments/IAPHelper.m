@@ -60,9 +60,20 @@
 
 - (void) dealloc
 {
-    if ( [SKPaymentQueue defaultQueue] )
+    if ( [[[UIDevice currentDevice] systemVersion] compare:@"12.0.0" options:NSNumericSearch] != NSOrderedAscending )
     {
-        [[SKPaymentQueue defaultQueue] removeTransactionObserver: self];
+        // running on iOS 12.0.0 or higher
+        NSLog(@"  [IAPHelper dealloc] Higher than iOS 12, so returns nothing..");
+        return ;
+    }
+    else
+    {
+        // running on iOS 10 ~ 11
+        NSLog(@"  [IAPHelper dealloc] Lower than iOS 12, so removes TransactionObserver..");
+        if ( [SKPaymentQueue defaultQueue] )
+        {
+            [[SKPaymentQueue defaultQueue] removeTransactionObserver: self];
+        }
     }
 }
 

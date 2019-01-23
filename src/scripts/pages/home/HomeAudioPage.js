@@ -220,6 +220,8 @@ class HomeAudioPage extends React.Component {
                 showsButtons={false}
                 height={this.props.store.slideHeight}
                 renderPagination={renderPagination}
+                autoplay={true}
+                autoplayTimeout={3}
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';

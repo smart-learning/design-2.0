@@ -170,7 +170,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       callbackMethodName = "play/contents-info";
       callbackMethod = "play";
 
-      sendData(WELEARN_WEB_URL + "play/contents-info/" + content.getString("cid"));
+      sendData(WELEARN_WEB_URL + "play/contents-info/" + contentCid);
     }
 
     Preferences.setSQLiteDuration(getReactApplicationContext(), true);
@@ -247,7 +247,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
 
       if(fcmFlag){
-        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "0800", "2100", new APICallback() {
+        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "2100", "0800", new APICallback() {
           @Override
           public void response (String code, JSONObject json) {
             //
@@ -255,7 +255,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
           }
         });
       }else{
-        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "0800", "2100", new APICallback() {
+        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "2100", "0800", new APICallback() {
           @Override
           public void response (String code, JSONObject json) {
             //
@@ -833,6 +833,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                 mProgressDialog.dismiss();
               }
 
+              // #842 #895 #896 케이스 권한이 없는데 contentID , contentCid 값을 내부적으로 셋팅하고 있었습니다.
+              Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
+              // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
+              // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
+              Preferences.setWelaaaPlayListCKey(getReactApplicationContext(), contentCid);
+
               if (contentType.equals("audiobook")) {
                 if (!can_play) {
 
@@ -859,11 +865,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   });
 
                 } else {
-                  // #842 #895 #896 케이스 권한이 없는데 contentID , contentCid 값을 내부적으로 셋팅하고 있었습니다.
-                  Preferences.setWelaaaPlayListCId(getReactApplicationContext(), contentId);
-                  // 플레이 버튼 , 자동 재생 할때 , 추천 콘텐츠 뷰 할 때 /play-data/ 들어갈때 .
-                  // LocalPlayback 에서 참조 함 . MP4 이지만 , audio only 인 케이스
-                  Preferences.setWelaaaPlayListCKey(getReactApplicationContext(), contentCid);
 
                   if (mWebPlayerInfo.getCurl()[contentId].equals("0") ||
                       mWebPlayerInfo.getCurl()[contentId].equals("0.0")) {

@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     height: 36,
     marginLeft: 'auto',
     marginRight: 'auto',
+    backgroundColor: '#dddddd',
   },
   classLinkViewAll: {
     marginTop: 15,
@@ -235,6 +236,8 @@ class HomeVideoPage extends React.Component {
                 showsButtons={false}
                 height={this.props.store.slideHeight}
                 renderPagination={renderPagination}
+                autoplay={true}
+                autoplayTimeout={3}
               >
                 {homeBannerData.map((item, key) => {
                   let bannerImageUrl = '';

@@ -116,6 +116,7 @@ import kr.co.influential.youngkangapp.util.HttpCon;
 import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.MyBroadcastReceiver;
+import kr.co.influential.youngkangapp.util.NetworkUtil;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
@@ -224,6 +225,10 @@ public class PlayerActivity extends BasePlayerActivity {
   private Button mBtnSubtitleTextSmall = null;
   private Button mBtnSubtitleTextNormal = null;
   private Button mBtnSubtitleTextBig = null;
+
+  private Button mBtnSubtitleTextSmallOff = null;
+  private Button mBtnSubtitleTextNormalOff = null;
+  private Button mBtnSubtitleTextBigOff = null;
 
   private Animation mAniSlideShow = null;
   private Animation mAniSlideHide = null;
@@ -675,6 +680,10 @@ public class PlayerActivity extends BasePlayerActivity {
     mBtnSubtitleTextNormal = null;
     mBtnSubtitleTextBig = null;
 
+    mBtnSubtitleTextSmallOff = null;
+    mBtnSubtitleTextNormalOff = null;
+    mBtnSubtitleTextBigOff = null;
+
     mBtnlistClose = null;
     mMyRepuBoxLinear = null;
 
@@ -754,8 +763,8 @@ public class PlayerActivity extends BasePlayerActivity {
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
 
-      for(int i=0; i<mWebPlayerInfo.getCkey().length ; i++){
-        if(cId.equals(mWebPlayerInfo.getCkey()[i])){
+      for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
+        if (cId.equals(mWebPlayerInfo.getCkey()[i])) {
           setContentId(i);
         }
       }
@@ -1791,6 +1800,10 @@ public class PlayerActivity extends BasePlayerActivity {
     mBtnSubtitleTextNormal = findViewById(R.id.fontsize_normal);
     mBtnSubtitleTextBig = findViewById(R.id.fontsize_big);
 
+    mBtnSubtitleTextSmallOff = findViewById(R.id.fontsize_small_off);
+    mBtnSubtitleTextNormalOff = findViewById(R.id.fontsize_normal_off);
+    mBtnSubtitleTextBigOff = findViewById(R.id.fontsize_big_off);
+
     mBtnlistClose = findViewById(R.id.BUTTON_PLAYLIST_LIST);
 
     mButton_playlist_close_linear = findViewById(R.id.BUTTON_PLAYLIST_CLOSE_LINEAR);
@@ -1891,6 +1904,10 @@ public class PlayerActivity extends BasePlayerActivity {
     mBtnSubtitleTextSmall.setOnClickListener(click_control);
     mBtnSubtitleTextNormal.setOnClickListener(click_control);
     mBtnSubtitleTextBig.setOnClickListener(click_control);
+
+    mBtnSubtitleTextSmallOff.setOnClickListener(click_control);
+    mBtnSubtitleTextNormalOff.setOnClickListener(click_control);
+    mBtnSubtitleTextBigOff.setOnClickListener(click_control);
 
     mBtnSleep_title.setOnClickListener(click_control);
     mBtnSleep_15.setOnClickListener(click_control);
@@ -2104,22 +2121,62 @@ public class PlayerActivity extends BasePlayerActivity {
 
           case R.id.CDN_TAG_BTN_BACKWARD: {
 
-            if (player.getCurrentPosition() - 10000 < 0) {
-              //
-            } else {
-              player.seekTo(player.getCurrentPosition() - 10000);
+            if (CONTENT_TYPE.equals("video-course")) {
+
+              if (cId != null) {
+                if (cId.startsWith("z")) {
+                  if (player.getCurrentPosition() - 30000 < 0) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() - 30000);
+                  }
+                }else{
+                  if (player.getCurrentPosition() - 10000 < 0) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() - 10000);
+                  }
+                }
+              }
+
+            }else{
+              if (player.getCurrentPosition() - 30000 < 0) {
+                //
+              } else {
+                player.seekTo(player.getCurrentPosition() - 30000);
+              }
             }
 
           }
           break;
 
           case R.id.CDN_TAG_BTN_FORWARD: {
-            if (player.getCurrentPosition() + 10000 > player.getDuration()) {
-              //
-            } else {
-              player.seekTo(player.getCurrentPosition() + 10000);
-            }
 
+            if (CONTENT_TYPE.equals("video-course")) {
+
+              if (cId != null) {
+                if (cId.startsWith("z")) {
+                  if (player.getCurrentPosition() + 30000 > player.getDuration()) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() + 30000);
+                  }
+                }else{
+                  if (player.getCurrentPosition() + 10000 > player.getDuration()) {
+                    //
+                  } else {
+                    player.seekTo(player.getCurrentPosition() + 10000);
+                  }
+                }
+              }
+
+            }else{
+              if (player.getCurrentPosition() + 30000 > player.getDuration()) {
+                //
+              } else {
+                player.seekTo(player.getCurrentPosition() + 30000);
+              }
+            }
           }
           break;
 
@@ -2669,6 +2726,153 @@ public class PlayerActivity extends BasePlayerActivity {
           case R.id.rightArrowButton:
             doNextPlay(true);
             break;
+
+          case R.id.fontsize_small: {
+            fontSize = "small";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.VISIBLE);
+            fontsize_small_off.setVisibility(View.GONE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+
+            setFullText("small");
+
+          }
+
+          break;
+          case R.id.fontsize_small_off: {
+            fontSize = "small";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.VISIBLE);
+            fontsize_small_off.setVisibility(View.GONE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+
+            setFullText("small");
+
+          }
+
+          break;
+          case R.id.fontsize_normal: {
+            fontSize = "normal";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.VISIBLE);
+            fontsize_normal_off.setVisibility(View.GONE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+            setFullText("normal");
+          }
+          break;
+          case R.id.fontsize_normal_off: {
+            fontSize = "normal";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.VISIBLE);
+            fontsize_normal_off.setVisibility(View.GONE);
+
+            fontsize_big.setVisibility(View.GONE);
+            fontsize_big_off.setVisibility(View.VISIBLE);
+            setFullText("normal");
+          }
+          break;
+          case R.id.fontsize_big: {
+            fontSize = "big";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.VISIBLE);
+            fontsize_big_off.setVisibility(View.GONE);
+
+            setFullText("big");
+          }
+          break;
+          case R.id.fontsize_big_off: {
+            fontSize = "big";
+
+            Button fontsize_small = findViewById(R.id.fontsize_small);
+            Button fontsize_small_off = findViewById(R.id.fontsize_small_off);
+
+            Button fontsize_normal = findViewById(R.id.fontsize_normal);
+            Button fontsize_normal_off = findViewById(R.id.fontsize_normal_off);
+
+            Button fontsize_big = findViewById(R.id.fontsize_big);
+            Button fontsize_big_off = findViewById(R.id.fontsize_big_off);
+
+            fontsize_small.setVisibility(View.GONE);
+            fontsize_small_off.setVisibility(View.VISIBLE);
+
+            fontsize_normal.setVisibility(View.GONE);
+            fontsize_normal_off.setVisibility(View.VISIBLE);
+
+            fontsize_big.setVisibility(View.VISIBLE);
+            fontsize_big_off.setVisibility(View.GONE);
+
+            setFullText("big");
+          }
+          break;
         }
 
       } catch (Exception e) {
@@ -2754,22 +2958,19 @@ public class PlayerActivity extends BasePlayerActivity {
     mSubtitlsmemo = msubtitlsInfo.getMemo();
     mSubtitlstime = msubtitlsInfo.getTime();
 
-    try {
-
-      UiThreadUtil.runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
+    UiThreadUtil.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        try {
           if (mSubtitlstime != null && mSubtitlsmemo != null) {
             setShortText();
             setFullText();
           }
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-      });
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+      }
+    });
   }
 
   /*******************************************************************
@@ -2916,10 +3117,6 @@ public class PlayerActivity extends BasePlayerActivity {
    *  긴 자막 UI
    *******************************************************************/
   public void setFullText() {
-    if (mSubtitlsmemo == null || mSubtitlsmemo.length <= 2) {
-      return;
-    }
-
     final LinearLayout textFullView = findViewById(R.id.fullTextTimeView);
     LinearLayout textFullTimeView = findViewById(R.id.fullTextView);
     LinearLayout longScroll_font = findViewById(R.id.longScroll_font);
@@ -3076,6 +3273,172 @@ public class PlayerActivity extends BasePlayerActivity {
       }
     });
 
+    textFullView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        Animation an = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
+        mfullSmiLayout.startAnimation(an);
+
+        an.setAnimationListener(new Animation.AnimationListener() {
+          @Override
+          public void onAnimationStart(Animation animation) {
+
+          }
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+            msubtitls_view.setVisibility(View.VISIBLE);
+            msubtitls_view_long.setVisibility(View.GONE);
+            setBlankSpaceParams(msubtitls_view.getWidth(), 0);
+
+            RelativeLayout control_wrap_bg = findViewById(R.id.CONTROL_WRAP_BG);
+            RelativeLayout general_button_group = findViewById(R.id.GENERAL_BUTTON_GROUP);
+            RelativeLayout myrepu_button_group = findViewById(R.id.MYREPU_BUTTON_GROUP);
+            RelativeLayout play_button_group = findViewById(R.id.PLAY_BUTTON_GROUP);
+            RelativeLayout smart_button_wrap = findViewById(R.id.SMART_BUTTON_WRAP);
+            RelativeLayout welean_blank_line2 = findViewById(R.id.welean_blank_line2);
+            RelativeLayout welean_blank_line = findViewById(R.id.welean_blank_line);
+            RelativeLayout welean_wrap_bg = findViewById(R.id.welean_wrap_bg);
+            RelativeLayout play_network_type_text = findViewById(
+                R.id.wrap_welean_play_network_type);
+
+            play_button_group.setVisibility(View.VISIBLE);
+            general_button_group.setVisibility(View.VISIBLE);
+            myrepu_button_group.setVisibility(View.VISIBLE);
+            control_wrap_bg.setVisibility(View.VISIBLE);
+            smart_button_wrap.setVisibility(View.VISIBLE);
+            welean_blank_line2.setVisibility(View.VISIBLE);
+            welean_blank_line.setVisibility(View.VISIBLE);
+            welean_wrap_bg.setVisibility(View.VISIBLE);
+            play_network_type_text.setVisibility(View.VISIBLE);
+
+          }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {
+
+          }
+        });
+      }
+    });
+  }
+
+
+  public void setFullText(String fontSize) {
+
+    LinearLayout textFullView = findViewById(R.id.fullTextTimeView);
+    LinearLayout textFullTimeView = findViewById(R.id.fullTextView);
+    LinearLayout fontView = findViewById(R.id.longScroll_font);
+
+    if (textFullView != null) textFullView.removeAllViews();
+    if (textFullTimeView != null) textFullTimeView.removeAllViews();
+
+    if (longSubTitlesTextView != null) longSubTitlesTextView = null;
+    if (longSubTitlesTextTimeView != null) longSubTitlesTextTimeView = null;
+
+    ScrollView longView = findViewById(R.id.longScroll);
+    ScrollView longScrollTime = findViewById(R.id.longScrollTime);
+
+    int fontcolor = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long);
+    int fontcolorWhite = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long_white);
+
+    longSubTitlesTextView = new TextView[mSubtitlsmemo.length - 2];
+    longSubTitlesTextTimeView = new TextView[mSubtitlsmemo.length - 2];
+
+    for (int j = 0; j < mSubtitlsmemo.length - 2; j++) {
+
+      if (longSubTitlesTextView[j] != null) longSubTitlesTextView[j] = null;
+      if (longSubTitlesTextTimeView[j] != null) longSubTitlesTextTimeView[j] = null;
+
+      if (j == getTextViewNumber()) {
+
+        longSubTitlesTextView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextView[j].setText(mSubtitlsmemo[j]);
+        longSubTitlesTextView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextView[j].setTextColor(fontcolor);
+        //longSubTitlesTextView[j].setLineSpacing(0,1.7f);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextView[j].setTextSize(17);
+          longSubTitlesTextView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullView.addView(longSubTitlesTextView[j]);
+
+        longSubTitlesTextTimeView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextTimeView[j].setText(timeToString(mSubtitlstime[j]));
+        longSubTitlesTextTimeView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextTimeView[j].setTextColor(fontcolor);
+        //longSubTitlesTextTimeView[j].setLineSpacing(0,1.7f);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextTimeView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextTimeView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextTimeView[j].setTextSize(17);
+          longSubTitlesTextTimeView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullTimeView.addView(longSubTitlesTextTimeView[j]);
+
+        int position = 0;
+
+        position = getTextviewHeight() * getTextViewNumber();
+
+        if (fontSize.equals("small")) {
+
+        } else if (fontSize.equals("normal")) {
+
+        } else if (fontSize.equals("big")) {
+          position = getTextviewHeightNew() * getTextViewNumber();
+        }
+
+        longView.setScrollY(position);
+        longScrollTime.setScrollY(position);
+
+      } else {
+
+        longSubTitlesTextView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextView[j].setText(mSubtitlsmemo[j]);
+        longSubTitlesTextView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextView[j].setTextColor(fontcolorWhite);
+//                longSubTitlesTextView[j].setLineSpacing(7,0);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextView[j].setTextSize(17);
+          longSubTitlesTextView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullView.addView(longSubTitlesTextView[j]);
+
+        longSubTitlesTextTimeView[j] = new TextView(getApplicationContext());
+        longSubTitlesTextTimeView[j].setText(timeToString(mSubtitlstime[j]));
+        longSubTitlesTextTimeView[j].setHeight(getTextviewHeight());
+        longSubTitlesTextTimeView[j].setTextColor(fontcolorWhite);
+//                longSubTitlesTextTimeView[j].setLineSpacing(7,0);
+
+        if (fontSize.equals("small")) {
+          longSubTitlesTextTimeView[j].setTextSize(13);
+        } else if (fontSize.equals("normal")) {
+          longSubTitlesTextTimeView[j].setTextSize(15);
+        } else if (fontSize.equals("big")) {
+          longSubTitlesTextTimeView[j].setTextSize(17);
+          longSubTitlesTextTimeView[j].setHeight(getTextviewHeightNew());
+        }
+
+        textFullTimeView.addView(longSubTitlesTextTimeView[j]);
+      }
+    }
     textFullView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -4055,7 +4418,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   String beforeCid = BeforeExtras.getString("drm_cid");
 
                   // 오디오북을 구매 한 경우
-                  if(getwebPlayerInfo().getAudiobookbuy().equals("true")){
+                  if (getwebPlayerInfo().getAudiobookbuy().equals("true")) {
                     if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                       lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
                           getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
@@ -4067,21 +4430,23 @@ public class PlayerActivity extends BasePlayerActivity {
                           "",
                           "2");
                     }
-                  }else{
+                  } else {
                     // 오디오북을 구매 하지 않은 경우는 preview 확인
-                    if(getwebPlayerInfo().getAudio_preview()[i].equals("true")){
+                    if (getwebPlayerInfo().getAudio_preview()[i].equals("true")) {
                       if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                         lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "",
+                            "",
                             "",
                             "31");
                       } else {
                         lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "",
+                            "",
                             "",
                             "32");
                       }
-                    }else{
+                    } else {
                       lectureAudioBookListItemdapter.add("",
                           "", getwebPlayerInfo().getCname()[i], "", "", "", "1");
                     }
@@ -4109,7 +4474,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
 
-                  if(getwebPlayerInfo().getAudiobookbuy().equals("true")){
+                  if (getwebPlayerInfo().getAudiobookbuy().equals("true")) {
                     if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                       lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
                           getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
@@ -4121,20 +4486,22 @@ public class PlayerActivity extends BasePlayerActivity {
                           "",
                           "4");
                     }
-                  }else{
-                    if(getwebPlayerInfo().getAudio_preview()[i].equals("true")){
+                  } else {
+                    if (getwebPlayerInfo().getAudio_preview()[i].equals("true")) {
                       if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                         lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "",
+                            "",
                             "",
                             "24");
                       } else {
                         lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "",
+                            "",
                             "",
                             "23");
                       }
-                    }else{
+                    } else {
                       lectureAudioBookListItemdapter.add("",
                           "", getwebPlayerInfo().getCname()[i], "", "", "", "3");
                     }
@@ -4164,7 +4531,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
                   String beforeCid = BeforeExtras.getString("drm_cid");
 
-                  if(getwebPlayerInfo().getAudiobookbuy().equals("true")){
+                  if (getwebPlayerInfo().getAudiobookbuy().equals("true")) {
                     if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                       lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
                           getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
@@ -4176,20 +4543,22 @@ public class PlayerActivity extends BasePlayerActivity {
                           "",
                           "6");
                     }
-                  }else{
-                    if(getwebPlayerInfo().getAudio_preview()[i].equals("true")){
+                  } else {
+                    if (getwebPlayerInfo().getAudio_preview()[i].equals("true")) {
                       if (getwebPlayerInfo().getCkey()[i].equals(beforeCid)) {
                         lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "",
+                            "",
                             "",
                             "28");
                       } else {
                         lectureAudioBookListItemdapter.add(getwebPlayerInfo().getCplayTime()[i],
-                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "", "",
+                            getwebPlayerInfo().getCkey()[i], getwebPlayerInfo().getCname()[i], "",
+                            "",
                             "",
                             "29");
                       }
-                    }else{
+                    } else {
                       lectureAudioBookListItemdapter.add("",
                           "", getwebPlayerInfo().getCname()[i], "", "", "", "5");
                     }
@@ -4334,7 +4703,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public void setPlayerTitle() {
     if (mWebPlayerInfo != null) {
 
-      LogHelper.e(TAG , " setPlayerTitle getContentID is " + getContentId());
+      LogHelper.e(TAG, " setPlayerTitle getContentID is " + getContentId());
 
       setVideoGroupTitle(mWebPlayerInfo.getGroupTitle(),
           mWebPlayerInfo.getCname()[getContentId()]);
@@ -4359,7 +4728,11 @@ public class PlayerActivity extends BasePlayerActivity {
         }
 
         if (player != null) {
-          player.setPlayWhenReady(true);
+
+          if(player.getPlayWhenReady()){
+            player.setPlayWhenReady(true);
+          }
+
         }
 
         // 추천 뷰 콘텐츠 뷰가 활성화 인 경우
@@ -4573,14 +4946,13 @@ public class PlayerActivity extends BasePlayerActivity {
           // player foreground 상태에서
           // 전화 통화 후 종료 , Power OFF 후 다시 Player 상태로 돌아오는 경우 .
           if (mediaController.getMetadata().getBundle() != null) {
-
             if (Preferences.getSQLiteDuration(getApplicationContext())) {
               // RN play 를 통해서 들어오는 경우는 그대로 재생 시도
               // 이 값은 LocalPlayBack 에서 다시 초기화 됩니다.
               // 이전에 재생 됐던 콘텐츠의 프로그래스 저장 합니다.
               Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
               try {
-                if (LocalPlayback.getInstance(this).isPlaying()) {
+//                if (LocalPlayback.getInstance(this).isPlaying()) {
                   BeforeExtras = mediaController.getMetadata().getBundle();
                   String beforeCid = BeforeExtras.getString("drm_cid");
 
@@ -4594,12 +4966,15 @@ public class PlayerActivity extends BasePlayerActivity {
                     ContentManager().insertProgress(beforeCid,
                         String.valueOf(player.getCurrentPosition()));
                   }
-                }
+//                }
+
               } catch (Exception e) {
+                LogHelper.d(TAG, "4976 Exception " + e.toString());
                 e.printStackTrace();
               }
 
             } else {
+
               if (LocalPlayback.getInstance(this).isPlaying()) {
                 extras = mediaController.getMetadata().getBundle();
                 uri = Uri.parse(extras.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
@@ -4616,7 +4991,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
           // 앱 구동 후 처음 껍데기 미니 플레이어가 있는 상태에서
           // 미니 플레이어 말고 다른 콘텐츠를 재생하려고 할 때
-          LogHelper.e(TAG , " Exception " + e.toString());
+          LogHelper.d(TAG, " Exception " + e.toString());
           // ContentId 다시 셋팅 ?
 
           setData(fromMediaSession, extras, uri);
@@ -4640,8 +5015,37 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   private void playFromUri(Uri uri, Bundle extras) {
-    getTransportControls().playFromUri(uri, extras);
-    attachPlayerView();
+
+    Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
+
+    boolean playWhenReady = true;
+    if (player != null) {
+      mPlayStatus.mPosition = player.getCurrentPosition();
+      playWhenReady = player.getPlayWhenReady();
+
+      boolean fromMediaSession = false;
+      Intent intent = getIntent();
+
+      if (intent != null) {
+        fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
+      }
+
+      if(fromMediaSession){
+        if (!playWhenReady) {
+          attachPlayerView();
+        } else {
+          getTransportControls().playFromUri(uri, extras);
+          attachPlayerView();
+        }
+      }else{
+        getTransportControls().playFromUri(uri, extras);
+        attachPlayerView();
+      }
+
+    }else{
+      getTransportControls().playFromUri(uri, extras);
+      attachPlayerView();
+    }
   }
 
   private void setPlayerView(PlayerView playerView) {
@@ -4668,14 +5072,34 @@ public class PlayerActivity extends BasePlayerActivity {
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
         try {
-          setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-              getwebPlayerInfo().getCname()[getContentId()]);
 
-          if (mCurrentTimeHandler != null) {
-            mCurrentTimeHandler.removeCallbacksAndMessages(null);
+          ConnectivityManager cmgr = (ConnectivityManager) getApplicationContext()
+              .getSystemService(Context.CONNECTIVITY_SERVICE);
+          NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-            Message msg = mCurrentTimeHandler.obtainMessage();
-            mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+          if(netInfo!=null){
+            setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+                getwebPlayerInfo().getCname()[getContentId()]);
+
+            if (mCurrentTimeHandler != null) {
+              mCurrentTimeHandler.removeCallbacksAndMessages(null);
+
+              Message msg = mCurrentTimeHandler.obtainMessage();
+              mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+            }
+
+          }else{
+            if (getTransportControls() != null) {
+
+              UiThreadUtil.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                  Utils.logToast(getApplicationContext(), getString(R.string.info_networkfail));
+                }
+              });
+
+              getTransportControls().pause();
+            }
           }
 
         } catch (Exception e) {
@@ -4937,6 +5361,10 @@ public class PlayerActivity extends BasePlayerActivity {
                       getwebPlayerInfo().getCkey()[getContentId()]);
 
                   Bundle extras = intent.getExtras();
+
+                  if (getTransportControls() != null) {
+                    getTransportControls().play();
+                  }
 
                   playFromUri(uri, extras);
                   // Meta data update 정상 .
@@ -5425,7 +5853,6 @@ public class PlayerActivity extends BasePlayerActivity {
 
               mWebPlayerInfo = new WebPlayerInfo(sb.toString());
             }
-
 
             callbackMethodName = "play/play-data/";
 
