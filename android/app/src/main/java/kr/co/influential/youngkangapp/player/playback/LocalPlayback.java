@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -78,6 +80,7 @@ import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Preferences;
+import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 
 /**
@@ -307,6 +310,32 @@ public final class LocalPlayback implements Playback,
 
   @Override
   public void play(MediaMetadataCompat item) {
+
+    try {
+
+      ConnectivityManager cmgr = (ConnectivityManager) mContext
+          .getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+
+      if(netInfo==null){
+
+        if (mExoPlayer != null) {
+          mExoPlayer.setPlayWhenReady(false);
+        }
+
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            Utils.logToast(mContext, mContext.getString(R.string.info_networkfail));
+          }
+        });
+
+        return;
+      }
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
     mPlayOnFocusGain = true;
     tryToGetAudioFocus();
     registerAudioNoisyReceiver();
@@ -508,7 +537,6 @@ public final class LocalPlayback implements Playback,
     configurePlayerState();
 
     if (Preferences.getSQLiteDuration(mContext)) {
-      // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ?
       mExoPlayer.seekTo(startSqlPosition);
 
       Preferences.setSQLiteDuration(mContext, false);

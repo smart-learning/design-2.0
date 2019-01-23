@@ -116,6 +116,7 @@ import kr.co.influential.youngkangapp.util.HttpCon;
 import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.MyBroadcastReceiver;
+import kr.co.influential.youngkangapp.util.NetworkUtil;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
@@ -5071,14 +5072,34 @@ public class PlayerActivity extends BasePlayerActivity {
     switch (state.getState()) {
       case PlaybackStateCompat.STATE_PLAYING:
         try {
-          setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-              getwebPlayerInfo().getCname()[getContentId()]);
 
-          if (mCurrentTimeHandler != null) {
-            mCurrentTimeHandler.removeCallbacksAndMessages(null);
+          ConnectivityManager cmgr = (ConnectivityManager) getApplicationContext()
+              .getSystemService(Context.CONNECTIVITY_SERVICE);
+          NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-            Message msg = mCurrentTimeHandler.obtainMessage();
-            mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+          if(netInfo!=null){
+            setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+                getwebPlayerInfo().getCname()[getContentId()]);
+
+            if (mCurrentTimeHandler != null) {
+              mCurrentTimeHandler.removeCallbacksAndMessages(null);
+
+              Message msg = mCurrentTimeHandler.obtainMessage();
+              mCurrentTimeHandler.sendMessageDelayed(msg, 100);
+            }
+
+          }else{
+            if (getTransportControls() != null) {
+
+              UiThreadUtil.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                  Utils.logToast(getApplicationContext(), getString(R.string.info_networkfail));
+                }
+              });
+
+              getTransportControls().pause();
+            }
           }
 
         } catch (Exception e) {
