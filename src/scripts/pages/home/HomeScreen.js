@@ -26,6 +26,7 @@ import HomeSeriesListPage from './HomeSeriesListPage';
 import HomeSeriesDetailPage from './HomeSeriesDetailPage';
 import InnerWebViewPage from '../in_web/InnerWebViewPage';
 import HomeBookDailyDetailPage from './HomeBookDailyDetailPage';
+import HomeBookMonthlyDetailPage from './HomeBookMonthlyDetailPage';
 
 const HomeScreen = createStackNavigator(
   {
@@ -110,10 +111,14 @@ const HomeScreen = createStackNavigator(
       screen: InnerWebViewPage,
       navigationOptions: NAV_OPTS_STACK,
     },
-	HomeBookDailyDetailPage: {
-	screen: HomeBookDailyDetailPage,
-		navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
-},
+    HomeBookDailyDetailPage: {
+      screen: HomeBookDailyDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+    },
+    HomeBookMonthlyDetailPage: {
+      screen: HomeBookMonthlyDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+    },
   },
 
   { navigationOptions: NAV_OPTS_COMMON }, // 공통 적용입니다.

@@ -85,8 +85,6 @@ class BookMonthlySwiperItem extends React.Component {
   render() {
     let itemData = this.props.itemData;
 
-    console.log('itemData', itemData);
-
     return (
       <View
         ref={ref => (this.view = ref)}
@@ -113,7 +111,15 @@ class BookMonthlySwiperItem extends React.Component {
           ]}
         >
           <View style={styles.bookItem}>
-            <TouchableOpacity activeOpacity={0.9}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() =>
+                this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
+                  title: '이달의 책',
+                  itemData: itemData.book_a,
+                })
+              }
+            >
               <ImageBackground
                 source={{ uri: itemData.book_a.images.banner }}
                 style={styles.thumbnail}
@@ -161,7 +167,15 @@ class BookMonthlySwiperItem extends React.Component {
           </View>
 
           <View style={styles.bookItem}>
-            <TouchableOpacity activeOpacity={0.9}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() =>
+                this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
+                  title: '이달의 책',
+                  itemData: itemData.book_b,
+                })
+              }
+            >
               <ImageBackground
                 source={{ uri: itemData.book_b.images.banner }}
                 style={styles.thumbnail}
