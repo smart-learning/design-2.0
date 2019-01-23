@@ -57,14 +57,25 @@
     
     return self;
 }
-/*
+
 - (void) dealloc
 {
-    if ( [SKPaymentQueue defaultQueue] )
+    if ( [[[UIDevice currentDevice] systemVersion] compare:@"12.0.0" options:NSNumericSearch] != NSOrderedAscending )
     {
-        [[SKPaymentQueue defaultQueue] removeTransactionObserver: self];
+        // running on iOS 12.0.0 or higher
+        NSLog(@"  [IAPHelper dealloc] Higher than iOS 12, so returns nothing..");
+        return ;
     }
-}*/
+    else
+    {
+        // running on iOS 10 ~ 11
+        NSLog(@"  [IAPHelper dealloc] Lower than iOS 12, so removes TransactionObserver..");
+        if ( [SKPaymentQueue defaultQueue] )
+        {
+            [[SKPaymentQueue defaultQueue] removeTransactionObserver: self];
+        }
+    }
+}
 
 //
 // 구입한 상품인지 확인하는 메서드입니다. 키체인에 저장해서 꺼내오는 방식인데 쓰이는지는 잘 모르겠습니다. 쓰이지 않는다면 삭제되어야 합니다.

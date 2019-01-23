@@ -97,11 +97,14 @@
     
     [self requestHistory];
   
-    // 현재 재생중인 콘텐츠의 index로 이동시킵니다.
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentPlayIndex inSection:0];
-    [_tableView scrollToRowAtIndexPath : indexPath
-                      atScrollPosition : UITableViewScrollPositionTop
-                              animated : YES];
+    // 현재 재생중인 콘텐츠의 index로 이동시킵니다. 단 서버문제로 레코드가 없는 경우에는 실행되지 않습니다.
+    if ( [_tableView numberOfRowsInSection : 0] > 0 )
+    {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentPlayIndex inSection:0];
+        [_tableView scrollToRowAtIndexPath : indexPath
+                          atScrollPosition : UITableViewScrollPositionTop
+                                  animated : YES];
+    }
 }
 
 - (UIView *) makeTitleView : (CGRect) frame
