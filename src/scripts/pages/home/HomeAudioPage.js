@@ -32,6 +32,8 @@ import Native from '../../commons/native';
 import IcMainWideBanner from '../../../images/main_wide_banner.png';
 import BannerMembership from '../../../images/banner-membership.png';
 import Footer from '../../components/home/Footer';
+import SeriesSwiper from '../../components/home/SeriesSwiper';
+import BookMonthlySwiper from '../../components/home/BookMonthlySwiper';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -86,8 +88,7 @@ const styles = StyleSheet.create({
   },
   monthContainer: {
     paddingTop: 30,
-    paddingBottom: 20,
-    backgroundColor: '#CDD0A4',
+    paddingBottom: 30,
   },
   dailyContainer: {
     position: 'relative',
@@ -307,9 +308,11 @@ class HomeAudioPage extends React.Component {
             </View>
           )}
 
-          <View style={styles.monthContainer}>
-            <BookMonthly itemData={this.props.store.audioMonth} />
-          </View>
+          {this.props.store.audioMonth.length > 0 && (
+            <View style={styles.monthContainer}>
+              <BookMonthlySwiper itemData={this.props.store.audioMonth} />
+            </View>
+          )}
 
           <View
             style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
