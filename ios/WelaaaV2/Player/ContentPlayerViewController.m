@@ -1872,9 +1872,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_miniPlayerUiView setPlayState : YES];
     else if ( _pauseButton.hidden )
         [_miniPlayerUiView setPlayState : NO];
-  
-    [self changedPlayerMode : YES];
-  
+    
     [UIView animateWithDuration : 0.3f
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
@@ -3195,66 +3193,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
 # pragma mark - Contents mini Player
 
-// 플레이어 모드 변경 (미니<->일반 플레이어뷰)
-- (void) changedPlayerMode : (BOOL) isMiniPlayer
-{
-  //self.view.hidden = NO;
-  //_miniPlayerUiView.hidden = NO;
-  
-  //self.view.alpha = isMiniPlayer ? 1.f : 0.f;
-  //_miniPlayerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
-  /*
-    [UIView animateWithDuration : 0.3f
-                          delay : 0
-                        options : UIViewAnimationOptionAllowUserInteraction
-                     animations : ^{
-                                      //_playerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
-                                      self.view.alpha = isMiniPlayer ? 0.f : 1.f;
-                                      _miniPlayerUiView.alpha = isMiniPlayer ? 1.f : 0.f;
-                                   }
-                     completion : ^(BOOL finished)
-                                  {
-                                      self.isMiniPlayer = isMiniPlayer;
-                                      //_playerUiView.hidden = self.isMiniPlayer;
-                                      self.view.hidden = self.isMiniPlayer;
-                                      _miniPlayerUiView.hidden = !self.isMiniPlayer;
-                                  }];
-  */
-    if ( isMiniPlayer )
-    {
-      // 이용로그 전송 시작
-      //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
-      /*
-      NSTimeInterval cTime = 0000;
-      [[LogManager sharedInstance] sendLogWithGroupKey: self.gkey
-                                            contentKey: self.ckey
-                                                status: @"miniPlayer"
-                                            downloaded: self.isDownloadFile
-                                          startingTime: (int) (cTime * 1000)
-                                            endingTime: (int) (cTime * 1000 + 30000)];
-      */
-    }
-    else
-    {
-      // 이용로그 전송 시작
-      //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
-      /*
-      NSTimeInterval cTime = 0000;
-      [[LogManager sharedInstance] sendLogWithGroupKey: self.gkey
-                                            contentKey: self.ckey
-                                                status: @"fullPlayer"
-                                            downloaded: self.isDownloadFile
-                                          startingTime: (int) (cTime * 1000)
-                                            endingTime: (int) (cTime * 1000 + 30000)];
-      */
-    }
-}
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
                  openView : (id) sender
 {
     NSLog(@"  [-miniPlayerUiView:openView:] mini Player -> Full Screen Player");
-    
-    [self changedPlayerMode : NO];
   
     [UIView animateWithDuration : 0.3f
                           delay : 0
@@ -3270,7 +3212,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     self.isMiniPlayer = NO;
     _miniPlayerUiView = nil;
     [[self.view viewWithTag:1] removeFromSuperview];
-  //_screenMode = ContentsPlayerScreenModeMiniPlayer;
     [common hideStatusBar];
 }
 
