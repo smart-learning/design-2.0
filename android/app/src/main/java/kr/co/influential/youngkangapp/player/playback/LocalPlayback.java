@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -78,6 +80,7 @@ import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Preferences;
+import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 
 /**
@@ -106,6 +109,8 @@ public final class LocalPlayback implements Playback,
   private boolean mPlayOnFocusGain;
   private Callback mCallback;
   private boolean mAudioNoisyReceiverRegistered;
+  private boolean mNetworkReceiverRegistered;
+
   private MediaMetadataCompat currentMedia;
 
   private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
@@ -162,6 +167,38 @@ public final class LocalPlayback implements Playback,
               i.setAction(MediaService.ACTION_CMD);
               i.putExtra(MediaService.CMD_NAME, MediaService.CMD_PAUSE);
               mContext.startService(i);
+            }
+          }
+        }
+      };
+
+  private final IntentFilter mNetworkIntentFilter =
+      new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+  private final BroadcastReceiver mNetworkReceiver =
+      new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+
+            ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+            if (!isConnected) {
+              if (mExoPlayer != null) {
+                mExoPlayer.setPlayWhenReady(false);
+              }
+
+              UiThreadUtil.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                  Utils.logToast(mContext, mContext.getString(R.string.info_networkfail));
+                }
+              });
             }
           }
         }
@@ -249,6 +286,7 @@ public final class LocalPlayback implements Playback,
 
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
+    unregisterNetworkReceiver();
     releaseResources(true);
   }
 
@@ -307,9 +345,34 @@ public final class LocalPlayback implements Playback,
 
   @Override
   public void play(MediaMetadataCompat item) {
+
+    ConnectivityManager cm =
+        (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+    boolean isConnected = activeNetwork != null &&
+        activeNetwork.isConnectedOrConnecting();
+
+    if (!isConnected) {
+      if (mExoPlayer != null) {
+        mExoPlayer.setPlayWhenReady(false);
+      }
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          Utils.logToast(mContext, mContext.getString(R.string.info_networkfail));
+        }
+      });
+
+      return;
+    }
+
     mPlayOnFocusGain = true;
     tryToGetAudioFocus();
     registerAudioNoisyReceiver();
+    registerNetworkReceiver();
+
     Uri uri = item.getDescription().getMediaUri();
 
     if (uri == null) {
@@ -514,9 +577,12 @@ public final class LocalPlayback implements Playback,
     configurePlayerState();
 
     if (Preferences.getSQLiteDuration(mContext)) {
-      // TODO : sqlite 를 통해서 가져온 데이터를 셋팅하는데 .. 어디에 셋팅해야 하는 걸까요 ? 여기가 맞나요 ?
-      mExoPlayer.seekTo(startSqlPosition);
 
+      if (startSqlPosition > mExoPlayer.getDuration()) {
+        mExoPlayer.seekTo(startSqlPosition);
+      } else {
+        mExoPlayer.seekTo(0);
+      }
       Preferences.setSQLiteDuration(mContext, false);
     }
 
@@ -533,6 +599,7 @@ public final class LocalPlayback implements Playback,
     // While paused, retain the player instance, but give up audio focus.
     releaseResources(false);
     unregisterAudioNoisyReceiver();
+    unregisterNetworkReceiver();
   }
 
   @Override
@@ -557,6 +624,7 @@ public final class LocalPlayback implements Playback,
 
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
+    unregisterNetworkReceiver();
     releaseResources(false);
     clearStartPosition();
   }
@@ -566,6 +634,7 @@ public final class LocalPlayback implements Playback,
     LogHelper.d(TAG, "seekTo called with ", position);
     if (mExoPlayer != null) {
       registerAudioNoisyReceiver();
+      registerNetworkReceiver();
       mExoPlayer.seekTo(position);
     }
   }
@@ -628,6 +697,7 @@ public final class LocalPlayback implements Playback,
       pause();
     } else {
       registerAudioNoisyReceiver();
+      registerNetworkReceiver();
 
       if (mCurrentAudioFocusState == AUDIO_NO_FOCUS_CAN_DUCK) {
         // We're permitted to play, but only if we 'duck', ie: play softly
@@ -722,6 +792,20 @@ public final class LocalPlayback implements Playback,
     }
   }
 
+  private void registerNetworkReceiver() {
+    if (!mNetworkReceiverRegistered) {
+      mContext.registerReceiver(mNetworkReceiver, mNetworkIntentFilter);
+      mNetworkReceiverRegistered = true;
+    }
+  }
+
+  private void unregisterNetworkReceiver() {
+    if (mNetworkReceiverRegistered) {
+      mContext.unregisterReceiver(mNetworkReceiver);
+      mNetworkReceiverRegistered = false;
+    }
+  }
+
   @Override
   public void onPreExecute() {
 
@@ -781,13 +865,13 @@ public final class LocalPlayback implements Playback,
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
       switch (playbackState) {
+
         case Player.STATE_IDLE:
         case Player.STATE_BUFFERING:
         case Player.STATE_READY:
           if (mCallback != null) {
             mCallback.onPlaybackStatusChanged(getState());
           }
-
           restorePlaybackSpeedRate();
           break;
         case Player.STATE_ENDED:
