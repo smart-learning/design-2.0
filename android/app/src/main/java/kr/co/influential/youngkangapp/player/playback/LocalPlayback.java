@@ -571,8 +571,12 @@ public final class LocalPlayback implements Playback,
     configurePlayerState();
 
     if (Preferences.getSQLiteDuration(mContext)) {
-      mExoPlayer.seekTo(startSqlPosition);
 
+      if(startSqlPosition > mExoPlayer.getDuration()){
+        mExoPlayer.seekTo(startSqlPosition);
+      }else{
+        mExoPlayer.seekTo(0);
+      }
       Preferences.setSQLiteDuration(mContext, false);
     }
 
