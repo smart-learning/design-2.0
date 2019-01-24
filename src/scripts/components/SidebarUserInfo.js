@@ -204,11 +204,11 @@ class SidebarUserInfo extends React.Component {
                   <Text style={styles.membershipItemText}>{expireAt}</Text>
                 </View>
               ) : (
-                <View style={styles.membershipItem}>
-                  <Text style={styles.membershipItemLabel}>멤버십 만료일</Text>
-                  <Text style={styles.membershipItemText}>{expireAt}</Text>
-                </View>
-              )}
+                  <View style={styles.membershipItem}>
+                    <Text style={styles.membershipItemLabel}>멤버십 만료일</Text>
+                    <Text style={styles.membershipItemText}>{expireAt}</Text>
+                  </View>
+                )}
               <View style={styles.membershipItem}>
                 <Text style={styles.membershipItemLabel}>이용권한</Text>
                 <View>
@@ -273,10 +273,10 @@ class SidebarUserInfo extends React.Component {
             <Image source={IcFree} style={styles.membershipButtonBullet} />
             <View>
               <Text style={styles.membershipButtonText}>
-                멤버십 첫 달 무료로
+                한달 무료 체험
               </Text>
               <Text style={styles.membershipButtonText}>
-                클래스&오디오북 마음껏 보기!
+                신청 하기!
               </Text>
             </View>
             <Image source={IcAngleRight} style={styles.membershipButtonIcon} />
