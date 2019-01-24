@@ -2253,8 +2253,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         [_player pause];
         [self invalidateTimerOnSlider];
-      
-        return NSLog(@"  [seekbarDragging] Stopped dragging. Duration is NaN!");
     }
     else
     {
@@ -2274,46 +2272,48 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) seekbarDragEndForTimeWarp : (NSTimeInterval) time
 {
-    [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
-    [self setTimerOnSlider];
-    [_player play];
-    // pauseButton으로 변경해주어야 합니다.
-    [self setPlayState : YES];
-    [_player setRate : _playbackRate];
-  
-    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
-    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : time];
-  
-    // 기존 타이머를 종료시키고 재시작
-    [_logTimer invalidate];
-    // 이용로그 전송 시작
-    NSString *netStatus = @"no_network";
-    if ( _isDownloadFile )
+    NSTimeInterval tTime = [self getDuration];
+    if ( isnan(tTime) )
     {
-        netStatus = @"DOWNLOAD";
+        return ;
     }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    else
     {
-        netStatus = @"Wi-Fi";
+        [_player seekToTime : CMTimeMakeWithSeconds(time, tTime)];
+        [self setTimerOnSlider];
+        [_player play];
+        // pauseButton으로 변경해주어야 합니다.
+        [self setPlayState : YES];
+        [_player setRate : _playbackRate];
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : time];
+      
+        // 기존 타이머를 종료시키고 재시작
+        [_logTimer invalidate];
+        // 이용로그 전송 시작
+        NSString *netStatus = @"no_network";
+        if ( _isDownloadFile )
+            netStatus = @"DOWNLOAD";
+        else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+            netStatus = @"Wi-Fi";
+        else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+            netStatus = @"LTE/3G";
+      
+        [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                      action : @"MOVE"             // START / ING / END / FORWARD / BACK
+                                 startSecond : [self getCurrentPlaybackTime]
+                                   endSecond : [self getCurrentPlaybackTime] + 30
+                                    duration : 30
+                                   netStatus : netStatus
+                                   authToken : [_args objectForKey : @"token"]];
+        // NSTimer를 통해 30초마다 로그내역을 전송
+        _logTimer = [NSTimer scheduledTimerWithTimeInterval : 30
+                                                     target : self
+                                                   selector : @selector(reloadLogData:)
+                                                   userInfo : nil
+                                                    repeats : YES];
     }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-    }
-  
-    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
-                                  action : @"MOVE"             // START / ING / END / FORWARD / BACK
-                             startSecond : [self getCurrentPlaybackTime]
-                               endSecond : [self getCurrentPlaybackTime] + 30
-                                duration : 30
-                               netStatus : netStatus
-                               authToken : [_args objectForKey : @"token"]];
-    // NSTimer를 통해 30초마다 로그내역을 전송
-    _logTimer = [NSTimer scheduledTimerWithTimeInterval : 30
-                                                 target : self
-                                               selector : @selector(reloadLogData:)
-                                               userInfo : nil
-                                                repeats : YES];
 }
 
 //
