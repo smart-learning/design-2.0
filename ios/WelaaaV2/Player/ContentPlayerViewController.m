@@ -1872,9 +1872,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
         [_miniPlayerUiView setPlayState : YES];
     else if ( _pauseButton.hidden )
         [_miniPlayerUiView setPlayState : NO];
-  
-    [self changedPlayerMode : YES];
-  
+    
     [UIView animateWithDuration : 0.3f
                           delay : 0
                         options : UIViewAnimationOptionAllowUserInteraction
@@ -2253,8 +2251,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     {
         [_player pause];
         [self invalidateTimerOnSlider];
-      
-        return NSLog(@"  [seekbarDragging] Stopped dragging. Duration is NaN!");
     }
     else
     {
@@ -2274,46 +2270,48 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) seekbarDragEndForTimeWarp : (NSTimeInterval) time
 {
-    [_player seekToTime : CMTimeMakeWithSeconds(time, [self getDuration])];
-    [self setTimerOnSlider];
-    [_player play];
-    // pauseButton으로 변경해주어야 합니다.
-    [self setPlayState : YES];
-    [_player setRate : _playbackRate];
-  
-    // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
-    [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : time];
-  
-    // 기존 타이머를 종료시키고 재시작
-    [_logTimer invalidate];
-    // 이용로그 전송 시작
-    NSString *netStatus = @"no_network";
-    if ( _isDownloadFile )
+    NSTimeInterval tTime = [self getDuration];
+    if ( isnan(tTime) )
     {
-        netStatus = @"DOWNLOAD";
+        return ;
     }
-    else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+    else
     {
-        netStatus = @"Wi-Fi";
+        [_player seekToTime : CMTimeMakeWithSeconds(time, tTime)];
+        [self setTimerOnSlider];
+        [_player play];
+        // pauseButton으로 변경해주어야 합니다.
+        [self setPlayState : YES];
+        [_player setRate : _playbackRate];
+      
+        // MPNowPlayingInfoCenter에 시간값을 업데이트 시킵니다.
+        [self updateCurrentPlaybackTimeOnNowPlayingInfoCenter : time];
+      
+        // 기존 타이머를 종료시키고 재시작
+        [_logTimer invalidate];
+        // 이용로그 전송 시작
+        NSString *netStatus = @"no_network";
+        if ( _isDownloadFile )
+            netStatus = @"DOWNLOAD";
+        else if ( [[ApiManager sharedInstance] isConnectionWifi] )
+            netStatus = @"Wi-Fi";
+        else if ( [[ApiManager sharedInstance] isConnectionCellular] )
+            netStatus = @"LTE/3G";
+      
+        [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
+                                      action : @"MOVE"             // START / ING / END / FORWARD / BACK
+                                 startSecond : [self getCurrentPlaybackTime]
+                                   endSecond : [self getCurrentPlaybackTime] + 30
+                                    duration : 30
+                                   netStatus : netStatus
+                                   authToken : [_args objectForKey : @"token"]];
+        // NSTimer를 통해 30초마다 로그내역을 전송
+        _logTimer = [NSTimer scheduledTimerWithTimeInterval : 30
+                                                     target : self
+                                                   selector : @selector(reloadLogData:)
+                                                   userInfo : nil
+                                                    repeats : YES];
     }
-    else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
-        netStatus = @"LTE/3G";
-    }
-  
-    [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
-                                  action : @"MOVE"             // START / ING / END / FORWARD / BACK
-                             startSecond : [self getCurrentPlaybackTime]
-                               endSecond : [self getCurrentPlaybackTime] + 30
-                                duration : 30
-                               netStatus : netStatus
-                               authToken : [_args objectForKey : @"token"]];
-    // NSTimer를 통해 30초마다 로그내역을 전송
-    _logTimer = [NSTimer scheduledTimerWithTimeInterval : 30
-                                                 target : self
-                                               selector : @selector(reloadLogData:)
-                                               userInfo : nil
-                                                repeats : YES];
 }
 
 //
@@ -3195,66 +3193,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 
 # pragma mark - Contents mini Player
 
-// 플레이어 모드 변경 (미니<->일반 플레이어뷰)
-- (void) changedPlayerMode : (BOOL) isMiniPlayer
-{
-  //self.view.hidden = NO;
-  //_miniPlayerUiView.hidden = NO;
-  
-  //self.view.alpha = isMiniPlayer ? 1.f : 0.f;
-  //_miniPlayerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
-  /*
-    [UIView animateWithDuration : 0.3f
-                          delay : 0
-                        options : UIViewAnimationOptionAllowUserInteraction
-                     animations : ^{
-                                      //_playerUiView.alpha = isMiniPlayer ? 0.f : 1.f;
-                                      self.view.alpha = isMiniPlayer ? 0.f : 1.f;
-                                      _miniPlayerUiView.alpha = isMiniPlayer ? 1.f : 0.f;
-                                   }
-                     completion : ^(BOOL finished)
-                                  {
-                                      self.isMiniPlayer = isMiniPlayer;
-                                      //_playerUiView.hidden = self.isMiniPlayer;
-                                      self.view.hidden = self.isMiniPlayer;
-                                      _miniPlayerUiView.hidden = !self.isMiniPlayer;
-                                  }];
-  */
-    if ( isMiniPlayer )
-    {
-      // 이용로그 전송 시작
-      //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
-      /*
-      NSTimeInterval cTime = 0000;
-      [[LogManager sharedInstance] sendLogWithGroupKey: self.gkey
-                                            contentKey: self.ckey
-                                                status: @"miniPlayer"
-                                            downloaded: self.isDownloadFile
-                                          startingTime: (int) (cTime * 1000)
-                                            endingTime: (int) (cTime * 1000 + 30000)];
-      */
-    }
-    else
-    {
-      // 이용로그 전송 시작
-      //NSTimeInterval cTime = [AquaSDK getCurrentPlaybackTime];
-      /*
-      NSTimeInterval cTime = 0000;
-      [[LogManager sharedInstance] sendLogWithGroupKey: self.gkey
-                                            contentKey: self.ckey
-                                                status: @"fullPlayer"
-                                            downloaded: self.isDownloadFile
-                                          startingTime: (int) (cTime * 1000)
-                                            endingTime: (int) (cTime * 1000 + 30000)];
-      */
-    }
-}
 - (void) miniPlayerUiView : (ContentMiniPlayerView *) view
                  openView : (id) sender
 {
     NSLog(@"  [-miniPlayerUiView:openView:] mini Player -> Full Screen Player");
-    
-    [self changedPlayerMode : NO];
   
     [UIView animateWithDuration : 0.3f
                           delay : 0
@@ -3270,7 +3212,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     self.isMiniPlayer = NO;
     _miniPlayerUiView = nil;
     [[self.view viewWithTag:1] removeFromSuperview];
-  //_screenMode = ContentsPlayerScreenModeMiniPlayer;
     [common hideStatusBar];
 }
 
@@ -3318,21 +3259,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) reloadLogData : (NSTimer *) timer
 {
-    NSLog(@"  [reloadLogData] 타이머에 예약에 의해 30초마다 서버로 사용로그를 전송합니다.");
     // 이용로그 전송 시작
     NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
-    {
         netStatus = @"DOWNLOAD";
-    }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
         netStatus = @"Wi-Fi";
-    }
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
         netStatus = @"LTE/3G";
-    }
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"ING"             // START / ING / END / FORWARD / BACK
@@ -3604,7 +3538,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         {
             // EarPod 또는 다른 헤드폰의 이벤트를 받았을 경우 호출됩니다.
             case UIEventSubtypeRemoteControlTogglePlayPause:
-                NSLog(@"  UIEventSubtypeRemoteControlTogglePlayPause");
                 if ( _playButton.hidden )  // 플레이 중인지 체크해야 합니다.
                     [self pressedPauseButton];
                 else
@@ -3614,49 +3547,44 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPlay:
-                NSLog(@"  UIEventSubtypeRemoteControlPlay");
                 [self pressedPlayButton];
                 break;
             
             // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPause:
-                NSLog(@"  UIEventSubtypeRemoteControlPause");
                 [self pressedPauseButton];
                 break;
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlStop:
-                NSLog(@"  UIEventSubtypeRemoteControlStop");
                 [self closePlayer];
                 break;
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
-                NSLog(@"  UIEventSubtypeRemoteControlPreviousTrack");
                 [self setPreviousContent];
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
-                NSLog(@"  UIEventSubtypeRemoteControlNextTrack");
                 [self setNextContent];
                 break;
             
             case UIEventSubtypeRemoteControlBeginSeekingForward:
-              NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingForward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingForward");
+                break;
             
             case UIEventSubtypeRemoteControlEndSeekingForward:
-              NSLog(@"  UIEventSubtypeRemoteControlEndSeekingForward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlEndSeekingForward");
+                break;
             
             case UIEventSubtypeRemoteControlBeginSeekingBackward:
-              NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingBackward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingBackward");
+                break;
             
             case UIEventSubtypeRemoteControlEndSeekingBackward:
-              NSLog(@"  UIEventSubtypeRemoteControlEndSeekingBackward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlEndSeekingBackward");
+                break;
             
             default:
                 return;
@@ -3670,28 +3598,17 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
     NSDictionary *interuptionDict = notification.userInfo;
     NSInteger routeChangeReason = [[interuptionDict valueForKey : AVAudioSessionRouteChangeReasonKey] integerValue];
-    NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
-
-    AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
-    NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
   
     switch (routeChangeReason)
     {
         case AVAudioSessionRouteChangeReasonUnknown:
-        {
-            NSLog(@"  [audioRouteChangeListenerCallback] The reason is unknown.");
             break;
-        }
         
         case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
-        {
-            NSLog(@"  [audioRouteChangeListenerCallback] A new device became available (e.g. headphones have been plugged in).");
             break;
-        }
         
         case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
         {
-            NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
             dispatch_sync(dispatch_get_main_queue(), ^{
                 // 재생 중 헤드폰이 분리될 경우 일시정지 처리합니다.
                 if ( self->_playButton.hidden )
@@ -3702,13 +3619,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         
         default:
             break;
-        /*
-         AVAudioSessionRouteChangeReasonCategoryChange = 3,
-         AVAudioSessionRouteChangeReasonOverride = 4,
-         AVAudioSessionRouteChangeReasonWakeFromSleep = 6,
-         AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory = 7,
-         AVAudioSessionRouteChangeReasonRouteConfigurationChange NS_ENUM_AVAILABLE_IOS(7_0) = 8
-        */
     }
 }
 
@@ -3748,9 +3658,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
-        /*
-        [songInfo setObject : @(0.0)
-                     forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];*/
+      
         [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
                      forKey : MPMediaItemPropertyPlaybackDuration];
          
