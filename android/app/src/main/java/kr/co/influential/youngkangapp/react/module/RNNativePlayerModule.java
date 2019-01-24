@@ -246,24 +246,25 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
 
-      if(fcmFlag){
-        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "2100", "0800", new APICallback() {
-          @Override
-          public void response (String code, JSONObject json) {
-            //
-            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
-          }
-        });
-      }else{
-        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "2100", "0800", new APICallback() {
-          @Override
-          public void response (String code, JSONObject json) {
-            //
-            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
-          }
-        });
+      if (fcmFlag) {
+        new SetConfig(getReactApplicationContext())
+            .request("Y", "Y", "Y", "2100", "0800", new APICallback() {
+              @Override
+              public void response(String code, JSONObject json) {
+                //
+                LogHelper.d(TAG, " FCM setConFig " + fcmFlag + " code " + code + " json " + json);
+              }
+            });
+      } else {
+        new SetConfig(getReactApplicationContext())
+            .request("N", "N", "N", "2100", "0800", new APICallback() {
+              @Override
+              public void response(String code, JSONObject json) {
+                //
+                LogHelper.d(TAG, " FCM setConFig " + fcmFlag + " code " + code + " json " + json);
+              }
+            });
       }
-
 
 
     } catch (Exception e) {
@@ -565,15 +566,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
                 } else {
 
-                  if(Utils.checkCidAudioChapter(contentCid)){
+                  if (Utils.checkCidAudioChapter(contentCid)) {
 
-                    if(contentCid.equals(json.getString("cid"))){
+                    if (contentCid.equals(json.getString("cid"))) {
                       contentId = i;
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");
                     }
 
-                  }else{
+                  } else {
                     if (i == 0) {
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");
@@ -1495,25 +1496,24 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         e.printStackTrace();
       }
 
-      new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
+      new DeviceCert(getReactApplicationContext()).request(userData, new APICallback() {
         public void response(String code, JSONObject json) {
-          LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
+          LogHelper.d(TAG, "TAS DeviceCert response " + code + " json " + json);
         }
       });
 
       // 로그인 없이는 진행 될 수 없습니다.
       new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
         public void response(String code, JSONObject json) {
-          LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
+          LogHelper.d(TAG, "TAS LoginPms response " + code + " json " + json);
         }
       });
-
 
       // TAS 서비스 시작 자동 수집을 위한 TAS 서비스 시작
       TAS.getInstance(getReactApplicationContext());
 
     } catch (Exception e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
   }
 
@@ -1521,8 +1521,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void tasLandingUrl(com.facebook.react.bridge.Callback resultCallback) {
     try {
       String landingUrl = Preferences.getWelaaaTasLandingUrl(getReactApplicationContext());
-      
-      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext() , "");
+
+      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext(), "");
 
       resultCallback.invoke(landingUrl);
     } catch (Exception e) {
@@ -1534,8 +1534,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void tasLogout() {
     new LogoutPms(getReactApplicationContext()).request(new APICallback() {
       @Override
-      public void response (String code, JSONObject json) {
-        LogHelper.d(TAG , "TAS LogoutPms response " + code + " json " + json);
+      public void response(String code, JSONObject json) {
+        LogHelper.d(TAG, "TAS LogoutPms response " + code + " json " + json);
       }
     });
   }

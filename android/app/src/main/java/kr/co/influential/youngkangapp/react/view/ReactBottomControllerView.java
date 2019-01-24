@@ -301,15 +301,15 @@ public class ReactBottomControllerView extends FrameLayout {
       PlaybackStateCompat state = mediaController.getPlaybackState();
       MediaMetadataCompat metadata = mediaController.getMetadata();
 
-      LogHelper.e(TAG , "moveToPlayer PlaybackStateCompat " + state );
-      LogHelper.e(TAG , "moveToPlayer MediaMetadataCompat " + metadata );
+      LogHelper.e(TAG, "moveToPlayer PlaybackStateCompat " + state);
+      LogHelper.e(TAG, "moveToPlayer MediaMetadataCompat " + metadata);
 
-      if (state != null && metadata !=null){
+      if (state != null && metadata != null) {
         Intent intent = new Intent(getContext(), PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(PlaybackManager.FROM_MEDIA_SESSION, true);
         ContextCompat.startActivity(getContext(), intent, null);
-      }else{
+      } else {
         onReceiveNativeEvent(contentCid);
       }
     }
@@ -336,9 +336,9 @@ public class ReactBottomControllerView extends FrameLayout {
       PlaybackStateCompat state = mediaController.getPlaybackState();
       MediaMetadataCompat metadata = mediaController.getMetadata();
 
-      if (state != null && metadata !=null){
+      if (state != null && metadata != null) {
         mediaController.getTransportControls().play();
-      }else{
+      } else {
         onReceiveNativeEvent(contentCid);
       }
     }
@@ -436,8 +436,8 @@ public class ReactBottomControllerView extends FrameLayout {
     }
   }
 
-  public void setMiniPlayer(@Nullable ReadableMap content){
-    try{
+  public void setMiniPlayer(@Nullable ReadableMap content) {
+    try {
 
       String miniPlayerCid = "";
       String miniPlayerTitle = "";
@@ -450,12 +450,14 @@ public class ReactBottomControllerView extends FrameLayout {
       ReadableNativeMap readableNativeMap = (ReadableNativeMap) content;
 
       miniPlayerTitle = readableNativeMap.getMap("arg").getString("miniPlayerTitle");
-      miniPlayercurrentPlayTime = readableNativeMap.getMap("arg").getString("miniPlayercurrentPlayTime");
-      miniPlayerTotalPlayTime = readableNativeMap.getMap("arg").getString("miniPlayerTotalPlayTime");
-      miniPlayerGroupTitle =  readableNativeMap.getMap("arg").getString("miniPlayerGroupTitle");
-      miniPlayerCid =  readableNativeMap.getMap("arg").getString("miniPlayerCid");
-      userId =  readableNativeMap.getMap("arg").getString("userId");
-      accessToken =  readableNativeMap.getMap("arg").getString("accessToken");
+      miniPlayercurrentPlayTime = readableNativeMap.getMap("arg")
+          .getString("miniPlayercurrentPlayTime");
+      miniPlayerTotalPlayTime = readableNativeMap.getMap("arg")
+          .getString("miniPlayerTotalPlayTime");
+      miniPlayerGroupTitle = readableNativeMap.getMap("arg").getString("miniPlayerGroupTitle");
+      miniPlayerCid = readableNativeMap.getMap("arg").getString("miniPlayerCid");
+      userId = readableNativeMap.getMap("arg").getString("userId");
+      accessToken = readableNativeMap.getMap("arg").getString("accessToken");
 
       title = findViewById(R.id.mini_title);
       groupTitle = findViewById(R.id.mini_group_title);
@@ -469,18 +471,18 @@ public class ReactBottomControllerView extends FrameLayout {
       title.setText(miniPlayerTitle);
       currentTime.setText(Utils.timeToString(Double.parseDouble(miniPlayercurrentPlayTime)));
 
-      if(miniPlayerTotalPlayTime!=null){
+      if (miniPlayerTotalPlayTime != null) {
         String[] timesplit = miniPlayerTotalPlayTime.split(":");
 
-        if(timesplit[0].equals("00")){
-          miniPlayerTotalPlayTime = timesplit[1]+":"+timesplit[2];
+        if (timesplit[0].equals("00")) {
+          miniPlayerTotalPlayTime = timesplit[1] + ":" + timesplit[2];
         }
       }
 
       durationTime.setText(miniPlayerTotalPlayTime);
       groupTitle.setText(miniPlayerGroupTitle);
 
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
@@ -488,7 +490,7 @@ public class ReactBottomControllerView extends FrameLayout {
   public void onReceiveNativeEvent(String cid) {
     WritableMap event = Arguments.createMap();
     event.putString("cid", cid);
-    ReactContext reactContext = (ReactContext)getContext();
+    ReactContext reactContext = (ReactContext) getContext();
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(
         "miniPlayerCallPlayer",
         event);

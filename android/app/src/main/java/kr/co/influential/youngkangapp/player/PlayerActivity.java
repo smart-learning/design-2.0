@@ -116,7 +116,6 @@ import kr.co.influential.youngkangapp.util.HttpCon;
 import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.MyBroadcastReceiver;
-import kr.co.influential.youngkangapp.util.NetworkUtil;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
@@ -1869,9 +1868,7 @@ public class PlayerActivity extends BasePlayerActivity {
         mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
       }
     } catch (
-        Exception e)
-
-    {
+        Exception e) {
       e.printStackTrace();
     }
 
@@ -2130,7 +2127,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   } else {
                     player.seekTo(player.getCurrentPosition() - 30000);
                   }
-                }else{
+                } else {
                   if (player.getCurrentPosition() - 10000 < 0) {
                     //
                   } else {
@@ -2139,7 +2136,7 @@ public class PlayerActivity extends BasePlayerActivity {
                 }
               }
 
-            }else{
+            } else {
               if (player.getCurrentPosition() - 30000 < 0) {
                 //
               } else {
@@ -2161,7 +2158,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   } else {
                     player.seekTo(player.getCurrentPosition() + 30000);
                   }
-                }else{
+                } else {
                   if (player.getCurrentPosition() + 10000 > player.getDuration()) {
                     //
                   } else {
@@ -2170,7 +2167,7 @@ public class PlayerActivity extends BasePlayerActivity {
                 }
               }
 
-            }else{
+            } else {
               if (player.getCurrentPosition() + 30000 > player.getDuration()) {
                 //
               } else {
@@ -3331,25 +3328,39 @@ public class PlayerActivity extends BasePlayerActivity {
     LinearLayout textFullTimeView = findViewById(R.id.fullTextView);
     LinearLayout fontView = findViewById(R.id.longScroll_font);
 
-    if (textFullView != null) textFullView.removeAllViews();
-    if (textFullTimeView != null) textFullTimeView.removeAllViews();
+    if (textFullView != null) {
+      textFullView.removeAllViews();
+    }
+    if (textFullTimeView != null) {
+      textFullTimeView.removeAllViews();
+    }
 
-    if (longSubTitlesTextView != null) longSubTitlesTextView = null;
-    if (longSubTitlesTextTimeView != null) longSubTitlesTextTimeView = null;
+    if (longSubTitlesTextView != null) {
+      longSubTitlesTextView = null;
+    }
+    if (longSubTitlesTextTimeView != null) {
+      longSubTitlesTextTimeView = null;
+    }
 
     ScrollView longView = findViewById(R.id.longScroll);
     ScrollView longScrollTime = findViewById(R.id.longScrollTime);
 
-    int fontcolor = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long);
-    int fontcolorWhite = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long_white);
+    int fontcolor = ContextCompat
+        .getColor(getApplicationContext(), R.color.subtitls_font_color_long);
+    int fontcolorWhite = ContextCompat
+        .getColor(getApplicationContext(), R.color.subtitls_font_color_long_white);
 
     longSubTitlesTextView = new TextView[mSubtitlsmemo.length - 2];
     longSubTitlesTextTimeView = new TextView[mSubtitlsmemo.length - 2];
 
     for (int j = 0; j < mSubtitlsmemo.length - 2; j++) {
 
-      if (longSubTitlesTextView[j] != null) longSubTitlesTextView[j] = null;
-      if (longSubTitlesTextTimeView[j] != null) longSubTitlesTextTimeView[j] = null;
+      if (longSubTitlesTextView[j] != null) {
+        longSubTitlesTextView[j] = null;
+      }
+      if (longSubTitlesTextTimeView[j] != null) {
+        longSubTitlesTextTimeView[j] = null;
+      }
 
       if (j == getTextViewNumber()) {
 
@@ -3543,9 +3554,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public void setMyrepuSetUI() {
 
     final Handler setMyrepuSetUIHandler = new Handler() {
-      public void handleMessage(android.os.Message msg)
-
-      {
+      public void handleMessage(android.os.Message msg) {
         try {
 
           if (CONTENT_TYPE.equals("video-course")) {
@@ -3604,9 +3613,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public void setRelatedUI() {
 
     final Handler setRelatedUIHandler = new Handler() {
-      public void handleMessage(android.os.Message msg)
-
-      {
+      public void handleMessage(android.os.Message msg) {
         try {
 
           if (CONTENT_TYPE.equals("video-course")) {
@@ -4729,7 +4736,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
         if (player != null) {
 
-          if(player.getPlayWhenReady()){
+          if (player.getPlayWhenReady()) {
             player.setPlayWhenReady(true);
           }
 
@@ -4953,19 +4960,19 @@ public class PlayerActivity extends BasePlayerActivity {
               Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
               try {
 //                if (LocalPlayback.getInstance(this).isPlaying()) {
-                  BeforeExtras = mediaController.getMetadata().getBundle();
-                  String beforeCid = BeforeExtras.getString("drm_cid");
+                BeforeExtras = mediaController.getMetadata().getBundle();
+                String beforeCid = BeforeExtras.getString("drm_cid");
 
-                  //  update
-                  if (ContentManager().isProgressExist(beforeCid) > 0) {
-                    ContentManager()
-                        .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()),
-                            "UPDATE");
-                    //insert
-                  } else {
-                    ContentManager().insertProgress(beforeCid,
-                        String.valueOf(player.getCurrentPosition()));
-                  }
+                //  update
+                if (ContentManager().isProgressExist(beforeCid) > 0) {
+                  ContentManager()
+                      .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()),
+                          "UPDATE");
+                  //insert
+                } else {
+                  ContentManager().insertProgress(beforeCid,
+                      String.valueOf(player.getCurrentPosition()));
+                }
 //                }
 
               } catch (Exception e) {
@@ -5030,19 +5037,19 @@ public class PlayerActivity extends BasePlayerActivity {
         fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
       }
 
-      if(fromMediaSession){
+      if (fromMediaSession) {
         if (!playWhenReady) {
           attachPlayerView();
         } else {
           getTransportControls().playFromUri(uri, extras);
           attachPlayerView();
         }
-      }else{
+      } else {
         getTransportControls().playFromUri(uri, extras);
         attachPlayerView();
       }
 
-    }else{
+    } else {
       getTransportControls().playFromUri(uri, extras);
       attachPlayerView();
     }
@@ -5077,7 +5084,7 @@ public class PlayerActivity extends BasePlayerActivity {
               .getSystemService(Context.CONNECTIVITY_SERVICE);
           NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-          if(netInfo!=null){
+          if (netInfo != null) {
             setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
                 getwebPlayerInfo().getCname()[getContentId()]);
 
@@ -5088,7 +5095,7 @@ public class PlayerActivity extends BasePlayerActivity {
               mCurrentTimeHandler.sendMessageDelayed(msg, 100);
             }
 
-          }else{
+          } else {
             if (getTransportControls() != null) {
 
               UiThreadUtil.runOnUiThread(new Runnable() {

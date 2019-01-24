@@ -175,20 +175,20 @@ public final class LocalPlayback implements Playback,
   private final IntentFilter mNetworkIntentFilter =
       new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
-  private final  BroadcastReceiver mNetworkReceiver =
+  private final BroadcastReceiver mNetworkReceiver =
       new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-          if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())){
+          if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
 
             ConnectivityManager cm =
-                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
-            if(!isConnected){
+            if (!isConnected) {
               if (mExoPlayer != null) {
                 mExoPlayer.setPlayWhenReady(false);
               }
@@ -347,13 +347,13 @@ public final class LocalPlayback implements Playback,
   public void play(MediaMetadataCompat item) {
 
     ConnectivityManager cm =
-        (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
     NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
     boolean isConnected = activeNetwork != null &&
         activeNetwork.isConnectedOrConnecting();
 
-    if(!isConnected){
+    if (!isConnected) {
       if (mExoPlayer != null) {
         mExoPlayer.setPlayWhenReady(false);
       }
@@ -572,9 +572,9 @@ public final class LocalPlayback implements Playback,
 
     if (Preferences.getSQLiteDuration(mContext)) {
 
-      if(startSqlPosition > mExoPlayer.getDuration()){
+      if (startSqlPosition > mExoPlayer.getDuration()) {
         mExoPlayer.seekTo(startSqlPosition);
-      }else{
+      } else {
         mExoPlayer.seekTo(0);
       }
       Preferences.setSQLiteDuration(mContext, false);
