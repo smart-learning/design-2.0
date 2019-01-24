@@ -3318,21 +3318,14 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
 //
 - (void) reloadLogData : (NSTimer *) timer
 {
-    NSLog(@"  [reloadLogData] 타이머에 예약에 의해 30초마다 서버로 사용로그를 전송합니다.");
     // 이용로그 전송 시작
     NSString *netStatus = @"no_network";
     if ( _isDownloadFile )
-    {
         netStatus = @"DOWNLOAD";
-    }
     else if ( [[ApiManager sharedInstance] isConnectionWifi] )
-    {
         netStatus = @"Wi-Fi";
-    }
     else if ( [[ApiManager sharedInstance] isConnectionCellular] )
-    {
         netStatus = @"LTE/3G";
-    }
   
     [ApiManager sendPlaybackProgressWith : [_args objectForKey : @"cid"]
                                   action : @"ING"             // START / ING / END / FORWARD / BACK
@@ -3604,7 +3597,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         {
             // EarPod 또는 다른 헤드폰의 이벤트를 받았을 경우 호출됩니다.
             case UIEventSubtypeRemoteControlTogglePlayPause:
-                NSLog(@"  UIEventSubtypeRemoteControlTogglePlayPause");
                 if ( _playButton.hidden )  // 플레이 중인지 체크해야 합니다.
                     [self pressedPauseButton];
                 else
@@ -3614,49 +3606,44 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
             
             // 스프링보드의 제어센터에서 재생버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPlay:
-                NSLog(@"  UIEventSubtypeRemoteControlPlay");
                 [self pressedPlayButton];
                 break;
             
             // 스프링보드의 제어센터에서 정지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPause:
-                NSLog(@"  UIEventSubtypeRemoteControlPause");
                 [self pressedPauseButton];
                 break;
             
             // 스프링보드의 제어센터에서 중지?버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlStop:
-                NSLog(@"  UIEventSubtypeRemoteControlStop");
                 [self closePlayer];
                 break;
             
             // 스프링보드의 제어센터에서 이전곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlPreviousTrack:
-                NSLog(@"  UIEventSubtypeRemoteControlPreviousTrack");
                 [self setPreviousContent];
                 break;
             
             // 스프링보드의 제어센터에서 다음곡버튼을 탭할 경우 호출됩니다.
             case UIEventSubtypeRemoteControlNextTrack:
-                NSLog(@"  UIEventSubtypeRemoteControlNextTrack");
                 [self setNextContent];
                 break;
             
             case UIEventSubtypeRemoteControlBeginSeekingForward:
-              NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingForward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingForward");
+                break;
             
             case UIEventSubtypeRemoteControlEndSeekingForward:
-              NSLog(@"  UIEventSubtypeRemoteControlEndSeekingForward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlEndSeekingForward");
+                break;
             
             case UIEventSubtypeRemoteControlBeginSeekingBackward:
-              NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingBackward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlBeginSeekingBackward");
+                break;
             
             case UIEventSubtypeRemoteControlEndSeekingBackward:
-              NSLog(@"  UIEventSubtypeRemoteControlEndSeekingBackward");
-              break;
+                NSLog(@"  UIEventSubtypeRemoteControlEndSeekingBackward");
+                break;
             
             default:
                 return;
@@ -3670,28 +3657,17 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 {
     NSDictionary *interuptionDict = notification.userInfo;
     NSInteger routeChangeReason = [[interuptionDict valueForKey : AVAudioSessionRouteChangeReasonKey] integerValue];
-    NSLog(@"  [audioRouteChangeListenerCallback] routeChangeReason: %ld", routeChangeReason);
-
-    AVAudioSessionRouteDescription *desc = [[AVAudioSession sharedInstance] currentRoute];
-    NSLog(@"  [audioRouteChangeListenerCallback] AVAudioSessionRouteDescription : %@", [desc description]);
   
     switch (routeChangeReason)
     {
         case AVAudioSessionRouteChangeReasonUnknown:
-        {
-            NSLog(@"  [audioRouteChangeListenerCallback] The reason is unknown.");
             break;
-        }
         
         case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
-        {
-            NSLog(@"  [audioRouteChangeListenerCallback] A new device became available (e.g. headphones have been plugged in).");
             break;
-        }
         
         case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
         {
-            NSLog(@"  [audioRouteChangeListenerCallback] The old device became unavailable (e.g. headphones have been unplugged).");
             dispatch_sync(dispatch_get_main_queue(), ^{
                 // 재생 중 헤드폰이 분리될 경우 일시정지 처리합니다.
                 if ( self->_playButton.hidden )
@@ -3702,13 +3678,6 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         
         default:
             break;
-        /*
-         AVAudioSessionRouteChangeReasonCategoryChange = 3,
-         AVAudioSessionRouteChangeReasonOverride = 4,
-         AVAudioSessionRouteChangeReasonWakeFromSleep = 6,
-         AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory = 7,
-         AVAudioSessionRouteChangeReasonRouteConfigurationChange NS_ENUM_AVAILABLE_IOS(7_0) = 8
-        */
     }
 }
 
@@ -3748,9 +3717,7 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
       
         [songInfo setObject : [_args objectForKey : @"name"]
                      forKey : MPMediaItemPropertyAlbumTitle];
-        /*
-        [songInfo setObject : @(0.0)
-                     forKey : MPNowPlayingInfoPropertyElapsedPlaybackTime];*/
+      
         [songInfo setObject : [NSNumber numberWithFloat:CMTimeGetSeconds(_urlAsset.duration)]
                      forKey : MPMediaItemPropertyPlaybackDuration];
          
