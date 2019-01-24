@@ -394,13 +394,6 @@ class App extends React.Component {
       );
 
       this.subscription.push(
-        DeviceEventEmitter.addListener('miniPlayerCallPlayer', params => {
-          console.log('miniPlayerCallPlayer DeviceEventEmitter ', params);
-          Native.play(params.cid);
-        }),
-      );
-
-      this.subscription.push(
         DeviceEventEmitter.addListener('downloadState', arg =>
           Native.downloadState(arg),
         ),

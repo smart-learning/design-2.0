@@ -320,6 +320,12 @@ public final class LocalPlayback implements Playback,
         !uri.equals(currentMedia.getDescription().getMediaUri());
     if (mediaHasChanged) {
       currentMedia = item;
+      String playWhenReady = currentMedia.getString(PlaybackManager.PLAY_WHEN_READY);
+      if (!TextUtils.isEmpty(playWhenReady)) {
+        startAutoPlay = Boolean.parseBoolean(playWhenReady);
+        currentMedia.getBundle().remove(PlaybackManager.PLAY_WHEN_READY);
+        setCurrentMedia(currentMedia);
+      }
     }
 
     ArrayList<HashMap<String, Object>> obj = null;
@@ -572,6 +578,9 @@ public final class LocalPlayback implements Playback,
   @Override
   public void setCurrentMedia(MediaMetadataCompat item) {
     currentMedia = item;
+    if (mCallback != null) {
+      mCallback.setCurrentMedia(currentMedia);
+    }
   }
 
   @Override
@@ -629,8 +638,13 @@ public final class LocalPlayback implements Playback,
 
       // If we were playing when we lost focus, we need to resume playing.
       if (mPlayOnFocusGain) {
-        mExoPlayer.setPlayWhenReady(true);
-        mPlayOnFocusGain = false;
+        if (startAutoPlay) {
+          mExoPlayer.setPlayWhenReady(true);
+          mPlayOnFocusGain = false;
+        } else {
+          mExoPlayer.setPlayWhenReady(false);
+          startAutoPlay = true;
+        }
       }
     }
   }
