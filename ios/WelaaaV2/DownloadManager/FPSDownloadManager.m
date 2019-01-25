@@ -72,7 +72,7 @@
                                                 userId : [args objectForKey : @"userId"]
                                              contentId : [args objectForKey : @"cid"]
                                             optionalId : [args objectForKey : @"oid"]
-                                     //downloadOptions : @""    // PallyConFPSSDK v1.6.3 적용 시 주석을 해제해주시기 바랍니다.
+                                       downloadOptions : @""
                                       downloadDelegate : self ];
   
     if ( !downloadTask )
@@ -105,8 +105,8 @@
                                                 userId : [args objectForKey : @"userId"]
                                              contentId : [args objectForKey : @"cid"]
                                             optionalId : [args objectForKey : @"oid"]
-                                     //downloadOptions : @""    // PallyConFPSSDK v1.6.3 적용 시 주석을 해제해주시기 바랍니다.
-                                      downloadDelegate : self ];    //  id<PallyConFPSDownloadDelegate> downloadDelegate
+                                       downloadOptions : @""
+                                      downloadDelegate : self ];
     [downloadTask resume];
 }
 
