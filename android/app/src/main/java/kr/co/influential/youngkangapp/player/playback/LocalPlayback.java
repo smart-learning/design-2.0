@@ -400,7 +400,10 @@ public final class LocalPlayback implements Playback,
           duration = String.valueOf(getobj.get("duration"));
 
           startSqlPosition = Long.parseLong(duration);
-          LogHelper.e(TAG, " CID " + currentCkey + " duration " + startSqlPosition);
+
+          if(startSqlPosition > mExoPlayer.getDuration()){
+            startSqlPosition = 0;
+          }
         }
       } else {
         startSqlPosition = 0;
