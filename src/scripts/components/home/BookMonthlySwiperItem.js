@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     width: 109,
     paddingTop: '70%',
     paddingBottom: '70%',
-    backgroundColor: '#444444',
   },
   title: {
     height: 80,
@@ -89,7 +88,11 @@ class BookMonthlySwiperItem extends React.Component {
       <View
         ref={ref => (this.view = ref)}
         borderRadius={12}
-        style={{ backgroundColor: '#77B6E3', height: 450 }}
+        style={{
+          backgroundColor:
+            itemData.bg_color === null ? '#77B6E3' : itemData.bg_color,
+          height: 450,
+        }}
       >
         <Text
           style={{
@@ -121,7 +124,7 @@ class BookMonthlySwiperItem extends React.Component {
               }
             >
               <ImageBackground
-                source={{ uri: itemData.book_a.images.banner }}
+                source={{ uri: itemData.book_a.audiobook.images.cover }}
                 style={styles.thumbnail}
                 resizeMode={'cover'}
               />
@@ -152,7 +155,7 @@ class BookMonthlySwiperItem extends React.Component {
                       : null,
                   }}
                   style={styles.mentorImage}
-                  resizeMode={'cover'}
+                  resizeMode={'contain'}
                 />
               </View>
             </View>
@@ -177,9 +180,9 @@ class BookMonthlySwiperItem extends React.Component {
               }
             >
               <ImageBackground
-                source={{ uri: itemData.book_b.images.banner }}
+                source={{ uri: itemData.book_b.audiobook.images.cover }}
                 style={styles.thumbnail}
-                resizeMode={'cover'}
+                resizeMode={'contain'}
               />
             </TouchableOpacity>
             <Text style={styles.title} ellipsizeMode={'tail'} numberOfLines={3}>
