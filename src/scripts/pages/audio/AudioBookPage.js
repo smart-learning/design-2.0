@@ -21,6 +21,7 @@ import PageCategoryItemVO from '../../vo/PageCategoryItemVO';
 import BookVO from '../../vo/BookVO';
 import createStore from '../../commons/createStore';
 import AudioBookInfoPage from './AudioBookInfoPage';
+import AudioBookListItem from '../../components/audio/AudioBookListItem';
 
 const styles = StyleSheet.create({
   toggleGroup: {
@@ -256,59 +257,58 @@ class AudioBookPage extends React.Component {
 
   render() {
     return (
-      <SafeAreaView
-        style={[CommonStyles.container, { justifyContent: 'flex-start' }]}
-      >
-        <ScrollView style={{ flex: 1 }}>
-          <View style={{ width: '100%', paddingTop: 82 }}>
-            {this.store.displayData !== null ? (
-              <FlatList
-                data={this.store.displayData}
-                ListFooterComponent={() => {
-                  return !this.store.isLoading &&
-                    this.store.pagination['has-next'] ? (
-                    <TouchableOpacity
-                      style={{ width: '100%', paddingHorizontal: 10 }}
-                      activeOpacity={0.9}
-                      onPress={this.loadMore}
-                    >
-                      <View
-                        style={[styles.linkViewAll, styles.classLinkViewAll]}
-                        borderRadius={5}
+      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
+        <SafeAreaView style={{ flex: 1, width: '100%' }}>
+          <ScrollView style={{ flex: 1 }}>
+            <View style={{ width: '100%', paddingTop: 82 }}>
+              {this.store.displayData !== null ? (
+                <FlatList
+                  data={this.store.displayData}
+                  ListFooterComponent={() => {
+                    return !this.store.isLoading &&
+                      this.store.pagination['has-next'] ? (
+                      <TouchableOpacity
+                        style={{ width: '100%', paddingHorizontal: 10 }}
+                        activeOpacity={0.9}
+                        onPress={this.loadMore}
                       >
-                        <Text style={styles.linkViewAllText}>더보기</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ) : null;
-                }}
-                renderItem={({ item }) => (
-                  <Book
-                    id={item.id}
-                    type="best"
-                    navigation={this.props.navigation}
-                    itemData={item}
-                  />
-                )}
-              />
-            ) : (
-              undefined
-            )}
-          </View>
-
-          <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
-            {this.store.isLoading && (
-              <View style={{ marginTop: 12 }}>
-                <ActivityIndicator
-                  size="large"
-                  color={CommonStyles.COLOR_PRIMARY}
+                        <View
+                          style={[styles.linkViewAll, styles.classLinkViewAll]}
+                          borderRadius={5}
+                        >
+                          <Text style={styles.linkViewAllText}>더보기</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ) : null;
+                  }}
+                  renderItem={({ item }) => (
+                    <AudioBookListItem
+                      id={item.id}
+                      navigation={this.props.navigation}
+                      itemData={item}
+                    />
+                  )}
                 />
-              </View>
-            )}
-          </View>
+              ) : (
+                undefined
+              )}
+            </View>
 
-          {this._renderHeader()}
-        </ScrollView>
-      </SafeAreaView>
+            <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
+              {this.store.isLoading && (
+                <View style={{ marginTop: 12 }}>
+                  <ActivityIndicator
+                    size="large"
+                    color={CommonStyles.COLOR_PRIMARY}
+                  />
+                </View>
+              )}
+            </View>
+
+            {this._renderHeader()}
+          </ScrollView>
+        </SafeAreaView>
+      </View>
     );
   }
 }

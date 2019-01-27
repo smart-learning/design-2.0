@@ -278,66 +278,63 @@ class ClassListPage extends React.Component {
   render() {
     console.log('this.store.displayData', this.store.displayData);
     return (
-      <SafeAreaView
-        style={[
-          CommonStyles.container,
-          { backgroundColor: '#ffffff', justifyContent: 'flex-start' },
-        ]}
-      >
-        <ScrollView style={{ flex: 1 }}>
-          <View
-            style={{ width: '100%', paddingTop: 82, paddingHorizontal: 15 }}
-          >
-            {this.store.displayData !== null ? (
-              <FlatList
-                data={this.store.displayData}
-                ListFooterComponent={() => {
-                  return !this.store.isLoading &&
-                    this.store.pagination['has-next'] ? (
-                    <TouchableOpacity
-                      style={{ width: '100%', paddingHorizontal: 10 }}
-                      activeOpacity={0.9}
-                      onPress={this.loadMore}
-                    >
-                      <View
-                        style={[styles.linkViewAll, styles.classLinkViewAll]}
-                        borderRadius={5}
+      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
+        <SafeAreaView style={{ flex: 1, width: '100%' }}>
+          <ScrollView style={{ flex: 1 }}>
+            <View
+              style={{ width: '100%', paddingTop: 82, paddingHorizontal: 15 }}
+            >
+              {this.store.displayData !== null ? (
+                <FlatList
+                  data={this.store.displayData}
+                  ListFooterComponent={() => {
+                    return !this.store.isLoading &&
+                      this.store.pagination['has-next'] ? (
+                      <TouchableOpacity
+                        style={{ width: '100%', paddingHorizontal: 10 }}
+                        activeOpacity={0.9}
+                        onPress={this.loadMore}
                       >
-                        <Text style={styles.linkViewAllText}>더보기</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ) : null;
-                }}
-                renderItem={({ item }) => (
-                  <ClassListItem
-                    id={item.id}
-                    navigation={this.props.navigation}
-                    itemData={item}
-                    itemType={'series'}
-                  />
-                )}
-              />
-            ) : (
-              undefined
-            )}
-
-            <View style={CommonStyles.contentContainer}>
-              {this.store.isLoading ? (
-                <View style={{ marginTop: 12 }}>
-                  <ActivityIndicator
-                    size="large"
-                    color={CommonStyles.COLOR_PRIMARY}
-                  />
-                </View>
+                        <View
+                          style={[styles.linkViewAll, styles.classLinkViewAll]}
+                          borderRadius={5}
+                        >
+                          <Text style={styles.linkViewAllText}>더보기</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ) : null;
+                  }}
+                  renderItem={({ item }) => (
+                    <ClassListItem
+                      id={item.id}
+                      navigation={this.props.navigation}
+                      itemData={item}
+                      itemType={'series'}
+                    />
+                  )}
+                />
               ) : (
                 undefined
               )}
-            </View>
-          </View>
 
-          {this._renderHeader()}
-        </ScrollView>
-      </SafeAreaView>
+              <View style={CommonStyles.contentContainer}>
+                {this.store.isLoading ? (
+                  <View style={{ marginTop: 12 }}>
+                    <ActivityIndicator
+                      size="large"
+                      color={CommonStyles.COLOR_PRIMARY}
+                    />
+                  </View>
+                ) : (
+                  undefined
+                )}
+              </View>
+            </View>
+
+            {this._renderHeader()}
+          </ScrollView>
+        </SafeAreaView>
+      </View>
     );
   }
 }
