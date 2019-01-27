@@ -47,6 +47,9 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginBottom: 15,
   },
+  titleWithButtonContainer: {
+    height: 30,
+  },
   titleH2: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -125,8 +128,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   showMoreWrapper: {
-    marginBottom: 10,
-    alignItems: 'flex-end',
+    marginTop: 2,
+    justifyContent: 'center',
   },
   showAllText: {
     color: CommonStyles.COLOR_PRIMARY,
@@ -338,11 +341,10 @@ class HomeVideoPage extends React.Component {
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.titleContainer,
+                    styles.titleWithButtonContainer,
                   ]}
                 >
-                  <View>
-                    <Text style={styles.titleH2}>윌라 추천시리즈</Text>
-                  </View>
+                  <Text style={styles.titleH2}>윌라 추천시리즈</Text>
                   <View style={styles.showMoreWrapper}>
                     <TouchableOpacity
                       style={styles.showMore}
@@ -384,6 +386,7 @@ class HomeVideoPage extends React.Component {
                 style={[
                   CommonStyles.alignJustifyContentBetween,
                   styles.titleContainer,
+                  styles.titleWithButtonContainer,
                 ]}
               >
                 <View>
