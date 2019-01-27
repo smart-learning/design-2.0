@@ -35,20 +35,35 @@ class BookRankList extends React.Component {
   }
 
   render() {
+    let originData = _.map(this.props.itemData, item => item);
+    let itemData = originData.slice(0, 15);
+    let list = [];
+    let rankList = [];
+
+    if (this.props.itemData && this.props.itemData.length > 0) {
+      list = _.map(itemData, item => item);
+
+      for (let i = 0; i < Math.ceil(list.length / 3); i++) {
+        let rankObject = [];
+
+        rankObject.push(list[i * 3]);
+        rankObject.push(list[i * 3 + 1]);
+        rankObject.push(list[i * 3 + 2]);
+
+        rankList.push(rankObject);
+      }
+    }
+
     this.props.itemData.forEach((element, n) => {
       element.rankNumber = n + 1;
     });
     let windowWidth = Dimensions.get('window').width;
-    let itemWidth = windowWidth * 0.55;
-
-    let originData = _.map(this.props.itemData, item => item);
-    let itemData = originData.slice(0, 15);
+    let itemWidth = 200;
 
     return (
       <View style={styles.classContainer}>
-        {/*{this.props.itemData > 0 && (*/}
         <Carousel
-          data={itemData}
+          data={rankList}
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
           itemWidth={itemWidth}
@@ -57,7 +72,6 @@ class BookRankList extends React.Component {
           inactiveSlideOpacity={1}
           inactiveSlideScale={1}
         />
-        {/*)}*/}
       </View>
     );
   }

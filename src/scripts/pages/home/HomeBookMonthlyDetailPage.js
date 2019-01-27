@@ -72,7 +72,7 @@ class HomeBookMonthlyDetailPage extends React.Component {
 
   render() {
     let itemData = this.props.navigation.state.params.itemData;
-    console.log('itemData', itemData);
+
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         {!!itemData && (
