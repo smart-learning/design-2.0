@@ -40,25 +40,20 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 8,
   },
-  sortDot: {
-    width: 6,
-    height: 6,
-    marginRight: 5,
-    backgroundColor: '#d7d7d7',
-  },
   sortText: {
     fontSize: 12,
     color: '#4A4A4A',
   },
   sortTextActive: {
     fontSize: 12,
-    color: '#000000',
+    color: CommonStyles.COLOR_PRIMARY,
     fontWeight: 'bold',
   },
   sortBar: {
     width: 1,
-    height: 17,
-    backgroundColor: '#CFCFCF',
+    height: 10,
+    marginRight: 8,
+    backgroundColor: '#E2E2E2',
   },
   myButton: {
     paddingTop: 3,
@@ -177,6 +172,30 @@ class AudioBookPage extends React.Component {
   _renderHeader() {
     return (
       <View style={{ position: 'absolute', top: 0, width: '100%' }}>
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: '#FFFFFF',
+            paddingLeft: 10,
+            paddingRight: 10,
+          }}
+        >
+          <PageCategory
+            selectedCategory={this.store.selectedCategory}
+            data={this.store.categories}
+            onCategorySelect={this.onCategorySelect}
+          />
+        </View>
+
+        <View
+          style={{
+            width: '100%',
+            height: 1,
+            marginHorizontal: 15,
+            backgroundColor: '#E2E2E2',
+          }}
+        />
+
         <View style={styles.toggleGroup}>
           <View style={styles.alignJustify}>
             <View style={styles.sortWrap}>
@@ -188,10 +207,6 @@ class AudioBookPage extends React.Component {
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
-                  <View style={styles.sortDot} borderRadius={3} />
-
-                  {/* <Text style={styles.sortText}>인기</Text> */}
-
                   <Text
                     style={
                       this.tabSortStatus === 'hot'
@@ -210,8 +225,6 @@ class AudioBookPage extends React.Component {
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
-                  <View style={styles.sortDot} borderRadius={3} />
-                  {/* <Text style={styles.sortText}>신규</Text> */}
                   <Text
                     style={
                       this.tabSortStatus === 'new'
@@ -237,20 +250,6 @@ class AudioBookPage extends React.Component {
                 </TouchableOpacity> */}
           </View>
         </View>
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: '#FFFFFF',
-            paddingLeft: 10,
-            paddingRight: 10,
-          }}
-        >
-          <PageCategory
-            selectedCategory={this.store.selectedCategory}
-            data={this.store.categories}
-            onCategorySelect={this.onCategorySelect}
-          />
-        </View>
       </View>
     );
   }
@@ -258,58 +257,57 @@ class AudioBookPage extends React.Component {
   render() {
     return (
       <SafeAreaView
-        style={[
-          CommonStyles.container,
-          { backgroundColor: '#ecf0f1', justifyContent: 'flex-start' },
-        ]}
+        style={[CommonStyles.container, { justifyContent: 'flex-start' }]}
       >
-        <View style={{ width: '100%', paddingTop: 182 }}>
-          {this.store.displayData !== null ? (
-            <FlatList
-              data={this.store.displayData}
-              ListFooterComponent={() => {
-                return !this.store.isLoading &&
-                  this.store.pagination['has-next'] ? (
-                  <TouchableOpacity
-                    style={{ width: '100%', paddingHorizontal: 10 }}
-                    activeOpacity={0.9}
-                    onPress={this.loadMore}
-                  >
-                    <View
-                      style={[styles.linkViewAll, styles.classLinkViewAll]}
-                      borderRadius={5}
+        <ScrollView style={{ flex: 1 }}>
+          <View style={{ width: '100%', paddingTop: 82 }}>
+            {this.store.displayData !== null ? (
+              <FlatList
+                data={this.store.displayData}
+                ListFooterComponent={() => {
+                  return !this.store.isLoading &&
+                    this.store.pagination['has-next'] ? (
+                    <TouchableOpacity
+                      style={{ width: '100%', paddingHorizontal: 10 }}
+                      activeOpacity={0.9}
+                      onPress={this.loadMore}
                     >
-                      <Text style={styles.linkViewAllText}>더보기</Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : null;
-              }}
-              renderItem={({ item }) => (
-                <Book
-                  id={item.id}
-                  type="best"
-                  navigation={this.props.navigation}
-                  itemData={item}
-                />
-              )}
-            />
-          ) : (
-            undefined
-          )}
-        </View>
-
-        <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
-          {this.store.isLoading && (
-            <View style={{ marginTop: 12 }}>
-              <ActivityIndicator
-                size="large"
-                color={CommonStyles.COLOR_PRIMARY}
+                      <View
+                        style={[styles.linkViewAll, styles.classLinkViewAll]}
+                        borderRadius={5}
+                      >
+                        <Text style={styles.linkViewAllText}>더보기</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : null;
+                }}
+                renderItem={({ item }) => (
+                  <Book
+                    id={item.id}
+                    type="best"
+                    navigation={this.props.navigation}
+                    itemData={item}
+                  />
+                )}
               />
-            </View>
-          )}
-        </View>
+            ) : (
+              undefined
+            )}
+          </View>
 
-        {this._renderHeader()}
+          <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
+            {this.store.isLoading && (
+              <View style={{ marginTop: 12 }}>
+                <ActivityIndicator
+                  size="large"
+                  color={CommonStyles.COLOR_PRIMARY}
+                />
+              </View>
+            )}
+          </View>
+
+          {this._renderHeader()}
+        </ScrollView>
       </SafeAreaView>
     );
   }
