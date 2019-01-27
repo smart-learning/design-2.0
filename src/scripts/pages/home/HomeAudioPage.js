@@ -53,6 +53,9 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginBottom: 15,
   },
+  titleWithButtonContainer: {
+    height: 30,
+  },
   titleH2: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -100,8 +103,8 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   showMoreWrapper: {
-    marginBottom: 10,
-    alignItems: 'flex-end',
+    marginTop: 2,
+    justifyContent: 'center',
   },
   showMore: {
     borderColor: CommonStyles.COLOR_PRIMARY,
@@ -342,11 +345,10 @@ class HomeAudioPage extends React.Component {
               style={[
                 CommonStyles.alignJustifyContentBetween,
                 styles.titleContainer,
+                styles.titleWithButtonContainer,
               ]}
             >
-              <View>
-                <Text style={styles.titleH2}>윌라 오디오북</Text>
-              </View>
+              <Text style={styles.titleH2}>윌라 오디오북</Text>
               <View style={styles.showMoreWrapper}>
                 <TouchableOpacity
                   style={styles.showMore}
