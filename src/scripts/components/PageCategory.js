@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 30,
-    marginRight: 10,
+    marginHorizontal: 5,
     marginBottom: 10,
     paddingLeft: 10,
     paddingRight: 10,
@@ -41,41 +41,61 @@ class PageCategory extends React.Component {
     }
     return (
       <View
-        style={[CommonStyles.alignJustifyFlex, { width: '98%', flexWrap: 'wrap' }]}
+        style={[
+          CommonStyles.alignJustifyFlex,
+          { width: '98%', flexWrap: 'wrap' },
+        ]}
       >
-        {this.props.data.map((item, key) => {
-          const categoryId = item.id;
-          const selectedCategory = this.props.selectedCategory;
-          let textStyle = {
-            color: selectedCategory === categoryId ? '#ffffff' : '#9DA4A7',
-          };
-          let categoryItemStyle = {
-            borderColor:
-              selectedCategory === categoryId
-                ? CommonStyles.COLOR_PRIMARY
-                : '#9DA4A7',
-            backgroundColor:
-              selectedCategory === categoryId
-                ? CommonStyles.COLOR_PRIMARY
-                : '#ffffff',
-          };
-          return (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => this.select(item)}
-              key={key}
-            >
-              <View
-                style={[styles.categoryItem, categoryItemStyle]}
-                borderRadius={15}
-              >
-                <Text style={[styles.categoryText, textStyle]}>
-                  {item.label}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+        <View>
+          <FlatList
+            style={styles.categoryContainer}
+            data={this.props.data}
+            selectedCategory={this.props.selectedCategory}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            extraData={this.props.data}
+            renderItem={({ item }) => {
+              const categoryId = item.id;
+              const selectedCategory = this.props.selectedCategory;
+              let textStyle = {
+                color: selectedCategory === categoryId ? '#ffffff' : '#9DA4A7',
+              };
+              let categoryItemStyle = {
+                borderColor:
+                  selectedCategory === categoryId
+                    ? CommonStyles.COLOR_PRIMARY
+                    : '#ffffff',
+                backgroundColor:
+                  selectedCategory === categoryId
+                    ? CommonStyles.COLOR_PRIMARY
+                    : '#ffffff',
+              };
+
+              if (selectedCategory === categoryId) {
+                textStyle.color = '#ffffff';
+              }
+
+              return (
+                <View style={CommonStyles.alignJustifyItemCenter}>
+                  <View
+                    style={[styles.categoryItem, categoryItemStyle]}
+                    borderRadius={15}
+                  >
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() => this.select(item)}
+                    >
+                      <Text style={[styles.categoryText, textStyle]}>
+                        {item.label}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={{ height: 30 }}>|</Text>
+                </View>
+              );
+            }}
+          />
+        </View>
       </View>
     );
   }
