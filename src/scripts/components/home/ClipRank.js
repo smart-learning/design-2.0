@@ -1,12 +1,34 @@
 import React from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import ClipRankItem from './ClipRankItem';
 import Carousel from 'react-native-snap-carousel';
 import _ from 'underscore';
+import ClassListItem from './ClassListItem';
+import { observer } from 'mobx-react';
 
+const styles = StyleSheet.create({
+  slide: {
+    width: Dimensions.get('window').width * 0.84,
+    paddingRight: 10,
+  },
+  slideInnerContainer: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+  },
+});
+
+@observer
 export default class ClipRank extends React.Component {
   _renderItem({ item }) {
-    return <ClipRankItem id={item.id} itemData={item} />;
+    return (
+      <View style={styles.slide}>
+        <ClipRankItem
+          id={item.id}
+          itemData={item}
+          style={styles.slideInnerContainer}
+        />
+      </View>
+    );
   }
 
   render() {
@@ -16,21 +38,16 @@ export default class ClipRank extends React.Component {
     let rankList = [];
 
     if (this.props.itemData && this.props.itemData.length > 0) {
-      list = _.map(this.props.itemData, item => item);
+      list = _.map(itemData, item => item);
 
-      for (let i = 0; i < Math.ceil(list.length / 10); i++) {
+      for (let i = 0; i < Math.ceil(list.length / 5); i++) {
         let rankObject = [];
 
-        rankObject.push(list[i * 10]);
-        rankObject.push(list[i * 10 + 1]);
-        rankObject.push(list[i * 10 + 2]);
-        rankObject.push(list[i * 10 + 3]);
-        rankObject.push(list[i * 10 + 4]);
-        rankObject.push(list[i * 10 + 5]);
-        rankObject.push(list[i * 10 + 6]);
-        rankObject.push(list[i * 10 + 7]);
-        rankObject.push(list[i * 10 + 8]);
-        rankObject.push(list[i * 10 + 9]);
+        rankObject.push(list[i * 5]);
+        rankObject.push(list[i * 5 + 1]);
+        rankObject.push(list[i * 5 + 2]);
+        rankObject.push(list[i * 5 + 3]);
+        rankObject.push(list[i * 5 + 4]);
 
         rankList.push(rankObject);
       }
@@ -45,14 +62,14 @@ export default class ClipRank extends React.Component {
     return (
       <View style={{ marginTop: 20, marginBottom: 30 }}>
         <Carousel
-          data={itemData}
+          data={rankList}
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
           itemWidth={itemWidth}
           layout={'default'}
           activeSlideAlignment={'start'}
           inactiveSlideOpacity={1}
-          inactiveSlideScale={0.95}
+          inactiveSlideScale={1}
         />
       </View>
     );
