@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
   slide: {
     width: Dimensions.get('window').width * 0.84,
-    paddingHorizontal: 10,
+    paddingRight: 10,
   },
   slideInnerContainer: {
     flex: 1,
