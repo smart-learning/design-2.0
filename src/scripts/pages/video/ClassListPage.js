@@ -20,6 +20,7 @@ import _ from 'underscore';
 import createStore from '../../commons/createStore';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
+import ClassListItem from '../../components/home/ClassListItem';
 
 const styles = StyleSheet.create({
   toggleGroup: {
@@ -275,12 +276,18 @@ class ClassListPage extends React.Component {
   }
 
   render() {
+    console.log('this.store.displayData', this.store.displayData);
     return (
       <SafeAreaView
-        style={[CommonStyles.container, { justifyContent: 'flex-start' }]}
+        style={[
+          CommonStyles.container,
+          { backgroundColor: '#ffffff', justifyContent: 'flex-start' },
+        ]}
       >
         <ScrollView style={{ flex: 1 }}>
-          <View style={{ width: '100%', paddingTop: 82 }}>
+          <View
+            style={{ width: '100%', paddingTop: 82, paddingHorizontal: 15 }}
+          >
             {this.store.displayData !== null ? (
               <FlatList
                 data={this.store.displayData}
@@ -302,10 +309,11 @@ class ClassListPage extends React.Component {
                   ) : null;
                 }}
                 renderItem={({ item }) => (
-                  <Lecture
+                  <ClassListItem
                     id={item.id}
                     navigation={this.props.navigation}
-                    item={item}
+                    itemData={item}
+                    itemType={'series'}
                   />
                 )}
               />
