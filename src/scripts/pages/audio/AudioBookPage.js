@@ -260,7 +260,9 @@ class AudioBookPage extends React.Component {
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
           <ScrollView style={{ flex: 1 }}>
-            <View style={{ width: '100%', paddingTop: 82 }}>
+            <View
+              style={{ width: '100%', paddingTop: 82, paddingHorizontal: 15 }}
+            >
               {this.store.displayData !== null ? (
                 <FlatList
                   data={this.store.displayData}
@@ -285,7 +287,7 @@ class AudioBookPage extends React.Component {
                     <AudioBookListItem
                       id={item.id}
                       navigation={this.props.navigation}
-                      itemData={item}
+					  itemData={item}
                     />
                   )}
                 />
