@@ -35,6 +35,8 @@ import Footer from '../../components/home/Footer';
 import SeriesSwiper from '../../components/home/SeriesSwiper';
 import BookMonthlySwiper from '../../components/home/BookMonthlySwiper';
 
+const CATEGORY_HEIGHT = 40;
+
 const styles = StyleSheet.create({
   wrapper: {},
   slide: {
@@ -118,8 +120,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   audioCategory: {
-    marginBottom: 25,
-    marginTop: 0,
+    paddingHorizontal: 4,
+    height: CATEGORY_HEIGHT,
   },
   audioCategoryHr: {
     height: 1,
@@ -170,12 +172,30 @@ const styles = StyleSheet.create({
 
 @observer
 class HomeAudioPage extends React.Component {
+  state = {
+    categoryY: CATEGORY_HEIGHT,
+  };
+
   /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
   premiumCategorySelect = data => {
     this.props.navigation.navigate(
       'AudioBookPage',
       { action: 'category', data: data }, // 전달할 데이터
     );
+  };
+
+  onScroll = event => {
+    let y = CATEGORY_HEIGHT - event.nativeEvent.contentOffset.y;
+    if (y < 0) {
+      y = 0;
+    } else if (y > CATEGORY_HEIGHT) {
+      y = CATEGORY_HEIGHT;
+    }
+    this.setState({ categoryY: y });
+
+    if (_.isFunction(this.props.onScroll)) {
+      this.props.onScroll(event);
+    }
   };
 
   render() {
@@ -213,220 +233,241 @@ class HomeAudioPage extends React.Component {
     };
 
     return (
-      <PTRView onRefresh={() => this.props.onRefresh()}>
-        <ScrollView style={{ flex: 1 }}>
-          {/* 이미지 스와이퍼 */}
-          <View style={{ height: this.props.store.slideHeight }}>
-            {homeBannerData.length > 0 && (
-              <Swiper
-                style={styles.wrapper}
-                showsButtons={false}
-                height={this.props.store.slideHeight}
-                renderPagination={renderPagination}
-                autoplay={true}
-                autoplayTimeout={3}
-              >
-                {homeBannerData.map((item, key) => {
-                  let bannerImageUrl = '';
-                  const { action_type, action_param } = item;
-                  try {
-                    bannerImageUrl = item.images.default;
-                  } catch (e) {}
-
-                  return (
-                    <HomeBanner
-                      key={key}
-                      action_type={action_type}
-                      action_param={action_param}
-                      bannerImageUrl={bannerImageUrl}
-                      navigation={this.props.navigation}
-                    />
-                  );
-                })}
-              </Swiper>
-            )}
-            {homeBannerData.length === 0 && (
-              <View style={{ marginTop: '20%' }}>
-                <ActivityIndicator
-                  size="large"
-                  color={CommonStyles.COLOR_PRIMARY}
-                />
-              </View>
-            )}
-          </View>
-          {/* /이미지 스와이퍼 */}
-
-          <View
-            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+      <View>
+        {/*카테고리 영역 시작*/}
+        <View
+          style={[
+            styles.audioCategory,
+            { transform: [{ translateY: this.state.categoryY }] },
+          ]}
+        >
+          <PageCategory
+            data={this.props.store.audioBookCategoryData}
+            selectedCategory={0}
+            onCategorySelect={this.premiumCategorySelect}
           />
-
-          <View>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() =>
-                // this.props.navigation.navigate('VideoPack', {
-                //   title: '윌라 홍보 영상'
-                // })
-                // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
-                // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
-                Native.play('v300001_001')
-              }
-            >
-              <ImageBackground
-                source={IcMainWideBanner}
-                resizeMode="contain"
-                style={styles.imageMainBanner}
-              />
-            </TouchableOpacity>
-          </View>
-
-          {globalStore.welaaaAuth && (
-            <View>
-              {this.props.store.audioUseData &&
-                this.props.store.audioUseData.length > 0 && (
-                  <View>
-                    <View
-                      style={[
-                        CommonStyles.contentContainer,
-                        styles.continueContainer,
-                      ]}
-                    >
-                      <View>
-                        <View style={CommonStyles.alignJustifyItemCenter}>
-                          <Text style={styles.titleH3}>최근 재생 오디오북</Text>
-                        </View>
-                        <BookContinueList
-                          itemData={this.props.store.audioUseData}
-                        />
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        width: '100%',
-                        height: 8,
-                        backgroundColor: '#F0F0F4',
-                      }}
-                    />
-                  </View>
-                )}
-            </View>
-          )}
-
-          {this.props.store.audioMonth.length > 0 && (
-            <View style={styles.monthContainer}>
-              <BookMonthlySwiper itemData={this.props.store.audioMonth} />
-            </View>
-          )}
-
-          <View
-            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
-          />
-
-          {/*매일 책 한 권*/}
-          <View style={[CommonStyles.contentContainer, styles.dailyContainer]}>
-            <View>
-              <Image source={BulletFree} style={styles.dailyBullet} />
-              <View style={CommonStyles.alignJustifyItemCenter}>
-                <Text style={styles.titleH2}>매일 책 한권</Text>
-              </View>
-              <BookDaily itemData={this.props.store.audioDaily} />
-            </View>
-          </View>
-
-          <View
-            style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
-          />
-
-          <View
-            style={[CommonStyles.contentContainer, styles.audioBookContainer]}
-          >
+        </View>
+        {/*카테고리 영역 끝*/}
+        <PTRView
+          onScroll={this.onScroll}
+          onRefresh={() => this.props.onRefresh()}
+        >
+          <View style={{ flex: 1 }}>
+            {/* 이미지 스와이퍼 */}
             <View
-              style={[
-                CommonStyles.alignJustifyContentBetween,
-                styles.titleContainer,
-                styles.titleWithButtonContainer,
-              ]}
-            >
-              <Text style={styles.titleH2}>윌라 오디오북</Text>
-              <View style={styles.showMoreWrapper}>
-                <TouchableOpacity
-                  style={styles.showMore}
-                  onPress={() => {
-                    this.props.navigation.navigate('AudioBookPage');
-                  }}
-                >
-                  <Text style={styles.showMoreText}>전체보기</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.audioCategory}>
-              <PageCategory
-                data={this.props.store.audioBookCategoryData}
-                selectedCategory={0}
-                onCategorySelect={this.premiumCategorySelect}
-              />
-            </View>
-
-            <View style={CommonStyles.alignJustifyContentBetween}>
-              <Text style={styles.titleH3}>새로 나온 오디오북</Text>
-            </View>
-
-            <BookNewList
-              itemData={
-                this.props.store.audioNewData.items
-                  ? this.props.store.audioNewData.items
-                  : this.props.store.audioNewData
-              }
-            />
-
-            <View style={CommonStyles.alignJustifyContentBetween}>
-              <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
-            </View>
-            {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
-            <BookRankList
-              itemData={
-                this.props.store.audioHotData.items
-                  ? this.props.store.audioHotData.items
-                  : this.props.store.audioHotData
-              }
-            />
-            {/* )} */}
-          </View>
-          <View style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}>
-            <TouchableOpacity
-              style={[styles.showMore, { height: 36 }]}
-              onPress={() => {
-                this.props.navigation.navigate('AudioBookPage');
+              style={{
+                height: this.props.store.slideHeight,
+                paddingTop: CATEGORY_HEIGHT,
               }}
             >
-              <Text style={styles.showAllText}>오디오북 전체보기</Text>
-            </TouchableOpacity>
-          </View>
+              {homeBannerData.length > 0 && (
+                <Swiper
+                  style={styles.wrapper}
+                  showsButtons={false}
+                  height={this.props.store.slideHeight}
+                  renderPagination={renderPagination}
+                  autoplay={true}
+                  autoplayTimeout={3}
+                >
+                  {homeBannerData.map((item, key) => {
+                    let bannerImageUrl = '';
+                    const { action_type, action_param } = item;
+                    try {
+                      bannerImageUrl = item.images.default;
+                    } catch (e) {}
 
-          <View>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() =>
-                // this.props.navigation.navigate('VideoPack', {
-                //   title: '윌라 홍보 영상'
-                // })
-                // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
-                // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
-                Native.play('v300001_001')
-              }
+                    return (
+                      <HomeBanner
+                        key={key}
+                        action_type={action_type}
+                        action_param={action_param}
+                        bannerImageUrl={bannerImageUrl}
+                        navigation={this.props.navigation}
+                      />
+                    );
+                  })}
+                </Swiper>
+              )}
+              {homeBannerData.length === 0 && (
+                <View style={{ marginTop: '20%' }}>
+                  <ActivityIndicator
+                    size="large"
+                    color={CommonStyles.COLOR_PRIMARY}
+                  />
+                </View>
+              )}
+            </View>
+            {/* /이미지 스와이퍼 */}
+
+            <View
+              style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+            />
+
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  // this.props.navigation.navigate('VideoPack', {
+                  //   title: '윌라 홍보 영상'
+                  // })
+                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                  Native.play('v300001_001')
+                }
+              >
+                <ImageBackground
+                  source={IcMainWideBanner}
+                  resizeMode="contain"
+                  style={styles.imageMainBanner}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {globalStore.welaaaAuth && (
+              <View>
+                {this.props.store.audioUseData &&
+                  this.props.store.audioUseData.length > 0 && (
+                    <View>
+                      <View
+                        style={[
+                          CommonStyles.contentContainer,
+                          styles.continueContainer,
+                        ]}
+                      >
+                        <View>
+                          <View style={CommonStyles.alignJustifyItemCenter}>
+                            <Text style={styles.titleH3}>
+                              최근 재생 오디오북
+                            </Text>
+                          </View>
+                          <BookContinueList
+                            itemData={this.props.store.audioUseData}
+                          />
+                        </View>
+                      </View>
+
+                      <View
+                        style={{
+                          width: '100%',
+                          height: 8,
+                          backgroundColor: '#F0F0F4',
+                        }}
+                      />
+                    </View>
+                  )}
+              </View>
+            )}
+
+            {this.props.store.audioMonth.length > 0 && (
+              <View style={styles.monthContainer}>
+                <BookMonthlySwiper itemData={this.props.store.audioMonth} />
+              </View>
+            )}
+
+            <View
+              style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+            />
+
+            {/*매일 책 한 권*/}
+            <View
+              style={[CommonStyles.contentContainer, styles.dailyContainer]}
             >
-              <ImageBackground
-                source={IcMainWideBanner}
-                resizeMode="contain"
-                style={styles.imageMainBanner}
-              />
-            </TouchableOpacity>
-          </View>
+              <View>
+                <Image source={BulletFree} style={styles.dailyBullet} />
+                <View style={CommonStyles.alignJustifyItemCenter}>
+                  <Text style={styles.titleH2}>매일 책 한권</Text>
+                </View>
+                <BookDaily itemData={this.props.store.audioDaily} />
+              </View>
+            </View>
 
-          <Footer />
-        </ScrollView>
-      </PTRView>
+            <View
+              style={{ width: '100%', height: 8, backgroundColor: '#F0F0F4' }}
+            />
+
+            <View
+              style={[CommonStyles.contentContainer, styles.audioBookContainer]}
+            >
+              <View
+                style={[
+                  CommonStyles.alignJustifyContentBetween,
+                  styles.titleContainer,
+                  styles.titleWithButtonContainer,
+                ]}
+              >
+                <Text style={styles.titleH2}>윌라 오디오북</Text>
+                <View style={styles.showMoreWrapper}>
+                  <TouchableOpacity
+                    style={styles.showMore}
+                    onPress={() => {
+                      this.props.navigation.navigate('AudioBookPage');
+                    }}
+                  >
+                    <Text style={styles.showMoreText}>전체보기</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={CommonStyles.alignJustifyContentBetween}>
+                <Text style={styles.titleH3}>새로 나온 오디오북</Text>
+              </View>
+
+              <BookNewList
+                itemData={
+                  this.props.store.audioNewData.items
+                    ? this.props.store.audioNewData.items
+                    : this.props.store.audioNewData
+                }
+              />
+
+              <View style={CommonStyles.alignJustifyContentBetween}>
+                <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
+              </View>
+              {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
+              <BookRankList
+                itemData={
+                  this.props.store.audioHotData.items
+                    ? this.props.store.audioHotData.items
+                    : this.props.store.audioHotData
+                }
+              />
+              {/* )} */}
+            </View>
+            <View style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}>
+              <TouchableOpacity
+                style={[styles.showMore, { height: 36 }]}
+                onPress={() => {
+                  this.props.navigation.navigate('AudioBookPage');
+                }}
+              >
+                <Text style={styles.showAllText}>오디오북 전체보기</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  // this.props.navigation.navigate('VideoPack', {
+                  //   title: '윌라 홍보 영상'
+                  // })
+                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                  Native.play('v300001_001')
+                }
+              >
+                <ImageBackground
+                  source={IcMainWideBanner}
+                  resizeMode="contain"
+                  style={styles.imageMainBanner}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <Footer />
+          </View>
+        </PTRView>
+      </View>
     );
   }
 }
