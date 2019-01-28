@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
   },
   review: {
     paddingTop: 30,
-    paddingRight: 15,
+    paddingLeft: 25,
+    paddingRight: 25,
     paddingBottom: 30,
-    paddingLeft: 15,
   },
   teacherContainer: {
     width: '100%',
@@ -421,13 +421,12 @@ class TabContentInfo extends React.Component {
           </View>
         </View>
 
+        <View style={styles.contentHrWrap}>
+          <View style={styles.contentHr} />
+        </View>
+
         <View style={styles.review}>
-          <View
-            style={[
-              CommonStyles.alignJustifyFlex,
-              { justifyContent: 'center', marginBottom: 20 },
-            ]}
-          >
+          <View style={[CommonStyles.alignJustifyFlex, { marginBottom: 20 }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
               윌라 회원님들의 평가
             </Text>
