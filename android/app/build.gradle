@@ -215,11 +215,11 @@ repositories {
 }
 
 dependencies {
+    implementation project(':react-native-kakao-logins')
     implementation project(':react-native-appsflyer')
     compile project(':react-native-iamport')
     compile project(':react-native-vector-icons')
     implementation project(':react-native-firebase')
-    implementation project(':react-native-kakao-signin')
     implementation project(':react-native-fbsdk')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
