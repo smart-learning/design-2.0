@@ -59,6 +59,14 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: 'center',
   },
+  viewMoreText: {
+    fontSize: 12,
+    color: '#888888',
+  },
+  viewMoreIcon: {
+    position: 'relative',
+    top: 4,
+  },
 });
 
 @observer

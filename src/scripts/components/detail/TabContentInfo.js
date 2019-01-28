@@ -19,6 +19,9 @@ import IcFile from '../../../images/ic-detail-label-file.png';
 import IcTime from '../../../images/ic-detail-label-time.png';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Evaluation from './Evaluation';
+import createStore from '../../commons/createStore';
+import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
+import numeral from 'numeral';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -40,7 +43,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginBottom: 20,
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#34342C',
   },
@@ -175,6 +178,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#ffffff',
   },
+  viewMoreContainer: {
+    alignItems: 'center',
+  },
+  viewMore: {
+    width: 50,
+    height: 36,
+    justifyContent: 'center',
+  },
+  viewMoreText: {
+    fontSize: 12,
+    color: '#888888',
+  },
+  viewMoreIcon: {
+    position: 'relative',
+    top: 4,
+  },
 });
 
 class Data {
@@ -186,11 +205,10 @@ class Data {
 
 @observer
 class TabContentInfo extends React.Component {
-  data = new Data();
-
-  // state = {
-  //   teacherView: false
-  // };
+  @observable
+  isContentMemoOpen = false;
+  @observable
+  isTeacherMemoOpen = false;
 
   componentDidMount() {
     let windowWidth = Dimensions.get('window').width;
@@ -198,32 +216,11 @@ class TabContentInfo extends React.Component {
     this.props.store.slideHeight = windowWidth * 0.833;
   }
 
-  toggleLectureView = () => {
-    if (this.props.store.lectureView === false) {
-      this.props.store.lectureView = true;
-    } else {
-      this.props.store.lectureView = false;
-    }
+  changeContentMemoViewMoreStatus = () => {
+    this.isContentMemoOpen = !this.isContentMemoOpen;
   };
-
-  showTeacherMemo = () => {
-    if (this.data.isMemoShow === false) {
-      this.data.isMemoShow = true;
-      this.data.buttonTextStatus = false;
-    } else if (this.data.isMemoShow === true) {
-      this.data.isMemoShow = false;
-      this.data.buttonTextStatus = true;
-    }
-  };
-  toggleTeacherView = () => {
-    // if ( this.props.store.teacherView === false ) {
-    // 	this.props.store.teacherView = true;
-    // } else {
-    // 	this.props.store.teacherView = false;
-    // }
-    this.setState({
-      teacherView: !this.state.teacherView,
-    });
+  changeTeacherMemoViewMoreStatus = () => {
+    this.isTeacherMemoOpen = !this.isTeacherMemoOpen;
   };
 
   render() {
@@ -259,7 +256,7 @@ class TabContentInfo extends React.Component {
                 style={styles.wrapper}
                 showsButtons={false}
                 height={window.width}
-				dotColor={'rgba(255,255,255,.3)'}
+                dotColor={'rgba(255,255,255,.3)'}
                 activeDotColor={'#ffffff'}
                 paginationStyle={{ bottom: 10 }}
               >
@@ -296,9 +293,10 @@ class TabContentInfo extends React.Component {
             <Image style={styles.labelInfoImage} source={IcTime} />
             <Text style={styles.labelInfoText}>
               전체 재생시간
-              <Text
-                style={styles.labelInfoSpanText}
-              >{`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
+              <Text style={styles.labelInfoSpanText}>
+                {' '}
+                {`${playTime.hours()}시간 ${playTime.minutes()}분`}
+              </Text>
             </Text>
           </View>
           <View style={[CommonStyles.alignJustifyFlex, styles.labelInfoItem]}>
@@ -310,12 +308,6 @@ class TabContentInfo extends React.Component {
               </Text>
             </Text>
           </View>
-          {1 === 2 && (
-            <View style={[CommonStyles.alignJustifyFlex, styles.labelInfoItem]}>
-              <Image style={styles.labelInfoImage} source={IcPrize} />
-              <Text style={styles.labelInfoText}>학습 완료 시 수료증 제공</Text>
-            </View>
-          )}
         </View>
 
         <View style={styles.contentHrWrap}>
@@ -323,15 +315,39 @@ class TabContentInfo extends React.Component {
         </View>
 
         <View style={[CommonStyles.contentContainer, styles.info]}>
-          {1 === 2 && (
-            <Text style={styles.infoTextNormal}>
-              {this.props.store.itemData.title}
-            </Text>
-          )}
-
-          <Text style={styles.infoTextNormal}>
+          <Text
+            style={[
+              styles.infoTextNormal,
+              {
+                height: this.isContentMemoOpen ? 'auto' : 80,
+              },
+            ]}
+          >
             {`${this.props.store.itemData.memo.split('<br>').join('\n')}`}
           </Text>
+
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={[styles.viewMoreContainer, { paddingTop: 20 }]}
+            onPress={this.changeContentMemoViewMoreStatus}
+          >
+            <View
+              style={[styles.viewMore, CommonStyles.alignJustifyContentBetween]}
+            >
+              <Text style={styles.viewMoreText}>더보기</Text>
+              <Image
+                source={IcAngleDownGrey}
+                style={[
+                  styles.viewMoreIcon,
+                  {
+                    transform: this.isContentMemoOpen
+                      ? [{ rotate: '180deg' }]
+                      : [{ rotate: '0deg' }],
+                  },
+                ]}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.contentHrWrap}>
@@ -339,6 +355,7 @@ class TabContentInfo extends React.Component {
         </View>
 
         <View style={styles.author}>
+          <Text style={styles.sectionTitle}>저자 소개</Text>
           <View style={{ position: 'relative', justifyContent: 'center' }}>
             {this.props.store.itemData.teacher !== null && (
               <Image
@@ -365,17 +382,75 @@ class TabContentInfo extends React.Component {
             </View>
           </View>
           <View style={styles.teacherMemo}>
-            <Text style={styles.teacherMemoText}>{teacherMemo}</Text>
+            <Text
+              style={[
+                styles.teacherMemoText,
+                {
+                  height: this.isTeacherMemoOpen ? 'auto' : 125,
+                },
+              ]}
+            >
+              {teacherMemo}
+            </Text>
+
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.viewMoreContainer}
+              onPress={this.changeTeacherMemoViewMoreStatus}
+            >
+              <View
+                style={[
+                  styles.viewMore,
+                  CommonStyles.alignJustifyContentBetween,
+                ]}
+              >
+                <Text style={styles.viewMoreText}>더보기</Text>
+                <Image
+                  source={IcAngleDownGrey}
+                  style={[
+                    styles.viewMoreIcon,
+                    {
+                      transform: this.isTeacherMemoOpen
+                        ? [{ rotate: '180deg' }]
+                        : [{ rotate: '0deg' }],
+                    },
+                  ]}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
-        {1 === 2 && (
-          <View style={styles.review}>
-            <Text style={styles.sectionTitle}>학습자 평가</Text>
-
-            <Evaluation itemData={this.props.store.itemData} />
+        <View style={styles.review}>
+          <View
+            style={[
+              CommonStyles.alignJustifyFlex,
+              { justifyContent: 'center', marginBottom: 20 },
+            ]}
+          >
+            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+              윌라 회원님들의 평가
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: '200',
+                color: '#898989',
+                paddingLeft: 13,
+              }}
+            >
+              {/* 댓글수 */}
+              {numeral(
+                this.props.store.itemData.meta
+                  ? this.props.store.itemData.meta.comment_count
+                  : this.props.store.itemData.review_count,
+              ).format('0a')}
+              개의 리뷰
+            </Text>
           </View>
-        )}
+
+          <Evaluation itemData={this.props.store.itemData} />
+        </View>
       </View>
     );
   }
