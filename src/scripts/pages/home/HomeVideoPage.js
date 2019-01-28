@@ -171,7 +171,7 @@ class HomeVideoPage extends React.Component {
                   const { action_type, action_param } = item;
                   try {
                     bannerImageUrl = item.images.default;
-                  } catch (e) {}
+                  } catch (e) { }
 
                   return (
                     <HomeBanner
@@ -211,7 +211,10 @@ class HomeVideoPage extends React.Component {
                 }
               >
                 <ImageBackground
-                  source={IcMainWideBanner}
+                  source={{
+                    uri:
+                      'https://static.welaaa.co.kr/static/banner/190128_welaaa_intro.png',
+                  }}
                   resizeMode="contain"
                   style={styles.imageMainBanner}
                 />
@@ -229,56 +232,56 @@ class HomeVideoPage extends React.Component {
                 />
               </View>
             ) : (
-              <View
-                style={[CommonStyles.contentContainer, styles.seriesContainer]}
-              >
-                <View>
-                  <View>
-                    <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                      윌라 추천 시리즈
-                    </Text>
-                    <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                      당신이 배우고 싶은 모든 것
-                    </Text>
-                  </View>
-                  <View style={styles.showMoreWrapper}>
-                    <TouchableOpacity
-                      style={styles.showMore}
-                      onPress={() => {
-                        this.props.navigation.navigate('HomeSeriesPage', {
-                          title: '윌라 추천 시리즈',
-                        });
-                      }}
-                    >
-                      <Text>전체보기</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <View style={styles.seriesComponent}>
-                  <Series itemData={this.props.store.homeSeriesData} />
-                </View>
-
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() =>
-                    this.props.navigation.navigate('HomeSeriesPage', {
-                      title: '윌라 추천 시리즈',
-                    })
-                  }
+                <View
+                  style={[CommonStyles.contentContainer, styles.seriesContainer]}
                 >
-                  <View style={styles.linkViewAll} borderRadius={5}>
-                    <Text style={styles.linkViewAllText}>
-                      추천 시리즈 전체 보기{' '}
-                      <Image
-                        source={IcAngleRightGrey}
-                        style={styles.linkViewAllIcon}
-                      />
+                  <View>
+                    <View>
+                      <Text style={[styles.mainTitleCenter, styles.titleH2]}>
+                        윌라 추천 시리즈
                     </Text>
+                      <Text style={[styles.mainTitleCenter, styles.titleH4]}>
+                        당신이 배우고 싶은 모든 것
+                    </Text>
+                    </View>
+                    <View style={styles.showMoreWrapper}>
+                      <TouchableOpacity
+                        style={styles.showMore}
+                        onPress={() => {
+                          this.props.navigation.navigate('HomeSeriesPage', {
+                            title: '윌라 추천 시리즈',
+                          });
+                        }}
+                      >
+                        <Text>전체보기</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </TouchableOpacity>
-              </View>
-            ))}
+
+                  <View style={styles.seriesComponent}>
+                    <Series itemData={this.props.store.homeSeriesData} />
+                  </View>
+
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() =>
+                      this.props.navigation.navigate('HomeSeriesPage', {
+                        title: '윌라 추천 시리즈',
+                      })
+                    }
+                  >
+                    <View style={styles.linkViewAll} borderRadius={5}>
+                      <Text style={styles.linkViewAllText}>
+                        추천 시리즈 전체 보기{' '}
+                        <Image
+                          source={IcAngleRightGrey}
+                          style={styles.linkViewAllIcon}
+                        />
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
 
           {this.props.store.classHotData.length > 0 && (
             <View
