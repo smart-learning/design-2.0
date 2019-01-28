@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {
   ActivityIndicator,
   Image,
@@ -12,7 +13,7 @@ import {
   View,
   UIManager,
 } from 'react-native';
-import PTRView from 'react-native-pull-to-refresh';
+import PTRView from '../../libs/react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
@@ -166,6 +167,8 @@ class HomeVideoPage extends React.Component {
 
   state = {
     categoryY: CATEGORY_HEIGHT,
+    scrollTargetY: 0,
+    selectedCategory: 0,
     forceScrollValue: null,
   };
 
@@ -180,10 +183,11 @@ class HomeVideoPage extends React.Component {
 
   /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
   premiumCategorySelect = data => {
-    this.props.navigation.navigate(
-      'ClassListPage',
-      { action: 'category', data: data }, // 전달할 데이터
-    );
+    this.setState({ selectedCategory: data.id });
+    this.scrollContent.scrollView.scrollTo({ y: this.state.scrollTargetY });
+    if (_.isFunction(this.props.updateCode)) {
+      this.props.updateCode(data.ccode);
+    }
   };
 
   onScroll = event => {
@@ -243,18 +247,20 @@ class HomeVideoPage extends React.Component {
         <View
           style={[
             styles.classCategory,
-            { transform: [{ translateY: this.state.categoryY }] },
+            { transform: [{ translateY: this.state.categoryY }], zIndex: 2 },
           ]}
         >
           <PageCategory
+            ref={ref => (this.pageCategory = ref)}
             data={this.props.store.videoCategoryData}
-            selectedCategory={0}
+            selectedCategory={this.state.selectedCategory}
             onCategorySelect={this.premiumCategorySelect}
           />
         </View>
         {/*/카테고리 영역 끝*/}
 
         <PTRView
+          ref={ref => (this.scrollContent = ref)}
           forceScrollValue={this.state.forceScrollValue}
           onScroll={this.onScroll}
           onRefresh={() => this.props.onRefresh()}
@@ -263,7 +269,7 @@ class HomeVideoPage extends React.Component {
             {/* 이미지 스와이퍼 */}
             <View
               style={{
-                height: this.props.store.slideHeight,
+                height: this.props.store.slideHeight + CATEGORY_HEIGHT,
                 background: '#ff0',
                 paddingTop: CATEGORY_HEIGHT,
               }}
@@ -272,7 +278,7 @@ class HomeVideoPage extends React.Component {
                 <Swiper
                   style={styles.wrapper}
                   showsButtons={false}
-                  height={this.props.store.slideHeight}
+                  height={this.props.store.slideHeight + CATEGORY_HEIGHT}
                   renderPagination={renderPagination}
                   autoplay={true}
                   autoplayTimeout={3}
@@ -421,6 +427,10 @@ class HomeVideoPage extends React.Component {
             {this.props.store.classHotData.length > 0 && (
               <View
                 style={[CommonStyles.contentContainer, styles.classContainer]}
+                onLayout={event => {
+                  const layout = event.nativeEvent.layout;
+                  this.setState({ scrollTargetY: layout.y });
+                }}
               >
                 <View
                   style={[

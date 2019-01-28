@@ -418,12 +418,16 @@ export default {
       });
   },
 
-  getHomeContents(isRefresh = false) {
+  getHomeContents(isRefresh = false, ccode = null) {
     let expired = DEFAULT_EXPIRED;
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/video', expired)
+    let url = API_PREFIX + 'v1.0/cms/main/video';
+    if (!!ccode) {
+      url += '/' + ccode;
+    }
+    return cacheOrLoad(url, expired)
       .then(data => {
         return data;
       })
@@ -669,12 +673,16 @@ export default {
     });
   },
 
-  getHomeAudioBookContents(isRefresh = false) {
+  getHomeAudioBookContents(isRefresh = false, ccode = null) {
     let expired = DEFAULT_EXPIRED;
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/audiobook', expired)
+    let url = API_PREFIX + 'v1.0/cms/main/audiobook';
+    if (!!ccode) {
+      url += '/' + ccode;
+    }
+    return cacheOrLoad(url, expired)
       .then(data => {
         return data;
       })

@@ -17,7 +17,7 @@ import BookMonthly from '../../components/home/BookMonthly';
 import PageCategory from '../../components/PageCategory';
 import BookFreeList from '../../components/home/BookFreeList';
 import BookContinueList from '../../components/home/BookContinueList';
-import PTRView from 'react-native-pull-to-refresh';
+import PTRView from '../../libs/react-native-pull-to-refresh';
 import moment from 'moment';
 import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
@@ -174,14 +174,17 @@ const styles = StyleSheet.create({
 class HomeAudioPage extends React.Component {
   state = {
     categoryY: CATEGORY_HEIGHT,
+    scrollTargetY: 0,
+    selectedCategory: 0,
   };
 
   /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
   premiumCategorySelect = data => {
-    this.props.navigation.navigate(
-      'AudioBookPage',
-      { action: 'category', data: data }, // 전달할 데이터
-    );
+    this.setState( {selectedCategory: data.id } );
+    this.scrollContent.scrollView.scrollTo({ y: this.state.scrollTargetY });
+    if( _.isFunction(this.props.updateCode) ) {
+      this.props.updateCode(data.ccode );
+    }
   };
 
   onScroll = event => {
@@ -238,17 +241,18 @@ class HomeAudioPage extends React.Component {
         <View
           style={[
             styles.audioCategory,
-            { transform: [{ translateY: this.state.categoryY }] },
+            { transform: [{ translateY: this.state.categoryY }], zIndex: 2 },
           ]}
         >
           <PageCategory
             data={this.props.store.audioBookCategoryData}
-            selectedCategory={0}
+            selectedCategory={this.state.selectedCategory}
             onCategorySelect={this.premiumCategorySelect}
           />
         </View>
         {/*카테고리 영역 끝*/}
         <PTRView
+          ref={ref => (this.scrollContent = ref)}
           onScroll={this.onScroll}
           onRefresh={() => this.props.onRefresh()}
         >
@@ -256,7 +260,7 @@ class HomeAudioPage extends React.Component {
             {/* 이미지 스와이퍼 */}
             <View
               style={{
-                height: this.props.store.slideHeight,
+                height: this.props.store.slideHeight + CATEGORY_HEIGHT,
                 paddingTop: CATEGORY_HEIGHT,
               }}
             >
@@ -264,7 +268,7 @@ class HomeAudioPage extends React.Component {
                 <Swiper
                   style={styles.wrapper}
                   showsButtons={false}
-                  height={this.props.store.slideHeight}
+                  height={this.props.store.slideHeight + CATEGORY_HEIGHT}
                   renderPagination={renderPagination}
                   autoplay={true}
                   autoplayTimeout={3}
@@ -387,6 +391,10 @@ class HomeAudioPage extends React.Component {
 
             <View
               style={[CommonStyles.contentContainer, styles.audioBookContainer]}
+              onLayout={event => {
+                const layout = event.nativeEvent.layout;
+                this.setState({ scrollTargetY: layout.y });
+              }}
             >
               <View
                 style={[
