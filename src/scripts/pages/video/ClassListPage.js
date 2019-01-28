@@ -276,7 +276,6 @@ class ClassListPage extends React.Component {
   }
 
   render() {
-    console.log('this.store.displayData', this.store.displayData);
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>

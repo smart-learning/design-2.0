@@ -76,7 +76,6 @@ export default class AudioBookListItem extends React.Component {
   };
 
   render() {
-    console.log('this.props.itemData', this.props.itemData);
     return (
       <View>
         <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
