@@ -14,6 +14,7 @@ import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-dark.png';
 import IcPlayBtn from '../../../images/ic-play-green.png';
 import numeral from 'numeral';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   rankGridItem: {
@@ -64,54 +65,63 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class ClipRankItemComponent extends React.Component {
+class ClipRankItemComponent extends React.Component {
+  gotoClassPage = () => {
+    this.props.navigation.navigate('ClassDetail', {
+      id: this.props.itemData.id,
+      title: ' ',
+    });
+  };
+
   render() {
     return (
       <View style={styles.rankGridItem}>
         <View style={styles.contentHr} />
-        <View style={CommonStyles.alignJustifyItemCenter}>
-          <View style={styles.rankNumber}>
-            <Text style={styles.rankNumberText}>
-              {this.props.itemData.rankNumber}
-            </Text>
-          </View>
-          <ImageBackground
-            source={{
-              uri: this.props.itemData.images.list
-                ? this.props.itemData.images.list
-                : null,
-            }}
-            resizeMode="cover"
-            style={styles.thumbnail}
-            borderRadius={4}
-          />
-          <View style={{ width: '51%' }}>
-            <TouchableOpacity>
+        <TouchableOpacity ActiveOpacity={0.9} onPress={this.gotoClassPage}>
+          <View style={CommonStyles.alignJustifyItemCenter}>
+            <View style={styles.rankNumber}>
+              <Text style={styles.rankNumberText}>
+                {this.props.itemData.rankNumber}
+              </Text>
+            </View>
+            <ImageBackground
+              source={{
+                uri: this.props.itemData.images.list
+                  ? this.props.itemData.images.list
+                  : null,
+              }}
+              resizeMode="cover"
+              style={styles.thumbnail}
+              borderRadius={4}
+            />
+            <View style={{ width: '51%' }}>
               <Text ellipsizeMode={'tail'} numberOfLines={2}>
                 {this.props.itemData.title}
               </Text>
-            </TouchableOpacity>
-            <View style={CommonStyles.alignJustifyFlex}>
-              <Image source={IcPlay} style={styles.rankIcon} />
-              <Text style={styles.rankContentText}>
-                {numeral(
-                  this.props.itemData.meta
-                    ? this.props.itemData.meta.play_count
-                    : this.props.itemData.hit_count,
-                ).format('0a')}
-              </Text>
-              <Text
-                style={styles.rankTeacherText}
-                ellipsizeMode={'tail'}
-                numberOfLines={1}
-              >
-                {this.props.itemData.course.teacher.name}
-              </Text>
+              <View style={CommonStyles.alignJustifyFlex}>
+                <Image source={IcPlay} style={styles.rankIcon} />
+                <Text style={styles.rankContentText}>
+                  {numeral(
+                    this.props.itemData.meta
+                      ? this.props.itemData.meta.play_count
+                      : this.props.itemData.hit_count,
+                  ).format('0a')}
+                </Text>
+                <Text
+                  style={styles.rankTeacherText}
+                  ellipsizeMode={'tail'}
+                  numberOfLines={1}
+                >
+                  {this.props.itemData.course.teacher.name}
+                </Text>
+              </View>
             </View>
+            <Image source={IcPlayBtn} style={styles.playButton} />
           </View>
-          <Image source={IcPlayBtn} style={styles.playButton} />
-        </View>
+        </TouchableOpacity>
       </View>
     );
   }
 }
+
+export default withNavigation(ClipRankItemComponent);
