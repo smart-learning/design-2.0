@@ -19,6 +19,7 @@ import TabContentInfo from './TabContentInfo';
 import TabContentList from './TabContentList';
 import TopBanner from './TopBanner';
 import VideoPaymentStatus from './VideoPaymentStatus';
+import PaymentPolicy from './PaymentPolicy';
 
 const styles = StyleSheet.create({
   tab: {
@@ -301,6 +302,9 @@ class DetailLayout extends React.Component {
             learnType={this.props.learnType}
             store={this.props.store}
           />
+
+          {/* 구매정책 레이아웃 샘플 */}
+          {1 === 2 && <PaymentPolicy />}
 
           {/* 가격 및 구매버튼 등을 보여주는 라인(iOS 의 경우 오디오북일 때에만 노출) */}
           {this.props.learnType === 'audioBook' ? (
