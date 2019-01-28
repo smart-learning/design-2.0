@@ -2,6 +2,7 @@ import React from 'react';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import { observable } from 'mobx';
+import native from './native.js';
 
 let socialType;
 let socialToken;
@@ -20,7 +21,7 @@ class Store {
   @observable
   initialRoute = {
     // initialRouteName: 'AuthCheck',
-    gesturesEnabled: false
+    gesturesEnabled: false,
   };
 
   // 사용권한이 있는 페이지 정리
@@ -53,8 +54,20 @@ class Store {
       'Bearer ' + auth.access_token;
 
     this.initialRoute = {
-      gesturesEnabled: false
+      gesturesEnabled: false,
     };
+
+    /**
+     * 2018.12.4
+     * jungon
+     * Invalidate native authorization.
+     */
+    if (!!auth) {
+      native.invalidateAuthorization({
+        id: welaaaAuth.profile.id.toString(),
+        access_token: welaaaAuth.access_token,
+      });
+    }
   }
 
   get currentMembership() {
@@ -88,7 +101,7 @@ class Store {
     AsyncStorage.multiRemove(['socialType', 'socialToken', 'welaaaAuth']);
     this.initialRoute = {
       initialRouteName: 'AuthCheck',
-      gesturesEnabled: false
+      gesturesEnabled: false,
     };
   };
 
@@ -119,7 +132,7 @@ class Store {
     isWifiPlay: true,
     isWifiDownload: true,
     isAlert: true,
-    isEmail: false
+    isEmail: false,
   };
 
   @observable
