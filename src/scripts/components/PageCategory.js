@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 30,
     marginHorizontal: 5,
-    marginBottom: 10,
+    // marginBottom: 10,
     paddingLeft: 10,
     paddingRight: 10,
     borderWidth: 1,
@@ -90,7 +90,7 @@ class PageCategory extends React.Component {
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  <Text style={{ height: 30 }}>|</Text>
+                  <Text style={{ top: 5, height: 30 }}>|</Text>
                 </View>
               );
             }}

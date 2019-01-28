@@ -2,7 +2,6 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
-  Alert,
   BackHandler,
   Dimensions,
   StyleSheet,
@@ -29,11 +28,10 @@ const styles = StyleSheet.create({
   tabContainer: {
     position: 'absolute',
     alignSelf: 'flex-start',
-    top: 0,
-    left: 0,
     width: '100%',
-    height: 40,
+    top: 0,
     backgroundColor: '#ffffff',
+    overflow: 'hidden',
   },
   tabFlex: {
     flexDirection: 'row',
@@ -72,15 +70,19 @@ const styles = StyleSheet.create({
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   tabContentContainer: {
-    paddingTop: 40,
+    // paddingTop: 40,
   },
 });
 
 @observer
 class HomePage extends React.Component {
+  TAB_MENU_MAX = 40;
+
   state = {
     show_popup: false,
     show_popup_mbs: false,
+    scrollY: 0,
+    tabMenuHeight: 40,
   };
 
   @observable
@@ -456,6 +458,20 @@ class HomePage extends React.Component {
     }
   };
 
+  onScroll = event => {
+    let height = this.TAB_MENU_MAX - event.nativeEvent.contentOffset.y;
+    if (height < 0) {
+      height = 0;
+    } else if (height > this.TAB_MENU_MAX) {
+      height = this.TAB_MENU_MAX;
+    }
+    this.setState({ tabMenuHeight: height });
+  };
+
+  onScrollEndDrag = event => {
+    // this.setState({ tabMenuHeight: height });
+  };
+
   render() {
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
@@ -463,23 +479,32 @@ class HomePage extends React.Component {
           <ViewPager
             ref={'pager'}
             initialPage={0}
-            style={{ flex: 1, height: this.store.windowHeight - 40 }}
+            style={{ flex: 1 }}
             onPageSelected={this.onPageSelected}
           >
             <View style={styles.tabContentContainer}>
               <HomeVideoPage
                 store={this.store}
                 onRefresh={() => this.getData(true)}
+                onScroll={this.onScroll}
+                onScrollEndDrag={this.onScrollEndDrag}
               />
             </View>
             <View style={styles.tabContentContainer}>
               <HomeAudioPage
                 store={this.store}
                 onRefresh={() => this.getData(true)}
+                onScroll={this.onScroll}
               />
             </View>
           </ViewPager>
-          <View style={styles.tabContainer}>
+
+          {this.showPopup()}
+          {this.showMbsPopup()}
+
+          <View
+            style={[styles.tabContainer, { height: this.state.tabMenuHeight }]}
+          >
             <View style={styles.tabFlex}>
               <View style={styles.tabItemContainer}>
                 <TouchableOpacity
@@ -533,8 +558,6 @@ class HomePage extends React.Component {
               </View>
             </View>
           </View>
-          {this.showPopup()}
-          {this.showMbsPopup()}
         </SafeAreaView>
       </View>
     );
