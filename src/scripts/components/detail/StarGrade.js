@@ -13,32 +13,15 @@ import IcStarPrimary from '../../../images/ic-star-primary.png';
 import IcStarGrey from '../../../images/ic-star-grey2.png';
 
 const styles = StyleSheet.create({
-  reviewForm: {
+  contentContainer: {
     paddingTop: 40,
     paddingBottom: 30,
   },
-  reviewFormParagraph: {
+  Paragraph: {
     textAlign: 'center',
     fontSize: 17,
     fontWeight: 'bold',
     color: '#353A3C',
-  },
-  reviewInput: {
-    height: 100,
-    marginTop: 30,
-    marginBottom: 10,
-    backgroundColor: '#ffffff',
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: 40,
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-  },
-  submitButtonText: {
-    fontSize: 15,
-    color: '#ffffff',
   },
   starIcons: {
     position: 'relative',
@@ -75,25 +58,13 @@ const styles = StyleSheet.create({
   },
 });
 
-class UselessTextInput extends React.Component {
-  render() {
-    return (
-      <TextInput
-        {...this.props} // Inherit any props passed to it; e.g., multiline, numberOfLines below
-        editable={true}
-        underlineColorAndroid={'rgba(0,0,0,0)'}
-      />
-    );
-  }
-}
-
 @observer
-class ReviewForm extends React.Component {
+class StarGrade extends React.Component {
   render() {
     return (
-      <View style={styles.reviewForm}>
-        <Text style={styles.reviewFormParagraph}>내용은 어떠셨나요?</Text>
-        <Text style={styles.reviewFormParagraph}>평점을 남겨주세요.</Text>
+      <View style={styles.contentContainer}>
+        <Text style={styles.Paragraph}>내용은 어떠셨나요?</Text>
+        <Text style={styles.Paragraph}>평점을 남겨주세요.</Text>
 
         <View style={styles.starIcons}>
           <View style={[styles.starIconContainer, styles.starIconContainer1]}>
@@ -232,24 +203,9 @@ class ReviewForm extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View style={styles.reviewInput} borderRadius={5}>
-          <UselessTextInput
-            multiline={true}
-            numberOfLines={4}
-            onChangeText={text => (this.props.store.reviewText = { text })}
-            value={this.props.store.reviewText}
-          />
-        </View>
-
-        <TouchableOpacity activeOpacity={0.9}>
-          <View style={styles.submitButton} borderRadius={5}>
-            <Text style={styles.submitButtonText}>등록</Text>
-          </View>
-        </TouchableOpacity>
       </View>
     );
   }
 }
 
-export default ReviewForm;
+export default StarGrade;
