@@ -27,6 +27,8 @@
 		5B0852E06F35401AA4EBC589 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA0DD6E4DAA8467E93F0FB5F /* FontAwesome5_Regular.ttf */; };
 		60FC0A051C894EB58D2775B5 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60A27EEB89D241B09F31BEBA /* Ionicons.ttf */; };
 		63053DE2212E8479007958D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 63053DE1212E8479007958D8 /* Localizable.strings */; };
+		63713EB921FB188500E22E5A /* PallyConFPSSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63713EB521FB183200E22E5A /* PallyConFPSSDK.framework */; };
+		63713EBA21FB188500E22E5A /* PallyConFPSSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63713EB521FB183200E22E5A /* PallyConFPSSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		63A387712140C8FB00E61CB0 /* Clip.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387702140C8FB00E61CB0 /* Clip.m */; };
 		63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387732140C91B00E61CB0 /* FPSDownload.m */; };
 		63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A387762140C95500E61CB0 /* FPSDownloadManager.m */; };
@@ -395,12 +397,14 @@
 
 /* Begin PBXCopyFilesBuildPhase section */
 		63BB3A8821C8BE8700619717 /* Embed Frameworks */ = {
+		63713EBB21FB188500E22E5A /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
 				63BB3A8721C8BE8700619717 /* PallyConFPSSDK.framework in Embed Frameworks */,
+				63713EBA21FB188500E22E5A /* PallyConFPSSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,6 +444,7 @@
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		60A27EEB89D241B09F31BEBA /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		63053DE1212E8479007958D8 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = WelaaaV2/Localizable.strings; sourceTree = "<group>"; };
+		63713EB521FB183200E22E5A /* PallyConFPSSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PallyConFPSSDK.framework; sourceTree = "<group>"; };
 		63A3876F2140C8FB00E61CB0 /* Clip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clip.h; sourceTree = "<group>"; };
 		63A387702140C8FB00E61CB0 /* Clip.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clip.m; sourceTree = "<group>"; };
 		63A387722140C91B00E61CB0 /* FPSDownload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FPSDownload.h; sourceTree = "<group>"; };
@@ -577,6 +582,7 @@
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				EF23D7532175A1A40023DE2D /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				63713EB921FB188500E22E5A /* PallyConFPSSDK.framework in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
@@ -713,6 +719,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63713EB521FB183200E22E5A /* PallyConFPSSDK.framework */,
 				63D13EC121E739FF0035D0FC /* UserNotifications.framework */,
 				63D13EBF21E347750035D0FC /* SystemConfiguration.framework */,
 				63D13EBD21E347670035D0FC /* MobileCoreServices.framework */,
@@ -1104,6 +1111,7 @@
 				EF9A98AC2111458C00EA3A8E /* ShellScript */,
 				A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */,
 				63BB3A8821C8BE8700619717 /* Embed Frameworks */,
+				63713EBB21FB188500E22E5A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1692,6 +1700,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = WelaaaV2/WelaaaV2.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: insuk Hong (NUSH2FVD65)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1742,6 +1751,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = WelaaaV2/WelaaaV2.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: INFLUENTIAL (FB8NKK8CCR)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FB8NKK8CCR;
@@ -1777,6 +1787,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.influential.smartlearning;
 				PRODUCT_NAME = WelaaaV2;
 				PROVISIONING_PROFILE_SPECIFIER = welaaa_provisioning_adhoc;
+				PROVISIONING_PROFILE_SPECIFIER = Influential_welaaa_Production;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
