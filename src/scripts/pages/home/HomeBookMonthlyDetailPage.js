@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewMore: {
-    width: 60,
     height: 36,
     alignItems: 'center',
   },

@@ -23,6 +23,7 @@ import createStore from '../../commons/createStore';
 import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
 import numeral from 'numeral';
 import StarGrade from './StarGrade';
+import ReviewForm from './ReviewForm';
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -452,6 +453,8 @@ class TabContentInfo extends React.Component {
           <Evaluation itemData={this.props.store.itemData} />
 
           <StarGrade store={this.props.store} />
+
+          <ReviewForm store={this.props.store} />
         </View>
       </View>
     );
