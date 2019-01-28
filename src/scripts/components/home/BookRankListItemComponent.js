@@ -5,25 +5,26 @@ import {
   TouchableOpacity,
   View,
   ImageBackground,
-  Image
+  Image,
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-dark.png';
 import numeral from 'numeral';
 import IcPlayBtn from '../../../images/ic-play-green.png';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   rankGridItem: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   rankNumber: {
-    width: 25
+    width: 25,
   },
   rankNumberText: {
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#353A3C'
+    color: '#353A3C',
   },
   thumbnail: {
     width: 60,
@@ -36,47 +37,47 @@ const styles = StyleSheet.create({
     top: 1,
     width: 14,
     height: 14,
-    marginRight: 2
+    marginRight: 2,
   },
   rankTitle: {
     fontSize: 14,
     color: '#353A3C',
-    paddingBottom: 7
+    paddingBottom: 7,
   },
   rankContentText: {
     paddingRight: 20,
     fontSize: 12,
-    color: '#767B80'
+    color: '#767B80',
   },
   contentHr: {
     height: 1,
     backgroundColor: '#E2E2E2',
-    marginBottom: 10
+    marginBottom: 10,
   },
   rankTeacherText: {
     fontSize: 12,
-    color: '#767B80'
+    color: '#767B80',
   },
   playButton: {
     width: 30,
     height: 30,
-    marginLeft: 'auto'
-  }
+    marginLeft: 'auto',
+  },
 });
 
-export default class BookRankListItemComponent extends React.Component {
+class BookRankListItemComponent extends React.Component {
   gotoAudioPage = () => {
     this.props.navigation.navigate('AudioBookDetailPage', {
       id: this.props.itemData.id,
-      title: this.props.itemData.title
+      title: this.props.itemData.title,
     });
   };
 
   render() {
     return (
-      <TouchableOpacity onPress={this.gotoAudioPage} activeOpacity={0.9}>
-        <View style={styles.rankGridItem}>
-          <View style={styles.contentHr} />
+      <View style={styles.rankGridItem}>
+        <View style={styles.contentHr} />
+        <TouchableOpacity onPress={this.gotoAudioPage} activeOpacity={0.9}>
           <View style={CommonStyles.alignJustifyItemCenter}>
             <View style={styles.rankNumber}>
               <Text style={styles.rankNumberText}>
@@ -108,7 +109,7 @@ export default class BookRankListItemComponent extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyFlex,
-                  { alignItems: 'flex-end' }
+                  { alignItems: 'flex-end' },
                 ]}
               >
                 <Image source={IcPlay} style={styles.rankIcon} />
@@ -116,14 +117,16 @@ export default class BookRankListItemComponent extends React.Component {
                   {numeral(
                     this.props.itemData.meta
                       ? this.props.itemData.meta.play_count
-                      : this.props.itemData.hit_count
+                      : this.props.itemData.hit_count,
                   ).format('0a')}
                 </Text>
               </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
+
+export default withNavigation(BookRankListItemComponent);
