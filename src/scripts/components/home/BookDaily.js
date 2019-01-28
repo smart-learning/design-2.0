@@ -15,6 +15,14 @@ const styles = StyleSheet.create({});
 
 @observer
 class BookDaily extends React.Component {
+  /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
+  premiumCategorySelect = () => {
+    this.props.navigation.navigate(
+      'AudioBookPage',
+      { action: 'category', data: 81 }, // 전달할 데이터
+    );
+  };
+
   render() {
     const originData = this.props.itemData;
     const filtered = _.map(originData.category, day => originData[day][0]);
@@ -51,9 +59,25 @@ class BookDaily extends React.Component {
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() =>
-                    this.props.navigation.navigate('HomeBookDailyDetailPage', {
-                      title: '매일 책 한권',
-                      itemData: originData,
+                    this.props.navigation.navigate('AudioBookPage', {
+                      title: '',
+                      data: {
+                        ccode: '050',
+                        id: 81,
+                        images: {
+                          default:
+                            'https://static.welaaa.co.kr/contentsUpImage/category/',
+                          icon_large:
+                            'https://static.welaaa.co.kr/static/categories/icon_lg_050.png',
+                          icon_small:
+                            'https://static.welaaa.co.kr/static/categories/icon_sm_050.png',
+                          large:
+                            'https://static.welaaa.co.kr/contentsUpImage/category/',
+                        },
+                        paragraph: '',
+                        title: '북리뷰',
+                        url: 'http://welaaa.co.kr/audiobook-list.php?ccode=050',
+                      },
                     })
                   }
                 >
