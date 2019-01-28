@@ -32,8 +32,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: 120,
     height: 192,
-    borderWidth: 1,
-    borderColor: '#E2E2E2',
   },
   headline: {
     paddingTop: 10,
