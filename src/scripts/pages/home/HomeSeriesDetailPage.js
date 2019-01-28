@@ -85,8 +85,10 @@ class HomeSeriesDetailPage extends React.Component {
       if (itemData.series) {
         if (itemData.series.description) {
           itemContent = itemData.series.description.split('<br>').join('\n');
-        } else {
+        } else if (itemData.series.memo) {
           itemContent = itemData.series.memo.split('<br>').join('\n');
+        } else {
+          itemContent = itemData.series.paragraph.split('<br>').join('\n');
         }
       } else {
         itemContent = '';
