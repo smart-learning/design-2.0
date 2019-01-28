@@ -38,6 +38,9 @@
     attributes:@{NSFontAttributeName : font} \
     context:nil].size) \
 
+#define SYSTEM_VERSION_GREATERTHAN_OR_EQUALTO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESSTHAN(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+
 @interface common : NSObject
 
 + (NSDictionary *) infoPlist;

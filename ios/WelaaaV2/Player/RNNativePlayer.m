@@ -423,6 +423,8 @@ RCT_EXPORT_MODULE();
       }
       
       // Device Certification + Login
+      // -> 이 방식은 setPushToken 이 미리 호출되어있지 않으면 Push가 안날아간다. 그래서 아래 방식 사용.
+      /*
       dispatch_async(dispatch_get_main_queue(), ^{
         [PMS deviceCertWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
           if([result isSuccess]){
@@ -432,9 +434,9 @@ RCT_EXPORT_MODULE();
           }
         }];
       });
+      */
       
       // Login only
-      /*
       [PMS loginWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
         if([result isSuccess]){
           NSMutableDictionary *dict = [NSMutableDictionary new];
@@ -446,7 +448,6 @@ RCT_EXPORT_MODULE();
           NSLog(@"TAS Login Fail %@ %@", result.code, result.msg);
         }
       }];
-       */
     }else{
       NSLog(@"tasDeviceCertWithCustId No args!");
     }
@@ -507,6 +508,39 @@ RCT_EXPORT_MODULE();
   }
   @catch (NSException *exception) {
     NSLog(@"tasSetting Exception -> %@",exception.description);
+  }
+}
+
+- (void) tasSendReadMsgEventPms : (NSDictionary *) args
+{
+  @try {
+    if(args){
+      NSLog(@"tasSendReadMsgEventPms args -> %@",args);
+      NSString* msgId = [args objectForKey:@"msgId"];
+      NSLog(@"tasSendReadMsgEventPms - msgId : %@",msgId);
+      if(msgId==nil || msgId.length==0){
+        NSLog(@"No msgId to Select!");
+        return;
+      }
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        // 메시지 읽음처리
+        [PMS sendReadMsgEventWithMsgId : msgId
+                         CompleteBlock : ^(PMSResult *result)
+         {
+           if ([result isSuccess])
+             NSLog(@"  TAS sendReadMsgEventWithMsgId Complete: %@",msgId);
+           else
+             NSLog(@"  TAS sendReadMsgEventWithMsgId Fail: %@",msgId);
+         }];
+      });
+      
+    }else{
+      NSLog(@"tasSendReadMsgEventPms No args!");
+    }
+  }
+  @catch (NSException *exception) {
+    NSLog(@"tasSendReadMsgEventPms Exception -> %@",exception.description);
   }
 }
 
@@ -599,6 +633,11 @@ RCT_EXPORT_METHOD( tasLogout )
 RCT_EXPORT_METHOD( tasSetting : (NSDictionary *) argsFromReactNative )
 {
   [self tasSettingPms:argsFromReactNative];
+}
+
+RCT_EXPORT_METHOD( tasSendReadMsgEvent : (NSDictionary *) argsFromReactNative )
+{
+  [self tasSendReadMsgEventPms:argsFromReactNative];
 }
 
 @end

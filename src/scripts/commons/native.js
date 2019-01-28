@@ -279,10 +279,10 @@ export default {
       // DeviceCert (TAS admin 페이지에서 확인되는 단말 등록)
       let userId = globalStore.welaaaAuth.profile.id;
       let accessToken = globalStore.welaaaAuth.access_token;
-      let currentMembership = "";
+      let currentMembership = '';
 
       if (globalStore.currentMembership.type !== undefined) {
-        currentMembership: globalStore.currentMembership.type.toString()
+        currentMembership: globalStore.currentMembership.type.toString();
       }
 
       let config = {
@@ -303,6 +303,21 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    }
+  },
+
+  tasSendReadMsg(msgId) {
+    try {
+      if (Platform.OS === 'ios') {
+        let args = {
+          msgId: msgId,
+        };
+        RNNativePlayer.tasSendReadMsgEvent(args);
+      }
+    } catch (error) {
+      console.log('native.tasSendReadMsgEvent > error', error);
+      console.log('native.tasSendReadMsgEvent > args', args);
+      return error;
     }
   },
 
