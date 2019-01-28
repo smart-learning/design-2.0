@@ -3457,15 +3457,19 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
     if ( playingInfoCenter )
     {
         NSMutableDictionary *songInfo = [[NSMutableDictionary alloc] init];
-        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
-                                                                       requestHandler : ^UIImage * _Nonnull(CGSize size)
-                                                                                        {
-                                                                                            UIImage *lockScreenArtworkApp;
-                                                                                            lockScreenArtworkApp = [UIImage imageNamed : @"AlbumArt"];
-                                                                                          
-                                                                                            return [self resizeImageWithImage : lockScreenArtworkApp
-                                                                                                                 scaledToSize : size];
-                                                                                        }];
+        MPMediaItemArtwork *albumArt;
+        albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize : CGSizeMake(600, 600)  // or image.size
+                                                   requestHandler : ^UIImage * _Nonnull (CGSize size)
+                                                      {
+                                                          UIImage *lockScreenArtworkApp;
+                                                        
+                                                          if ( [self->_currentContentsInfo[@"data"][@"teacher"][@"images"] isKindOfClass : [NSDictionary class]] )
+                                                              lockScreenArtworkApp = [UIImage imageNamed : @"AlbumArt"];
+                                                          else
+                                                              lockScreenArtworkApp = [UIImage imageNamed : @"AlbumArt"];
+                                                        
+                                                          return [self resizeImageWithImage:lockScreenArtworkApp scaledToSize:size];
+                                                      }];
       
         // 가끔 '강좌명'이 null로 세팅될 때가 있습니다.
         if ( !nullStr(_currentLectureTitle) )

@@ -60,6 +60,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
   public static final String DRM_MULTI_SESSION = "drm_multi_session";
   public static final String THUMB_URL = "thumb_url";
   public static final String DRM_CONTENT_TITLE = "drm_content_title";
+  public static final String PLAY_WHEN_READY = "play_when_ready";
 
   // Whether played from mediasession.
   public static final String FROM_MEDIA_SESSION = "from_media_session";
@@ -289,6 +290,7 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
   @Override
   public void setCurrentMedia(MediaMetadataCompat item) {
     LogHelper.d(TAG, "setCurrentMedia", item);
+    mListener.onMetadataChanged(item);
   }
 
   @Override
@@ -499,19 +501,27 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
       currentMedia = null;
     }
 
-    String name = extras.getString(PlaybackManager.DRM_CONTENT_NAME_EXTRA);
-    String drmSchemeUuid = extras.getString(PlaybackManager.DRM_SCHEME_UUID_EXTRA);
-    String drmLicenseUrl = extras.getString(PlaybackManager.DRM_LICENSE_URL);
-    String userId = extras.getString(PlaybackManager.DRM_USERID);
-    String cId = extras.getString(PlaybackManager.DRM_CID);
-    String oId = extras.getString(PlaybackManager.DRM_OID);
-    String token = extras.getString(PlaybackManager.DRM_TOKEN);
-    String thumbUrl = extras.getString(PlaybackManager.THUMB_URL);
-    String customData = extras.getString(PlaybackManager.DRM_CUSTOME_DATA);
-    String title = extras.getString(PlaybackManager.DRM_CONTENT_TITLE);
+    String name = extras.getString(DRM_CONTENT_NAME_EXTRA);
+    String drmSchemeUuid = extras.getString(DRM_SCHEME_UUID_EXTRA);
+    String drmLicenseUrl = extras.getString(DRM_LICENSE_URL);
+    String userId = extras.getString(DRM_USERID);
+    String cId = extras.getString(DRM_CID);
+    String oId = extras.getString(DRM_OID);
+    String token = extras.getString(DRM_TOKEN);
+    String thumbUrl = extras.getString(THUMB_URL);
+    String customData = extras.getString(DRM_CUSTOME_DATA);
+    String title = extras.getString(DRM_CONTENT_TITLE);
 
     String duration = extras.getString("duration");
     String playInfo = extras.getString("play_info");
+
+    String type = extras.getString("type", "");
+    boolean canPlay = extras.getBoolean("can_play", false);
+    boolean isFree = extras.getBoolean("if_free", false);
+    String expireAt = extras.getString("expire_at", "");
+    int historyProgress = extras.getInt("history_start_seconds", 0);
+
+    boolean playWhenReady = extras.getBoolean(PLAY_WHEN_READY, true);
 
     // Set MediaMetadata.
     MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder();
@@ -523,20 +533,28 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
     builder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, title);
 
     // drm information.
-    builder.putString(PlaybackManager.DRM_CONTENT_NAME_EXTRA, name);
-    builder.putString(PlaybackManager.DRM_SCHEME_UUID_EXTRA, drmSchemeUuid);
-    builder.putString(PlaybackManager.DRM_LICENSE_URL, drmLicenseUrl);
-    builder.putString(PlaybackManager.DRM_USERID, userId);
-    builder.putString(PlaybackManager.DRM_CID, cId);
-    builder.putString(PlaybackManager.DRM_OID, oId);
-    builder.putString(PlaybackManager.DRM_TOKEN, token);
-    builder.putString(PlaybackManager.THUMB_URL, thumbUrl);
-    builder.putString(PlaybackManager.DRM_CUSTOME_DATA, customData);
-    builder.putString(PlaybackManager.DRM_CONTENT_TITLE, title);
+    builder.putString(DRM_CONTENT_NAME_EXTRA, name);
+    builder.putString(DRM_SCHEME_UUID_EXTRA, drmSchemeUuid);
+    builder.putString(DRM_LICENSE_URL, drmLicenseUrl);
+    builder.putString(DRM_USERID, userId);
+    builder.putString(DRM_CID, cId);
+    builder.putString(DRM_OID, oId);
+    builder.putString(DRM_TOKEN, token);
+    builder.putString(THUMB_URL, thumbUrl);
+    builder.putString(DRM_CUSTOME_DATA, customData);
+    builder.putString(DRM_CONTENT_TITLE, title);
 
     // Play information.
     builder.putString("duration", duration);
     builder.putString("play_info", playInfo);
+
+    builder.putString("type", type);
+    builder.putString("can_play", Boolean.toString(canPlay));
+    builder.putString("if_free", Boolean.toString(isFree));
+    builder.putString("expire_at", expireAt);
+    builder.putString("history_start_seconds", Integer.toString(historyProgress));
+
+    builder.putString(PLAY_WHEN_READY, Boolean.toString(playWhenReady));
 
     currentMedia = builder.build();
   }

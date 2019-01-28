@@ -58,7 +58,6 @@
 		D8005A84259C4D7791858494 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50E99BF152DB40A1A6BFDC1D /* FontAwesome5_Solid.ttf */; };
 		EF056AB921267EFD00F3178B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF056AB821267EFD00F3178B /* StoreKit.framework */; };
 		EF094701212662B200FD849B /* RNProductPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = EF094700212662B200FD849B /* RNProductPayment.m */; };
-		EF111E46219D47B600605BF2 /* welaaasplash_.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EF111E1C219D47B600605BF2 /* welaaasplash_.mp4 */; };
 		EF23D7532175A1A40023DE2D /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		EF4F4137211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF4F4107211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf */; };
 		EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF5D544A211936F8008F60B4 /* Images.xcassets */; };
@@ -98,7 +97,6 @@
 		EFE0835721144239006D3F6C /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832821144239006D3F6C /* NSString+Base64.m */; };
 		EFE0835821144239006D3F6C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832921144239006D3F6C /* SFHFKeychainUtils.m */; };
 		EFE0835921144239006D3F6C /* IAPShare.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE0832E21144239006D3F6C /* IAPShare.m */; };
-		EFE5F19D219A8951008E10B7 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = EFE5F19C219A8951008E10B7 /* SplashView.m */; };
 		EFF53EE821DCB20100B52972 /* AppsFlyerLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */; };
 		FEB4A0A1AA6341EE8ED27C0B /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EC83BF071F44EB699826325 /* libRCTFBSDK.a */; };
 /* End PBXBuildFile section */
@@ -479,7 +477,6 @@
 		EF056AB821267EFD00F3178B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EF0946FF212662B200FD849B /* RNProductPayment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNProductPayment.h; sourceTree = "<group>"; };
 		EF094700212662B200FD849B /* RNProductPayment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNProductPayment.m; sourceTree = "<group>"; };
-		EF111E1C219D47B600605BF2 /* welaaasplash_.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = welaaasplash_.mp4; sourceTree = "<group>"; };
 		EF4F4107211ABE5C005E1CBD /* Spoqa Han Sans Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Spoqa Han Sans Regular.ttf"; sourceTree = "<group>"; };
 		EF5D544A211936F8008F60B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = WelaaaV2/Images.xcassets; sourceTree = "<group>"; };
 		EF671AD3213E4BA100767E01 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -553,8 +550,6 @@
 		EFE0832D21144239006D3F6C /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
 		EFE0832E21144239006D3F6C /* IAPShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPShare.m; sourceTree = "<group>"; };
 		EFE0F3B22117E5F900D4558B /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
-		EFE5F19B219A8951008E10B7 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashView.h; sourceTree = "<group>"; };
-		EFE5F19C219A8951008E10B7 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashView.m; sourceTree = "<group>"; };
 		EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppsFlyerLib.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -666,7 +661,6 @@
 				EF4F4106211ABE5C005E1CBD /* UIFonts */,
 				EFE0832621144239006D3F6C /* Payments */,
 				EFE08308211430E7006D3F6C /* DownloadManager */,
-				EFE5F19A219A8951008E10B7 /* SplashView */,
 				EF13DA2A2113D95000CFED8A /* Utils */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -1076,17 +1070,6 @@
 			);
 			name = Payments;
 			path = WelaaaV2/Payments;
-			sourceTree = "<group>";
-		};
-		EFE5F19A219A8951008E10B7 /* SplashView */ = {
-			isa = PBXGroup;
-			children = (
-				EF111E1C219D47B600605BF2 /* welaaasplash_.mp4 */,
-				EFE5F19B219A8951008E10B7 /* SplashView.h */,
-				EFE5F19C219A8951008E10B7 /* SplashView.m */,
-			);
-			name = SplashView;
-			path = WelaaaV2/SplashView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1527,7 +1510,6 @@
 				EF5D544B211936F9008F60B4 /* Images.xcassets in Resources */,
 				EF70861A2148ED9600B202DE /* Montserrat-Bold.ttf in Resources */,
 				63053DE2212E8479007958D8 /* Localizable.strings in Resources */,
-				EF111E46219D47B600605BF2 /* welaaasplash_.mp4 in Resources */,
 				EF7086182148EBAD00B202DE /* Spoqa Han Sans Bold.ttf in Resources */,
 				EF9A983B211144A800EA3A8E /* GoogleService-Info.plist in Resources */,
 				80A6802482114CE7816BF435 /* AntDesign.ttf in Resources */,
@@ -1649,7 +1631,6 @@
 				EFAEBDC6213D33050070F10E /* ContentsListPopupViewCell.m in Sources */,
 				63A387772140C95500E61CB0 /* FPSDownloadManager.m in Sources */,
 				EFAEBDCC213D33050070F10E /* PlayerSleepTimerView.m in Sources */,
-				EFE5F19D219A8951008E10B7 /* SplashView.m in Sources */,
 				63A387742140C91B00E61CB0 /* FPSDownload.m in Sources */,
 				EF9A983C211144A800EA3A8E /* RNNativePlayer.m in Sources */,
 				EFE081E52113ED85006D3F6C /* NSTimer+Blocks.m in Sources */,

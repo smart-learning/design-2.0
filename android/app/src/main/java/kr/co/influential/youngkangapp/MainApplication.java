@@ -52,6 +52,8 @@ public class MainApplication extends Application implements ReactApplication {
 
   private MediaBrowserCompat mediaBrowser;
 
+  private MediaControllerCompat mediaController;
+
   private final MediaBrowserCompat.ConnectionCallback connectionCallback =
       new MediaBrowserCompat.ConnectionCallback() {
         @Override
@@ -183,8 +185,12 @@ public class MainApplication extends Application implements ReactApplication {
   }
 
   private void connectToSession(MediaSessionCompat.Token token) throws RemoteException {
-    MediaControllerCompat mediaController = new MediaControllerCompat(this, token);
+    mediaController = new MediaControllerCompat(this, token);
     mediaController.registerCallback(mediaControllerCallback);
+  }
+
+  public MediaControllerCompat getMediaController() {
+    return mediaController;
   }
 
   public void setEventEmitter(RNEventEmitter eventEmitter) {

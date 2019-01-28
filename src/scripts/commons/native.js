@@ -137,24 +137,9 @@ export default {
     }
   },
 
-  getProgressDatabase(success, failed) {
-    let userId = globalStore.welaaaAuth.profile.id;
-    let config = {
-      userId: userId.toString(),
-    };
-
-    try {
-      RNNativePlayer.selectProgressDatabase(config)
-        .then(success)
-        .catch(failed);
-    } catch (error) {
-      console.log(error);
-    }
+  latestMiniPlayer() {
+    RNNativePlayer.latestMiniPlayer();
   },
-
-  // receiveDownloadList(args) {
-  // 	console.log('naive.receiveDownloadList:', args);
-  // },
 
   download(args) {
     const { welaaaAuth } = globalStore;
@@ -330,5 +315,9 @@ export default {
     } catch (error) {
       console.log(error);
     }
+  },
+
+  invalidateAuthorization(data) {
+    RNNativePlayer.invalidateAuthorization(data);
   },
 };
