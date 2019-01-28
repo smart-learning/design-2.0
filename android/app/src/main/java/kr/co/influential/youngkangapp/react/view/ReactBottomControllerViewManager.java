@@ -26,7 +26,7 @@ public class ReactBottomControllerViewManager extends SimpleViewManager<ReactBot
   }
 
   @ReactProp(name = "miniPlayer")
-  public void setSrc(ReactBottomControllerView view, @Nullable ReadableMap content) {
+  public void setMiniPlayer(ReactBottomControllerView view, @Nullable ReadableMap content) {
 
     view.setMiniPlayer(content);
   }

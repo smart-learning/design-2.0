@@ -87,9 +87,7 @@ import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import java.io.IOException;
 import java.io.Reader;
@@ -771,24 +769,15 @@ public class PlayerActivity extends BasePlayerActivity {
       initialize();
 
     } else {
-      String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
       Gson gson = new Gson();
-      WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
-      mWebPlayerInfo = mWebPlayerInfoFromJson;
+      String jsonWebPlayerInfo = Preferences.getWelaaaWebPlayInfo(PlayerActivity.this);
+      mWebPlayerInfo = gson.fromJson(jsonWebPlayerInfo, WebPlayerInfo.class);
 
-      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
-
-      try {
-        JsonElement jsonElement = new JsonParser().parse(extras.getString("play_info"));
-        JsonObject jsonPlayInfo = jsonElement.getAsJsonObject();
-        CONTENT_TYPE = jsonPlayInfo.get("type").getAsString();
-        CAN_PLAY = jsonPlayInfo.get("can_play").getAsBoolean();
-        IS_FREE = jsonPlayInfo.get("is_free").getAsBoolean();
-        EXPIRE_AT = jsonPlayInfo.get("expire_at").getAsString();
-        CONTENT_HISTORY_SEC = jsonPlayInfo.get("history_start_seconds").getAsInt();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      CONTENT_TYPE = extras.getString("type", "");
+      CAN_PLAY = Boolean.parseBoolean(extras.getString("can_play", "false"));
+      IS_FREE = Boolean.parseBoolean(extras.getString("if_free", "false"));
+      EXPIRE_AT = extras.getString("expire_at", "");
+      CONTENT_HISTORY_SEC = Integer.parseInt(extras.getString("history_start_seconds", "0"));
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
       if (simpleExoPlayerView.getPlayer() != null) {

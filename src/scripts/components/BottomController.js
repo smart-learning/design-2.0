@@ -18,7 +18,7 @@ class BottomControllerComponent extends Component {
       <BottomController
         {...this.props}
         style={{ height: 50 }}
-        miniPlayer={this.props}
+        miniPlayer={this.props.arg}
       />
     );
   }
