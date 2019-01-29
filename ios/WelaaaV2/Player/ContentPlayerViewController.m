@@ -304,6 +304,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
+    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+    [_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:0 context:nil];
+  
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer : _player];
     _playerLayer.frame = _contentView.bounds;
@@ -3445,6 +3448,47 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         
         default:
             break;
+    }
+}
+
+//
+// Player Item observer
+//
+- (void) observeValueForKeyPath : (NSString *) keyPath
+                       ofObject : (id) object
+                         change : (NSDictionary *) change
+                        context : (void *) context
+{
+    if ( [object isKindOfClass : [AVPlayerItem class]] )
+    {
+        AVPlayerItem *item = (AVPlayerItem *) object;
+        //playerItem status value changed?
+        if ( [keyPath isEqualToString : @"status"] )
+        {   //yes->check it...
+          switch ( item.status )
+          {
+              case AVPlayerItemStatusFailed:
+              {
+                  NSLog(@"  player item status failed");
+                  [self closePlayer];
+                  return [common presentAlertWithTitle:@"Oops...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+              }
+              case AVPlayerItemStatusReadyToPlay:
+                  NSLog(@"  player item status is ready to play");
+                  break;
+            
+              case AVPlayerItemStatusUnknown:
+                  NSLog(@"  player item status is unknown");
+                  break;
+          }
+      }
+      else if ( [keyPath isEqualToString : @"playbackBufferEmpty"] )
+      {
+          if ( item.playbackBufferEmpty )
+          {
+              NSLog(@"  player item playback buffer is empty");
+          }
+      }
     }
 }
 
