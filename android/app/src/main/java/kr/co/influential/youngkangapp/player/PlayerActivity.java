@@ -1746,7 +1746,17 @@ public class PlayerActivity extends BasePlayerActivity {
     mAniSlideHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
     mBtnForward = findViewById(R.id.CDN_TAG_BTN_FORWARD);
+    mBtnForward.setText(R.string.txt_backwardforward_30);
     mBtnBackward = findViewById(R.id.CDN_TAG_BTN_BACKWARD);
+    mBtnBackward.setText(R.string.txt_backwardforward_30);
+    if (CONTENT_TYPE != null && cId != null) {
+      if (CONTENT_TYPE.equals("video-course")) {
+        if (!cId.startsWith("z")) {
+          mBtnForward.setText(R.string.txt_backwardforward_10);
+          mBtnBackward.setText(R.string.txt_backwardforward_10);
+        }
+      }
+    }
     mBtnClosed = findViewById(R.id.BTN_CLOSE);
     mButtonAudio = findViewById(R.id.BTN_AUDIO);
     mButtonVideo = findViewById(R.id.BTN_VIDEO);
