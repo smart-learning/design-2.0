@@ -172,7 +172,15 @@ class AudioBookPage extends React.Component {
 
   _renderHeader() {
     return (
-      <View style={{ position: 'absolute', top: 0, width: '100%' }}>
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+          alignSelf: 'flex-start',
+          backgroundColor: '#FFFFFF',
+        }}
+      >
         <View
           style={{
             width: '100%',
@@ -192,7 +200,7 @@ class AudioBookPage extends React.Component {
           style={{
             width: '100%',
             height: 1,
-            marginHorizontal: 15,
+            marginTop: 12,
             backgroundColor: '#E2E2E2',
           }}
         />
@@ -287,7 +295,7 @@ class AudioBookPage extends React.Component {
                     <AudioBookListItem
                       id={item.id}
                       navigation={this.props.navigation}
-					  itemData={item}
+                      itemData={item}
                     />
                   )}
                 />
@@ -306,9 +314,8 @@ class AudioBookPage extends React.Component {
                 </View>
               )}
             </View>
-
-            {this._renderHeader()}
           </ScrollView>
+          {this._renderHeader()}
         </SafeAreaView>
       </View>
     );
