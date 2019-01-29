@@ -74,8 +74,9 @@ class KakaoLoginButton extends React.Component {
   };
 
   // 카카오 로그인 시작.
+
   kakaoLogin = async () => {
-    console.log('kakaoLogin ');
+
     this.setState({ loginButtonDisabled: true });
 
     RNKakaoLogins.login((err, result) => {
@@ -85,15 +86,14 @@ class KakaoLoginButton extends React.Component {
         return;
 
       } else {
-        const kakaoAccessToken = result;
-        console.log('   kakaoLogin   ', kakaoAccessToken);
+        const kakaoAccessToken = result.token;
+
         this.setState({ token: kakaoAccessToken });
-        console.log('   kakaoLogin   onAccess ', kakaoAccessToken);
+
         this.props.onAccess(kakaoAccessToken, () => {
           this.setState({ loginButtonDisabled: false });
         });
       }
-      Alert.alert('result', result);
     });
   }
 
