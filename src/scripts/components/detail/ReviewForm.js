@@ -91,29 +91,31 @@ class ReviewForm extends React.Component {
                 >
                   2019.01.21. 15:46
                 </Text>
-                <View style={{ marginLeft: 'auto' }}>
-                  <TouchableOpacity>
-                    <View
-                      style={{
-                        width: 40,
-                        height: 18,
-                        backgroundColor: CommonStyles.COLOR_PRIMARY,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Text
+                {1 === 2 && (
+                  <View style={{ marginLeft: 'auto' }}>
+                    <TouchableOpacity>
+                      <View
                         style={{
-                          fontSize: 11,
-                          fontWeight: '400',
-                          color: '#ffffff',
+                          width: 40,
+                          height: 18,
+                          backgroundColor: CommonStyles.COLOR_PRIMARY,
+                          justifyContent: 'center',
+                          alignItems: 'center',
                         }}
                       >
-                        수정
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
+                        <Text
+                          style={{
+                            fontSize: 11,
+                            fontWeight: '400',
+                            color: '#ffffff',
+                          }}
+                        >
+                          수정
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             </View>
 
