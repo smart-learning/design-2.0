@@ -286,32 +286,39 @@ class ClassListPage extends React.Component {
 
   render() {
     return (
-      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
+      <View
+        style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
+      >
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
           <ScrollView style={{ flex: 1 }}>
             <View
-              style={{ width: '100%', paddingTop: 82, paddingHorizontal: 15 }}
+              style={{
+                width: '100%',
+                paddingTop: 82,
+                paddingHorizontal: 15,
+              }}
             >
               {this.store.displayData !== null ? (
                 <FlatList
                   data={this.store.displayData}
-                  ListFooterComponent={() => {
-                    return !this.store.isLoading &&
-                      this.store.pagination['has-next'] ? (
-                      <TouchableOpacity
-                        style={{ width: '100%', paddingHorizontal: 10 }}
-                        activeOpacity={0.9}
-                        onPress={this.loadMore}
-                      >
-                        <View
-                          style={[styles.linkViewAll, styles.classLinkViewAll]}
-                          borderRadius={5}
-                        >
-                          <Text style={styles.linkViewAllText}>더보기</Text>
-                        </View>
-                      </TouchableOpacity>
-                    ) : null;
-                  }}
+                  onEndReached={this.loadMore}
+                  // ListFooterComponent={() => {
+                  //   return !this.store.isLoading &&
+                  //     this.store.pagination['has-next'] ? (
+                  //     <TouchableOpacity
+                  //       style={{ width: '100%', paddingHorizontal: 10 }}
+                  //       activeOpacity={0.9}
+                  //       onPress={this.loadMore}
+                  //     >
+                  //       <View
+                  //         style={[styles.linkViewAll, styles.classLinkViewAll]}
+                  //         borderRadius={5}
+                  //       >
+                  //         <Text style={styles.linkViewAllText}>더보기</Text>
+                  //       </View>
+                  //     </TouchableOpacity>
+                  //   ) : null;
+                  // }}
                   renderItem={({ item }) => (
                     <ClassListItem
                       id={item.id}
