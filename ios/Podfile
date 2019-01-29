@@ -36,4 +36,6 @@ target 'WelaaaV2' do
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
 
+  pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
+
 end
