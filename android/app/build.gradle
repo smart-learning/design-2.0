@@ -216,7 +216,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':react-native-sentry')
+    implementation project(':react-native-sentry')
     implementation project(':react-native-appsflyer')
     compile project(':react-native-iamport')
     compile project(':react-native-vector-icons')

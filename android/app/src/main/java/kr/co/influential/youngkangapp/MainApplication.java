@@ -114,7 +114,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNSentryPackage(),
-          new RNAppsFlyerPackage(MainApplication.this),
+          new RNAppsFlyerPackage(),
           new IAmPortPackage(),
           new VectorIconsPackage(),
           new RNFirebasePackage(),
