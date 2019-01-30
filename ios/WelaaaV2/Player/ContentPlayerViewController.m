@@ -304,7 +304,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
-    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];  // watching..
+    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];  // 현재 AVAssetItem의 observer인듯.. replace되는 시점에 remove해줘야 할듯..
     [_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:0 context:nil]; // watching..
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
@@ -3465,30 +3465,31 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         //playerItem status value changed?
         if ( [keyPath isEqualToString : @"status"] )
         {   //yes->check it...
-          switch ( item.status )
-          {
-              case AVPlayerItemStatusFailed:
-              {
-                  NSLog(@"  player item status failed");
-                  [self closePlayer];
-                  return [common presentAlertWithTitle:@"Oops...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
-              }
-              case AVPlayerItemStatusReadyToPlay:
-                  NSLog(@"  player item status is ready to play");
-                  break;
-            
-              case AVPlayerItemStatusUnknown:
-                  NSLog(@"  player item status is unknown");
-                  break;
-          }
-      }
-      else if ( [keyPath isEqualToString : @"playbackBufferEmpty"] )
-      {
-          if ( item.playbackBufferEmpty )
-          {
-              NSLog(@"  player item playback buffer is empty");
-          }
-      }
+            switch ( item.status )
+            {
+                case AVPlayerItemStatusFailed:
+                {
+                    NSLog(@"  [AVPlayerItemStatusFailed] The item no longer plays due to an error.");
+                    [self closePlayer];
+                    return [common presentAlertWithTitle:@"Oops...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\nAVPlayerItemStatusFailed"];
+                }
+                case AVPlayerItemStatusReadyToPlay:
+                    NSLog(@"  Player item is ready to play.");
+                    break;
+              
+                case AVPlayerItemStatusUnknown:
+                    NSLog(@"  Player item is not yet ready.");
+                    break;
+            }
+        }
+        else if ( [keyPath isEqualToString : @"playbackBufferEmpty"] )
+        {
+            if ( item.playbackBufferEmpty )
+            {
+                NSLog(@"  player item playback buffer is empty");
+                // 일시정지 처리를 해줘야할 듯.
+            }
+        }
     }
 }
 
