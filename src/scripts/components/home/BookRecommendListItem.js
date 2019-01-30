@@ -126,7 +126,9 @@ class BookRecommendListItem extends React.Component {
                 ellipsizeMode={'tail'}
                 numberOfLines={1}
               >
-                {this.props.itemData.teacher.name}
+                {this.props.itemData.teacher.name
+                  ? this.props.itemData.teacher.name
+                  : ''}
               </Text>
               <Text
                 style={styles.recommendSubTitle}

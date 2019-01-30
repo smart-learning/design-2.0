@@ -164,7 +164,9 @@ class ClassListItem extends React.Component {
               numberOfLines={1}
             >
               {this.props.itemData.teacher.headline}{' '}
-              {this.props.itemData.teacher.name}
+              {this.props.itemData.teacher.name
+                ? this.props.itemData.teacher.name
+                : ''}
             </Text>
           </View>
           <View style={[CommonStyles.alignJustifyFlex, styles.classLabels]}>
