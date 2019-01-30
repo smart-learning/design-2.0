@@ -102,9 +102,7 @@ export default class AudioBookListItem extends React.Component {
                 numberOfLines={1}
                 style={{ fontSize: 11, fontWeight: '200' }}
               >
-                {this.props.itemData.teacher.name
-                  ? this.props.itemData.teacher.name
-                  : ''}
+                {this.props.itemData.teacher?.name}
               </Text>
               <Text
                 ellipsizeMode={'tail'}
