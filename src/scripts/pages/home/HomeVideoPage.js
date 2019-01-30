@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import PTRView from 'react-native-pull-to-refresh';
+import PTRView from '../../libs/react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
@@ -26,6 +26,8 @@ import HomeBanner from '../../components/home/HomeBanner';
 import Series from '../../components/home/Series';
 import PageCategory from '../../components/PageCategory';
 import Native from '../../commons/native';
+
+const CATEGORY_HEIGHT = 40;
 
 const styles = StyleSheet.create({
   slide: {
@@ -100,8 +102,8 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   classCategory: {
-    marginTop: 0,
-    marginBottom: 20,
+    paddingHorizontal: 4,
+    height: CATEGORY_HEIGHT,
   },
   classCategoryHr: {
     height: 1,
@@ -128,12 +130,33 @@ const styles = StyleSheet.create({
 
 @observer
 class HomeVideoPage extends React.Component {
+  state = {
+    categoryY: CATEGORY_HEIGHT,
+    scrollTargetY: 0,
+    selectedCategory: 0,
+  };
+
   /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
   premiumCategorySelect = data => {
-    this.props.navigation.navigate(
-      'ClassListPage',
-      { action: 'category', data: data }, // 전달할 데이터
-    );
+    this.setState({ selectedCategory: data.id });
+    this.scrollContent.scrollView.scrollTo({ y: this.state.scrollTargetY });
+    if (_.isFunction(this.props.updateCode)) {
+      this.props.updateCode(data.ccode);
+    }
+  };
+
+  onScroll = event => {
+    let y = CATEGORY_HEIGHT - event.nativeEvent.contentOffset.y;
+    if (y < 0) {
+      y = 0;
+    } else if (y > CATEGORY_HEIGHT) {
+      y = CATEGORY_HEIGHT;
+    }
+    this.setState({ categoryY: y });
+
+    if (_.isFunction(this.props.onScroll)) {
+      this.props.onScroll(event);
+    }
   };
 
   render() {
@@ -150,281 +173,319 @@ class HomeVideoPage extends React.Component {
     const { homeSeriesData } = this.props.store;
 
     return (
-      <PTRView onRefresh={() => this.props.onRefresh()}>
-        <ScrollView style={{ flex: 1 }}>
-          {/* 이미지 스와이퍼 */}
+      <View>
+        {/*카테고리 영역 시작*/}
+        <View
+          style={[
+            styles.classCategory,
+            { transform: [{ translateY: this.state.categoryY }], zIndex: 2 },
+          ]}
+        >
+          <PageCategory
+            ref={ref => (this.pageCategory = ref)}
+            data={this.props.store.videoCategoryData}
+            selectedCategory={this.state.selectedCategory}
+            onCategorySelect={this.premiumCategorySelect}
+          />
+        </View>
+        {/*/카테고리 영역 끝*/}
 
-          <View style={{ height: this.props.store.slideHeight }}>
-            {homeBannerData.length > 0 && (
-              <Swiper
-                style={styles.wrapper}
-                showsButtons={false}
-                height={window.width}
-                dotColor={'#888888'}
-                activeDotColor={'#ffffff'}
-                paginationStyle={{ bottom: 10 }}
-                autoplay={true}
-                autoplayTimeout={3}
-              >
-                {homeBannerData.map((item, key) => {
-                  let bannerImageUrl = '';
-                  const { action_type, action_param } = item;
-                  try {
-                    bannerImageUrl = item.images.default;
-                  } catch (e) { }
+        <PTRView
+          ref={ref => (this.scrollContent = ref)}
+          forceScrollValue={this.state.forceScrollValue}
+          onScroll={this.onScroll}
+          onRefresh={() => this.props.onRefresh()}
+        >
+          <View style={{ flex: 1 }}>
+            {/* 이미지 스와이퍼 */}
 
-                  return (
-                    <HomeBanner
-                      key={key}
-                      action_type={action_type}
-                      action_param={action_param}
-                      bannerImageUrl={bannerImageUrl}
-                      navigation={this.props.navigation}
-                    />
-                  );
-                })}
-              </Swiper>
-            )}
-            {homeBannerData.length === 0 && (
-              <View style={{ marginTop: '20%' }}>
-                <ActivityIndicator
-                  size="large"
-                  color={CommonStyles.COLOR_PRIMARY}
-                />
-              </View>
-            )}
-          </View>
-          {/* /이미지 스와이퍼 */}
-
-          {/* */}
-          {
-            <View>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() =>
-                  // this.props.navigation.navigate('VideoPack', {
-                  //   title: '윌라 홍보 영상'
-                  // })
-                  // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
-                  // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
-                  Native.play('v300001_001')
-                }
-              >
-                <ImageBackground
-                  source={{
-                    uri:
-                      'https://static.welaaa.co.kr/static/banner/190128_welaaa_intro.png',
-                  }}
-                  resizeMode="contain"
-                  style={styles.imageMainBanner}
-                />
-              </TouchableOpacity>
-            </View>
-          }
-
-          {homeSeriesData &&
-          homeSeriesData.length &&
-          (homeSeriesData.length <= 6 ? (
-            <View style={{ marginTop: 12 }}>
-              <ActivityIndicator
-                size="large"
-                color={CommonStyles.COLOR_PRIMARY}
-              />
-            </View>
-          ) : (
             <View
-              style={[CommonStyles.contentContainer, styles.seriesContainer]}
+              style={{
+                height: this.props.store.slideHeight + CATEGORY_HEIGHT,
+                background: '#ff0',
+                paddingTop: CATEGORY_HEIGHT,
+              }}
             >
+              {homeBannerData.length > 0 && (
+                <Swiper
+                  style={styles.wrapper}
+                  showsButtons={false}
+                  height={window.width}
+                  dotColor={'#888888'}
+                  activeDotColor={'#ffffff'}
+                  paginationStyle={{ bottom: 10 }}
+                  autoplay={true}
+                  autoplayTimeout={3}
+                >
+                  {homeBannerData.map((item, key) => {
+                    let bannerImageUrl = '';
+                    const { action_type, action_param } = item;
+                    try {
+                      bannerImageUrl = item.images.default;
+                    } catch (e) {}
+
+                    return (
+                      <HomeBanner
+                        key={key}
+                        action_type={action_type}
+                        action_param={action_param}
+                        bannerImageUrl={bannerImageUrl}
+                        navigation={this.props.navigation}
+                      />
+                    );
+                  })}
+                </Swiper>
+              )}
+              {homeBannerData.length === 0 && (
+                <View style={{ marginTop: '20%' }}>
+                  <ActivityIndicator
+                    size="large"
+                    color={CommonStyles.COLOR_PRIMARY}
+                  />
+                </View>
+              )}
+            </View>
+            {/* /이미지 스와이퍼 */}
+
+            {/* */}
+            {
               <View>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    // this.props.navigation.navigate('VideoPack', {
+                    //   title: '윌라 홍보 영상'
+                    // })
+                    // 윌라 소개 동영상을 임시로 강좌로 구성했습니다.
+                    // VideoPack 쓰려면 HomeScreen 에 추가 해서 사용하시면 됩니다.
+                    Native.play('v300001_001')
+                  }
+                >
+                  <ImageBackground
+                    source={{
+                      uri:
+                        'https://static.welaaa.co.kr/static/banner/190128_welaaa_intro.png',
+                    }}
+                    resizeMode="contain"
+                    style={styles.imageMainBanner}
+                  />
+                </TouchableOpacity>
+              </View>
+            }
+
+            {homeSeriesData &&
+              homeSeriesData.length &&
+              (homeSeriesData.length <= 6 ? (
+                <View style={{ marginTop: 12 }}>
+                  <ActivityIndicator
+                    size="large"
+                    color={CommonStyles.COLOR_PRIMARY}
+                  />
+                </View>
+              ) : (
+                <View
+                  style={[
+                    CommonStyles.contentContainer,
+                    styles.seriesContainer,
+                  ]}
+                >
+                  <View>
+                    <View>
+                      <Text style={[styles.mainTitleCenter, styles.titleH2]}>
+                        윌라 추천 시리즈
+                      </Text>
+                      <Text style={[styles.mainTitleCenter, styles.titleH4]}>
+                        당신이 배우고 싶은 모든 것
+                      </Text>
+                    </View>
+                    <View style={styles.showMoreWrapper}>
+                      <TouchableOpacity
+                        style={styles.showMore}
+                        onPress={() => {
+                          this.props.navigation.navigate('HomeSeriesPage', {
+                            title: '윌라 추천 시리즈',
+                          });
+                        }}
+                      >
+                        <Text>전체보기</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <View style={styles.seriesComponent}>
+                    <Series itemData={this.props.store.homeSeriesData} />
+                  </View>
+
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() =>
+                      this.props.navigation.navigate('HomeSeriesPage', {
+                        title: '윌라 추천 시리즈',
+                      })
+                    }
+                  >
+                    <View style={styles.linkViewAll} borderRadius={5}>
+                      <Text style={styles.linkViewAllText}>
+                        추천 시리즈 전체 보기{' '}
+                        <Image
+                          source={IcAngleRightGrey}
+                          style={styles.linkViewAllIcon}
+                        />
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
+
+            {this.props.store.classHotData.length > 0 && (
+              <View
+                style={[CommonStyles.contentContainer, styles.classContainer]}
+                onLayout={event => {
+                  const layout = event.nativeEvent.layout;
+                  this.setState({ scrollTargetY: layout.y });
+                }}
+              >
                 <View>
                   <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                    윌라 추천 시리즈
+                    윌라 프리미엄 클래스
                   </Text>
                   <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                    당신이 배우고 싶은 모든 것
+                    당신의 커리어 성공과 행복한 일상을 위한 교육
                   </Text>
                 </View>
                 <View style={styles.showMoreWrapper}>
                   <TouchableOpacity
                     style={styles.showMore}
                     onPress={() => {
-                      this.props.navigation.navigate('HomeSeriesPage', {
-                        title: '윌라 추천 시리즈',
-                      });
+                      this.props.navigation.navigate('ClassListPage');
                     }}
                   >
                     <Text>전체보기</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
 
-              <View style={styles.seriesComponent}>
-                <Series itemData={this.props.store.homeSeriesData} />
-              </View>
+                <View style={styles.classCategory}>
+                  <View style={styles.classCategoryHr} />
+                  <PageCategory
+                    data={this.props.store.videoCategoryData}
+                    selectedCategory={0}
+                    onCategorySelect={this.premiumCategorySelect}
+                  />
+                  <View style={styles.classCategoryHr} />
+                </View>
 
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() =>
-                  this.props.navigation.navigate('HomeSeriesPage', {
-                    title: '윌라 추천 시리즈',
-                  })
-                }
-              >
-                <View style={styles.linkViewAll} borderRadius={5}>
-                  <Text style={styles.linkViewAllText}>
-                    추천 시리즈 전체 보기{' '}
-                    <Image
-                      source={IcAngleRightGrey}
-                      style={styles.linkViewAllIcon}
-                    />
+                <View style={CommonStyles.alignJustifyContentBetween}>
+                  <Text style={styles.titleH3}>새로 나온 클래스</Text>
+                  <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
+                    {updatedAt} 업데이트
                   </Text>
                 </View>
-              </TouchableOpacity>
-            </View>
-          ))}
 
-          {this.props.store.classHotData.length > 0 && (
-            <View
-              style={[CommonStyles.contentContainer, styles.classContainer]}
-            >
-              <View>
-                <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-                  윌라 프리미엄 클래스
-                </Text>
-                <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                  당신의 커리어 성공과 행복한 일상을 위한 교육
-                </Text>
-              </View>
-              <View style={styles.showMoreWrapper}>
-                <TouchableOpacity
-                  style={styles.showMore}
-                  onPress={() => {
-                    this.props.navigation.navigate('ClassListPage');
-                  }}
-                >
-                  <Text>전체보기</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.classCategory}>
-                <View style={styles.classCategoryHr} />
-                <PageCategory
-                  data={this.props.store.videoCategoryData}
-                  selectedCategory={0}
-                  onCategorySelect={this.premiumCategorySelect}
+                <ClassList
+                  itemData={this.props.store.classNewData}
+                  classType="new"
                 />
-                <View style={styles.classCategoryHr} />
-              </View>
 
-              <View style={CommonStyles.alignJustifyContentBetween}>
-                <Text style={styles.titleH3}>새로 나온 클래스</Text>
-                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                  {updatedAt} 업데이트
-                </Text>
-              </View>
-
-              <ClassList
-                itemData={this.props.store.classNewData}
-                classType="new"
-              />
-
-              <View style={CommonStyles.alignJustifyContentBetween}>
-                <Text style={styles.titleH3}>
-                  회원들이 열심히 듣고 있는 클래스
-                </Text>
-                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                  {updatedAt} 업데이트
-                </Text>
-              </View>
-
-              <ClassList
-                classType="hot"
-                itemData={this.props.store.classHotData}
-              />
-
-              <View style={CommonStyles.alignJustifyContentBetween}>
-                <Text style={styles.titleH3}>윌라 추천 클래스</Text>
-                <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
-                  {updatedAt} 업데이트
-                </Text>
-              </View>
-
-              <ClassList itemData={this.props.store.classRecommendData} />
-
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => this.props.navigation.navigate('ClassListPage')}
-              >
-                <View
-                  style={[styles.linkViewAll, styles.classLinkViewAll]}
-                  borderRadius={5}
-                >
-                  <Text style={styles.linkViewAllText}>
-                    클래스 전체 보기{' '}
-                    <Image
-                      source={IcAngleRightGrey}
-                      style={styles.linkViewAllIcon}
-                    />
+                <View style={CommonStyles.alignJustifyContentBetween}>
+                  <Text style={styles.titleH3}>
+                    회원들이 열심히 듣고 있는 클래스
+                  </Text>
+                  <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
+                    {updatedAt} 업데이트
                   </Text>
                 </View>
-              </TouchableOpacity>
 
-              {1 === 2 && (
-                <View>
-                  <View style={CommonStyles.alignJustifyContentBetween}>
-                    <Text style={styles.titleH3}>
-                      지금 많이 듣고 있는 강의클립
-                    </Text>
-                    <Text
-                      style={[styles.titleParagraph, { marginLeft: 'auto' }]}
-                    >
-                      {updatedAt} 업데이트
+                <ClassList
+                  classType="hot"
+                  itemData={this.props.store.classHotData}
+                />
+
+                <View style={CommonStyles.alignJustifyContentBetween}>
+                  <Text style={styles.titleH3}>윌라 추천 클래스</Text>
+                  <Text style={[styles.titleParagraph, { marginLeft: 0 }]}>
+                    {updatedAt} 업데이트
+                  </Text>
+                </View>
+
+                <ClassList itemData={this.props.store.classRecommendData} />
+
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    this.props.navigation.navigate('ClassListPage')
+                  }
+                >
+                  <View
+                    style={[styles.linkViewAll, styles.classLinkViewAll]}
+                    borderRadius={5}
+                  >
+                    <Text style={styles.linkViewAllText}>
+                      클래스 전체 보기{' '}
+                      <Image
+                        source={IcAngleRightGrey}
+                        style={styles.linkViewAllIcon}
+                      />
                     </Text>
                   </View>
-                  <View style={styles.titleHr} />
+                </TouchableOpacity>
 
-                  <ClipRank
-                    itemData={this.props.store.clipRankData}
-                    clipRankContentSize={this.props.store.clipRankContentSize}
-                  />
-
-                  {globalStore.welaaaAuth && (
-                    <View>
-                      <View style={CommonStyles.alignJustifyItemCenter}>
-                        <Text style={styles.titleH3}>이어보기</Text>
-                        <Text style={styles.titleParagraph}>
-                          {updatedAt} 업데이트
-                        </Text>
-                      </View>
-                      <View style={styles.titleHr} />
-
-                      {this.props.store.classUseData &&
-                      this.props.store.classUseData.length === 0 && (
-                        <Text
-                          style={{
-                            paddingTop: 20,
-                            paddingBottom: 20,
-                            textAlign: 'center',
-                          }}
-                        >
-                          재생 내역이 없습니다
-                        </Text>
-                      )}
-
-                      {this.props.store.classUseData &&
-                      this.props.store.classUseData.length > 0 && (
-                        <ClassContinueList
-                          itemData={this.props.store.classUseData}
-                        />
-                      )}
+                {1 === 2 && (
+                  <View>
+                    <View style={CommonStyles.alignJustifyContentBetween}>
+                      <Text style={styles.titleH3}>
+                        지금 많이 듣고 있는 강의클립
+                      </Text>
+                      <Text
+                        style={[styles.titleParagraph, { marginLeft: 'auto' }]}
+                      >
+                        {updatedAt} 업데이트
+                      </Text>
                     </View>
-                  )}
-                </View>
-              )}
-            </View>
-          )}
-        </ScrollView>
-      </PTRView>
+                    <View style={styles.titleHr} />
+
+                    <ClipRank
+                      itemData={this.props.store.clipRankData}
+                      clipRankContentSize={this.props.store.clipRankContentSize}
+                    />
+
+                    {globalStore.welaaaAuth && (
+                      <View>
+                        <View style={CommonStyles.alignJustifyItemCenter}>
+                          <Text style={styles.titleH3}>이어보기</Text>
+                          <Text style={styles.titleParagraph}>
+                            {updatedAt} 업데이트
+                          </Text>
+                        </View>
+                        <View style={styles.titleHr} />
+
+                        {this.props.store.classUseData &&
+                          this.props.store.classUseData.length === 0 && (
+                            <Text
+                              style={{
+                                paddingTop: 20,
+                                paddingBottom: 20,
+                                textAlign: 'center',
+                              }}
+                            >
+                              재생 내역이 없습니다
+                            </Text>
+                          )}
+
+                        {this.props.store.classUseData &&
+                          this.props.store.classUseData.length > 0 && (
+                            <ClassContinueList
+                              itemData={this.props.store.classUseData}
+                            />
+                          )}
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
+        </PTRView>
+      </View>
     );
   }
 }
