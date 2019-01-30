@@ -209,6 +209,7 @@ class HomeAudioPage extends React.Component {
       }
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     const renderPagination = (index, total, context) => {

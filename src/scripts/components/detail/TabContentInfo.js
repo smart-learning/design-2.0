@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import moment from 'moment';
 import React from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   ImageBackground,
@@ -235,6 +236,7 @@ class TabContentInfo extends React.Component {
       }
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     try {
@@ -246,6 +248,7 @@ class TabContentInfo extends React.Component {
       }
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     return (

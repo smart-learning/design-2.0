@@ -128,12 +128,14 @@ class AudioBookDetailPage extends React.Component {
         this.data.itemEvaluationData = evaluation;
       } catch (error) {
         console.log(error);
+        Alert.alert('Error', '통신에 실패했습니다.');
       }
       try {
         const comments = await net.getReviewList(resultBookData.cid);
         this.data.itemReviewData = comments;
       } catch (error) {
         console.log(error);
+        Alert.alert('Error', '통신에 실패했습니다.');
       }
     }
     this.data.cid = resultBookData.cid;

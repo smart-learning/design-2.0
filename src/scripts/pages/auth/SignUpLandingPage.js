@@ -228,6 +228,7 @@ class SignUpLandingPage extends React.Component {
         }
         Alert.alert(message);
         console.log(error);
+        Alert.alert('Error', '통신에 실패했습니다.');
       });
   }
 

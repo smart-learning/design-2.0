@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import React from 'react';
 import {
+  Alert,
   BackHandler,
   Dimensions,
   StyleSheet,
@@ -216,6 +217,7 @@ class HomePage extends React.Component {
       });
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     // mobx 바인딩
@@ -227,21 +229,25 @@ class HomePage extends React.Component {
       this.store.clipRankData = await net.getHomeClipRank(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.homeBannerData = await net.getMainBanner(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.audioNewData = await net.getAudioBookList(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.audioMonth = await net.getHomeAudioBookMonth(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     this.store.clipRankData = await net.getHomeClipRank(isRefresh);
     this.store.audioNewData = await net.getAudioBookList(isRefresh);
@@ -251,6 +257,7 @@ class HomePage extends React.Component {
       this.store.audioDaily = await net.getDailyBookList(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     this.store.audioHotData = homeAudioBookContents.hot;
@@ -261,16 +268,19 @@ class HomePage extends React.Component {
       this.store.classUseData = await net.getPlayRecentVideoCourses(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.audioBuyData = await net.getPurchasedAudioBooks(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.audioUseData = await net.getPlayRecentAudioBook(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
   };
 
@@ -327,6 +337,7 @@ class HomePage extends React.Component {
         this.getData();
       } catch (error) {
         console.log(error);
+        Alert.alert('Error', '통신에 실패했습니다.');
       }
     }
     if (this.props.navigation.isFocused()) {

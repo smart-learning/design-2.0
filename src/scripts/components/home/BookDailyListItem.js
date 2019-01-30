@@ -97,6 +97,7 @@ class BookDailyList extends React.Component {
       mm = today.getMonth() + 1; //January is 0!
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     return (
