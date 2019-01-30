@@ -72,7 +72,7 @@
                                                 userId : [args objectForKey : @"userId"]
                                              contentId : [args objectForKey : @"cid"]
                                             optionalId : [args objectForKey : @"oid"]
-                                     //downloadOptions : @""    // PallyConFPSSDK v1.6.3 적용 시 주석을 해제해주시기 바랍니다.
+                                       downloadOptions : @""
                                       downloadDelegate : self ];
   
     if ( !downloadTask )
@@ -105,8 +105,8 @@
                                                 userId : [args objectForKey : @"userId"]
                                              contentId : [args objectForKey : @"cid"]
                                             optionalId : [args objectForKey : @"oid"]
-                                     //downloadOptions : @""    // PallyConFPSSDK v1.6.3 적용 시 주석을 해제해주시기 바랍니다.
-                                      downloadDelegate : self ];    //  id<PallyConFPSDownloadDelegate> downloadDelegate
+                                       downloadOptions : @""
+                                      downloadDelegate : self ];
     [downloadTask resume];
 }
 
@@ -1130,120 +1130,142 @@
 // 로컬에 저장된 파일과 DB 를 비교해서 유효하지 않은 파일 및 DB 레코드 삭제.
 // 다운로드 콘텐츠 페이지 진입시 호출.
 // 화면이 resume 될 때에도 리액트 네이티브 단에서 호출하는것 고려.
-- (void)synchronizeLocalFilesWithDB
+- (void) synchronizeLocalFilesWithDB
 {
-  NSLog(@"  synchronizeLocalFilesWithDB");
+    NSLog(@"  synchronizeLocalFilesWithDB");
   
-  // 현재 다운로드 중인 파일인데 삭제되어버리면 안되므로 아래의 처리 추가. 2018.10.29
-  // ㄴ다운로드 중에 다운로드 콘텐츠 화면 진입시 에러 발생하는 문제 있었다. #364 issue
-  // -> 다운로드 중인 상황에서는 동기화 처리 하지 않음.
-  if([self numberOfItemsInActive] > 0 // 진행중인 작업갯수
-     || [self numberOfItemsInWating] > 0) // 대기중인 작업갯수
-  {
-    return;
-  }
+    // 현재 다운로드 중인 파일인데 삭제되어버리면 안되므로 아래의 처리 추가. 2018.10.29
+    // ㄴ다운로드 중에 다운로드 콘텐츠 화면 진입시 에러 발생하는 문제 있었다. #364 issue
+    // -> 다운로드 중인 상황에서는 동기화 처리 하지 않음.
+    /* 진행중인 작업갯수가 0보다 크거나 대기중인 작업갯수가 0보다 크다면 */
+    if ( [self numberOfItemsInActive] > 0 || [self numberOfItemsInWating] > 0 )
+    {
+        return;
+    }
   
-  // 로컬에 저장된 콘텐츠 파일(동영상 파일 경로)과 연결된 DB 레코드가 있는지 확인해보고 없으면 삭제(트랙킹이 안되는 파일이므로).
-  // Asset 폴더 경로부터 비교. 예) com.apple.UserManagedAssets.jtB6U2/v100015_005_2796BB4F50ADAA4C.movpkg
-  NSError* error = nil;
-  NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-  NSArray* hlsContentsPaths = [self loadLibraryContentsAs:@"com.apple.UserManagedAssets."];
+    // 로컬에 저장된 콘텐츠 파일(동영상 파일 경로)과 연결된 DB 레코드가 있는지 확인해보고 없으면 삭제(트랙킹이 안되는 파일이므로).
+    // Asset 폴더 경로부터 비교. 예) com.apple.UserManagedAssets.jtB6U2/v100015_005_2796BB4F50ADAA4C.movpkg
+    NSError *error = nil;
+    NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSArray *hlsContentsPaths = [self loadLibraryContentsAs : @"com.apple.UserManagedAssets."];
   
-  for(NSString* hlsDirName in hlsContentsPaths){
-    NSLog(@"  hlsDirName : %@",hlsDirName);   // ex) com.apple.UserManagedAssets.jtB6U2
-    NSString* hlsPath = [libraryPath stringByAppendingPathComponent:hlsDirName];
-    NSArray *hlsFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:hlsPath error:&error];
-    for(NSString* fileName in hlsFiles){
-      NSString* contentFullPath = [NSString stringWithFormat:@"%@/%@",hlsPath,fileName];
-      NSLog(@"  HLS contentFullPath : %@", contentFullPath);
+    for ( NSString *hlsDirName in hlsContentsPaths )
+    {
+        NSLog(@"  hlsDirName : %@", hlsDirName);   // ex) com.apple.UserManagedAssets.jtB6U2
+        NSString *hlsPath = [libraryPath stringByAppendingPathComponent : hlsDirName];
+        NSArray *hlsFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:hlsPath error:&error];
       
-      // 경로를 줄여서 저장 -> Library/ 부터.
-      NSString* contentPath = [self getPathFromLibraryDir:contentFullPath];
-      NSLog(@"  HLS contentPath : %@", contentPath);
+        for ( NSString *fileName in hlsFiles )
+        {
+            NSString *contentFullPath = [NSString stringWithFormat : @"%@/%@", hlsPath, fileName];
+            NSLog(@"  HLS contentFullPath : %@", contentFullPath);
+          
+            // 경로를 줄여서 저장 -> Library/ 부터.
+            NSString *contentPath = [self getPathFromLibraryDir : contentFullPath];
+            NSLog(@"  HLS contentPath : %@", contentPath);
+        
+            NSMutableArray *searchResults = [[DatabaseManager sharedInstance] searchDownloadedContentsPath : contentPath];
+          
+            if ( searchResults != nil && searchResults.count > 0 )
+            {
+                // DB 와 연결되어 있는 파일
+                Clip *searchedClip = searchResults[0];
+                NSLog(@"  This File(%@) is connected with cid %@", contentPath, searchedClip.cid);
+            }
+            else
+            {
+                // DB 에 기록이 없는 파일 -> 삭제
+                NSLog(@"  No DB Record -> remove this file : %@", contentPath);
+                [self removeHlsFileAtPath : contentPath];
+            }
+        }
+    }
+  
+    // DB 레코드에 있는 로컬파일이 실제로 존재하지 않거나 재생불가능한 파일일 경우 해당 DB 레코드 삭제
+    NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
+  
+    for ( NSDictionary *record in allRecords )
+    {
+        NSString *localFilePath = record[@"contentPath"];
+        NSString *cid = record[@"cid"];
       
-      NSMutableArray* searchResults = [[DatabaseManager sharedInstance] searchDownloadedContentsPath:contentPath];
-      if(searchResults!=nil && searchResults.count>0){
-        // DB 와 연결되어 있는 파일
-        Clip* searchedClip = searchResults[0];
-        NSLog(@"  This File(%@) is connected with cid %@", contentPath, searchedClip.cid);
-      }else{
-        // DB 에 기록이 없는 파일 -> 삭제
-        NSLog(@"  No DB Record -> remove this file : %@", contentPath);
-        [self removeHlsFileAtPath:contentPath];
-      }
+        if ( cid == nil )
+        {
+            continue;
+        }
+      
+        if ( localFilePath && localFilePath.length > 0 )
+        {
+            if ( [self isPlayableOfflineAsset : localFilePath] )
+            {
+                // 재생가능한 파일
+            }
+            else
+            {
+                // 재생불가능 파일(파일없음 혹은 파일오류 등)
+                [[DatabaseManager sharedInstance] removeDownloadedContentsId : cid];
+            }
+        }
+        else
+        {
+            [[DatabaseManager sharedInstance] removeDownloadedContentsId:cid];
+        }
     }
-  }
-  
-  // DB 레코드에 있는 로컬파일이 실제로 존재하지 않거나 재생불가능한 파일일 경우 해당 DB 레코드 삭제
-  NSMutableArray *allRecords = [[DatabaseManager sharedInstance] searchDownloadedContentsAll];
-  
-  for(NSDictionary *record in allRecords){
-    NSString *localFilePath = record[@"contentPath"];
-    NSString *cid = record[@"cid"];
-    
-    if (cid == nil) {
-      continue;
-    }
-    
-    if (localFilePath && localFilePath.length>0) {
-      if ([self isPlayableOfflineAsset:localFilePath]) {
-        // 재생가능한 파일
-      }else{
-        // 재생불가능 파일(파일없음 혹은 파일오류 등)
-        [[DatabaseManager sharedInstance] removeDownloadedContentsId:cid];
-      }
-    }else{
-      [[DatabaseManager sharedInstance] removeDownloadedContentsId:cid];
-    }
-  }
 }
 
 
 // 라이브러리 폴더 안에 특정 문자열 패턴이 포함된 이름의 디렉토리나 파일이 있으면 리턴해준다(동영상 저장 경로를 찾기 위해 사용).
-- (NSArray*)loadLibraryContentsAs:(NSString *)folderPrefixPattern{
+- (NSArray *) loadLibraryContentsAs : (NSString *) folderPrefixPattern
+{
+    NSMutableArray *filteredContents = [[NSMutableArray alloc] init];
   
-  NSMutableArray* filteredContents = [[NSMutableArray alloc] init];
+    NSError *error = nil;
+    NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSArray *libraryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:libraryPath error:&error];
   
-  NSError* error = nil;
-  NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-  NSArray *libraryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:libraryPath error:&error];
-  if(error){
-    NSLog(@"  error.description : %@",error.description);
-    return nil;
-  }
-  for (NSString *strFileName in libraryContents) {
-    NSLog(@"  file(or dir) name --> %@", strFileName);
-    if([strFileName hasPrefix:folderPrefixPattern]){
-      [filteredContents addObject:strFileName];
+    if ( error )
+    {
+        NSLog(@"  error.description : %@", error.description);
+        return nil;
     }
-  }
   
-  return filteredContents;
+    for ( NSString *strFileName in libraryContents )
+    {
+        NSLog(@"  file(or dir) name --> %@", strFileName);
+        if ( [strFileName hasPrefix : folderPrefixPattern] )
+        {
+            [filteredContents addObject : strFileName];
+        }
+    }
+  
+    return filteredContents;
 }
 
-
 // 재생가능한 파일인지 확인.
-- (BOOL)isPlayableOfflineAsset:(NSString *)contentFullPath
+- (BOOL) isPlayableOfflineAsset : (NSString *) contentFullPath
 {
-  NSLog(@"  HLS contentFullPath : %@", contentFullPath);
+    NSLog(@"  HLS contentFullPath : %@", contentFullPath);
   
-  NSString* assetPath = [self getPathFromLibraryDir:contentFullPath];
-  NSLog(@"  HLS assetPath : %@", assetPath);
+    NSString *assetPath = [self getPathFromLibraryDir : contentFullPath];
+    NSLog(@"  HLS assetPath : %@", assetPath);
   
-  NSURL* baseURL = [NSURL fileURLWithPath:NSHomeDirectory()];
-  NSString* assetURL = [[baseURL absoluteString] stringByAppendingPathComponent:assetPath];
-  NSLog(@"  assetURL absoluteString : %@", assetURL);
+    NSURL *baseURL = [NSURL fileURLWithPath : NSHomeDirectory()];
+    NSString *assetURL = [[baseURL absoluteString] stringByAppendingPathComponent : assetPath];
+    NSLog(@"  assetURL absoluteString : %@", assetURL);
   
-  AVURLAsset* asset = [AVURLAsset assetWithURL:[NSURL URLWithString:assetURL]];
-  AVAssetCache* cache = asset.assetCache;
+    AVURLAsset *asset = [AVURLAsset assetWithURL : [NSURL URLWithString : assetURL]];
+    AVAssetCache *cache = asset.assetCache;
   
-  if (cache && [cache isPlayableOffline]) {
-    NSLog(@"  isPlayableOfflineAsset true");
-    return YES;
-  }else{
-    NSLog(@"  isPlayableOfflineAsset false");
-    return NO;
-  }
+    if ( cache && [cache isPlayableOffline] )
+    {
+        NSLog(@"  isPlayableOfflineAsset true");
+        return YES;
+    }
+    else
+    {
+        NSLog(@"  isPlayableOfflineAsset false");
+        return NO;
+    }
 }
 
 
@@ -1354,41 +1376,45 @@
    totalTimeRangesLoaded : (NSArray<NSValue *> * _Nonnull) loadedTimeRanges
  timeRangeExpectedToLoad : (CMTimeRange) timeRangeExpectedToLoad
 {
-  // 다운로드 진행된 percentage 를 계산해서 출력
+    // 다운로드 진행된 percentage 를 계산해서 출력
+    double percentComplete = 0.0;
+
+    for ( NSValue *value in loadedTimeRanges )
+    {
+        CMTimeRange loadedTimeRange = value.CMTimeRangeValue;
+        percentComplete += CMTimeGetSeconds(loadedTimeRange.duration) / CMTimeGetSeconds(timeRangeExpectedToLoad.duration);
+    }
   
-  double percentComplete = 0.0;
-  for(NSValue* value in loadedTimeRanges){
-    CMTimeRange loadedTimeRange = value.CMTimeRangeValue;
-    percentComplete += CMTimeGetSeconds(loadedTimeRange.duration) / CMTimeGetSeconds(timeRangeExpectedToLoad.duration);
-  }
+    FPSDownload *download = nil;
+    @try {
+        download = [_activeDownloads objectForKey : contentId];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"  %@", exception.reason);
+        return;
+    }
+    @finally {}
   
-  FPSDownload* download = nil;
-  @try {
-    download = [_activeDownloads objectForKey:contentId];
-  }
-  @catch (NSException *exception) {
-    NSLog(@"%@", exception.reason);
-    return;
-  }
-  @finally {}
+    if ( download )
+    {
+        download.progress = percentComplete;
+        NSLog(@"  activeDownload contentId : %@ ( %f )", contentId, percentComplete * 100.0);
+    }
+    else
+    {
+        download.progress = 0.0;
+    }
   
-  if (download) {
-    download.progress = percentComplete;
-    NSLog(@"  activeDownload contentId : %@ ( %f )", contentId, percentComplete * 100.0);
-  }else{
-    download.progress = 0.0;
-  }
+    // TODO : 다운로드 진행 상황을 보여주는 곳의 UI 를 여기서 업데이트 해준다(프로그레스바 등). 그럴려면 프로그레스바의 UI 주소를 미리 받아둬야 한다.
+    // 델리게이트 방식 등으로.
   
-  // TODO : 다운로드 진행 상황을 보여주는 곳의 UI 를 여기서 업데이트 해준다(프로그레스바 등). 그럴려면 프로그레스바의 UI 주소를 미리 받아둬야 한다.
-  // 델리게이트 방식 등으로.
-  
-  if ( _delegateFpsDownload )
-  {
-    [_delegateFpsDownload downloadContent : contentId
-                                  didLoad : timeRange
-                    totalTimeRangesLoaded : loadedTimeRanges
-                  timeRangeExpectedToLoad : timeRangeExpectedToLoad];
-  }
+    if ( _delegateFpsDownload )
+    {
+        [_delegateFpsDownload downloadContent : contentId
+                                      didLoad : timeRange
+                        totalTimeRangesLoaded : loadedTimeRanges
+                      timeRangeExpectedToLoad : timeRangeExpectedToLoad];
+    }
 }
 
 
@@ -1431,47 +1457,35 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
 #pragma mark - Notifications 각종 알림 관련
 - (void) showToast : (NSString *) text
 {
-  [[UIApplication sharedApplication].keyWindow makeToast:text];
+    [[UIApplication sharedApplication].keyWindow makeToast : text];
 }
 
-
-- (void) showAlertOk : (NSString *) title message:(NSString *)msg
+- (void) showAlertOk : (NSString *) title
+             message : (NSString *) msg
 {
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle : title
-                                                                 message : msg
-                                                          preferredStyle : UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle : title
+                                                                   message : msg
+                                                            preferredStyle : UIAlertControllerStyleAlert];
   
-  UIAlertAction *ok = [UIAlertAction actionWithTitle : @"확인"
-                                              style : UIAlertActionStyleDefault
-                                            handler : ^(UIAlertAction * action)
-                      {
-                        [alert dismissViewControllerAnimated:YES completion:nil];
-                      }];
+    UIAlertAction *ok = [UIAlertAction actionWithTitle : @"확인"
+                                                 style : UIAlertActionStyleDefault
+                                               handler : ^(UIAlertAction *action)
+                                                         {
+                                                             [alert dismissViewControllerAnimated:YES completion:nil];
+                                                         }];
   
-  [alert addAction : ok];
+    [alert addAction : ok];
   
-  // root뷰컨트롤러를 덮고 있는 뷰가 있으면 그위에 팝업을 띄우기 위해 아래와 같이 처리. 무조건 rootViewController에 띄우면 안뜨는 경우 있으므로. 2018.11.7.
-  UIViewController *frontViewController = [[UIApplication sharedApplication].keyWindow.rootViewController presentedViewController];
-  if (!frontViewController) {
-    frontViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-  }
-  [frontViewController presentViewController : alert
-                                    animated : YES
-                                  completion : nil];
+    // root뷰컨트롤러를 덮고 있는 뷰가 있으면 그위에 팝업을 띄우기 위해 아래와 같이 처리. 무조건 rootViewController에 띄우면 안뜨는 경우 있으므로. 2018.11.7.
+    UIViewController *frontViewController = [[UIApplication sharedApplication].keyWindow.rootViewController presentedViewController];
+    if ( !frontViewController )
+    {
+        frontViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    }
+  
+    [frontViewController presentViewController : alert
+                                      animated : YES
+                                    completion : nil];
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-

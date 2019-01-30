@@ -87,9 +87,7 @@ import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.common.images.WebImage;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.pallycon.widevinelibrary.PallyconWVMSDKFactory;
 import java.io.IOException;
 import java.io.Reader;
@@ -116,7 +114,6 @@ import kr.co.influential.youngkangapp.util.HttpCon;
 import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.MyBroadcastReceiver;
-import kr.co.influential.youngkangapp.util.NetworkUtil;
 import kr.co.influential.youngkangapp.util.Preferences;
 import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
@@ -772,24 +769,15 @@ public class PlayerActivity extends BasePlayerActivity {
       initialize();
 
     } else {
-      String json = Preferences.getWelaaaWebPlayInfo(getApplicationContext());
       Gson gson = new Gson();
-      WebPlayerInfo mWebPlayerInfoFromJson = gson.fromJson(json, WebPlayerInfo.class);
-      mWebPlayerInfo = mWebPlayerInfoFromJson;
+      String jsonWebPlayerInfo = Preferences.getWelaaaWebPlayInfo(PlayerActivity.this);
+      mWebPlayerInfo = gson.fromJson(jsonWebPlayerInfo, WebPlayerInfo.class);
 
-      Preferences.setWelaaaWebPlayInfo(getApplicationContext(), json);
-
-      try {
-        JsonElement jsonElement = new JsonParser().parse(extras.getString("play_info"));
-        JsonObject jsonPlayInfo = jsonElement.getAsJsonObject();
-        CONTENT_TYPE = jsonPlayInfo.get("type").getAsString();
-        CAN_PLAY = jsonPlayInfo.get("can_play").getAsBoolean();
-        IS_FREE = jsonPlayInfo.get("is_free").getAsBoolean();
-        EXPIRE_AT = jsonPlayInfo.get("expire_at").getAsString();
-        CONTENT_HISTORY_SEC = jsonPlayInfo.get("history_start_seconds").getAsInt();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      CONTENT_TYPE = extras.getString("type", "");
+      CAN_PLAY = Boolean.parseBoolean(extras.getString("can_play", "false"));
+      IS_FREE = Boolean.parseBoolean(extras.getString("if_free", "false"));
+      EXPIRE_AT = extras.getString("expire_at", "");
+      CONTENT_HISTORY_SEC = Integer.parseInt(extras.getString("history_start_seconds", "0"));
 
       cId = extras.getString(PlaybackManager.DRM_CID, "");
       if (simpleExoPlayerView.getPlayer() != null) {
@@ -1758,7 +1746,17 @@ public class PlayerActivity extends BasePlayerActivity {
     mAniSlideHide = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
     mBtnForward = findViewById(R.id.CDN_TAG_BTN_FORWARD);
+    mBtnForward.setText(R.string.txt_backwardforward_30);
     mBtnBackward = findViewById(R.id.CDN_TAG_BTN_BACKWARD);
+    mBtnBackward.setText(R.string.txt_backwardforward_30);
+    if (CONTENT_TYPE != null && cId != null) {
+      if (CONTENT_TYPE.equals("video-course")) {
+        if (!cId.startsWith("z")) {
+          mBtnForward.setText(R.string.txt_backwardforward_10);
+          mBtnBackward.setText(R.string.txt_backwardforward_10);
+        }
+      }
+    }
     mBtnClosed = findViewById(R.id.BTN_CLOSE);
     mButtonAudio = findViewById(R.id.BTN_AUDIO);
     mButtonVideo = findViewById(R.id.BTN_VIDEO);
@@ -1869,9 +1867,7 @@ public class PlayerActivity extends BasePlayerActivity {
         mBtnDownload.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_download));
       }
     } catch (
-        Exception e)
-
-    {
+        Exception e) {
       e.printStackTrace();
     }
 
@@ -2130,7 +2126,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   } else {
                     player.seekTo(player.getCurrentPosition() - 30000);
                   }
-                }else{
+                } else {
                   if (player.getCurrentPosition() - 10000 < 0) {
                     //
                   } else {
@@ -2139,7 +2135,7 @@ public class PlayerActivity extends BasePlayerActivity {
                 }
               }
 
-            }else{
+            } else {
               if (player.getCurrentPosition() - 30000 < 0) {
                 //
               } else {
@@ -2161,7 +2157,7 @@ public class PlayerActivity extends BasePlayerActivity {
                   } else {
                     player.seekTo(player.getCurrentPosition() + 30000);
                   }
-                }else{
+                } else {
                   if (player.getCurrentPosition() + 10000 > player.getDuration()) {
                     //
                   } else {
@@ -2170,7 +2166,7 @@ public class PlayerActivity extends BasePlayerActivity {
                 }
               }
 
-            }else{
+            } else {
               if (player.getCurrentPosition() + 30000 > player.getDuration()) {
                 //
               } else {
@@ -3331,25 +3327,39 @@ public class PlayerActivity extends BasePlayerActivity {
     LinearLayout textFullTimeView = findViewById(R.id.fullTextView);
     LinearLayout fontView = findViewById(R.id.longScroll_font);
 
-    if (textFullView != null) textFullView.removeAllViews();
-    if (textFullTimeView != null) textFullTimeView.removeAllViews();
+    if (textFullView != null) {
+      textFullView.removeAllViews();
+    }
+    if (textFullTimeView != null) {
+      textFullTimeView.removeAllViews();
+    }
 
-    if (longSubTitlesTextView != null) longSubTitlesTextView = null;
-    if (longSubTitlesTextTimeView != null) longSubTitlesTextTimeView = null;
+    if (longSubTitlesTextView != null) {
+      longSubTitlesTextView = null;
+    }
+    if (longSubTitlesTextTimeView != null) {
+      longSubTitlesTextTimeView = null;
+    }
 
     ScrollView longView = findViewById(R.id.longScroll);
     ScrollView longScrollTime = findViewById(R.id.longScrollTime);
 
-    int fontcolor = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long);
-    int fontcolorWhite = ContextCompat.getColor(getApplicationContext(), R.color.subtitls_font_color_long_white);
+    int fontcolor = ContextCompat
+        .getColor(getApplicationContext(), R.color.subtitls_font_color_long);
+    int fontcolorWhite = ContextCompat
+        .getColor(getApplicationContext(), R.color.subtitls_font_color_long_white);
 
     longSubTitlesTextView = new TextView[mSubtitlsmemo.length - 2];
     longSubTitlesTextTimeView = new TextView[mSubtitlsmemo.length - 2];
 
     for (int j = 0; j < mSubtitlsmemo.length - 2; j++) {
 
-      if (longSubTitlesTextView[j] != null) longSubTitlesTextView[j] = null;
-      if (longSubTitlesTextTimeView[j] != null) longSubTitlesTextTimeView[j] = null;
+      if (longSubTitlesTextView[j] != null) {
+        longSubTitlesTextView[j] = null;
+      }
+      if (longSubTitlesTextTimeView[j] != null) {
+        longSubTitlesTextTimeView[j] = null;
+      }
 
       if (j == getTextViewNumber()) {
 
@@ -3543,9 +3553,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public void setMyrepuSetUI() {
 
     final Handler setMyrepuSetUIHandler = new Handler() {
-      public void handleMessage(android.os.Message msg)
-
-      {
+      public void handleMessage(android.os.Message msg) {
         try {
 
           if (CONTENT_TYPE.equals("video-course")) {
@@ -3604,9 +3612,7 @@ public class PlayerActivity extends BasePlayerActivity {
   public void setRelatedUI() {
 
     final Handler setRelatedUIHandler = new Handler() {
-      public void handleMessage(android.os.Message msg)
-
-      {
+      public void handleMessage(android.os.Message msg) {
         try {
 
           if (CONTENT_TYPE.equals("video-course")) {
@@ -4729,7 +4735,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
         if (player != null) {
 
-          if(player.getPlayWhenReady()){
+          if (player.getPlayWhenReady()) {
             player.setPlayWhenReady(true);
           }
 
@@ -4953,19 +4959,19 @@ public class PlayerActivity extends BasePlayerActivity {
               Player player = LocalPlayback.getInstance(PlayerActivity.this).getPlayer();
               try {
 //                if (LocalPlayback.getInstance(this).isPlaying()) {
-                  BeforeExtras = mediaController.getMetadata().getBundle();
-                  String beforeCid = BeforeExtras.getString("drm_cid");
+                BeforeExtras = mediaController.getMetadata().getBundle();
+                String beforeCid = BeforeExtras.getString("drm_cid");
 
-                  //  update
-                  if (ContentManager().isProgressExist(beforeCid) > 0) {
-                    ContentManager()
-                        .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()),
-                            "UPDATE");
-                    //insert
-                  } else {
-                    ContentManager().insertProgress(beforeCid,
-                        String.valueOf(player.getCurrentPosition()));
-                  }
+                //  update
+                if (ContentManager().isProgressExist(beforeCid) > 0) {
+                  ContentManager()
+                      .updateProgress(beforeCid, String.valueOf(player.getCurrentPosition()),
+                          "UPDATE");
+                  //insert
+                } else {
+                  ContentManager().insertProgress(beforeCid,
+                      String.valueOf(player.getCurrentPosition()));
+                }
 //                }
 
               } catch (Exception e) {
@@ -5030,19 +5036,19 @@ public class PlayerActivity extends BasePlayerActivity {
         fromMediaSession = intent.getBooleanExtra(PlaybackManager.FROM_MEDIA_SESSION, false);
       }
 
-      if(fromMediaSession){
+      if (fromMediaSession) {
         if (!playWhenReady) {
           attachPlayerView();
         } else {
           getTransportControls().playFromUri(uri, extras);
           attachPlayerView();
         }
-      }else{
+      } else {
         getTransportControls().playFromUri(uri, extras);
         attachPlayerView();
       }
 
-    }else{
+    } else {
       getTransportControls().playFromUri(uri, extras);
       attachPlayerView();
     }
@@ -5077,7 +5083,7 @@ public class PlayerActivity extends BasePlayerActivity {
               .getSystemService(Context.CONNECTIVITY_SERVICE);
           NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-          if(netInfo!=null){
+          if (netInfo != null) {
             setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
                 getwebPlayerInfo().getCname()[getContentId()]);
 
@@ -5088,7 +5094,7 @@ public class PlayerActivity extends BasePlayerActivity {
               mCurrentTimeHandler.sendMessageDelayed(msg, 100);
             }
 
-          }else{
+          } else {
             if (getTransportControls() != null) {
 
               UiThreadUtil.runOnUiThread(new Runnable() {

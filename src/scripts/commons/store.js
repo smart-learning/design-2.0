@@ -1,7 +1,8 @@
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 import axios from 'axios';
 import { observable } from 'mobx';
+import native from './native.js';
 
 let socialType;
 let socialToken;
@@ -55,6 +56,20 @@ class Store {
     this.initialRoute = {
       gesturesEnabled: false,
     };
+
+    if (Platform.OS === 'android') {
+      /**
+       * 2018.12.4
+       * jungon
+       * Invalidate native authorization.
+       */
+      if (!!auth) {
+        native.invalidateAuthorization({
+          id: welaaaAuth.profile.id.toString(),
+          access_token: welaaaAuth.access_token,
+        });
+      }
+    }
   }
 
   get currentMembership() {
@@ -119,7 +134,7 @@ class Store {
     isWifiPlay: true,
     isWifiDownload: true,
     isAlert: true,
-    isEmail: false
+    isEmail: false,
   };
 
   @observable

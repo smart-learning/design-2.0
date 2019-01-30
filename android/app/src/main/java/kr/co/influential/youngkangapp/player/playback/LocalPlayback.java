@@ -109,6 +109,8 @@ public final class LocalPlayback implements Playback,
   private boolean mPlayOnFocusGain;
   private Callback mCallback;
   private boolean mAudioNoisyReceiverRegistered;
+  private boolean mNetworkReceiverRegistered;
+
   private MediaMetadataCompat currentMedia;
 
   private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
@@ -165,6 +167,38 @@ public final class LocalPlayback implements Playback,
               i.setAction(MediaService.ACTION_CMD);
               i.putExtra(MediaService.CMD_NAME, MediaService.CMD_PAUSE);
               mContext.startService(i);
+            }
+          }
+        }
+      };
+
+  private final IntentFilter mNetworkIntentFilter =
+      new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+  private final BroadcastReceiver mNetworkReceiver =
+      new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+
+            ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+            if (!isConnected) {
+              if (mExoPlayer != null) {
+                mExoPlayer.setPlayWhenReady(false);
+              }
+
+              UiThreadUtil.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                  Utils.logToast(mContext, mContext.getString(R.string.info_networkfail));
+                }
+              });
             }
           }
         }
@@ -252,6 +286,7 @@ public final class LocalPlayback implements Playback,
 
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
+    unregisterNetworkReceiver();
     releaseResources(true);
   }
 
@@ -311,34 +346,33 @@ public final class LocalPlayback implements Playback,
   @Override
   public void play(MediaMetadataCompat item) {
 
-    try {
+    ConnectivityManager cm =
+        (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-      ConnectivityManager cmgr = (ConnectivityManager) mContext
-          .getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
+    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+    boolean isConnected = activeNetwork != null &&
+        activeNetwork.isConnectedOrConnecting();
 
-      if(netInfo==null){
-
-        if (mExoPlayer != null) {
-          mExoPlayer.setPlayWhenReady(false);
-        }
-
-        UiThreadUtil.runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            Utils.logToast(mContext, mContext.getString(R.string.info_networkfail));
-          }
-        });
-
-        return;
+    if (!isConnected) {
+      if (mExoPlayer != null) {
+        mExoPlayer.setPlayWhenReady(false);
       }
-    }catch (Exception e){
-      e.printStackTrace();
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          Utils.logToast(mContext, mContext.getString(R.string.info_networkfail));
+        }
+      });
+
+      return;
     }
 
     mPlayOnFocusGain = true;
     tryToGetAudioFocus();
     registerAudioNoisyReceiver();
+    registerNetworkReceiver();
+
     Uri uri = item.getDescription().getMediaUri();
 
     if (uri == null) {
@@ -349,6 +383,12 @@ public final class LocalPlayback implements Playback,
         !uri.equals(currentMedia.getDescription().getMediaUri());
     if (mediaHasChanged) {
       currentMedia = item;
+      String playWhenReady = currentMedia.getString(PlaybackManager.PLAY_WHEN_READY);
+      if (!TextUtils.isEmpty(playWhenReady)) {
+        startAutoPlay = Boolean.parseBoolean(playWhenReady);
+        currentMedia.getBundle().remove(PlaybackManager.PLAY_WHEN_READY);
+        setCurrentMedia(currentMedia);
+      }
     }
 
     ArrayList<HashMap<String, Object>> obj = null;
@@ -366,7 +406,10 @@ public final class LocalPlayback implements Playback,
           duration = String.valueOf(getobj.get("duration"));
 
           startSqlPosition = Long.parseLong(duration);
-          LogHelper.e(TAG, " CID " + currentCkey + " duration " + startSqlPosition);
+
+          if(startSqlPosition > mExoPlayer.getDuration()){
+            startSqlPosition = 0;
+          }
         }
       } else {
         startSqlPosition = 0;
@@ -537,8 +580,12 @@ public final class LocalPlayback implements Playback,
     configurePlayerState();
 
     if (Preferences.getSQLiteDuration(mContext)) {
-      mExoPlayer.seekTo(startSqlPosition);
 
+      if (startSqlPosition > mExoPlayer.getDuration()) {
+        mExoPlayer.seekTo(startSqlPosition);
+      } else {
+        mExoPlayer.seekTo(0);
+      }
       Preferences.setSQLiteDuration(mContext, false);
     }
 
@@ -555,6 +602,7 @@ public final class LocalPlayback implements Playback,
     // While paused, retain the player instance, but give up audio focus.
     releaseResources(false);
     unregisterAudioNoisyReceiver();
+    unregisterNetworkReceiver();
   }
 
   @Override
@@ -579,6 +627,7 @@ public final class LocalPlayback implements Playback,
 
     giveUpAudioFocus();
     unregisterAudioNoisyReceiver();
+    unregisterNetworkReceiver();
     releaseResources(false);
     clearStartPosition();
   }
@@ -588,6 +637,7 @@ public final class LocalPlayback implements Playback,
     LogHelper.d(TAG, "seekTo called with ", position);
     if (mExoPlayer != null) {
       registerAudioNoisyReceiver();
+      registerNetworkReceiver();
       mExoPlayer.seekTo(position);
     }
   }
@@ -600,6 +650,9 @@ public final class LocalPlayback implements Playback,
   @Override
   public void setCurrentMedia(MediaMetadataCompat item) {
     currentMedia = item;
+    if (mCallback != null) {
+      mCallback.setCurrentMedia(currentMedia);
+    }
   }
 
   @Override
@@ -647,6 +700,7 @@ public final class LocalPlayback implements Playback,
       pause();
     } else {
       registerAudioNoisyReceiver();
+      registerNetworkReceiver();
 
       if (mCurrentAudioFocusState == AUDIO_NO_FOCUS_CAN_DUCK) {
         // We're permitted to play, but only if we 'duck', ie: play softly
@@ -657,8 +711,13 @@ public final class LocalPlayback implements Playback,
 
       // If we were playing when we lost focus, we need to resume playing.
       if (mPlayOnFocusGain) {
-        mExoPlayer.setPlayWhenReady(true);
-        mPlayOnFocusGain = false;
+        if (startAutoPlay) {
+          mExoPlayer.setPlayWhenReady(true);
+          mPlayOnFocusGain = false;
+        } else {
+          mExoPlayer.setPlayWhenReady(false);
+          startAutoPlay = true;
+        }
       }
     }
   }
@@ -736,6 +795,20 @@ public final class LocalPlayback implements Playback,
     }
   }
 
+  private void registerNetworkReceiver() {
+    if (!mNetworkReceiverRegistered) {
+      mContext.registerReceiver(mNetworkReceiver, mNetworkIntentFilter);
+      mNetworkReceiverRegistered = true;
+    }
+  }
+
+  private void unregisterNetworkReceiver() {
+    if (mNetworkReceiverRegistered) {
+      mContext.unregisterReceiver(mNetworkReceiver);
+      mNetworkReceiverRegistered = false;
+    }
+  }
+
   @Override
   public void onPreExecute() {
 
@@ -795,13 +868,13 @@ public final class LocalPlayback implements Playback,
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
       switch (playbackState) {
+
         case Player.STATE_IDLE:
         case Player.STATE_BUFFERING:
         case Player.STATE_READY:
           if (mCallback != null) {
             mCallback.onPlaybackStatusChanged(getState());
           }
-
           restorePlaybackSpeedRate();
           break;
         case Player.STATE_ENDED:

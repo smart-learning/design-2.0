@@ -1,7 +1,7 @@
 # More documentation about how to customize your build
 # can be found here:
 # https://docs.fastlane.tools
-fastlane_version '2.113.0'
+fastlane_version '2.115.0'
 
 # This value helps us track success metrics for Fastfiles
 # we automatically generate. Feel free to remove this line

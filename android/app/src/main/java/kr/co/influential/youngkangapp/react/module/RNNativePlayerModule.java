@@ -1,5 +1,7 @@
 package kr.co.influential.youngkangapp.react.module;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -36,6 +38,8 @@ import com.google.android.exoplayer2.ParserException;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
@@ -93,7 +97,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
   private boolean checkAudioBookChapter = false;
 
-  private String userId = "";
+  private boolean playWhenReady;
 
   @Override
   public String getName() {
@@ -104,22 +108,12 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void play(ReadableMap content) {
     if (content.hasKey("offline") && content.getBoolean("offline")) {
       OfflineContentData offlineContentData = parseOfflineContentData(content);
-//      // TODO: 2018. 10. 2. Implements offline(play content that is downloaded).
-
       contentUrl = offlineContentData.getContentPath();
       contentName = offlineContentData.getcTitle();
       contentUuid = offlineContentData.getDrmSchemeUuid();
       contentDrmLicenseUrl = offlineContentData.getDrmLicenseUrl();
       contentUserId = offlineContentData.getUserId();
       contentCid = offlineContentData.getCid();
-
-//      LogHelper.e(TAG , "offlineContentData contentUrl " + contentUrl);
-//      LogHelper.e(TAG , "offlineContentData contentName " + contentName);
-//      LogHelper.e(TAG , "offlineContentData contentUuid " + contentUuid);
-//      LogHelper.e(TAG , "offlineContentData contentDrmLicenseUrl " + contentDrmLicenseUrl);
-//      LogHelper.e(TAG , "offlineContentData contentUserId " + contentUserId);
-//      LogHelper.e(TAG , "offlineContentData contentCid " + contentCid);
-
     } else {
       contentUrl = content.getString("uri");
       contentName = content.getString("name");
@@ -127,15 +121,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
       contentDrmLicenseUrl = content.getString("drmLicenseUrl");
       contentUserId = content.getString("userId");
       contentCid = content.getString("cid");
-
-//      LogHelper.e(TAG , " contentUrl " + contentUrl);
-//      LogHelper.e(TAG , " contentName " + contentName);
-//      LogHelper.e(TAG , " contentUuid " + contentUuid);
-//      LogHelper.e(TAG , " contentDrmLicenseUrl " + contentDrmLicenseUrl);
-//      LogHelper.e(TAG , " contentUserId " + contentUserId);
-//      LogHelper.e(TAG , " contentCid " + contentCid);
     }
-//    else {
     ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
         .getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
@@ -167,6 +153,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       return;
     } else {
+      playWhenReady = true;
+
       callbackMethodName = "play/contents-info";
       callbackMethod = "play";
 
@@ -246,24 +234,25 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
       Preferences.setWelaaaOauthToken(getReactApplicationContext(), token);
 
-      if(fcmFlag){
-        new SetConfig(getReactApplicationContext()).request("Y", "Y", "Y", "2100", "0800", new APICallback() {
-          @Override
-          public void response (String code, JSONObject json) {
-            //
-            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
-          }
-        });
-      }else{
-        new SetConfig(getReactApplicationContext()).request("N", "N", "N", "2100", "0800", new APICallback() {
-          @Override
-          public void response (String code, JSONObject json) {
-            //
-            LogHelper.d(TAG , " FCM setConFig " + fcmFlag + " code " +code + " json " + json );
-          }
-        });
+      if (fcmFlag) {
+        new SetConfig(getReactApplicationContext())
+            .request("Y", "Y", "Y", "2100", "0800", new APICallback() {
+              @Override
+              public void response(String code, JSONObject json) {
+                //
+                LogHelper.d(TAG, " FCM setConFig " + fcmFlag + " code " + code + " json " + json);
+              }
+            });
+      } else {
+        new SetConfig(getReactApplicationContext())
+            .request("N", "N", "N", "2100", "0800", new APICallback() {
+              @Override
+              public void response(String code, JSONObject json) {
+                //
+                LogHelper.d(TAG, " FCM setConFig " + fcmFlag + " code " + code + " json " + json);
+              }
+            });
       }
-
 
 
     } catch (Exception e) {
@@ -341,20 +330,37 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void selectProgressDatabase(ReadableMap content, Promise promise) {
-    // 2018.10.05
+  public void latestMiniPlayer() {
     try {
+      ArrayList<HashMap<String, Object>> content = ContentManager().getProgressCid();
+      if (content != null && content.size() > 0) {
+        contentCid = content.get(0).get("cid").toString();
 
-      String userId = content.getString("userId");
+        ConnectivityManager cmgr = (ConnectivityManager) getReactApplicationContext()
+            .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cmgr.getActiveNetworkInfo();
 
-      Gson gson = new Gson();
-      String json = gson.toJson(ContentManager().getProgressCid());
+        boolean isOnlywifiView = Preferences.getOnlyWifiView(getReactApplicationContext());
 
-      promise.resolve(json);
+        checkAudioBookChapter = Utils.checkCidAudioChapter(contentCid);
+
+        if (isOnlywifiView && netInfo.isConnected() && !netInfo.getTypeName().equals("WIFI")) {
+
+        } else {
+          playWhenReady = false;
+
+          contentUuid = "widevine";
+          contentDrmLicenseUrl = "http://tokyo.pallycon.com/ri/licenseManager.do";
+
+          callbackMethodName = "play/contents-info";
+          callbackMethod = "play";
+
+          sendData(WELEARN_WEB_URL + "play/contents-info/" + contentCid);
+        }
+      }
     } catch (Exception e) {
-      promise.reject(e);
+      e.printStackTrace();
     }
-
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
@@ -565,15 +571,15 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
                 } else {
 
-                  if(Utils.checkCidAudioChapter(contentCid)){
+                  if (Utils.checkCidAudioChapter(contentCid)) {
 
-                    if(contentCid.equals(json.getString("cid"))){
+                    if (contentCid.equals(json.getString("cid"))) {
                       contentId = i;
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");
                     }
 
-                  }else{
+                  } else {
                     if (i == 0) {
                       contentCid = json.getString("cid");
                       contentName = json.getString("title");
@@ -588,7 +594,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               }
 
               mWebPlayerInfo = new WebPlayerInfo(sb.toString());
-
             } else if (contentType.equals("audiobook")) {
 
               JSONObject dataObject = json.getJSONObject("data");
@@ -749,7 +754,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
               mWebPlayerInfo = new WebPlayerInfo(sb.toString());
             }
-
           } catch (Exception e) {
             e.printStackTrace();
 
@@ -929,7 +933,17 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   LogHelper.e(TAG, "can_play : " + can_play);
                   LogHelper.e(TAG, "Pre can_play : " + Preferences
                       .getWelaaaPreviewPlay(getReactApplicationContext()));
-                  ContextCompat.startActivity(activity, intent, null);
+
+                  intent.putExtra(PlaybackManager.PLAY_WHEN_READY, playWhenReady);
+
+                  if (playWhenReady) {
+                    ContextCompat.startActivity(activity, intent, null);
+                  } else {
+                    MediaControllerCompat mediaController = ((MainApplication) getApplicationContext())
+                        .getMediaController();
+                    mediaController.getTransportControls()
+                        .playFromUri(intent.getData(), intent.getExtras());
+                  }
                 }
 
                 return;
@@ -994,7 +1008,21 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
 
                 LogHelper.e(TAG, "Pre can_play : " + Preferences
                     .getWelaaaPreviewPlay(getReactApplicationContext()));
-                ContextCompat.startActivity(activity, intent, null);
+
+                intent.putExtra(PlaybackManager.PLAY_WHEN_READY, playWhenReady);
+
+                Gson gson = new Gson();
+                String jsonWebPlayerInfo = gson.toJson(mWebPlayerInfo);
+                Preferences.setWelaaaWebPlayInfo(getApplicationContext(), jsonWebPlayerInfo);
+
+                if (playWhenReady) {
+                  ContextCompat.startActivity(activity, intent, null);
+                } else {
+                  MediaControllerCompat mediaController = ((MainApplication) getApplicationContext())
+                      .getMediaController();
+                  mediaController.getTransportControls()
+                      .playFromUri(intent.getData(), intent.getExtras());
+                }
               }
 
             } else if (callbackMethod.equals("download")) {
@@ -1175,6 +1203,7 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     View.OnClickListener rightListner = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        playWhenReady = true;
 
         switch (alertWindowId) {
           case FLAG_PLAY_NETWORK_CHECK:
@@ -1188,7 +1217,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
             callbackMethod = "download";
 
             sendData(WELEARN_WEB_URL + "play/contents-info/" + contentCid);
-
             break;
         }
         mCustomDialog.dismiss();
@@ -1453,9 +1481,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
     if (content.hasKey("modified")) {
       offlineContentData.setModified(content.getString("modified"));
     }
-    if (content.hasKey("modified")) {
-      offlineContentData.setModified(content.getString("modified"));
-    }
     if (content.hasKey("oid")) {
       offlineContentData.setOid(content.getString("oid"));
     }
@@ -1495,25 +1520,24 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
         e.printStackTrace();
       }
 
-      new DeviceCert(getReactApplicationContext()).request(userData,  new APICallback() {
+      new DeviceCert(getReactApplicationContext()).request(userData, new APICallback() {
         public void response(String code, JSONObject json) {
-          LogHelper.d(TAG , "TAS DeviceCert response " + code + " json " + json);
+          LogHelper.d(TAG, "TAS DeviceCert response " + code + " json " + json);
         }
       });
 
       // 로그인 없이는 진행 될 수 없습니다.
       new LoginPms(getReactApplicationContext()).request(userId, userData, new APICallback() {
         public void response(String code, JSONObject json) {
-          LogHelper.d(TAG , "TAS LoginPms response " + code + " json " + json);
+          LogHelper.d(TAG, "TAS LoginPms response " + code + " json " + json);
         }
       });
-
 
       // TAS 서비스 시작 자동 수집을 위한 TAS 서비스 시작
       TAS.getInstance(getReactApplicationContext());
 
     } catch (Exception e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
   }
 
@@ -1521,8 +1545,8 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void tasLandingUrl(com.facebook.react.bridge.Callback resultCallback) {
     try {
       String landingUrl = Preferences.getWelaaaTasLandingUrl(getReactApplicationContext());
-      
-      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext() , "");
+
+      Preferences.setWelaaaTasLandingUrl(getReactApplicationContext(), "");
 
       resultCallback.invoke(landingUrl);
     } catch (Exception e) {
@@ -1534,11 +1558,21 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
   public void tasLogout() {
     new LogoutPms(getReactApplicationContext()).request(new APICallback() {
       @Override
-      public void response (String code, JSONObject json) {
-        LogHelper.d(TAG , "TAS LogoutPms response " + code + " json " + json);
+      public void response(String code, JSONObject json) {
+        LogHelper.d(TAG, "TAS LogoutPms response " + code + " json " + json);
       }
     });
   }
 
-
+  @ReactMethod
+  public void invalidateAuthorization(ReadableMap readableMap) {
+    if (readableMap.hasKey("id")) {
+      contentUserId = readableMap.getString("id");
+      Preferences.setWelaaaUserId(getReactApplicationContext(), contentUserId);
+    }
+    if (readableMap.hasKey("access_token")) {
+      contentToken = readableMap.getString("access_token");
+      Preferences.setWelaaaOauthToken(getReactApplicationContext(), contentToken);
+    }
+  }
 }

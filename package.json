@@ -17,7 +17,7 @@
 		"eject": "react-native eject",
 		"link": "react-native link",
 		"start": "react-native start",
-		"android": "react-native run-android --appIdSuffix debug --main-activity SplashActivity",
+		"android": "react-native run-android --variant welaaaDebug --appIdSuffix debug --main-activity SplashActivity",
 		"ios": "react-native run-ios",
 		"test": "jest",
 		"reload": "adb shell input text 'RR'",

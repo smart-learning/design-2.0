@@ -939,6 +939,9 @@
 
 + (void) processCheckingUpdate
 {
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라어드민"] )
+        return; // 검수용 앱은 버젼체크를 하지 않습니다.
+  
     // Check available updates.
     NSString *currentVersionStr = [[common infoPlist] objectForKey : @"CFBundleShortVersionString"];
     NSDictionary *updateInfo = [ApiManager getUpdateData];
@@ -958,26 +961,21 @@
             {
                 UIAlertController *alert;
                 UIAlertAction *ok;
-                UIAlertAction *no;
               
                 alert = [UIAlertController alertControllerWithTitle : @"업데이트"
-                                                            message : @"필수 업데이트가 있습니다.\n업데이트하시겠습니까?"//updateInfo[@"description"]
+                                                            message : @"필수 업데이트가 있습니다."//updateInfo[@"description"]
                                                      preferredStyle : UIAlertControllerStyleAlert];
               
-                ok = [UIAlertAction actionWithTitle : @"업데이트"
+                ok = [UIAlertAction actionWithTitle : @"앱스토어로 이동"
                                               style : UIAlertActionStyleDefault
                                             handler : ^(UIAlertAction * action)
                                                       {
-                                                          [[UIApplication sharedApplication] openURL : [NSURL URLWithString:updateInfo[@"store_url"]]
+                                                          [[UIApplication sharedApplication] openURL : [NSURL URLWithString : updateInfo[@"store_url"]]
                                                                                              options : @{}
                                                                                    completionHandler : ^(BOOL success) { exit(0); }];
                                                       }];
               
-                no = [UIAlertAction actionWithTitle : @"앱 종료"
-                                              style : UIAlertActionStyleDefault
-                                            handler : ^(UIAlertAction * action) { exit(0); }];
                 [alert addAction : ok];
-                [alert addAction : no];
               
                 UIWindow *topWindow = [[UIWindow alloc] initWithFrame : [UIScreen mainScreen].bounds];
                 topWindow.rootViewController = [UIViewController new];
@@ -1046,6 +1044,18 @@
         return true;
   
     return false;
+}
+
++ (id) getDeviceToken
+{
+  return [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"];
+}
+
++ (void) setDeviceToken : (NSData *) deviceToken
+{
+  [[NSUserDefaults standardUserDefaults] setObject: deviceToken
+                                            forKey: @"deviceToken"];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
