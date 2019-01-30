@@ -98,9 +98,9 @@ class LoginPage extends React.Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   keyboardStateChanged = isKeyboardOn => {
     console.log('keyboardStateChanged isKeyboardOn: ', isKeyboardOn);
@@ -119,6 +119,7 @@ class LoginPage extends React.Component {
    * @params password: 이메일비번이나 소셜 토큰
    * */
   login = (email, password, callback) => {
+
     let { navigation } = this.props;
     const resultAuthToken = net.getAuthToken(email, password);
 

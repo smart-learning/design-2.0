@@ -47,7 +47,7 @@
 		"react-native-iamport": "git+https://github.com/smart-learning/react-native-iamport.git",
 		"react-native-icon-badge": "^1.1.3",
 		"react-native-in-app-notification": "^2.2.0",
-		"react-native-kakao-signin": "git+https://github.com/kyejune/react-native-kakao-signin.git",
+		"react-native-kakao-logins": "git+https://github.com/smart-learning/react-native-kakao-logins",
 		"react-native-loading-spinner-overlay": "^1.0.1",
 		"react-native-pull-to-refresh": "^2.1.3",
 		"react-native-scalable-image": "^0.4.0",
