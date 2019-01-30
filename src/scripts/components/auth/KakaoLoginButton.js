@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Alert,
   View
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
@@ -13,6 +14,7 @@ import icKakaoLight from '../../../images/ic-kakao-light.png';
 import icKakao from '../../../images/ic-kakao.png';
 import Native from '../../commons/native';
 import firebase from 'react-native-firebase';
+import RNKakaoLogins from "react-native-kakao-logins";
 
 const styles = StyleSheet.create({
   kakaoButtonWrap: {
@@ -71,12 +73,57 @@ class KakaoLoginButton extends React.Component {
     loginButtonDisabled: false
   };
 
+  // 카카오 로그인 시작.
+
+  kakaoLogin = async () => {
+
+    this.setState({ loginButtonDisabled: true });
+
+    RNKakaoLogins.login((err, result) => {
+      if (err) {
+        console.log(err);
+        this.setState({ loginButtonDisabled: false });
+        return;
+
+      } else {
+        const kakaoAccessToken = result.token;
+
+        this.setState({ token: kakaoAccessToken });
+
+        this.props.onAccess(kakaoAccessToken, () => {
+          this.setState({ loginButtonDisabled: false });
+        });
+      }
+    });
+  }
+
+  // 카카오 로그인 시작.
+  // kakaoLogin() {
+  //   this.setState({ loginButtonDisabled: true });
+
+  //   console.log('   kakaoLogin   ');
+  //   RNKakaoLogins.login((err, result) => {
+
+  //     if (err) {
+  //       console.log(err);
+  //       this.setState({ loginButtonDisabled: false });
+  //       return;
+  //     }
+
+  //     console.log(result);
+  //     this.setState({ token: result });
+  //     this.props.onAccess(result, () => {
+  //       this.setState({ loginButtonDisabled: false });
+  //     });
+  //   });
+  // }
+
   signInOut = async () => {
-    const { RNKaKaoSignin } = NativeModules;
+    const { RNKakaoLoginsModule } = NativeModules;
     this.setState({ loginButtonDisabled: true });
 
     try {
-      const kakaoAccessToken = await RNKaKaoSignin.signIn();
+      const kakaoAccessToken = await RNKakaoLoginsModule.login();
 
       console.log(kakaoAccessToken);
 
@@ -97,7 +144,7 @@ class KakaoLoginButton extends React.Component {
       //   'EVENT_PARAM_REGISTRATION_METHOD': 'kakaotalk',
       //   'OS_TYPE':Platform.OS
       // });
-      
+
       // AppEventsLogger.logEvent('WELAAARN_KAKAO_SIGN_UP');
       this.setState({ token: kakaoAccessToken });
       this.props.onAccess(kakaoAccessToken, () => {
@@ -113,7 +160,7 @@ class KakaoLoginButton extends React.Component {
     return (
       <TouchableOpacity
         activeOpacity={0.9}
-        onPress={this.signInOut}
+        onPress={this.kakaoLogin}
         disabled={this.state.loginButtonDisabled}
         style={styles.kakaoButtonWrap}
       >

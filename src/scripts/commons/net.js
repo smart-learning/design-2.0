@@ -188,7 +188,7 @@ export default {
           pagination[key.replace('pagination-', '')] = eval(
             headers[key].toLowerCase(),
           );
-        } catch (e) {}
+        } catch (e) { }
       }
     });
     return pagination;
@@ -556,7 +556,7 @@ export default {
       });
   },
 
-  getUserHeartContent: function(contentType, page = 1) {
+  getUserHeartContent: function (contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
       videoCourses: 'video-courses',
@@ -663,7 +663,7 @@ export default {
       .post(
         API_PREFIX + 'v1.1/payment/import/subscriptions/issue-billing',
         data,
-      )
+    )
       .then(resp => resp.data);
   },
   // fcm token 등록
