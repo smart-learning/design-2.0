@@ -684,6 +684,18 @@ export default {
     });
   },
 
+  postReview(cid, content) {
+    return axios.post(API_PREFIX + 'v1.0/action/comments/' + cid, {
+      content,
+    });
+  },
+
+  postStarCount(cid, store) {
+    return axios.post(API_PREFIX + 'v1.0/action/stars/' + cid, {
+      store,
+    });
+  },
+
   getHomeAudioBookContents(isRefresh = false, ccode = null) {
     let expired = DEFAULT_EXPIRED;
     if (isRefresh) {

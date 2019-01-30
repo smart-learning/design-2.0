@@ -12,6 +12,7 @@ import utils from '../../commons/utils';
 @observer
 class ClassDetailPage extends React.Component {
   data = createStore({
+    cid: null,
     isLoading: true,
     itemData: null,
     itemClipData: [],
@@ -22,7 +23,7 @@ class ClassDetailPage extends React.Component {
     teacherView: false,
     slideHeight: null,
     reviewText: '',
-    reviewStar: 0,
+    reviewStar: 5,
     voucherStatus: {},
   });
 
@@ -109,6 +110,8 @@ class ClassDetailPage extends React.Component {
         console.log(error);
       }
     }
+
+    this.data.cid = resultLectureData.cid;
 
     await this.getPlayPermissions();
 

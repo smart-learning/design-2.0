@@ -13,6 +13,7 @@ import utils from '../../commons/utils';
 @observer
 class AudioBookDetailPage extends React.Component {
   data = createStore({
+    cid: null,
     isLoading: true,
     itemData: null,
     itemClipData: [],
@@ -23,7 +24,7 @@ class AudioBookDetailPage extends React.Component {
     teacherView: false,
     slideHeight: null,
     reviewText: '',
-    reviewStar: 0,
+    reviewStar: 5,
     voucherStatus: {},
   });
 
@@ -113,7 +114,6 @@ class AudioBookDetailPage extends React.Component {
     this.data.isLoading = true;
     const resultBookData = await net.getBookItem(this.state.id);
     const resultChapterData = await net.getBookChapterList(this.state.id);
-    const resultEvaluationData = await net.getItemEvaluation(this.state.cid);
 
     this.props.navigation.setParams({
       title: resultBookData.title,
@@ -136,7 +136,7 @@ class AudioBookDetailPage extends React.Component {
         console.log(error);
       }
     }
-
+    this.data.cid = resultBookData.cid;
     this.data.isLoading = false;
     await this.getPlayPermissions();
 

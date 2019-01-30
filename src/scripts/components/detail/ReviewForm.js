@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import {
+  Alert,
   Text,
   View,
   StyleSheet,
@@ -13,6 +14,7 @@ import IcStarPrimary from '../../../images/ic-star-primary.png';
 import IcStarGrey from '../../../images/ic-star-grey2.png';
 import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
 import moment from '../../pages/home/HomeBookMonthlyDetailPage';
+import net from '../../commons/net';
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -57,6 +59,32 @@ class UselessTextInput extends React.Component {
 
 @observer
 class ReviewForm extends React.Component {
+  reviewSubmit = async () => {
+    if (this.props.store.reviewText === '') {
+      Alert.alert('Error', '리뷰를 입력 해주세요.');
+      return false;
+    } else {
+      try {
+        await net.postReview(this.props.store.cid, this.props.store.reviewText);
+        await net.postStarCount(
+          this.props.store.cid,
+          this.props.store.reviewStar,
+        );
+        // 코멘트 다시 로드
+        const comments = await net.getReviewList(this.props.store.cid);
+        this.props.store.itemReviewData = comments;
+        // 별점 다시 로드
+        const evaluation = await net.getItemEvaluation(
+          this.props.store.cid.cid,
+        );
+        this.data.itemEvaluationData = evaluation;
+      } catch (error) {
+        console.log(error);
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
+
   render() {
     let itemData = this.props.store.itemReviewData;
 
@@ -249,7 +277,10 @@ class ReviewForm extends React.Component {
                     value={this.props.store.reviewText}
                   />
                 </View>
-                <TouchableOpacity activeOpacity={0.9}>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={this.reviewSubmit}
+                >
                   <View
                     style={{
                       width: 50,
