@@ -13,13 +13,13 @@
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
 /* NSLog only on DEBUG_MODE */
-/*
+
 #ifdef DEBUG
 #define NSLog( s, ... ) NSLog( @"<%p %@:(%d)> %@", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
 #else
 #define NSLog( s, ... )
 #endif
-*/
+
 /* NSLog only on DEBUG_MODE */
 
 #endif /* WelaaaV2_Prefix_pch */
