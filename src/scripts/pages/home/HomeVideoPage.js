@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   mainTitleCenter: {
     textAlign: 'center',
   },
+  titleContainer: {
+    marginBottom: 15,
+  },
   titleWithButtonContainer: {
     height: 30,
   },
