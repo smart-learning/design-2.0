@@ -3465,30 +3465,30 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         //playerItem status value changed?
         if ( [keyPath isEqualToString : @"status"] )
         {   //yes->check it...
-          switch ( item.status )
-          {
-              case AVPlayerItemStatusFailed:
-              {
-                  NSLog(@"  player item status failed");
-                  [self closePlayer];
-                  return [common presentAlertWithTitle:@"Oops...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
-              }
-              case AVPlayerItemStatusReadyToPlay:
-                  NSLog(@"  player item status is ready to play");
-                  break;
-            
-              case AVPlayerItemStatusUnknown:
-                  NSLog(@"  player item status is unknown");
-                  break;
-          }
-      }
-      else if ( [keyPath isEqualToString : @"playbackBufferEmpty"] )
-      {
-          if ( item.playbackBufferEmpty )
-          {
-              NSLog(@"  player item playback buffer is empty");
-          }
-      }
+            switch ( item.status )
+            {
+                case AVPlayerItemStatusFailed:
+                {
+                    NSLog(@"  player item status failed");
+                    [self closePlayer];
+                    return [common presentAlertWithTitle:@"Oops...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\n잠시 후 실행해 주세요."];
+                }
+                case AVPlayerItemStatusReadyToPlay:
+                    NSLog(@"  player item status is ready to play");
+                    break;
+              
+                case AVPlayerItemStatusUnknown:
+                    NSLog(@"  player item status is unknown");
+                    break;
+            }
+        }
+        else if ( [keyPath isEqualToString : @"playbackBufferEmpty"] )
+        {
+            if ( item.playbackBufferEmpty )
+            {
+                NSLog(@"  player item playback buffer is empty");
+            }
+        }
     }
 }
 
