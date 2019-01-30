@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import moment from 'moment';
 import React from 'react';
 import {
-  Alert
+  Alert,
   ActivityIndicator,
   Image,
   ImageBackground,

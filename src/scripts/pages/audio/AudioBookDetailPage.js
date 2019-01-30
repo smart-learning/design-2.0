@@ -121,7 +121,6 @@ class AudioBookDetailPage extends React.Component {
 
     this.data.itemData = resultBookData;
     this.data.itemClipData = resultChapterData;
-    this.data.itemEvaluationData = resultEvaluationData;
     if (resultBookData && resultBookData.cid) {
       try {
         const evaluation = await net.getItemEvaluation(resultBookData.cid);
