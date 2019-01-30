@@ -349,7 +349,9 @@ didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
   
     // [PMS setPushToken : deviceToken]; // TAS
     //  비로그인 상태일 때는 아예 푸시 발송 대상에서 제외시키기 위해 토큰 등록하지 않는걸로 결론.
-    //  앱 설치만 한 경우 아직 사용자의 약관 동의 등을 받지 않은 상태이기 때문에. 2019.1.24.
+    //  앱 설치만 한 경우 아직 사용자의 약관 동의 등을 받지 않은 상태이고 과금 문제 때문에. 2019.1.28.
+  
+    [common setDeviceToken:deviceToken];  // 로그인 이후에 등록하기 위해 미리 저장.
 }
 
 #pragma mark - Core Data stack

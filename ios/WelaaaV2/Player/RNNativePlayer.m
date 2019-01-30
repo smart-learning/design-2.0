@@ -422,10 +422,35 @@ RCT_EXPORT_MODULE();
         NSLog(@"No UserId to Select!");
       }
       
-      // Device Certification + Login
-      // -> 이 방식은 setPushToken 이 미리 호출되어있지 않으면 Push가 안날아간다. 그래서 아래 방식 사용.
+      //// 제일 간단한 방식이나 메뉴얼 상에 없고 단순히 토큰과 아이디를 매칭시키는 기능인걸로 보여 사용 안함.
       /*
       dispatch_async(dispatch_get_main_queue(), ^{
+        [PMS setPushToken:[common getDeviceToken] UserData:dict CustId:userId];
+      });
+       */
+      
+      //// Login only
+      /*
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [PMS setPushToken : [common getDeviceToken]]; // 이 부분이 없으면 푸시 안됨.
+        [PMS loginWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
+          if([result isSuccess]){
+            NSMutableDictionary *dict = [NSMutableDictionary new];
+            [dict setValue:userId forKey:@"custId"];
+            [dict setValue:currentMembership forKey:@"currentMembership"];
+            [TAS identifyUser:userId userProp:dict];
+            NSLog(@"TAS Login Success with UserId %@",userId);
+          }else{
+            NSLog(@"TAS Login Fail %@ %@", result.code, result.msg);
+          }
+        }];
+      });
+       */
+      
+      // Device Certification + Login
+      // 성공
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [PMS setPushToken : [common getDeviceToken]]; // 이 부분이 없으면 푸시 안됨.
         [PMS deviceCertWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
           if([result isSuccess]){
             NSLog(@"TAS DeviceCert and Login Success with UserId %@",userId);
@@ -434,20 +459,7 @@ RCT_EXPORT_MODULE();
           }
         }];
       });
-      */
       
-      // Login only
-      [PMS loginWithCustId:userId UserData:dict CompleteBlock:^(PMSResult *result) {
-        if([result isSuccess]){
-          NSMutableDictionary *dict = [NSMutableDictionary new];
-          [dict setValue:userId forKey:@"custId"];
-          [dict setValue:currentMembership forKey:@"currentMembership"];
-          [TAS identifyUser:userId userProp:dict];
-          NSLog(@"TAS Login Success with UserId %@",userId);
-        }else{
-          NSLog(@"TAS Login Fail %@ %@", result.code, result.msg);
-        }
-      }];
     }else{
       NSLog(@"tasDeviceCertWithCustId No args!");
     }
@@ -493,25 +505,22 @@ RCT_EXPORT_MODULE();
       dispatch_async(dispatch_get_main_queue(), ^{
         [PMS setConfigWithNotiFlag:notiFlag MsgFlag:msgFlag MktFlag:mktFlag CompleteBlock:^(PMSResult *result) {
           NSLog(@"switchValueChanged is complete %@ %@", result.code, result.msg);
-          //// 최종 설정 상태 확인
+          //// 최종 설정된 상태 확인을 위한 로깅
           // Push(정보성) 수신여부 확인
           if ( [PMS getNotiFlag] )
             NSLog(@"TAS getNotiFlag YES");
           else
             NSLog(@"TAS getNotiFlag YES");
-        //[PMS getNotiFlag]?NSLog(@"TAS getNotiFlag YES"):NSLog(@"TAS getNotiFlag NO");
           // 메시지함 적재여부 확인
           if ( [PMS getMsgFlag] )
             NSLog(@"TAS getMsgFlag YES");
           else
             NSLog(@"TAS getMsgFlag NO");
-        //[PMS getMsgFlag]?NSLog(@"TAS getMsgFlag YES"):NSLog(@"TAS getMsgFlag NO");
           // 마케팅 수신 동의여부 확인 (NotiFlag의 영향 받지 않음)
           if ( [PMS getMktFlag] )
             NSLog(@"TAS getMktFlag YES");
           else
             NSLog(@"TAS getMktFlag NO");
-        //[PMS getMktFlag]?NSLog(@"TAS getMktFlag YES"):NSLog(@"TAS getMktFlag NO");
         }];
       });
     }else{

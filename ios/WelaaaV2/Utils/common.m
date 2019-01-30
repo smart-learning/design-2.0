@@ -1051,4 +1051,16 @@
     return false;
 }
 
++ (id) getDeviceToken
+{
+  return [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"];
+}
+
++ (void) setDeviceToken : (NSData *) deviceToken
+{
+  [[NSUserDefaults standardUserDefaults] setObject: deviceToken
+                                            forKey: @"deviceToken"];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end
