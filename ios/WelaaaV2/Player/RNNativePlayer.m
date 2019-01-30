@@ -495,11 +495,23 @@ RCT_EXPORT_MODULE();
           NSLog(@"switchValueChanged is complete %@ %@", result.code, result.msg);
           //// 최종 설정 상태 확인
           // Push(정보성) 수신여부 확인
-          [PMS getNotiFlag]?NSLog(@"TAS getNotiFlag YES"):NSLog(@"TAS getNotiFlag NO");
+          if ( [PMS getNotiFlag] )
+            NSLog(@"TAS getNotiFlag YES");
+          else
+            NSLog(@"TAS getNotiFlag YES");
+        //[PMS getNotiFlag]?NSLog(@"TAS getNotiFlag YES"):NSLog(@"TAS getNotiFlag NO");
           // 메시지함 적재여부 확인
-          [PMS getMsgFlag]?NSLog(@"TAS getMsgFlag YES"):NSLog(@"TAS getMsgFlag NO");
+          if ( [PMS getMsgFlag] )
+            NSLog(@"TAS getMsgFlag YES");
+          else
+            NSLog(@"TAS getMsgFlag NO");
+        //[PMS getMsgFlag]?NSLog(@"TAS getMsgFlag YES"):NSLog(@"TAS getMsgFlag NO");
           // 마케팅 수신 동의여부 확인 (NotiFlag의 영향 받지 않음)
-          [PMS getMktFlag]?NSLog(@"TAS getMktFlag YES"):NSLog(@"TAS getMktFlag NO");
+          if ( [PMS getMktFlag] )
+            NSLog(@"TAS getMktFlag YES");
+          else
+            NSLog(@"TAS getMktFlag NO");
+        //[PMS getMktFlag]?NSLog(@"TAS getMktFlag YES"):NSLog(@"TAS getMktFlag NO");
         }];
       });
     }else{
