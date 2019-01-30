@@ -256,7 +256,6 @@ class HomePage extends React.Component {
     this.store.audioHotData = homeAudioBookContents.hot;
     this.store.audioNewData = homeAudioBookContents.new;
     this.store.audioRecommendData = homeAudioBookContents.recommend;
-    // this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
 
     try {
       this.store.classUseData = await net.getPlayRecentVideoCourses(isRefresh);
