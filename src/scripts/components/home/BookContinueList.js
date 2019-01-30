@@ -86,7 +86,9 @@ export default class BookContinueList extends React.Component {
               ellipsizeMode={'tail'}
               numberOfLines={1}
             >
-              {item.data.teacher.name}
+              {this.props.itemData.teacher.name
+                ? this.props.itemData.teacher.name
+                : ''}
             </Text>
           </View>
           <View style={{ marginLeft: 'auto' }}>

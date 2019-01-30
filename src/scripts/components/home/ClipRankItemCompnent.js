@@ -112,7 +112,9 @@ class ClipRankItemComponent extends React.Component {
                   ellipsizeMode={'tail'}
                   numberOfLines={1}
                 >
-                  {this.props.itemData.course.teacher.name}
+                  {this.props.itemData.course.teacher.name
+                    ? this.props.itemData.course.teacher.name
+                    : ''}
                 </Text>
               </View>
             </View>

@@ -374,7 +374,9 @@ class TabContentInfo extends React.Component {
               {this.props.store.itemData.teacher !== null && (
                 <View>
                   <Text style={styles.teacherName}>
-                    {this.props.store.itemData.teacher.name}
+                    {this.props.store.itemData.teacher.name
+                      ? this.props.store.itemData.teacher.name
+                      : ''}
                   </Text>
                   <Text style={styles.teacherHeadline}>
                     {this.props.store.itemData.teacher.headline}
