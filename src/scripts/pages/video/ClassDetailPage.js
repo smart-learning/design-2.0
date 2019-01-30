@@ -15,6 +15,7 @@ class ClassDetailPage extends React.Component {
     isLoading: true,
     itemData: null,
     itemClipData: [],
+    itemReviewData: [],
     itemEvaluationData: {},
     tabStatus: 'info',
     lectureView: false,
@@ -87,8 +88,6 @@ class ClassDetailPage extends React.Component {
   getData = async () => {
     const resultLectureData = await net.getLectureItem(this.state.id);
     const resultLectureClipData = await net.getLectureClipList(this.state.id);
-    const resultEvaluationData = await net.getItemEvaluation(this.state.cid);
-
     this.props.navigation.setParams({
       title: resultLectureData.title,
     });
@@ -96,7 +95,20 @@ class ClassDetailPage extends React.Component {
     this.data.itemData = resultLectureData;
     this.data.itemClipData = resultLectureClipData;
     this.data.isLoading = false;
-    this.data.itemEvaluationData = resultEvaluationData;
+    if (resultLectureData && resultLectureData.cid) {
+      try {
+        const evaluation = await net.getItemEvaluation(resultLectureData.cid);
+        this.data.itemEvaluationData = evaluation;
+      } catch (error) {
+        console.log(error);
+      }
+      try {
+        const comments = await net.getReviewList(resultLectureData.cid);
+        this.data.itemReviewData = comments;
+      } catch (error) {
+        console.log(error);
+      }
+    }
 
     await this.getPlayPermissions();
 

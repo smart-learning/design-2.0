@@ -17,6 +17,7 @@ class AudioBookDetailPage extends React.Component {
     itemData: null,
     itemClipData: [],
     itemReviewData: [],
+    itemEvaluationData: [],
     tabStatus: 'info',
     lectureView: false,
     teacherView: false,
@@ -112,6 +113,7 @@ class AudioBookDetailPage extends React.Component {
     this.data.isLoading = true;
     const resultBookData = await net.getBookItem(this.state.id);
     const resultChapterData = await net.getBookChapterList(this.state.id);
+    const resultEvaluationData = await net.getItemEvaluation(this.state.cid);
 
     this.props.navigation.setParams({
       title: resultBookData.title,
@@ -119,9 +121,16 @@ class AudioBookDetailPage extends React.Component {
 
     this.data.itemData = resultBookData;
     this.data.itemClipData = resultChapterData;
+    this.data.itemEvaluationData = resultEvaluationData;
     if (resultBookData && resultBookData.cid) {
       try {
-        const comments = await net.getBookReviewList(resultBookData.cid);
+        const evaluation = await net.getItemEvaluation(resultBookData.cid);
+        this.data.itemEvaluationData = evaluation;
+      } catch (error) {
+        console.log(error);
+      }
+      try {
+        const comments = await net.getReviewList(resultBookData.cid);
         this.data.itemReviewData = comments;
       } catch (error) {
         console.log(error);
