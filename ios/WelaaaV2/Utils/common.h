@@ -123,6 +123,10 @@
 + (BOOL) compareBetweenCurrentVersion : (NSString *) currentVersion
                         andNewVersion : (NSString *) newVersion;
 
+// TAS 푸시 발송 시스템에 사용
++ (id) getDeviceToken;
++ (void) setDeviceToken : (NSData *) deviceToken;
+
 @end
 
 

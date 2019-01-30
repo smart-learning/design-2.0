@@ -339,7 +339,7 @@
                 android:background="@drawable/icon_speed_10"/>
 
             <Button
-                android:text="@string/txt_backwardforward"
+                android:text="@string/txt_backwardforward_10"
                 android:layout_width="@dimen/welean_btn_backward_width"
                 android:layout_height="@dimen/welean_btn_backward_height"
                 android:textColor="@color/colorWhite"
@@ -360,7 +360,7 @@
                 android:visibility="gone"/>
 
             <Button
-                android:text="@string/txt_backwardforward"
+                android:text="@string/txt_backwardforward_10"
                 android:layout_width="@dimen/welean_btn_backward_width"
                 android:layout_height="@dimen/welean_btn_backward_height"
                 android:textColor="@color/colorWhite"

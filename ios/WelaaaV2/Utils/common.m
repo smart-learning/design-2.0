@@ -939,6 +939,9 @@
 
 + (void) processCheckingUpdate
 {
+    if ( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] isEqualToString:@"윌라어드민"] )
+        return; // 검수용 앱은 버젼체크를 하지 않습니다.
+  
     // Check available updates.
     NSString *currentVersionStr = [[common infoPlist] objectForKey : @"CFBundleShortVersionString"];
     NSDictionary *updateInfo = [ApiManager getUpdateData];
@@ -1046,6 +1049,18 @@
         return true;
   
     return false;
+}
+
++ (id) getDeviceToken
+{
+  return [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"];
+}
+
++ (void) setDeviceToken : (NSData *) deviceToken
+{
+  [[NSUserDefaults standardUserDefaults] setObject: deviceToken
+                                            forKey: @"deviceToken"];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

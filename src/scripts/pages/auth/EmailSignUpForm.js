@@ -290,7 +290,7 @@ class EmailSignUpForm extends Component {
         // 2018. 11. 9
         // jungon
         // 회원가입 후 Membership 가입 촉진 페이지 노출.
-        this.props.navigation.navigate('MembershipPage', {
+        this.props.navigation.navigate('Main', {
           trackEvent: { af_registration_method: 'email', OS_TYPE: Platform.OS },
         });
       })

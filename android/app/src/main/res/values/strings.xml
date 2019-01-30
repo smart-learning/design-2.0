@@ -52,7 +52,8 @@
     <string name="btn_txt_subtitlefull">전체자막</string>
     <string name="btn_txt_speedcontrol">배속조절</string>
     <string name="btn_txt_autoplay">자동재생</string>
-    <string name="txt_backwardforward">10</string>
+    <string name="txt_backwardforward_10">10</string>
+    <string name="txt_backwardforward_30">30</string>
     <string name="btn_txt_unRock">락off</string>
 
     <!--facebookLogin-->

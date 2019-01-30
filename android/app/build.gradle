@@ -122,8 +122,8 @@ android {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 148
-        versionName "1.50.048"
+        versionCode 149
+        versionName "1.50.049"
         archivesBaseName = "welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -277,8 +277,8 @@ dependencies {
     // added the Google maven respository to your root build.gradle
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation project(':SDK_Android_APMS_11743')
     implementation 'com.android.volley:volley:1.1.1'
+    implementation project(':SDK_Android_APMS_11796')
 }
 
 // Run this once to be able to run the application with BUCK
