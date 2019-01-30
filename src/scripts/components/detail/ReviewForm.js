@@ -119,10 +119,12 @@ class ReviewForm extends React.Component {
               </View>
             </View>
 
-            <Text style={{ marginTop: 10, fontsize: 14, color: '#353A3C' }}>
-              4차 산업혁명이 우리와 얼마나 깊은 연관이 있는지 알게 되었습니다.
-              좋은 강연 감사합니다!
-            </Text>
+            <View style={{ marginTop: 10 }}>
+              <Text style={{ fontSize: 14, color: '#353A3C' }}>
+                4차 산업혁명이 우리와 얼마나 깊은 연관이 있는지 알게 되었습니다.
+                좋은 강연 감사합니다!
+              </Text>
+            </View>
           </View>
 
           <View
@@ -141,10 +143,12 @@ class ReviewForm extends React.Component {
                 <Text style={styles.reviewText}>2019.01.21. 15:46</Text>
               </View>
             </View>
-            <Text style={{ marginTop: 10, fontsize: 14, color: '#353A3C' }}>
-              4차 산업혁명이 우리와 얼마나 깊은 연관이 있는지 알게 되었습니다.
-              좋은 강연 감사합니다!
-            </Text>
+            <View style={{ marginTop: 10 }}>
+              <Text style={{ fontSize: 14, color: '#353A3C' }}>
+                4차 산업혁명이 우리와 얼마나 깊은 연관이 있는지 알게 되었습니다.
+                좋은 강연 감사합니다!
+              </Text>
+            </View>
 
             <View
               style={{

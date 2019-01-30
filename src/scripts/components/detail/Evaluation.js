@@ -53,164 +53,186 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     height: 13,
-    backgroundColor: '#838d92',
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
 });
 
 export default class Evaluation extends React.Component {
   render() {
+    let originData = this.props.itemData.all?.score;
+    let itemData = [];
     let starData = [];
-    let starAvg = this.props.itemData.star_avg;
-    let starSetAll = this.props.itemData.star_set.all;
+    let starSum = 0;
 
-    _.each(this.props.itemData.star_set, element => {
-      starData.push((element / starSetAll) * 100);
-    });
+    if (originData) {
+      _.map(originData, element => {
+        itemData.push(element);
+      });
+      for (let i = 0; i < itemData.length; i++) {
+        starSum += itemData[i];
+      }
+      _.each(itemData, element => {
+        starData.push((element / starSum) * 100);
+      });
+    }
 
     return (
-      <View style={styles.evaluation}>
-        <View
-          style={[
-            CommonStyles.alignJustifyContentBetween,
-            { width: 240, marginLeft: 'auto', marginRight: 'auto' },
-          ]}
-        >
-          <View>
+      <View>
+        {originData && (
+          <View style={styles.evaluation}>
             <View
               style={[
                 CommonStyles.alignJustifyContentBetween,
-                { width: 160, marginBottom: 20 },
+                { width: 160, marginLeft: 'auto', marginRight: 'auto' },
               ]}
             >
-              <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-              <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-              <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-              <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-              <Image source={IcStarGrey} style={styles.evaluationIconMy} />
+              <View>
+                <View
+                  style={[
+                    CommonStyles.alignJustifyContentBetween,
+                    { width: 160, marginBottom: 20 },
+                  ]}
+                >
+                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
+                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
+                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
+                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
+                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
+                </View>
+              </View>
             </View>
-          </View>
-          <Text style={styles.starCount}>
-            <Text style={styles.starCountMy}>
-              {numeral(starAvg).format('0.0')}
-            </Text>{' '}
-            / 5.0
-          </Text>
-        </View>
 
-        <View
-          style={[
-            CommonStyles.alignJustifyContentBetween,
-            styles.evaluationItem,
-          ]}
-        >
-          <View>
-            <View style={CommonStyles.alignJustifyFlex}>
-              <Image source={IcStarGrey} style={styles.evaluationIcon} />
-              <Text style={styles.evaluationText}>5</Text>
-            </View>
-          </View>
-          <View style={styles.evaluationBar}>
             <View
-              style={[styles.evaluationProgress, { width: starData[4] + '%' }]}
-            />
-          </View>
-          <Text style={styles.evaluationText}>
-            {numeral(starData[4]).format('0.0')}{' '}
-            <Text style={styles.evaluationTextBullet}>%</Text>
-          </Text>
-        </View>
+              style={[
+                CommonStyles.alignJustifyContentBetween,
+                styles.evaluationItem,
+              ]}
+            >
+              <View>
+                <View style={CommonStyles.alignJustifyFlex}>
+                  <Image source={IcStarGrey} style={styles.evaluationIcon} />
+                  <Text style={styles.evaluationText}>5</Text>
+                </View>
+              </View>
+              <View style={styles.evaluationBar}>
+                <View
+                  style={[
+                    styles.evaluationProgress,
+                    { width: starData[4] + '%' },
+                  ]}
+                />
+              </View>
+              <Text style={styles.evaluationText}>
+                {numeral(starData[4]).format('0.0')}{' '}
+                <Text style={styles.evaluationTextBullet}>%</Text>
+              </Text>
+            </View>
 
-        <View
-          style={[
-            CommonStyles.alignJustifyContentBetween,
-            styles.evaluationItem,
-          ]}
-        >
-          <View>
-            <View style={CommonStyles.alignJustifyFlex}>
-              <Image source={IcStarGrey} style={styles.evaluationIcon} />
-              <Text style={styles.evaluationText}>4</Text>
-            </View>
-          </View>
-          <View style={styles.evaluationBar}>
             <View
-              style={[styles.evaluationProgress, { width: starData[3] + '%' }]}
-            />
-          </View>
-          <Text style={styles.evaluationText}>
-            {numeral(starData[3]).format('0.0')}{' '}
-            <Text style={styles.evaluationTextBullet}>%</Text>
-          </Text>
-        </View>
+              style={[
+                CommonStyles.alignJustifyContentBetween,
+                styles.evaluationItem,
+              ]}
+            >
+              <View>
+                <View style={CommonStyles.alignJustifyFlex}>
+                  <Image source={IcStarGrey} style={styles.evaluationIcon} />
+                  <Text style={styles.evaluationText}>4</Text>
+                </View>
+              </View>
+              <View style={styles.evaluationBar}>
+                <View
+                  style={[
+                    styles.evaluationProgress,
+                    { width: starData[3] + '%' },
+                  ]}
+                />
+              </View>
+              <Text style={styles.evaluationText}>
+                {numeral(starData[3]).format('0.0')}{' '}
+                <Text style={styles.evaluationTextBullet}>%</Text>
+              </Text>
+            </View>
 
-        <View
-          style={[
-            CommonStyles.alignJustifyContentBetween,
-            styles.evaluationItem,
-          ]}
-        >
-          <View>
-            <View style={CommonStyles.alignJustifyFlex}>
-              <Image source={IcStarGrey} style={styles.evaluationIcon} />
-              <Text style={styles.evaluationText}>3</Text>
-            </View>
-          </View>
-          <View style={styles.evaluationBar}>
             <View
-              style={[styles.evaluationProgress, { width: starData[2] + '%' }]}
-            />
-          </View>
-          <Text style={styles.evaluationText}>
-            {numeral(starData[2]).format('0.0')}{' '}
-            <Text style={styles.evaluationTextBullet}>%</Text>
-          </Text>
-        </View>
+              style={[
+                CommonStyles.alignJustifyContentBetween,
+                styles.evaluationItem,
+              ]}
+            >
+              <View>
+                <View style={CommonStyles.alignJustifyFlex}>
+                  <Image source={IcStarGrey} style={styles.evaluationIcon} />
+                  <Text style={styles.evaluationText}>3</Text>
+                </View>
+              </View>
+              <View style={styles.evaluationBar}>
+                <View
+                  style={[
+                    styles.evaluationProgress,
+                    { width: starData[2] + '%' },
+                  ]}
+                />
+              </View>
+              <Text style={styles.evaluationText}>
+                {numeral(starData[2]).format('0.0')}{' '}
+                <Text style={styles.evaluationTextBullet}>%</Text>
+              </Text>
+            </View>
 
-        <View
-          style={[
-            CommonStyles.alignJustifyContentBetween,
-            styles.evaluationItem,
-          ]}
-        >
-          <View>
-            <View style={CommonStyles.alignJustifyFlex}>
-              <Image source={IcStarGrey} style={styles.evaluationIcon} />
-              <Text style={styles.evaluationText}>2</Text>
-            </View>
-          </View>
-          <View style={styles.evaluationBar}>
             <View
-              style={[styles.evaluationProgress, { width: starData[1] + '%' }]}
-            />
-          </View>
-          <Text style={styles.evaluationText}>
-            {numeral(starData[1]).format('0.0')}{' '}
-            <Text style={styles.evaluationTextBullet}>%</Text>
-          </Text>
-        </View>
+              style={[
+                CommonStyles.alignJustifyContentBetween,
+                styles.evaluationItem,
+              ]}
+            >
+              <View>
+                <View style={CommonStyles.alignJustifyFlex}>
+                  <Image source={IcStarGrey} style={styles.evaluationIcon} />
+                  <Text style={styles.evaluationText}>2</Text>
+                </View>
+              </View>
+              <View style={styles.evaluationBar}>
+                <View
+                  style={[
+                    styles.evaluationProgress,
+                    { width: starData[1] + '%' },
+                  ]}
+                />
+              </View>
+              <Text style={styles.evaluationText}>
+                {numeral(starData[1]).format('0.0')}{' '}
+                <Text style={styles.evaluationTextBullet}>%</Text>
+              </Text>
+            </View>
 
-        <View
-          style={[
-            CommonStyles.alignJustifyContentBetween,
-            styles.evaluationItem,
-          ]}
-        >
-          <View>
-            <View style={CommonStyles.alignJustifyFlex}>
-              <Image source={IcStarGrey} style={styles.evaluationIcon} />
-              <Text style={styles.evaluationText}>1</Text>
+            <View
+              style={[
+                CommonStyles.alignJustifyContentBetween,
+                styles.evaluationItem,
+              ]}
+            >
+              <View>
+                <View style={CommonStyles.alignJustifyFlex}>
+                  <Image source={IcStarGrey} style={styles.evaluationIcon} />
+                  <Text style={styles.evaluationText}>1</Text>
+                </View>
+              </View>
+              <View style={styles.evaluationBar}>
+                <View
+                  style={[
+                    styles.evaluationProgress,
+                    { width: starData[0] + '%' },
+                  ]}
+                />
+              </View>
+              <Text style={styles.evaluationText}>
+                {numeral(starData[0]).format('0.0')}{' '}
+                <Text style={styles.evaluationTextBullet}>%</Text>
+              </Text>
             </View>
           </View>
-          <View style={styles.evaluationBar}>
-            <View
-              style={[styles.evaluationProgress, { width: starData[0] + '%' }]}
-            />
-          </View>
-          <Text style={styles.evaluationText}>
-            {numeral(starData[0]).format('0.0')}{' '}
-            <Text style={styles.evaluationTextBullet}>%</Text>
-          </Text>
-        </View>
+        )}
       </View>
     );
   }

@@ -452,7 +452,9 @@ class TabContentInfo extends React.Component {
             </Text>
           </View>
 
-          <Evaluation itemData={this.props.store.itemData} />
+          {this.props.store.itemEvaluationData && (
+            <Evaluation itemData={this.props.store.itemEvaluationData} />
+          )}
 
           <StarGrade store={this.props.store} />
 

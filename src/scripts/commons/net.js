@@ -269,6 +269,20 @@ export default {
     });
   },
 
+  getItemEvaluation(id) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(API_PREFIX + 'v1.0/action/stars/' + id)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  },
+
   getLectureClipList(id) {
     return new Promise((resolve, reject) => {
       axios
