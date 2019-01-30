@@ -670,14 +670,11 @@ export default {
     return axios.post(API_PREFIX + 'v1.0/membership/vouchers/exchange', params);
   },
 
-  getBookReviewList(cid) {
+  getReviewList(cid) {
     return new Promise((resolve, reject) => {
       axios
         .get(API_PREFIX + 'v1.0/action/comments/' + cid)
         .then(response => {
-          response.data.forEach(element => {
-            element.key = element.id.toString();
-          });
           resolve(response.data);
         })
         .catch(error => {
