@@ -304,8 +304,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
-    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
-    [_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:0 context:nil];
+    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];  // watching..
+    [_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:0 context:nil]; // watching..
   
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer : _player];
