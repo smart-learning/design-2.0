@@ -137,6 +137,12 @@ class AudioBookDetailPage extends React.Component {
       title: resultBookData.title,
     });
 
+    if( !resultBookData.cid ) {
+      Alert.alert( 'Error', 'cid를 찾을 수 없습니다.' );
+      this.data.isLoading = false;
+      return;
+    }
+
     this.data.itemData = resultBookData;
     this.data.itemClipData = resultChapterData;
     if (resultBookData && resultBookData.cid) {
@@ -155,6 +161,8 @@ class AudioBookDetailPage extends React.Component {
     }
     this.data.cid = resultBookData.cid;
     this.data.isLoading = false;
+
+    console.log( 'resultBookData', resultBookData );
 
     try {
       await this.getPlayPermissions();

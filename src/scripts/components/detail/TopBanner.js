@@ -265,10 +265,10 @@ export default class TopBanner extends React.Component {
               <View style={{ width: '30%', marginLeft: 20 }}>
                 <TouchableOpacity
                   activeOpacity={0.9}
-                  onPress={() => Native.play(this.props.store.itemData.cid)}
+                  onPress={() => Native.play(this.props.store.itemData?.cid)}
                 >
                   <ImageBackground
-                    source={{ uri: this.props.store.itemData.images.list }}
+                    source={{ uri: this.props.store.itemData?.images?.list }}
                     resizeMode={'contain'}
                     style={styles.audioBookThumbnail}
                   >

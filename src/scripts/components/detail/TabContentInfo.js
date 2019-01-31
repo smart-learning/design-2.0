@@ -243,12 +243,22 @@ class TabContentInfo extends React.Component {
       if (!_.isNull(this.props.store.itemData.teacher)) {
         if (!_.isNull(this.props.store.itemData.teacher?.memo)) {
           teacherMemo = this.props.store.itemData.teacher?.memo;
-          teacherMemo = teacherMemo.split('<br>').join('\n');
+          if( teacherMemo ) {
+            teacherMemo = teacherMemo.split('<br>').join('\n');
+          }
         }
       }
     } catch (error) {
       console.log(error);
       Alert.alert('Error', '통신에 실패했습니다.');
+    }
+
+    if (!this.props.store.itemData) {
+      return (
+        <View>
+          <Text>데이터 없음</Text>
+        </View>
+      );
     }
 
     return (
@@ -364,11 +374,13 @@ class TabContentInfo extends React.Component {
           <View style={{ position: 'relative', justifyContent: 'center' }}>
             {this.props.store.itemData?.teacher !== null && (
               <Image
-                source={{
-                  uri: this.props.store.itemData?.teacher
-                    ? this.props.store.itemData?.teacher?.images.default
-                    : DummyTeacher,
-                }}
+                source={
+                  this.props.store.itemData?.teacher
+                    ? {
+                        uri: this.props.store.itemData?.teacher?.images.default,
+                      }
+                    : DummyTeacher
+                }
                 style={styles.teacherThumbnail}
               />
             )}

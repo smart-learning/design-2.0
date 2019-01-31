@@ -111,6 +111,12 @@ class ClassDetailPage extends React.Component {
       title: resultLectureData.title,
     });
 
+    if( !resultLectureData.cid ) {
+      Alert.alert( 'Error', 'cid를 찾을 수 없습니다.' );
+      this.data.isLoading = false;
+      return;
+    }
+
     this.data.itemData = resultLectureData;
     this.data.itemClipData = resultLectureClipData;
     this.data.isLoading = false;
