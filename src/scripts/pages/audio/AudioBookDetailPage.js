@@ -112,8 +112,24 @@ class AudioBookDetailPage extends React.Component {
 
   getData = async () => {
     this.data.isLoading = true;
-    const resultBookData = await net.getBookItem(this.state.id);
-    const resultChapterData = await net.getBookChapterList(this.state.id);
+    let resultBookData;
+    try {
+      resultBookData = await net.getBookItem(this.state.id);
+    }
+    catch( error ) {
+      // TODO: 통신 실패시 기본 데이터를 빈 오브젝트로 할 것인지 확인 필요
+      resultBookData = {};
+      Alert.alert( 'Error', error.message );
+    }
+    let resultChapterData;
+    try {
+      resultChapterData = await net.getBookChapterList(this.state.id);
+    }
+    catch( error ) {
+      // TODO: 통신 실패시 기본 데이터를 빈 오브젝트로 할 것인지 확인 필요
+      resultChapterData = {};
+      Alert.alert( 'Error', error.message );
+    }
 
     this.props.navigation.setParams({
       title: resultBookData.title,
@@ -127,22 +143,33 @@ class AudioBookDetailPage extends React.Component {
         this.data.itemEvaluationData = evaluation;
       } catch (error) {
         console.log(error);
-        Alert.alert('Error', '통신에 실패했습니다.');
+        Alert.alert('Error', error.message );
       }
       try {
         const comments = await net.getReviewList(resultBookData.cid);
         this.data.itemReviewData = comments;
       } catch (error) {
         console.log(error);
-        Alert.alert('Error', '통신에 실패했습니다.');
+        Alert.alert('Error', error.message );
       }
     }
     this.data.cid = resultBookData.cid;
     this.data.isLoading = false;
-    await this.getPlayPermissions();
+
+    try {
+      await this.getPlayPermissions();
+    }
+    catch( error ) {
+      Alert.alert( 'Error', error.message );
+    }
 
     //조회수 증가
-    await net.postAddContentViewCount(resultBookData.cid);
+    try {
+      await net.postAddContentViewCount(resultBookData.cid);
+    }
+    catch( error ) {
+      Alert.alert( 'Error', error.message );
+    }
   };
 
   componentWillUnmount() {}

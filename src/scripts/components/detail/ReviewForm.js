@@ -192,7 +192,9 @@ class ReviewForm extends React.Component {
                         <View>
                           <View>
                             <View style={CommonStyles.alignJustifyFlex}>
-                              <Text style={[styles.reviewText, { width: 80 }]}>
+                              <Text
+                                style={[styles.reviewText, { width: 80 }]}
+                              >
                                 {item.member !== null
                                   ? item.member?.name
                                   : '익명'}
@@ -205,7 +207,9 @@ class ReviewForm extends React.Component {
                             </View>
                           </View>
                           <View style={{ marginTop: 10 }}>
-                            <Text style={{ fontSize: 14, color: '#353A3C' }}>
+                            <Text
+                              style={{ fontSize: 14, color: '#353A3C' }}
+                            >
                               {item.content ? item.content : ''}
                             </Text>
                           </View>
