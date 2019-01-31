@@ -13,7 +13,7 @@ import CommonStyles from '../../../styles/common';
 import IcStarPrimary from '../../../images/ic-star-primary.png';
 import IcStarGrey from '../../../images/ic-star-grey2.png';
 import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
-import moment from '../../pages/home/HomeBookMonthlyDetailPage';
+import moment from 'moment';
 import net from '../../commons/net';
 
 const styles = StyleSheet.create({
@@ -192,9 +192,7 @@ class ReviewForm extends React.Component {
                         <View>
                           <View>
                             <View style={CommonStyles.alignJustifyFlex}>
-                              <Text
-                                style={[styles.reviewText, { width: 80 }]}
-                              >
+                              <Text style={[styles.reviewText, { width: 80 }]}>
                                 {item.member !== null
                                   ? item.member?.name
                                   : '익명'}
@@ -207,21 +205,10 @@ class ReviewForm extends React.Component {
                             </View>
                           </View>
                           <View style={{ marginTop: 10 }}>
-                            <Text
-                              style={{ fontSize: 14, color: '#353A3C' }}
-                            >
+                            <Text style={{ fontSize: 14, color: '#353A3C' }}>
                               {item.content ? item.content : ''}
                             </Text>
                           </View>
-
-                          <View
-                            style={{
-                              width: '100%',
-                              height: 1,
-                              marginVertical: 15,
-                              backgroundColor: '#E2E2E2',
-                            }}
-                          />
                         </View>
                       </View>
                     );
@@ -240,7 +227,14 @@ class ReviewForm extends React.Component {
                   </Text>
                 </View>
               )}
-              {/*모든 댓글*/}
+              <View
+                style={{
+                  width: '100%',
+                  height: 1,
+                  marginVertical: 15,
+                  backgroundColor: '#E2E2E2',
+                }}
+              />
             </View>
 
             {1 === 2 && (
