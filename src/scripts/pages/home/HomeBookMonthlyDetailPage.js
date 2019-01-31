@@ -160,7 +160,7 @@ class HomeBookMonthlyDetailPage extends React.Component {
                             this.props.navigation.navigate(
                               'AudioBookDetailPage',
                               {
-                                id: itemData.id,
+                                id: itemData.audiobook.id,
                                 title: itemData.title,
                               },
                             );
@@ -297,7 +297,7 @@ class HomeBookMonthlyDetailPage extends React.Component {
                     activeOpacity={0.9}
                     onPress={() => {
                       this.props.navigation.navigate('AudioBookDetailPage', {
-                        id: itemData.id,
+                        id: itemData.audiobook.id,
                         title: itemData.title,
                       });
                     }}
