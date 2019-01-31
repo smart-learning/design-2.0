@@ -87,8 +87,26 @@ class ClassDetailPage extends React.Component {
   };
 
   getData = async () => {
-    const resultLectureData = await net.getLectureItem(this.state.id);
-    const resultLectureClipData = await net.getLectureClipList(this.state.id);
+    let resultLectureData;
+    try {
+      resultLectureData = await net.getLectureItem(this.state.id);
+    }
+    catch( error ) {
+      Alert.alert( 'Error', error.message );
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
+    }
+    let resultLectureClipData;
+    try {
+      resultLectureClipData = await net.getLectureClipList(this.state.id);
+    }
+    catch( error ) {
+      Alert.alert( 'Error', error.message );
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
+    }
     this.props.navigation.setParams({
       title: resultLectureData.title,
     });
@@ -101,8 +119,7 @@ class ClassDetailPage extends React.Component {
         const evaluation = await net.getItemEvaluation(resultLectureData.cid);
         this.data.itemEvaluationData = evaluation;
       } catch (error) {
-        console.log(error);
-        Alert.alert('Error', '통신에 실패했습니다.');
+        Alert.alert('Error', error.message);
       }
       try {
         const comments = await net.getReviewList(resultLectureData.cid);
@@ -115,10 +132,22 @@ class ClassDetailPage extends React.Component {
 
     this.data.cid = resultLectureData.cid;
 
-    await this.getPlayPermissions();
+    try {
+      await this.getPlayPermissions();
+    }
+    catch( error ) {
+      Alert.alert( 'Error', error.message );
+    }
 
     //조회수 증가
-    await net.postAddContentViewCount(resultLectureData.cid);
+    if( resultLectureData.cid ) {
+      try {
+        await net.postAddContentViewCount(resultLectureData.cid);
+      }
+      catch( error ) {
+        Alert.alert( 'Error', error.message );
+      }
+    }
   };
 
   componentDidMount() {
@@ -150,11 +179,13 @@ class ClassDetailPage extends React.Component {
       return;
     }
 
-    const permissionData = await net.getPlayPermissionByCid(cid);
-    this.setState({
-      permission: permissionData,
-      permissionLoading: false,
-    });
+    if( cid ) {
+      const permissionData = await net.getPlayPermissionByCid(cid);
+      this.setState({
+        permission: permissionData,
+        permissionLoading: false,
+      });
+    }
   }
 
   render() {

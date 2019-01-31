@@ -117,18 +117,20 @@ class AudioBookDetailPage extends React.Component {
       resultBookData = await net.getBookItem(this.state.id);
     }
     catch( error ) {
-      // TODO: 통신 실패시 기본 데이터를 빈 오브젝트로 할 것인지 확인 필요
-      resultBookData = {};
       Alert.alert( 'Error', error.message );
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
     }
     let resultChapterData;
     try {
       resultChapterData = await net.getBookChapterList(this.state.id);
     }
     catch( error ) {
-      // TODO: 통신 실패시 기본 데이터를 빈 오브젝트로 할 것인지 확인 필요
-      resultChapterData = {};
       Alert.alert( 'Error', error.message );
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
     }
 
     this.props.navigation.setParams({
@@ -142,14 +144,12 @@ class AudioBookDetailPage extends React.Component {
         const evaluation = await net.getItemEvaluation(resultBookData.cid);
         this.data.itemEvaluationData = evaluation;
       } catch (error) {
-        console.log(error);
         Alert.alert('Error', error.message );
       }
       try {
         const comments = await net.getReviewList(resultBookData.cid);
         this.data.itemReviewData = comments;
       } catch (error) {
-        console.log(error);
         Alert.alert('Error', error.message );
       }
     }

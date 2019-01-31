@@ -287,7 +287,7 @@ export default class TopBanner extends React.Component {
                 onPress={() => this.tryNativePlayerCall()}
               >
                 <ImageBackground
-                  source={{ uri: this.props.store.itemData.images.wide }}
+                  source={{ uri: this.props.store.itemData?.images?.wide }}
                   resizeMode="cover"
                   style={styles.classThumbnail}
                 >

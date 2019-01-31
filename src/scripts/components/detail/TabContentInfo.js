@@ -241,8 +241,8 @@ class TabContentInfo extends React.Component {
 
     try {
       if (!_.isNull(this.props.store.itemData.teacher)) {
-        if (!_.isNull(this.props.store.itemData.teacher.memo)) {
-          teacherMemo = this.props.store.itemData.teacher.memo;
+        if (!_.isNull(this.props.store.itemData.teacher?.memo)) {
+          teacherMemo = this.props.store.itemData.teacher?.memo;
           teacherMemo = teacherMemo.split('<br>').join('\n');
         }
       }
@@ -254,9 +254,9 @@ class TabContentInfo extends React.Component {
     return (
       <View>
         {/* 이미지 스와이퍼 */}
-        {this.props.store.itemData.info_img_set.length > 0 && (
+        {this.props.store.itemData?.info_img_set?.length > 0 && (
           <View style={{ height: this.props.store.slideHeight }}>
-            {this.props.store.itemData.info_img_set.length > 0 && (
+            {this.props.store.itemData?.info_img_set?.length > 0 && (
               <Swiper
                 style={styles.wrapper}
                 showsButtons={false}
@@ -328,7 +328,7 @@ class TabContentInfo extends React.Component {
               },
             ]}
           >
-            {`${this.props.store.itemData.memo.split('<br>').join('\n')}`}
+            {`${this.props.store.itemData?.memo?.split('<br>').join('\n')}`}
           </Text>
 
           <TouchableOpacity
@@ -362,11 +362,11 @@ class TabContentInfo extends React.Component {
         <View style={styles.author}>
           <Text style={styles.sectionTitle}>저자 소개</Text>
           <View style={{ position: 'relative', justifyContent: 'center' }}>
-            {this.props.store.itemData.teacher !== null && (
+            {this.props.store.itemData?.teacher !== null && (
               <Image
                 source={{
-                  uri: this.props.store.itemData.teacher
-                    ? this.props.store.itemData.teacher.images.default
+                  uri: this.props.store.itemData?.teacher
+                    ? this.props.store.itemData?.teacher?.images.default
                     : DummyTeacher,
                 }}
                 style={styles.teacherThumbnail}
@@ -374,15 +374,15 @@ class TabContentInfo extends React.Component {
             )}
 
             <View style={{ width: '100%', paddingLeft: 100 }}>
-              {this.props.store.itemData.teacher !== null && (
+              {this.props.store.itemData?.teacher !== null && (
                 <View>
                   <Text style={styles.teacherName}>
-                    {this.props.store.itemData.teacher.name
-                      ? this.props.store.itemData.teacher.name
+                    {this.props.store.itemData?.teacher?.name
+                      ? this.props.store.itemData?.teacher?.name
                       : ''}
                   </Text>
                   <Text style={styles.teacherHeadline}>
-                    {this.props.store.itemData.teacher.headline}
+                    {this.props.store.itemData?.teacher?.headline}
                   </Text>
                 </View>
               )}
@@ -447,9 +447,9 @@ class TabContentInfo extends React.Component {
             >
               {/* 댓글수 */}
               {numeral(
-                this.props.store.itemData.meta
-                  ? this.props.store.itemData.meta.comment_count
-                  : this.props.store.itemData.review_count,
+                this.props.store.itemData?.meta
+                  ? this.props.store.itemData?.meta.comment_count
+                  : this.props.store.itemData?.review_count,
               ).format('0a')}
               개의 리뷰
             </Text>
