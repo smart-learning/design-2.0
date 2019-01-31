@@ -460,7 +460,8 @@
     if ( [contentID hasPrefix : @"b"] )
         return @[];
   
-    NSString *subtitlesUrl = [NSString stringWithFormat : @"https://api-dev.welaaa.com/api/v1.0/play/contents-smi/%@", contentID];
+    NSString *apiContentSubtitles = @"/api/v1.0/play/contents-smi/";
+    NSString *subtitlesUrl = [NSString stringWithFormat : @"%@%@%@", API_HOST, apiContentSubtitles, contentID];
   
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL : [NSURL URLWithString : [NSString stringWithFormat : @"%@", subtitlesUrl]]];
