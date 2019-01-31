@@ -74,10 +74,11 @@ class KakaoLoginButton extends React.Component {
   };
 
   // 카카오 로그인 시작.
-
   kakaoLogin = async () => {
 
-    this.setState({ loginButtonDisabled: true });
+    if (Platform.OS === 'ios') {
+      this.setState({ loginButtonDisabled: true });
+    }
 
     RNKakaoLogins.login((err, result) => {
       if (err) {
