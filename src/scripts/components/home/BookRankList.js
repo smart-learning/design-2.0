@@ -7,6 +7,7 @@ import _ from 'underscore';
 
 const styles = StyleSheet.create({
   classContainer: {
+    position: 'relative',
     marginTop: 20,
     marginBottom: 30,
   },
@@ -71,6 +72,14 @@ class BookRankList extends React.Component {
           activeSlideAlignment={'start'}
           inactiveSlideOpacity={1}
           inactiveSlideScale={1}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: 1,
+            backgroundColor: '#ffffff',
+          }}
         />
       </View>
     );
