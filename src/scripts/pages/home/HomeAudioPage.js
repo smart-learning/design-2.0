@@ -55,6 +55,9 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginBottom: 15,
   },
+  classTitleContainer: {
+    marginTop: 35,
+  },
   titleWithButtonContainer: {
     height: 30,
   },
@@ -69,8 +72,8 @@ const styles = StyleSheet.create({
     color: '#888888',
   },
   titleH3: {
-    fontSize: 17,
-    fontWeight: '400',
+    fontSize: 17.5,
+    fontWeight: '500',
     color: '#353A3C',
   },
   titleParagraph: {
@@ -92,17 +95,17 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   monthContainer: {
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 50,
+    paddingBottom: 50,
   },
   dailyContainer: {
     position: 'relative',
-    paddingTop: 50,
+    paddingTop: 40,
     paddingBottom: 30,
   },
   audioBookContainer: {
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 40,
+    paddingBottom: 40,
   },
   showMoreWrapper: {
     marginTop: 2,
@@ -180,10 +183,10 @@ class HomeAudioPage extends React.Component {
 
   /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
   premiumCategorySelect = data => {
-    this.setState( {selectedCategory: data.id } );
+    this.setState({ selectedCategory: data.id });
     this.scrollContent.scrollView.scrollTo({ y: this.state.scrollTargetY });
-    if( _.isFunction(this.props.updateCode) ) {
-      this.props.updateCode(data.ccode );
+    if (_.isFunction(this.props.updateCode)) {
+      this.props.updateCode(data.ccode);
     }
   };
 
@@ -417,7 +420,12 @@ class HomeAudioPage extends React.Component {
                 </View>
               </View>
 
-              <View style={CommonStyles.alignJustifyContentBetween}>
+              <View
+                style={[
+                  CommonStyles.alignJustifyContentBetween,
+                  styles.classTitleContainer,
+                ]}
+              >
                 <Text style={styles.titleH3}>새로 나온 오디오북</Text>
               </View>
 
@@ -429,7 +437,12 @@ class HomeAudioPage extends React.Component {
                 }
               />
 
-              <View style={CommonStyles.alignJustifyContentBetween}>
+              <View
+                style={[
+                  CommonStyles.alignJustifyContentBetween,
+                  styles.classTitleContainer,
+                ]}
+              >
                 <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
               </View>
               {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
@@ -442,7 +455,7 @@ class HomeAudioPage extends React.Component {
               />
               {/* )} */}
             </View>
-            <View style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}>
+            <View style={{ marginBottom: 50, marginLeft: 10, marginRight: 10 }}>
               <TouchableOpacity
                 style={[styles.showMore, { height: 36 }]}
                 onPress={() => {
