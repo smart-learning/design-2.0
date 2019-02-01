@@ -57,7 +57,7 @@ class BookNewListItem extends React.Component {
             ellipsizeMode={'tail'}
             numberOfLines={3}
           >
-            {this.props.itemData.title}
+            {this.props.itemData.memo_top}
           </Text>
         </TouchableOpacity>
       </View>
