@@ -7,8 +7,7 @@ import _ from 'underscore';
 
 const styles = StyleSheet.create({
   classContainer: {
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 15,
   },
   slide: {
     width: Dimensions.get('window').width * 0.84,

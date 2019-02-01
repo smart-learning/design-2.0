@@ -47,6 +47,9 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginBottom: 15,
   },
+  classTitleContainer: {
+    marginTop: 35,
+  },
   titleWithButtonContainer: {
     height: 30,
   },
@@ -61,8 +64,8 @@ const styles = StyleSheet.create({
     color: '#888888',
   },
   titleH3: {
-    fontSize: 17,
-    fontWeight: '400',
+    fontSize: 17.5,
+    fontWeight: '500',
     color: '#353A3C',
   },
   titleParagraph: {
@@ -105,12 +108,12 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   seriesContainer: {
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 35,
+    paddingBottom: 40,
   },
   classContainer: {
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingTop: 40,
+    paddingBottom: 40,
   },
   clipRankContainer: {
     paddingTop: 30,
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#cecece',
   },
   seriesComponent: {
-    paddingTop: 10,
+    paddingTop: 25,
   },
   showMoreWrapper: {
     marginTop: 2,
@@ -430,7 +433,6 @@ class HomeVideoPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
-                    styles.titleContainer,
                     styles.titleWithButtonContainer,
                   ]}
                 >
@@ -449,7 +451,12 @@ class HomeVideoPage extends React.Component {
                   </View>
                 </View>
 
-                <View style={CommonStyles.alignJustifyContentBetween}>
+                <View
+                  style={[
+                    CommonStyles.alignJustifyContentBetween,
+                    styles.classTitleContainer,
+                  ]}
+                >
                   <Text style={styles.titleH3}>새로 나온 클래스</Text>
                 </View>
 
@@ -458,7 +465,12 @@ class HomeVideoPage extends React.Component {
                   classType="new"
                 />
 
-                <View style={CommonStyles.alignJustifyContentBetween}>
+                <View
+                  style={[
+                    CommonStyles.alignJustifyContentBetween,
+                    styles.classTitleContainer,
+                  ]}
+                >
                   <Text style={styles.titleH3}>오늘의 인기 클래스</Text>
                 </View>
 
@@ -466,7 +478,6 @@ class HomeVideoPage extends React.Component {
 
                 <View
                   style={{
-                    marginBottom: 22,
                     marginLeft: -13,
                     marginRight: -13,
                   }}
@@ -490,7 +501,14 @@ class HomeVideoPage extends React.Component {
                   </TouchableOpacity>
                 </View>
 
-                <View style={CommonStyles.alignJustifyContentBetween}>
+                <View style={{ height: 30 }} />
+
+                <View
+                  style={[
+                    CommonStyles.alignJustifyContentBetween,
+                    styles.classTitleContainer,
+                  ]}
+                >
                   <Text style={styles.titleH3}>
                     {globalStore.welaaaAuth.profile
                       ? globalStore.welaaaAuth.profile.name || '<윌라회원님>'
@@ -505,7 +523,12 @@ class HomeVideoPage extends React.Component {
                 />
 
                 <View
-                  style={{ marginBottom: 30, marginLeft: 10, marginRight: 10 }}
+                  style={{
+                    marginTop: 40,
+                    marginBottom: 30,
+                    marginLeft: 10,
+                    marginRight: 10,
+                  }}
                 >
                   <TouchableOpacity
                     style={[styles.showMore, { height: 36 }]}

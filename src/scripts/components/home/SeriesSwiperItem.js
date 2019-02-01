@@ -29,7 +29,7 @@ class SeriesSwiperItem extends React.Component {
       itemData = itemData[0];
     }
     return (
-      <View>
+      <View borderRadius={12}>
         <TouchableOpacity
           ref={ref => (this.view = ref)}
           activeOpacity={0.9}
