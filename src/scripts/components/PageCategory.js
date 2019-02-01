@@ -14,11 +14,11 @@ const styles = StyleSheet.create({
   categoryItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 30,
-    marginHorizontal: 5,
+    height: 20,
+    marginHorizontal: 3,
     // marginBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 8,
+    paddingRight: 8,
     borderWidth: 1,
   },
   categoryText: {
