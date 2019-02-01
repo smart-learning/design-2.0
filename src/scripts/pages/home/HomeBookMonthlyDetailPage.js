@@ -24,7 +24,7 @@ import Dummy from '../../../images/dummy-series.png';
 import globalStore from '../../commons/store';
 import moment from 'moment';
 import Native from '../../commons/native';
-import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
+import IcAngleDownGrey from '../../../images/ic-angle-down-grey2.png';
 
 const styles = StyleSheet.create({
   bannerButton: {
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewMore: {
+    width: 55,
     height: 36,
     alignItems: 'center',
   },
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   },
   viewMoreIcon: {
     position: 'relative',
-    top: 4,
+    top: 2,
   },
 });
 
