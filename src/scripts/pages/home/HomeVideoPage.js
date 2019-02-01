@@ -16,9 +16,7 @@ import PTRView from '../../libs/react-native-pull-to-refresh';
 import Swiper from 'react-native-swiper';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
-import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
 import IcMainWideBanner from '../../../images/main_wide_banner.png';
-import BannerMembership from '../../../images/banner-membership.png';
 import CommonStyles from '../../../styles/common';
 import globalStore from '../../commons/store';
 import ClassContinueList from '../../components/home/ClassContinueList';
@@ -26,12 +24,11 @@ import ClassList from '../../components/home/ClassList';
 import ClipRank from '../../components/home/ClipRank';
 import HomeBanner from '../../components/home/HomeBanner';
 import SeriesSwiper from '../../components/home/SeriesSwiper';
-import Series from '../../components/home/Series';
 import PageCategory from '../../components/PageCategory';
 import Native from '../../commons/native';
 import Footer from '../../components/home/Footer';
 
-const CATEGORY_HEIGHT = 40;
+const CATEGORY_HEIGHT = 50;
 
 const styles = StyleSheet.create({
   slide: {
