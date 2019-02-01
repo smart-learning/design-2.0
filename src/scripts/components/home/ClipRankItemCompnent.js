@@ -11,10 +11,11 @@ import {
   Image,
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
-import IcPlay from '../../../images/ic-play-dark.png';
+import IcPlay from '../../../images/ic-play-dark2.png';
 import IcPlayBtn from '../../../images/ic-play-green.png';
 import numeral from 'numeral';
 import { withNavigation } from 'react-navigation';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   rankGridItem: {
@@ -34,6 +35,11 @@ const styles = StyleSheet.create({
     height: 60,
     marginRight: 10,
     marginLeft: 10,
+  },
+  rankTitle: {
+    fontSize: 14,
+    lineHeight: 18,
+    color: '#353A3C',
   },
   rankIcon: {
     position: 'relative',
@@ -61,7 +67,6 @@ const styles = StyleSheet.create({
   playButton: {
     width: 30,
     height: 30,
-    marginLeft: 'auto',
   },
 });
 
@@ -77,7 +82,10 @@ class ClipRankItemComponent extends React.Component {
     return (
       <View style={styles.rankGridItem}>
         <View style={styles.contentHr} />
-        <TouchableOpacity ActiveOpacity={0.9} onPress={this.gotoClassPage}>
+        <TouchableOpacity
+          ActiveOpacity={0.9}
+          onPress={() => Native.play(this.props.itemData.cid)}
+        >
           <View style={CommonStyles.alignJustifyItemCenter}>
             <View style={styles.rankNumber}>
               <Text style={styles.rankNumberText}>
@@ -86,15 +94,15 @@ class ClipRankItemComponent extends React.Component {
             </View>
             <ImageBackground
               source={{
-                uri: this.props.itemData.images.list
-                  ? this.props.itemData.images.list
+                uri: this.props.itemData.images.wide
+                  ? this.props.itemData.images.wide
                   : null,
               }}
               resizeMode="cover"
               style={styles.thumbnail}
               borderRadius={4}
             />
-            <View style={{ width: '51%' }}>
+            <View style={{ width: 155 }}>
               <Text
                 ellipsizeMode={'tail'}
                 numberOfLines={2}
@@ -124,7 +132,10 @@ class ClipRankItemComponent extends React.Component {
                 </View>
               </View>
             </View>
-            <Image source={IcPlayBtn} style={styles.playButton} />
+            <View style={{ width: 30 }}>
+              <Image source={IcPlayBtn} style={styles.playButton} />
+            </View>
+            <View style={{ width: 10 }} />
           </View>
         </TouchableOpacity>
       </View>
