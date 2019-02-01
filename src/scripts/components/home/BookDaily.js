@@ -43,15 +43,15 @@ class BookDaily extends React.Component {
             <View style={{ position: 'relative', width: 195, height: 125 }}>
               <Text
                 ellipsizeMode={'tail'}
-                numberOfLines={1}
-                style={{ fontSize: 17, fontWeight: '400', color: '#363636' }}
+                numberOfLines={2}
+                style={{ fontSize: 17, fontWeight: '500', color: '#363636' }}
               >
                 {todayItem.title}
               </Text>
               <Text
                 ellipsizeMode={'tail'}
                 numberOfLines={2}
-                style={{ fontSize: 13, fontWeight: '200', color: '#000000' }}
+                style={{ fontSize: 13, fontWeight: '300', color: '#000000' }}
               >
                 {todayItem.memo.split('<br>').join('\n')}
               </Text>
