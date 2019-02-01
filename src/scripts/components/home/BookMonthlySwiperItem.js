@@ -12,6 +12,7 @@ import Dummy from '../../../images/dummy-series.png';
 import globalStore from '../../commons/store';
 import CommonStyles from '../../../styles/common';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 
 const styles = StyleSheet.create({
   bookItem: {
@@ -81,7 +82,6 @@ const styles = StyleSheet.create({
 class BookMonthlySwiperItem extends React.Component {
   render() {
     let itemData = this.props.itemData;
-
     return (
       <View
         ref={ref => (this.view = ref)}
@@ -97,13 +97,13 @@ class BookMonthlySwiperItem extends React.Component {
             width: '100%',
             paddingTop: 20,
             paddingBottom: 20,
-            fontSize: 23,
+            fontSize: 22.5,
             fontWeight: 'bold',
             textAlign: 'center',
             color: '#ffffff',
           }}
         >
-          이달의 책
+          {moment(itemData.month).format('M')}월 이달의 책
         </Text>
         <View
           style={[
