@@ -818,7 +818,6 @@ public class PlayerActivity extends BasePlayerActivity {
         UiThreadUtil.runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            mButton_Arrow_Layout.setVisibility(GONE);
             mRelatedViewBtn.setVisibility(GONE);
 
             RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
@@ -849,7 +848,6 @@ public class PlayerActivity extends BasePlayerActivity {
             UiThreadUtil.runOnUiThread(new Runnable() {
               @Override
               public void run() {
-                mButton_Arrow_Layout.setVisibility(GONE);
                 mRelatedViewBtn.setVisibility(GONE);
 
                 RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
@@ -5154,65 +5152,44 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void doNextPlay(Boolean type) {
     // Left -- , Right ++
-
-    if (type) {
-      int nextId = getContentId();
-
-      if (getwebPlayerInfo().getCkey().length <= ++nextId) {
-        Utils.logToast(PlayerActivity.this, getString(R.string.info_lastplay));
-        return;
-      }
-
-      setContentId(nextId);
-
-      // 자동 재생 여부와 관계 없이 재생할 수 있도록
-      playOnClickPlayTry = true;
-
-      if (CONTENT_TYPE.equals("video-course")) {
-//        if (getTransportControls() != null) {
-//          getTransportControls().pause();
-//        }
-        callbackMethodName = "play/play-data/";
-        callbackMethod = "play";
-        sendData(
-            API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
-            callbackMethod);
-
-        setContentId(getContentId());
-
-        // 타이틀 동기화는 meta 데이터를 활용할 것
-        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-            getwebPlayerInfo().getCname()[getContentId()]);
-      }
-
-    } else {
-      int id = getContentId();
-      if (getContentId() == 0) {
-        Utils.logToast(getApplicationContext(), getString(R.string.info_fristplay));
-        return;
+    int id = getContentId();
+    do {
+      if (type) {
+        if (++id >= getwebPlayerInfo().getCkey().length) {
+          Utils.logToast(PlayerActivity.this, getString(R.string.info_lastplay));
+          return;
+        }
       } else {
-        setContentId(--id);
-        // 자동 재생 여부와 관계 없이 재생할 수 있도록
-        playOnClickPlayTry = true;
+        if (--id < 0) {
+          Utils.logToast(getApplicationContext(), getString(R.string.info_fristplay));
+          return;
+        }
       }
 
-      if (CONTENT_TYPE.equals("video-course")) {
-//        if (getTransportControls() != null) {
-//          getTransportControls().pause();
-//        }
-        callbackMethodName = "play/play-data/";
-        callbackMethod = "play";
-        sendData(
-            API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
-            callbackMethod);
-
-        setContentId(getContentId());
-
-        // 타이틀 동기화는 meta 데이터를 활용할 것
-        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-            getwebPlayerInfo().getCname()[getContentId()]);
+      if (mWebPlayerInfo.getCon_class().equals("audiobook")) {
+        if (mWebPlayerInfo.getCurl()[id].equals("0") ||
+            mWebPlayerInfo.getCurl()[id].equals("0.0")) {
+          continue;
+        }
       }
-    }
+
+      break;
+    } while (true);
+
+    setContentId(id);
+
+    // 자동 재생 여부와 관계 없이 재생할 수 있도록
+    playOnClickPlayTry = true;
+
+    callbackMethodName = "play/play-data/";
+    callbackMethod = "play";
+    sendData(
+        API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+        callbackMethod);
+
+    // 타이틀 동기화는 meta 데이터를 활용할 것
+    setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+        getwebPlayerInfo().getCname()[getContentId()]);
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
