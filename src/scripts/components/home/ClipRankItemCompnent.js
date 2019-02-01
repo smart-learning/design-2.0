@@ -95,7 +95,11 @@ class ClipRankItemComponent extends React.Component {
               borderRadius={4}
             />
             <View style={{ width: '51%' }}>
-              <Text ellipsizeMode={'tail'} numberOfLines={2}>
+              <Text
+                ellipsizeMode={'tail'}
+                numberOfLines={2}
+                style={styles.rankTitle}
+              >
                 {this.props.itemData.title}
               </Text>
               <View style={CommonStyles.alignJustifyFlex}>
