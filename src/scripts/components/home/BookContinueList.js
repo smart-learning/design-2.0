@@ -65,10 +65,7 @@ export default class BookContinueList extends React.Component {
         <View style={[styles.continueItem, CommonStyles.alignJustifyFlex]}>
           <ImageBackground
             source={{
-              uri:
-                item.data.teacher && item.data.teacher.images
-                  ? item.data.teacher.images.default
-                  : null,
+              uri: item.data?.images?.list,
             }}
             resizeMode={'cover'}
             style={styles.thumbnail}
