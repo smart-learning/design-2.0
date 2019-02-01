@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
   thumbnail: {
     width: 60,
     height: 60,
+    borderRadius: 4,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
   },
   play: {
     marginRight: 10,
@@ -62,7 +65,10 @@ export default class BookContinueList extends React.Component {
   _renderItem({ item }) {
     return (
       <View style={styles.slide}>
-        <View style={[styles.continueItem, CommonStyles.alignJustifyFlex]}>
+        <View
+          style={[styles.continueItem, CommonStyles.alignJustifyFlex]}
+          borderRadius={4}
+        >
           <ImageBackground
             source={{
               uri: item.data?.images?.list,
