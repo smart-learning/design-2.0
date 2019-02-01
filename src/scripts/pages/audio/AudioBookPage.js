@@ -139,8 +139,10 @@ class AudioBookPage extends React.Component {
   };
 
   loadMore = () => {
-    if (this.store.pagination['has-next']) {
-      this.loadAudioList(this.store.ccode, this.store.pagination.page + 1);
+    if( !this.store.isLoading ) {
+      if (this.store.pagination['has-next']) {
+        this.loadAudioList(this.store.ccode, this.store.pagination.page + 1);
+      }
     }
   };
 
@@ -168,6 +170,14 @@ class AudioBookPage extends React.Component {
     this.loadAudioList(item.ccode).catch(e => {
       console.log(e);
     });
+  };
+
+  handleScroll = event => {
+    const ratio =
+      event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
+    if (ratio > 0.7) {
+      this.loadMore();
+    }
   };
 
   _renderHeader() {
@@ -269,7 +279,7 @@ class AudioBookPage extends React.Component {
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
       >
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
-          <ScrollView style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }} onScroll={this.handleScroll}>
             <View
               style={{
                 width: '100%',
@@ -281,23 +291,7 @@ class AudioBookPage extends React.Component {
                 <FlatList
                   data={this.store.displayData}
                   onEndReached={this.loadMore}
-                  // ListFooterComponent={() => {
-                  //   return !this.store.isLoading &&
-                  //     this.store.pagination['has-next'] ? (
-                  //     <TouchableOpacity
-                  //       style={{ width: '100%', paddingHorizontal: 10 }}
-                  //       activeOpacity={0.9}
-                  //       onPress={this.loadMore}
-                  //     >
-                  //       <View
-                  //         style={[styles.linkViewAll, styles.classLinkViewAll]}
-                  //         borderRadius={5}
-                  //       >
-                  //         <Text style={styles.linkViewAllText}>더보기</Text>
-                  //       </View>
-                  //     </TouchableOpacity>
-                  //   ) : null;
-                  // }}
+                  extraData={this.store.displayData.length}
                   renderItem={({ item }) => (
                     <AudioBookListItem
                       id={item.id}

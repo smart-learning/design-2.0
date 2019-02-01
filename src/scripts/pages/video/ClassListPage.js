@@ -135,6 +135,7 @@ class ClassListPage extends React.Component {
     } else {
       _.each(VOs, e => this.store.displayData.push(e));
     }
+
     this.store.ccode = ccode;
     // TODO: V1.1 대응 페이지네이션 처리 추가.
     this.store.pagination = data.pagination;
@@ -142,8 +143,10 @@ class ClassListPage extends React.Component {
   };
 
   loadMore = () => {
-    if (this.store.pagination['has-next']) {
-      this.loadClassList(this.store.ccode, this.store.pagination.page + 1);
+    if( !this.store.isLoading ) {
+      if (this.store.pagination['has-next']) {
+        this.loadClassList(this.store.ccode, this.store.pagination.page + 1);
+      }
     }
   };
 
@@ -189,6 +192,14 @@ class ClassListPage extends React.Component {
   onCategorySelect = item => {
     this.store.selectedCategory = item.id;
     this.loadClassList(item.ccode);
+  };
+
+  handleScroll = event => {
+    const ratio =
+      event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
+    if (ratio > 0.7) {
+      this.loadMore();
+    }
   };
 
   _renderHeader() {
@@ -286,11 +297,9 @@ class ClassListPage extends React.Component {
 
   render() {
     return (
-      <View
-        style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
-      >
+      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
-          <ScrollView style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }} onScroll={this.handleScroll}>
             <View
               style={{
                 width: '100%',
@@ -301,24 +310,7 @@ class ClassListPage extends React.Component {
               {this.store.displayData !== null ? (
                 <FlatList
                   data={this.store.displayData}
-                  onEndReached={this.loadMore}
-                  // ListFooterComponent={() => {
-                  //   return !this.store.isLoading &&
-                  //     this.store.pagination['has-next'] ? (
-                  //     <TouchableOpacity
-                  //       style={{ width: '100%', paddingHorizontal: 10 }}
-                  //       activeOpacity={0.9}
-                  //       onPress={this.loadMore}
-                  //     >
-                  //       <View
-                  //         style={[styles.linkViewAll, styles.classLinkViewAll]}
-                  //         borderRadius={5}
-                  //       >
-                  //         <Text style={styles.linkViewAllText}>더보기</Text>
-                  //       </View>
-                  //     </TouchableOpacity>
-                  //   ) : null;
-                  // }}
+                  extraData={this.store.displayData.length}
                   renderItem={({ item }) => (
                     <ClassListItem
                       id={item.id}
