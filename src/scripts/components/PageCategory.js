@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 14,
-    fontWeight: 'bold',
   },
 });
 
