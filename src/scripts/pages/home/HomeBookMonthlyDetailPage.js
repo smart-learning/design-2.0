@@ -25,6 +25,7 @@ import globalStore from '../../commons/store';
 import moment from 'moment';
 import Native from '../../commons/native';
 import IcAngleDownGrey from '../../../images/ic-angle-down-grey2.png';
+import IcPlay from '../../../images/ic-play-monthly-detail.png';
 
 const styles = StyleSheet.create({
   bannerButton: {
@@ -102,7 +103,27 @@ class HomeBookMonthlyDetailPage extends React.Component {
                         height: 164,
                       }}
                       resizeMode="cover"
-                    />
+                    >
+                      <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => Native.play(itemData.audiobook.cid)}
+                      >
+                        <View
+                          style={{
+                            position: 'absolute',
+                            width: 117,
+                            height: 164,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Image
+                            source={IcPlay}
+                            style={{ width: 50, height: 50 }}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </ImageBackground>
                   </View>
                   <View
                     style={{
@@ -248,13 +269,8 @@ class HomeBookMonthlyDetailPage extends React.Component {
                   </View>
                   <View>
                     <Text
-                      style={[
-                        styles.contentText,
-                        {
-                          paddingVertical: 15,
-                          height: this.isOpen ? 'auto' : 106,
-                        },
-                      ]}
+                      style={[styles.contentText, { paddingVertical: 15 }]}
+                      numberOfLines={this.isOpen ? null : 4}
                     >
                       {itemData.mentor.memo.split('<br>').join('\n')}
                     </Text>
