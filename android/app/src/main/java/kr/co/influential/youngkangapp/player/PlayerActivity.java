@@ -2974,8 +2974,7 @@ public class PlayerActivity extends BasePlayerActivity {
    *  http://crashes.to/s/019819c138e 2017.09.19
    *******************************************************************/
   public void setNoneSubtilteText() {
-
-    try {
+    runOnUiThread(() -> {
       LinearLayout shortTextView = findViewById(R.id.shortTextView);
       if (shortTextView != null) {
         shortTextView.removeAllViews();
@@ -2989,10 +2988,7 @@ public class PlayerActivity extends BasePlayerActivity {
       mblankTextView.setTextColor(emfontcolor);
 
       shortTextView.addView(mblankTextView);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    });
   }
 
   /*******************************************************************
@@ -5160,9 +5156,14 @@ public class PlayerActivity extends BasePlayerActivity {
     // Left -- , Right ++
 
     if (type) {
-      int id = getContentId();
+      int nextId = getContentId();
 
-      setContentId(++id);
+      if (getwebPlayerInfo().getCkey().length <= ++nextId) {
+        Utils.logToast(PlayerActivity.this, getString(R.string.info_lastplay));
+        return;
+      }
+
+      setContentId(nextId);
 
       // 자동 재생 여부와 관계 없이 재생할 수 있도록
       playOnClickPlayTry = true;
@@ -5536,12 +5537,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
             LogHelper.e(TAG, "20181125 Exception " + e.toString());
 
-            UiThreadUtil.runOnUiThread(new Runnable() {
-              @Override
-              public void run() {
-                setNoneSubtilteText();
-              }
-            });
+            setNoneSubtilteText();
 
             hasSubTitlsJesonUrl = false;
             e.printStackTrace();
