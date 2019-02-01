@@ -35,7 +35,7 @@ import Footer from '../../components/home/Footer';
 import SeriesSwiper from '../../components/home/SeriesSwiper';
 import BookMonthlySwiper from '../../components/home/BookMonthlySwiper';
 
-const CATEGORY_HEIGHT = 50;
+const CATEGORY_HEIGHT = 45;
 
 const styles = StyleSheet.create({
   wrapper: {},

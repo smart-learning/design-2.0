@@ -28,7 +28,7 @@ import PageCategory from '../../components/PageCategory';
 import Native from '../../commons/native';
 import Footer from '../../components/home/Footer';
 
-const CATEGORY_HEIGHT = 50;
+const CATEGORY_HEIGHT = 45;
 
 const styles = StyleSheet.create({
   slide: {
