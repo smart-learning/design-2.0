@@ -5,8 +5,8 @@ import CommonStyles from '../../../styles/common';
 const styles = StyleSheet.create({
   footerContainer: {
     backgroundColor: '#F2F2F2',
-    paddingTop: 20,
-    paddingBottom: 30,
+    paddingTop: 30,
+    paddingBottom: 80,
     paddingLeft: 15,
     paddingRight: 15,
   },
@@ -45,7 +45,7 @@ class Footer extends React.Component {
             통신판매업 신고번호 제 2015-서울종로-0405호
           </Text>
         </View>
-        <View style={{ marginTop: 20, }}>
+        <View style={{ marginTop: 20 }}>
           <View style={CommonStyles.alignJustifyFlex}>
             <View>
               <TouchableOpacity
