@@ -89,21 +89,25 @@ class HomeBookMonthlyDetailPage extends React.Component {
                 <View
                   style={[
                     CommonStyles.alignJustifyFlex,
-                    { height: 168, marginTop: 15, marginBottom: 30 },
+                    { height: 164, marginTop: 15, marginBottom: 30 },
                   ]}
                 >
-                  <View style={{ width: '33%' }}>
+                  <View style={{ width: 117 }}>
                     <ImageBackground
                       source={{ uri: itemData.audiobook.images.cover }}
-                      style={{ width: 120, height: 168 }}
+                      style={{
+                        position: 'relative',
+                        width: 117,
+                        height: 164,
+                      }}
                       resizeMode="cover"
                     />
                   </View>
                   <View
                     style={{
                       position: 'relative',
-                      width: '67%',
-                      paddingLeft: 15,
+                      flex: 1,
+                      paddingLeft: 20,
                     }}
                   >
                     <Text
