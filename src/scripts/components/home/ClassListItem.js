@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   classAuthor: {
     fontSize: 13,
     color: '#767B80',
+    fontWeight: '200',
     paddingTop: 10,
     paddingBottom: 12,
     paddingLeft: 12,
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   },
   classLabel: {
     height: 22,
-    marginRight: 3,
+    marginRight: 6,
     marginBottom: 10,
     paddingTop: 3,
     paddingRight: 10,
