@@ -41,10 +41,8 @@ const styles = StyleSheet.create({
     height: 70,
   },
   mentorLabel: {
-    width: 50,
+    width: 53,
     height: 17,
-    marginTop: 7,
-    marginBottom: 7,
     borderWidth: 1,
     borderColor: '#ffffff',
     flexDirection: 'row',
@@ -52,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mentorLabelText: {
-    width: 50,
+    width: 53,
     fontSize: 11,
     textAlign: 'center',
     color: '#ffffff',
