@@ -235,17 +235,6 @@ class HomePage extends React.Component {
     }
   };
 
-  latestMiniPlayer = async () => {
-    if (Platform.OS === 'android') {
-      /**
-       * 2019.01.23
-       * 김중온
-       * Native 에 미니플레이어 설정 요청
-       */
-      Native.latestMiniPlayer();
-    }
-  };
-
   showPopup() {
     if (globalStore.welaaaAuth) {
       return (
@@ -273,8 +262,6 @@ class HomePage extends React.Component {
   }
 
   componentDidMount = async () => {
-    this.latestMiniPlayer();
-
     if (globalStore.welaaaAuth) {
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
