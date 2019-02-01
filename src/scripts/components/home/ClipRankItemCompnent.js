@@ -102,24 +102,26 @@ class ClipRankItemComponent extends React.Component {
               >
                 {this.props.itemData.title}
               </Text>
-              <View style={CommonStyles.alignJustifyFlex}>
-                <Image source={IcPlay} style={styles.rankIcon} />
-                <Text style={styles.rankContentText}>
-                  {numeral(
-                    this.props.itemData.meta
-                      ? this.props.itemData.meta.play_count
-                      : this.props.itemData.hit_count,
-                  ).format('0a')}
-                </Text>
-                <Text
-                  style={styles.rankTeacherText}
-                  ellipsizeMode={'tail'}
-                  numberOfLines={1}
-                >
-                  {this.props.itemData.course.teacher.name
-                    ? this.props.itemData.course.teacher.name
-                    : ''}
-                </Text>
+              <View style={{ marginTop: 5 }}>
+                <View style={CommonStyles.alignJustifyFlex}>
+                  <Image source={IcPlay} style={styles.rankIcon} />
+                  <Text style={styles.rankContentText}>
+                    {numeral(
+                      this.props.itemData.meta
+                        ? this.props.itemData.meta.play_count
+                        : this.props.itemData.hit_count,
+                    ).format('0a')}
+                  </Text>
+                  <Text
+                    style={styles.rankTeacherText}
+                    ellipsizeMode={'tail'}
+                    numberOfLines={1}
+                  >
+                    {this.props.itemData.course.teacher.name
+                      ? this.props.itemData.course.teacher.name
+                      : ''}
+                  </Text>
+                </View>
               </View>
             </View>
             <Image source={IcPlayBtn} style={styles.playButton} />
