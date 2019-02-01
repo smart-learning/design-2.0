@@ -60,7 +60,7 @@ export default class ClipRank extends React.Component {
     let itemWidth = 300;
 
     return (
-      <View style={{ marginTop: 20, marginBottom: 30 }}>
+      <View style={{ marginTop: 20, marginBottom: 30, position: 'relative' }}>
         <Carousel
           data={rankList}
           renderItem={this._renderItem}
@@ -70,6 +70,14 @@ export default class ClipRank extends React.Component {
           activeSlideAlignment={'start'}
           inactiveSlideOpacity={1}
           inactiveSlideScale={1}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: 1,
+            backgroundColor: '#ffffff',
+          }}
         />
       </View>
     );
