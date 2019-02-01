@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     height: 69,
   },
   mentorMemo: {
-    height: 65,
+    height: 70,
     paddingTop: 7,
     fontSize: 12,
     lineHeight: 14,
