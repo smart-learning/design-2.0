@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   slide: {
-    width: Dimensions.get('window').width * 0.84,
+    width: Dimensions.get('window').width * 0.70833333333,
     paddingRight: 10,
   },
   slideInnerContainer: {
@@ -107,7 +107,7 @@ export default class BookContinueList extends React.Component {
 
   render() {
     let windowWidth = Dimensions.get('window').width;
-    let itemWidth = windowWidth * 0.84;
+    let itemWidth = windowWidth * 0.70833333333;
 
     let originData = _.map(this.props.itemData, item => item);
     let itemData = originData.slice(0, 5);
