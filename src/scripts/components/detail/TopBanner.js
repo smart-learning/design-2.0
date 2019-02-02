@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-class-continue-play.png';
+import IcPlayAudio from '../../../images/ic-play-audio-detail.png';
 import { observer } from 'mobx-react';
 import Native from '../../commons/native';
 import numeral from 'numeral';
@@ -29,9 +30,10 @@ const styles = StyleSheet.create({
     paddingBottom: '21.875%',
   },
   audioBookThumbnail: {
-    position: 'relative',
     width: 120,
     height: 192,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headline: {
     paddingTop: 10,
@@ -48,11 +50,6 @@ const styles = StyleSheet.create({
     color: '#363636',
   },
   audioBookPlayButton: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: 20,
-    marginLeft: -20,
     width: 40,
     height: 40,
   },
@@ -272,7 +269,10 @@ export default class TopBanner extends React.Component {
                     resizeMode={'contain'}
                     style={styles.audioBookThumbnail}
                   >
-                    <Image source={IcPlay} style={styles.audioBookPlayButton} />
+                    <Image
+                      source={IcPlayAudio}
+                      style={styles.audioBookPlayButton}
+                    />
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
