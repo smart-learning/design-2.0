@@ -96,7 +96,7 @@ export default class TabContentList extends React.Component {
               >
                 <Image source={IcPlay} style={styles.btnSetSmall} />
                 <Text style={styles.clipInfoText}>
-                  전체 재생시간
+                  전체 재생시간{' '}
                   <Text
                     style={styles.clipInfoTextImportant}
                   >{`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
