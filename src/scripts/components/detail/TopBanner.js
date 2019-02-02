@@ -259,7 +259,7 @@ export default class TopBanner extends React.Component {
         <View>
           {this.props.learnType === 'audioBook' && (
             <View style={CommonStyles.alignJustifyContentBetween}>
-              <View style={{ width: '30%', marginLeft: 20 }}>
+              <View style={{ width: 120, marginLeft: 20, marginRight: 25 }}>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => Native.play(this.props.store.itemData?.cid)}
@@ -276,7 +276,9 @@ export default class TopBanner extends React.Component {
                   </ImageBackground>
                 </TouchableOpacity>
               </View>
-              <View style={{ width: '60%' }}>{this.content()}</View>
+              <View style={{ flex: 1, paddingRight: 20 }}>
+                {this.content()}
+              </View>
             </View>
           )}
 
