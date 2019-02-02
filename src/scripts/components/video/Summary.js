@@ -238,7 +238,14 @@ export default class Summary extends React.Component {
               <ImageBackground
                 source={{ uri: this.props.itemData.images.wide }}
                 resizeMode="cover"
-                style={styles.thumbnail}
+                style={[
+                  styles.thumbnail,
+                  {
+                    borderRadius: 4,
+                    borderBottomLeftRadius: 0,
+                    borderBottomRightRadius: 0,
+                  },
+                ]}
               />
             </TouchableOpacity>
           )}

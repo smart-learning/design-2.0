@@ -78,7 +78,7 @@ export default class ClipListItem extends React.Component {
   render() {
     const playTime = moment.duration(this.props.itemData.play_time);
     return (
-      <View style={styles.clipListItem}>
+      <View style={styles.clipListItem} borderRadius={4}>
         <Summary type={'detailClip'} itemData={this.props.itemData} />
         <View style={styles.clipNumber}>
           <Text style={styles.clipNumberText}>
