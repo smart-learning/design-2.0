@@ -15,9 +15,9 @@ import {
 import Swiper from 'react-native-swiper';
 import _ from 'underscore';
 import DummyTeacher from '../../../images/dummy-my-profile-2.png';
-import IcClip from '../../../images/ic-detail-label-clip.png';
-import IcFile from '../../../images/ic-detail-label-file.png';
-import IcTime from '../../../images/ic-detail-label-time.png';
+import IcClip from '../../../images/ic-detail-label-clip2.png';
+import IcFile from '../../../images/ic-detail-label-file2.png';
+import IcTime from '../../../images/ic-duration.png';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Evaluation from './Evaluation';
 import createStore from '../../commons/createStore';
@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   labelInfoImage: {
-    width: 12,
-    height: 12,
+    width: 20,
+    height: 20,
     marginRight: 7,
   },
   labelInfoText: {
