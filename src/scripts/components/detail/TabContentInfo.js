@@ -439,7 +439,9 @@ class TabContentInfo extends React.Component {
         </View>
 
         <View style={styles.review}>
-          <View style={[CommonStyles.alignJustifyFlex, { marginBottom: 20 }]}>
+          <View
+            style={[CommonStyles.alignJustifyItemCenter, { marginBottom: 20 }]}
+          >
             <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
               윌라 회원님들의 평가
             </Text>
@@ -465,7 +467,10 @@ class TabContentInfo extends React.Component {
             <Evaluation itemData={this.props.store.itemEvaluationData} />
           )}
 
-          <StarGrade learnType={this.props.learnType} store={this.props.store} />
+          <StarGrade
+            learnType={this.props.learnType}
+            store={this.props.store}
+          />
 
           <ReviewForm store={this.props.store} />
         </View>
