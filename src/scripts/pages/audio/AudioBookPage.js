@@ -139,7 +139,7 @@ class AudioBookPage extends React.Component {
   };
 
   loadMore = () => {
-    if( !this.store.isLoading ) {
+    if (!this.store.isLoading) {
       if (this.store.pagination['has-next']) {
         this.loadAudioList(this.store.ccode, this.store.pagination.page + 1);
       }
@@ -256,17 +256,6 @@ class AudioBookPage extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
-            {/* <TouchableOpacity
-                  activeOpacity={0.9}
-                  style={{ marginLeft: 'auto' }}
-                  onPress={() => {
-                    this.props.navigation.navigate('AudioBookBuyPage');
-                  }}
-                >
-                  <View style={styles.myButton} borderRadius={3}>
-                    <Text style={styles.myButtonText}>내 오디오북 보기</Text>
-                  </View>
-                </TouchableOpacity> */}
           </View>
         </View>
       </View>
@@ -275,9 +264,7 @@ class AudioBookPage extends React.Component {
 
   render() {
     return (
-      <View
-        style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
-      >
+      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
           <ScrollView style={{ flex: 1 }} onScroll={this.handleScroll}>
             <View
@@ -297,6 +284,7 @@ class AudioBookPage extends React.Component {
                       id={item.id}
                       navigation={this.props.navigation}
                       itemData={item}
+                      tabStatus={this.tabSortStatus}
                     />
                   )}
                 />
@@ -305,9 +293,7 @@ class AudioBookPage extends React.Component {
               )}
             </View>
 
-            <View
-              style={[CommonStyles.contentContainer, { width: '100%' }]}
-            >
+            <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
               {this.store.isLoading && (
                 <View style={{ marginTop: 12 }}>
                   <ActivityIndicator

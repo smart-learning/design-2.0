@@ -80,6 +80,21 @@ export default class AudioBookListItem extends React.Component {
       <View>
         <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
           <View style={[CommonStyles.alignJustifyFlex, { height: 115 }]}>
+            {this.props.tabStatus === 'hot' && (
+              <View
+                style={{
+                  width: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{ fontSize: 14, fontWeight: 'bold', color: '#353A3C' }}
+                >
+                  {this.props.itemData.rankNumber}
+                </Text>
+              </View>
+            )}
             <View style={{ width: 94 }}>
               <ImageBackground
                 source={{ uri: this.props.itemData.images.list }}
