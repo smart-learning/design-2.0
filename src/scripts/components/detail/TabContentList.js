@@ -11,7 +11,7 @@ import CommonStyles from '../../../styles/common';
 import ClipListItem from './ClipListItem';
 import ChapterListItem from './ChapterListItem';
 import moment from 'moment';
-import IcPlay from '../../../images/ic-play-dark.png';
+import IcPlay from '../../../images/ic-duration.png';
 
 const styles = StyleSheet.create({
   clipListContainer: {

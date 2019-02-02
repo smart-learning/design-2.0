@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Image } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import Summary from '../video/Summary';
 import IcPlay1 from '../../../images/ic-play-dark.png';
-import IcPlay2 from '../../../images/ic-play-dark.png';
+import IcPlay2 from '../../../images/ic-duration.png';
 import numeral from 'numeral';
 import moment from 'moment';
 
