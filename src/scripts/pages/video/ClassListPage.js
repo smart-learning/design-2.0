@@ -303,7 +303,7 @@ class ClassListPage extends React.Component {
             <View
               style={{
                 width: '100%',
-                paddingTop: 82,
+                paddingTop: 86,
                 paddingHorizontal: 15,
               }}
             >
