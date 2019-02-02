@@ -25,11 +25,9 @@ const styles = StyleSheet.create({
   },
   starIcons: {
     position: 'relative',
-    width: 185,
+    width: 225,
     height: 32,
     marginTop: 20,
-    marginRight: 'auto',
-    marginLeft: 'auto',
   },
   starIconContainer: {
     position: 'absolute',
@@ -38,16 +36,16 @@ const styles = StyleSheet.create({
     left: 0,
   },
   starIconContainer2: {
-    left: 37,
+    left: 48,
   },
   starIconContainer3: {
-    left: 74,
+    left: 96,
   },
   starIconContainer4: {
-    left: 111,
+    left: 144,
   },
   starIconContainer5: {
-    left: 148,
+    left: 192,
   },
   starIcon: {
     position: 'absolute',
@@ -69,141 +67,150 @@ class StarGrade extends React.Component {
         </Text>
         <Text style={styles.Paragraph}>평점을 남겨주세요</Text>
 
-        <View style={styles.starIcons}>
-          <View style={[styles.starIconContainer, styles.starIconContainer1]}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => (this.props.store.reviewStar = 1)}
-            >
-              <Image
-                source={IcStarGrey}
-                style={
-                  this.props.store.reviewStar === 0
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-              <Image
-                source={IcStarPrimary}
-                style={
-                  this.props.store.reviewStar === 1 ||
-                  this.props.store.reviewStar === 2 ||
-                  this.props.store.reviewStar === 3 ||
-                  this.props.store.reviewStar === 4 ||
-                  this.props.store.reviewStar === 5
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.starIconContainer, styles.starIconContainer2]}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => (this.props.store.reviewStar = 2)}
-            >
-              <Image
-                source={IcStarGrey}
-                style={
-                  this.props.store.reviewStar === 0 ||
-                  this.props.store.reviewStar === 1
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-              <Image
-                source={IcStarPrimary}
-                style={
-                  this.props.store.reviewStar === 2 ||
-                  this.props.store.reviewStar === 3 ||
-                  this.props.store.reviewStar === 4 ||
-                  this.props.store.reviewStar === 5
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.starIconContainer, styles.starIconContainer3]}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => (this.props.store.reviewStar = 3)}
-            >
-              <Image
-                source={IcStarGrey}
-                style={
-                  this.props.store.reviewStar === 0 ||
-                  this.props.store.reviewStar === 1 ||
-                  this.props.store.reviewStar === 2
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-              <Image
-                source={IcStarPrimary}
-                style={
-                  this.props.store.reviewStar === 3 ||
-                  this.props.store.reviewStar === 4 ||
-                  this.props.store.reviewStar === 5
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.starIconContainer, styles.starIconContainer4]}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => (this.props.store.reviewStar = 4)}
-            >
-              <Image
-                source={IcStarGrey}
-                style={
-                  this.props.store.reviewStar === 0 ||
-                  this.props.store.reviewStar === 1 ||
-                  this.props.store.reviewStar === 2 ||
-                  this.props.store.reviewStar === 3
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-              <Image
-                source={IcStarPrimary}
-                style={
-                  this.props.store.reviewStar === 4 ||
-                  this.props.store.reviewStar === 5
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.starIconContainer, styles.starIconContainer5]}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => (this.props.store.reviewStar = 5)}
-            >
-              <Image
-                source={IcStarGrey}
-                style={
-                  this.props.store.reviewStar === 0 ||
-                  this.props.store.reviewStar === 1 ||
-                  this.props.store.reviewStar === 2 ||
-                  this.props.store.reviewStar === 3 ||
-                  this.props.store.reviewStar === 4
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-              <Image
-                source={IcStarPrimary}
-                style={
-                  this.props.store.reviewStar === 5
-                    ? styles.starIcon
-                    : { opacity: 0 }
-                }
-              />
-            </TouchableOpacity>
+        <View
+          style={{
+            width: '100%',
+            height: 32,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View style={styles.starIcons}>
+            <View style={[styles.starIconContainer, styles.starIconContainer1]}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => (this.props.store.reviewStar = 1)}
+              >
+                <Image
+                  source={IcStarGrey}
+                  style={
+                    this.props.store.reviewStar === 0
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+                <Image
+                  source={IcStarPrimary}
+                  style={
+                    this.props.store.reviewStar === 1 ||
+                    this.props.store.reviewStar === 2 ||
+                    this.props.store.reviewStar === 3 ||
+                    this.props.store.reviewStar === 4 ||
+                    this.props.store.reviewStar === 5
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.starIconContainer, styles.starIconContainer2]}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => (this.props.store.reviewStar = 2)}
+              >
+                <Image
+                  source={IcStarGrey}
+                  style={
+                    this.props.store.reviewStar === 0 ||
+                    this.props.store.reviewStar === 1
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+                <Image
+                  source={IcStarPrimary}
+                  style={
+                    this.props.store.reviewStar === 2 ||
+                    this.props.store.reviewStar === 3 ||
+                    this.props.store.reviewStar === 4 ||
+                    this.props.store.reviewStar === 5
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.starIconContainer, styles.starIconContainer3]}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => (this.props.store.reviewStar = 3)}
+              >
+                <Image
+                  source={IcStarGrey}
+                  style={
+                    this.props.store.reviewStar === 0 ||
+                    this.props.store.reviewStar === 1 ||
+                    this.props.store.reviewStar === 2
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+                <Image
+                  source={IcStarPrimary}
+                  style={
+                    this.props.store.reviewStar === 3 ||
+                    this.props.store.reviewStar === 4 ||
+                    this.props.store.reviewStar === 5
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.starIconContainer, styles.starIconContainer4]}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => (this.props.store.reviewStar = 4)}
+              >
+                <Image
+                  source={IcStarGrey}
+                  style={
+                    this.props.store.reviewStar === 0 ||
+                    this.props.store.reviewStar === 1 ||
+                    this.props.store.reviewStar === 2 ||
+                    this.props.store.reviewStar === 3
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+                <Image
+                  source={IcStarPrimary}
+                  style={
+                    this.props.store.reviewStar === 4 ||
+                    this.props.store.reviewStar === 5
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.starIconContainer, styles.starIconContainer5]}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => (this.props.store.reviewStar = 5)}
+              >
+                <Image
+                  source={IcStarGrey}
+                  style={
+                    this.props.store.reviewStar === 0 ||
+                    this.props.store.reviewStar === 1 ||
+                    this.props.store.reviewStar === 2 ||
+                    this.props.store.reviewStar === 3 ||
+                    this.props.store.reviewStar === 4
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+                <Image
+                  source={IcStarPrimary}
+                  style={
+                    this.props.store.reviewStar === 5
+                      ? styles.starIcon
+                      : { opacity: 0 }
+                  }
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
