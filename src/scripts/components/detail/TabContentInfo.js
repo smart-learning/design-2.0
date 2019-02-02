@@ -242,7 +242,7 @@ class TabContentInfo extends React.Component {
       if (!_.isNull(this.props.store.itemData.teacher)) {
         if (!_.isNull(this.props.store.itemData.teacher?.memo)) {
           teacherMemo = this.props.store.itemData.teacher?.memo;
-          if( teacherMemo ) {
+          if (teacherMemo) {
             teacherMemo = teacherMemo.split('<br>').join('\n');
           }
         }
@@ -398,12 +398,8 @@ class TabContentInfo extends React.Component {
           </View>
           <View style={styles.teacherMemo}>
             <Text
-              style={[
-                styles.teacherMemoText,
-                {
-                  height: this.isTeacherMemoOpen ? 'auto' : 125,
-                },
-              ]}
+              style={styles.teacherMemoText}
+              numberOfLines={this.isTeacherMemoOpen ? null : 3}
             >
               {teacherMemo}
             </Text>
