@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
   teacherMemo: {},
   teacherMemoText: {
     paddingTop: 20,
-    paddingBottom: 25,
     lineHeight: 20,
     color: '#353A3C',
     fontWeight: '200',
@@ -330,12 +329,8 @@ class TabContentInfo extends React.Component {
 
         <View style={[CommonStyles.contentContainer, styles.info]}>
           <Text
-            style={[
-              styles.infoTextNormal,
-              {
-                height: this.isContentMemoOpen ? 'auto' : 80,
-              },
-            ]}
+            style={styles.infoTextNormal}
+            numberOfLines={this.isContentMemoOpen ? null : 4}
           >
             {`${this.props.store.itemData?.memo?.split('<br>').join('\n')}`}
           </Text>
