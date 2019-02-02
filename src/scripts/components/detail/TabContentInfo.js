@@ -465,7 +465,7 @@ class TabContentInfo extends React.Component {
             <Evaluation itemData={this.props.store.itemEvaluationData} />
           )}
 
-          <StarGrade store={this.props.store} />
+          <StarGrade learnType={this.props.learnType} store={this.props.store} />
 
           <ReviewForm store={this.props.store} />
         </View>
