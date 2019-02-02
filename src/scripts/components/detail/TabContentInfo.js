@@ -21,7 +21,7 @@ import IcTime from '../../../images/ic-duration.png';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Evaluation from './Evaluation';
 import createStore from '../../commons/createStore';
-import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
+import IcAngleDownGrey from '../../../images/ic-angle-down-grey2.png';
 import numeral from 'numeral';
 import StarGrade from './StarGrade';
 import ReviewForm from './ReviewForm';
@@ -185,9 +185,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewMore: {
-    width: 50,
+    width: 55,
     height: 36,
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   viewMoreText: {
     fontSize: 12,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   viewMoreIcon: {
     position: 'relative',
-    top: 4,
+    top: 2,
   },
 });
 
@@ -348,7 +348,9 @@ class TabContentInfo extends React.Component {
             <View
               style={[styles.viewMore, CommonStyles.alignJustifyContentBetween]}
             >
-              <Text style={styles.viewMoreText}>더보기</Text>
+              <Text style={styles.viewMoreText}>
+                {this.isContentMemoOpen ? '접기' : '더보기'}
+              </Text>
               <Image
                 source={IcAngleDownGrey}
                 style={[
@@ -422,7 +424,9 @@ class TabContentInfo extends React.Component {
                   CommonStyles.alignJustifyContentBetween,
                 ]}
               >
-                <Text style={styles.viewMoreText}>더보기</Text>
+                <Text style={styles.viewMoreText}>
+                  {this.isTeacherMemoOpen ? '접기' : '더보기'}
+                </Text>
                 <Image
                   source={IcAngleDownGrey}
                   style={[
