@@ -30,9 +30,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   countWrap: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 2,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
   },
   bookLabels: {
     marginBottom: 5,
@@ -80,30 +80,30 @@ export default class AudioBookListItem extends React.Component {
       <View>
         <TouchableOpacity activeOpacity={0.9} onPress={this.changePage}>
           <View style={[CommonStyles.alignJustifyFlex, { height: 115 }]}>
-            <View>
+            <View style={{ width: 94 }}>
               <ImageBackground
                 source={{ uri: this.props.itemData.images.list }}
                 resizeMode="contain"
                 style={{ width: 82, height: 115 }}
               />
             </View>
-            <View
-              style={{ width: '80%', marginLeft: 13 }}
-            >
+            <View style={{ flex: 1, position: 'relative', height: 115 }}>
               <Text
                 ellipsizeMode={'tail'}
                 numberOfLines={1}
-                style={{ fontSize: 15, fontWeight: '400' }}
+                style={{ fontSize: 15, fontWeight: '500', color: '#353A3C' }}
               >
                 {this.props.itemData.title ? this.props.itemData.title : ''}
               </Text>
-              <Text
-                ellipsizeMode={'tail'}
-                numberOfLines={1}
-                style={{ fontSize: 11, fontWeight: '200' }}
-              >
-                {this.props.itemData.teacher?.name}
-              </Text>
+              <View style={{ paddingVertical: 3 }}>
+                <Text
+                  ellipsizeMode={'tail'}
+                  numberOfLines={1}
+                  style={{ fontSize: 11, fontWeight: '200', color: '#767B80' }}
+                >
+                  {this.props.itemData.teacher?.name}
+                </Text>
+              </View>
               <Text
                 ellipsizeMode={'tail'}
                 numberOfLines={2}
@@ -112,6 +112,7 @@ export default class AudioBookListItem extends React.Component {
                   fontWeight: '200',
                   lineHeight: 15,
                   height: 30,
+                  color: '#353A3C',
                 }}
               >
                 {this.props.itemData.subtitle
