@@ -298,7 +298,7 @@ class TabContentInfo extends React.Component {
               <Image style={styles.labelInfoImage} source={IcClip} />
               <Text style={styles.labelInfoText}>
                 <Text style={styles.labelInfoSpanText}>
-                  {this.props.store.itemData.clip_count}개
+                  {this.props.store.itemData.clip_count}개{' '}
                 </Text>
                 의 강의
               </Text>
@@ -307,9 +307,8 @@ class TabContentInfo extends React.Component {
           <View style={[CommonStyles.alignJustifyFlex, styles.labelInfoItem]}>
             <Image style={styles.labelInfoImage} source={IcTime} />
             <Text style={styles.labelInfoText}>
-              전체 재생시간
+              전체 재생시간{' '}
               <Text style={styles.labelInfoSpanText}>
-                {' '}
                 {`${playTime.hours()}시간 ${playTime.minutes()}분`}
               </Text>
             </Text>
@@ -317,7 +316,7 @@ class TabContentInfo extends React.Component {
           <View style={[CommonStyles.alignJustifyFlex, styles.labelInfoItem]}>
             <Image style={styles.labelInfoImage} source={IcFile} />
             <Text style={styles.labelInfoText}>
-              다운로드 시 용량
+              다운로드 시 용량{' '}
               <Text style={styles.labelInfoSpanText}>
                 {this.props.store.itemData.file_size} MB
               </Text>
