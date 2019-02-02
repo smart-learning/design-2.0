@@ -108,7 +108,7 @@ class ClassDetailPage extends React.Component {
       return;
     }
     this.props.navigation.setParams({
-      title: resultLectureData.title,
+      title: ' ',
     });
 
     if( !resultLectureData.cid ) {

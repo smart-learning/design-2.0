@@ -39,7 +39,7 @@ class BookNewListItem extends React.Component {
   gotoAudioPage = () => {
     this.props.navigation.navigate('AudioBookDetailPage', {
       id: this.props.itemData.id,
-      title: this.props.itemData.title,
+      title: ' ',
     });
   };
 

@@ -134,7 +134,7 @@ class AudioBookDetailPage extends React.Component {
     }
 
     this.props.navigation.setParams({
-      title: resultBookData.title,
+      title: ' ',
     });
 
     if( !resultBookData.cid ) {

@@ -169,7 +169,7 @@ class BookListItem extends React.Component {
           onPress={() =>
             this.props.navigation.navigate('AudioBookDetailPage', {
               id: this.props.itemData.id,
-              title: this.props.itemData.title
+              title: ' '
             })
           }
         >

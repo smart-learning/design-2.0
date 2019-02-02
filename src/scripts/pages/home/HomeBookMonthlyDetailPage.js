@@ -319,7 +319,7 @@ class HomeBookMonthlyDetailPage extends React.Component {
                     onPress={() => {
                       this.props.navigation.navigate('AudioBookDetailPage', {
                         id: itemData.audiobook.id,
-                        title: itemData.title,
+                        title: ' ',
                       });
                     }}
                   >
