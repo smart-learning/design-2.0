@@ -18,6 +18,7 @@ import net from '../../commons/net';
 
 const styles = StyleSheet.create({
   contentContainer: {
+    marginTop: 20,
     paddingBottom: 30,
   },
   reviewText: {

@@ -101,8 +101,9 @@ export default class Evaluation extends React.Component {
               style={[
                 CommonStyles.alignJustifyContentBetween,
                 {
-                  width: 270,
+                  width: 250,
                   height: 26,
+                  marginBottom: 25,
                   marginLeft: 'auto',
                   marginRight: 'auto',
                   alignItems: 'center',
@@ -188,7 +189,7 @@ export default class Evaluation extends React.Component {
                   />
                 )}
               </View>
-              <View style={{ width: 73, paddingLeft: 20 }}>
+              <View style={{ width: 53 }}>
                 <Text
                   style={{
                     fontSize: 16,
