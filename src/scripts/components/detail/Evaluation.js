@@ -1,8 +1,18 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, ImageBackground } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcStarGrey from '../../../images/ic-star-grey2.png';
-import IcStarPrimary from '../../../images/ic-star-primary.png';
+import BgStar from '../../../images/bg-star-grade.png';
+import BgStar05 from '../../../images/bg-star-grade-active-05.png';
+import BgStar10 from '../../../images/bg-star-grade-active-10.png';
+import BgStar15 from '../../../images/bg-star-grade-active-15.png';
+import BgStar20 from '../../../images/bg-star-grade-active-20.png';
+import BgStar25 from '../../../images/bg-star-grade-active-25.png';
+import BgStar30 from '../../../images/bg-star-grade-active-30.png';
+import BgStar35 from '../../../images/bg-star-grade-active-35.png';
+import BgStar40 from '../../../images/bg-star-grade-active-40.png';
+import BgStar45 from '../../../images/bg-star-grade-active-45.png';
+import BgStar50 from '../../../images/bg-star-grade-active-50.png';
 import numeral from 'numeral';
 import _ from 'underscore';
 
@@ -55,14 +65,21 @@ const styles = StyleSheet.create({
     height: 13,
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
+  starEvgImage: {
+    width: 172,
+    height: 26,
+  },
 });
 
 export default class Evaluation extends React.Component {
   render() {
-    let originData = this.props.itemData.all?.score;
+    let originData = this.props.store.itemEvaluationData?.all?.score;
     let itemData = [];
     let starData = [];
     let starSum = 0;
+    let starAvg = this.props.store.itemData
+      ? this.props.store.itemData.star_avg
+      : 0;
 
     if (originData) {
       _.map(originData, element => {
@@ -83,22 +100,112 @@ export default class Evaluation extends React.Component {
             <View
               style={[
                 CommonStyles.alignJustifyContentBetween,
-                { width: 160, marginLeft: 'auto', marginRight: 'auto' },
+                {
+                  width: 270,
+                  height: 26,
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  alignItems: 'center',
+                },
               ]}
             >
-              <View>
-                <View
-                  style={[
-                    CommonStyles.alignJustifyContentBetween,
-                    { width: 160, marginBottom: 20 },
-                  ]}
+              <View style={{ width: 172 }}>
+                {starAvg === 0 && (
+                  <ImageBackground
+                    source={BgStar}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {0 < starAvg && starAvg <= 0.5 && (
+                  <ImageBackground
+                    source={BgStar05}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {0.5 < starAvg && starAvg <= 1 && (
+                  <ImageBackground
+                    source={BgStar10}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {1 < starAvg && starAvg <= 1.5 && (
+                  <ImageBackground
+                    source={BgStar15}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {1.5 < starAvg && starAvg <= 2 && (
+                  <ImageBackground
+                    source={BgStar20}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {2 < starAvg && starAvg <= 2.5 && (
+                  <ImageBackground
+                    source={BgStar25}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {2.5 < starAvg && starAvg <= 3 && (
+                  <ImageBackground
+                    source={BgStar30}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {3 < starAvg && starAvg <= 3.5 && (
+                  <ImageBackground
+                    source={BgStar35}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {3.5 < starAvg && starAvg <= 4 && (
+                  <ImageBackground
+                    source={BgStar40}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {4 < starAvg && starAvg <= 4.5 && (
+                  <ImageBackground
+                    source={BgStar45}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+                {4.5 < starAvg && starAvg <= 5 && (
+                  <ImageBackground
+                    source={BgStar50}
+                    resizeMode={'cover'}
+                    style={styles.starEvgImage}
+                  />
+                )}
+              </View>
+              <View style={{ width: 73, paddingLeft: 20 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '200',
+                    color: '#898989',
+                  }}
                 >
-                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-                  <Image source={IcStarGrey} style={styles.evaluationIconMy} />
-                </View>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      color: CommonStyles.COLOR_PRIMARY,
+                    }}
+                  >
+                    {numeral(starAvg).format('0a')}{' '}
+                  </Text>
+                  / 5.0
+                </Text>
               </View>
             </View>
 

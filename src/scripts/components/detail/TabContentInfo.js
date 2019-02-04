@@ -403,7 +403,6 @@ class TabContentInfo extends React.Component {
             >
               {teacherMemo}
             </Text>
-
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.viewMoreContainer}
@@ -464,7 +463,7 @@ class TabContentInfo extends React.Component {
           </View>
 
           {this.props.store.itemEvaluationData && (
-            <Evaluation itemData={this.props.store.itemEvaluationData} />
+            <Evaluation store={this.props.store} />
           )}
 
           <StarGrade
