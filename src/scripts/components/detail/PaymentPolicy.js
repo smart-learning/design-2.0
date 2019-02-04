@@ -176,6 +176,10 @@ export default class PaymentPolicy extends React.Component {
   }
 
   render() {
+    if( Platform.OS !== 'android' && this.props.learnType !== 'audioBook' ) {
+      // 렌더 안함
+      return <View/>;
+    }
     if (this.props.permissionLoading) {
       return this.renderPermissionLoading();
     } else {

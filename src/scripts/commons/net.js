@@ -675,7 +675,16 @@ export default {
       axios
         .get(API_PREFIX + 'v1.0/action/comments/' + cid)
         .then(response => {
-          resolve(response.data);
+          // 전체 목록에서도 my 에 속한 값들이 같이 내려오고 있기 때문에 앱에서 데이터를 받은 후 걸러내야 함
+          const my = response.data.my;
+          let all = [];
+          response.data.all.forEach( review => {
+            const exist = my.find( myReview => myReview.id === review.id );
+            if( !exist ) {
+              all.push( review );
+            }
+          } );
+          resolve({ my, all });
         })
         .catch(error => {
           console.log(error);
@@ -690,9 +699,21 @@ export default {
     });
   },
 
-  postStarCount(cid, store) {
+  patchReview(id, content) {
+    return axios.patch(API_PREFIX + 'v1.0/action/comments/' + id, {
+      content,
+    });
+  },
+
+  deleteReview(id) {
+    return axios.delete(API_PREFIX + 'v1.0/action/comments/' + id);
+  },
+
+  postStarCount(cid, score) {
+    // console.log( 'postStarCount - cid', cid );
+    // console.log( 'postStarCount - content', store );
     return axios.post(API_PREFIX + 'v1.0/action/stars/' + cid, {
-      store,
+      score,
     });
   },
 
