@@ -15,7 +15,7 @@ import { observer } from 'mobx-react';
 import Native from '../../commons/native';
 import numeral from 'numeral';
 import IcPlay2 from '../../../images/ic-play-dark.png';
-import IcHeart from '../../../images/ic-heart-dark.png';
+import IcStar from '../../../images/ic-star-grey-line.png';
 import IcComment from '../../../images/ic-commenting-dark.png';
 import IcClip from '../../../images/ic-clip-dark.png';
 
@@ -230,13 +230,13 @@ export default class TopBanner extends React.Component {
                 : this.props.store.itemData.hit_count,
             ).format('0a')}
           </Text>
-          <Image source={IcHeart} style={styles.btnSetSmall} />
+          <Image source={IcStar} style={styles.btnSetSmall} />
           <Text style={styles.countText}>
             {/* 별점 */}
             {numeral(
               this.props.store.itemData.meta
                 ? this.props.store.itemData.meta.like_count
-                : this.props.store.itemData.like_count,
+                : this.props.store.itemData.star_avg,
             ).format('0a')}
           </Text>
           <Image source={IcComment} style={styles.btnSetSmall} />
