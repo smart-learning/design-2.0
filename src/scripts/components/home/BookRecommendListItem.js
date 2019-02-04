@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FD7E14'
   },
   labelFeatured: {
-    backgroundColor: 'black'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   labelExclusive: {
     backgroundColor: CommonStyles.COLOR_PRIMARY

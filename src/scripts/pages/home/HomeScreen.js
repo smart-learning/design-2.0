@@ -25,7 +25,6 @@ import SerieseIntro from '../series/SeriesIntroPage';
 import HomeSeriesListPage from './HomeSeriesListPage';
 import HomeSeriesDetailPage from './HomeSeriesDetailPage';
 import InnerWebViewPage from '../in_web/InnerWebViewPage';
-import HomeBookDailyDetailPage from './HomeBookDailyDetailPage';
 import HomeBookMonthlyDetailPage from './HomeBookMonthlyDetailPage';
 import FullModalSection from '../../components/FullModalSection';
 
@@ -118,10 +117,6 @@ const HomeScreen = createStackNavigator(
     InnerWebViewPage: {
       screen: InnerWebViewPage,
       navigationOptions: NAV_OPTS_STACK,
-    },
-    HomeBookDailyDetailPage: {
-      screen: HomeBookDailyDetailPage,
-      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
     },
     HomeBookMonthlyDetailPage: {
       screen: HomeBookMonthlyDetailPage,

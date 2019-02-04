@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   bookLabelFree: {
-    backgroundColor: '#E8D815'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   bookLabelDefault: {
     backgroundColor: CommonStyles.COLOR_PRIMARY

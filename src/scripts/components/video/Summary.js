@@ -121,31 +121,37 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
-  classLabel: {
+  badges: {
+    paddingLeft: 12,
+  },
+  badge: {
     height: 22,
-    marginRight: 3,
+    marginRight: 6,
     marginBottom: 10,
     paddingTop: 3,
     paddingRight: 10,
-    paddingBottom: 3,
     paddingLeft: 10,
+    borderRadius: 3,
   },
-  classLabelText: {
+  badgeText: {
     fontSize: 12,
     color: '#ffffff',
   },
-  classLabelBlank: {
+  badgeBlank: {
     borderColor: 'transparent',
     opacity: 0,
   },
-  classLabelNew: {
+  badgeNew: {
     backgroundColor: '#FD7E14',
   },
-  classLabelExclusive: {
+  badgeFeatured: {
+    backgroundColor: '#FD424C',
+  },
+  badgeExclusive: {
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
-  classLabelFree: {
-    backgroundColor: '#E8D815',
+  badgeFree: {
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
 });
 
@@ -175,34 +181,34 @@ export default class Summary extends React.Component {
           <View style={CommonStyles.alignJustifyFlex}>
             {!!this.props.is_new && (
               <View
-                style={[styles.classLabel, styles.classLabelNew]}
+                style={[styles.badge, styles.badgeNew]}
                 borderRadius={10}
               >
-                <Text style={styles.classLabelText}>NEW</Text>
+                <Text style={styles.badgeText}>NEW</Text>
               </View>
             )}
             {!!this.props.is_featured && (
               <View
-                style={[styles.classLabel, styles.classLabelFeatured]}
+                style={[styles.badge, styles.badgeFeatured]}
                 borderRadius={10}
               >
-                <Text style={styles.classLabelText}>추천</Text>
+                <Text style={styles.badgeText}>추천</Text>
               </View>
             )}
             {!!this.props.is_exclusive && (
               <View
-                style={[styles.classLabel, styles.classLabelExclusive]}
+                style={[styles.badge, styles.badgeExclusive]}
                 borderRadius={10}
               >
-                <Text style={styles.classLabelText}>오리지널</Text>
+                <Text style={styles.badgeText}>오리지널</Text>
               </View>
             )}
             {!!this.props.is_free && (
               <View
-                style={[styles.classLabel, styles.classLabelFree]}
+                style={[styles.badge, styles.badgeFree]}
                 borderRadius={10}
               >
-                <Text style={styles.classLabelText}>무료</Text>
+                <Text style={styles.badgeText}>무료</Text>
               </View>
             )}
           </View>

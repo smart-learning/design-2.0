@@ -5,6 +5,7 @@ import moment from 'moment';
 import { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
 import { observer } from 'mobx-react';
+import CommonStyles from '../../../styles/common';
 
 const styles = StyleSheet.create({
   bookListItemContainer: {
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   bookLabelFree: {
-    backgroundColor: '#E8D815'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   bookLabelText: {
     fontSize: 12,

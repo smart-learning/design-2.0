@@ -43,36 +43,37 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
   },
-  classLabels: {
+  badges: {
     paddingLeft: 12,
   },
-  classLabel: {
+  badge: {
     height: 22,
     marginRight: 6,
     marginBottom: 10,
     paddingTop: 3,
     paddingRight: 10,
     paddingLeft: 10,
+    borderRadius: 3,
   },
-  classLabelText: {
+  badgeText: {
     fontSize: 12,
     color: '#ffffff',
   },
-  classLabelBlank: {
+  badgeBlank: {
     borderColor: 'transparent',
     opacity: 0,
   },
-  classLabelNew: {
+  badgeNew: {
     backgroundColor: '#FD7E14',
   },
-  classLabelFeatured: {
-    backgroundColor: 'black',
+  badgeFeatured: {
+    backgroundColor: '#FD424C',
   },
-  classLabelExclusive: {
+  badgeExclusive: {
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
-  classLabelFree: {
-    backgroundColor: '#E8D815',
+  badgeFree: {
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   thumbnail: {
     position: 'relative',
@@ -170,29 +171,29 @@ class ClassListItem extends React.Component {
                 : ''}
             </Text>
           </View>
-          <View style={[CommonStyles.alignJustifyFlex, styles.classLabels]}>
+          <View style={[CommonStyles.alignJustifyFlex, styles.badges]}>
             {!!this.props.itemData.is_new && (
-              <View style={[styles.classLabel, styles.classLabelNew]}>
-                <Text style={styles.classLabelText}>NEW</Text>
+              <View style={[styles.badge, styles.badgeNew]}>
+                <Text style={styles.badgeText}>NEW</Text>
               </View>
             )}
             {!!this.props.itemData.is_featured && (
-              <View style={[styles.classLabel, styles.classLabelFeatured]}>
-                <Text style={styles.classLabelText}>추천</Text>
+              <View style={[styles.badge, styles.badgeFeatured]}>
+                <Text style={styles.badgeText}>추천</Text>
               </View>
             )}
             {!!this.props.itemData.is_exclusive && (
-              <View style={[styles.classLabel, styles.classLabelExclusive]}>
-                <Text style={styles.classLabelText}>오리지널</Text>
+              <View style={[styles.badge, styles.badgeExclusive]}>
+                <Text style={styles.badgeText}>오리지널</Text>
               </View>
             )}
             {!!this.props.itemData.is_free && (
-              <View style={[styles.classLabel, styles.classLabelFree]}>
-                <Text style={styles.classLabelText}>무료</Text>
+              <View style={[styles.badge, styles.badgeFree]}>
+                <Text style={styles.badgeText}>무료</Text>
               </View>
             )}
-            <View style={[styles.classLabel, styles.classLabelBlank]}>
-              <Text style={styles.classLabelText} />
+            <View style={[styles.badge, styles.badgeBlank]}>
+              <Text style={styles.badgeText} />
             </View>
           </View>
         </TouchableOpacity>

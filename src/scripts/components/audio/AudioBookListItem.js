@@ -34,10 +34,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
   },
-  bookLabels: {
+  badges: {
     marginBottom: 5,
   },
-  bookLabel: {
+  badge: {
     height: 22,
     marginBottom: 9,
     marginRight: 3,
@@ -45,25 +45,35 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingBottom: 3,
     paddingLeft: 10,
+    borderRadius: 3,
   },
-  bookLabelText: {
+  badgeText: {
     fontSize: 12,
     color: '#ffffff',
   },
-  bookLabelBlank: {
+  badgeBlank: {
     borderColor: 'transparent',
     opacity: 0,
   },
-  bookLabelNew: {
-    backgroundColor: '#FD7E14',
-  },
-  bookLabelExclusive: {
+  badgeFree: {
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
-  bookLabelFree: {
-    backgroundColor: '#E8D815',
+  badgeFeatured: {
+    backgroundColor: '#FD424C',
   },
-  bookLabelDefault: {
+  badgeRead: {
+    backgroundColor: '#0099CC',
+  },
+  badgeSummary: {
+    backgroundColor: '#FF9933',
+  },
+  badgeBookReview: {
+    backgroundColor: '#B47B58',
+  },
+  badgeNew: {
+    backgroundColor: '#FD7E14',
+  },
+  badgeExclusive: {
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
 });
@@ -136,54 +146,51 @@ export default class AudioBookListItem extends React.Component {
               </Text>
 
               <View style={[styles.bookLabels, CommonStyles.alignJustifyFlex]}>
-                {!this.props.itemData.is_new &&
-                  !this.props.itemData.is_exclusive &&
-                  !this.props.itemData.is_free &&
-                  !this.props.itemData.is_bookreview &&
-                  !this.props.itemData.is_botm &&
-                  !this.props.itemData.audiobook_type && (
-                    <View style={[styles.bookLabel, styles.bookLabelBlank]}>
-                      <Text
-                        style={[
-                          styles.bookLabelText,
-                          styles.bookLabelExclusiveText,
-                        ]}
-                      />
-                    </View>
-                  )}
+                {!this.props.itemData.is_free &&
+                !this.props.itemData.is_featured &&
+                this.props.itemData.audiobook_type !== '완독' &&
+                this.props.itemData.audiobook_type !== '요약' &&
+                this.props.itemData.audiobook_type !== '북리뷰' &&
+                !this.props.itemData.audiobook_type && (
+                  <View style={[styles.bookLabel, styles.bookLabelBlank]}>
+                    <Text
+                      style={[styles.bookLabelText, styles.bookLabelExclusiveText]}
+                    />
+                  </View>
+                )}
                 {!!this.props.itemData.is_new && (
-                  <View style={[styles.bookLabel, styles.bookLabelNew]}>
-                    <Text style={[styles.bookLabelText]}>New</Text>
+                  <View style={[styles.badge, styles.badgeNew]}>
+                    <Text style={[styles.badgeText]}>NEW</Text>
                   </View>
                 )}
                 {!!this.props.itemData.is_exclusive && (
-                  <View style={[styles.bookLabel, styles.bookLabelExclusive]}>
-                    <Text style={[styles.bookLabelText]}>오리지널</Text>
-                  </View>
-                )}
-                {!!this.props.itemData.is_botm && (
-                  <View style={[styles.bookLabel, styles.bookLabelExclusive]}>
-                    <Text style={[styles.bookLabelText]}>이달의책</Text>
+                  <View style={[styles.badge, styles.badgeExclusive]}>
+                    <Text style={[styles.badgeText]}>오리지널</Text>
                   </View>
                 )}
                 {!!this.props.itemData.is_free && (
-                  <View style={[styles.bookLabel, styles.bookLabelFree]}>
-                    <Text style={[styles.bookLabelText]}>무료</Text>
+                  <View style={[styles.badge, styles.badgeFree]}>
+                    <Text style={[styles.badgeText]}>무료</Text>
                   </View>
                 )}
-                {!!this.props.itemData.is_bookreview && (
-                  <View style={[styles.bookLabel, styles.bookLabelFree]}>
-                    <Text style={[styles.bookLabelText]}>북리뷰</Text>
+                {!!this.props.itemData.is_featured && (
+                  <View style={[styles.badge, styles.badgeFeatured]}>
+                    <Text style={[styles.badgeText]}>추천</Text>
                   </View>
                 )}
                 {this.props.itemData.audiobook_type === '완독' && (
-                  <View style={[styles.bookLabel, styles.bookLabelDefault]}>
-                    <Text style={[styles.bookLabelText]}>완독</Text>
+                  <View style={[styles.badge, styles.badgeRead]}>
+                    <Text style={[styles.badgeText]}>완독</Text>
                   </View>
                 )}
                 {this.props.itemData.audiobook_type === '요약' && (
-                  <View style={[styles.bookLabel, styles.bookLabelDefault]}>
-                    <Text style={[styles.bookLabelText]}>요약</Text>
+                  <View style={[styles.badge, styles.badgeSummary]}>
+                    <Text style={[styles.badgeText]}>요약</Text>
+                  </View>
+                )}
+                {this.props.itemData.audiobook_type === '북리뷰' && (
+                  <View style={[styles.badge, styles.badgeBookReview]}>
+                    <Text style={[styles.badgeText]}>북리뷰</Text>
                   </View>
                 )}
               </View>
