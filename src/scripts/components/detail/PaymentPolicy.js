@@ -176,8 +176,6 @@ export default class PaymentPolicy extends React.Component {
   }
 
   render() {
-    console.log('PaymentPolicy.render');
-    console.log('this.props', this.props);
     if (this.props.permissionLoading) {
       return this.renderPermissionLoading();
     } else {
@@ -248,9 +246,9 @@ export default class PaymentPolicy extends React.Component {
                   <Text style={styles.paymentText}>소장중</Text>
                 )}
               {this.props.learnType === 'class' &&
-              this.props.permission.type === 'membership' && (
-                <Text style={styles.paymentText}>클래스 멤버십 전용</Text>
-              )}
+                this.props.permission.type === 'membership' && (
+                  <Text style={styles.paymentText}>클래스 멤버십 전용</Text>
+                )}
             </View>
             <View>
               {this.props.permission.type === 'can_buy' && 1 === 2 && (
