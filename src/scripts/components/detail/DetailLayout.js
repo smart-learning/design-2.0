@@ -303,43 +303,59 @@ class DetailLayout extends React.Component {
             store={this.props.store}
           />
 
-          {/* 구매정책 레이아웃 샘플 */}
-          {1 === 2 && <PaymentPolicy />}
+          {/* 구매정책 */}
+          <PaymentPolicy
+            addToCart={this.props.addToCart}
+            iosBuy={this.props.iosBuy}
+            useVoucher={this.props.useVoucher}
+            voucherStatus={this.props.voucherStatus}
+            permission={this.props.permission}
+            itemData={this.props.itemData}
+            learnType={this.props.learnType}
+            store={this.props.store}
+            paymentType={this.props.paymentType}
+            expire={this.props.expire}
+            permissionLoading={this.props.permissionLoading}
+            onDownload={this.onDownload}
+          />
 
-          {/* 가격 및 구매버튼 등을 보여주는 라인(iOS 의 경우 오디오북일 때에만 노출) */}
-          {this.props.learnType === 'audioBook' ? (
-            <AudiobookPaymentStatus
-              addToCart={this.props.addToCart}
-              iosBuy={this.props.iosBuy}
-              useVoucher={this.props.useVoucher}
-              voucherStatus={this.props.voucherStatus}
-              // permissions={this.props.permissions}
-              permission={this.props.permission}
-              itemData={this.props.itemData}
-              learnType={this.props.learnType}
-              store={this.props.store}
-              paymentType={this.props.paymentType}
-              expire={this.props.expire}
-              permissionLoading={this.props.permissionLoading}
-            />
-          ) : Platform.OS === 'android' ? (
-            <VideoPaymentStatus
-              addToCart={this.props.addToCart}
-              permission={this.props.permission}
-              // permissions={this.props.permissions}
-              itemData={this.props.itemData}
-              learnType={this.props.learnType}
-              store={this.props.store}
-              paymentType={this.props.paymentType}
-              expire={this.props.expire}
-              permissionLoading={this.props.permissionLoading}
-            />
-          ) : (
-            <View />
+          {1 === 2 && (
+            <View>
+              {/* 가격 및 구매버튼 등을 보여주는 라인(iOS 의 경우 오디오북일 때에만 노출) */}
+              {this.props.learnType === 'audioBook' ? (
+                <AudiobookPaymentStatus
+                  addToCart={this.props.addToCart}
+                  iosBuy={this.props.iosBuy}
+                  useVoucher={this.props.useVoucher}
+                  voucherStatus={this.props.voucherStatus}
+                  // permissions={this.props.permissions}
+                  permission={this.props.permission}
+                  itemData={this.props.itemData}
+                  learnType={this.props.learnType}
+                  store={this.props.store}
+                  paymentType={this.props.paymentType}
+                  expire={this.props.expire}
+                  permissionLoading={this.props.permissionLoading}
+                />
+              ) : Platform.OS === 'android' ? (
+                <VideoPaymentStatus
+                  addToCart={this.props.addToCart}
+                  permission={this.props.permission}
+                  // permissions={this.props.permissions}
+                  itemData={this.props.itemData}
+                  learnType={this.props.learnType}
+                  store={this.props.store}
+                  paymentType={this.props.paymentType}
+                  expire={this.props.expire}
+                  permissionLoading={this.props.permissionLoading}
+                />
+              ) : (
+                <View />
+              )}
+              {/* Download contents */}
+              {this.downloadContentsView(vcontent)}
+            </View>
           )}
-
-          {/* Download contents */}
-          {this.downloadContentsView(vcontent)}
 
           {1 === 2 && <CountView store={this.props.store} />}
           <View style={[CommonStyles.alignJustifyContentBetween, styles.tab]}>
