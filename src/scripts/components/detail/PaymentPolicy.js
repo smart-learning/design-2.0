@@ -128,7 +128,12 @@ class DownloadButton extends React.Component {
 class PurchaseButton extends React.Component {
   render() {
     return (
-      <TouchableOpacity activeOpacity={0.9}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={
+          Platform.OS === 'ios' ? this.props.iosBuy : this.props.addToCart
+        }
+      >
         <View
           style={[
             styles.buttonItem,
@@ -176,9 +181,9 @@ export default class PaymentPolicy extends React.Component {
   }
 
   render() {
-    if( Platform.OS !== 'android' && this.props.learnType !== 'audioBook' ) {
+    if (Platform.OS !== 'android' && this.props.learnType !== 'audioBook') {
       // 렌더 안함
-      return <View/>;
+      return <View />;
     }
     if (this.props.permissionLoading) {
       return this.renderPermissionLoading();
