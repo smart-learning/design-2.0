@@ -4,15 +4,12 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground,
-  Dimensions,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import Dummy from '../../../images/dummy-series.png';
-import globalStore from '../../commons/store';
 import CommonStyles from '../../../styles/common';
 import { observer } from 'mobx-react';
 import moment from 'moment';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   bookItem: {
@@ -121,7 +118,7 @@ class BookMonthlySwiperItem extends React.Component {
                 })
               }
             >
-              <ImageBackground
+              <FastImage
                 source={{ uri: itemData.book_a.audiobook.images.cover }}
                 style={styles.thumbnail}
                 resizeMode={'cover'}
@@ -146,7 +143,7 @@ class BookMonthlySwiperItem extends React.Component {
                       : null}
                   </Text>
                 </View>
-                <ImageBackground
+                <FastImage
                   source={{
                     uri: itemData.book_a.mentor.images.profile
                       ? itemData.book_a.mentor.images.profile
@@ -177,7 +174,7 @@ class BookMonthlySwiperItem extends React.Component {
                 })
               }
             >
-              <ImageBackground
+              <FastImage
                 source={{ uri: itemData.book_b.audiobook.images.cover }}
                 style={styles.thumbnail}
                 resizeMode={'contain'}
@@ -202,7 +199,7 @@ class BookMonthlySwiperItem extends React.Component {
                       : null}
                   </Text>
                 </View>
-                <ImageBackground
+                <FastImage
                   source={{
                     uri: itemData.book_b.mentor.images.profile
                       ? itemData.book_b.mentor.images.profile

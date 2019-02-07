@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ImageBackground,
   Dimensions,
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
@@ -13,6 +12,7 @@ import IcPlay from '../../../images/ic-play-green.png';
 import Native from '../../commons/native';
 import Carousel from 'react-native-snap-carousel';
 import _ from 'underscore';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   continueList: {
@@ -69,7 +69,7 @@ export default class BookContinueList extends React.Component {
           style={[styles.continueItem, CommonStyles.alignJustifyFlex]}
           borderRadius={4}
         >
-          <ImageBackground
+          <FastImage
             source={{
               uri: item.data?.images?.list,
             }}

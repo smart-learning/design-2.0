@@ -1,12 +1,12 @@
 import React from 'react';
 import nav from '../../commons/nav';
 import {
-  ImageBackground,
   Linking,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   thumbnail: {
@@ -64,7 +64,7 @@ export default class HomeBanner extends React.Component {
           }}
           activeOpacity={0.9}
         >
-          <ImageBackground
+          <FastImage
             source={{ uri: bannerImageUrl }}
             resizeMode="cover"
             style={styles.thumbnail}

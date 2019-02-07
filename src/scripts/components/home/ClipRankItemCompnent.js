@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     height: 60,
     marginRight: 10,
     marginLeft: 10,
+    borderRadius: 4,
   },
   rankTitle: {
     fontSize: 14,
@@ -97,7 +98,6 @@ class ClipRankItemComponent extends React.Component {
               source={{ uri: this.props.itemData?.images?.wide }}
               resizeMode={FastImage.resizeMode.cover}
               style={styles.thumbnail}
-              borderRadius={4}
             />
             <View style={{ width: 155 }}>
               <Text

@@ -1,10 +1,7 @@
 import React from 'react';
 import {
-  Text,
   View,
   StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
   Dimensions,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';

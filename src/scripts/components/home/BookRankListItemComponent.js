@@ -4,13 +4,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ImageBackground,
   Image,
 } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-dark.png';
 import numeral from 'numeral';
-import IcPlayBtn from '../../../images/ic-play-green.png';
 import { withNavigation } from 'react-navigation';
 import FastImage from 'react-native-fast-image';
 
@@ -32,6 +30,7 @@ const styles = StyleSheet.create({
     height: 96,
     marginRight: 7,
     marginLeft: 7,
+    borderRadius: 4,
   },
   rankIcon: {
     position: 'relative',
@@ -89,7 +88,6 @@ class BookRankListItemComponent extends React.Component {
               source={{ uri: this.props.itemData?.images.list }}
               resizeMode={FastImage.resizeMode.cover}
               style={styles.thumbnail}
-              borderRadius={4}
             />
             <View style={{ width: '50%', alignItems: 'flex-start' }}>
               <Text

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,8 +9,7 @@ import { withNavigation } from 'react-navigation';
 import { observer } from 'mobx-react';
 import _ from 'underscore';
 import CommonStyles from '../../../styles/common';
-
-const styles = StyleSheet.create({});
+import FastImage from 'react-native-fast-image';
 
 @observer
 class BookDaily extends React.Component {
@@ -34,7 +32,7 @@ class BookDaily extends React.Component {
         {sorted.length > 0 && (
           <View style={[CommonStyles.alignJustifyFlex, { marginTop: 20 }]}>
             <View style={{ marginRight: 45 }}>
-              <ImageBackground
+              <FastImage
                 source={{ uri: todayItem.image }}
                 resizeMode="contain"
                 style={{ width: 78, height: 125, backgroundColor: '#efefef' }}

@@ -4,13 +4,10 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground,
-  Dimensions,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import Dummy from '../../../images/dummy-series.png';
-import globalStore from '../../commons/store';
 import { observer } from 'mobx-react';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   thumbnail: {
@@ -18,6 +15,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: '70%',
     paddingBottom: '70%',
+    borderRadius: 20,
   },
 });
 
@@ -41,11 +39,10 @@ class SeriesSwiperItem extends React.Component {
             });
           }}
         >
-          <ImageBackground
+          <FastImage
             source={{ uri: itemData.image }}
             resizeMode="contain"
             style={styles.thumbnail}
-            borderRadius={12}
           >
             <Text
               ellipsizeMode={'tail'}
@@ -62,7 +59,7 @@ class SeriesSwiperItem extends React.Component {
             >
               {itemData.description}
             </Text>
-          </ImageBackground>
+          </FastImage>
         </TouchableOpacity>
       </View>
     );

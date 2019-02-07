@@ -4,9 +4,6 @@ import React from 'react';
 import {
   Alert,
   ActivityIndicator,
-  Image,
-  ImageBackground,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -27,6 +24,7 @@ import SeriesSwiper from '../../components/home/SeriesSwiper';
 import PageCategory from '../../components/PageCategory';
 import Native from '../../commons/native';
 import Footer from '../../components/home/Footer';
+import FastImage from 'react-native-fast-image';
 
 const CATEGORY_HEIGHT = 45;
 
@@ -319,7 +317,7 @@ class HomeVideoPage extends React.Component {
                   Native.play('v300001_001')
                 }
               >
-                <ImageBackground
+                <FastImage
                   source={IcMainWideBanner}
                   resizeMode="contain"
                   style={styles.imageMainBanner}
@@ -493,7 +491,7 @@ class HomeVideoPage extends React.Component {
                       Native.play('v300001_001')
                     }
                   >
-                    <ImageBackground
+                    <FastImage
                       source={IcMainWideBanner}
                       resizeMode="contain"
                       style={styles.imageMainBanner}

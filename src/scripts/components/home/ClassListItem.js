@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ImageBackground,
   Image,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
@@ -14,6 +13,7 @@ import numeral from 'numeral';
 import IcHeart from '../../../images/ic-star-grey-line.png';
 import IcComment from '../../../images/ic-commenting-dark.png';
 import IcClip from '../../../images/ic-clip-dark.png';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   classList: {
@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: '20.75%',
     paddingBottom: '20.75%',
+    borderRadius: 4,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   thumbnailTitle: {
     position: 'absolute',
@@ -133,7 +136,7 @@ class ClassListItem extends React.Component {
     return (
       <View style={styles.classItem}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.gotoClassPage}>
-          <ImageBackground
+          <FastImage
             source={{
               uri:
                 this.props.itemType === 'series'
@@ -142,16 +145,11 @@ class ClassListItem extends React.Component {
             }}
             resizeMode="cover"
             style={styles.thumbnail}
-            imageStyle={{
-              borderRadius: 4,
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-            }}
           >
             <Text style={styles.thumbnailTitle}>
               {this.props.itemData.title}
             </Text>
-          </ImageBackground>
+          </FastImage>
           <View style={{ height: 90 }}>
             <Text
               style={styles.classTitle}

@@ -1,18 +1,11 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  Dimensions,
-} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-class-continue.png';
 import Native from '../../commons/native';
 import Carousel from 'react-native-snap-carousel';
 import _ from 'underscore';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   continueGrid: {
@@ -31,6 +24,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#efefef',
+    borderRadius: 10,
   },
   thumbnailTitle: {
     position: 'absolute',
@@ -62,7 +56,7 @@ export default class ClassContinueListItem extends React.Component {
           activeOpacity={0.9}
           onPress={() => Native.play(this.props.itemData.data.cid)}
         >
-          <ImageBackground
+          <FastImage
             source={{
               uri: this.props.itemData.data.images
                 ? this.props.itemData.data.images.wide
@@ -70,7 +64,6 @@ export default class ClassContinueListItem extends React.Component {
             }}
             resizeMode="cover"
             style={styles.thumbnail}
-            borderRadius={10}
           >
             <Text
               style={styles.thumbnailTitle}
@@ -82,7 +75,7 @@ export default class ClassContinueListItem extends React.Component {
             <View style={styles.play}>
               <Image source={IcPlay} style={CommonStyles.fullImg} />
             </View>
-          </ImageBackground>
+          </FastImage>
         </TouchableOpacity>
       </View>
     );

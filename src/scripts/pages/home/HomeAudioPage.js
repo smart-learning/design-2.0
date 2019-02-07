@@ -3,8 +3,6 @@ import CommonStyles from '../../../styles/common';
 import {
   ActivityIndicator,
   Image,
-  ImageBackground,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,13 +10,9 @@ import {
 } from 'react-native';
 import { observer } from 'mobx-react';
 import Swiper from 'react-native-swiper';
-import IcAngleRightGrey from '../../../images/ic-angle-right-grey.png';
-import BookMonthly from '../../components/home/BookMonthly';
 import PageCategory from '../../components/PageCategory';
-import BookFreeList from '../../components/home/BookFreeList';
 import BookContinueList from '../../components/home/BookContinueList';
 import PTRView from '../../libs/react-native-pull-to-refresh';
-import moment from 'moment';
 import BookDaily from '../../components/home/BookDaily';
 import { withNavigation } from 'react-navigation';
 import _ from 'underscore';
@@ -26,14 +20,12 @@ import HomeBanner from '../../components/home/HomeBanner';
 import globalStore from '../../commons/store';
 import BookNewList from '../../components/home/BookNewList';
 import BookRankList from '../../components/home/BookRankList';
-import BookRecommendList from '../../components/home/BookRecommendList';
 import BulletFree from '../../../images/badge-free.png';
 import Native from '../../commons/native';
 import IcMainWideBanner from '../../../images/main_wide_banner.png';
-import BannerMembership from '../../../images/banner-membership.png';
 import Footer from '../../components/home/Footer';
-import SeriesSwiper from '../../components/home/SeriesSwiper';
 import BookMonthlySwiper from '../../components/home/BookMonthlySwiper';
+import FastImage from 'react-native-fast-image';
 
 const CATEGORY_HEIGHT = 45;
 
@@ -323,7 +315,7 @@ class HomeAudioPage extends React.Component {
                   Native.play('v300001_001')
                 }
               >
-                <ImageBackground
+                <FastImage
                   source={IcMainWideBanner}
                   resizeMode="contain"
                   style={styles.imageMainBanner}
@@ -444,7 +436,6 @@ class HomeAudioPage extends React.Component {
               >
                 <Text style={styles.titleH3}>오늘의 인기 오디오북</Text>
               </View>
-              {/* {(this.props.store.audioHotData.items !== undefined) && ( */}
               <BookRankList
                 itemData={
                   this.props.store.audioHotData.items
@@ -452,7 +443,6 @@ class HomeAudioPage extends React.Component {
                     : this.props.store.audioHotData
                 }
               />
-              {/* )} */}
             </View>
             <View style={{ marginBottom: 50, marginLeft: 10, marginRight: 10 }}>
               <TouchableOpacity
@@ -477,7 +467,7 @@ class HomeAudioPage extends React.Component {
                   Native.play('v300001_001')
                 }
               >
-                <ImageBackground
+                <FastImage
                   source={IcMainWideBanner}
                   resizeMode="contain"
                   style={styles.imageMainBanner}

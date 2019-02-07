@@ -3,7 +3,6 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import ClipRankItem from './ClipRankItem';
 import Carousel from 'react-native-snap-carousel';
 import _ from 'underscore';
-import ClassListItem from './ClassListItem';
 import { observer } from 'mobx-react';
 
 const styles = StyleSheet.create({
