@@ -47,14 +47,14 @@ class BookMonthlySwiper extends React.Component {
     return (
       <View>
         <Carousel
-          data={itemData}
+          data={itemData.reverse()}
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
           itemWidth={itemWidth}
           layout={'stack'}
           inactiveSlideScal={0.8}
           inactiveSlideOpacity={0.8}
-          firstItem={10}
+          firstItem={4}
           loopClonesPerSide={14}
           loop={true}
         />
