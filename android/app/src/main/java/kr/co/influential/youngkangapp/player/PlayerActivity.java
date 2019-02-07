@@ -818,7 +818,6 @@ public class PlayerActivity extends BasePlayerActivity {
         UiThreadUtil.runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            mButton_Arrow_Layout.setVisibility(GONE);
             mRelatedViewBtn.setVisibility(GONE);
 
             RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
@@ -849,7 +848,6 @@ public class PlayerActivity extends BasePlayerActivity {
             UiThreadUtil.runOnUiThread(new Runnable() {
               @Override
               public void run() {
-                mButton_Arrow_Layout.setVisibility(GONE);
                 mRelatedViewBtn.setVisibility(GONE);
 
                 RelativeLayout subscription_wrap = findViewById(R.id.subtitles_btn_wrap);
@@ -2974,8 +2972,7 @@ public class PlayerActivity extends BasePlayerActivity {
    *  http://crashes.to/s/019819c138e 2017.09.19
    *******************************************************************/
   public void setNoneSubtilteText() {
-
-    try {
+    runOnUiThread(() -> {
       LinearLayout shortTextView = findViewById(R.id.shortTextView);
       if (shortTextView != null) {
         shortTextView.removeAllViews();
@@ -2989,10 +2986,7 @@ public class PlayerActivity extends BasePlayerActivity {
       mblankTextView.setTextColor(emfontcolor);
 
       shortTextView.addView(mblankTextView);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    });
   }
 
   /*******************************************************************
@@ -5158,60 +5152,36 @@ public class PlayerActivity extends BasePlayerActivity {
 
   public void doNextPlay(Boolean type) {
     // Left -- , Right ++
-
-    if (type) {
-      int id = getContentId();
-
-      setContentId(++id);
-
-      // 자동 재생 여부와 관계 없이 재생할 수 있도록
-      playOnClickPlayTry = true;
-
-      if (CONTENT_TYPE.equals("video-course")) {
-//        if (getTransportControls() != null) {
-//          getTransportControls().pause();
-//        }
-        callbackMethodName = "play/play-data/";
-        callbackMethod = "play";
-        sendData(
-            API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
-            callbackMethod);
-
-        setContentId(getContentId());
-
-        // 타이틀 동기화는 meta 데이터를 활용할 것
-        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-            getwebPlayerInfo().getCname()[getContentId()]);
-      }
-
-    } else {
-      int id = getContentId();
-      if (getContentId() == 0) {
-        Utils.logToast(getApplicationContext(), getString(R.string.info_fristplay));
-        return;
+    int id = getContentId();
+    do {
+      if (type) {
+        if (++id >= getwebPlayerInfo().getCkey().length) {
+          Utils.logToast(PlayerActivity.this, getString(R.string.info_lastplay));
+          return;
+        }
       } else {
-        setContentId(--id);
-        // 자동 재생 여부와 관계 없이 재생할 수 있도록
-        playOnClickPlayTry = true;
+        if (--id < 0) {
+          Utils.logToast(getApplicationContext(), getString(R.string.info_fristplay));
+          return;
+        }
       }
+    } while ("0".equals(mWebPlayerInfo.getCurl()[id])
+        || "0.0".equals(mWebPlayerInfo.getCurl()[id]));
 
-      if (CONTENT_TYPE.equals("video-course")) {
-//        if (getTransportControls() != null) {
-//          getTransportControls().pause();
-//        }
-        callbackMethodName = "play/play-data/";
-        callbackMethod = "play";
-        sendData(
-            API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
-            callbackMethod);
+    setContentId(id);
 
-        setContentId(getContentId());
+    // 자동 재생 여부와 관계 없이 재생할 수 있도록
+    playOnClickPlayTry = true;
 
-        // 타이틀 동기화는 meta 데이터를 활용할 것
-        setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
-            getwebPlayerInfo().getCname()[getContentId()]);
-      }
-    }
+    callbackMethodName = "play/play-data/";
+    callbackMethod = "play";
+    sendData(
+        API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+        callbackMethod);
+
+    // 타이틀 동기화는 meta 데이터를 활용할 것
+    setVideoGroupTitle(getwebPlayerInfo().getGroupTitle(),
+        getwebPlayerInfo().getCname()[getContentId()]);
   }
 
   private UUID getDrmUuid(String typeString) throws ParserException {
@@ -5536,12 +5506,7 @@ public class PlayerActivity extends BasePlayerActivity {
 
             LogHelper.e(TAG, "20181125 Exception " + e.toString());
 
-            UiThreadUtil.runOnUiThread(new Runnable() {
-              @Override
-              public void run() {
-                setNoneSubtilteText();
-              }
-            });
+            setNoneSubtilteText();
 
             hasSubTitlsJesonUrl = false;
             e.printStackTrace();
