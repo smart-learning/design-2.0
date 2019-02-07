@@ -16,6 +16,7 @@ import IcPlayBtn from '../../../images/ic-play-green.png';
 import numeral from 'numeral';
 import { withNavigation } from 'react-navigation';
 import Native from '../../commons/native';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   rankGridItem: {
@@ -92,9 +93,9 @@ class ClipRankItemComponent extends React.Component {
                 {this.props.itemData?.rankNumber}
               </Text>
             </View>
-            <ImageBackground
+            <FastImage
               source={{ uri: this.props.itemData?.images?.wide }}
-              resizeMode="cover"
+              resizeMode={FastImage.resizeMode.cover}
               style={styles.thumbnail}
               borderRadius={4}
             />

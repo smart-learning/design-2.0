@@ -215,6 +215,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':react-native-fast-image')
     implementation project(':react-native-kakao-logins')
     implementation project(':react-native-appsflyer')
     compile project(':react-native-iamport')

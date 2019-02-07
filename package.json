@@ -44,6 +44,7 @@
 		"react-native-asyncstorage": "^1.0.0",
 		"react-native-cli": "^2.0.1",
 		"react-native-elements": "^0.19.1",
+		"react-native-fast-image": "^5.1.2",
 		"react-native-fbsdk": "^0.8.0",
 		"react-native-firebase": "^4.3.8",
 		"react-native-iamport": "git+https://github.com/smart-learning/react-native-iamport.git",

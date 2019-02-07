@@ -7,6 +7,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   bookItem: {
@@ -47,9 +48,9 @@ class BookNewListItem extends React.Component {
     return (
       <View style={styles.bookItem} borderRadius={8}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.gotoAudioPage}>
-          <ImageBackground
+          <FastImage
             source={{ uri: this.props.itemData.images.list }}
-            resizeMode="contain"
+            resizeMode={FastImage.resizeMode.contain}
             style={styles.thumbnail}
           />
           <Text

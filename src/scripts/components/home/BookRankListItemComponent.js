@@ -12,6 +12,7 @@ import IcPlay from '../../../images/ic-play-dark.png';
 import numeral from 'numeral';
 import IcPlayBtn from '../../../images/ic-play-green.png';
 import { withNavigation } from 'react-navigation';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   rankGridItem: {
@@ -84,9 +85,9 @@ class BookRankListItemComponent extends React.Component {
                 {this.props.itemData?.rankNumber}
               </Text>
             </View>
-            <ImageBackground
+            <FastImage
               source={{ uri: this.props.itemData?.images.list }}
-              resizeMode="cover"
+              resizeMode={FastImage.resizeMode.cover}
               style={styles.thumbnail}
               borderRadius={4}
             />
