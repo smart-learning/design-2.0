@@ -5165,16 +5165,8 @@ public class PlayerActivity extends BasePlayerActivity {
           return;
         }
       }
-
-      if (mWebPlayerInfo.getCon_class().equals("audiobook")) {
-        if (mWebPlayerInfo.getCurl()[id].equals("0") ||
-            mWebPlayerInfo.getCurl()[id].equals("0.0")) {
-          continue;
-        }
-      }
-
-      break;
-    } while (true);
+    } while ("0".equals(mWebPlayerInfo.getCurl()[id])
+        || "0.0".equals(mWebPlayerInfo.getCurl()[id]));
 
     setContentId(id);
 
