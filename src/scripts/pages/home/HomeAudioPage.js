@@ -403,7 +403,6 @@ class HomeAudioPage extends React.Component {
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
-                  styles.titleContainer,
                   styles.titleWithButtonContainer,
                 ]}
               >

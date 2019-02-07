@@ -7,7 +7,7 @@ import _ from 'underscore';
 
 const styles = StyleSheet.create({
   classContainer: {
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: 30,
   },
   slide: {
