@@ -60,6 +60,13 @@ class UselessTextInput extends React.Component {
 }
 
 class ReviewInput extends React.Component {
+  state = {
+    reviewText: '',
+  };
+  onChangeText = text => {
+    this.setState({ reviewText: text });
+    this.props.store.reviewText = text;
+  };
   render() {
     return (
       <View
@@ -73,8 +80,8 @@ class ReviewInput extends React.Component {
           <UselessTextInput
             multiline={true}
             numberOfLines={2}
-            onChangeText={text => (this.props.store.reviewText = text)}
-            value={this.props.store.reviewText}
+            onChangeText={this.onChangeText}
+            value={this.state.reviewText}
           />
         </View>
         <TouchableOpacity activeOpacity={0.9} onPress={this.reviewSubmit}>
