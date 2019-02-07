@@ -474,7 +474,7 @@ class HomeVideoPage extends React.Component {
                   <Text style={styles.titleH3}>오늘의 인기 클래스</Text>
                 </View>
 
-                <ClipRank itemData={this.props.store.clipRankData} />
+                <ClipRank itemData={this.props.store.classHotData} />
 
                 <View
                   style={{
