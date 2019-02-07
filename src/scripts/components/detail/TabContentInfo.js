@@ -297,9 +297,8 @@ class TabContentInfo extends React.Component {
               <Image style={styles.labelInfoImage} source={IcClip} />
               <Text style={styles.labelInfoText}>
                 <Text style={styles.labelInfoSpanText}>
-                  {this.props.store.itemData.clip_count}개{' '}
-                </Text>
-                의 강의
+                  {this.props.store.itemData.clip_count}개
+                </Text>의 강의
               </Text>
             </View>
           )}
