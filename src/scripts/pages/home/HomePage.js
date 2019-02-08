@@ -181,8 +181,18 @@ class HomePage extends React.Component {
     // Facebook AppEventLogger Test
     // AppEventsLogger.logEvent('welaaaRN_Main_getData');
 
-    // 시리즈는 제일 먼저 읽어온다
+    // 가급적 화면 표시 순서대로 로드를 진행한다
+
+    // 시리즈
     this.store.homeSeriesData = await net.getHomeSeries();
+
+    // 최근 재생 클래스
+    try {
+      this.store.classUseData = await net.getPlayRecentVideoCourses(isRefresh);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
+    }
 
     // 데이터 가져와서
     const videoCategoryData = await net.getLectureCategory(isRefresh);
@@ -266,12 +276,6 @@ class HomePage extends React.Component {
     this.store.audioNewData = homeAudioBookContents.new;
     this.store.audioRecommendData = homeAudioBookContents.recommend;
 
-    try {
-      this.store.classUseData = await net.getPlayRecentVideoCourses(isRefresh);
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Error', '통신에 실패했습니다.');
-    }
     try {
       this.store.audioBuyData = await net.getPurchasedAudioBooks(isRefresh);
     } catch (error) {
