@@ -204,11 +204,11 @@ class SidebarUserInfo extends React.Component {
                   <Text style={styles.membershipItemText}>{expireAt}</Text>
                 </View>
               ) : (
-                  <View style={styles.membershipItem}>
-                    <Text style={styles.membershipItemLabel}>멤버십 만료일</Text>
-                    <Text style={styles.membershipItemText}>{expireAt}</Text>
-                  </View>
-                )}
+                <View style={styles.membershipItem}>
+                  <Text style={styles.membershipItemLabel}>멤버십 만료일</Text>
+                  <Text style={styles.membershipItemText}>{expireAt}</Text>
+                </View>
+              )}
               <View style={styles.membershipItem}>
                 <Text style={styles.membershipItemLabel}>이용권한</Text>
                 <View>
@@ -272,12 +272,8 @@ class SidebarUserInfo extends React.Component {
           <View style={styles.membershipButton} borderRadius={4}>
             <Image source={IcFree} style={styles.membershipButtonBullet} />
             <View>
-              <Text style={styles.membershipButtonText}>
-                한달 무료 체험
-              </Text>
-              <Text style={styles.membershipButtonText}>
-                신청 하기!
-              </Text>
+              <Text style={styles.membershipButtonText}>한달 무료 체험</Text>
+              <Text style={styles.membershipButtonText}>신청 하기!</Text>
             </View>
             <Image source={IcAngleRight} style={styles.membershipButtonIcon} />
           </View>
@@ -346,11 +342,12 @@ class SidebarUserInfo extends React.Component {
                   >
                     <TouchableOpacity
                       activeOpacity={0.9}
-                      onPress={() =>
+                      onPress={() => {
+                        this.props.navigation.navigate('HomeScreen', {});
                         this.props.navigation.navigate('SetAppPage', {
                           title: '설정',
-                        })
-                      }
+                        });
+                      }}
                     >
                       <View
                         style={{

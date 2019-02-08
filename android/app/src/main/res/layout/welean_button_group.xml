@@ -25,6 +25,11 @@
             android:layout_height="match_parent"
             android:id="@+id/audio_mode_backgroundimg"
             android:scaleType="fitXY"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/weleanButtonGroupBg"/>
     </RelativeLayout>
 
     <RelativeLayout
