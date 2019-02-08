@@ -27,6 +27,16 @@ class BookDaily extends React.Component {
     const sorted = _.sortBy(filtered, 'open_date').reverse();
     const todayItem = sorted[0];
 
+    const regExp = /(<.+?>)/gi;
+    let title = '< >';
+    let subTitle = '';
+    if( sorted.length > 0 ) {
+      // 타이틀, 서브타이틀 추출
+      title = todayItem.title.match( regExp )[ 0 ] || '< >';
+      subTitle = todayItem.title.substr( title.length ).trim();
+      title = title.substr( 1, title.length - 2 )
+    }
+
     return (
       <View>
         {sorted.length > 0 && (
@@ -44,14 +54,14 @@ class BookDaily extends React.Component {
                 numberOfLines={2}
                 style={{ fontSize: 17, fontWeight: '500', color: '#363636' }}
               >
-                {todayItem.title}
+                {title}
               </Text>
               <Text
                 ellipsizeMode={'tail'}
                 numberOfLines={2}
                 style={{ fontSize: 13, fontWeight: '300', color: '#000000' }}
               >
-                {todayItem.memo.split('<br>').join('\n')}
+                {subTitle}
               </Text>
               <View style={{ position: 'absolute', bottom: 0 }}>
                 <TouchableOpacity
