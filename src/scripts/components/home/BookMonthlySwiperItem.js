@@ -113,7 +113,7 @@ class BookMonthlySwiperItem extends React.Component {
               activeOpacity={0.9}
               onPress={() =>
                 this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
-                  title: '이달의 책',
+                  title: ' ',
                   itemData: itemData.book_a,
                 })
               }
@@ -169,7 +169,7 @@ class BookMonthlySwiperItem extends React.Component {
               activeOpacity={0.9}
               onPress={() =>
                 this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
-                  title: '이달의 책',
+                  title: ' ',
                   itemData: itemData.book_b,
                 })
               }
