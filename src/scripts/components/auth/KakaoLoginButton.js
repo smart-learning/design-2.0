@@ -68,9 +68,18 @@ const landingStyles = StyleSheet.create({
 });
 
 class KakaoLoginButton extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   state = {
     token: null,
     loginButtonDisabled: false
+  };
+
+  kakaoLoginFail = () => {
+    console.log('KakaoLoginButton', 'kakaoLoginFail');
+    this.setState({ loginButtonDisabled: false });
   };
 
   // 카카오 로그인 시작.
@@ -78,11 +87,20 @@ class KakaoLoginButton extends React.Component {
 
     if (Platform.OS === 'ios') {
       this.setState({ loginButtonDisabled: true });
+    } else {
+      RNKakaoLogins.logout((err, result) => {
+        if (err) {
+          console.log('KAKAO log out func ', err);
+          return;
+        } else {
+          console.log('KAKAO log out result ', result);
+        }
+      });
     }
 
     RNKakaoLogins.login((err, result) => {
       if (err) {
-        console.log(err);
+        console.log('KAKAO LOgin Button login func ', err);
         this.setState({ loginButtonDisabled: false });
         return;
 
@@ -92,6 +110,7 @@ class KakaoLoginButton extends React.Component {
         this.setState({ token: kakaoAccessToken });
 
         this.props.onAccess(kakaoAccessToken, () => {
+          console.log('kakao login ', kakaoAccessToken);
           this.setState({ loginButtonDisabled: false });
         });
       }
@@ -149,10 +168,13 @@ class KakaoLoginButton extends React.Component {
       // AppEventsLogger.logEvent('WELAAARN_KAKAO_SIGN_UP');
       this.setState({ token: kakaoAccessToken });
       this.props.onAccess(kakaoAccessToken, () => {
+
+        console.log('Login 154', kakaoAccessToken)
+
         this.setState({ loginButtonDisabled: false });
       });
     } catch (err) {
-      console.log('Login Error!!', err);
+      console.log('Login 159 Error!!', err);
       this.setState({ loginButtonDisabled: false });
     }
   };
