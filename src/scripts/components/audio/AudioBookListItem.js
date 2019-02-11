@@ -34,18 +34,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
   },
-  badges: {
-    marginBottom: 5,
-  },
   badge: {
-    height: 22,
-    marginBottom: 9,
+    height: 19,
     marginRight: 3,
-    paddingTop: 3,
-    paddingRight: 10,
-    paddingBottom: 3,
-    paddingLeft: 10,
+    paddingRight: 7,
+    paddingLeft: 7,
     borderRadius: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   badgeText: {
     fontSize: 12,
@@ -93,7 +89,7 @@ export default class AudioBookListItem extends React.Component {
             {this.props.tabStatus === 'hot' && (
               <View
                 style={{
-                  width: 20,
+                  width: 22,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
@@ -129,35 +125,39 @@ export default class AudioBookListItem extends React.Component {
                   {this.props.itemData.teacher?.name}
                 </Text>
               </View>
-              <Text
-                ellipsizeMode={'tail'}
-                numberOfLines={2}
-                style={{
-                  fontSize: 12,
-                  fontWeight: '200',
-                  lineHeight: 15,
-                  height: 30,
-                  color: '#353A3C',
-                }}
-              >
-                {this.props.itemData.subtitle
-                  ? this.props.itemData.subtitle
-                  : ''}
-              </Text>
-
+              <View style={{ height: 30, marginBottom: 3 }}>
+                <Text
+                  ellipsizeMode={'tail'}
+                  numberOfLines={2}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '200',
+                    lineHeight: 15,
+                    height: 30,
+                    color: '#353A3C',
+                  }}
+                >
+                  {this.props.itemData.subtitle
+                    ? this.props.itemData.subtitle
+                    : ''}
+                </Text>
+              </View>
               <View style={[styles.bookLabels, CommonStyles.alignJustifyFlex]}>
                 {!this.props.itemData.is_free &&
-                !this.props.itemData.is_featured &&
-                this.props.itemData.audiobook_type !== '완독' &&
-                this.props.itemData.audiobook_type !== '요약' &&
-                this.props.itemData.audiobook_type !== '북리뷰' &&
-                !this.props.itemData.audiobook_type && (
-                  <View style={[styles.bookLabel, styles.bookLabelBlank]}>
-                    <Text
-                      style={[styles.bookLabelText, styles.bookLabelExclusiveText]}
-                    />
-                  </View>
-                )}
+                  !this.props.itemData.is_featured &&
+                  this.props.itemData.audiobook_type !== '완독' &&
+                  this.props.itemData.audiobook_type !== '요약' &&
+                  this.props.itemData.audiobook_type !== '북리뷰' &&
+                  !this.props.itemData.audiobook_type && (
+                    <View style={[styles.bookLabel, styles.bookLabelBlank]}>
+                      <Text
+                        style={[
+                          styles.bookLabelText,
+                          styles.bookLabelExclusiveText,
+                        ]}
+                      />
+                    </View>
+                  )}
                 {!!this.props.itemData.is_new && (
                   <View style={[styles.badge, styles.badgeNew]}>
                     <Text style={[styles.badgeText]}>NEW</Text>
