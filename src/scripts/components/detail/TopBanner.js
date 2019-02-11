@@ -86,27 +86,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     opacity: 0,
   },
-  badgeFree: {
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-  },
-  badgeFeatured: {
-    backgroundColor: '#FD424C',
-  },
-  badgeRead: {
-    backgroundColor: '#0099CC',
-  },
-  badgeSummary: {
-    backgroundColor: '#FF9933',
-  },
-  badgeBookReview: {
-    backgroundColor: '#B47B58',
-  },
-  badgeNew: {
-    backgroundColor: '#FD7E14',
-  },
-  badgeExclusive: {
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-  },
   btnSetSmall: {
     width: 14,
     height: 14,
@@ -160,51 +139,21 @@ export default class TopBanner extends React.Component {
     return (
       <View>
         <View style={[styles.bookLabels, CommonStyles.alignJustifyFlex]}>
-          {!this.props.store.itemData.is_free &&
-            !this.props.store.itemData.is_featured &&
-            this.props.store.itemData.audiobook_type !== '완독' &&
-            this.props.store.itemData.audiobook_type !== '요약' &&
-            this.props.store.itemData.audiobook_type !== '북리뷰' &&
-            !this.props.store.itemData.audiobook_type && (
-              <View style={[styles.bookLabel, styles.bookLabelBlank]}>
-                <Text
-                  style={[styles.bookLabelText, styles.bookLabelExclusiveText]}
-                />
+          {this.props.itemData.badge?.map((item, key) => {
+            return (
+              <View
+                key={key}
+                style={[styles.badge, { backgroundColor: item.color }]}
+              >
+                <Text style={styles.badgeText}>{item.title}</Text>
               </View>
-            )}
-          {!!this.props.store.itemData.is_new && (
-            <View style={[styles.badge, styles.badgeNew]}>
-              <Text style={[styles.badgeText]}>NEW</Text>
-            </View>
-          )}
-          {!!this.props.store.itemData.is_exclusive && (
-            <View style={[styles.badge, styles.badgeExclusive]}>
-              <Text style={[styles.badgeText]}>오리지널</Text>
-            </View>
-          )}
-          {!!this.props.store.itemData.is_free && (
-            <View style={[styles.badge, styles.badgeFree]}>
-              <Text style={[styles.badgeText]}>무료</Text>
-            </View>
-          )}
-          {!!this.props.store.itemData.is_featured && (
-            <View style={[styles.badge, styles.badgeFeatured]}>
-              <Text style={[styles.badgeText]}>추천</Text>
-            </View>
-          )}
-          {this.props.store.itemData.audiobook_type === '완독' && (
-            <View style={[styles.badge, styles.badgeRead]}>
-              <Text style={[styles.badgeText]}>완독</Text>
-            </View>
-          )}
-          {this.props.store.itemData.audiobook_type === '요약' && (
-            <View style={[styles.badge, styles.badgeSummary]}>
-              <Text style={[styles.badgeText]}>요약</Text>
-            </View>
-          )}
-          {this.props.store.itemData.audiobook_type === '북리뷰' && (
-            <View style={[styles.badge, styles.badgeBookReview]}>
-              <Text style={[styles.badgeText]}>북리뷰</Text>
+            );
+          })}
+          {(!this.props.itemData.badge ||
+            this.props.itemData.badge === null ||
+            this.props.itemData.badge?.length === 0) && (
+            <View style={[styles.badge, styles.badgeBlank]}>
+              <Text style={styles.badgeText} />
             </View>
           )}
         </View>

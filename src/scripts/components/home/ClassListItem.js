@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-dark.png';
@@ -62,18 +56,6 @@ const styles = StyleSheet.create({
   badgeBlank: {
     borderColor: 'transparent',
     opacity: 0,
-  },
-  badgeNew: {
-    backgroundColor: '#FD7E14',
-  },
-  badgeFeatured: {
-    backgroundColor: '#FD424C',
-  },
-  badgeExclusive: {
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-  },
-  badgeFree: {
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   thumbnail: {
     position: 'relative',
@@ -170,29 +152,23 @@ class ClassListItem extends React.Component {
             </Text>
           </View>
           <View style={[CommonStyles.alignJustifyFlex, styles.badges]}>
-            {!!this.props.itemData.is_new && (
-              <View style={[styles.badge, styles.badgeNew]}>
-                <Text style={styles.badgeText}>NEW</Text>
+            {this.props.itemData.badge?.map((item, key) => {
+              return (
+                <View
+                  key={key}
+                  style={[styles.badge, { backgroundColor: item.color }]}
+                >
+                  <Text style={styles.badgeText}>{item.title}</Text>
+                </View>
+              );
+            })}
+            {(!this.props.itemData.badge ||
+              this.props.itemData.badge === null ||
+              this.props.itemData.badge?.length === 0) && (
+              <View style={[styles.badge, styles.badgeBlank]}>
+                <Text style={styles.badgeText} />
               </View>
             )}
-            {!!this.props.itemData.is_featured && (
-              <View style={[styles.badge, styles.badgeFeatured]}>
-                <Text style={styles.badgeText}>추천</Text>
-              </View>
-            )}
-            {!!this.props.itemData.is_exclusive && (
-              <View style={[styles.badge, styles.badgeExclusive]}>
-                <Text style={styles.badgeText}>오리지널</Text>
-              </View>
-            )}
-            {!!this.props.itemData.is_free && (
-              <View style={[styles.badge, styles.badgeFree]}>
-                <Text style={styles.badgeText}>무료</Text>
-              </View>
-            )}
-            <View style={[styles.badge, styles.badgeBlank]}>
-              <Text style={styles.badgeText} />
-            </View>
           </View>
         </TouchableOpacity>
         <View style={styles.countHr} />

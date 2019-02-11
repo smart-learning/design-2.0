@@ -141,18 +141,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     opacity: 0,
   },
-  badgeNew: {
-    backgroundColor: '#FD7E14',
-  },
-  badgeFeatured: {
-    backgroundColor: '#FD424C',
-  },
-  badgeExclusive: {
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-  },
-  badgeFree: {
-    backgroundColor: CommonStyles.COLOR_PRIMARY,
-  },
 });
 
 export default class Summary extends React.Component {
@@ -179,36 +167,21 @@ export default class Summary extends React.Component {
       <View style={styles.itemContainer}>
         <TouchableOpacity activeOpacity={0.9} onPress={this.props.onPress}>
           <View style={CommonStyles.alignJustifyFlex}>
-            {!!this.props.is_new && (
-              <View
-                style={[styles.badge, styles.badgeNew]}
-                borderRadius={10}
-              >
-                <Text style={styles.badgeText}>NEW</Text>
-              </View>
-            )}
-            {!!this.props.is_featured && (
-              <View
-                style={[styles.badge, styles.badgeFeatured]}
-                borderRadius={10}
-              >
-                <Text style={styles.badgeText}>추천</Text>
-              </View>
-            )}
-            {!!this.props.is_exclusive && (
-              <View
-                style={[styles.badge, styles.badgeExclusive]}
-                borderRadius={10}
-              >
-                <Text style={styles.badgeText}>오리지널</Text>
-              </View>
-            )}
-            {!!this.props.is_free && (
-              <View
-                style={[styles.badge, styles.badgeFree]}
-                borderRadius={10}
-              >
-                <Text style={styles.badgeText}>무료</Text>
+            {this.props.itemData.badge?.map((item, key) => {
+              return (
+                <View
+                  key={key}
+                  style={[styles.badge, { backgroundColor: item.color }]}
+                >
+                  <Text style={styles.badgeText}>{item.title}</Text>
+                </View>
+              );
+            })}
+            {(!this.props.itemData.badge ||
+              this.props.itemData.badge === null ||
+              this.props.itemData.badge?.length === 0) && (
+              <View style={[styles.badge, styles.badgeBlank]}>
+                <Text style={styles.badgeText} />
               </View>
             )}
           </View>
