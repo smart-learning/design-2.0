@@ -89,7 +89,7 @@ export default class AudioBookListItem extends React.Component {
             {this.props.tabStatus === 'hot' && (
               <View
                 style={{
-                  width: 22,
+                  width: 30,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}

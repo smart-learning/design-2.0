@@ -162,6 +162,7 @@ export default {
     if (sort) {
       params.sort = sort;
     }
+    params.count = 20;
     url += '?' + encodeParams(params);
 
     return axios
@@ -188,7 +189,7 @@ export default {
           pagination[key.replace('pagination-', '')] = eval(
             headers[key].toLowerCase(),
           );
-        } catch (e) { }
+        } catch (e) {}
       }
     });
     return pagination;
@@ -219,10 +220,10 @@ export default {
     if (page) {
       params.page = page;
     }
-
     if (sort) {
       params.sort = sort;
     }
+    params.count = 20;
 
     url += '?' + encodeParams(params);
 
@@ -598,7 +599,7 @@ export default {
       });
   },
 
-  getUserHeartContent: function (contentType, page = 1) {
+  getUserHeartContent: function(contentType, page = 1) {
     const urlMappings = {
       audiobooks: 'audiobooks',
       videoCourses: 'video-courses',
@@ -678,12 +679,12 @@ export default {
           // 전체 목록에서도 my 에 속한 값들이 같이 내려오고 있기 때문에 앱에서 데이터를 받은 후 걸러내야 함
           const my = response.data.my;
           let all = [];
-          response.data.all.forEach( review => {
-            const exist = my.find( myReview => myReview.id === review.id );
-            if( !exist ) {
-              all.push( review );
+          response.data.all.forEach(review => {
+            const exist = my.find(myReview => myReview.id === review.id);
+            if (!exist) {
+              all.push(review);
             }
-          } );
+          });
           resolve({ my, all });
         })
         .catch(error => {
@@ -739,7 +740,7 @@ export default {
       .post(
         API_PREFIX + 'v1.1/payment/import/subscriptions/issue-billing',
         data,
-    )
+      )
       .then(resp => resp.data);
   },
   // fcm token 등록
