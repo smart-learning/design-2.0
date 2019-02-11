@@ -18,6 +18,9 @@ export default class PTRViewiOS extends React.Component {
     };
   }
   _handleScroll(e) {
+    if( this.props.onScroll ) {
+      this.props.onScroll(e);
+    }
     var offset = e.nativeEvent.contentOffset.y;
     if (!this.state.isLoading) {
       this.setState({ scroll_offset: offset });
