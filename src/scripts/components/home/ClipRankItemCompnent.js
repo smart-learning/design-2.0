@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   rankTitle: {
+    height: 36,
     fontSize: 14,
     lineHeight: 18,
     color: '#353A3C',
@@ -108,7 +109,12 @@ class ClipRankItemComponent extends React.Component {
                 {this.props.itemData?.title}
               </Text>
               <View style={{ marginTop: 5 }}>
-                <View style={CommonStyles.alignJustifyFlex}>
+                <View
+                  style={[
+                    CommonStyles.alignJustifyFlex,
+                    { alignItems: 'center' },
+                  ]}
+                >
                   <Image source={IcPlay} style={styles.rankIcon} />
                   <Text style={styles.rankContentText}>
                     {numeral(this.props.itemData?.meta?.play_count).format(
