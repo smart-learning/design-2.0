@@ -209,10 +209,10 @@ class SeriesIntroPage extends React.Component {
         <View style={[styles.img_center]}>
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={() => this.gotoDetail('video-not-open', 0)}
+            onPress={() => this.gotoDetail('video', 1226)}
           >
             <ScaledImage
-              uri="https://static.welaaa.co.kr/static/series/181210_4gen/181226-C-6.png"
+              uri="https://static.welaaa.co.kr/static/series/181210_4gen/190211-C-6.png"
               width={contents_img_width}
             />
           </TouchableOpacity>
