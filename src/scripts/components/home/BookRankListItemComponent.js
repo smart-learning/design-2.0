@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import CommonStyles from '../../../styles/common';
 import IcPlay from '../../../images/ic-play-dark.png';
 import numeral from 'numeral';
@@ -89,7 +83,14 @@ class BookRankListItemComponent extends React.Component {
               resizeMode={FastImage.resizeMode.cover}
               style={styles.thumbnail}
             />
-            <View style={{ width: '50%', alignItems: 'flex-start' }}>
+            <View
+              style={{
+                position: 'relative',
+                flex: 1,
+                height: 96,
+                alignItems: 'flex-start',
+              }}
+            >
               <Text
                 style={styles.rankTitle}
                 ellipsizeMode={'tail'}
@@ -105,20 +106,22 @@ class BookRankListItemComponent extends React.Component {
                 {this.props.itemData?.teacher?.name}
               </Text>
 
-              <View
-                style={[
-                  CommonStyles.alignJustifyFlex,
-                  { alignItems: 'flex-end' },
-                ]}
-              >
-                <Image source={IcPlay} style={styles.rankIcon} />
-                <Text style={styles.rankContentText}>
-                  {numeral(
-                    this.props.itemData?.meta
-                      ? this.props.itemData?.meta.play_count
-                      : this.props.itemData?.hit_count,
-                  ).format('0a')}
-                </Text>
+              <View style={{ position: 'absolute', bottom: 0 }}>
+                <View
+                  style={[
+                    CommonStyles.alignJustifyFlex,
+                    { alignItems: 'center' },
+                  ]}
+                >
+                  <Image source={IcPlay} style={styles.rankIcon} />
+                  <Text style={styles.rankContentText}>
+                    {numeral(
+                      this.props.itemData?.meta
+                        ? this.props.itemData?.meta.play_count
+                        : this.props.itemData?.hit_count,
+                    ).format('0a')}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
