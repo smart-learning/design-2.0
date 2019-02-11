@@ -317,8 +317,8 @@ class HomeAudioPage extends React.Component {
               >
                 <FastImage
                   source={IcMainWideBanner}
-                  resizeMode="contain"
                   style={styles.imageMainBanner}
+                  resizeMode={FastImage.resizeMode.contain}
                 />
               </TouchableOpacity>
             </View>
@@ -469,7 +469,7 @@ class HomeAudioPage extends React.Component {
               >
                 <FastImage
                   source={IcMainWideBanner}
-                  resizeMode="contain"
+                  resizeMode={FastImage.resizeMode.contain}
                   style={styles.imageMainBanner}
                 />
               </TouchableOpacity>

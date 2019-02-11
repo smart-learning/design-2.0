@@ -108,7 +108,7 @@ export default class AudioBookListItem extends React.Component {
             <View style={{ width: 94 }}>
               <ImageBackground
                 source={{ uri: this.props.itemData.images.list }}
-                resizeMode="contain"
+                resizeMode="cover"
                 style={{ width: 82, height: 115 }}
               />
             </View>

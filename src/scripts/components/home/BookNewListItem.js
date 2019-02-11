@@ -50,8 +50,8 @@ class BookNewListItem extends React.Component {
         <TouchableOpacity activeOpacity={0.9} onPress={this.gotoAudioPage}>
           <FastImage
             source={{ uri: this.props.itemData.images.list }}
-            resizeMode={FastImage.resizeMode.contain}
             style={styles.thumbnail}
+            resizeMode={FastImage.resizeMode.cover}
           />
           <Text
             style={styles.bookTitle}

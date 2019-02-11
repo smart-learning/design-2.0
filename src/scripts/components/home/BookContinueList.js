@@ -73,7 +73,7 @@ export default class BookContinueList extends React.Component {
             source={{
               uri: item.data?.images?.list,
             }}
-            resizeMode={'cover'}
+            resizeMode={FastImage.resizeMode.cover}
             style={styles.thumbnail}
           />
           <View style={styles.continueText}>

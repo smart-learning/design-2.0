@@ -44,8 +44,8 @@ class BookDaily extends React.Component {
             <View style={{ marginRight: 45 }}>
               <FastImage
                 source={{ uri: todayItem.image }}
-                resizeMode="contain"
                 style={{ width: 78, height: 125, backgroundColor: '#efefef' }}
+                resizeMode={FastImage.resizeMode.cover}
               />
             </View>
             <View style={{ position: 'relative', width: 195, height: 125 }}>
