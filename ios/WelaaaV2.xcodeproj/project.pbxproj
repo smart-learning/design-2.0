@@ -825,9 +825,9 @@
 				EF9A9849211144F200EA3A8E /* Recovered References */,
 				C128B17DFD8B412EBE5A790A /* Resources */,
 			);
-			indentWidth = 2;
+			indentWidth = 4;
 			sourceTree = "<group>";
-			tabWidth = 2;
+			tabWidth = 4;
 			usesTabs = 0;
 		};
 		83CBBA001A601CBA00E9B192 /* Products */ = {

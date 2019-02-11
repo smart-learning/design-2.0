@@ -796,11 +796,13 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   private void initialize() {
-    if (!CAN_PLAY) {
-      Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
-    }
+
 
     if (CONTENT_TYPE != null) {
+
+      if (!CAN_PLAY && !CONTENT_TYPE.equals("audiobook")) {
+        Utils.logToast(getApplicationContext(), getString(R.string.info_nosession));
+      }
 
       Preferences.setWelaaaPlayerOnClickPos(getApplicationContext(), 0);
 
