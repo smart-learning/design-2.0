@@ -229,7 +229,7 @@ class HomeVideoPage extends React.Component {
     };
 
     return (
-      <View>
+      <View style={{flex: 1}}>
         {/*카테고리 영역 시작*/}
         <View
           style={[
