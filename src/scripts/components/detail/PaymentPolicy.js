@@ -211,6 +211,10 @@ export default class PaymentPolicy extends React.Component {
               {this.props.permission.type === 'rental' && (
                 <Text style={styles.labelText}>이용 가능 기간</Text>
               )}
+              {this.props.learnType === 'class' &&
+              this.props.permission.type === 'membership' && (
+                <Text style={styles.labelText}>이용 가능 기간</Text>
+              )}
             </View>
             <View>
               {this.props.permission.type !== 'free' &&
@@ -243,6 +247,10 @@ export default class PaymentPolicy extends React.Component {
                 this.props.permission.type === 'membership' && (
                   <Text style={styles.paymentText}>마음껏 이용 :)</Text>
                 )}
+              {this.props.learnType === 'class' &&
+              this.props.permission.type === 'membership' && (
+                <Text style={styles.paymentText}>무제한 이용 가능</Text>
+              )}
               {this.props.permission.type === 'rental' && (
                 <Text style={styles.paymentText}>
                   {moment(this.props.permission.expire_at).format(
