@@ -3,6 +3,7 @@ package kr.co.influential.youngkangapp;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +12,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import java.io.IOException;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.BaseAlertDialog;
@@ -50,6 +54,10 @@ public class SplashActivity extends AppCompatActivity implements SurfaceHolder.C
       Utils.logToast(this , "DEBUG APP SKIP SPLASH VERSION CHECK");
       launchMain();
     }
+
+    //TODO::Ad ID 를 이용할 경우 코드 활용 해주세요
+//    GoogleAppIdTask googleAppIdTask = new GoogleAppIdTask();
+//    googleAppIdTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
   }
 
@@ -219,5 +227,33 @@ public class SplashActivity extends AppCompatActivity implements SurfaceHolder.C
   @Override
   public void surfaceDestroyed(SurfaceHolder holder) {
 
+  }
+
+  private class GoogleAppIdTask extends AsyncTask<Void, Void, String> {
+    protected String doInBackground(final Void... params) {
+      String adId = null;
+      try {
+        adId = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext()).getId();
+        LogHelper.d(TAG , "adid : " + adId);
+
+      } catch (IllegalStateException ex) {
+        ex.printStackTrace();
+        LogHelper.d(TAG , "IllegalStateException");
+      } catch (GooglePlayServicesRepairableException ex) {
+        ex.printStackTrace();
+        LogHelper.d(TAG, "GooglePlayServicesRepairableException");
+      } catch (IOException ex) {
+        ex.printStackTrace();
+        LogHelper.d(TAG, "IOException");
+      } catch (GooglePlayServicesNotAvailableException ex) {
+        ex.printStackTrace();
+        LogHelper.d(TAG , "GooglePlayServicesNotAvailableException");
+      }
+      return adId;
+    }
+
+    protected void onPostExecute(String adId) {
+      //TODO::Ad ID를 이용한 작업 수행
+    }
   }
  }
