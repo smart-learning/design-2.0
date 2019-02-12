@@ -76,19 +76,19 @@ class PageCategory extends React.Component {
 
               return (
                 <View style={CommonStyles.alignJustifyItemCenter}>
-                  <View
-                    style={[styles.categoryItem, categoryItemStyle]}
-                    borderRadius={15}
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => this.select(item)}
                   >
-                    <TouchableOpacity
-                      activeOpacity={0.9}
-                      onPress={() => this.select(item)}
+                    <View
+                      style={[styles.categoryItem, categoryItemStyle]}
+                      borderRadius={15}
                     >
                       <Text style={[styles.categoryText, textStyle]}>
                         {item.label}
                       </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  </TouchableOpacity>
                   <Text style={{ top: 5, height: 30 }}>|</Text>
                 </View>
               );
