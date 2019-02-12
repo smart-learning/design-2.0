@@ -25,6 +25,7 @@ class ClassDetailPage extends React.Component {
     reviewText: '',
     reviewStar: 5,
     voucherStatus: {},
+    isSubmitStatus: false,
   });
 
   constructor(props) {

@@ -26,6 +26,7 @@ class AudioBookDetailPage extends React.Component {
     reviewText: '',
     reviewStar: 5,
     voucherStatus: {},
+    isSubmitStatus: false,
   });
 
   constructor(props) {

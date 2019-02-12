@@ -63,9 +63,52 @@ class ReviewInput extends React.Component {
   state = {
     reviewText: '',
   };
+  componentDidMount() {
+    this.props.store.isSubmitStatus = false;
+  }
+
   onChangeText = text => {
     this.setState({ reviewText: text });
     this.props.store.reviewText = text;
+  };
+
+  reviewSubmit = async () => {
+    if (this.props.store.reviewText === '') {
+      Alert.alert('Error', '리뷰를 입력 해주세요.');
+      return false;
+    } else {
+      try {
+        let result = await net.postReview(
+          this.props.store.cid,
+          this.props.store.reviewText,
+        );
+        await net.postStarCount(
+          this.props.store.cid,
+          this.props.store.reviewStar,
+        );
+
+        this.props.store.isSubmitStatus = true;
+
+        if (result) {
+          Alert.alert('알림', '리뷰가 등록되었습니다');
+          // 코멘트 다시 로드
+          const comments = await net.getReviewList(this.props.store.cid);
+          this.props.store.itemReviewData = comments;
+          // 별점 다시 로드
+          const evaluation = await net.getItemEvaluation(
+            this.props.store.cid.cid,
+          );
+          this.props.store.itemEvaluationData = evaluation;
+          this.props.store.reviewStar;
+        } else {
+          Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
+          this.props.store.isSubmitStatus = false;
+        }
+      } catch (error) {
+        console.log(error);
+        Alert.alert('Error', error.message);
+      }
+    }
   };
   render() {
     return (
@@ -84,7 +127,7 @@ class ReviewInput extends React.Component {
             value={this.state.reviewText}
           />
         </View>
-        <TouchableOpacity activeOpacity={0.9} onPress={this.reviewSubmit}>
+        {!!this.props.store.isSubmitStatus ? (
           <View
             style={{
               width: 50,
@@ -104,10 +147,35 @@ class ReviewInput extends React.Component {
                 color: '#ffffff',
               }}
             >
-              등록
+              등록중
             </Text>
           </View>
-        </TouchableOpacity>
+        ) : (
+          <TouchableOpacity activeOpacity={0.9} onPress={this.reviewSubmit}>
+            <View
+              style={{
+                width: 50,
+                height: 54,
+                backgroundColor: CommonStyles.COLOR_PRIMARY,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 4,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: '400',
+                  color: '#ffffff',
+                }}
+              >
+                등록
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
@@ -120,56 +188,6 @@ class ReviewForm extends React.Component {
     myReviewId: null,
     myReviewContent: '',
   });
-
-  reviewSubmit = async () => {
-    if (this.props.store.reviewText === '') {
-      Alert.alert('Error', '리뷰를 입력 해주세요.');
-      return false;
-    } else if (this.props.type === 'create') {
-      try {
-        await net.postReview(this.props.store.cid, this.props.store.reviewText);
-        await net.postStarCount(
-          this.props.store.cid,
-          this.props.store.reviewStar,
-        );
-        // 코멘트 다시 로드
-        const comments = await net.getReviewList(this.props.store.cid);
-        this.props.store.itemReviewData = comments;
-        // 별점 다시 로드
-        const evaluation = await net.getItemEvaluation(
-          this.props.store.cid.cid,
-        );
-        this.props.store.itemEvaluationData = evaluation;
-        this.props.store.reviewStar;
-      } catch (error) {
-        console.log(error);
-        Alert.alert('Error', error.message);
-      }
-    } else if (this.props.type === 'patch') {
-      try {
-        await net.patchReview(
-          this.data.myReviewId,
-          this.props.store.reviewText,
-        );
-        await net.postStarCount(
-          this.props.store.cid,
-          this.props.store.reviewStar,
-        );
-        // 코멘트 다시 로드
-        const comments = await net.getReviewList(this.props.store.cid);
-        this.props.store.itemReviewData = comments;
-        // 별점 다시 로드
-        const evaluation = await net.getItemEvaluation(
-          this.props.store.cid.cid,
-        );
-        this.props.store.itemEvaluationData = evaluation;
-        this.props.store.reviewStar;
-      } catch (error) {
-        console.log(error);
-        Alert.alert('Error', error.message);
-      }
-    }
-  };
 
   changeMyReviewStatus = item => {
     this.data.isUpdate = true;
@@ -326,7 +344,7 @@ class ReviewForm extends React.Component {
                 </View>
               )}
 
-              {itemData.all && itemData.all.length > 0 ? (
+              {itemData.all && itemData.all.length > 0 && (
                 <View>
                   {itemData.all.map((item, key) => {
                     return (
@@ -364,7 +382,8 @@ class ReviewForm extends React.Component {
                     );
                   })}
                 </View>
-              ) : (
+              )}
+              {itemData.all?.length === 0 && itemData.my?.length === 0 && (
                 <View
                   style={{
                     height: 100,
