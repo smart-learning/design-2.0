@@ -65,6 +65,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
@@ -2299,9 +2301,11 @@ public class PlayerActivity extends BasePlayerActivity {
             Glide
                 .with(getApplicationContext())
                 .load(getwebPlayerInfo().getGroupImg())
-                .centerCrop()
-                .placeholder(null)
-                .crossFade()
+                .apply(new RequestOptions()
+                    .centerCrop()
+                    .placeholder(null))
+                .transition(new DrawableTransitionOptions()
+                    .crossFade())
                 .into(audioModeBackgroundImg);
 
             audioModeBackgroundLayout.setVisibility(View.VISIBLE); //이미지보이고
@@ -4149,9 +4153,11 @@ public class PlayerActivity extends BasePlayerActivity {
       Glide
           .with(getApplicationContext())
           .load(getwebPlayerInfo().getGroupImg())
-          .centerCrop()
-          .placeholder(null)
-          .crossFade()
+          .apply(new RequestOptions()
+              .centerCrop()
+              .placeholder(null))
+          .transition(new DrawableTransitionOptions()
+              .crossFade())
           .into(audioModeBackgroundImg);
 
       // audioBook mode , video/audio mode
