@@ -252,7 +252,13 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.59'
 
     // glide
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation("com.github.bumptech.glide:glide:${glideVersion}") {
+        exclude group: "com.android.support", module: "glide"
+    }
+    implementation("com.github.bumptech.glide:okhttp3-integration:${glideVersion}") {
+        exclude group: "com.android.support", module: "okhttp3-integration"
+        exclude group: "com.android.support", module: "glide-parent"
+    }
 
     // fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
