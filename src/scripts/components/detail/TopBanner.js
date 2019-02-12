@@ -139,7 +139,7 @@ export default class TopBanner extends React.Component {
     return (
       <View>
         <View style={[styles.bookLabels, CommonStyles.alignJustifyFlex]}>
-          {this.props.itemData.badge?.map((item, key) => {
+          {this.props.store.itemData.badge?.map((item, key) => {
             return (
               <View
                 key={key}
@@ -149,9 +149,9 @@ export default class TopBanner extends React.Component {
               </View>
             );
           })}
-          {(!this.props.itemData.badge ||
-            this.props.itemData.badge === null ||
-            this.props.itemData.badge?.length === 0) && (
+          {(!this.props.store.itemData.badge ||
+            this.props.store.itemData.badge === null ||
+            this.props.store.itemData.badge?.length === 0) && (
             <View style={[styles.badge, styles.badgeBlank]}>
               <Text style={styles.badgeText} />
             </View>
