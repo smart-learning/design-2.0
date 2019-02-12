@@ -35,3 +35,7 @@ ext {
     supportLibVersion = '27.1.1'
     wearableVersion = '2.3.0'
 }
+
+project.ext {
+    excludeAppGlideModule = true
+}

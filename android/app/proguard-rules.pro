@@ -82,3 +82,7 @@
 
 # AppsFlyer
 -keep class com.appsflyer.** { *; }
+
+# ReactNativeFastImage
+-keep public class com.dylanvann.fastimage. *{*;}
+-keep public class com.dylanvann.fastimage.** {*;}
