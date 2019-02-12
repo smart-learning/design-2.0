@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import CommonStyles from '../../../styles/common';
+import withNavigation from 'react-navigation/src/views/withNavigation';
 
 const styles = StyleSheet.create({
   footerContainer: {
@@ -86,4 +87,4 @@ class Footer extends React.Component {
   }
 }
 
-export default Footer;
+export default withNavigation(Footer);
