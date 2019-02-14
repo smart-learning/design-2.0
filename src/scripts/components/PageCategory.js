@@ -40,7 +40,7 @@ class PageCategory extends React.Component {
       <View
         style={[
           CommonStyles.alignJustifyFlex,
-          { width: '98%', flexWrap: 'wrap', paddingLeft: 15, paddingRight: 10 },
+          { width: '98%', flexWrap: 'wrap', paddingLeft: this.props.pageLocation === 'main'? 15 : 0, paddingRight: this.props.pageLocation === 'main'? 10 : 0 },
         ]}
       >
         <View>

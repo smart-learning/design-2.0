@@ -241,6 +241,7 @@ class HomeVideoPage extends React.Component {
             data={this.props.store.videoCategoryData}
             selectedCategory={this.state.selectedCategory}
             onCategorySelect={this.premiumCategorySelect}
+            pageLocation={'main'}
           />
         </View>
         {/*/카테고리 영역 끝*/}
