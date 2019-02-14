@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     width: '98%',
     marginLeft: 'auto',
     marginRight: 'auto',
+    marginTop: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
   thumbnail: {
     position: 'relative',
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 30,
     paddingTop: '70.9302713709%',
     paddingBottom: '70.9302713709%',
   },
@@ -59,7 +60,7 @@ class HomeSeriesListPage extends React.Component {
     if (_.isObject(this.store.homeSeriesData)) {
       itemData = this.store.homeSeriesData;
     }
-
+    
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
