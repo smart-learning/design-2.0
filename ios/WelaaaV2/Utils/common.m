@@ -1048,14 +1048,26 @@
 
 + (id) getDeviceToken
 {
-  return [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"];
+    return [[NSUserDefaults standardUserDefaults] objectForKey: @"deviceToken"];
 }
 
 + (void) setDeviceToken : (NSData *) deviceToken
 {
-  [[NSUserDefaults standardUserDefaults] setObject: deviceToken
-                                            forKey: @"deviceToken"];
-  [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSUserDefaults standardUserDefaults] setObject: deviceToken
+                                              forKey: @"deviceToken"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *) getAdvertiserId
+{
+    // Check whether advertising tracking is enabled
+    if ( [[ASIdentifierManager sharedManager] isAdvertisingTrackingEnabled] )
+    {
+        NSUUID *identifier = [[ASIdentifierManager sharedManager] advertisingIdentifier];
+        return [identifier UUIDString];
+    }
+    
+    return @"NO_ADVERTISER_ID";
 }
 
 @end

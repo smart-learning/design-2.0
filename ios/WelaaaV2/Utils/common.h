@@ -11,6 +11,7 @@
 #import <net/if.h>      // For IFF_LOOPBACK
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SAMKeychain/SAMKeychain.h>
+#import <AdSupport/ASIdentifierManager.h>
 
 #define SYSTEM_VERSION  [[UIDevice currentDevice] systemVersion]
 
@@ -127,6 +128,7 @@
 + (id) getDeviceToken;
 + (void) setDeviceToken : (NSData *) deviceToken;
 
++ (NSString *) getAdvertiserId;
 @end
 
 

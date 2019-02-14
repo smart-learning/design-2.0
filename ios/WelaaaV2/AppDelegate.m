@@ -167,6 +167,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     NSLog(@"  [DeviceInfo] idForVendor   :  %@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);  // 171025 김태현
     NSLog(@"  [DeviceInfo] Cellular Type :  %@", [common getCellularType]);
     NSLog(@"  [DeviceInfo] Device Name   :  %@", [[UIDevice currentDevice] name]);
+    NSLog(@"  [DeviceInfo] Advertiser ID :  %@", [common getAdvertiserId]);
     [common getNetInterfaceNames];
   
     /** APPSFLYER INIT **/
