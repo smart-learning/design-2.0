@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   viewMoreIcon: {
     position: 'relative',
-    top: 2,
+    top: 1,
   },
 });
 
@@ -220,7 +220,6 @@ class HomeBookMonthlyDetailPage extends React.Component {
                     style={[
                       CommonStyles.alignJustifyFlex,
                       {
-                        alignItems: 'flex-end',
                         borderWidth: 1,
                         borderColor: '#E2E2E2',
                         backgroundColor: '#F8F8F8',
@@ -236,12 +235,11 @@ class HomeBookMonthlyDetailPage extends React.Component {
                         height: 98,
                         marginRight: 40,
                       }}
-                      resizeMode={'cover'}
+                      resizeMode={'contain'}
                     />
-                    <View>
+                    <View style={{ flex: 1, marginRight: 20, paddingTop: 27 }}>
                       <Text
                         style={{
-                          width: 125,
                           marginBottom: 7,
                           fontSize: 16,
                           fontWeight: 'bold',
@@ -254,7 +252,6 @@ class HomeBookMonthlyDetailPage extends React.Component {
                       </Text>
                       <Text
                         style={{
-                          width: 125,
                           marginBottom: 10,
                           fontSize: 13,
                           color: '#353A3C',
