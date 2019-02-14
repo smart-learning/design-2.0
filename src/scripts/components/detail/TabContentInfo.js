@@ -336,7 +336,7 @@ class TabContentInfo extends React.Component {
 
           <TouchableOpacity
             activeOpacity={0.9}
-            style={[styles.viewMoreContainer, { paddingTop: 20 }]}
+            style={styles.viewMoreContainer}
             onPress={this.changeContentMemoViewMoreStatus}
           >
             <View
