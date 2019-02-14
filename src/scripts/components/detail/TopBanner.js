@@ -17,7 +17,6 @@ import numeral from 'numeral';
 import IcPlay2 from '../../../images/ic-play-dark.png';
 import IcStar from '../../../images/ic-star-grey-line.png';
 import IcComment from '../../../images/ic-commenting-dark.png';
-import IcClip from '../../../images/ic-clip-dark.png';
 
 const styles = StyleSheet.create({
   banner: {
@@ -36,15 +35,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headline: {
-    paddingTop: 10,
+    paddingTop: 7,
     paddingRight: 20,
-    marginBottom: 7,
+    marginBottom: 4,
     fontSize: 14,
     color: '#363636',
   },
   title: {
     paddingRight: 20,
-    marginBottom: 7,
+    marginBottom: 3,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#363636',
@@ -103,7 +102,6 @@ const styles = StyleSheet.create({
   },
   countWrap: {
     paddingTop: 10,
-    paddingBottom: 20,
   },
 });
 
