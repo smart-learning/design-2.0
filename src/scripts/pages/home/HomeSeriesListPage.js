@@ -60,7 +60,7 @@ class HomeSeriesListPage extends React.Component {
     if (_.isObject(this.store.homeSeriesData)) {
       itemData = this.store.homeSeriesData;
     }
-    
+
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
@@ -94,7 +94,7 @@ class HomeSeriesListPage extends React.Component {
                               {
                                 itemData: item.category,
                                 thumbnail: item.image,
-                                title: '윌라 추천시리즈',
+                                title: ' ',
                               },
                             )
                           }

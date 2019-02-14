@@ -35,13 +35,13 @@ class SeriesSwiperItem extends React.Component {
             this.props.navigation.navigate('HomeSeriesDetailPage', {
               itemData: itemData.category,
               thumbnail: itemData.image,
-              title: '윌라 추천시리즈',
+              title: ' ',
             });
           }}
         >
           <FastImage
             source={{ uri: itemData.image }}
-            resizeMode="contain"
+            resizeMode={FastImage.resizeMode.contain}
             style={styles.thumbnail}
           >
             <Text

@@ -7,7 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Image,
   View,
 } from 'react-native';
 
@@ -20,6 +20,7 @@ import createStore from '../../commons/createStore';
 import _ from 'underscore';
 import ClassListItem from '../../components/home/ClassListItem';
 import Dummy from '../../../images/dummy-series.png';
+import Cover from '../../../images/cover-series-detail.png';
 import globalStore from '../../commons/store';
 
 const styles = StyleSheet.create({
@@ -101,17 +102,35 @@ class HomeSeriesDetailPage extends React.Component {
       }
     }
 
+    // const shadowOpt = {
+    //   color: '#000',
+    //   shadowOffset: {
+    //     width: 0,
+    //     height: 3,
+    //   },
+    //   shadowOpacity: 0.3,
+    //   shadowRadius: 4.65,
+    //
+    //   elevation: 6,
+    // };
+
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
           <ScrollView style={{ flex: 1 }}>
             <View style={styles.banner} removeClippedSubviews={true}>
-              <ImageBackground
-                source={{ uri: this.props.navigation.state.params.thumbnail }}
-                style={styles.thumbnail}
-                resizeMode={'contain'}
-              />
+              {/*<BoxShadow setting={shadowOpt}>*/}
+                <ImageBackground
+                  source={{ uri: this.props.navigation.state.params.thumbnail }}
+                  style={styles.thumbnail}
+                  resizeMode={'contain'}
+                />
+              {/*</BoxShadow>*/}
             </View>
+            <Image
+              source={Cover}
+              style={{ position: 'absolute', top: 0, width: '100%' }}
+            />
             <View style={styles.contentContainer}>
               <Text style={styles.title}>윌라 추천시리즈 소개</Text>
               <Text style={styles.paragraph}>{itemContent}</Text>
