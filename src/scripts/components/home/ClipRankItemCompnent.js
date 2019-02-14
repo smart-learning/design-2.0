@@ -96,7 +96,7 @@ class ClipRankItemComponent extends React.Component {
               </Text>
             </View>
             <FastImage
-              source={{ uri: this.props.itemData?.images?.wide }}
+              source={{ uri: this.props.itemData?.images?.list }}
               resizeMode={FastImage.resizeMode.cover}
               style={styles.thumbnail}
             />
