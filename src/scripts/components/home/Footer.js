@@ -32,7 +32,7 @@ class Footer extends React.Component {
     return (
       <View style={styles.footerContainer}>
         <View>
-          <Text style={[styles.footerText, styles.footerTextImportant]}>
+          <Text style={styles.footerText}>
             ㈜ 인플루엔셜 | 대표이사: 문태진
           </Text>
           <Text style={styles.footerText}>
