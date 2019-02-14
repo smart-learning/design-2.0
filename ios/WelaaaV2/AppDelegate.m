@@ -42,7 +42,7 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 - (BOOL)          application : (UIApplication *) application
 didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 {
-    [NSThread sleepForTimeInterval : 2]; //add 2 seconds longer.
+    [NSThread sleepForTimeInterval : 1.5]; // 인트로에서 1.5초 지연.
     
     // Push notification badge reset. 앱이 완전히 재구동되어야 뱃지가 디카운팅이 됨. 백그라운드에서 돌아올때는 여기서 리셋되지는 않습니다.
     if ( [UIApplication sharedApplication].applicationIconBadgeNumber != 0 )
@@ -167,6 +167,7 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     NSLog(@"  [DeviceInfo] idForVendor   :  %@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);  // 171025 김태현
     NSLog(@"  [DeviceInfo] Cellular Type :  %@", [common getCellularType]);
     NSLog(@"  [DeviceInfo] Device Name   :  %@", [[UIDevice currentDevice] name]);
+    NSLog(@"  [DeviceInfo] Advertiser ID :  %@", [common getAdvertiserId]);
     [common getNetInterfaceNames];
   
     /** APPSFLYER INIT **/

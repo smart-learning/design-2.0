@@ -708,21 +708,21 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				63D13EC121E739FF0035D0FC /* UserNotifications.framework */,
-				63D13EBF21E347750035D0FC /* SystemConfiguration.framework */,
-				63D13EBD21E347670035D0FC /* MobileCoreServices.framework */,
-				63D13EBB21E3475B0035D0FC /* CoreLocation.framework */,
-				63D13EB921E347460035D0FC /* libz.tbd */,
-				63D13EB721E346C90035D0FC /* PMS.framework */,
-				EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */,
-				63BB3AEF21D33F9200619717 /* iAd.framework */,
-				63BB3AC521D33F8600619717 /* AdSupport.framework */,
-				63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */,
-				EF671AD3213E4BA100767E01 /* libsqlite3.tbd */,
-				EF056AB821267EFD00F3178B /* StoreKit.framework */,
-				EFE0F3B22117E5F900D4558B /* Contacts.framework */,
-				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				5AA606472D9E3A76D92EEDF5 /* libPods-WelaaaV2.a */,
+				2D16E6891FA4F8E400B85C8A /* libReact.a */,
+				63BB3AC521D33F8600619717 /* AdSupport.framework */,
+				EFF53EE521DCAAD200B52972 /* AppsFlyerLib.framework */,
+				EFE0F3B22117E5F900D4558B /* Contacts.framework */,
+				63D13EBB21E3475B0035D0FC /* CoreLocation.framework */,
+				63BB3AEF21D33F9200619717 /* iAd.framework */,
+				63D13EBD21E347670035D0FC /* MobileCoreServices.framework */,
+				63BB3A8221C8BE6B00619717 /* PallyConFPSSDK.framework */,
+				63D13EB721E346C90035D0FC /* PMS.framework */,
+				EF056AB821267EFD00F3178B /* StoreKit.framework */,
+				63D13EBF21E347750035D0FC /* SystemConfiguration.framework */,
+				63D13EC121E739FF0035D0FC /* UserNotifications.framework */,
+				EF671AD3213E4BA100767E01 /* libsqlite3.tbd */,
+				63D13EB921E347460035D0FC /* libz.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

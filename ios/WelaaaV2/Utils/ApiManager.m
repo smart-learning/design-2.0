@@ -402,33 +402,22 @@
     [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
   
-    [request setHTTPMethod : @"POST"];
-    // 테스트를 목적으로 권한정보를 강제로 fix하였습니다.
-    [request            setValue : headerValue
-              forHTTPHeaderField : @"authorization"];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:headerValue forHTTPHeaderField:@"authorization"];
   
     NSError *error;
     NSURLResponse *resp = nil;
   
     NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-    [dictionary setObject:cid                                     forKey:@"cid"];
-    [dictionary setObject:@"iphone"                               forKey:@"platform"];
-    [dictionary setObject:action                                  forKey:@"action"];
-    [dictionary setObject:[NSNumber numberWithDouble : start]     forKey:@"start"];
-    [dictionary setObject:[NSNumber numberWithDouble : end]       forKey:@"end"];
-    [dictionary setObject:[NSNumber numberWithDouble : duration]  forKey:@"duration"];
-    [dictionary setObject:netStatus                               forKey:@"net_status"];
-    [dictionary setObject:cid                                     forKey:@"error"];
-  /*
-    dictionary = [@{@"cid"        : cid,
-                    @"platform"   : @"iphone",
-                    @"action"     : action,     // START / ING / END / FORWARD / BACK
-                    @"start"      : [NSNumber numberWithDouble : start],         // msec
-                    @"end"        : [NSNumber numberWithDouble : end],         // msec
-                    @"duration"   : [NSNumber numberWithDouble : duration],         // end - start = msec
-                    @"net_status" : netStatus,  // "DOWNLOAD" / "Wi-Fi" / "LTE/3G"
-                    @"error"      : @"NO_ERROR"} mutableCopy];
-  */
+    [dictionary setObject:cid                                           forKey:@"cid"];
+    [dictionary setObject:@"iphone"                                     forKey:@"platform"];
+    [dictionary setObject:action                                        forKey:@"action"];
+    [dictionary setObject:[NSNumber numberWithDouble : start*1000]      forKey:@"start"];
+    [dictionary setObject:[NSNumber numberWithDouble : end*1000]        forKey:@"end"];
+    [dictionary setObject:[NSNumber numberWithDouble : duration*1000]   forKey:@"duration"];
+    [dictionary setObject:netStatus                                     forKey:@"net_status"];
+    [dictionary setObject:cid                                           forKey:@"error"];
+    
     NSLog(@"  [sendPlaybackProgressWith] dictionary = %@", dictionary);
     NSData *postData = [NSJSONSerialization dataWithJSONObject : dictionary
                                                        options : 0
@@ -531,10 +520,3 @@
     return updateDataDics;
 }
 @end
-
-
-
-
-
-
-

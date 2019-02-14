@@ -84,9 +84,9 @@ public class DownloadService extends IntentService implements
 
         boolean result = downloadTask.isDownloadCompleted();
 
-//        if(result){
-//          mCallback.recvData(intent_downloadContentCid);
-//        }
+        if(result){
+          mCallback.recvData(intent_downloadContentCid);
+        }
       } catch (PallyconDownloadException e) {
         Toast.makeText(DownloadService.this, e.getMessage(), Toast.LENGTH_LONG).show();
       } catch (NetworkConnectedException e) {
