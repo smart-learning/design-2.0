@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { observer } from 'mobx-react';
 import _ from 'underscore';
@@ -30,25 +25,35 @@ class BookDaily extends React.Component {
     const regExp = /(<.+?>)/gi;
     let title = '< >';
     let subTitle = '';
-    if( sorted.length > 0 ) {
+    if (sorted.length > 0) {
       // 타이틀, 서브타이틀 추출
-      title = todayItem.title.match( regExp )[ 0 ] || '< >';
-      subTitle = todayItem.title.substr( title.length ).trim();
-      title = title.substr( 1, title.length - 2 )
+      title = todayItem.title.match(regExp)[0] || '< >';
+      subTitle = todayItem.title.substr(title.length).trim();
+      title = title.substr(1, title.length - 2);
     }
 
     return (
       <View>
         {sorted.length > 0 && (
-          <View style={[CommonStyles.alignJustifyFlex, { marginTop: 20 }]}>
-            <View style={{ marginRight: 45 }}>
+          <View
+            style={[
+              CommonStyles.alignJustifyFlex,
+              {
+                width: 295,
+                marginTop: 20,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              },
+            ]}
+          >
+            <View style={{ marginRight: 30 }}>
               <FastImage
                 source={{ uri: todayItem.image }}
-                style={{ width: 78, height: 125, backgroundColor: '#efefef' }}
+                style={{ width: 80, height: 125, backgroundColor: '#efefef' }}
                 resizeMode={FastImage.resizeMode.contain}
               />
             </View>
-            <View style={{ position: 'relative', width: 195, height: 125 }}>
+            <View style={{ position: 'relative', width: 185, height: 125 }}>
               <Text
                 ellipsizeMode={'tail'}
                 numberOfLines={2}
@@ -91,7 +96,7 @@ class BookDaily extends React.Component {
                 >
                   <View
                     style={{
-                      width: 195,
+                      width: 185,
                       height: 28,
                       borderWidth: 1,
                       borderColor: CommonStyles.COLOR_PRIMARY,
