@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import {
+  ActivityIndicator,
   Alert,
   Text,
   View,
@@ -395,6 +396,33 @@ class ReviewForm extends React.Component {
                   </Text>
                 </View>
               )}
+              {itemData.all?.length !== 0 &&
+                !!this.props.store.pagination['has-next'] &&
+                !this.props.store.isReviewLoading && (
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.viewMoreContainer}
+                    onPress={() =>
+                      this.props.store.loadReview(
+                        this.props.store.pagination['page'] + 1,
+                      )
+                    }
+                  >
+                    <View
+                      style={[
+                        styles.viewMore,
+                        CommonStyles.alignJustifyContentBetween,
+                      ]}
+                    >
+                      <Text style={styles.viewMoreText}>더보기</Text>
+                      <Image
+                        source={IcAngleDownGrey}
+                        style={[styles.viewMoreIcon]}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+              {this.props.store.isReviewLoading && <ActivityIndicator />}
               <View
                 style={{
                   width: '100%',
@@ -404,26 +432,6 @@ class ReviewForm extends React.Component {
                 }}
               />
             </View>
-
-            {1 === 2 && (
-              <TouchableOpacity
-                activeOpacity={0.9}
-                style={styles.viewMoreContainer}
-              >
-                <View
-                  style={[
-                    styles.viewMore,
-                    CommonStyles.alignJustifyContentBetween,
-                  ]}
-                >
-                  <Text style={styles.viewMoreText}>더보기</Text>
-                  <Image
-                    source={IcAngleDownGrey}
-                    style={[styles.viewMoreIcon]}
-                  />
-                </View>
-              </TouchableOpacity>
-            )}
 
             {itemData.my && itemData.my.length === 0 && (
               <ReviewInput {...this.props} formType={'create'} />

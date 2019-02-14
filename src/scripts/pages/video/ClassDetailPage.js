@@ -8,25 +8,55 @@ import createStore from '../../commons/createStore';
 import DetailLayout from '../../components/detail/DetailLayout';
 import globalStore from '../../commons/store';
 import utils from '../../commons/utils';
+import { action, observable } from 'mobx';
 
+class Data {
+  @observable cid = null;
+  @observable isLoading = true;
+  @observable itemData = null;
+  @observable itemClipData = [];
+  @observable itemReviewData = { my: [], all: [] };
+  @observable itemEvaluationData = [];
+  @observable tabStatus = 'info';
+  @observable lectureView = false;
+  @observable teacherView = false;
+  @observable slideHeight = null;
+  @observable reviewText = '';
+  @observable reviewStar = 5;
+  @observable voucherStatus = {};
+  @observable isSubmitStatus = false;
+  @observable pagination = {
+    'has-next': true,
+  };
+  @observable isReviewLoading = false;
+
+  @action.bound
+  loadReview(page = 1) {
+    this.isReviewLoading = true;
+    net
+      .getReviewList(this.cid, page)
+      .then(comments => {
+        this.pagination = comments.pagination;
+        this.itemReviewData.my = comments.my;
+        comments.all.forEach(comment => {
+          const exist = this.itemReviewData.all.find(
+            element => element.id === comment.id,
+          );
+          if (!exist) {
+            this.itemReviewData.all.push(comment);
+          }
+        });
+        this.isReviewLoading = false;
+      })
+      .catch(error => {
+        Alert.alert('Error', error.message);
+        this.isReviewLoading = false;
+      });
+  }
+}
 @observer
 class ClassDetailPage extends React.Component {
-  data = createStore({
-    cid: null,
-    isLoading: true,
-    itemData: null,
-    itemClipData: [],
-    itemReviewData: [],
-    itemEvaluationData: {},
-    tabStatus: 'info',
-    lectureView: false,
-    teacherView: false,
-    slideHeight: null,
-    reviewText: '',
-    reviewStar: 5,
-    voucherStatus: {},
-    isSubmitStatus: false,
-  });
+  data = new Data();
 
   constructor(props) {
     super(props);
@@ -91,9 +121,8 @@ class ClassDetailPage extends React.Component {
     let resultLectureData;
     try {
       resultLectureData = await net.getLectureItem(this.state.id);
-    }
-    catch( error ) {
-      Alert.alert( 'Error', error.message );
+    } catch (error) {
+      Alert.alert('Error', error.message);
       // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
       this.data.isLoading = false;
       return;
@@ -101,9 +130,8 @@ class ClassDetailPage extends React.Component {
     let resultLectureClipData;
     try {
       resultLectureClipData = await net.getLectureClipList(this.state.id);
-    }
-    catch( error ) {
-      Alert.alert( 'Error', error.message );
+    } catch (error) {
+      Alert.alert('Error', error.message);
       // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
       this.data.isLoading = false;
       return;
@@ -112,13 +140,14 @@ class ClassDetailPage extends React.Component {
       title: ' ',
     });
 
-    if( !resultLectureData.cid ) {
-      Alert.alert( 'Error', 'cid를 찾을 수 없습니다.' );
+    if (!resultLectureData.cid) {
+      Alert.alert('Error', 'cid를 찾을 수 없습니다.');
       this.data.isLoading = false;
       return;
     }
 
     this.data.itemData = resultLectureData;
+    this.data.cid = resultLectureData.cid;
     this.data.itemClipData = resultLectureClipData;
     this.data.isLoading = false;
     if (resultLectureData && resultLectureData.cid) {
@@ -129,30 +158,24 @@ class ClassDetailPage extends React.Component {
         Alert.alert('Error', error.message);
       }
       try {
-        const comments = await net.getReviewList(resultLectureData.cid);
-        this.data.itemReviewData = comments;
+        await this.data.loadReview();
       } catch (error) {
-        console.log(error);
-        Alert.alert('Error', '통신에 실패했습니다.');
+        Alert.alert('Error', error.message);
       }
     }
-
-    this.data.cid = resultLectureData.cid;
 
     try {
       await this.getPlayPermissions();
-    }
-    catch( error ) {
-      Alert.alert( 'Error', error.message );
+    } catch (error) {
+      Alert.alert('Error', error.message);
     }
 
     //조회수 증가
-    if( resultLectureData.cid ) {
+    if (resultLectureData.cid) {
       try {
         await net.postAddContentViewCount(resultLectureData.cid);
-      }
-      catch( error ) {
-        Alert.alert( 'Error', error.message );
+      } catch (error) {
+        Alert.alert('Error', error.message);
       }
     }
   };
@@ -186,7 +209,7 @@ class ClassDetailPage extends React.Component {
       return;
     }
 
-    if( cid ) {
+    if (cid) {
       const permissionData = await net.getPlayPermissionByCid(cid);
       this.setState({
         permission: permissionData,

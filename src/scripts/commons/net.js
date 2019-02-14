@@ -671,21 +671,21 @@ export default {
     return axios.post(API_PREFIX + 'v1.0/membership/vouchers/exchange', params);
   },
 
-  getReviewList(cid) {
+  getReviewList(cid,page = 1) {
     return new Promise((resolve, reject) => {
+      const params = {};
+      params.count = 5;
+      params.page = page;
+      const query = '?' + encodeParams(params);
       axios
-        .get(API_PREFIX + 'v1.0/action/comments/' + cid)
+        .get(API_PREFIX + 'v1.0/action/comments/' + cid + query)
         .then(response => {
           // 전체 목록에서도 my 에 속한 값들이 같이 내려오고 있기 때문에 앱에서 데이터를 받은 후 걸러내야 함
           const my = response.data.my;
-          let all = [];
-          response.data.all.forEach(review => {
-            const exist = my.find(myReview => myReview.id === review.id);
-            if (!exist) {
-              all.push(review);
-            }
-          });
-          resolve({ my, all });
+          let all = response.data.all;
+          my.forEach( item => all = all.filter( e => e.id !== item.id ) );
+          const pagination = this.parsePaginationHeaders(response.headers)
+          resolve({ my, all, pagination });
         })
         .catch(error => {
           console.log(error);
