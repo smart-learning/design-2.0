@@ -100,27 +100,23 @@ class DownloadButton extends React.Component {
     }
 
     return (
-      <TouchableOpacity activeOpacity={0.9} onPress={this.onPress}>
-        <View
-          style={[
-            styles.buttonItem,
-            this.props.active
-              ? styles.buttonItemActive
-              : styles.buttonItemDisabled,
-          ]}
-        >
-          <Text
-            style={[
-              styles.buttonText,
-              this.props.active
-                ? styles.buttonTextActive
-                : styles.buttonTextDisabled,
-            ]}
-          >
-            {downloadLabel}
-          </Text>
-        </View>
-      </TouchableOpacity>
+      <View>
+        {this.props.active ? (
+          <TouchableOpacity activeOpacity={0.9} onPress={this.onPress}>
+            <View style={[styles.buttonItem, styles.buttonItemActive]}>
+              <Text style={[styles.buttonText, styles.buttonTextActive]}>
+                {downloadLabel}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <View style={[styles.buttonItem, styles.buttonItemDisabled]}>
+            <Text style={[styles.buttonText, styles.buttonTextDisabled]}>
+              {downloadLabel}
+            </Text>
+          </View>
+        )}
+      </View>
     );
   }
 }
@@ -128,32 +124,28 @@ class DownloadButton extends React.Component {
 class PurchaseButton extends React.Component {
   render() {
     return (
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={
-          Platform.OS === 'ios' ? this.props.iosBuy : this.props.addToCart
-        }
-      >
-        <View
-          style={[
-            styles.buttonItem,
-            this.props.active
-              ? styles.buttonItemActive
-              : styles.buttonItemDisabled,
-          ]}
-        >
-          <Text
-            style={[
-              styles.buttonText,
-              this.props.active
-                ? styles.buttonTextActive
-                : styles.buttonTextDisabled,
-            ]}
+      <View>
+        {this.props.active ? (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={
+              Platform.OS === 'ios' ? this.props.iosBuy : this.props.addToCart
+            }
           >
-            구매
-          </Text>
-        </View>
-      </TouchableOpacity>
+            <View style={[styles.buttonItem, styles.buttonItemActive]}>
+              <Text style={[styles.buttonText, styles.buttonTextActive]}>
+                구매
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <View style={[styles.buttonItem, styles.buttonItemDisabled]}>
+            <Text style={[styles.buttonText, styles.buttonTextDisabled]}>
+              구매
+            </Text>
+          </View>
+        )}
+      </View>
     );
   }
 }
