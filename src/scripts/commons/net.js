@@ -700,8 +700,8 @@ export default {
     });
   },
 
-  patchReview(id, content) {
-    return axios.patch(API_PREFIX + 'v1.0/action/comments/' + id, {
+  putReview(id, content) {
+    return axios.put(API_PREFIX + 'v1.0/action/comments/' + id, {
       content,
     });
   },

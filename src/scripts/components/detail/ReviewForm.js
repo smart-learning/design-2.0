@@ -76,7 +76,7 @@ class ReviewInput extends React.Component {
     if (this.props.store.reviewText === '') {
       Alert.alert('Error', '리뷰를 입력 해주세요.');
       return false;
-    } else {
+    } else if (this.props.formType === 'create') {
       try {
         let result = await net.postReview(
           this.props.store.cid,
@@ -108,6 +108,45 @@ class ReviewInput extends React.Component {
         console.log(error);
         Alert.alert('Error', error.message);
       }
+    } else if (this.props.formType === 'put') {
+      if (this.props.store.reviewText === '') {
+        Alert.alert('Error', '리뷰를 입력 해주세요.');
+        return false;
+      } else {
+        try {
+          let result = await net.putReview(
+            this.props.store.myReviewId,
+            this.props.store.reviewText,
+          );
+          await net.postStarCount(
+            this.props.store.cid,
+            this.props.store.reviewStar,
+          );
+
+          this.props.store.isSubmitStatus = true;
+
+          if (result) {
+            Alert.alert('알림', '리뷰가 등록되었습니다');
+            this.props.store.isReviewUpdate = false;
+            this.props.store.isSubmitStatus = false;
+            // 코멘트 다시 로드
+            const comments = await net.getReviewList(this.props.store.cid);
+            this.props.store.itemReviewData = comments;
+            // 별점 다시 로드
+            const evaluation = await net.getItemEvaluation(
+              this.props.store.cid.cid,
+            );
+            this.props.store.itemEvaluationData = evaluation;
+            this.props.store.reviewStar;
+          } else {
+            Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
+            this.props.store.isSubmitStatus = false;
+          }
+        } catch (error) {
+          console.log(error);
+          Alert.alert('Error', error.message);
+        }
+      }
     }
   };
   render() {
@@ -124,7 +163,11 @@ class ReviewInput extends React.Component {
             multiline={true}
             numberOfLines={2}
             onChangeText={this.onChangeText}
-            value={this.state.reviewText}
+            value={
+              this.props.store.formType === 'create'
+                ? this.state.reviewText
+                : this.props.store.reviewText
+            }
           />
         </View>
         {!!this.props.store.isSubmitStatus ? (
@@ -184,15 +227,15 @@ class ReviewInput extends React.Component {
 @observer
 class ReviewForm extends React.Component {
   data = createStore({
-    isUpdate: false,
-    myReviewId: null,
     myReviewContent: '',
   });
 
   changeMyReviewStatus = item => {
-    this.data.isUpdate = true;
-    this.data.myReviewId = item.id;
+    this.props.store.isReviewUpdate = true;
+    this.props.store.myReviewId = item.id;
     this.props.store.reviewText = item.content ? item.content : '';
+
+    console.log('this.props.store.myReviewId', this.props.store.myReviewId);
   };
 
   removeMyReview = async item => {
@@ -263,33 +306,7 @@ class ReviewForm extends React.Component {
                               )}
                             </Text>
                             <View style={{ marginLeft: 'auto' }}>
-                              <TouchableOpacity
-                                activeOpacity={0.9}
-                                onPress={() => {
-                                  this.removeMyReview(item);
-                                }}
-                              >
-                                <View
-                                  style={{
-                                    width: 40,
-                                    height: 18,
-                                    backgroundColor: CommonStyles.COLOR_PRIMARY,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  <Text
-                                    style={{
-                                      fontSize: 11,
-                                      fontWeight: '400',
-                                      color: '#ffffff',
-                                    }}
-                                  >
-                                    삭제
-                                  </Text>
-                                </View>
-                              </TouchableOpacity>
-                              {!this.data.isUpdate && 1 === 2 ? (
+                              {!this.props.store.isReviewUpdate ? (
                                 <TouchableOpacity
                                   activeOpacity={0.9}
                                   onPress={() => {
@@ -320,12 +337,41 @@ class ReviewForm extends React.Component {
                               ) : (
                                 <View />
                               )}
+                              {1 === 2 && (
+                                <TouchableOpacity
+                                  activeOpacity={0.9}
+                                  onPress={() => {
+                                    this.removeMyReview(item);
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      width: 40,
+                                      height: 18,
+                                      backgroundColor:
+                                        CommonStyles.COLOR_PRIMARY,
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 11,
+                                        fontWeight: '400',
+                                        color: '#ffffff',
+                                      }}
+                                    >
+                                      삭제
+                                    </Text>
+                                  </View>
+                                </TouchableOpacity>
+                              )}
                             </View>
                           </View>
                         </View>
 
                         <View style={{ marginTop: 10 }}>
-                          {!this.data.isUpdate ? (
+                          {!this.props.store.isReviewUpdate ? (
                             <Text
                               style={{
                                 fontSize: 14,
@@ -335,7 +381,7 @@ class ReviewForm extends React.Component {
                               {item.content ? item.content : ''}
                             </Text>
                           ) : (
-                            <ReviewInput {...this.props} formType={'patch'} />
+                            <ReviewInput {...this.props} formType={'put'} />
                           )}
                         </View>
                       </View>

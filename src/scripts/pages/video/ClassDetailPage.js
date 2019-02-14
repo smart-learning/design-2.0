@@ -29,6 +29,8 @@ class Data {
     'has-next': true,
   };
   @observable isReviewLoading = false;
+  @observable myReviewId = null;
+  @observable isReviewUpdate = false;
 
   @action.bound
   loadReview(page = 1) {
