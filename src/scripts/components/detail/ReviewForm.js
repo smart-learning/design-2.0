@@ -13,7 +13,7 @@ import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
 import IcStarPrimary from '../../../images/ic-star-primary.png';
 import IcStarGrey from '../../../images/ic-star-grey2.png';
-import IcAngleDownGrey from '../../../images/ic-angle-down-grey.png';
+import IcAngleDownGrey from '../../../images/ic-angle-down-grey2.png';
 import moment from 'moment';
 import net from '../../commons/net';
 
@@ -31,10 +31,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewMore: {
-    width: 60,
+    width: 55,
     height: 36,
-    marginTop: 10,
-    marginBottom: 22,
+    marginTop: 20,
     alignItems: 'center',
   },
   viewMoreText: {
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
   },
   viewMoreIcon: {
     position: 'relative',
-    top: 4,
+    top: 1,
   },
 });
 

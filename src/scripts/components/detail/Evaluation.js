@@ -69,6 +69,12 @@ const styles = StyleSheet.create({
     width: 172,
     height: 26,
   },
+  percentWrap: {
+    width: 50,
+  },
+  percentAlign: {
+    textAlign: 'right',
+  },
 });
 
 export default class Evaluation extends React.Component {
@@ -230,10 +236,12 @@ export default class Evaluation extends React.Component {
                   ]}
                 />
               </View>
-              <Text style={styles.evaluationText}>
-                {numeral(starData[4]).format('0.0')}{' '}
-                <Text style={styles.evaluationTextBullet}>%</Text>
-              </Text>
+              <View style={styles.percentWrap}>
+                <Text style={[styles.evaluationText, styles.percentAlign]}>
+                  {numeral(starData[4]).format('0.0')}{' '}
+                  <Text style={styles.evaluationTextBullet}>%</Text>
+                </Text>
+              </View>
             </View>
 
             <View
@@ -256,10 +264,12 @@ export default class Evaluation extends React.Component {
                   ]}
                 />
               </View>
-              <Text style={styles.evaluationText}>
-                {numeral(starData[3]).format('0.0')}{' '}
-                <Text style={styles.evaluationTextBullet}>%</Text>
-              </Text>
+              <View style={styles.percentWrap}>
+                <Text style={[styles.evaluationText, styles.percentAlign]}>
+                  {numeral(starData[3]).format('0.0')}{' '}
+                  <Text style={styles.evaluationTextBullet}>%</Text>
+                </Text>
+              </View>
             </View>
 
             <View
@@ -282,10 +292,12 @@ export default class Evaluation extends React.Component {
                   ]}
                 />
               </View>
-              <Text style={styles.evaluationText}>
-                {numeral(starData[2]).format('0.0')}{' '}
-                <Text style={styles.evaluationTextBullet}>%</Text>
-              </Text>
+              <View style={styles.percentWrap}>
+                <Text style={[styles.evaluationText, styles.percentAlign]}>
+                  {numeral(starData[2]).format('0.0')}{' '}
+                  <Text style={styles.evaluationTextBullet}>%</Text>
+                </Text>
+              </View>
             </View>
 
             <View
@@ -308,10 +320,12 @@ export default class Evaluation extends React.Component {
                   ]}
                 />
               </View>
-              <Text style={styles.evaluationText}>
-                {numeral(starData[1]).format('0.0')}{' '}
-                <Text style={styles.evaluationTextBullet}>%</Text>
-              </Text>
+              <View style={styles.percentWrap}>
+                <Text style={[styles.evaluationText, styles.percentAlign]}>
+                  {numeral(starData[1]).format('0.0')}{' '}
+                  <Text style={styles.evaluationTextBullet}>%</Text>
+                </Text>
+              </View>
             </View>
 
             <View
@@ -334,10 +348,12 @@ export default class Evaluation extends React.Component {
                   ]}
                 />
               </View>
-              <Text style={styles.evaluationText}>
-                {numeral(starData[0]).format('0.0')}{' '}
-                <Text style={styles.evaluationTextBullet}>%</Text>
-              </Text>
+              <View style={styles.percentWrap}>
+                <Text style={[styles.evaluationText, styles.percentAlign]}>
+                  {numeral(starData[0]).format('0.0')}{' '}
+                  <Text style={styles.evaluationTextBullet}>%</Text>
+                </Text>
+              </View>
             </View>
           </View>
         )}
