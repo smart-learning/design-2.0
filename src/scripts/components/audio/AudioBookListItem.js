@@ -35,10 +35,9 @@ const styles = StyleSheet.create({
     left: 0,
   },
   badge: {
-    height: 22,
+    height: 17.5,
     marginRight: 6,
     marginBottom: 10,
-    paddingTop: 3,
     paddingRight: 10,
     paddingLeft: 10,
     borderRadius: 3,
