@@ -26,7 +26,7 @@ import Native from '../../commons/native';
 import Footer from '../../components/home/Footer';
 import FastImage from 'react-native-fast-image';
 
-const CATEGORY_HEIGHT = 45;
+const CATEGORY_HEIGHT = 48;
 
 const styles = StyleSheet.create({
   slide: {
@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   classCategory: {
-    paddingHorizontal: 4,
     height: CATEGORY_HEIGHT,
   },
   classCategoryHr: {
@@ -258,7 +257,6 @@ class HomeVideoPage extends React.Component {
             <View
               style={{
                 height: this.props.store.slideHeight + CATEGORY_HEIGHT,
-                background: '#ff0',
                 paddingTop: CATEGORY_HEIGHT,
               }}
             >

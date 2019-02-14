@@ -27,7 +27,7 @@ import Footer from '../../components/home/Footer';
 import BookMonthlySwiper from '../../components/home/BookMonthlySwiper';
 import FastImage from 'react-native-fast-image';
 
-const CATEGORY_HEIGHT = 45;
+const CATEGORY_HEIGHT = 48;
 
 const styles = StyleSheet.create({
   wrapper: {},
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   audioCategory: {
-    paddingHorizontal: 4,
     height: CATEGORY_HEIGHT,
   },
   audioCategoryHr: {

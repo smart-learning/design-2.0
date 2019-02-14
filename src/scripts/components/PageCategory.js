@@ -15,8 +15,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 20,
-    marginHorizontal: 3,
-    // marginBottom: 10,
     paddingLeft: 8,
     paddingRight: 8,
     borderWidth: 1,
@@ -42,7 +40,7 @@ class PageCategory extends React.Component {
       <View
         style={[
           CommonStyles.alignJustifyFlex,
-          { width: '98%', flexWrap: 'wrap' },
+          { width: '98%', flexWrap: 'wrap', paddingLeft: 15, paddingRight: 10 },
         ]}
       >
         <View>
