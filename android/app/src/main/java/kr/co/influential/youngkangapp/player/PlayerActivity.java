@@ -4221,16 +4221,16 @@ public class PlayerActivity extends BasePlayerActivity {
         } else {
           mBtnDownload
               .setBackground(Utils.getDrawable(getApplicationContext(), R.drawable.icon_download));
-        }
 
-        try {
-          if (netInfo.isConnected() && netInfo.getTypeName().equals("WIFI")) {
-            nTitle = "Wi-Fi 재생";
-          } else if (netInfo.isConnected() && netInfo.getTypeName().equals("MOBILE")) {
-            nTitle = "LTE/3G 재생";
+          try {
+            if (netInfo.isConnected() && netInfo.getTypeName().equals("WIFI")) {
+              nTitle = "Wi-Fi 재생";
+            } else if (netInfo.isConnected() && netInfo.getTypeName().equals("MOBILE")) {
+              nTitle = "LTE/3G 재생";
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
           }
-        } catch (Exception e) {
-          e.printStackTrace();
         }
       }
 
@@ -4912,7 +4912,8 @@ public class PlayerActivity extends BasePlayerActivity {
     public void onServiceConnected(ComponentName className, IBinder service) {
       DownloadService.MainServiceBinder binder = (DownloadService.MainServiceBinder) service;
       mdownloadService = binder.getService();
-//			mdownloadService.registerCallback(callback);
+
+			mdownloadService.registerCallback(mCallback);
     }
 
     public void onServiceDisconnected(ComponentName className) {
@@ -4923,6 +4924,10 @@ public class PlayerActivity extends BasePlayerActivity {
   private DownloadService.ICallback mCallback = new DownloadService.ICallback() {
     public void recvData(String cid) {
 //			setWebDownloadedContent(Integer.parseInt(cid));
+
+      LogHelper.e(TAG , " Player download Service recvData " + cid);
+
+      setDownloadHandlering();
     }
   };
 
