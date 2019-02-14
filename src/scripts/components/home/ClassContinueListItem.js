@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#efefef',
-    borderRadius: 10,
+    borderRadius: 4,
   },
   thumbnailTitle: {
     position: 'absolute',
