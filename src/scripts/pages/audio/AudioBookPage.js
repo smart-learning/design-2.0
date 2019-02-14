@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sortWrap: {
-    width: 100,
+    width: 150,
   },
   sortButton: {
     paddingLeft: 8,
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   sortBar: {
     width: 1,
     height: 10,
-    marginRight: 8,
     backgroundColor: '#E2E2E2',
   },
   myButton: {
@@ -102,7 +101,7 @@ class AudioBookPage extends React.Component {
     pagination: {},
   });
 
-  // 인기 , 신규 조회 조건 , 'hot' , 'new'
+  // 인기 , 업데이트 순 조회 조건 , 'hot' , 'new'
   @observable
   tabSortStatus = 'hot';
 
@@ -216,13 +215,13 @@ class AudioBookPage extends React.Component {
         />
 
         <View style={styles.toggleGroup}>
-          <View style={styles.alignJustify}>
-            <View style={styles.sortWrap}>
-              <View style={styles.alignJustify}>
+          <View>
+            <View style={styles.alignJustify}>
+              <View>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
-                    this.loadAudioList(this.store.ccode, 1, 'hot');
+                    this.loadClassList(this.store.ccode, 1, 'hot');
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
@@ -236,11 +235,13 @@ class AudioBookPage extends React.Component {
                     인기
                   </Text>
                 </TouchableOpacity>
-                <View style={styles.sortBar} />
+              </View>
+              <View style={styles.sortBar} />
+              <View>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
-                    this.loadAudioList(this.store.ccode, 1, 'new');
+                    this.loadClassList(this.store.ccode, 1, 'new');
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
@@ -251,7 +252,7 @@ class AudioBookPage extends React.Component {
                         : styles.sortText
                     }
                   >
-                    신규
+                    업데이트 순
                   </Text>
                 </TouchableOpacity>
               </View>

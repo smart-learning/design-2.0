@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sortWrap: {
-    width: 100,
+    width: 150,
   },
   sortButton: {
     paddingLeft: 8,
@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
   sortBar: {
     width: 1,
     height: 10,
-    marginRight: 8,
     backgroundColor: '#E2E2E2',
   },
   clipButton: {
@@ -102,7 +101,7 @@ class ClassListPage extends React.Component {
     has_next: false,
   });
 
-  // 인기 , 신규 조회 조건 , 'hot' , 'new'
+  // 인기 , 업데이트 순 조회 조건 , 'hot' , 'new'
   @observable
   tabSortStatus = 'hot';
 
@@ -239,9 +238,9 @@ class ClassListPage extends React.Component {
         />
 
         <View style={styles.toggleGroup}>
-          <View style={styles.alignJustify}>
-            <View style={styles.sortWrap}>
-              <View style={styles.alignJustify}>
+          <View>
+            <View style={styles.alignJustify}>
+              <View>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
@@ -259,7 +258,9 @@ class ClassListPage extends React.Component {
                     인기
                   </Text>
                 </TouchableOpacity>
-                <View style={styles.sortBar} />
+              </View>
+              <View style={styles.sortBar} />
+              <View>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
@@ -274,21 +275,11 @@ class ClassListPage extends React.Component {
                         : styles.sortText
                     }
                   >
-                    신규
+                    업데이트 순
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
-            {/* <TouchableOpacity activeOpacity={0.9}
-										  style={{marginLeft: 'auto'}}
-										  onPress={() => {
-											  this.props.navigation.navigate('ClipPage')
-										  }}
-						>
-							<View style={styles.clipButton} borderRadius={3}>
-								<Text style={styles.clipButtonText}>강의클립 전체보기</Text>
-							</View>
-						</TouchableOpacity> */}
           </View>
         </View>
       </View>
