@@ -99,6 +99,7 @@ class AudioBookPage extends React.Component {
     selectedCategory: null,
     ccode: null,
     pagination: {},
+    categoryScrollToEnd: false,
   });
 
   // 인기 , 업데이트 순 조회 조건 , 'hot' , 'new'
@@ -150,8 +151,10 @@ class AudioBookPage extends React.Component {
 
     const currCategory = this.props.navigation.getParam('data', {});
     const ccode = currCategory.ccode ? currCategory.ccode : null;
+    const categoryScrollToEnd = currCategory.categoryScrollToEnd ? currCategory.categoryScrollToEnd : false;
     this.store.ccode = ccode;
     this.store.selectedCategory = currCategory.id ? currCategory.id : 0;
+    this.store.categoryScrollToEnd = categoryScrollToEnd;
 
     const loadedCategories = await net.getAudioBookCategory();
     this.store.categories = loadedCategories.map(element => {
@@ -199,8 +202,10 @@ class AudioBookPage extends React.Component {
           }}
         >
           <PageCategory
+            ref={ref => (this.category = ref)}
             selectedCategory={this.store.selectedCategory}
             data={this.store.categories}
+            categoryScrollToEnd={this.store.categoryScrollToEnd}
             onCategorySelect={this.onCategorySelect}
           />
         </View>

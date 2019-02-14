@@ -77,19 +77,7 @@ class BookDaily extends React.Component {
                       data: {
                         ccode: '050',
                         id: 81,
-                        images: {
-                          default:
-                            'https://static.welaaa.co.kr/contentsUpImage/category/',
-                          icon_large:
-                            'https://static.welaaa.co.kr/static/categories/icon_lg_050.png',
-                          icon_small:
-                            'https://static.welaaa.co.kr/static/categories/icon_sm_050.png',
-                          large:
-                            'https://static.welaaa.co.kr/contentsUpImage/category/',
-                        },
-                        paragraph: '',
-                        title: '북리뷰',
-                        url: 'http://welaaa.co.kr/audiobook-list.php?ccode=050',
+                        categoryScrollToEnd: true,
                       },
                     })
                   }
