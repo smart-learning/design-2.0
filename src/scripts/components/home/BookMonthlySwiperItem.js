@@ -121,7 +121,7 @@ class BookMonthlySwiperItem extends React.Component {
               <FastImage
                 source={{ uri: itemData.book_a.audiobook.images.cover }}
                 style={styles.thumbnail}
-                resizeMode={FastImage.resizeMode.cover}
+                resizeMode={FastImage.resizeMode.contain}
               />
             </TouchableOpacity>
             <Text style={styles.title} ellipsizeMode={'tail'} numberOfLines={3}>
@@ -177,7 +177,7 @@ class BookMonthlySwiperItem extends React.Component {
               <FastImage
                 source={{ uri: itemData.book_b.audiobook.images.cover }}
                 style={styles.thumbnail}
-                resizeMode={FastImage.resizeMode.cover}
+                resizeMode={FastImage.resizeMode.contain}
               />
             </TouchableOpacity>
             <Text style={styles.title} ellipsizeMode={'tail'} numberOfLines={3}>

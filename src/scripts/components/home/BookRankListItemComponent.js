@@ -81,7 +81,7 @@ class BookRankListItemComponent extends React.Component {
             <FastImage
               source={{ uri: this.props.itemData?.images.list }}
               style={styles.thumbnail}
-              resizeMode={FastImage.resizeMode.cover}
+              resizeMode={FastImage.resizeMode.contain}
             />
             <View
               style={{
