@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headline: {
-    paddingTop: 7,
     paddingRight: 20,
     marginBottom: 4,
     fontSize: 14,
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     height: 22,
-    marginBottom: 9,
+    marginBottom: 12,
     marginRight: 3,
     paddingTop: 3,
     paddingRight: 10,
@@ -215,7 +214,12 @@ export default class TopBanner extends React.Component {
       <View style={styles.banner}>
         <View>
           {this.props.learnType === 'audioBook' && (
-            <View style={CommonStyles.alignJustifyContentBetween}>
+            <View
+              style={[
+                CommonStyles.alignJustifyContentBetween,
+                { marginTop: 15 },
+              ]}
+            >
               <View style={{ width: 120, marginLeft: 20, marginRight: 25 }}>
                 <TouchableOpacity
                   activeOpacity={0.9}
