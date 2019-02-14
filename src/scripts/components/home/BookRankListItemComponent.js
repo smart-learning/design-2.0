@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     height: 96,
     marginRight: 7,
     marginLeft: 7,
-    borderRadius: 4,
   },
   rankIcon: {
     position: 'relative',
