@@ -81,7 +81,7 @@ class HomeBookMonthlyDetailPage extends React.Component {
 
   render() {
     let itemData = this.props.navigation.state.params.itemData;
-
+    console.log('itemData', itemData);
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
         {!!itemData && (
@@ -95,18 +95,18 @@ class HomeBookMonthlyDetailPage extends React.Component {
                   ]}
                 >
                   <View style={{ width: 117 }}>
-                    <ImageBackground
-                      source={{ uri: itemData.audiobook.images.cover }}
-                      style={{
-                        position: 'relative',
-                        width: 117,
-                        height: 164,
-                      }}
-                      resizeMode="cover"
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() => Native.play(itemData.audiobook.cid)}
                     >
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={() => Native.play(itemData.audiobook.cid)}
+                      <ImageBackground
+                        source={{ uri: itemData.audiobook.images.cover }}
+                        style={{
+                          position: 'relative',
+                          width: 117,
+                          height: 164,
+                        }}
+                        resizeMode="cover"
                       >
                         <View
                           style={{
@@ -122,8 +122,8 @@ class HomeBookMonthlyDetailPage extends React.Component {
                             style={{ width: 50, height: 50 }}
                           />
                         </View>
-                      </TouchableOpacity>
-                    </ImageBackground>
+                      </ImageBackground>
+                    </TouchableOpacity>
                   </View>
                   <View
                     style={{
