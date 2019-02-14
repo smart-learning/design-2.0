@@ -1,9 +1,13 @@
 package kr.co.influential.youngkangapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +20,7 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import java.io.IOException;
+import java.util.UUID;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.BaseAlertDialog;
 import kr.co.influential.youngkangapp.util.Utils;
@@ -234,7 +239,11 @@ public class SplashActivity extends AppCompatActivity implements SurfaceHolder.C
       String adId = null;
       try {
         adId = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext()).getId();
-        LogHelper.d(TAG , "adid : " + adId);
+        LogHelper.e(TAG , "adid : " + adId);
+
+        LogHelper.e(TAG , "getDeviceId " + getDeviceId() );
+        LogHelper.e(TAG , "getModel " + getModel() );
+        LogHelper.e(TAG , "getVersionNumber " + getVersionNumber() );
 
       } catch (IllegalStateException ex) {
         ex.printStackTrace();
@@ -256,4 +265,46 @@ public class SplashActivity extends AppCompatActivity implements SurfaceHolder.C
       //TODO::Ad ID를 이용한 작업 수행
     }
   }
+
+  private String getDeviceId() {
+    // Secure Android ID
+//    String androidId = Settings.Secure.getString(getCurrentActivity().getContentResolver(),
+//        Secure.ANDROID_ID);
+
+    // Use UUID
+    Object lock = new Object();
+    final String PREF_UNIQUE_ID = "pref_unique_id";
+    String uniqueId = "";
+
+    synchronized (lock) {
+      if (getApplicationContext() != null) {
+        SharedPreferences sharedPreferences =
+            getApplicationContext().getSharedPreferences(PREF_UNIQUE_ID, Context.MODE_PRIVATE);
+        uniqueId = sharedPreferences.getString(PREF_UNIQUE_ID, null);
+
+        LogHelper.e(TAG, "uniqueId " + uniqueId );
+
+        if (uniqueId == null) {
+          uniqueId = UUID.randomUUID().toString();
+          Editor editor = sharedPreferences.edit();
+          editor.putString(PREF_UNIQUE_ID, uniqueId);
+          editor.commit();
+        }
+
+        LogHelper.e(TAG, "uniqueId " + uniqueId );
+      } else {
+        LogHelper.e(TAG, "No current Activity");
+      }
+    }
+    return uniqueId;
+  }
+
+  private String getModel() {
+    return Build.MODEL;
+  }
+
+  private String getVersionNumber() {
+    return BuildConfig.VERSION_NAME;
+  }
+
  }
