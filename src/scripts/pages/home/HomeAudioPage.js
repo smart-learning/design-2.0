@@ -444,7 +444,7 @@ class HomeAudioPage extends React.Component {
                 }
               />
             </View>
-            <View style={{ marginBottom: 50, marginLeft: 10, marginRight: 10 }}>
+            <View style={{ marginBottom: 70, marginLeft: 10, marginRight: 10 }}>
               <TouchableOpacity
                 style={[styles.showMore, { height: 36 }]}
                 onPress={() => {
