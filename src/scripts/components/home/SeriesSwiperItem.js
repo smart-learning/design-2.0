@@ -57,7 +57,7 @@ class SeriesSwiperItem extends React.Component {
                 textAlign: 'center',
               }}
             >
-              {itemData.description}
+              {itemData.title}
             </Text>
           </FastImage>
         </TouchableOpacity>

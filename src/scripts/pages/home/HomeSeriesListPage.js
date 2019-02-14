@@ -118,7 +118,7 @@ class HomeSeriesListPage extends React.Component {
                                 textAlign: 'center',
                               }}
                             >
-                              {item.description}
+                              {item.title}
                             </Text>
                           </ImageBackground>
                         </TouchableOpacity>
