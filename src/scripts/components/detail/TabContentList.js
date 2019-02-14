@@ -90,7 +90,7 @@ export default class TabContentList extends React.Component {
             <View style={CommonStyles.contentContainer}>
               <View
                 style={[
-                  CommonStyles.alignJustifyFlex,
+                  CommonStyles.alignJustifyItemCenter,
                   { marginTop: 30, marginBottom: 15 },
                 ]}
               >
