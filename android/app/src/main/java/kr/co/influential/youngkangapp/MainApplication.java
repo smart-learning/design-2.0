@@ -198,4 +198,17 @@ public class MainApplication extends Application implements ReactApplication {
   public void setEventEmitter(RNEventEmitter eventEmitter) {
     this.eventEmitter = eventEmitter;
   }
+
+  public void sendEventDownload(String cid){
+
+    try{
+      WritableMap params = Arguments.createMap();
+      params.putBoolean("complete", true);
+      params.putString("cid", cid);
+      eventEmitter.sendEvent("downloadState", params);
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
+  }
 }

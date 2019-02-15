@@ -763,6 +763,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self.view addSubview : _audioUiView];
   
     _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
+    if ( [common hasNotch] )
+        _backgroundImageView.contentMode = UIViewContentModeScaleAspectFit;
     [_audioUiView addSubview : _backgroundImageView];
   
     UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
