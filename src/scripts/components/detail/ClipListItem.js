@@ -1,11 +1,19 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 import CommonStyles from '../../../styles/common';
 import Summary from '../video/Summary';
 import IcPlay1 from '../../../images/ic-play-dark.png';
 import IcPlay2 from '../../../images/ic-duration.png';
 import numeral from 'numeral';
 import moment from 'moment';
+import Native from '../../commons/native';
 
 const styles = StyleSheet.create({
   clipListItem: {
@@ -68,6 +76,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  thumbnail: {
+    position: 'relative',
+    width: '100%',
+    paddingTop: '20.75%',
+    paddingBottom: '20.75%',
+    borderRadius: 3,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
 });
 
 export default class ClipListItem extends React.Component {
@@ -79,7 +96,23 @@ export default class ClipListItem extends React.Component {
     const playTime = moment.duration(this.props.itemData.play_time);
     return (
       <View style={styles.clipListItem} borderRadius={4}>
-        <Summary type={'detailClip'} itemData={this.props.itemData} />
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => Native.play(this.props.itemData.cid)}
+        >
+          <ImageBackground
+            source={{ uri: this.props.itemData.images.wide }}
+            resizeMode="cover"
+            style={[
+              styles.thumbnail,
+              {
+                borderRadius: 4,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+              },
+            ]}
+          />
+        </TouchableOpacity>
         <View style={styles.clipNumber}>
           <Text style={styles.clipNumberText}>
             {this.props.itemData.clipNumber < 10 && <Text>0</Text>}
