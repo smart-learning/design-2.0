@@ -163,7 +163,9 @@ class HomePage extends React.Component {
     );
     this.store.classHotData = hotVOs;
     this.store.classNewData = newVOs;
-    this.store.classRecommendData = recommendVOs;
+    if (!!recommendVOs && recommendVOs.length > 1) {
+      this.store.classRecommendData = recommendVOs;
+    }
   };
 
   updateAudioCCode = async code => {
@@ -423,10 +425,10 @@ class HomePage extends React.Component {
   onPageSelected = event => {
     if (event.nativeEvent.position === 0) {
       this.tabStatus = 'video';
-      this.setState( {tabMenuHeight: this.TAB_MENU_MAX});
+      this.setState({ tabMenuHeight: this.TAB_MENU_MAX });
     } else if (event.nativeEvent.position === 1) {
       this.tabStatus = 'audioBook';
-      this.setState( {tabMenuHeight: this.TAB_MENU_MAX});
+      this.setState({ tabMenuHeight: this.TAB_MENU_MAX });
     }
   };
 
