@@ -287,9 +287,9 @@ public class DownloadService extends IntentService implements
           // drmSchemeUuid = > widevine , fairplay
           // drmLicenseUrl = >
           // cid
-          // oid // no use
-          // contentPath 저장소 경로 확인
-          // totalSize 파일용량 정보
+          // oid // dash server URL 정보로 사용
+          // contentPath 로컬 저장소 경로 확인
+          // totalSize 다운로드 status 필드로 임시 사용중
           // gTitle
           // cTitle
           // groupImg
