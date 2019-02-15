@@ -167,6 +167,95 @@ class VoucherButton extends React.Component {
     );
   }
 }
+class Origin extends React.Component {
+  render() {
+    if (this.props.permission.type === 'rental') {
+      return (
+        <View style={{ height: 22 }}>
+          <Text style={styles.labelText}>이용 가능 기간</Text>
+        </View>
+      );
+    } else if (
+      this.props.learnType === 'class' &&
+      this.props.permission.type === 'membership'
+    ) {
+      return (
+        <View style={{ height: 22 }}>
+          <Text style={styles.labelText}>이용 가능 기간</Text>
+        </View>
+      );
+    } else {
+      if (
+        this.props.permission.orig_price !== this.props.permission.user_price
+      ) {
+        if (
+          this.props.permission.user_price > 0 ||
+          this.props.permission.user_price !== this.props.permission.orig_price
+        ) {
+          return (
+            <Text style={styles.originPriceText}>
+              ₩{numeral(this.props.permission.orig_price).format('0,0')}
+            </Text>
+          );
+        }
+      }
+    }
+
+    return <View />;
+  }
+}
+class Amount extends React.Component {
+  render() {
+    if (this.props.permission.type === 'free') {
+      return <Text style={styles.paymentText}>무료! 마음껏 이용 :)</Text>;
+    } else if (
+      this.props.learnType === 'audioBook' &&
+      this.props.permission.type === 'membership'
+    ) {
+      return <Text style={styles.paymentText}>마음껏 이용 :)</Text>;
+    } else if (
+      this.props.learnType === 'class' &&
+      this.props.permission.type === 'membership'
+    ) {
+      return <Text style={styles.paymentText}>무제한 이용 가능</Text>;
+    } else if (this.props.permission.type === 'rental') {
+      return (
+        <Text style={styles.paymentText}>
+          {moment(this.props.permission.expire_at).format('YYYY년 MM월 DD일')}
+        </Text>
+      );
+    } else if (
+      this.props.learnType === 'audioBook' &&
+      this.props.permission.type === 'owned'
+    ) {
+      return <Text style={styles.paymentText}>소장중</Text>;
+    } else if (this.props.permission.type !== 'free') {
+      return Platform.select({
+        ios: (
+          <Text style={styles.paymentText}>
+            ₩{numeral(this.props.permission.ios_price).format('0,0')}
+            {this.props.permission.type === 'can_buy' && (
+              <Text style={styles.durationText}>
+                /{this.props.permission.rental_period}일
+              </Text>
+            )}
+          </Text>
+        ),
+        android: (
+          <Text style={styles.paymentText}>
+            ₩{numeral(this.props.permission.user_price).format('0,0')}
+            {this.props.permission.type === 'can_buy' && (
+              <Text style={styles.durationText}>
+                /{this.props.permission.rental_period}일
+              </Text>
+            )}
+          </Text>
+        ),
+      });
+    }
+    return <View />;
+  }
+}
 export default class PaymentPolicy extends React.Component {
   renderPermissionLoading() {
     return (
@@ -175,6 +264,15 @@ export default class PaymentPolicy extends React.Component {
       </View>
     );
   }
+
+  /*
+    금액 및 구매 영역
+  +----------------------------------+--------------------------------------+
+  | ~11,700~ (Origin)                |                                      |
+  +----------------------------------+                                      +
+  | 8,189 (Amount)                   |  [DownloadButton]  [PurchaseButton]  |
+  +----------------------------------+--------------------------------------+
+   */
 
   render() {
     if (Platform.OS !== 'android' && this.props.learnType !== 'audioBook') {
@@ -186,114 +284,48 @@ export default class PaymentPolicy extends React.Component {
     } else {
       return (
         <View style={styles.contentContainer}>
-          {Platform.OS === 'android' &&
-          this.props.permission.orig_price !== this.props.permission.user_price
-            ? (this.props.permission.user_price > 0 ||
-                this.props.permission.user_price !==
-                  this.props.permission.orig_price) && (
-                <Text style={styles.originPriceText}>
-                  ₩{numeral(this.props.permission.orig_price).format('0,0')}
-                </Text>
-              )
-            : undefined}
-          {this.props.permission.type === 'rental' && (
-            <View style={{ height: 22 }}>
-              <Text style={styles.labelText}>이용 가능 기간</Text>
+          {Platform.OS === 'android' && (
+            <View>
+              <Origin {...this.props} />
+              <View style={CommonStyles.alignJustifyContentBetween}>
+                <View style={{ flex: 1 }}>
+                  <View>
+                    <Amount {...this.props} />
+                  </View>
+                  <View>
+                    {this.props.permission.type === 'can_buy' && 1 === 2 && (
+                      <Text style={styles.infoText}>
+                        별도 구매가 필요합니다
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                <View>
+                  <View style={CommonStyles.alignJustifyFlex}>
+                    {this.props.permission.can_play && (
+                      <DownloadButton {...this.props} active={true} />
+                    )}
+                    {!this.props.permission.can_play && (
+                      <DownloadButton {...this.props} active={false} />
+                    )}
+
+                    {this.props.permission.type !== 'can_use_voucher' &&
+                      this.props.permission.type === 'can_buy' && (
+                        <PurchaseButton {...this.props} active={true} />
+                      )}
+                    {this.props.permission.type !== 'can_use_voucher' &&
+                      this.props.permission.type !== 'can_buy' && (
+                        <PurchaseButton {...this.props} active={false} />
+                      )}
+
+                    {this.props.permission.type === 'can_use_voucher' && (
+                      <VoucherButton {...this.props} />
+                    )}
+                  </View>
+                </View>
+              </View>
             </View>
           )}
-          {this.props.learnType === 'class' &&
-            this.props.permission.type === 'membership' && (
-              <View style={{ height: 22 }}>
-                <Text style={styles.labelText}>이용 가능 기간</Text>
-              </View>
-            )}
-          <View style={CommonStyles.alignJustifyContentBetween}>
-            <View style={{ flex: 1 }}>
-              <View>
-                {this.props.permission.type !== 'free' &&
-                  Platform.select({
-                    ios: (
-                      <Text style={styles.paymentText}>
-                        ₩
-                        {numeral(this.props.permission.ios_price).format('0,0')}
-                        {this.props.permission.type === 'can_buy' && (
-                          <Text style={styles.durationText}>
-                            /{this.props.permission.rental_period}일
-                          </Text>
-                        )}
-                      </Text>
-                    ),
-                    android: (
-                      <Text style={styles.paymentText}>
-                        ₩
-                        {numeral(this.props.permission.user_price).format(
-                          '0,0',
-                        )}
-                        {this.props.permission.type === 'can_buy' && (
-                          <Text style={styles.durationText}>
-                            /{this.props.permission.rental_period}일
-                          </Text>
-                        )}
-                      </Text>
-                    ),
-                  })}
-                {this.props.permission.type === 'free' && (
-                  <Text style={styles.paymentText}>무료! 마음껏 이용 :)</Text>
-                )}
-                {this.props.learnType === 'audioBook' &&
-                  this.props.permission.type === 'membership' && (
-                    <Text style={styles.paymentText}>마음껏 이용 :)</Text>
-                  )}
-                {this.props.learnType === 'class' &&
-                  this.props.permission.type === 'membership' && (
-                    <Text style={styles.paymentText}>무제한 이용 가능</Text>
-                  )}
-                {this.props.permission.type === 'rental' && (
-                  <Text style={styles.paymentText}>
-                    {moment(this.props.permission.expire_at).format(
-                      'YYYY년 MM월 DD일',
-                    )}
-                  </Text>
-                )}
-                {this.props.learnType === 'audioBook' &&
-                  this.props.permission.type === 'owned' && (
-                    <Text style={styles.paymentText}>소장중</Text>
-                  )}
-                {this.props.learnType === 'class' &&
-                  this.props.permission.type === 'membership' && (
-                    <Text style={styles.paymentText}>클래스 멤버십 전용</Text>
-                  )}
-              </View>
-              <View>
-                {this.props.permission.type === 'can_buy' && 1 === 2 && (
-                  <Text style={styles.infoText}>별도 구매가 필요합니다</Text>
-                )}
-              </View>
-            </View>
-            <View>
-              <View style={CommonStyles.alignJustifyFlex}>
-                {this.props.permission.can_play && (
-                  <DownloadButton {...this.props} active={true} />
-                )}
-                {!this.props.permission.can_play && (
-                  <DownloadButton {...this.props} active={false} />
-                )}
-
-                {this.props.permission.type !== 'can_use_voucher' &&
-                  this.props.permission.type === 'can_buy' && (
-                    <PurchaseButton {...this.props} active={true} />
-                  )}
-                {this.props.permission.type !== 'can_use_voucher' &&
-                  this.props.permission.type !== 'can_buy' && (
-                    <PurchaseButton {...this.props} active={false} />
-                  )}
-
-                {this.props.permission.type === 'can_use_voucher' && (
-                  <VoucherButton {...this.props} />
-                )}
-              </View>
-            </View>
-          </View>
         </View>
       );
     }
