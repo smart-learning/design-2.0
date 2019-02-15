@@ -36,7 +36,7 @@ class Footer extends React.Component {
             ㈜ 인플루엔셜 | 대표이사: 문태진
           </Text>
           <Text style={styles.footerText}>
-            주소: (06040)서울특별시 강남구 도산대로 156 제이콘텐트리빌딩 7층
+            주소: 서울특별시 강남구 도산대로 156 제이콘텐트리빌딩 7층
           </Text>
           <Text style={styles.footerText}>
             고객센터 : 02-6206-3237 | FAX: 02-720-1043
