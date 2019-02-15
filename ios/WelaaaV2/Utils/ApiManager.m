@@ -393,7 +393,7 @@
 {
     // Dealing with parameters...
     NSLog(@"  [sendPlaybackProgressWith] loaded properly.....");
-    NSString *apiProgress = @"/api/v1.0/play/progress"; // dev -> ?
+    NSString *apiProgress = @"/api/v1.1/play/progress";
     NSString *urlStr = [NSString stringWithFormat : @"%@%@", API_HOST, apiProgress];
     NSURL *url = [NSURL URLWithString : urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL : url];
