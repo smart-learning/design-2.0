@@ -50,9 +50,6 @@ class PageCategory extends React.Component {
         <View>
           <FlatList
             onLayout={ () => {
-              console.log( 'FlatList > onLyaout' );
-              console.log( 'this.props.categoryScrollToEnd', this.props.categoryScrollToEnd );
-              console.log( 'this.props.selectedCategory', this.props.selectedCategory );
               if( this.props.categoryScrollToEnd && this.props.selectedCategory === 81 ) {
                 setTimeout( this.toEnd, 16 );
               }

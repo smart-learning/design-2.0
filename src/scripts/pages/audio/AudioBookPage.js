@@ -100,21 +100,15 @@ class AudioBookPage extends React.Component {
     ccode: null,
     pagination: {},
     categoryScrollToEnd: false,
+    tabSortStatus: 'hot',
   });
-
-  // 인기 , 업데이트 순 조회 조건 , 'hot' , 'new'
-  @observable
-  tabSortStatus = 'hot';
 
   loadAudioList = async (ccode = null, page = 1, sort) => {
     this.store.isLoading = true;
     if (page === 1) {
       this.store.displayData = null;
     }
-    if (sort) {
-      this.tabSortStatus = sort;
-    }
-    const data = await net.getAudioBookList(ccode, page, this.tabSortStatus);
+    const data = await net.getAudioBookList(ccode, page, this.store.tabSortStatus);
     const VOs = data.items.map((element, n) => {
       const vo = new BookVO();
       _.each(element, (value, key) => (vo[key] = value));
@@ -148,10 +142,13 @@ class AudioBookPage extends React.Component {
 
   async componentDidMount() {
     this.props.navigation.setParams({ title: '오디오북 전체목록' });
+    this.store.tabSortStatus = this.props.navigation.getParam('sortStatus', 'hot');
 
     const currCategory = this.props.navigation.getParam('data', {});
     const ccode = currCategory.ccode ? currCategory.ccode : null;
-    const categoryScrollToEnd = currCategory.categoryScrollToEnd ? currCategory.categoryScrollToEnd : false;
+    const categoryScrollToEnd = currCategory.categoryScrollToEnd
+      ? currCategory.categoryScrollToEnd
+      : false;
     this.store.ccode = ccode;
     this.store.selectedCategory = currCategory.id ? currCategory.id : 0;
     this.store.categoryScrollToEnd = categoryScrollToEnd;
@@ -226,13 +223,13 @@ class AudioBookPage extends React.Component {
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
-                    this.loadClassList(this.store.ccode, 1, 'hot');
+                    this.loadAudioList(this.store.ccode, 1, 'hot');
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
                   <Text
                     style={
-                      this.tabSortStatus === 'hot'
+                      this.store.tabSortStatus === 'hot'
                         ? styles.sortTextActive
                         : styles.sortText
                     }
@@ -246,13 +243,13 @@ class AudioBookPage extends React.Component {
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
-                    this.loadClassList(this.store.ccode, 1, 'new');
+                    this.loadAudioList(this.store.ccode, 1, 'new');
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
                   <Text
                     style={
-                      this.tabSortStatus === 'new'
+                      this.store.tabSortStatus === 'new'
                         ? styles.sortTextActive
                         : styles.sortText
                     }
@@ -290,7 +287,7 @@ class AudioBookPage extends React.Component {
                       id={item.id}
                       navigation={this.props.navigation}
                       itemData={item}
-                      tabStatus={this.tabSortStatus}
+                      tabStatus={this.store.tabSortStatus}
                     />
                   )}
                 />

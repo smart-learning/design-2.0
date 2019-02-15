@@ -79,6 +79,7 @@ class BookDaily extends React.Component {
                         id: 81,
                         categoryScrollToEnd: true,
                       },
+                      sortStatus: 'new',
                     })
                   }
                 >
