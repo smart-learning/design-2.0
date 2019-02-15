@@ -108,6 +108,9 @@ class AudioBookPage extends React.Component {
     if (page === 1) {
       this.store.displayData = null;
     }
+    if(sort) {
+      this.store.tabSortStatus = sort;
+    }
     const data = await net.getAudioBookList(ccode, page, this.store.tabSortStatus);
     const VOs = data.items.map((element, n) => {
       const vo = new BookVO();
