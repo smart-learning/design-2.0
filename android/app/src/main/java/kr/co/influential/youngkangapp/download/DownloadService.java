@@ -21,10 +21,11 @@ import android.widget.Toast;
 import com.pallycon.widevinelibrary.NetworkConnectedException;
 import com.pallycon.widevinelibrary.PallyconDownloadException;
 import com.pallycon.widevinelibrary.PallyconDownloadTask;
+import java.util.ArrayList;
+import java.util.HashMap;
 import kr.co.influential.youngkangapp.MainApplication;
 import kr.co.influential.youngkangapp.R;
 import kr.co.influential.youngkangapp.pallycon.DownloadCallbackImpl;
-import kr.co.influential.youngkangapp.player.NewWebPlayerInfo;
 import kr.co.influential.youngkangapp.player.WebPlayerInfo;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.Logger;
@@ -58,7 +59,6 @@ public class DownloadService extends IntentService implements
   private Handler mHandler = null;
 
   private WebPlayerInfo mWebPlayerInfo = null;
-  private NewWebPlayerInfo mNewWebPlayerInfo = null;
 
   private String intent_drm_content_uri_extra = "";
   private String intent_drm_content_name_extra = "";
@@ -74,22 +74,55 @@ public class DownloadService extends IntentService implements
   public void onPostExecute() {
     // TODO: Release the UI after the download is complete.
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      LogHelper.e(TAG, "Download Service onPostExecute ! ");
       try {
-        // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
-        DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
-        downloadTask = new PallyconDownloadTask(DownloadService.this,
-            Uri.parse(intent_drm_content_uri_extra)
-            , intent_downloadContentCid, DownloadService.this, eventHandler, downloadCallback);
 
-        boolean result = downloadTask.isDownloadCompleted();
+        String userId = Preferences.getWelaaaUserId(getApplicationContext());
+        String[] cid = intent_downloadContentCid.split("_");
 
-        if(result){
-          mCallback.recvData(intent_downloadContentCid);
+        String groupkey = cid[0];
+        int cnt = 0 ;
+
+        ArrayList<HashMap<String, Object>> content = ContentManager().getDatabase(userId, groupkey);
+        if (content != null && content.size() > 0) {
+
+          for (int i = 0; i < content.size(); i++) {
+
+            for(int j =0; j<mWebPlayerInfo.getCkey().length; j++){
+
+              if(mWebPlayerInfo.getCkey()[j].equals(content.get(i).get("cid").toString())){
+                // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
+                DownloadCallbackImpl downloadCallback = new DownloadCallbackImpl(getApplicationContext());
+                downloadTask = new PallyconDownloadTask(DownloadService.this,
+                    Uri.parse(content.get(i).get("oid").toString())
+                    , content.get(i).get("cid").toString(), DownloadService.this, eventHandler, downloadCallback);
+
+                boolean result = downloadTask.isDownloadCompleted();
+
+                if(result){
+                  // 다운로드 완료 여부를 확인 합니다.
+                  cnt++;
+                  ContentManager().updateDownloadStatus(content.get(i).get("cid").toString() , userId , "Y");
+                  // RN 으로 sendEvent 던집니다.
+                  MainApplication myApp = (MainApplication) getApplicationContext();
+                  myApp.sendEventDownload(content.get(i).get("cid").toString());
+                }
+              }
+            }
+          }
         }
+
+        if(mCallback!=null){
+          if(cnt>0){
+            mCallback.recvData(intent_downloadContentCid);
+          }
+        }
+
       } catch (PallyconDownloadException e) {
-        Toast.makeText(DownloadService.this, e.getMessage(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(DownloadService.this, e.getMessage(), Toast.LENGTH_LONG).show();
+        e.printStackTrace();
       } catch (NetworkConnectedException e) {
+        e.printStackTrace();
+      } catch (Exception e) {
         e.printStackTrace();
       }
     }
@@ -209,10 +242,16 @@ public class DownloadService extends IntentService implements
     } else {
 
       String expire_at = intent.getStringExtra("expire_at");
-      String drm_content_name_extra = intent.getStringExtra("drm_content_name_extra");
 
-      intent_drm_content_name_extra = drm_content_name_extra;
       mWebPlayerInfo = (WebPlayerInfo) intent.getSerializableExtra("webPlayerInfo");
+      intent_downloadContentCid = downloadContentCid;
+
+      // mWebPlayerInfo csmi 활용하기 웹 경로
+      for(int i =0; i<mWebPlayerInfo.getCkey().length; i++){
+        if(mWebPlayerInfo.getCkey()[i].equals(downloadContentCid)){
+
+        }
+      }
 
       try {
         // TODO: If you don't want to create downloadcallback implementation, input null into callback parameter
@@ -275,10 +314,19 @@ public class DownloadService extends IntentService implements
               try {
                 if (ContentManager().existCid(mWebPlayerInfo.getCkey()[i])) {
                   // exist File !!
+                  LogHelper.e(TAG , "downloadAdd exist responseCode " + mWebPlayerInfo.getCkey()[i] + " " + localUrl + " ");
                 } else {
+
+                  if(mWebPlayerInfo.getGroupId() == null){
+                    String[] cid = mWebPlayerInfo.getCkey()[i].split("_");
+                    String groupkey = cid[0];
+                    mWebPlayerInfo.setGroupId(groupkey);
+                  }
+
                   ContentManager()
                       .downloadAdd(mWebPlayerInfo.getGroupId(), mWebPlayerInfo.getCkey()[i], userId,
-                          "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i], "", localUrl, "",
+                          "widevine", "drmUrl", mWebPlayerInfo.getCkey()[i],
+                          drm_content_uri_extra, localUrl, "N",
                           mWebPlayerInfo.getGroupTitle(), mWebPlayerInfo.getCname()[i],
                           mWebPlayerInfo.getGroupImg(), mWebPlayerInfo.getClist_img()[i],
                           mWebPlayerInfo.getCon_class(), mWebPlayerInfo.getGroupTeachername(),
@@ -291,8 +339,6 @@ public class DownloadService extends IntentService implements
               }
             }
           }
-
-//          setDownloadServiceListener();
           doStuff(intent);
         }
 
