@@ -280,7 +280,7 @@ class AudioBookPage extends React.Component {
               {this.store.displayData !== null ? (
                 <FlatList
                   data={this.store.displayData}
-                  onEndReached={this.loadMore}
+                  // onEndReached={this.loadMore}
                   extraData={this.store.displayData.length}
                   renderItem={({ item }) => (
                     <AudioBookListItem
@@ -292,8 +292,8 @@ class AudioBookPage extends React.Component {
                   )}
                 />
               ) : (
-                undefined
-              )}
+                  undefined
+                )}
             </View>
 
             <View style={[CommonStyles.contentContainer, { width: '100%' }]}>

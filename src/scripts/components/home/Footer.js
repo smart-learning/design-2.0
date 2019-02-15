@@ -52,7 +52,9 @@ class Footer extends React.Component {
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() =>
-                  this.props.navigation.navigate('InquireFormPage')
+                  this.props.navigation.navigate('InquireFormPage', {
+                    title: '제휴 문의',
+                  })
                 }
               >
                 <Text style={styles.footerLinkText}>콘텐츠 제안</Text>
