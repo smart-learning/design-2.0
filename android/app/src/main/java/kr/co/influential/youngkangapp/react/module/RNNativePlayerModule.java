@@ -1074,12 +1074,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                       WELEARN_WEB_URL + "play/play-data/" + mWebPlayerInfo.getCkey()[i],
                       mWebPlayerInfo.getCkey()[i]);
 
-//                  v100008_001
-//                  v100008_002
-//                  v100008_003
-//                  v100008_004
-//                  v100008_005
-
                 }
               }
             } else {
