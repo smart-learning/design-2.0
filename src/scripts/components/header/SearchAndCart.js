@@ -15,8 +15,8 @@ export default class SearchAndCartButton extends Component {
           marginRight: 12,
         }}
       >
-        <SearchButton navigation={this.props.navigation} />
         {!isIos && <CartButton />}
+        <SearchButton navigation={this.props.navigation} />
       </View>
     );
   }

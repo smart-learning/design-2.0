@@ -175,7 +175,7 @@ export default class Book extends React.Component {
   changePage = () => {
     this.props.navigation.navigate('AudioBookDetailPage', {
       id: this.props.id,
-      title: this.props.itemData.title
+      title: ' '
     });
   };
 
@@ -221,7 +221,9 @@ export default class Book extends React.Component {
                   {this.props.itemData.title}
                 </Text>
                 <Text style={styles.teacherName}>
-                  {this.props.itemData.teacher.name}
+                  {this.props.itemData.teacher.name
+                    ? this.props.itemData.teacher.name
+                    : ''}
                 </Text>
                 <View style={styles.alignJustify}>
                   {time.hours() === 0 && (

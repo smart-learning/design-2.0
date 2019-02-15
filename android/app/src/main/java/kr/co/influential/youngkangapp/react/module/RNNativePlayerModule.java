@@ -844,30 +844,18 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
               Preferences.setWelaaaPlayListCKey(getReactApplicationContext(), contentCid);
 
               if (contentType.equals("audiobook")) {
+
                 if (!can_play) {
 
-                  if (mProgressDialog != null) {
-                    mProgressDialog.dismiss();
-                  }
+                  for (int i = 0; i < mWebPlayerInfo.getCkey().length; i++) {
+                    if(mWebPlayerInfo.getCkey()[i].equals(contentCid)){
+                      contentId = i++;
+                      contentCid = mWebPlayerInfo.getCkey()[i++];
 
-                  UiThreadUtil.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                      Activity activity = getCurrentActivity();
-
-                      new AlertDialog.Builder(activity)
-                          .setTitle("알림")
-                          .setMessage(
-                              "구매 후 이용할 수 있습니다.")
-                          .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                              return;
-                            }
-                          }).show();
+                      doNextPlay(contentCid);
+                      return;
                     }
-                  });
-
+                  }
                 } else {
 
                   if (mWebPlayerInfo.getCurl()[contentId].equals("0") ||
@@ -1085,12 +1073,6 @@ public class RNNativePlayerModule extends ReactContextBaseJavaModule
                   sendDataDownload(
                       WELEARN_WEB_URL + "play/play-data/" + mWebPlayerInfo.getCkey()[i],
                       mWebPlayerInfo.getCkey()[i]);
-
-//                  v100008_001
-//                  v100008_002
-//                  v100008_003
-//                  v100008_004
-//                  v100008_005
 
                 }
               }

@@ -29,11 +29,10 @@ const styles = StyleSheet.create({
   tabContainer: {
     position: 'absolute',
     alignSelf: 'flex-start',
-    top: 0,
-    left: 0,
     width: '100%',
-    height: 40,
+    top: 0,
     backgroundColor: '#ffffff',
+    overflow: 'hidden',
   },
   tabFlex: {
     flexDirection: 'row',
@@ -48,39 +47,47 @@ const styles = StyleSheet.create({
     height: 40,
   },
   tabText: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '400',
     color: '#a4a4a4',
   },
   tabTextActive: {
-    fontSize: 14,
-    color: '#000000',
+    fontSize: 16,
+    fontWeight: '400',
+    color: CommonStyles.COLOR_PRIMARY,
   },
   tabHr: {
     position: 'absolute',
-    left: 0,
+    left: '7%',
     bottom: 0,
-    width: '100%',
+    width: '86%',
     height: 3,
     backgroundColor: '#ffffff',
   },
   tabHrActive: {
     position: 'absolute',
-    left: 0,
+    left: '7%',
     bottom: 0,
-    width: '100%',
+    width: '86%',
     height: 3,
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   tabContentContainer: {
-    paddingTop: 40,
+    // paddingTop: 40,
   },
 });
 
 @observer
 class HomePage extends React.Component {
+  TAB_MENU_MAX = 40;
+
   state = {
     show_popup: false,
     show_popup_mbs: false,
+    scrollY: 0,
+    tabMenuHeight: this.TAB_MENU_MAX,
+    videoCCode: null,
+    audioCCode: null,
   };
 
   @observable
@@ -111,30 +118,11 @@ class HomePage extends React.Component {
       recommend: [],
     },
     contentDataInfo: [],
-
     // audioPlayRecentData: [],
   });
 
-  getData = async (isRefresh = false) => {
-    // Facebook AppEventLogger Test
-    // AppEventsLogger.logEvent('welaaaRN_Main_getData');
-
-    // 시리즈는 제일 먼저 읽어온다
-    this.store.homeSeriesData = await net.getHomeSeries();
-
-    // 데이터 가져와서
-    const videoCategoryData = await net.getLectureCategory(isRefresh);
-    const homeContents = await net.getHomeContents(isRefresh);
-    const homeAudioBookContents = await net.getHomeAudioBookContents(isRefresh);
-    // VO로 정리해서 사용
-    const categoryVOs = videoCategoryData.map(element => {
-      const vo = new PageCategoryItemVO();
-      _.each(element, (value, key) => (vo[key] = value));
-      vo.key = element.id.toString();
-      vo.label = element.title;
-      return vo;
-    });
-    const hotVOs = homeContents.hot.map((element, n) => {
+  convertHomeContentsToVO = contents => {
+    const hotVOs = contents.hot.map((element, n) => {
       const vo = new SummaryVO();
       _.each(element, (value, key) => (vo[key] = value));
       vo.key = element.id.toString();
@@ -144,7 +132,7 @@ class HomePage extends React.Component {
       }
       return vo;
     });
-    const newVOs = homeContents.new.map(element => {
+    const newVOs = contents.new.map(element => {
       const vo = new SummaryVO();
       _.each(element, (value, key) => (vo[key] = value));
       vo.key = element.id.toString();
@@ -153,13 +141,78 @@ class HomePage extends React.Component {
       }
       return vo;
     });
-    const recommendVOs = homeContents.recommend.map(element => {
+    const recommendVOs = contents.recommend.map(element => {
       const vo = new SummaryVO();
       _.each(element, (value, key) => (vo[key] = value));
       vo.key = element.id.toString();
       if (!vo.thumbnail) {
         vo.thumbnail = vo.images.wide;
       }
+      return vo;
+    });
+
+    return { hotVOs, newVOs, recommendVOs };
+  };
+
+  updateVideoCCode = async code => {
+    this.setState({ videoCCode: code });
+    const homeContents = await net.getHomeContents(false, code);
+    // VO로 정리해서 사용
+    const { hotVOs, newVOs, recommendVOs } = this.convertHomeContentsToVO(
+      homeContents,
+    );
+    this.store.classHotData = hotVOs;
+    this.store.classNewData = newVOs;
+    this.store.classRecommendData = recommendVOs;
+  };
+
+  updateAudioCCode = async code => {
+    this.setState({ audioCCode: code });
+    const homeAudioBookContents = await net.getHomeAudioBookContents(
+      false,
+      code,
+    );
+    this.store.audioHotData = homeAudioBookContents.hot;
+    this.store.audioNewData = homeAudioBookContents.new;
+    this.store.audioRecommendData = homeAudioBookContents.recommend;
+  };
+
+  getData = async (isRefresh = false) => {
+    // Facebook AppEventLogger Test
+    // AppEventsLogger.logEvent('welaaaRN_Main_getData');
+
+    // 가급적 화면 표시 순서대로 로드를 진행한다
+
+    // 시리즈
+    this.store.homeSeriesData = await net.getHomeSeries();
+
+    // 최근 재생 클래스
+    try {
+      this.store.classUseData = await net.getPlayRecentVideoCourses(isRefresh);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
+    }
+
+    // 데이터 가져와서
+    const videoCategoryData = await net.getLectureCategory(isRefresh);
+    const homeContents = await net.getHomeContents(
+      isRefresh,
+      this.state.videoCCode,
+    );
+    const homeAudioBookContents = await net.getHomeAudioBookContents(
+      isRefresh,
+      this.state.audioCCode,
+    );
+    // VO로 정리해서 사용
+    const { hotVOs, newVOs, recommendVOs } = this.convertHomeContentsToVO(
+      homeContents,
+    );
+    const categoryVOs = videoCategoryData.map(element => {
+      const vo = new PageCategoryItemVO();
+      _.each(element, (value, key) => (vo[key] = value));
+      vo.key = element.id.toString();
+      vo.label = element.title;
       return vo;
     });
 
@@ -176,6 +229,7 @@ class HomePage extends React.Component {
       });
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     // mobx 바인딩
@@ -187,21 +241,25 @@ class HomePage extends React.Component {
       this.store.clipRankData = await net.getHomeClipRank(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.homeBannerData = await net.getMainBanner(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.audioNewData = await net.getAudioBookList(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.audioMonth = await net.getHomeAudioBookMonth(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     this.store.clipRankData = await net.getHomeClipRank(isRefresh);
     this.store.audioNewData = await net.getAudioBookList(isRefresh);
@@ -211,38 +269,24 @@ class HomePage extends React.Component {
       this.store.audioDaily = await net.getDailyBookList(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     this.store.audioHotData = homeAudioBookContents.hot;
     this.store.audioNewData = homeAudioBookContents.new;
     this.store.audioRecommendData = homeAudioBookContents.recommend;
-    // this.store.audioPlayRecentData = await net.getPlayRecentAudioBook( isRefresh );
 
-    try {
-      this.store.classUseData = await net.getPlayRecentVideoCourses(isRefresh);
-    } catch (error) {
-      console.log(error);
-    }
     try {
       this.store.audioBuyData = await net.getPurchasedAudioBooks(isRefresh);
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
     try {
       this.store.audioUseData = await net.getPlayRecentAudioBook(isRefresh);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  latestMiniPlayer = async () => {
-    if (Platform.OS === 'android') {
-      /**
-       * 2019.01.23
-       * 김중온
-       * Native 에 미니플레이어 설정 요청
-       */
-      Native.latestMiniPlayer();
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
   };
 
@@ -273,21 +317,20 @@ class HomePage extends React.Component {
   }
 
   componentDidMount = async () => {
-    this.latestMiniPlayer();
-
     if (globalStore.welaaaAuth) {
       let windowWidth = Dimensions.get('window').width;
       let windowHeight = Dimensions.get('window').height;
 
       this.store.windowWidth = windowWidth;
       this.store.windowHeight = windowHeight;
-      this.store.slideHeight = windowWidth * 0.347;
+      this.store.slideHeight = windowWidth * 0.44444;
       this.store.clipRankContentSize = windowWidth - 85;
 
       try {
         this.getData();
       } catch (error) {
         console.log(error);
+        Alert.alert('Error', '통신에 실패했습니다.');
       }
     }
     if (this.props.navigation.isFocused()) {
@@ -380,9 +423,25 @@ class HomePage extends React.Component {
   onPageSelected = event => {
     if (event.nativeEvent.position === 0) {
       this.tabStatus = 'video';
+      this.setState( {tabMenuHeight: this.TAB_MENU_MAX});
     } else if (event.nativeEvent.position === 1) {
       this.tabStatus = 'audioBook';
+      this.setState( {tabMenuHeight: this.TAB_MENU_MAX});
     }
+  };
+
+  onScroll = event => {
+    let height = this.TAB_MENU_MAX - event.nativeEvent.contentOffset.y;
+    if (height < 0) {
+      height = 0;
+    } else if (height > this.TAB_MENU_MAX) {
+      height = this.TAB_MENU_MAX;
+    }
+    this.setState({ tabMenuHeight: height });
+  };
+
+  onScrollEndDrag = event => {
+    // this.setState({ tabMenuHeight: height });
   };
 
   render() {
@@ -392,23 +451,36 @@ class HomePage extends React.Component {
           <ViewPager
             ref={'pager'}
             initialPage={0}
-            style={{ flex: 1, height: this.store.windowHeight - 40 }}
+            style={{ flex: 1 }}
             onPageSelected={this.onPageSelected}
           >
             <View style={styles.tabContentContainer}>
               <HomeVideoPage
+                ref={ref => (this.videoPage = ref)}
                 store={this.store}
                 onRefresh={() => this.getData(true)}
+                onScroll={this.onScroll}
+                onScrollEndDrag={this.onScrollEndDrag}
+                updateCode={this.updateVideoCCode}
               />
             </View>
             <View style={styles.tabContentContainer}>
               <HomeAudioPage
+                ref={ref => (this.audioPage = ref)}
                 store={this.store}
                 onRefresh={() => this.getData(true)}
+                onScroll={this.onScroll}
+                updateCode={this.updateAudioCCode}
               />
             </View>
           </ViewPager>
-          <View style={styles.tabContainer}>
+
+          {this.showPopup()}
+          {this.showMbsPopup()}
+
+          <View
+            style={[styles.tabContainer, { height: this.state.tabMenuHeight }]}
+          >
             <View style={styles.tabFlex}>
               <View style={styles.tabItemContainer}>
                 <TouchableOpacity
@@ -462,8 +534,6 @@ class HomePage extends React.Component {
               </View>
             </View>
           </View>
-          {this.showPopup()}
-          {this.showMbsPopup()}
         </SafeAreaView>
       </View>
     );

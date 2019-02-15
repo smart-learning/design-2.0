@@ -16,6 +16,8 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.CallbackManager;
 import com.facebook.react.ReactApplication;
+import com.dylanvann.fastimage.FastImageViewPackage;
+import com.dooboolab.kakaologins.RNKakaoLoginsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.Arguments;
@@ -25,7 +27,6 @@ import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.soloader.SoLoader;
 import com.jeongjuwon.iamport.IAmPortPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.sunyrora.kakaosignin.RNKaKaoSigninPackage;
 import io.fabric.sdk.android.Fabric;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
@@ -112,6 +113,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FastImageViewPackage(),
           new RNAppsFlyerPackage(),
           new IAmPortPackage(),
           new VectorIconsPackage(),
@@ -119,7 +121,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseMessagingPackage(),
           new RNFirebaseNotificationsPackage(),
           new RNFirebaseAnalyticsPackage(),
-          new RNKaKaoSigninPackage(),
+          new RNKakaoLoginsPackage(),
           new FBSDKPackage(mCallbackManager),
           new RNNativePlayerPackage(MainApplication.this)
       );
@@ -195,5 +197,18 @@ public class MainApplication extends Application implements ReactApplication {
 
   public void setEventEmitter(RNEventEmitter eventEmitter) {
     this.eventEmitter = eventEmitter;
+  }
+
+  public void sendEventDownload(String cid){
+
+    try{
+      WritableMap params = Arguments.createMap();
+      params.putBoolean("complete", true);
+      params.putString("cid", cid);
+      eventEmitter.sendEvent("downloadState", params);
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+
   }
 }

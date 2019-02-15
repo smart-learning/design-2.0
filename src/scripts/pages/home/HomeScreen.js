@@ -22,7 +22,10 @@ import SearchResultPage from './SearchResultPage';
 import MembershipScreens from '../membership/MembershipScreen';
 import CartScreen from '../cart/CartScreen';
 import SerieseIntro from '../series/SeriesIntroPage';
+import HomeSeriesListPage from './HomeSeriesListPage';
+import HomeSeriesDetailPage from './HomeSeriesDetailPage';
 import InnerWebViewPage from '../in_web/InnerWebViewPage';
+import HomeBookMonthlyDetailPage from './HomeBookMonthlyDetailPage';
 import FullModalSection from '../../components/FullModalSection';
 
 const HomeScreen = createStackNavigator(
@@ -33,12 +36,12 @@ const HomeScreen = createStackNavigator(
     },
     HomeSeriesPage: {
       screen: HomeSeriesPage,
-      navigationOptions: NAV_OPTS_STACK,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
     },
 
     HomeMonthlyReviewPage: {
       screen: AudioBookInfoPage,
-      navigationOptions: NAV_OPTS_STACK,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
     },
 
     HomeScreen2: {
@@ -103,10 +106,21 @@ const HomeScreen = createStackNavigator(
       screen: SerieseIntro,
       navigationOptions: NAV_OPTS_STACK,
     },
-
+    HomeSeriesListPage: {
+      screen: HomeSeriesListPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+    },
+    HomeSeriesDetailPage: {
+      screen: HomeSeriesDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
+    },
     InnerWebViewPage: {
       screen: InnerWebViewPage,
       navigationOptions: NAV_OPTS_STACK,
+    },
+    HomeBookMonthlyDetailPage: {
+      screen: HomeBookMonthlyDetailPage,
+      navigationOptions: NAV_OPTS_STACK_HISTORY_BACK,
     },
   },
 

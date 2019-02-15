@@ -240,6 +240,17 @@ class App extends React.Component {
     );
   };
 
+  latestMiniPlayer = async () => {
+    if (Platform.OS === 'android') {
+      /**
+       * 2019.01.23
+       * 김중온
+       * Native 에 미니플레이어 설정 요청
+       */
+      Native.latestMiniPlayer();
+    }
+  };
+
   async componentDidMount() {
     this.addNetInfoEvent();
 
@@ -623,6 +634,8 @@ class App extends React.Component {
       'keyboardDidHide',
       this.keyboardDidHide,
     );
+
+    this.latestMiniPlayer();
   }
 
   componentWillUpdate() {

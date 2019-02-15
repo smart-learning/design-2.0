@@ -221,13 +221,18 @@ class SignUpLandingPage extends React.Component {
         });
       })
       .catch(error => {
-        const code = error.response.code;
-        let message = '회원가입 실패';
-        if (error.response.data && error.response.data.error) {
-          message += ` (server message: ${error.response.data.error})`;
+
+        try {
+          const code = error.response.code;
+          let message = '회원가입 실패';
+          if (error.response.data && error.response.data.error) {
+            message += ` (server message: ${error.response.data.error})`;
+          }
+          Alert.alert(message);
+          console.log(error);
+        } catch (err) {
+          console.log(err);
         }
-        Alert.alert(message);
-        console.log(error);
       });
   }
 

@@ -18,7 +18,7 @@ const styles = StyleSheet.create( {
 		marginRight: 10,
 		fontSize: 15,
 		fontWeight: 'bold',
-		color: '#333333',
+		color: '#34342C',
 	},
 	reviewIcon: {
 		position: 'relative',

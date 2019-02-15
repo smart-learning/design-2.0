@@ -180,15 +180,15 @@ public class WeContentManager extends SQLiteOpenHelper {
     return nCount;
   }
 
-  public void updateDownloadFilePath(String cid, String customerid, String filepath)
+  public void updateDownloadStatus(String cid, String userid, String totalsize)
       throws Exception {
 
     if (!db.isOpen()) {
       openDb();
     }
     String sql =
-        "UPDATE DOWNLOAD SET filePath='" + filepath + "'WHERE cId='" + cid + "' AND customerId='"
-            + customerid + "'";
+        "UPDATE DOWNLOAD SET totalsize='" + totalsize + "'WHERE cId='" + cid + "' AND userid='"
+            + userid + "'";
     db.execSQL(sql);
   }
 
@@ -435,8 +435,8 @@ public class WeContentManager extends SQLiteOpenHelper {
     String query = "SELECT groupkey, ckey, userId, drmSchemeUuid, drmLicenseUrl, cid, oid, "
         + "contentPath,totalSize,gTitle,cTitle,groupImg,thumbnailImg,audioVideoType,"
         + "groupTeacherName,cPlayTime,groupContentScnt,groupAllPlayTime,view_limitdate,modified "
-        + "FROM DOWNLOAD WHERE cid like '" + cid + "%' AND userId='" + userId
-        + "'";
+        + "FROM DOWNLOAD WHERE cid like '" + cid + "%' AND userId='" + userId + "'"
+        + "AND totalSize = 'Y' ";
     Cursor c = db.rawQuery(query, null);
     return CursorToDataTable(c);
   }
@@ -611,7 +611,30 @@ public class WeContentManager extends SQLiteOpenHelper {
     if (!db.isOpen()) {
       openDb();
     }
-    String query = "SELECT * FROM DOWNLOAD WHERE userId = '"+ userId+"' ORDER BY CID ASC";
+    String query = "SELECT * FROM DOWNLOAD WHERE userId = '"+ userId+"' AND totalsize = 'Y' ORDER BY CID ASC";
+
+//    String query = "select distinct cid , gTitle , audioVideoType ,groupTeacherName,view_limitdate , count(*) as groupContentScnt "
+//        + "FROM DOWNLOAD "
+//        + "WHERE userId = '"+ userId +"' "
+//        + "order by cid asc "
+//        + "group by gTitle,audioVideoType,groupTeacherName ";
+
+//    String query = "select * from ("
+//        +" select * "
+//        +" from download "
+//        +" order by cid desc "
+//        +") as a "
+//        +" group by a.gTitle ";
+
+    Cursor c = db.rawQuery(query, null);
+    return CursorToDataTable(c);
+  }
+
+  public ArrayList<HashMap<String, Object>> getDatabase(String userId , String groupkey) throws Exception {
+    if (!db.isOpen()) {
+      openDb();
+    }
+    String query = "SELECT * FROM DOWNLOAD WHERE userId = '"+ userId+"' AND groupkey = '"+groupkey+"' AND totalSize = 'N' ORDER BY CID ASC";
 
 //    String query = "select distinct cid , gTitle , audioVideoType ,groupTeacherName,view_limitdate , count(*) as groupContentScnt "
 //        + "FROM DOWNLOAD "

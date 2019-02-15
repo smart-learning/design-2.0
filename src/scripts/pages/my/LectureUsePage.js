@@ -30,7 +30,7 @@ class LectureUsePage extends React.Component {
   goLecture = item => {
     this.props.navigation.navigate('ClassDetail', {
       id: item.data.id,
-      title: item.data.headline
+      title: ' '
     });
   };
 

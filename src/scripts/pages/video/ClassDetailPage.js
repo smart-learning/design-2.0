@@ -8,27 +8,64 @@ import createStore from '../../commons/createStore';
 import DetailLayout from '../../components/detail/DetailLayout';
 import globalStore from '../../commons/store';
 import utils from '../../commons/utils';
+import { action, observable } from 'mobx';
 
+class Data {
+  @observable cid = null;
+  @observable isLoading = true;
+  @observable itemData = null;
+  @observable itemClipData = [];
+  @observable itemReviewData = { my: [], all: [] };
+  @observable itemEvaluationData = [];
+  @observable tabStatus = 'info';
+  @observable lectureView = false;
+  @observable teacherView = false;
+  @observable slideHeight = null;
+  @observable reviewText = '';
+  @observable reviewStar = 5;
+  @observable voucherStatus = {};
+  @observable isSubmitStatus = false;
+  @observable pagination = {
+    'has-next': true,
+  };
+  @observable isReviewLoading = false;
+  @observable myReviewId = null;
+  @observable isReviewUpdate = false;
+
+  @action.bound
+  loadReview(page = 1) {
+    this.isReviewLoading = true;
+    net
+      .getReviewList(this.cid, page)
+      .then(comments => {
+        this.pagination = comments.pagination;
+        this.itemReviewData.my = comments.my;
+        comments.all.forEach(comment => {
+          const exist = this.itemReviewData.all.find(
+            element => element.id === comment.id,
+          );
+          if (!exist) {
+            this.itemReviewData.all.push(comment);
+          }
+        });
+        this.isReviewLoading = false;
+      })
+      .catch(error => {
+        Alert.alert('Error', error.message);
+        this.isReviewLoading = false;
+      });
+  }
+}
 @observer
 class ClassDetailPage extends React.Component {
-  data = createStore({
-    isLoading: true,
-    itemData: null,
-    itemClipData: [],
-    tabStatus: 'info',
-    lectureView: false,
-    teacherView: false,
-    slideHeight: null,
-    reviewText: '',
-    reviewStar: 0,
-    voucherStatus: {},
-  });
+  data = new Data();
 
   constructor(props) {
     super(props);
 
     this.state = {
       id: this.props.navigation.state.params.id,
+      cid: this.props.navigation.state.params.cid,
       paymentType: 1,
       expire: null,
       permissionLoading: true,
@@ -83,21 +120,66 @@ class ClassDetailPage extends React.Component {
   };
 
   getData = async () => {
-    const resultLectureData = await net.getLectureItem(this.state.id);
-    const resultLectureClipData = await net.getLectureClipList(this.state.id);
-
+    let resultLectureData;
+    try {
+      resultLectureData = await net.getLectureItem(this.state.id);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
+    }
+    let resultLectureClipData;
+    try {
+      resultLectureClipData = await net.getLectureClipList(this.state.id);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
+    }
     this.props.navigation.setParams({
-      title: resultLectureData.title,
+      title: ' ',
     });
 
+    if (!resultLectureData.cid) {
+      Alert.alert('Error', 'cid를 찾을 수 없습니다.');
+      this.data.isLoading = false;
+      return;
+    }
+
     this.data.itemData = resultLectureData;
+    this.data.cid = resultLectureData.cid;
     this.data.itemClipData = resultLectureClipData;
     this.data.isLoading = false;
+    if (resultLectureData && resultLectureData.cid) {
+      try {
+        const evaluation = await net.getItemEvaluation(resultLectureData.cid);
+        this.data.itemEvaluationData = evaluation;
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      }
+      try {
+        await this.data.loadReview();
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      }
+    }
 
-    await this.getPlayPermissions();
+    try {
+      await this.getPlayPermissions();
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
 
     //조회수 증가
-    await net.postAddContentViewCount(resultLectureData.cid);
+    if (resultLectureData.cid) {
+      try {
+        await net.postAddContentViewCount(resultLectureData.cid);
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      }
+    }
   };
 
   componentDidMount() {
@@ -129,11 +211,13 @@ class ClassDetailPage extends React.Component {
       return;
     }
 
-    const permissionData = await net.getPlayPermissionByCid(cid);
-    this.setState({
-      permission: permissionData,
-      permissionLoading: false,
-    });
+    if (cid) {
+      const permissionData = await net.getPlayPermissionByCid(cid);
+      this.setState({
+        permission: permissionData,
+        permissionLoading: false,
+      });
+    }
   }
 
   render() {
