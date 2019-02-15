@@ -96,10 +96,10 @@ class ReviewInput extends React.Component {
           this.props.store.itemReviewData = comments;
           // 별점 다시 로드
           const evaluation = await net.getItemEvaluation(
-            this.props.store.cid.cid,
+            this.props.store.cid,
           );
           this.props.store.itemEvaluationData = evaluation;
-          this.props.store.reviewStar;
+          // this.props.store.reviewStar;
         } else {
           Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
           this.props.store.isSubmitStatus = false;
