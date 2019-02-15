@@ -10,7 +10,7 @@ import globalStore from '../../../scripts/commons/store';
 import CommonStyles from '../../../styles/common';
 import _ from 'underscore';
 import numeral from 'numeral';
-import moment from './AudiobookPaymentStatus';
+import moment from 'moment';
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -128,9 +128,13 @@ class PurchaseButton extends React.Component {
         {this.props.active ? (
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={
-              Platform.OS === 'ios' ? this.props.iosBuy : this.props.addToCart
-            }
+            onPress={() => {
+              if (!!this.props.active) {
+                Platform.OS === 'ios'
+                  ? this.props.iosBuy()
+                  : this.props.addToCart();
+              }
+            }}
           >
             <View style={[styles.buttonItem, styles.buttonItemActive]}>
               <Text style={[styles.buttonText, styles.buttonTextActive]}>
