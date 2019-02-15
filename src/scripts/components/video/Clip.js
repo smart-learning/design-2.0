@@ -48,7 +48,7 @@ export default class Lecture extends React.Component {
 	}
 
 	changePage() {
-		this.props.navigation.navigate( 'ClassDetailPage', { id: this.props.id, title: this.props.title } );
+		this.props.navigation.navigate( 'ClassDetailPage', { id: this.props.id, title: ' ' } );
 	}
 
 	render() {

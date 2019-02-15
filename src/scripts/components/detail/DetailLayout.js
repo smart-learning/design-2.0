@@ -19,8 +19,21 @@ import TabContentInfo from './TabContentInfo';
 import TabContentList from './TabContentList';
 import TopBanner from './TopBanner';
 import VideoPaymentStatus from './VideoPaymentStatus';
+import PaymentPolicy from './PaymentPolicy';
 
 const styles = StyleSheet.create({
+  tab: {
+    position: 'relative',
+    marginTop: 35,
+  },
+  tabBorder: {
+    position: 'absolute',
+    top: 10,
+    left: '50%',
+    width: 1,
+    height: 14,
+    backgroundColor: '#BEBEBE',
+  },
   tabContainer: {
     // width: '33.3%',
     width: '50%',
@@ -29,23 +42,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    height: 60,
+    height: 35,
     backgroundColor: '#ffffff',
   },
   tabNormalText: {
-    fontSize: 15,
-    color: '#555555',
+    fontSize: 13,
+    color: '#363636',
   },
   tabActiveText: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#34342C',
   },
   tabNormalHr: {
     position: 'absolute',
     left: 0,
     bottom: 0,
-    height: 3,
+    height: 2,
     backgroundColor: '#ffffff',
   },
   tabActiveHr: {
@@ -53,7 +66,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     width: '100%',
-    height: 3,
+    height: 2,
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
 });
@@ -290,43 +303,62 @@ class DetailLayout extends React.Component {
             store={this.props.store}
           />
 
-          {/* 가격 및 구매버튼 등을 보여주는 라인(iOS 의 경우 오디오북일 때에만 노출) */}
-          {this.props.learnType === 'audioBook' ? (
-            <AudiobookPaymentStatus
-              addToCart={this.props.addToCart}
-              iosBuy={this.props.iosBuy}
-              useVoucher={this.props.useVoucher}
-              voucherStatus={this.props.voucherStatus}
-              // permissions={this.props.permissions}
-              permission={this.props.permission}
-              itemData={this.props.itemData}
-              learnType={this.props.learnType}
-              store={this.props.store}
-              paymentType={this.props.paymentType}
-              expire={this.props.expire}
-              permissionLoading={this.props.permissionLoading}
-            />
-          ) : Platform.OS === 'android' ? (
-            <VideoPaymentStatus
-              addToCart={this.props.addToCart}
-              permission={this.props.permission}
-              // permissions={this.props.permissions}
-              itemData={this.props.itemData}
-              learnType={this.props.learnType}
-              store={this.props.store}
-              paymentType={this.props.paymentType}
-              expire={this.props.expire}
-              permissionLoading={this.props.permissionLoading}
-            />
-          ) : (
-            <View />
+          {/* 구매정책 */}
+          <PaymentPolicy
+            addToCart={this.props.addToCart}
+            iosBuy={this.props.iosBuy}
+            useVoucher={this.props.useVoucher}
+            voucherStatus={this.props.voucherStatus}
+            permission={this.props.permission}
+            itemData={this.props.itemData}
+            learnType={this.props.learnType}
+            store={this.props.store}
+            paymentType={this.props.paymentType}
+            expire={this.props.expire}
+            permissionLoading={this.props.permissionLoading}
+            onDownload={this.onDownload}
+          />
+
+          {1 === 2 && (
+            <View>
+              {/* 가격 및 구매버튼 등을 보여주는 라인(iOS 의 경우 오디오북일 때에만 노출) */}
+              {this.props.learnType === 'audioBook' ? (
+                <AudiobookPaymentStatus
+                  addToCart={this.props.addToCart}
+                  iosBuy={this.props.iosBuy}
+                  useVoucher={this.props.useVoucher}
+                  voucherStatus={this.props.voucherStatus}
+                  // permissions={this.props.permissions}
+                  permission={this.props.permission}
+                  itemData={this.props.itemData}
+                  learnType={this.props.learnType}
+                  store={this.props.store}
+                  paymentType={this.props.paymentType}
+                  expire={this.props.expire}
+                  permissionLoading={this.props.permissionLoading}
+                />
+              ) : Platform.OS === 'android' ? (
+                <VideoPaymentStatus
+                  addToCart={this.props.addToCart}
+                  permission={this.props.permission}
+                  // permissions={this.props.permissions}
+                  itemData={this.props.itemData}
+                  learnType={this.props.learnType}
+                  store={this.props.store}
+                  paymentType={this.props.paymentType}
+                  expire={this.props.expire}
+                  permissionLoading={this.props.permissionLoading}
+                />
+              ) : (
+                <View />
+              )}
+              {/* Download contents */}
+              {this.downloadContentsView(vcontent)}
+            </View>
           )}
 
-          {/* Download contents */}
-          {this.downloadContentsView(vcontent)}
-
           {1 === 2 && <CountView store={this.props.store} />}
-          <View style={CommonStyles.alignJustifyContentBetween}>
+          <View style={[CommonStyles.alignJustifyContentBetween, styles.tab]}>
             <View style={styles.tabContainer}>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -382,7 +414,7 @@ class DetailLayout extends React.Component {
                     )}
                     {this.props.learnType === 'class' && (
                       <Text>
-                        강의목차(
+                        목차(
                         {this.props.store.itemClipData.length})
                       </Text>
                     )}
@@ -397,6 +429,7 @@ class DetailLayout extends React.Component {
                 </View>
               </TouchableOpacity>
             </View>
+            <View style={styles.tabBorder} />
           </View>
           {this.props.store.tabStatus === 'info' && (
             <TabContentInfo

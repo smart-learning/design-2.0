@@ -30,7 +30,7 @@ class AudioBookUsePage extends React.Component {
   go = item => {
     this.props.navigation.navigate('AudioBookDetail', {
       id: item.data.id,
-      title: item.data.title
+      title: ' '
     });
   };
 

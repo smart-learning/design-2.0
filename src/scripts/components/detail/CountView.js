@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: 40,
-		backgroundColor: '#333333',
+		backgroundColor: '#34342C',
 	},
 	countContainer: {
 		flexDirection: 'row',

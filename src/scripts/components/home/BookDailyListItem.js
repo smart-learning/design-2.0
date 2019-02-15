@@ -5,6 +5,7 @@ import moment from 'moment';
 import { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
 import { observer } from 'mobx-react';
+import CommonStyles from '../../../styles/common';
 
 const styles = StyleSheet.create({
   bookListItemContainer: {
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   bookLabelFree: {
-    backgroundColor: '#00afba'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   bookLabelText: {
     fontSize: 12,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     fontSize: 16,
-    color: '#333333',
+    color: '#34342C',
     marginTop: 14
   },
   summaryDim: {
@@ -97,6 +98,7 @@ class BookDailyList extends React.Component {
       mm = today.getMonth() + 1; //January is 0!
     } catch (error) {
       console.log(error);
+      Alert.alert('Error', '통신에 실패했습니다.');
     }
 
     return (

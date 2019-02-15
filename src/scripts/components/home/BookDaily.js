@@ -1,296 +1,114 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
-import BookDailyList from '../../components/home/BookDailyList';
 import { observer } from 'mobx-react';
-import createStore from '../../commons/createStore';
-import moment from 'moment';
-
-const styles = StyleSheet.create({
-  mainTitleCenter: {
-    textAlign: 'center'
-  },
-  titleH2: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#333333'
-  },
-  titleH4: {
-    paddingTop: 10,
-    fontSize: 13,
-    color: '#888888'
-  },
-  dailyCategory: {
-    marginTop: 20,
-    marginBottom: 20
-  },
-  categoryHr: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#cecece'
-  },
-  categoryContainer: {
-    width: '100%',
-    height: 40
-  },
-  categoryItem: {
-    width: '20%',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  categoryText: {
-    color: '#555555',
-    fontSize: 14,
-    textAlign: 'center'
-  },
-  categoryButton: {
-    position: 'relative',
-    padding: 12
-  },
-  categoryButtonHr: {
-    position: 'absolute',
-    bottom: -10,
-    left: -3,
-    width: 20,
-    height: 3,
-    backgroundColor: '#ffffff'
-  },
-  categoryButtonHrActive: {
-    position: 'absolute',
-    bottom: -10,
-    left: -3,
-    width: 20,
-    height: 3,
-    backgroundColor: COLOR_PRIMARY
-  },
-  dailyBookHeadlineText: {
-    marginTop: 20,
-    marginBottom: 20,
-    fontSize: 16,
-    color: '#333333'
-  },
-  dailyBookContentHeadline: {}
-});
+import _ from 'underscore';
+import CommonStyles from '../../../styles/common';
+import FastImage from 'react-native-fast-image';
 
 @observer
 class BookDaily extends React.Component {
-  data = createStore({
-    today: '',
-    dailyTabSelected: 'Mon',
-    monday: [],
-    tuesday: [],
-    wednesday: [],
-    thursday: [],
-    friday: []
-  });
-
-  componentDidMount() {
-    if (this.props.itemData) {
-      this.data.monday = this.props.itemData['월'];
-      this.data.tuesday = this.props.itemData['화'];
-      this.data.wednesday = this.props.itemData['수'];
-      this.data.thursday = this.props.itemData['목'];
-      this.data.friday = this.props.itemData['금'];
-    }
-
-    this.data.today = moment().format('ddd');
-    this.data.dailyTabSelected = moment().format('ddd');
-  }
-
-  componentDidUpdate() {
-    if (this.props.itemData) {
-      this.data.monday = this.props.itemData['월'];
-      this.data.tuesday = this.props.itemData['화'];
-      this.data.wednesday = this.props.itemData['수'];
-      this.data.thursday = this.props.itemData['목'];
-      this.data.friday = this.props.itemData['금'];
-    }
-  }
+  /* 카테고리 클릭시 클래스 리스트 페이지로 이동 with Params */
+  premiumCategorySelect = () => {
+    this.props.navigation.navigate(
+      'AudioBookPage',
+      { action: 'category', data: 81 }, // 전달할 데이터
+    );
+  };
 
   render() {
+    const originData = this.props.itemData;
+    const filtered = _.map(originData.category, day => originData[day][0]);
+    const sorted = _.sortBy(filtered, 'open_date').reverse();
+    const todayItem = sorted[0];
+
+    const regExp = /(<.+?>)/gi;
+    let title = '< >';
+    let subTitle = '';
+    if (sorted.length > 0) {
+      // 타이틀, 서브타이틀 추출
+      title = todayItem.title.match(regExp)[0] || '< >';
+      subTitle = todayItem.title.substr(title.length).trim();
+      title = title.substr(1, title.length - 2);
+    }
+
     return (
       <View>
-        {/*헤더*/}
-        <View>
-          <Text style={[styles.mainTitleCenter, styles.titleH2]}>
-            매일 책 한 권
-          </Text>
-          <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-            책 좀 아는 사람들이 요약해 주는 읽은 척 매뉴얼
-          </Text>
-        </View>
-
-        {/*카테고리*/}
-        <View style={styles.dailyCategory}>
-          <View style={styles.categoryHr} />
+        {sorted.length > 0 && (
           <View
-            style={[CommonStyles.alignJustifyFlex, styles.categoryContainer]}
+            style={[
+              CommonStyles.alignJustifyFlex,
+              {
+                width: 295,
+                marginTop: 20,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              },
+            ]}
           >
-            <View style={styles.categoryItem}>
-              <TouchableOpacity
-                style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'Mon')}
-              >
-                <View>
-                  <Text style={styles.categoryText}>월</Text>
-                  <View
-                    style={
-                      this.data.dailyTabSelected === 'Mon'
-                        ? styles.categoryButtonHrActive
-                        : styles.categoryButtonHr
-                    }
-                  />
-                </View>
-              </TouchableOpacity>
+            <View style={{ marginRight: 30 }}>
+              <FastImage
+                source={{ uri: todayItem.image }}
+                style={{ width: 80, height: 125, backgroundColor: '#efefef' }}
+                resizeMode={FastImage.resizeMode.contain}
+              />
             </View>
-            <View style={styles.categoryItem}>
-              <TouchableOpacity
-                style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'Tue')}
+            <View style={{ position: 'relative', width: 185, height: 125 }}>
+              <Text
+                ellipsizeMode={'tail'}
+                numberOfLines={2}
+                style={{ fontSize: 17, fontWeight: '500', color: '#363636' }}
               >
-                <View>
-                  <Text style={styles.categoryText}>화</Text>
-                  <View
-                    style={
-                      this.data.dailyTabSelected === 'Tue'
-                        ? styles.categoryButtonHrActive
-                        : styles.categoryButtonHr
-                    }
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.categoryItem}>
-              <TouchableOpacity
-                style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'Wed')}
+                {title}
+              </Text>
+              <Text
+                ellipsizeMode={'tail'}
+                numberOfLines={2}
+                style={{ fontSize: 13, fontWeight: '300', color: '#000000' }}
               >
-                <View>
-                  <Text style={styles.categoryText}>수</Text>
+                {subTitle}
+              </Text>
+              <View style={{ position: 'absolute', bottom: 0 }}>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() =>
+                    this.props.navigation.navigate('AudioBookPage', {
+                      title: '',
+                      data: {
+                        ccode: '050',
+                        id: 81,
+                        categoryScrollToEnd: true,
+                      },
+                      sortStatus: 'new',
+                    })
+                  }
+                >
                   <View
-                    style={
-                      this.data.dailyTabSelected === 'Wed'
-                        ? styles.categoryButtonHrActive
-                        : styles.categoryButtonHr
-                    }
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.categoryItem}>
-              <TouchableOpacity
-                style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'Thu')}
-              >
-                <View>
-                  <Text style={styles.categoryText}>목</Text>
-                  <View
-                    style={
-                      this.data.dailyTabSelected === 'Thu'
-                        ? styles.categoryButtonHrActive
-                        : styles.categoryButtonHr
-                    }
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.categoryItem}>
-              <TouchableOpacity
-                style={styles.categoryButton}
-                onPress={() => (this.data.dailyTabSelected = 'Fri')}
-              >
-                <View>
-                  <Text style={styles.categoryText}>금</Text>
-                  <View
-                    style={
-                      this.data.dailyTabSelected === 'Fri' ||
-                      this.data.dailyTabSelected === 'Sat' ||
-                      this.data.dailyTabSelected === 'Sun'
-                        ? styles.categoryButtonHrActive
-                        : styles.categoryButtonHr
-                    }
-                  />
-                </View>
-              </TouchableOpacity>
+                    style={{
+                      width: 185,
+                      height: 28,
+                      borderWidth: 1,
+                      borderColor: CommonStyles.COLOR_PRIMARY,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 13,
+                        color: CommonStyles.COLOR_PRIMARY,
+                      }}
+                    >
+                      매일 책 한권 보러가기
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-          <View style={styles.categoryHr} />
-        </View>
-
-        {/*콘텐츠*/}
-        <View>
-          {this.data.dailyTabSelected === 'Mon' ? (
-            <View style={styles.dailyBookContentHeadline}>
-              <Text style={styles.dailyBookHeadlineText}>
-                [월] 하지현의 마음을 치유하는 책
-              </Text>
-              <View>
-                <BookDailyList
-                  today={this.data.today}
-                  itemDay={'Mon'}
-                  itemData={this.data.monday}
-                />
-              </View>
-            </View>
-          ) : this.data.dailyTabSelected === 'Tue' ? (
-            <View style={styles.dailyBookContentHeadline}>
-              <Text style={styles.dailyBookHeadlineText}>
-                [화] 권영설의 내일을 위한 책
-              </Text>
-              <View>
-                <BookDailyList
-                  today={this.data.today}
-                  itemDay={'Tue'}
-                  itemData={this.data.tuesday}
-                />
-              </View>
-            </View>
-          ) : this.data.dailyTabSelected === 'Wed' ? (
-            <View style={styles.dailyBookContentHeadline}>
-              <Text style={styles.dailyBookHeadlineText}>
-                [수] 홍순철의 젠틀한 독서
-              </Text>
-              <View>
-                <BookDailyList
-                  today={this.data.today}
-                  itemDay={'Wed'}
-                  itemData={this.data.wednesday}
-                />
-              </View>
-            </View>
-          ) : this.data.dailyTabSelected === 'Thu' ? (
-            <View style={styles.dailyBookContentHeadline}>
-              <Text style={styles.dailyBookHeadlineText}>
-                [목] 한미화의 인생책방
-              </Text>
-              <View>
-                <BookDailyList
-                  today={this.data.today}
-                  itemDay={'Thu'}
-                  itemData={this.data.thursday}
-                />
-              </View>
-            </View>
-          ) : this.data.dailyTabSelected === 'Fri' ||
-            this.data.dailyTabSelected === 'Sat' ||
-            this.data.dailyTabSelected === 'Sun' ? (
-            <View style={styles.dailyBookContentHeadline}>
-              <Text style={styles.dailyBookHeadlineText}>
-                [금] 이영미의 밤 새워 읽고 싶은 책
-              </Text>
-              <View>
-                <BookDailyList
-                  today={this.data.today}
-                  itemDay={'Fri'}
-                  itemData={this.data.friday}
-                />
-              </View>
-            </View>
-          ) : (
-            undefined
-          )}
-        </View>
+        )}
       </View>
     );
   }

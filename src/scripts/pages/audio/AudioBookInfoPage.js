@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
   teacherHeadline: {
     fontSize: 15,
     fontWeight: 'normal',
-    color: '#333333'
+    color: '#34342C'
   },
   teacherName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   teacherMemo: {
     paddingTop: 25,
@@ -308,7 +308,7 @@ class AudioBookInfoPage extends React.Component {
                       onPress={() =>
                         this.props.navigation.navigate('AudioBookDetailPage', {
                           id: itemData.audiobook.id,
-                          title: itemData.audiobook.title
+                          title: ' '
                         })
                       }
                     >
@@ -383,7 +383,7 @@ class AudioBookInfoPage extends React.Component {
                 onPress={() =>
                   this.props.navigation.navigate('AudioBookDetailPage', {
                     id: itemData.audiobook.id,
-                    title: itemData.audiobook.title
+                    title: ' '
                   })
                 }
               >

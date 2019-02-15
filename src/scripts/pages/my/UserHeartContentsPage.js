@@ -168,14 +168,14 @@ class UserHeartContentsPage extends React.Component {
   goLecture = item => {
     this.props.navigation.navigate('ClassDetailPage', {
       id: item.id,
-      title: item.title
+      title: ' '
     });
   };
 
   goAudiobook = item => {
     this.props.navigation.navigate('AudioBookDetailPage', {
       id: item.id,
-      title: item.title
+      title: ' '
     });
   };
   goPage = pageName => {

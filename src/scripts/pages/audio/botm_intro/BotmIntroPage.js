@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -73,6 +74,7 @@ export default class BotmIntroPage extends React.Component {
         },
         error => {
           console.log(error);
+          Alert.alert('Error', '통신에 실패했습니다.');
         },
       );
     }

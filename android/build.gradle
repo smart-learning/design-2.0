@@ -36,3 +36,7 @@ ext {
     wearableVersion = '2.3.0'
     glideVersion = '4.7.1'
 }
+
+project.ext {
+    excludeAppGlideModule = true
+}

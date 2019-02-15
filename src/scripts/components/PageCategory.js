@@ -1,30 +1,27 @@
 import React from 'react';
 import {
   FlatList,
+  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { observer } from 'mobx-react';
 import CommonStyles from '../../styles/common';
 
 const styles = StyleSheet.create({
-  categoryContainer: {
-    width: '100%',
-    height: 40
-  },
   categoryItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20
+    height: 20,
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderWidth: 1,
   },
   categoryText: {
-    color: '#A1A1A1',
-    fontSize: 14
-  }
+    fontSize: 14,
+  },
 });
 
 @observer
@@ -35,51 +32,77 @@ class PageCategory extends React.Component {
     }
   };
 
+  toEnd = () => {
+    this.flatList.scrollToEnd();
+  }
+
   render() {
     if (!this.props.data) {
       return <View />;
     }
     return (
-      <View>
-        <FlatList
-          style={styles.categoryContainer}
-          data={this.props.data}
-          selectedCategory={this.props.selectedCategory}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          extraData={this.props.data}
-          renderItem={({ item }) => {
-            const categoryId = item.id;
-            const selectedCategory = this.props.selectedCategory;
-            let textStyle = {
-              color: selectedCategory === categoryId ? '#444444' : '#A1A1A1'
-            };
-            let categoryItemStyle = {
-              borderTopWidth: 0,
-              borderRightWidth: 0,
-              borderBottomWidth: selectedCategory === categoryId ? 3 : 0,
-              borderLeftWidth: 0,
-              borderColor: CommonStyles.COLOR_PRIMARY
-            };
+      <View
+        style={[
+          CommonStyles.alignJustifyFlex,
+          { width: '98%', flexWrap: 'wrap', paddingLeft: this.props.pageLocation === 'main'? 15 : 0, paddingRight: this.props.pageLocation === 'main'? 10 : 0 },
+        ]}
+      >
+        <View>
+          <FlatList
+            onLayout={ () => {
+              if( this.props.categoryScrollToEnd && this.props.selectedCategory === 81 ) {
+                setTimeout( this.toEnd, 16 );
+              }
+            }}
+            ref={ ref => this.flatList = ref }
+            style={styles.categoryContainer}
+            data={this.props.data}
+            selectedCategory={this.props.selectedCategory}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            extraData={this.props.data}
+            renderItem={({ item }) => {
+              const categoryId = item.id;
+              const selectedCategory = this.props.selectedCategory;
+              let textStyle = {
+                color: selectedCategory === categoryId ? '#ffffff' : '#9DA4A7',
+              };
+              let categoryItemStyle = {
+                borderColor:
+                  selectedCategory === categoryId
+                    ? CommonStyles.COLOR_PRIMARY
+                    : '#ffffff',
+                backgroundColor:
+                  selectedCategory === categoryId
+                    ? CommonStyles.COLOR_PRIMARY
+                    : '#ffffff',
+              };
 
-            if (selectedCategory === categoryId) {
-              textStyle.color = '#444444';
-            }
+              if (selectedCategory === categoryId) {
+                textStyle.color = '#ffffff';
+              }
 
-            return (
-              <View style={[styles.categoryItem, categoryItemStyle]}>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() => this.select(item)}
-                >
-                  <Text style={[styles.categoryText, textStyle]}>
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            );
-          }}
-        />
+              return (
+                <View style={CommonStyles.alignJustifyItemCenter}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => this.select(item)}
+                  >
+                    <View
+                      style={[styles.categoryItem, categoryItemStyle]}
+                      borderRadius={15}
+                    >
+                      <Text style={[styles.categoryText, textStyle]}>
+                        {item.label}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <Text style={{ top: 5, height: 30 }}>|</Text>
+                </View>
+              );
+            }}
+          />
+        </View>
       </View>
     );
   }

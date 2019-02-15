@@ -22,14 +22,14 @@ const styles = StyleSheet.create({
 		paddingBottom: 10,
 		fontSize: 16,
 		fontWeight: 'bold',
-		color: '#333333',
+		color: '#34342C',
 	},
 	sectionList: {
 		paddingBottom: 10,
 	},
 	sectionListItemText: {
 		fontSize: 14,
-		color: '#333333',
+		color: '#34342C',
 	},
 } );
 

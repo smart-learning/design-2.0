@@ -29,7 +29,7 @@ class LectureBuyPage extends React.Component {
   gotoClassDetail = item => {
     this.props.navigation.navigate('ClassDetail', {
       id: item.data.id,
-      title: item.data.title
+      title: ' '
     });
   };
 
