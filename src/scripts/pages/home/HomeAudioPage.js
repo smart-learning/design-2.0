@@ -403,7 +403,12 @@ class HomeAudioPage extends React.Component {
                   <TouchableOpacity
                     style={styles.showMore}
                     onPress={() => {
-                      this.props.navigation.navigate('AudioBookPage');
+                      this.props.navigation.navigate('AudioBookPage', {
+                        data: {
+                          ccode: null,
+                        },
+                        sortStatus: 'hot',
+                      });
                     }}
                   >
                     <Text style={styles.showMoreText}>전체보기</Text>
@@ -448,8 +453,14 @@ class HomeAudioPage extends React.Component {
               <TouchableOpacity
                 style={[styles.showMore, { height: 36 }]}
                 onPress={() => {
-                  this.props.navigation.navigate('AudioBookPage');
+                  this.props.navigation.navigate('AudioBookPage', {
+                    data: {
+                      ccode: null,
+                    },
+                    sortStatus: 'hot',
+                  });
                 }}
+
               >
                 <Text style={styles.showAllText}>오디오북 전체보기</Text>
               </TouchableOpacity>
