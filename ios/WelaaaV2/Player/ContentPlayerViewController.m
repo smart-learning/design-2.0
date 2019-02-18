@@ -304,9 +304,6 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
-    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];  // 재생중인 AVAssetItem의 observer를 추가합니다.
-  //[_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:0 context:nil]; // 버퍼 핸들링은 추후에 구현할 예정입니다.
-  
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer : _player];
     _playerLayer.frame = _contentView.bounds;
@@ -388,7 +385,10 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
                                               selector : @selector(audioSessionInterrupted:)
                                                   name : AVAudioSessionInterruptionNotification
                                                 object : nil];
-  
+    
+    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];  // 재생중인 AVAssetItem의 observer를 추가합니다.
+  //[_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:0 context:nil]; // 버퍼 핸들링은 추후에 구현할 예정입니다.
+    
     // 간헐적인 콘텐츠 로딩 오류 시 플레이어를 종료합니다.
     if ( [_totalTimeLabel.text isEqualToString:@"00:00"] )
     {
