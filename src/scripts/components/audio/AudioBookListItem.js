@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import IcPlay from '../../../images/ic-play-dark.png';
 import numeral from 'numeral';
-import IcHeart from '../../../images/ic-heart-dark.png';
+import IcHeart from '../../../images/ic-star-grey-line.png';
 import IcComment from '../../../images/ic-commenting-dark.png';
 
 const styles = StyleSheet.create({
