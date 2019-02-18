@@ -711,9 +711,13 @@ export default {
   },
 
   postStarCount(cid, score) {
-    // console.log( 'postStarCount - cid', cid );
-    // console.log( 'postStarCount - content', store );
     return axios.post(API_PREFIX + 'v1.0/action/stars/' + cid, {
+      score,
+    });
+  },
+
+  putStarCount(id, score) {
+    return axios.put(API_PREFIX + 'v1.0/action/stars/' + id, {
       score,
     });
   },

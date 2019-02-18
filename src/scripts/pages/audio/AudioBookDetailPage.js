@@ -32,6 +32,7 @@ class Data {
   @observable isReviewLoading = false;
   @observable myReviewId = null;
   @observable isReviewUpdate = false;
+  @observable isStarEditMode = false;
 
   @action.bound
   loadReview(page = 1) {
@@ -193,8 +194,6 @@ class AudioBookDetailPage extends React.Component {
     }
     this.data.isLoading = false;
 
-    console.log('resultBookData', resultBookData);
-
     try {
       await this.getPlayPermissions();
     } catch (error) {
@@ -252,6 +251,7 @@ class AudioBookDetailPage extends React.Component {
   }
 
   render() {
+    console.log('this.data', this.data);
     const { permission } = this.state;
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>

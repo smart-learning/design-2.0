@@ -298,7 +298,8 @@ class TabContentInfo extends React.Component {
               <Text style={styles.labelInfoText}>
                 <Text style={styles.labelInfoSpanText}>
                   {this.props.store.itemData.clip_count}개
-                </Text>의 강의
+                </Text>
+                의 강의
               </Text>
             </View>
           )}
@@ -436,44 +437,42 @@ class TabContentInfo extends React.Component {
           <View style={styles.contentHr} />
         </View>
 
-        {1===2&&(
-          <View style={styles.review}>
-            <View
-              style={[CommonStyles.alignJustifyItemCenter, { marginBottom: 20 }]}
+        <View style={styles.review}>
+          <View
+            style={[CommonStyles.alignJustifyItemCenter, { marginBottom: 20 }]}
+          >
+            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
+              윌라 회원님들의 평가
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: '200',
+                color: '#898989',
+                paddingLeft: 13,
+              }}
             >
-              <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-                윌라 회원님들의 평가
-              </Text>
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: '200',
-                  color: '#898989',
-                  paddingLeft: 13,
-                }}
-              >
-                {/* 댓글수 */}
-                {numeral(
-                  this.props.store.itemData?.meta
-                    ? this.props.store.itemData?.meta.comment_count
-                    : this.props.store.itemData?.review_count,
-                ).format('0a')}
-                개의 리뷰
-              </Text>
-            </View>
-
-            {this.props.store.itemEvaluationData && (
-              <Evaluation store={this.props.store} />
-            )}
-
-            <StarGrade
-              learnType={this.props.learnType}
-              store={this.props.store}
-            />
-
-            <ReviewForm store={this.props.store} />
+              {/* 댓글수 */}
+              {numeral(
+                this.props.store.itemData?.meta
+                  ? this.props.store.itemData?.meta.comment_count
+                  : this.props.store.itemData?.review_count,
+              ).format('0a')}
+              개의 리뷰
+            </Text>
           </View>
-        )}
+
+          {this.props.store.itemEvaluationData && (
+            <Evaluation store={this.props.store} />
+          )}
+
+          <StarGrade
+            learnType={this.props.learnType}
+            store={this.props.store}
+          />
+
+          <ReviewForm store={this.props.store} />
+        </View>
       </View>
     );
   }

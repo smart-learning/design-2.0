@@ -31,6 +31,7 @@ class Data {
   @observable isReviewLoading = false;
   @observable myReviewId = null;
   @observable isReviewUpdate = false;
+  @observable isStarEditMode = false;
 
   @action.bound
   loadReview(page = 1) {
