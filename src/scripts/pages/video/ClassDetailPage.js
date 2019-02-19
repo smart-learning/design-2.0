@@ -157,6 +157,9 @@ class ClassDetailPage extends React.Component {
       try {
         const evaluation = await net.getItemEvaluation(resultLectureData.cid);
         this.data.itemEvaluationData = evaluation;
+        if (this.data.itemEvaluationData.my?.score > 0) {
+          this.data.reviewStar = this.data.itemEvaluationData?.my?.score;
+        }
       } catch (error) {
         Alert.alert('Error', error.message);
       }
