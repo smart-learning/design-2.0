@@ -5,6 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#if __has_include(<React/RNSentry.h>)
+#import <React/RNSentry.h> // This is used for versions of react >= 0.40
+#else
+#import "RNSentry.h" // This is used for versions of react < 0.40
+#endif
+
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import <React/RCTBundleURLProvider.h>
