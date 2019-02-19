@@ -72,6 +72,10 @@ class ReviewInput extends React.Component {
     this.props.store.reviewText = text;
   };
 
+  clearReviewText = () => {
+    this.setState({ reviewText: '' });
+  };
+
   reviewSubmit = async () => {
     if (this.props.store.reviewText === '') {
       Alert.alert('Error', '리뷰를 입력 해주세요.');
@@ -233,6 +237,7 @@ class ReviewForm extends React.Component {
       const comments = await net.getReviewList(this.props.store.cid);
       this.props.store.itemReviewData = comments;
       this.props.store.reviewText = '';
+      this.reviewInput.clearReviewText();
       Alert.alert('Message', '삭제되었습니다.');
     } catch (error) {
       console.log(error);
@@ -248,7 +253,11 @@ class ReviewForm extends React.Component {
         {itemData && (
           <View style={styles.contentContainer}>
             {itemData.my && itemData.my.length === 0 && (
-              <ReviewInput {...this.props} formType={'create'} />
+              <ReviewInput
+                {...this.props}
+                formType={'create'}
+                ref={ref => (this.reviewInput = ref)}
+              />
             )}
 
             <View style={{ height: 30 }} />
