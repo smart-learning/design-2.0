@@ -135,12 +135,13 @@ didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
     jsCodeLocation = [ [NSBundle mainBundle] URLForResource : @"main"
                                               withExtension : @"jsbundle" ];
 #endif
-
-    RCTRootView *rootView = [ [RCTRootView alloc] initWithBundleURL : jsCodeLocation
+RCTRootView *rootView = [ [RCTRootView alloc] initWithBundleURL : jsCodeLocation
                                                          moduleName : @"WelaaaV2"
                                                   initialProperties : nil
                                                       launchOptions : launchOptions ];
-  
+
+    [RNSentry installWithRootView:rootView];
+
     self.window = [ [UIWindow alloc] initWithFrame : [UIScreen mainScreen].bounds ];
   
     UIViewController *rootViewController = [UIViewController new];

@@ -25,6 +25,14 @@ import HomeAudioPage from './HomeAudioPage';
 import HomeVideoPage from './HomeVideoPage';
 import Native from '../../commons/native';
 
+import {
+  Sentry,
+  SentrySeverity,
+  SentryLog
+} from 'react-native-sentry';
+
+Sentry.config('https://4f360fd602b44af79e2f4ec8b44e6566@sentry.io/1279179').install();
+
 const styles = StyleSheet.create({
   tabContainer: {
     position: 'absolute',
@@ -163,7 +171,9 @@ class HomePage extends React.Component {
     );
     this.store.classHotData = hotVOs;
     this.store.classNewData = newVOs;
-    this.store.classRecommendData = recommendVOs;
+    if (!!recommendVOs && recommendVOs.length > 1) {
+      this.store.classRecommendData = recommendVOs;
+    }
   };
 
   updateAudioCCode = async code => {
@@ -423,10 +433,10 @@ class HomePage extends React.Component {
   onPageSelected = event => {
     if (event.nativeEvent.position === 0) {
       this.tabStatus = 'video';
-      this.setState( {tabMenuHeight: this.TAB_MENU_MAX});
+      this.setState({ tabMenuHeight: this.TAB_MENU_MAX });
     } else if (event.nativeEvent.position === 1) {
       this.tabStatus = 'audioBook';
-      this.setState( {tabMenuHeight: this.TAB_MENU_MAX});
+      this.setState({ tabMenuHeight: this.TAB_MENU_MAX });
     }
   };
 

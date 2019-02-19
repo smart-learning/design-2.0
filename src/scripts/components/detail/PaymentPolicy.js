@@ -235,9 +235,7 @@ class Amount extends React.Component {
           <Text style={styles.paymentText}>
             ₩{numeral(this.props.permission.ios_price).format('0,0')}
             {this.props.permission.type === 'can_buy' && (
-              <Text style={styles.durationText}>
-                /{this.props.permission.rental_period}일
-              </Text>
+              <Text style={styles.durationText} />
             )}
           </Text>
         ),
@@ -245,9 +243,7 @@ class Amount extends React.Component {
           <Text style={styles.paymentText}>
             ₩{numeral(this.props.permission.user_price).format('0,0')}
             {this.props.permission.type === 'can_buy' && (
-              <Text style={styles.durationText}>
-                /{this.props.permission.rental_period}일
-              </Text>
+              <Text style={styles.durationText} />
             )}
           </Text>
         ),

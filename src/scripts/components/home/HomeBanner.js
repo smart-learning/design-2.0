@@ -1,23 +1,19 @@
 import React from 'react';
 import nav from '../../commons/nav';
-import {
-  Linking,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import net from '../../commons/net';
+import { Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   thumbnail: {
     width: '100%',
     paddingTop: '22.22%',
-    paddingBottom: '22.22%'
-  }
+    paddingBottom: '22.22%',
+  },
 });
 
 export default class HomeBanner extends React.Component {
-  handleAction = () => {
+  handleAction = async () => {
     const { action_type, action_param } = this.props;
 
     if (action_type === 'event') {
@@ -44,10 +40,11 @@ export default class HomeBanner extends React.Component {
     } else if (action_type === 'botm') {
       const params = action_param.split(',');
 
-      this.props.navigation.navigate('HomeMonthlyReviewPage', {
-        month: params[0],
-        sort: params[1],
-        title: '이달의 책 북리뷰',
+      itemData = await net.getBotmData(params[0], params[1]);
+
+      this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
+        title: ' ',
+        itemData: itemData,
       });
     } else {
       nav.parseDeepLink('welaaa://' + action_type + '/' + action_param);

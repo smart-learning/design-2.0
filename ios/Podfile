@@ -36,7 +36,9 @@ target 'WelaaaV2' do
   # Showing images from web
   pod 'SDWebImage', '~> 4.0'
 
-  # Third party deps podspec link
+  
+  # Third party deps podspec link  
+  pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
@@ -49,6 +51,7 @@ target 'WelaaaV2' do
       'RCTNetwork',
       'RCTWebSocket',
       'RCTImage',
+      'RCTAnimation', # Needed for FlatList and animations running on native UI thread
   ]
   pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
   
