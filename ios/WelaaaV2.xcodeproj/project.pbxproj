@@ -1567,7 +1567,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"PODS_ROOT = $(SRCROOT)/Pods\"\n\"PODS_PODFILE_DIR_PATH = $(SRCROOT)/\"\n\"${PODS_ROOT}/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B857ED89A6B442B1BA95B58A /* Upload Debug Symbols to Sentry */ = {
