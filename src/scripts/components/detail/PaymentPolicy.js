@@ -167,6 +167,41 @@ class VoucherButton extends React.Component {
     );
   }
 }
+
+class MembershipButton extends React.Component {
+  render() {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => this.props.navigation.navigate('MembershipScreen')}
+      >
+        <View style={[styles.buttonItem, styles.buttonItemActive]}>
+          <Text style={[styles.buttonText, styles.buttonTextActive]}>
+            멤버십 구매
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
+
+class MembershipChangeButton extends React.Component {
+  render() {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => this.props.navigation.navigate('MembershipScreen')}
+      >
+        <View style={[styles.buttonItem, styles.buttonItemActive]}>
+          <Text style={[styles.buttonText, styles.buttonTextActive]}>
+            멤버십 변경
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
+
 class Origin extends React.Component {
   render() {
     if (this.props.permission.type === 'rental') {
@@ -208,47 +243,104 @@ class Amount extends React.Component {
   render() {
     if (this.props.permission.type === 'free') {
       return <Text style={styles.paymentText}>무료! 마음껏 이용 :)</Text>;
-    } else if (
-      this.props.learnType === 'audioBook' &&
-      this.props.permission.type === 'membership'
-    ) {
-      return <Text style={styles.paymentText}>마음껏 이용 :)</Text>;
-    } else if (
-      this.props.learnType === 'class' &&
-      this.props.permission.type === 'membership'
-    ) {
-      return <Text style={styles.paymentText}>무제한 이용 가능</Text>;
-    } else if (this.props.permission.type === 'rental') {
-      return (
-        <Text style={styles.paymentText}>
-          {moment(this.props.permission.expire_at).format('YYYY년 MM월 DD일')}
-        </Text>
-      );
-    } else if (
-      this.props.learnType === 'audioBook' &&
-      this.props.permission.type === 'owned'
-    ) {
-      return <Text style={styles.paymentText}>소장중</Text>;
-    } else if (this.props.permission.type !== 'free') {
-      return Platform.select({
-        ios: (
-          <Text style={styles.paymentText}>
-            ₩{numeral(this.props.permission.ios_price).format('0,0')}
-            {this.props.permission.type === 'can_buy' && (
-              <Text style={styles.durationText} />
-            )}
-          </Text>
-        ),
-        android: (
-          <Text style={styles.paymentText}>
-            ₩{numeral(this.props.permission.user_price).format('0,0')}
-            {this.props.permission.type === 'can_buy' && (
-              <Text style={styles.durationText} />
-            )}
-          </Text>
-        ),
-      });
     }
+    else if (Platform.OS === 'ios' && this.props.learnType === 'class') {
+      if (this.props.permission.type !== 'membership') {
+        return <Text style={styles.paymentText}>멤버십 구매 필요</Text>;
+      } else if (this.props.permission.type === '오디오북 멤버쉽') {
+        return <Text style={styles.paymentText}>멤버십 변경 필요</Text>;
+      } else if (this.props.permission.type === 'membership') {
+        return <Text style={styles.paymentText}>무제한 이용 가능</Text>;
+      }
+    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      if (
+        this.props.learnType === 'audioBook' &&
+        this.props.permission.type === 'membership'
+      ) {
+        return <Text style={styles.paymentText}>마음껏 이용 :)</Text>;
+      } else if (
+        this.props.learnType === 'class' &&
+        this.props.permission.type === 'membership'
+      ) {
+        return <Text style={styles.paymentText}>무제한 이용 가능</Text>;
+      } else if (this.props.permission.type === 'rental') {
+        return (
+          <Text style={styles.paymentText}>
+            {moment(this.props.permission.expire_at).format('YYYY년 MM월 DD일')}
+          </Text>
+        );
+      } else if (
+        this.props.learnType === 'audioBook' &&
+        this.props.permission.type === 'owned'
+      ) {
+        return <Text style={styles.paymentText}>소장중</Text>;
+      } else if (this.props.permission.type !== 'free') {
+        return Platform.select({
+          ios: (
+            <Text style={styles.paymentText}>
+              ₩{numeral(this.props.permission.ios_price).format('0,0')}
+              {this.props.permission.type === 'can_buy' && (
+                <Text style={styles.durationText} />
+              )}
+            </Text>
+          ),
+          android: (
+            <Text style={styles.paymentText}>
+              ₩{numeral(this.props.permission.user_price).format('0,0')}
+              {this.props.permission.type === 'can_buy' && (
+                <Text style={styles.durationText} />
+              )}
+            </Text>
+          ),
+        });
+      }
+    }
+    return <View />;
+  }
+}
+class Button1st extends React.Component {
+  render() {
+    if (Platform.OS === 'ios' && this.props.learnType === 'class') {
+      if( this.props.permission.type === 'free' ) {
+        return <DownloadButton {...this.props} active={true} />;
+      } else if (this.props.permission.type !== 'membership') {
+        return <MembershipButton {...this.props} />;
+      } else if (this.props.permission.type === '오디오북 멤버쉽') {
+        return <MembershipChangeButton {...this.props} />;
+      }
+    } else if (this.props.permission.can_play) {
+      return <DownloadButton {...this.props} active={true} />;
+    } else if (!this.props.permission.can_play) {
+      return <DownloadButton {...this.props} active={false} />;
+    }
+
+    return <View />;
+  }
+}
+class Button2nd extends React.Component {
+  render() {
+    if (Platform.OS === 'ios' && this.props.learnType === 'class') {
+      if( this.props.permission.type === 'free' ) {
+        return <PurchaseButton {...this.props} active={false} />;
+      } else if (this.props.permission.type !== 'membership') {
+        return <DownloadButton {...this.props} active={false} />;
+      } else if (this.props.permission.type === '오디오북 멤버쉽') {
+        return <DownloadButton {...this.props} active={false} />;
+      }
+    } else if (
+      this.props.permission.type !== 'can_use_voucher' &&
+      this.props.permission.type === 'can_buy'
+    ) {
+      return <PurchaseButton {...this.props} active={true} />;
+    } else if (
+      this.props.permission.type !== 'can_use_voucher' &&
+      this.props.permission.type !== 'can_buy'
+    ) {
+      return <PurchaseButton {...this.props} active={false} />;
+    } else if (this.props.permission.type === 'can_use_voucher') {
+      return <VoucherButton {...this.props} />;
+    }
+
     return <View />;
   }
 }
@@ -266,62 +358,45 @@ export default class PaymentPolicy extends React.Component {
   +----------------------------------+--------------------------------------+
   | ~11,700~ (Origin)                |                                      |
   +----------------------------------+                                      +
-  | 8,189 (Amount)                   |  [DownloadButton]  [PurchaseButton]  |
+  | 8,189 (Amount)                   |      [Button1st]    [Button2nd]      |
   +----------------------------------+--------------------------------------+
    */
-
+  //   if(platform.iOS && class-type){
+  //   if (permission.type !== membership){
+  //   if (currentMembership == null) {
+  //   1번 경우
+  //   } else if (currentMembership == ‘오디오북 멤버쉽’){
+  //   2번 경우
+  //   }
+  //   }
+  //   }
   render() {
-    if (Platform.OS !== 'android' && this.props.learnType !== 'audioBook') {
-      // 렌더 안함
-      return <View />;
-    }
     if (this.props.permissionLoading) {
       return this.renderPermissionLoading();
     } else {
       return (
         <View style={styles.contentContainer}>
-          {Platform.OS === 'android' && (
-            <View>
-              <Origin {...this.props} />
-              <View style={CommonStyles.alignJustifyContentBetween}>
-                <View style={{ flex: 1 }}>
-                  <View>
-                    <Amount {...this.props} />
-                  </View>
-                  <View>
-                    {this.props.permission.type === 'can_buy' && 1 === 2 && (
-                      <Text style={styles.infoText}>
-                        별도 구매가 필요합니다
-                      </Text>
-                    )}
-                  </View>
+          <View>
+            {Platform.OS === 'android' && <Origin {...this.props} />}
+            <View style={CommonStyles.alignJustifyContentBetween}>
+              <View style={{ flex: 1 }}>
+                <View>
+                  <Amount {...this.props} />
                 </View>
                 <View>
-                  <View style={CommonStyles.alignJustifyFlex}>
-                    {this.props.permission.can_play && (
-                      <DownloadButton {...this.props} active={true} />
-                    )}
-                    {!this.props.permission.can_play && (
-                      <DownloadButton {...this.props} active={false} />
-                    )}
-
-                    {this.props.permission.type !== 'can_use_voucher' &&
-                      this.props.permission.type === 'can_buy' && (
-                        <PurchaseButton {...this.props} active={true} />
-                      )}
-                    {this.props.permission.type !== 'can_use_voucher' &&
-                      this.props.permission.type !== 'can_buy' && (
-                        <PurchaseButton {...this.props} active={false} />
-                      )}
-
-                    {this.props.permission.type === 'can_use_voucher' && (
-                      <VoucherButton {...this.props} />
-                    )}
-                  </View>
+                  {this.props.permission.type === 'can_buy' && 1 === 2 && (
+                    <Text style={styles.infoText}>별도 구매가 필요합니다</Text>
+                  )}
+                </View>
+              </View>
+              <View>
+                <View style={CommonStyles.alignJustifyFlex}>
+                  <Button1st {...this.props} />
+                  <Button2nd {...this.props} />
                 </View>
               </View>
             </View>
-          )}
+          </View>
         </View>
       );
     }
