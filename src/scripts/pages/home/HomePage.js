@@ -25,6 +25,14 @@ import HomeAudioPage from './HomeAudioPage';
 import HomeVideoPage from './HomeVideoPage';
 import Native from '../../commons/native';
 
+import {
+  Sentry,
+  SentrySeverity,
+  SentryLog
+} from 'react-native-sentry';
+
+Sentry.config('https://4f360fd602b44af79e2f4ec8b44e6566@sentry.io/1279179').install();
+
 const styles = StyleSheet.create({
   tabContainer: {
     position: 'absolute',

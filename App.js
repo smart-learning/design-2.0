@@ -47,6 +47,11 @@ import VideoScreen from './src/scripts/pages/video/VideoScreen';
 import commonStyle from './src/styles/common';
 import FullModalSectionPage from './src/scripts/pages/auth/FullModalSectionPage';
 
+import { Sentry } from 'react-native-sentry';
+
+Sentry.config('https://4f360fd602b44af79e2f4ec8b44e6566@sentry.io/1279179').install();
+
+
 class Data {
   @observable
   welaaaAuthLoaded = false;
