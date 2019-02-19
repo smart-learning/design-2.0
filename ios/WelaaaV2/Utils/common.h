@@ -11,6 +11,7 @@
 #import <net/if.h>      // For IFF_LOOPBACK
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SAMKeychain/SAMKeychain.h>
+#import <AdSupport/ASIdentifierManager.h>
 
 #define SYSTEM_VERSION  [[UIDevice currentDevice] systemVersion]
 
@@ -123,6 +124,11 @@
 + (BOOL) compareBetweenCurrentVersion : (NSString *) currentVersion
                         andNewVersion : (NSString *) newVersion;
 
+// TAS 푸시 발송 시스템에 사용
++ (id) getDeviceToken;
++ (void) setDeviceToken : (NSData *) deviceToken;
+
++ (NSString *) getAdvertiserId;
 @end
 
 

@@ -162,6 +162,7 @@ export default {
     if (sort) {
       params.sort = sort;
     }
+    params.count = 20;
     url += '?' + encodeParams(params);
 
     return axios
@@ -219,10 +220,10 @@ export default {
     if (page) {
       params.page = page;
     }
-
     if (sort) {
       params.sort = sort;
     }
+    params.count = 20;
 
     url += '?' + encodeParams(params);
 
@@ -259,6 +260,20 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(API_PREFIX + 'v1.0/contents/video-courses/' + id)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  },
+
+  getItemEvaluation(id) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(API_PREFIX + 'v1.0/action/stars/' + id)
         .then(response => {
           resolve(response.data);
         })
@@ -418,12 +433,16 @@ export default {
       });
   },
 
-  getHomeContents(isRefresh = false) {
+  getHomeContents(isRefresh = false, ccode = null) {
     let expired = DEFAULT_EXPIRED;
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/video', expired)
+    let url = API_PREFIX + 'v1.0/cms/main/video';
+    if (!!ccode) {
+      url += '/' + ccode;
+    }
+    return cacheOrLoad(url, expired)
       .then(data => {
         return data;
       })
@@ -452,7 +471,31 @@ export default {
       });
   },
   getHomeSeries() {
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/series', DEFAULT_EXPIRED)
+    return cacheOrLoad(API_PREFIX + 'v1.1/cms/main/series', DEFAULT_EXPIRED)
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
+  getHomeSeriesDetail(cate) {
+    return cacheOrLoad(
+      API_PREFIX + '/v1.0/contents/video-series/' + cate,
+      DEFAULT_EXPIRED,
+    )
+      .then(data => {
+        return data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
+  getVideoSeries() {
+    return cacheOrLoad(
+      API_PREFIX + 'v1.0/contents/video-series',
+      DEFAULT_EXPIRED,
+    )
       .then(data => {
         return data;
       })
@@ -628,15 +671,21 @@ export default {
     return axios.post(API_PREFIX + 'v1.0/membership/vouchers/exchange', params);
   },
 
-  getBookReviewList(cid) {
+  getReviewList(cid,page = 1) {
     return new Promise((resolve, reject) => {
+      const params = {};
+      params.count = 5;
+      params.page = page;
+      const query = '?' + encodeParams(params);
       axios
-        .get(API_PREFIX + 'v1.0/action/comments/' + cid)
+        .get(API_PREFIX + 'v1.0/action/comments/' + cid + query)
         .then(response => {
-          response.data.forEach(element => {
-            element.key = element.id.toString();
-          });
-          resolve(response.data);
+          // 전체 목록에서도 my 에 속한 값들이 같이 내려오고 있기 때문에 앱에서 데이터를 받은 후 걸러내야 함
+          const my = response.data.my;
+          let all = response.data.all;
+          my.forEach( item => all = all.filter( e => e.id !== item.id ) );
+          const pagination = this.parsePaginationHeaders(response.headers)
+          resolve({ my, all, pagination });
         })
         .catch(error => {
           console.log(error);
@@ -645,12 +694,40 @@ export default {
     });
   },
 
-  getHomeAudioBookContents(isRefresh = false) {
+  postReview(cid, content) {
+    return axios.post(API_PREFIX + 'v1.0/action/comments/' + cid, {
+      content,
+    });
+  },
+
+  putReview(id, content) {
+    return axios.put(API_PREFIX + 'v1.0/action/comments/' + id, {
+      content,
+    });
+  },
+
+  deleteReview(id) {
+    return axios.delete(API_PREFIX + 'v1.0/action/comments/' + id);
+  },
+
+  postStarCount(cid, score) {
+    // console.log( 'postStarCount - cid', cid );
+    // console.log( 'postStarCount - content', store );
+    return axios.post(API_PREFIX + 'v1.0/action/stars/' + cid, {
+      score,
+    });
+  },
+
+  getHomeAudioBookContents(isRefresh = false, ccode = null) {
     let expired = DEFAULT_EXPIRED;
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/audiobook', expired)
+    let url = API_PREFIX + 'v1.0/cms/main/audiobook';
+    if (!!ccode) {
+      url += '/' + ccode;
+    }
+    return cacheOrLoad(url, expired)
       .then(data => {
         return data;
       })
@@ -718,7 +795,7 @@ export default {
     if (isRefresh) {
       expired = 1;
     }
-    return cacheOrLoad(API_PREFIX + 'v1.0/cms/main/a-book-a-day', expired)
+    return cacheOrLoad(API_PREFIX + 'v1.1/cms/main/a-book-a-day', expired)
       .then(data => {
         return data;
       })

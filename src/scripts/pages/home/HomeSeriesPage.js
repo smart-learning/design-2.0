@@ -20,18 +20,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   titleH3: {
     marginTop: 30,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333333'
+    color: '#34342C'
   },
   titleHr: {
     height: 1,
     marginTop: 7,
-    backgroundColor: '#333333'
+    backgroundColor: '#34342C'
   },
   container: {
     flex: 1

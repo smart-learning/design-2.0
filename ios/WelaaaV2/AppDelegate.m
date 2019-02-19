@@ -42,6 +42,8 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 - (BOOL)          application : (UIApplication *) application
 didFinishLaunchingWithOptions : (NSDictionary *) launchOptions
 {
+    [NSThread sleepForTimeInterval : 1.5]; // 인트로에서 1.5초 지연.
+    
     // Push notification badge reset. 앱이 완전히 재구동되어야 뱃지가 디카운팅이 됨. 백그라운드에서 돌아올때는 여기서 리셋되지는 않습니다.
     if ( [UIApplication sharedApplication].applicationIconBadgeNumber != 0 )
     {
@@ -166,6 +168,7 @@ RCTRootView *rootView = [ [RCTRootView alloc] initWithBundleURL : jsCodeLocation
     NSLog(@"  [DeviceInfo] idForVendor   :  %@", [[[UIDevice currentDevice] identifierForVendor] UUIDString]);  // 171025 김태현
     NSLog(@"  [DeviceInfo] Cellular Type :  %@", [common getCellularType]);
     NSLog(@"  [DeviceInfo] Device Name   :  %@", [[UIDevice currentDevice] name]);
+    NSLog(@"  [DeviceInfo] Advertiser ID :  %@", [common getAdvertiserId]);
     [common getNetInterfaceNames];
   
     /** APPSFLYER INIT **/
@@ -350,7 +353,9 @@ didRegisterForRemoteNotificationsWithDeviceToken : (NSData *) deviceToken
   
     // [PMS setPushToken : deviceToken]; // TAS
     //  비로그인 상태일 때는 아예 푸시 발송 대상에서 제외시키기 위해 토큰 등록하지 않는걸로 결론.
-    //  앱 설치만 한 경우 아직 사용자의 약관 동의 등을 받지 않은 상태이기 때문에. 2019.1.24.
+    //  앱 설치만 한 경우 아직 사용자의 약관 동의 등을 받지 않은 상태이고 과금 문제 때문에. 2019.1.28.
+  
+    [common setDeviceToken:deviceToken];  // 로그인 이후에 등록하기 위해 미리 저장.
 }
 
 #pragma mark - Core Data stack

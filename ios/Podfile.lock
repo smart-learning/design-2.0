@@ -20,8 +20,10 @@ PODS:
   - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
+  - boost-for-react-native (1.63.0)
   - Crashlytics (3.11.0):
     - Fabric (~> 1.8.0)
+  - DoubleConversion (1.1.6)
   - Fabric (1.8.0)
   - FBSDKCoreKit (4.38.0):
     - Bolts (~> 1.9)
@@ -58,6 +60,12 @@ PODS:
     - GoogleUtilities/Environment (~> 5.2)
     - GoogleUtilities/Reachability (~> 5.2)
     - Protobuf (~> 3.1)
+  - FLAnimatedImage (1.0.12)
+  - Folly (2016.10.31.00):
+    - boost-for-react-native
+    - DoubleConversion
+    - glog
+  - glog (0.3.5)
   - GoogleAppMeasurement (5.2.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
     - GoogleUtilities/MethodSwizzler (~> 5.2)
@@ -104,31 +112,88 @@ PODS:
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
   - Protobuf (3.6.1)
+  - React (0.57.8):
+    - React/Core (= 0.57.8)
+  - react-native-fast-image (5.1.2):
+    - FLAnimatedImage
+    - React
+    - SDWebImage/Core
+    - SDWebImage/GIF
+  - React/Core (0.57.8):
+    - yoga (= 0.57.8.React)
+  - React/CxxBridge (0.57.8):
+    - Folly (= 2016.10.31.00)
+    - React/Core
+    - React/cxxreact
+  - React/cxxreact (0.57.8):
+    - boost-for-react-native (= 1.63.0)
+    - Folly (= 2016.10.31.00)
+    - React/jschelpers
+    - React/jsinspector
+  - React/DevSupport (0.57.8):
+    - React/Core
+    - React/RCTWebSocket
+  - React/fishhook (0.57.8)
+  - React/jschelpers (0.57.8):
+    - Folly (= 2016.10.31.00)
+    - React/PrivateDatabase
+  - React/jsinspector (0.57.8)
+  - React/PrivateDatabase (0.57.8)
+  - React/RCTBlob (0.57.8):
+    - React/Core
+  - React/RCTImage (0.57.8):
+    - React/Core
+    - React/RCTNetwork
+  - React/RCTNetwork (0.57.8):
+    - React/Core
+  - React/RCTText (0.57.8):
+    - React/Core
+  - React/RCTWebSocket (0.57.8):
+    - React/Core
+    - React/fishhook
+    - React/RCTBlob
   - SAMKeychain (1.5.3)
   - SDWebImage (4.4.2):
     - SDWebImage/Core (= 4.4.2)
   - SDWebImage/Core (4.4.2)
+  - SDWebImage/GIF (4.4.2):
+    - FLAnimatedImage (~> 1.0)
+    - SDWebImage/Core
   - Toast (4.0.0)
+  - yoga (0.57.8.React)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.0)
   - Bolts
   - Crashlytics
+  - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Fabric
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKShareKit
   - Firebase/Core
   - Firebase/Messaging
+  - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
+  - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - KakaoOpenSDK
+  - react-native-fast-image (from `../node_modules/react-native-fast-image`)
+  - React/Core (from `../node_modules/react-native`)
+  - React/CxxBridge (from `../node_modules/react-native`)
+  - React/DevSupport (from `../node_modules/react-native`)
+  - React/RCTImage (from `../node_modules/react-native`)
+  - React/RCTNetwork (from `../node_modules/react-native`)
+  - React/RCTText (from `../node_modules/react-native`)
+  - React/RCTWebSocket (from `../node_modules/react-native`)
   - SAMKeychain
   - SDWebImage (~> 4.0)
   - Toast (~> 4.0.0)
+  - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AFNetworking
     - Bolts
+    - boost-for-react-native
     - Crashlytics
     - Fabric
     - FBSDKCoreKit
@@ -139,6 +204,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseInstanceID
     - FirebaseMessaging
+    - FLAnimatedImage
     - GoogleAppMeasurement
     - GoogleUtilities
     - KakaoOpenSDK
@@ -148,10 +214,26 @@ SPEC REPOS:
     - SDWebImage
     - Toast
 
+EXTERNAL SOURCES:
+  DoubleConversion:
+    :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  Folly:
+    :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
+  glog:
+    :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  React:
+    :path: "../node_modules/react-native"
+  react-native-fast-image:
+    :path: "../node_modules/react-native-fast-image"
+  yoga:
+    :path: "../node_modules/react-native/ReactCommon/yoga"
+
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   Crashlytics: 1448070c1d2731ab71ea7c3faf84ac0f69657287
+  DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
   Fabric: 4ac1cdfef3004ccd83ce0959b91eda8a6e37df72
   FBSDKCoreKit: 2ab7fdbf600dc6b628ba7a49aa29d357a7b4c74e
   FBSDKLoginKit: 634fa27e72e33620eb6389253337342c03d4a407
@@ -161,15 +243,21 @@ SPEC CHECKSUMS:
   FirebaseCore: c6079de64c1a87000e52e9b408dddcadc901177f
   FirebaseInstanceID: 78ba376fcd5b94c001f9999b2cbd3d1f1e56e78d
   FirebaseMessaging: 000b32447b461b34b6b912b23ec11be20b503b5b
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  Folly: c89ac2d5c6ab169cd7397ef27485c44f35f742c7
+  glog: e8acf0ebbf99759d3ff18c86c292a5898282dcde
   GoogleAppMeasurement: 2b3a023a61239c8d002e6e4fcf4abce8eddce0e0
   GoogleUtilities: abb092d2c12e817fa3e0e7b274987dd72fb86ec3
   KakaoOpenSDK: efae64765210068818e6de3f32126a877a532583
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
+  React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
+  react-native-fast-image: cba3d9bf9c2cf8ddb643d887a686c53a5dd90a2c
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: 789fef51b7b5a508594a7e0243451c5ef77ed647
+PODFILE CHECKSUM: 70fbf9f384615d48be688cafa1069aa7c16c6d77
 
 COCOAPODS: 1.5.3

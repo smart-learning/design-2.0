@@ -1,19 +1,19 @@
 import React from 'react';
 import nav from '../../commons/nav';
 import {
-  ImageBackground,
   Linking,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const styles = StyleSheet.create({
   thumbnail: {
     width: '100%',
-    paddingTop: '17.3571428572%',
-    paddingBottom: '17.3571428572%',
-  },
+    paddingTop: '22.22%',
+    paddingBottom: '22.22%'
+  }
 });
 
 export default class HomeBanner extends React.Component {
@@ -32,12 +32,12 @@ export default class HomeBanner extends React.Component {
     } else if (action_type === 'videocourse') {
       this.props.navigation.navigate('ClassDetail', {
         id: action_param,
-        title: '강좌',
+        title: ' ',
       });
     } else if (action_type === 'audiobook') {
       this.props.navigation.navigate('AudioBookDetail', {
         id: action_param,
-        title: '오디오북',
+        title: ' ',
       });
     } else if (action_type === 'outlink') {
       Linking.openURL(action_param);
@@ -64,7 +64,7 @@ export default class HomeBanner extends React.Component {
           }}
           activeOpacity={0.9}
         >
-          <ImageBackground
+          <FastImage
             source={{ uri: bannerImageUrl }}
             resizeMode="cover"
             style={styles.thumbnail}

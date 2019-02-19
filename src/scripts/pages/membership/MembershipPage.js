@@ -14,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import appsFlyer from 'react-native-appsflyer';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import Swiper from 'react-native-swiper';
 import { SafeAreaView } from 'react-navigation';
@@ -49,12 +48,12 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#34342C',
   },
   sectionSubTitle: {
     paddingBottom: 7,
     fontSize: 14,
-    color: '#333333',
+    color: '#34342C',
   },
   sectionList: {
     paddingBottom: 10,
@@ -68,12 +67,12 @@ const styles = StyleSheet.create({
     top: 8,
     width: 4,
     height: 4,
-    backgroundColor: '#333333',
+    backgroundColor: '#34342C',
   },
   sectionListItemText: {
     paddingLeft: 15,
     fontSize: 14,
-    color: '#333333',
+    color: '#34342C',
   },
   sectionListItemTextImportant: {
     fontSize: 14,
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
     fontSize: 24,
-    color: '#333333',
+    color: '#34342C',
   },
   paragraphBox: {
     marginBottom: 30,
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
   paragraphText: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#333333',
+    color: '#34342C',
   },
   paragraphImportantText: {
     textAlign: 'center',
@@ -224,7 +223,7 @@ const styles = StyleSheet.create({
   },
   membershipPrice: {
     fontSize: 16,
-    color: '#333333',
+    color: '#34342C',
   },
   membershipSalePrice: {
     fontSize: 14,
@@ -267,30 +266,6 @@ export default class MembershipPage extends React.Component {
   }
 
   componentDidMount = async () => {
-    /* 2018.12.27
-     * appsFlyer 마케팅 요청
-     * 이메일 가입 시점
-     */
-    if (
-      !!this.props.navigation.state.params &&
-      !!this.props.navigation.state.params.trackEvent
-    ) {
-      appsFlyer.trackEvent(
-        'af_complete_registration',
-        this.props.navigation.getParam('trackEvent'),
-        result => {
-          console.log('AF::appsFlyer.trackEvent', result);
-        },
-        error => {
-          console.error('AF::appsFlyer.trackEvent error ', error);
-        },
-      );
-
-      const params = this.props.navigation.state.params;
-      delete params.trackEvent;
-      this.props.navigation.setParams(params);
-    }
-
     this.disposer = observe(globalStore.buyResult, change => {
       if ('success' === change.name && change.newValue) {
         globalStore.buyResult.success = false;

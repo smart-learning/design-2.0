@@ -9,22 +9,58 @@ import createStore from '../../commons/createStore';
 import globalStore from '../../commons/store';
 import DetailLayout from '../../components/detail/DetailLayout';
 import utils from '../../commons/utils';
+import { action, observable } from 'mobx';
+
+class Data {
+  @observable cid = null;
+  @observable isLoading = true;
+  @observable itemData = null;
+  @observable itemClipData = [];
+  @observable itemReviewData = { my: [], all: [] };
+  @observable itemEvaluationData = [];
+  @observable tabStatus = 'info';
+  @observable lectureView = false;
+  @observable teacherView = false;
+  @observable slideHeight = null;
+  @observable reviewText = '';
+  @observable reviewStar = 5;
+  @observable voucherStatus = {};
+  @observable isSubmitStatus = false;
+  @observable pagination = {
+    'has-next': true,
+  };
+  @observable isReviewLoading = false;
+  @observable myReviewId = null;
+  @observable isReviewUpdate = false;
+
+  @action.bound
+  loadReview(page = 1) {
+    this.isReviewLoading = true;
+    net
+      .getReviewList(this.cid, page)
+      .then(comments => {
+        this.pagination = comments.pagination;
+        this.itemReviewData.my = comments.my;
+        comments.all.forEach(comment => {
+          const exist = this.itemReviewData.all.find(
+            element => element.id === comment.id,
+          );
+          if (!exist) {
+            this.itemReviewData.all.push(comment);
+          }
+        });
+        this.isReviewLoading = false;
+      })
+      .catch(error => {
+        Alert.alert('Error', error.message);
+        this.isReviewLoading = false;
+      });
+  }
+}
 
 @observer
 class AudioBookDetailPage extends React.Component {
-  data = createStore({
-    isLoading: true,
-    itemData: null,
-    itemClipData: [],
-    itemReviewData: [],
-    tabStatus: 'info',
-    lectureView: false,
-    teacherView: false,
-    slideHeight: null,
-    reviewText: '',
-    reviewStar: 0,
-    voucherStatus: {},
-  });
+  data = new Data();
 
   constructor(props) {
     super(props);
@@ -110,29 +146,67 @@ class AudioBookDetailPage extends React.Component {
 
   getData = async () => {
     this.data.isLoading = true;
-    const resultBookData = await net.getBookItem(this.state.id);
-    const resultChapterData = await net.getBookChapterList(this.state.id);
+    let resultBookData;
+    try {
+      resultBookData = await net.getBookItem(this.state.id);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
+    }
+    let resultChapterData;
+    try {
+      resultChapterData = await net.getBookChapterList(this.state.id);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+      // 기본 데이터를 로드하지 못했다면 더 이상의 진행이 불가하므로 getData 함수 종료.
+      this.data.isLoading = false;
+      return;
+    }
 
     this.props.navigation.setParams({
-      title: resultBookData.title,
+      title: ' ',
     });
 
+    if (!resultBookData.cid) {
+      Alert.alert('Error', 'cid를 찾을 수 없습니다.');
+      this.data.isLoading = false;
+      return;
+    }
+
     this.data.itemData = resultBookData;
+    this.data.cid = resultBookData.cid;
     this.data.itemClipData = resultChapterData;
     if (resultBookData && resultBookData.cid) {
       try {
-        const comments = await net.getBookReviewList(resultBookData.cid);
-        this.data.itemReviewData = comments;
+        const evaluation = await net.getItemEvaluation(resultBookData.cid);
+        this.data.itemEvaluationData = evaluation;
       } catch (error) {
-        console.log(error);
+        Alert.alert('Error', error.message);
+      }
+      try {
+        await this.data.loadReview();
+      } catch (error) {
+        Alert.alert('Error', error.message);
       }
     }
-
     this.data.isLoading = false;
-    await this.getPlayPermissions();
+
+    console.log('resultBookData', resultBookData);
+
+    try {
+      await this.getPlayPermissions();
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
 
     //조회수 증가
-    await net.postAddContentViewCount(resultBookData.cid);
+    try {
+      await net.postAddContentViewCount(resultBookData.cid);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
 
   componentWillUnmount() {}

@@ -245,6 +245,17 @@ class App extends React.Component {
     );
   };
 
+  latestMiniPlayer = async () => {
+    if (Platform.OS === 'android') {
+      /**
+       * 2019.01.23
+       * 김중온
+       * Native 에 미니플레이어 설정 요청
+       */
+      Native.latestMiniPlayer();
+    }
+  };
+
   async componentDidMount() {
     this.addNetInfoEvent();
 
@@ -628,6 +639,35 @@ class App extends React.Component {
       'keyboardDidHide',
       this.keyboardDidHide,
     );
+
+    this.latestMiniPlayer();
+  }
+
+  componentWillUpdate() {
+    /* 2019.01.29 김중온
+     * 대표님 요청 사항 무료계정 생성 후 메인 진입 수정으로 인해
+     * appsflyer 호출 위치 수정.
+     * appsFlyer 마케팅 요청
+     */
+    if (
+      !!this.props.navigation.state.params &&
+      !!this.props.navigation.state.params.trackEvent
+    ) {
+      appsFlyer.trackEvent(
+        'af_complete_registration',
+        this.props.navigation.getParam('trackEvent'),
+        result => {
+          console.log('AF::appsFlyer.trackEvent', result);
+        },
+        error => {
+          console.error('AF::appsFlyer.trackEvent error ', error);
+        },
+      );
+
+      const params = this.props.navigation.state.params;
+      delete params.trackEvent;
+      this.props.navigation.setParams(params);
+    }
   }
 
   componentWillUnmount() {

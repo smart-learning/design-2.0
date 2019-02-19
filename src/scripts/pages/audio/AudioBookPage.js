@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { SafeAreaView, withNavigation } from 'react-navigation';
 import PageCategory from '../../components/PageCategory';
@@ -21,44 +21,39 @@ import PageCategoryItemVO from '../../vo/PageCategoryItemVO';
 import BookVO from '../../vo/BookVO';
 import createStore from '../../commons/createStore';
 import AudioBookInfoPage from './AudioBookInfoPage';
+import AudioBookListItem from '../../components/audio/AudioBookListItem';
 
 const styles = StyleSheet.create({
   toggleGroup: {
     width: '100%',
     padding: 12,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   alignJustify: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   sortWrap: {
-    width: 100
+    width: 150,
   },
   sortButton: {
     paddingLeft: 8,
-    paddingRight: 8
-  },
-  sortDot: {
-    width: 6,
-    height: 6,
-    marginRight: 5,
-    backgroundColor: '#d7d7d7'
+    paddingRight: 8,
   },
   sortText: {
     fontSize: 12,
-    color: '#4A4A4A'
+    color: '#4A4A4A',
   },
   sortTextActive: {
     fontSize: 12,
-    color: '#000000',
-    fontWeight: 'bold'
+    color: CommonStyles.COLOR_PRIMARY,
+    fontWeight: 'bold',
   },
   sortBar: {
     width: 1,
-    height: 17,
-    backgroundColor: '#CFCFCF'
+    height: 10,
+    backgroundColor: '#E2E2E2',
   },
   myButton: {
     paddingTop: 3,
@@ -66,11 +61,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     borderWidth: 1,
-    borderColor: '#CBCBCB'
+    borderColor: '#CBCBCB',
   },
   myButtonText: {
     fontSize: 12,
-    color: '#585858'
+    color: '#585858',
   },
   linkViewAll: {
     alignItems: 'center',
@@ -79,20 +74,20 @@ const styles = StyleSheet.create({
     height: 36,
     marginLeft: 'auto',
     marginRight: 'auto',
-    backgroundColor: CommonStyles.COLOR_PRIMARY
+    backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   classLinkViewAll: {
     marginTop: 15,
-    marginBottom: 30
+    marginBottom: 30,
   },
   linkViewAllText: {
     fontSize: 14,
-    color: '#ffffff'
+    color: '#ffffff',
   },
   linkViewAllIcon: {
     paddingLeft: 7,
-    height: 13
-  }
+    height: 13,
+  },
 });
 
 @observer
@@ -103,22 +98,20 @@ class AudioBookPage extends React.Component {
     displayData: null,
     selectedCategory: null,
     ccode: null,
-    pagination: {}
+    pagination: {},
+    categoryScrollToEnd: false,
+    tabSortStatus: 'hot',
   });
-
-  // 인기 , 신규 조회 조건 , 'hot' , 'new'
-  @observable
-  tabSortStatus = 'hot';
 
   loadAudioList = async (ccode = null, page = 1, sort) => {
     this.store.isLoading = true;
     if (page === 1) {
       this.store.displayData = null;
     }
-    if (sort) {
-      this.tabSortStatus = sort;
+    if(sort) {
+      this.store.tabSortStatus = sort;
     }
-    const data = await net.getAudioBookList(ccode, page, this.tabSortStatus);
+    const data = await net.getAudioBookList(ccode, page, this.store.tabSortStatus);
     const VOs = data.items.map((element, n) => {
       const vo = new BookVO();
       _.each(element, (value, key) => (vo[key] = value));
@@ -143,18 +136,25 @@ class AudioBookPage extends React.Component {
   };
 
   loadMore = () => {
-    if (this.store.pagination['has-next']) {
-      this.loadAudioList(this.store.ccode, this.store.pagination.page + 1);
+    if (!this.store.isLoading) {
+      if (this.store.pagination['has-next']) {
+        this.loadAudioList(this.store.ccode, this.store.pagination.page + 1);
+      }
     }
   };
 
   async componentDidMount() {
     this.props.navigation.setParams({ title: '오디오북 전체목록' });
+    this.store.tabSortStatus = this.props.navigation.getParam('sortStatus', 'hot');
 
     const currCategory = this.props.navigation.getParam('data', {});
     const ccode = currCategory.ccode ? currCategory.ccode : null;
+    const categoryScrollToEnd = currCategory.categoryScrollToEnd
+      ? currCategory.categoryScrollToEnd
+      : false;
     this.store.ccode = ccode;
     this.store.selectedCategory = currCategory.id ? currCategory.id : 0;
+    this.store.categoryScrollToEnd = categoryScrollToEnd;
 
     const loadedCategories = await net.getAudioBookCategory();
     this.store.categories = loadedCategories.map(element => {
@@ -174,13 +174,55 @@ class AudioBookPage extends React.Component {
     });
   };
 
+  handleScroll = event => {
+    const ratio =
+      event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
+    if (ratio > 0.7) {
+      this.loadMore();
+    }
+  };
+
   _renderHeader() {
     return (
-      <View style={{ position: 'absolute', top: 0, width: '100%' }}>
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+          alignSelf: 'flex-start',
+          backgroundColor: '#FFFFFF',
+        }}
+      >
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: '#FFFFFF',
+            paddingLeft: 10,
+            paddingRight: 10,
+          }}
+        >
+          <PageCategory
+            ref={ref => (this.category = ref)}
+            selectedCategory={this.store.selectedCategory}
+            data={this.store.categories}
+            categoryScrollToEnd={this.store.categoryScrollToEnd}
+            onCategorySelect={this.onCategorySelect}
+          />
+        </View>
+
+        <View
+          style={{
+            width: '100%',
+            height: 1,
+            marginTop: 12,
+            backgroundColor: '#E2E2E2',
+          }}
+        />
+
         <View style={styles.toggleGroup}>
-          <View style={styles.alignJustify}>
-            <View style={styles.sortWrap}>
-              <View style={styles.alignJustify}>
+          <View>
+            <View style={styles.alignJustify}>
+              <View>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
@@ -188,13 +230,9 @@ class AudioBookPage extends React.Component {
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
-                  <View style={styles.sortDot} borderRadius={3} />
-
-                  {/* <Text style={styles.sortText}>인기</Text> */}
-
                   <Text
                     style={
-                      this.tabSortStatus === 'hot'
+                      this.store.tabSortStatus === 'hot'
                         ? styles.sortTextActive
                         : styles.sortText
                     }
@@ -202,7 +240,9 @@ class AudioBookPage extends React.Component {
                     인기
                   </Text>
                 </TouchableOpacity>
-                <View style={styles.sortBar} />
+              </View>
+              <View style={styles.sortBar} />
+              <View>
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => {
@@ -210,44 +250,19 @@ class AudioBookPage extends React.Component {
                   }}
                   style={[styles.alignJustify, styles.sortButton]}
                 >
-                  <View style={styles.sortDot} borderRadius={3} />
-                  {/* <Text style={styles.sortText}>신규</Text> */}
                   <Text
                     style={
-                      this.tabSortStatus === 'new'
+                      this.store.tabSortStatus === 'new'
                         ? styles.sortTextActive
                         : styles.sortText
                     }
                   >
-                    신규
+                    업데이트 순
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
-            {/* <TouchableOpacity
-                  activeOpacity={0.9}
-                  style={{ marginLeft: 'auto' }}
-                  onPress={() => {
-                    this.props.navigation.navigate('AudioBookBuyPage');
-                  }}
-                >
-                  <View style={styles.myButton} borderRadius={3}>
-                    <Text style={styles.myButtonText}>내 오디오북 보기</Text>
-                  </View>
-                </TouchableOpacity> */}
           </View>
-        </View>
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: '#FFFFFF'
-          }}
-        >
-          <PageCategory
-            selectedCategory={this.store.selectedCategory}
-            data={this.store.categories}
-            onCategorySelect={this.onCategorySelect}
-          />
         </View>
       </View>
     );
@@ -255,62 +270,49 @@ class AudioBookPage extends React.Component {
 
   render() {
     return (
-      <SafeAreaView
-        style={[
-          CommonStyles.container,
-          { backgroundColor: '#ecf0f1', justifyContent: 'flex-start' }
-        ]}
-      >
-        
-        <View style={{ width: '100%', paddingTop: 82 }}>
-          {this.store.displayData !== null ? (
-            <FlatList
-              data={this.store.displayData}
-              ListFooterComponent={() => {
-                return !this.store.isLoading &&
-                  this.store.pagination['has-next'] ? (
-                  <TouchableOpacity
-                    style={{ width: '100%', paddingHorizontal: 10 }}
-                    activeOpacity={0.9}
-                    onPress={this.loadMore}
-                  >
-                    <View
-                      style={[styles.linkViewAll, styles.classLinkViewAll]}
-                      borderRadius={5}
-                    >
-                      <Text style={styles.linkViewAllText}>더보기</Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : null;
+      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
+        <SafeAreaView style={{ flex: 1, width: '100%' }}>
+          <ScrollView style={{ flex: 1 }} onScroll={this.handleScroll}>
+            <View
+              style={{
+                width: '100%',
+                paddingTop: 82,
+                paddingHorizontal: 15,
               }}
-              renderItem={({ item }) => (
-                <Book
-                  id={item.id}
-                  type="best"
-                  navigation={this.props.navigation}
-                  itemData={item}
+            >
+              {this.store.displayData !== null ? (
+                <FlatList
+                  data={this.store.displayData}
+                  // onEndReached={this.loadMore}
+                  extraData={this.store.displayData.length}
+                  renderItem={({ item }) => (
+                    <AudioBookListItem
+                      id={item.id}
+                      navigation={this.props.navigation}
+                      itemData={item}
+                      tabStatus={this.store.tabSortStatus}
+                    />
+                  )}
                 />
-              )}
-            />
-          ) : (
-            undefined
-          )}
-        </View>
-
-        <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
-          {this.store.isLoading && (
-            <View style={{ marginTop: 12 }}>
-              <ActivityIndicator
-                size="large"
-                color={CommonStyles.COLOR_PRIMARY}
-              />
+              ) : (
+                  undefined
+                )}
             </View>
-          )}
-        </View>
 
-        {this._renderHeader()}
-        
-      </SafeAreaView>
+            <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
+              {this.store.isLoading && (
+                <View style={{ marginTop: 12 }}>
+                  <ActivityIndicator
+                    size="large"
+                    color={CommonStyles.COLOR_PRIMARY}
+                  />
+                </View>
+              )}
+            </View>
+          </ScrollView>
+          {this._renderHeader()}
+        </SafeAreaView>
+      </View>
     );
   }
 }

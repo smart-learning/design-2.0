@@ -1,59 +1,70 @@
 import React from 'react';
-import { Text, View, StyleSheet, FlatList, ScrollView } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  Image,
+} from 'react-native';
 import CommonStyles from '../../../styles/common';
 import ClipListItem from './ClipListItem';
 import ChapterListItem from './ChapterListItem';
 import moment from 'moment';
+import IcPlay from '../../../images/ic-duration.png';
 
 const styles = StyleSheet.create({
   clipListContainer: {
     paddingBottom: 30,
-    backgroundColor: '#2a2c31'
+    backgroundColor: '#ffffff',
   },
   clipInfoText: {
-    marginTop: 30,
-    marginBottom: 15,
+    paddingLeft: 5,
     fontSize: 13,
-    color: '#ffffff'
+    color: '#353A3C',
   },
   clipInfoTextImportant: {
     fontWeight: 'bold',
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   chapterListContainer: {
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   chapterInfoText: {
     marginTop: 30,
     marginBottom: 15,
     fontSize: 13,
-    color: '#333333'
+    color: '#34342C',
   },
   notReadyText: {
     marginTop: 30,
     marginBottom: 15,
     fontSize: 13,
-    color: '#333333',
+    color: '#34342C',
     borderWidth: 1,
     borderColor: '#bbbbbe',
-    padding: 15
+    padding: 15,
   },
   chapterInfoTextImportant: {
     fontWeight: 'bold',
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   chapterTitleText: {
     paddingTop: 40,
     paddingBottom: 15,
     fontWeight: 'bold',
     fontSize: 18,
-    color: CommonStyles.COLOR_PRIMARY
+    color: CommonStyles.COLOR_PRIMARY,
   },
   chapterHr: {
     width: '100%',
     height: 1,
-    backgroundColor: '#dddddd'
-  }
+    backgroundColor: '#dddddd',
+  },
+  btnSetSmall: {
+    width: 14,
+    height: 14,
+  },
 });
 
 export default class TabContentList extends React.Component {
@@ -75,19 +86,24 @@ export default class TabContentList extends React.Component {
     return (
       <View>
         <ScrollView style={{ flex: 1 }}>
-          {this.props.learnType === 'class' && (
-            <View style={styles.clipListContainer}>
-              <View style={CommonStyles.contentContainer}>
+          <View style={styles.clipListContainer}>
+            <View style={CommonStyles.contentContainer}>
+              <View
+                style={[
+                  CommonStyles.alignJustifyItemCenter,
+                  { marginTop: 30, marginBottom: 15 },
+                ]}
+              >
+                <Image source={IcPlay} style={styles.btnSetSmall} />
                 <Text style={styles.clipInfoText}>
-                  <Text style={styles.clipInfoTextImportant}>
-                    {this.props.store.itemClipData.length}개
-                  </Text>
-                  강의클립, 전체 재생시간
+                  전체 재생시간{' '}
                   <Text
                     style={styles.clipInfoTextImportant}
                   >{`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
                 </Text>
+              </View>
 
+              {this.props.learnType === 'class' && (
                 <FlatList
                   style={{ width: '100%' }}
                   data={this.props.store.itemClipData}
@@ -95,42 +111,24 @@ export default class TabContentList extends React.Component {
                     <ClipListItem type={'detailClip'} itemData={item} />
                   )}
                 />
-              </View>
-            </View>
-          )}
+              )}
 
-          {this.props.learnType === 'audioBook' && (
-            <View style={styles.chapterListContainer}>
-              <View style={CommonStyles.contentContainer}>
-                <Text style={styles.chapterInfoText}>
-                  <Text style={styles.clipInfoTextImportant}>
-                    {/* {this.props.store.itemClipData.length} */}
-                    {realLength}개
-                  </Text>
-                  챕터, 전체 재생시간
-                  <Text
-                    style={styles.clipInfoTextImportant}
-                  >{`${playTime.hours()}시간 ${playTime.minutes()}분`}</Text>
-                </Text>
-
-                <View>
-                  <Text style={styles.chapterTitleText}>목차</Text>
-                  <View style={styles.chapterHr} />
-                </View>
-
+              {this.props.learnType === 'audioBook' && (
                 <FlatList
                   style={{ width: '100%' }}
                   data={this.props.store.itemClipData}
-                  renderItem={({ item }) =>
+                  renderItem={({ item }) => (
                     <ChapterListItem
                       itemData={item}
                       store={this.props.store}
                       paymentType={this.props.paymentType}
-                      learnType={this.props.learnType} />}
+                      learnType={this.props.learnType}
+                    />
+                  )}
                 />
-              </View>
+              )}
             </View>
-          )}
+          </View>
         </ScrollView>
       </View>
     );

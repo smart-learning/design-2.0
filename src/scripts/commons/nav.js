@@ -12,11 +12,17 @@ import Native from './native';
 
 export const NAV_OPTS_COMMON = {
   headerStyle: {
-    backgroundColor: CommonStyle.COLOR_PRIMARY,
+    backgroundColor: '#fff',
+    shadowOpacity: 0,
+    shadowOffset: {
+      height: 0,
+    },
+    shadowRadius: 0,
+    elevation: 0,
   },
-  headerTintColor: '#fff',
+  headerTintColor: '#000',
   headerTitleStyle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 };
@@ -72,6 +78,7 @@ export const NAV_OPTS_MY_HOME = ({ navigation, navigationOptions }) => {
       paddingLeft: 0,
       paddingRight: 0,
       borderBottomWidth: 0,
+      shadowOpacity: 0,
     },
     headerLeft: <HomeButton />,
     headerTitle: <HomeWelaaaButton />,
@@ -149,7 +156,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff',
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             홈
           </Text>
           <Image
@@ -184,7 +191,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff',
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             클래스 전체목록
           </Text>
           <Image
@@ -219,7 +226,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff',
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             오디오북 전체목록
           </Text>
           <Image
@@ -254,7 +261,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff',
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             마이윌라
           </Text>
           <Image
@@ -289,7 +296,7 @@ export const NAV_OPTS_DRAWER = ({ navigation, navigationOptions }) => {
             backgroundColor: '#ffffff',
           }}
         >
-          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#333333' }}>
+          <Text style={{ paddingLeft: 15, fontSize: 15, color: '#34342C' }}>
             1:1 문의
           </Text>
           <Image
@@ -487,12 +494,12 @@ export default {
           switch (schemes[0]) {
             case '035':
               navigate('Series_4genPage', {
-                title: '윌라 추천 시리즈',
+                title: '윌라 추천시리즈',
               });
               break;
             default:
               navigate('HomeSeriesPage', {
-                title: '윌라 추천 시리즈',
+                title: '윌라 추천시리즈',
               });
               break;
           }

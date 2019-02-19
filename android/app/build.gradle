@@ -123,8 +123,8 @@ android {
         applicationId "kr.co.influential.youngkangapp"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 148
-        versionName "1.50.048"
+        versionCode 150
+        versionName "1.60.001"
         archivesBaseName = "welaaa-$versionName-" + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -217,11 +217,12 @@ repositories {
 
 dependencies {
     implementation project(':react-native-sentry')
+    compile project(':react-native-fast-image')
+    implementation project(':react-native-kakao-logins')
     implementation project(':react-native-appsflyer')
     compile project(':react-native-iamport')
     compile project(':react-native-vector-icons')
     implementation project(':react-native-firebase')
-    implementation project(':react-native-kakao-signin')
     implementation project(':react-native-fbsdk')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
@@ -254,7 +255,13 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.59'
 
     // glide
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation("com.github.bumptech.glide:glide:${glideVersion}") {
+        exclude group: "com.android.support", module: "glide"
+    }
+    implementation("com.github.bumptech.glide:okhttp3-integration:${glideVersion}") {
+        exclude group: "com.android.support", module: "okhttp3-integration"
+        exclude group: "com.android.support", module: "glide-parent"
+    }
 
     // fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
@@ -279,8 +286,8 @@ dependencies {
     // added the Google maven respository to your root build.gradle
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation project(':SDK_Android_APMS_11743')
     implementation 'com.android.volley:volley:1.1.1'
+    implementation project(':SDK_Android_APMS_11796')
 }
 
 // Run this once to be able to run the application with BUCK

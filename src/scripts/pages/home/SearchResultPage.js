@@ -177,12 +177,12 @@ export default class SearchResultPage extends React.Component {
     const { navigation } = this.props;
     if ('video-course' === item.type) {
       navigation.navigate('ClassDetail', {
-        title: item.title,
+        title: ' ',
         id: item.id
       });
     } else if ('audiobook' === item.type) {
       navigation.navigate('AudioBookDetail', {
-        title: item.title,
+        title: ' ',
         id: item.id
       });
     }

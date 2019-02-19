@@ -216,18 +216,23 @@ class SignUpLandingPage extends React.Component {
         store.welaaaAuth = data;
         // 2018. 11. 9. jungon
         // 회원가입 후 Membership 가입 촉진 페이지 노출.
-        navigation.navigate('MembershipScreen', {
+        navigation.navigate('Main', {
           trackEvent: { af_registration_method: type, OS_TYPE: Platform.OS },
         });
       })
       .catch(error => {
-        const code = error.response.code;
-        let message = '회원가입 실패';
-        if (error.response.data && error.response.data.error) {
-          message += ` (server message: ${error.response.data.error})`;
+
+        try {
+          const code = error.response.code;
+          let message = '회원가입 실패';
+          if (error.response.data && error.response.data.error) {
+            message += ` (server message: ${error.response.data.error})`;
+          }
+          Alert.alert(message);
+          console.log(error);
+        } catch (err) {
+          console.log(err);
         }
-        Alert.alert(message);
-        console.log(error);
       });
   }
 

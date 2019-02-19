@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
     opacity: 0
   },
   bookLabelNew: {
-    backgroundColor: '#5f45b4'
+    backgroundColor: '#FD7E14'
   },
   bookLabelExclusive: {
-    backgroundColor: '#ff761b'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   bookLabelFree: {
-    backgroundColor: '#00afba'
+    backgroundColor: CommonStyles.COLOR_PRIMARY
   },
   bookLabelDefault: {
     backgroundColor: CommonStyles.COLOR_PRIMARY
@@ -169,7 +169,7 @@ class BookListItem extends React.Component {
           onPress={() =>
             this.props.navigation.navigate('AudioBookDetailPage', {
               id: this.props.itemData.id,
-              title: this.props.itemData.title
+              title: ' '
             })
           }
         >
@@ -204,7 +204,7 @@ class BookListItem extends React.Component {
                       style={[styles.bookLabel, styles.bookLabelExclusive]}
                       borderRadius={7}
                     >
-                      <Text style={[styles.bookLabelText]}>독점</Text>
+                      <Text style={[styles.bookLabelText]}>오리지널</Text>
                     </View>
                   )}
                   {this.props.itemData.is_botm && (

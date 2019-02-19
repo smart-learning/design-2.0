@@ -1,155 +1,492 @@
-import React from "react";
-import {observer} from 'mobx-react';
-import {Text, View, StyleSheet, TouchableOpacity, Image, TextInput,} from "react-native";
-import CommonStyles from "../../../styles/common";
-import IcStarOrange from "../../../images/ic-star-orange-lg.png";
-import IcStarGrey from "../../../images/ic-star-grey-lg.png";
-
+import React from 'react';
+import { observer } from 'mobx-react';
+import {
+  ActivityIndicator,
+  Alert,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TextInput,
+} from 'react-native';
+import CommonStyles from '../../../styles/common';
+import createStore from '../../commons/createStore';
+import IcStarPrimary from '../../../images/ic-star-primary.png';
+import IcStarGrey from '../../../images/ic-star-grey2.png';
+import IcAngleDownGrey from '../../../images/ic-angle-down-grey2.png';
+import moment from 'moment';
+import net from '../../commons/net';
 
 const styles = StyleSheet.create({
-	reviewForm: {
-		paddingTop: 30,
-		paddingRight: 15,
-		paddingBottom: 30,
-		paddingLeft: 15,
-		backgroundColor: '#f1f1f1',
-	},
-	reviewFormParagraph: {
-		textAlign: 'center',
-		fontSize: 15,
-		color: '#555555',
-	},
-	reviewInput: {
-		height: 100,
-		marginTop: 30,
-		marginBottom: 10,
-		backgroundColor: '#ffffff',
-	},
-	submitButton: {
-		justifyContent: 'center',
-		alignItems: 'center',
-		width: '100%',
-		height: 40,
-		backgroundColor: CommonStyles.COLOR_PRIMARY,
-	},
-	submitButtonText: {
-		fontSize: 15,
-		color: '#ffffff'
-	},
-	starIcons: {
-		position: 'relative',
-		width: 185,
-		height: 32,
-		marginTop: 20,
-		marginRight: 'auto',
-		marginLeft: 'auto',
-	},
-	starIconContainer: {
-		position: 'absolute',
-	},
-	starIconContainer1: {
-		left: 0,
-	},
-	starIconContainer2: {
-		left: 37,
-	},
-	starIconContainer3: {
-		left: 74,
-	},
-	starIconContainer4: {
-		left: 111,
-	},
-	starIconContainer5: {
-		left: 148,
-	},
-	starIcon: {
-		position: 'absolute',
-		left: 0,
-		top: 0,
-		width: 33,
-		height: 32,
-	},
+  contentContainer: {
+    marginTop: 20,
+    paddingBottom: 30,
+  },
+  reviewText: {
+    fontSize: 12,
+    fontWeight: '200',
+    color: '#A7A7A7',
+  },
+  viewMoreContainer: {
+    alignItems: 'center',
+  },
+  viewMore: {
+    width: 55,
+    height: 36,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  viewMoreText: {
+    fontSize: 12,
+    color: '#888888',
+  },
+  viewMoreIcon: {
+    position: 'relative',
+    top: 1,
+  },
 });
 
 class UselessTextInput extends React.Component {
-	render() {
-		return (
-			<TextInput
-				{...this.props} // Inherit any props passed to it; e.g., multiline, numberOfLines below
-				editable={true}
-				underlineColorAndroid={'rgba(0,0,0,0)'}
-			/>
-		);
-	}
+  render() {
+    return (
+      <TextInput
+        {...this.props} // Inherit any props passed to it; e.g., multiline, numberOfLines below
+        editable={true}
+        underlineColorAndroid={'rgba(0,0,0,0)'}
+      />
+    );
+  }
+}
+
+class ReviewInput extends React.Component {
+  state = {
+    reviewText: '',
+  };
+  componentDidMount() {
+    this.props.store.isSubmitStatus = false;
+  }
+
+  onChangeText = text => {
+    this.setState({ reviewText: text });
+    this.props.store.reviewText = text;
+  };
+
+  reviewSubmit = async () => {
+    if (this.props.store.reviewText === '') {
+      Alert.alert('Error', '리뷰를 입력 해주세요.');
+      return false;
+    } else if (this.props.formType === 'create') {
+      try {
+        let result = await net.postReview(
+          this.props.store.cid,
+          this.props.store.reviewText,
+        );
+        await net.postStarCount(
+          this.props.store.cid,
+          this.props.store.reviewStar,
+        );
+
+        this.props.store.isSubmitStatus = true;
+
+        if (result) {
+          Alert.alert('알림', '리뷰가 등록되었습니다');
+          // 코멘트 다시 로드
+          const comments = await net.getReviewList(this.props.store.cid);
+          this.props.store.itemReviewData = comments;
+          // 별점 다시 로드
+          const evaluation = await net.getItemEvaluation(
+            this.props.store.cid,
+          );
+          this.props.store.itemEvaluationData = evaluation;
+          // this.props.store.reviewStar;
+        } else {
+          Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
+          this.props.store.isSubmitStatus = false;
+        }
+      } catch (error) {
+        console.log(error);
+        Alert.alert('Error', error.message);
+      }
+    } else if (this.props.formType === 'put') {
+      if (this.props.store.reviewText === '') {
+        Alert.alert('Error', '리뷰를 입력 해주세요.');
+        return false;
+      } else {
+        try {
+          let result = await net.putReview(
+            this.props.store.myReviewId,
+            this.props.store.reviewText,
+          );
+          await net.postStarCount(
+            this.props.store.cid,
+            this.props.store.reviewStar,
+          );
+
+          this.props.store.isSubmitStatus = true;
+
+          if (result) {
+            Alert.alert('알림', '리뷰가 등록되었습니다');
+            this.props.store.isReviewUpdate = false;
+            this.props.store.isSubmitStatus = false;
+            // 코멘트 다시 로드
+            const comments = await net.getReviewList(this.props.store.cid);
+            this.props.store.itemReviewData = comments;
+            // 별점 다시 로드
+            const evaluation = await net.getItemEvaluation(
+              this.props.store.cid.cid,
+            );
+            this.props.store.itemEvaluationData = evaluation;
+            this.props.store.reviewStar;
+          } else {
+            Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
+            this.props.store.isSubmitStatus = false;
+          }
+        } catch (error) {
+          console.log(error);
+          Alert.alert('Error', error.message);
+        }
+      }
+    }
+  };
+  render() {
+    return (
+      <View
+        style={[
+          CommonStyles.alignJustifyContentBetween,
+          { height: 54, borderWidth: 1, borderColor: '#B9B9B9' },
+        ]}
+        borderRadius={4}
+      >
+        <View style={{ flex: 1 }}>
+          <UselessTextInput
+            multiline={true}
+            numberOfLines={2}
+            onChangeText={this.onChangeText}
+            value={
+              this.props.store.formType === 'create'
+                ? this.state.reviewText
+                : this.props.store.reviewText
+            }
+          />
+        </View>
+        {!!this.props.store.isSubmitStatus ? (
+          <View
+            style={{
+              width: 50,
+              height: 54,
+              backgroundColor: CommonStyles.COLOR_PRIMARY,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 4,
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: '400',
+                color: '#ffffff',
+              }}
+            >
+              등록중
+            </Text>
+          </View>
+        ) : (
+          <TouchableOpacity activeOpacity={0.9} onPress={this.reviewSubmit}>
+            <View
+              style={{
+                width: 50,
+                height: 54,
+                backgroundColor: CommonStyles.COLOR_PRIMARY,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 4,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: '400',
+                  color: '#ffffff',
+                }}
+              >
+                등록
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
 }
 
 @observer
 class ReviewForm extends React.Component {
+  data = createStore({
+    myReviewContent: '',
+  });
 
-	render() {
-		return <View style={styles.reviewForm}>
-			<Text style={styles.reviewFormParagraph}>여러분의 평가를 바탕으로</Text>
-			<Text style={styles.reviewFormParagraph}>더 좋은 강의를 만들겠습니다^^</Text>
+  changeMyReviewStatus = item => {
+    this.props.store.isReviewUpdate = true;
+    this.props.store.myReviewId = item.id;
+    this.props.store.reviewText = item.content ? item.content : '';
 
-			<View style={styles.starIcons}>
-				<View style={[styles.starIconContainer, styles.starIconContainer1]}>
-					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 1}>
-						<Image source={IcStarGrey}
-							   style={this.props.store.reviewStar === 0 ? styles.starIcon : {opacity: 0}}/>
-						<Image source={IcStarOrange}
-							   style={(this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</TouchableOpacity>
-				</View>
-				<View style={[styles.starIconContainer, styles.starIconContainer2]}>
-					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 2}>
-						<Image source={IcStarGrey}
-							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1) ? styles.starIcon : {opacity: 0}}/>
-						<Image source={IcStarOrange}
-							   style={(this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</TouchableOpacity>
-				</View>
-				<View style={[styles.starIconContainer, styles.starIconContainer3]}>
-					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 3}>
-						<Image source={IcStarGrey}
-							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2) ? styles.starIcon : {opacity: 0}}/>
-						<Image source={IcStarOrange}
-							   style={(this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</TouchableOpacity>
-				</View>
-				<View style={[styles.starIconContainer, styles.starIconContainer4]}>
-					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 4}>
-						<Image source={IcStarGrey}
-							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3) ? styles.starIcon : {opacity: 0}}/>
-						<Image source={IcStarOrange}
-							   style={(this.props.store.reviewStar === 4 || this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</TouchableOpacity>
-				</View>
-				<View style={[styles.starIconContainer, styles.starIconContainer5]}>
-					<TouchableOpacity activeOpacity={0.7} onPress={() => this.props.store.reviewStar = 5}>
-						<Image source={IcStarGrey}
-							   style={(this.props.store.reviewStar === 0 || this.props.store.reviewStar === 1 || this.props.store.reviewStar === 2 || this.props.store.reviewStar === 3 || this.props.store.reviewStar === 4) ? styles.starIcon : {opacity: 0}}/>
-						<Image source={IcStarOrange}
-							   style={(this.props.store.reviewStar === 5) ? styles.starIcon : {opacity: 0}}/>
-					</TouchableOpacity>
-				</View>
-			</View>
+    console.log('this.props.store.myReviewId', this.props.store.myReviewId);
+  };
 
-			<View style={styles.reviewInput} borderRadius={5}>
-				<UselessTextInput
-					multiline={true}
-					numberOfLines={4}
-					onChangeText={(text) => this.props.store.reviewText = {text}}
-					value={this.props.store.reviewText}
-				/>
-			</View>
+  removeMyReview = async item => {
+    this.data.myReviewId = item.id;
+    try {
+      await net.deleteReview(this.data.myReviewId);
+      // 코멘트 다시 로드
+      const comments = await net.getReviewList(this.props.store.cid);
+      this.props.store.itemReviewData = comments;
+      Alert.alert('Message', '삭제되었습니다.');
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', error.message);
+    }
+  };
 
-			<TouchableOpacity activeOpacity={0.9}>
-				<View style={styles.submitButton} borderRadius={5}>
-					<Text style={styles.submitButtonText}>등록</Text>
-				</View>
-			</TouchableOpacity>
-		</View>
-	}
+  render() {
+    let itemData = this.props.store.itemReviewData;
+
+    return (
+      <View>
+        {itemData && (
+          <View style={styles.contentContainer}>
+            <Text
+              style={{ fontSize: 17, fontWeight: 'bold', color: '#353A3C' }}
+            >
+              리뷰 남기기
+            </Text>
+
+            <View>
+              {/*내가 쓴 댓글*/}
+              {itemData.my && itemData.my.length > 0 && (
+                <View>
+                  {itemData.my.map((item, key) => {
+                    return (
+                      <View key={key}>
+                        <View
+                          style={{
+                            width: '100%',
+                            height: 1,
+                            marginVertical: 15,
+                            backgroundColor: '#E2E2E2',
+                          }}
+                        />
+                        <View>
+                          <View style={CommonStyles.alignJustifyFlex}>
+                            <Text
+                              style={[
+                                styles.reviewText,
+                                {
+                                  width: 80,
+                                  color: CommonStyles.COLOR_PRIMARY,
+                                },
+                              ]}
+                            >
+                              {item.member?.name}
+                            </Text>
+                            <Text
+                              style={[
+                                styles.reviewText,
+                                {
+                                  color: CommonStyles.COLOR_PRIMARY,
+                                },
+                              ]}
+                            >
+                              {moment(item.created_at).format(
+                                'YYYY. MM. DD hh:mm',
+                              )}
+                            </Text>
+                            <View style={{ marginLeft: 'auto' }}>
+                              {!this.props.store.isReviewUpdate ? (
+                                <TouchableOpacity
+                                  activeOpacity={0.9}
+                                  onPress={() => {
+                                    this.changeMyReviewStatus(item);
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      width: 40,
+                                      height: 18,
+                                      backgroundColor:
+                                        CommonStyles.COLOR_PRIMARY,
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 11,
+                                        fontWeight: '400',
+                                        color: '#ffffff',
+                                      }}
+                                    >
+                                      수정
+                                    </Text>
+                                  </View>
+                                </TouchableOpacity>
+                              ) : (
+                                <View />
+                              )}
+                              {1 === 2 && (
+                                <TouchableOpacity
+                                  activeOpacity={0.9}
+                                  onPress={() => {
+                                    this.removeMyReview(item);
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      width: 40,
+                                      height: 18,
+                                      backgroundColor:
+                                        CommonStyles.COLOR_PRIMARY,
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 11,
+                                        fontWeight: '400',
+                                        color: '#ffffff',
+                                      }}
+                                    >
+                                      삭제
+                                    </Text>
+                                  </View>
+                                </TouchableOpacity>
+                              )}
+                            </View>
+                          </View>
+                        </View>
+
+                        <View style={{ marginTop: 10 }}>
+                          {!this.props.store.isReviewUpdate ? (
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: '#353A3C',
+                              }}
+                            >
+                              {item.content ? item.content : ''}
+                            </Text>
+                          ) : (
+                            <ReviewInput {...this.props} formType={'put'} />
+                          )}
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
+
+              {itemData.all && itemData.all.length > 0 && (
+                <View>
+                  {itemData.all.map((item, key) => {
+                    return (
+                      <View key={key}>
+                        <View
+                          style={{
+                            width: '100%',
+                            height: 1,
+                            marginVertical: 15,
+                            backgroundColor: '#E2E2E2',
+                          }}
+                        />
+                        <View>
+                          <View>
+                            <View style={CommonStyles.alignJustifyFlex}>
+                              <Text style={[styles.reviewText, { width: 80 }]}>
+                                {item.member !== null
+                                  ? item.member?.name
+                                  : '익명'}
+                              </Text>
+                              <Text style={styles.reviewText}>
+                                {moment(item.created_at).format(
+                                  'YYYY. MM. DD hh:mm',
+                                )}
+                              </Text>
+                            </View>
+                          </View>
+                          <View style={{ marginTop: 10 }}>
+                            <Text style={{ fontSize: 14, color: '#353A3C' }}>
+                              {item.content ? item.content : ''}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
+              {itemData.all?.length === 0 && itemData.my?.length === 0 && (
+                <View
+                  style={{
+                    height: 100,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 14, color: '#353A3C' }}>
+                    리뷰가 없습니다.
+                  </Text>
+                </View>
+              )}
+              {itemData.all?.length !== 0 &&
+                !!this.props.store.pagination['has-next'] &&
+                !this.props.store.isReviewLoading && (
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.viewMoreContainer}
+                    onPress={() =>
+                      this.props.store.loadReview(
+                        this.props.store.pagination['page'] + 1,
+                      )
+                    }
+                  >
+                    <View
+                      style={[
+                        styles.viewMore,
+                        CommonStyles.alignJustifyContentBetween,
+                      ]}
+                    >
+                      <Text style={styles.viewMoreText}>더보기</Text>
+                      <Image
+                        source={IcAngleDownGrey}
+                        style={[styles.viewMoreIcon]}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+              {this.props.store.isReviewLoading && <ActivityIndicator />}
+              <View
+                style={{
+                  width: '100%',
+                  height: 1,
+                  marginVertical: 15,
+                  backgroundColor: '#E2E2E2',
+                }}
+              />
+            </View>
+
+            {itemData.my && itemData.my.length === 0 && (
+              <ReviewInput {...this.props} formType={'create'} />
+            )}
+          </View>
+        )}
+      </View>
+    );
+  }
 }
 
 export default ReviewForm;

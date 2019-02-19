@@ -19,14 +19,9 @@ import nav from '../../commons/nav';
 import BookMonthlyItem from './BookMonthlyItem';
 
 const styles = StyleSheet.create({
-  bookMonthly: {},
-  botm_top_title: {},
   bookMonthlyItem: {
     justifyContent: 'center',
     position: 'relative',
-    paddingTop: 50,
-    paddingBottom: 80,
-    backgroundColor: '#8cd8b1',
   },
   couponContainer: {
     justifyContent: 'center',
@@ -42,7 +37,7 @@ const styles = StyleSheet.create({
     height: 30,
     paddingLeft: 25,
     paddingRight: 35,
-    backgroundColor: '#1c9165',
+    backgroundColor: '#A6AC53',
   },
   couponIcon: {
     width: 19,
@@ -61,15 +56,14 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   bookItemContainer: {
-    marginTop: 10,
-  },
-  bullet: {
-    position: 'absolute',
-    zIndex: -9,
-    left: 0,
-    bottom: 40,
-    width: '100%',
+    width: '75%',
     height: 200,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 20,
+  },
+  bookItem: {
+    width: '42%',
   },
   mainTitleCenter: {
     textAlign: 'center',
@@ -77,7 +71,7 @@ const styles = StyleSheet.create({
   titleH2: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#34342C',
   },
   titleH4: {
     paddingTop: 10,
@@ -90,40 +84,31 @@ class BookMonthly extends React.Component {
   render() {
     let itemData = [];
     if (_.isObject(this.props.itemData)) {
-      itemData = this.props.itemData;
+      itemData = this.props.itemData.slice(0, 3);
     }
     return (
       <View style={styles.bookMonthly}>
-        {this.props.itemData.length > 0 && (
-          <Swiper
-            showsButtons={false}
-            height={560}
-            dotColor={'#9bcdba'}
-            activeDotColor={CommonStyles.COLOR_PRIMARY}
-            paginationStyle={{ bottom: 10 }}
-          >
-            {itemData.map((item, key) => {
-              const MonthData = moment(item.month).format('M');
-              let bg_color = [styles.bookMonthlyItem];
-              if (item.month == '2018-12-01') {
-                bg_color = [
-                  styles.bookMonthlyItem,
-                  { backgroundColor: '#cdd0a4' },
-                ];
-              }
-              return (
-                <View style={(styles.swiper, styles.swiper_margin)} key={key}>
-                  <View style={bg_color}>
-                    <View style={styles.botm_top_title}>
+        <View style={styles.swiper}>
+          {this.props.itemData.length > 0 && (
+            <Swiper
+              showsButtons={false}
+              height={450}
+              dotColor={'#ADB08B'}
+              activeDotColor={'#34342C'}
+              paginationStyle={{ bottom: 10 }}
+            >
+              {itemData.map((item, key) => {
+                const MonthData = moment(item.month).format('M');
+                return (
+                  <View style={styles.bookMonthlyItem} key={key}>
+                    <View>
                       <Text style={[styles.mainTitleCenter, styles.titleH2]}>
                         {MonthData}월 이달의 책
                       </Text>
-                      <Text style={[styles.mainTitleCenter, styles.titleH4]}>
-                        이 정도는 읽어주자! 리딩멘토가 추천하는 『좋은 책』
-                      </Text>
                     </View>
 
-                    {globalStore.currentMembership !== undefined &&
+                    {1 === 2 &&
+                      globalStore.currentMembership !== undefined &&
                       ((globalStore.currentMembership.type === 2 ||
                         globalStore.currentMembership.type === 4) && (
                         <View>
@@ -158,41 +143,47 @@ class BookMonthly extends React.Component {
                       ))}
 
                     <View style={styles.bookItemContainer}>
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={() =>
-                          this.props.navigation.navigate(
-                            'HomeMonthlyReviewPage',
-                            {
-                              itemData: item.book_a,
-                              title: '이달의 책 북리뷰',
-                            },
-                          )
-                        }
-                      >
-                        <BookMonthlyItem itemData={item.book_a} />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        activeOpacity={0.9}
-                        onPress={() =>
-                          this.props.navigation.navigate(
-                            'HomeMonthlyReviewPage',
-                            {
-                              itemData: item.book_b,
-                              title: '이달의 책 북리뷰',
-                            },
-                          )
-                        }
-                      >
-                        <BookMonthlyItem itemData={item.book_b} />
-                      </TouchableOpacity>
+                      <View style={CommonStyles.alignJustifyContentBetween}>
+                        <View style={styles.bookItem}>
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              this.props.navigation.navigate(
+                                'HomeMonthlyReviewPage',
+                                {
+                                  itemData: item.book_a,
+                                  title: '이달의 책 북리뷰',
+                                },
+                              )
+                            }
+                          >
+                            <BookMonthlyItem itemData={item.book_a} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.bookItem}>
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() =>
+                              this.props.navigation.navigate(
+                                'HomeMonthlyReviewPage',
+                                {
+                                  itemData: item.book_b,
+                                  title: '이달의 책 북리뷰',
+                                },
+                              )
+                            }
+                          >
+                            <BookMonthlyItem itemData={item.book_b} />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </View>
                   </View>
-                </View>
-              );
-            })}
-          </Swiper>
-        )}
+                );
+              })}
+            </Swiper>
+          )}
+        </View>
       </View>
     );
   }

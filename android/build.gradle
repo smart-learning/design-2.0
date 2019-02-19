@@ -34,4 +34,9 @@ task clean(type: Delete) {
 ext {
     supportLibVersion = '27.1.1'
     wearableVersion = '2.3.0'
+    glideVersion = '4.7.1'
+}
+
+project.ext {
+    excludeAppGlideModule = true
 }

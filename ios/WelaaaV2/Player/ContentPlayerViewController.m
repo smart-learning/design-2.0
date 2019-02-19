@@ -304,6 +304,9 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     _playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmSpectral;  // 재생속도 관련.
     _player = [ AVPlayer playerWithPlayerItem : _playerItem ];
   
+    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];  // 재생중인 AVAssetItem의 observer를 추가합니다.
+  //[_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:0 context:nil]; // 버퍼 핸들링은 추후에 구현할 예정입니다.
+  
     // _contentView에 add하기위해 AVPlayerViewController가 아닌 AVPlayerLayer를 사용합니다.
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer : _player];
     _playerLayer.frame = _contentView.bounds;
@@ -760,6 +763,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [self.view addSubview : _audioUiView];
   
     _backgroundImageView = [[UIImageView alloc] initWithFrame : _audioUiView.bounds];
+    if ( [common hasNotch] )
+        _backgroundImageView.contentMode = UIViewContentModeScaleAspectFit;
     [_audioUiView addSubview : _backgroundImageView];
   
     UIImage *headphoneImage = [UIImage imageNamed : @"image_headphones"];
@@ -1574,6 +1579,8 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [_player pause];
     [self invalidateTimerOnSlider];
   
+    [_playerItem removeObserver:self forKeyPath:@"status" context:nil]; // 재생중이었던 AVAssetItem의 observer를 제거합니다.
+  
     // 네트워크 체크하여 온라인이라면 Contents-Info dictionary를 업데이트합니다.
     if ( [[ApiManager sharedInstance] isConnectedToInternet] )
     {
@@ -1609,6 +1616,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
   
     _playerItem = [ AVPlayerItem playerItemWithAsset : _urlAsset ];
     [_player replaceCurrentItemWithPlayerItem : _playerItem];
+    [_playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];  // 곧 재생 예정인 AVAssetItem의 observer를 추가합니다.
     [self setupNowPlayingInfoCenter];
     if ( !_startSeconds || _startSeconds == 0 || _progress == 100 )  // 전체 다 재생했던 콘텐츠는 다시 0부터 재생합니다.
     {
@@ -1758,6 +1766,7 @@ static AFNetworkReachabilityStatus recentNetStatus; // 가장 최근의 네트�
     [[NSNotificationCenter defaultCenter] removeObserver : self
                                                     name : AVAudioSessionRouteChangeNotification
                                                   object : nil];
+    [_playerItem removeObserver:self forKeyPath:@"status" context:nil]; // 재생중인 AVAssetItem의 observer를 제거합니다.
     [self dismissViewControllerAnimated:YES completion:nil];  // playerController를 닫습니다.
     [common showStatusBar];
 }
@@ -3445,6 +3454,60 @@ didStartDownloadWithAsset : (AVURLAsset * _Nonnull) asset
         
         default:
             break;
+    }
+}
+
+//
+// Player Item observer
+//
+- (void) observeValueForKeyPath : (NSString *) keyPath
+                       ofObject : (id) object
+                         change : (NSDictionary *) change
+                        context : (void *) context
+{
+    if ( [object isKindOfClass : [AVPlayerItem class]] )
+    {
+        AVPlayerItem *item = (AVPlayerItem *) object;
+        NSLog(@"  [AVPlayerItemObserver] 01_ AVPlayerItem : %@ \n", [item description]);
+      
+        //playerItem status value changed?
+        if ( [keyPath isEqualToString : @"status"] )
+        {
+            switch ( item.status )
+            {
+                case AVPlayerItemStatusFailed:
+                {
+                    NSLog(@"  [AVPlayerItemObserver] 02_ AVPlayerItemStatusFailed : The item no longer plays due to an error.");
+                    [self closePlayer];
+                    return [common presentAlertWithTitle:@"Oops...!" andMessage:@"콘텐츠 로딩에 문제가 발생되었습니다.\nAVPlayerItemStatusFailed"];
+                }
+                
+                case AVPlayerItemStatusReadyToPlay:
+                {
+                    NSLog(@"  [AVPlayerItemObserver] 02_ AVPlayerItemStatusReadyToPlay : Player item is ready to play.");
+                    break;
+                }
+                
+                /*
+                 * When a player item is created, its status is AVPlayerItemStatusUnknown,
+                 * meaning its media hasn’t been loaded and has not yet been enqueued for playback.
+                 */
+                case AVPlayerItemStatusUnknown:
+                {
+                    NSLog(@"  [AVPlayerItemObserver] 02_ AVPlayerItemStatusUnknown : Player item is not yet ready, but will be soon.");
+                    break;
+                }
+            }
+        }
+        else if ( [keyPath isEqualToString : @"playbackBufferEmpty"] )
+        {
+            if ( item.playbackBufferEmpty )
+            {
+                NSLog(@"  player item playback buffer is empty");
+                // Buffer가 empty일 경우 일시정지 처리해야 합니다.
+                // 추후에 프로그래스 뷰를 추가해야 합니다.
+            }
+        }
     }
 }
 
