@@ -35,54 +35,54 @@ class BookDaily extends React.Component {
     return (
       <View>
         {sorted.length > 0 && (
-          <View
-            style={[
-              CommonStyles.alignJustifyFlex,
-              {
-                width: 295,
-                marginTop: 20,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              },
-            ]}
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() =>
+              this.props.navigation.navigate('AudioBookPage', {
+                title: '',
+                data: {
+                  ccode: '050',
+                  id: 81,
+                  categoryScrollToEnd: true,
+                },
+                sortStatus: 'new',
+              })
+            }
           >
-            <View style={{ marginRight: 30 }}>
-              <FastImage
-                source={{ uri: todayItem.image }}
-                style={{ width: 80, height: 125, backgroundColor: '#efefef' }}
-                resizeMode={FastImage.resizeMode.contain}
-              />
-            </View>
-            <View style={{ position: 'relative', width: 185, height: 125 }}>
-              <Text
-                ellipsizeMode={'tail'}
-                numberOfLines={2}
-                style={{ fontSize: 17, fontWeight: '500', color: '#363636' }}
-              >
-                {title}
-              </Text>
-              <Text
-                ellipsizeMode={'tail'}
-                numberOfLines={2}
-                style={{ fontSize: 13, fontWeight: '300', color: '#000000' }}
-              >
-                {subTitle}
-              </Text>
-              <View style={{ position: 'absolute', bottom: 0 }}>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() =>
-                    this.props.navigation.navigate('AudioBookPage', {
-                      title: '',
-                      data: {
-                        ccode: '050',
-                        id: 81,
-                        categoryScrollToEnd: true,
-                      },
-                      sortStatus: 'new',
-                    })
-                  }
+            <View
+              style={[
+                CommonStyles.alignJustifyFlex,
+                {
+                  width: 295,
+                  marginTop: 20,
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                },
+              ]}
+            >
+              <View style={{ marginRight: 30 }}>
+                <FastImage
+                  source={{ uri: todayItem.image }}
+                  style={{ width: 80, height: 125, backgroundColor: '#efefef' }}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
+              </View>
+              <View style={{ position: 'relative', width: 185, height: 125 }}>
+                <Text
+                  ellipsizeMode={'tail'}
+                  numberOfLines={2}
+                  style={{ fontSize: 17, fontWeight: '500', color: '#363636' }}
                 >
+                  {title}
+                </Text>
+                <Text
+                  ellipsizeMode={'tail'}
+                  numberOfLines={2}
+                  style={{ fontSize: 13, fontWeight: '300', color: '#000000' }}
+                >
+                  {subTitle}
+                </Text>
+                <View style={{ position: 'absolute', bottom: 0 }}>
                   <View
                     style={{
                       width: 185,
@@ -104,10 +104,10 @@ class BookDaily extends React.Component {
                       매일 책 한권 보러가기
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       </View>
     );
