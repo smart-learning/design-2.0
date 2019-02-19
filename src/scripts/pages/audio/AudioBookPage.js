@@ -108,10 +108,14 @@ class AudioBookPage extends React.Component {
     if (page === 1) {
       this.store.displayData = null;
     }
-    if(sort) {
+    if (sort) {
       this.store.tabSortStatus = sort;
     }
-    const data = await net.getAudioBookList(ccode, page, this.store.tabSortStatus);
+    const data = await net.getAudioBookList(
+      ccode,
+      page,
+      this.store.tabSortStatus,
+    );
     const VOs = data.items.map((element, n) => {
       const vo = new BookVO();
       _.each(element, (value, key) => (vo[key] = value));
@@ -122,7 +126,7 @@ class AudioBookPage extends React.Component {
       if (!vo.banner_color) {
         vo.banner_color = 'transparent';
       }
-      vo.rankNumber = (page - 1) * 10 + (n + 1);
+      vo.rankNumber = (page - 1) * 20 + (n + 1);
       return vo;
     });
     if (page === 1) {
@@ -145,7 +149,10 @@ class AudioBookPage extends React.Component {
 
   async componentDidMount() {
     this.props.navigation.setParams({ title: '오디오북 전체목록' });
-    this.store.tabSortStatus = this.props.navigation.getParam('sortStatus', 'hot');
+    this.store.tabSortStatus = this.props.navigation.getParam(
+      'sortStatus',
+      'hot',
+    );
 
     const currCategory = this.props.navigation.getParam('data', {});
     const ccode = currCategory.ccode ? currCategory.ccode : null;
@@ -270,7 +277,9 @@ class AudioBookPage extends React.Component {
 
   render() {
     return (
-      <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
+      <View
+        style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
+      >
         <SafeAreaView style={{ flex: 1, width: '100%' }}>
           <ScrollView style={{ flex: 1 }} onScroll={this.handleScroll}>
             <View
@@ -295,11 +304,13 @@ class AudioBookPage extends React.Component {
                   )}
                 />
               ) : (
-                  undefined
-                )}
+                undefined
+              )}
             </View>
 
-            <View style={[CommonStyles.contentContainer, { width: '100%' }]}>
+            <View
+              style={[CommonStyles.contentContainer, { width: '100%' }]}
+            >
               {this.store.isLoading && (
                 <View style={{ marginTop: 12 }}>
                   <ActivityIndicator
