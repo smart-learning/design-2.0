@@ -1556,7 +1556,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2-resources.sh",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/SAMKeychain/Support/SAMKeychain.bundle",
 			);
@@ -1567,7 +1567,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B857ED89A6B442B1BA95B58A /* Upload Debug Symbols to Sentry */ = {
