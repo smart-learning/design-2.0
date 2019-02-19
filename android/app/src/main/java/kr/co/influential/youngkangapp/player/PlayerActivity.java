@@ -24,7 +24,6 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,7 +50,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.CookieManager;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -99,6 +97,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import kr.co.influential.youngkangapp.BasePlayerActivity;
 import kr.co.influential.youngkangapp.BuildConfig;
 import kr.co.influential.youngkangapp.MainApplication;
@@ -112,7 +111,6 @@ import kr.co.influential.youngkangapp.player.service.MediaService;
 import kr.co.influential.youngkangapp.player.utils.LogHelper;
 import kr.co.influential.youngkangapp.util.CustomDialog;
 import kr.co.influential.youngkangapp.util.HLVAdapter;
-import kr.co.influential.youngkangapp.util.HttpCon;
 import kr.co.influential.youngkangapp.util.HttpConnection;
 import kr.co.influential.youngkangapp.util.Logger;
 import kr.co.influential.youngkangapp.util.MyBroadcastReceiver;
@@ -121,8 +119,11 @@ import kr.co.influential.youngkangapp.util.Utils;
 import kr.co.influential.youngkangapp.util.WeContentManager;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -3552,56 +3553,11 @@ public class PlayerActivity extends BasePlayerActivity {
    ****************************************************************************/
   public void setMyrepuSetUI() {
 
-    final Handler setMyrepuSetUIHandler = new Handler() {
-      public void handleMessage(android.os.Message msg) {
-        try {
+    callbackMethodName = "action/stars/";
+    callbackMethod = "stars";
 
-          if (CONTENT_TYPE.equals("video-course")) {
-            mMyRepuBoxLinear.setVisibility(View.VISIBLE);
-
-            if (mUserStar == null) {
-              if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("0")) {
-                mUserStar = Preferences.getWelaaaMyReputation(getApplicationContext());
-              } else {
-                mUserStar = "";
-              }
-            }
-            Preferences.setWelaaaMyReputation(PlayerActivity.this, "");
-            if (mUserStar.equals("")) {
-              // 등록된 별점 정보가 없는 경우
-              TextView myrepu_text = findViewById(R.id.myrepu_text);
-              myrepu_text.setVisibility(View.GONE);
-
-              LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
-              myrepu_linear.setVisibility(View.GONE);
-
-              LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
-              myrepu_linear_update.setVisibility(View.VISIBLE);
-            } else {
-
-              TextView myrepu_text = findViewById(R.id.myrepu_text);
-              myrepu_text.setVisibility(View.VISIBLE);
-
-              LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
-              myrepu_linear.setVisibility(View.VISIBLE);
-
-              LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
-              myrepu_linear_update.setVisibility(View.GONE);
-
-              TextView myrepu_star_text = findViewById(R.id.myrepu_star);
-              myrepu_star_text
-                  .setText(Preferences.getWelaaaMyReputation(getApplicationContext()) + ".0");
-            }
-          } else if (CONTENT_TYPE.equals("audiobook")) {
-            mMyRepuBoxLinear.setVisibility(View.GONE);
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    };
-
-    setMyrepuSetUIHandler.sendEmptyMessageDelayed(0, 500);
+    sendDataStar(API_BASE_URL + callbackMethodName + getwebPlayerInfo().getCkey()[getContentId()],
+        callbackMethodName);
 
     return;
   }
@@ -3950,7 +3906,6 @@ public class PlayerActivity extends BasePlayerActivity {
               LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
               LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
 
-              UserStarAsyncTask userStarAsyncTask = new UserStarAsyncTask();
 
               try {
                 if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("0")) {
@@ -3958,22 +3913,13 @@ public class PlayerActivity extends BasePlayerActivity {
                       .setText(Preferences.getWelaaaMyReputation(getApplicationContext()) + ".0");
                 }
 
-                if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-//									ckey = mWelaaaPlayer.getNewWebPlayerInfo().getCkey()[getContentId()];
-                } else {
-//									ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
-                }
-
-                weburl = API_BASE_URL + "/usingapp/update_star.php?star="
-                    + Preferences.getWelaaaMyReputation(getApplicationContext()) + "&ckey=" + ckey;
-
                 if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("")) {
 
-                  if (Build.VERSION.SDK_INT >= 11) {
-                    userStarAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, weburl);
-                  } else {
-                    userStarAsyncTask.execute(weburl);
-                  }
+                  callbackMethodName = "action/stars/";
+                  callbackMethod = "stars";
+
+                  sendData(API_BASE_URL + callbackMethodName +getwebPlayerInfo().getCkey()[getContentId()],
+                      callbackMethodName);
 
                   myrepu_text.setVisibility(View.VISIBLE);
                   myrepu_linear.setVisibility(View.VISIBLE);
@@ -3994,30 +3940,17 @@ public class PlayerActivity extends BasePlayerActivity {
                     .setText(Preferences.getWelaaaMyReputation(getApplicationContext()) + ".0");
               }
 
-              if (Preferences.getWelaaaPlayListUsed(getApplicationContext())) {
-//								ckey = mWelaaaPlayer.getNewWebPlayerInfo().getCkey()[getContentId()];
-              } else {
-//								ckey = mWelaaaPlayer.getwebPlayerInfo().getCkey()[getContentId()];
-              }
-
-              ckey = "";
-
-              weburl = API_BASE_URL + "/usingapp/update_star.php?star="
-                  + Preferences.getWelaaaMyReputation(getApplicationContext()) + "&ckey=" + ckey;
-
-              Logger.e(TAG + " 20170902 case 2 : " + weburl);
               myrepu_text = findViewById(R.id.myrepu_text);
               myrepu_linear = findViewById(R.id.myrepu_linear);
               myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
 
               if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("")) {
 
-                userStarAsyncTask = new UserStarAsyncTask();
-                if (Build.VERSION.SDK_INT >= 11) {
-                  userStarAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, weburl);
-                } else {
-                  userStarAsyncTask.execute(weburl);
-                }
+                callbackMethodName = "action/stars/";
+                callbackMethod = "stars";
+
+                sendData(API_BASE_URL + callbackMethodName+getwebPlayerInfo().getCkey()[getContentId()],
+                    callbackMethodName);
 
                 myrepu_text.setVisibility(View.VISIBLE);
 
@@ -4080,43 +4013,6 @@ public class PlayerActivity extends BasePlayerActivity {
       mMyReCustomDialog.show();
     } catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-
-  /****************************************************************************
-   * 유저 별점 업데이트 처리
-   ****************************************************************************/
-  public class UserStarAsyncTask extends AsyncTask<String, Integer, String> {
-
-    @Override
-    protected String doInBackground(String... params) {
-
-      CookieManager mCookieManager = CookieManager.getInstance();
-      String m_cookies = mCookieManager.getCookie(Utils.welaaaWebUrl());
-
-      HttpCon test = new HttpCon();
-//			String result = test.connection(params[0]);
-      String result = "";
-
-      return result;
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-
-      if (result != null) {
-        try {
-          JSONObject jsonResult = new JSONObject(result);
-
-          String code = jsonResult.getString("code");
-          String msg = jsonResult.getString("msg");
-
-        } catch (Exception e) {
-          // TODO: handle exception
-          e.printStackTrace();
-        }
-      }
     }
   }
 
@@ -5213,9 +5109,55 @@ public class PlayerActivity extends BasePlayerActivity {
   }
 
   /**
-   * 웹 서버로 데이터 전송 // content-info , play-data
+   * 웹 서버로 데이터 전송 // content-info , play-data , action/stars
    */
   private void sendData(String sendUrl, String type) {
+
+    String requestWebUrl = sendUrl;
+
+    LogHelper.e(TAG, " requestWebUrl is " + requestWebUrl);
+    LogHelper
+        .e(TAG, " requestWebUrl is " + Preferences.getWelaaaOauthToken(getApplicationContext()));
+
+    if(sendUrl.contains("action/stars")){
+
+      final MediaType JSON
+          = MediaType.parse("application/json; charset=utf-8");
+
+      JSONObject postdata = new JSONObject();
+      try {
+        if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("")) {
+          postdata.put("score", Preferences.getWelaaaMyReputation(getApplicationContext()));
+        }
+
+      } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      RequestBody body = RequestBody.create(JSON, postdata.toString());
+
+      new Thread() {
+        public void run() {
+          httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
+              Preferences.getWelaaaOauthToken(getApplicationContext()), body ,
+              callbackRequest);
+        }
+      }.start();
+
+    }else{
+      new Thread() {
+        public void run() {
+          httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
+              Preferences.getWelaaaOauthToken(getApplicationContext()),
+              callbackRequest);
+        }
+      }.start();
+    }
+
+  }
+
+  private void sendDataStar(String sendUrl, String type) {
 
     String requestWebUrl = sendUrl;
 
@@ -5227,10 +5169,89 @@ public class PlayerActivity extends BasePlayerActivity {
       public void run() {
         httpConn.requestWebServer(requestWebUrl, "CLIENT_ID", "CLIENT_SECRET",
             Preferences.getWelaaaOauthToken(getApplicationContext()),
-            callbackRequest);
+            callbackStarRequest);
       }
     }.start();
+
   }
+
+  private final Callback callbackStarRequest = new Callback() {
+
+    @Override
+    public void onFailure(Call call, IOException e) {
+
+    }
+
+    @Override
+    public void onResponse(Call call, Response response) throws IOException {
+      String body = response.body().string();
+
+      LogHelper.e(TAG, "action/stars !! " + body);
+
+      UiThreadUtil.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+
+          try{
+            JSONObject json = new JSONObject(body);
+
+            if (!json.isNull("my")) {
+              JSONObject myStar = json.getJSONObject("my");
+              String myStarScore = myStar.getString("score");
+
+              mUserStar = myStarScore;
+            }
+
+
+          }catch (Exception e){
+            e.printStackTrace();
+          }
+
+          if (CONTENT_TYPE.equals("video-course")) {
+            mMyRepuBoxLinear.setVisibility(View.VISIBLE);
+
+            if (mUserStar == null) {
+              if (!Preferences.getWelaaaMyReputation(getApplicationContext()).equals("0")) {
+                mUserStar = Preferences.getWelaaaMyReputation(getApplicationContext());
+              } else {
+                mUserStar = "";
+              }
+            }
+
+            Preferences.setWelaaaMyReputation(PlayerActivity.this, mUserStar);
+
+            if (mUserStar.equals("")) {
+              // 등록된 별점 정보가 없는 경우
+              TextView myrepu_text = findViewById(R.id.myrepu_text);
+              myrepu_text.setVisibility(View.GONE);
+
+              LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
+              myrepu_linear.setVisibility(View.GONE);
+
+              LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
+              myrepu_linear_update.setVisibility(View.VISIBLE);
+            } else {
+
+              TextView myrepu_text = findViewById(R.id.myrepu_text);
+              myrepu_text.setVisibility(View.VISIBLE);
+
+              LinearLayout myrepu_linear = findViewById(R.id.myrepu_linear);
+              myrepu_linear.setVisibility(View.VISIBLE);
+
+              LinearLayout myrepu_linear_update = findViewById(R.id.myrepu_linear_update);
+              myrepu_linear_update.setVisibility(View.GONE);
+
+              TextView myrepu_star_text = findViewById(R.id.myrepu_star);
+              myrepu_star_text
+                  .setText(Preferences.getWelaaaMyReputation(getApplicationContext()) + ".0");
+            }
+          } else if (CONTENT_TYPE.equals("audiobook")) {
+            mMyRepuBoxLinear.setVisibility(View.GONE);
+          }
+        }
+      });
+    }
+  };
 
   private final Callback callbackRequest = new Callback() {
     @Override
@@ -6044,4 +6065,5 @@ public class PlayerActivity extends BasePlayerActivity {
       super.onChange(selfChange, uri);
     }
   }
+
 }
