@@ -273,7 +273,6 @@ class ReviewForm extends React.Component {
                 {...this.props}
                 formType={'create'}
                 ref={ref => (this.reviewInput = ref)}
-                onKeyboardStatus={isKeyboardOn => {}}
               />
             )}
 
@@ -405,11 +404,7 @@ class ReviewForm extends React.Component {
                               {item.content ? item.content : ''}
                             </Text>
                           ) : (
-                            <ReviewInput
-                              {...this.props}
-                              formType={'put'}
-                              onKeyboardStatus={isKeyboardOn => {}}
-                            />
+                            <ReviewInput {...this.props} formType={'put'} />
                           )}
                         </View>
                       </View>
@@ -460,7 +455,7 @@ class ReviewForm extends React.Component {
               {itemData.all?.length === 0 && itemData.my?.length === 0 && (
                 <View
                   style={{
-                    height: 100,
+                    height: 170,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
