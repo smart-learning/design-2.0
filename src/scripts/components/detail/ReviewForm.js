@@ -62,9 +62,10 @@ class UselessTextInput extends React.Component {
 class ReviewInput extends React.Component {
   state = {
     reviewText: '',
+    isSubmitStatus: false,
   };
   componentDidMount() {
-    this.props.store.isSubmitStatus = false;
+    this.setState({ isSubmitStatus: false });
   }
 
   onChangeText = text => {
@@ -77,7 +78,9 @@ class ReviewInput extends React.Component {
   };
 
   reviewSubmit = async () => {
+    this.setState({ isSubmitStatus: true });
     if (this.props.store.reviewText === '') {
+      this.setState({ isSubmitStatus: false });
       Alert.alert('Error', '리뷰를 입력 해주세요.');
       return false;
     } else if (this.props.formType === 'create') {
@@ -91,8 +94,6 @@ class ReviewInput extends React.Component {
           this.props.store.reviewStar,
         );
 
-        this.props.store.isSubmitStatus = true;
-
         if (result) {
           // 코멘트 다시 로드
           const comments = await net.getReviewList(this.props.store.cid);
@@ -100,10 +101,10 @@ class ReviewInput extends React.Component {
           // 별점 다시 로드
           const evaluation = await net.getItemEvaluation(this.props.store.cid);
           this.props.store.itemEvaluationData = evaluation;
-          // this.props.store.reviewStar;
+          this.setState({ isSubmitStatus: false });
         } else {
           Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
-          this.props.store.isSubmitStatus = false;
+          this.setState({ isSubmitStatus: false });
         }
       } catch (error) {
         console.log(error);
@@ -115,23 +116,23 @@ class ReviewInput extends React.Component {
         return false;
       } else {
         try {
+          this.setState({ isSubmitStatus: true });
+
           let result = await net.putReview(
             this.props.store.myReviewId,
             this.props.store.reviewText,
           );
 
-          this.props.store.isSubmitStatus = true;
-
           if (result) {
             Alert.alert('알림', '리뷰가 등록되었습니다');
             this.props.store.isReviewUpdate = false;
-            this.props.store.isSubmitStatus = false;
+            this.setState({ isSubmitStatus: false });
             // 코멘트 다시 로드
             const comments = await net.getReviewList(this.props.store.cid);
             this.props.store.itemReviewData = comments;
           } else {
             Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
-            this.props.store.isSubmitStatus = false;
+            this.setState({ isSubmitStatus: false });
           }
         } catch (error) {
           console.log(error);
@@ -161,7 +162,7 @@ class ReviewInput extends React.Component {
             }
           />
         </View>
-        {!!this.props.store.isSubmitStatus ? (
+        {!!this.state.isSubmitStatus ? (
           <View
             style={{
               width: 50,
@@ -225,24 +226,39 @@ class ReviewForm extends React.Component {
     this.props.store.isReviewUpdate = true;
     this.props.store.myReviewId = item.id;
     this.props.store.reviewText = item.content ? item.content : '';
-
-    console.log('this.props.store.myReviewId', this.props.store.myReviewId);
   };
 
   removeMyReview = async item => {
     this.data.myReviewId = item.id;
-    try {
-      await net.deleteReview(this.data.myReviewId);
-      // 코멘트 다시 로드
-      const comments = await net.getReviewList(this.props.store.cid);
-      this.props.store.itemReviewData = comments;
-      this.props.store.reviewText = '';
-      this.reviewInput.clearReviewText();
-      Alert.alert('Message', '삭제되었습니다.');
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Error', error.message);
-    }
+    Alert.alert(
+      'Message',
+      '삭제하시겠습니까',
+      [
+        {
+          text: '취소',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            try {
+              await net.deleteReview(this.data.myReviewId);
+              // 코멘트 다시 로드
+              const comments = await net.getReviewList(this.props.store.cid);
+              this.props.store.itemReviewData = comments;
+              this.props.store.reviewText = '';
+              this.reviewInput.clearReviewText();
+              Alert.alert('Message', '삭제되었습니다.');
+            } catch (error) {
+              console.log(error);
+              Alert.alert('Error', error.message);
+            }
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   render() {
@@ -439,7 +455,7 @@ class ReviewForm extends React.Component {
               {itemData.all?.length === 0 && itemData.my?.length === 0 && (
                 <View
                   style={{
-                    height: 100,
+                    height: 170,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
@@ -457,7 +473,7 @@ class ReviewForm extends React.Component {
                     style={styles.viewMoreContainer}
                     onPress={() =>
                       this.props.store.loadReview(
-                        this.props.store.pagination['page'] + 1,
+                        this.props.store.pagination['next-page'],
                       )
                     }
                   >
