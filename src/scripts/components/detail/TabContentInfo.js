@@ -460,7 +460,7 @@ class TabContentInfo extends React.Component {
                   ? this.props.store.itemData?.meta.comment_count
                   : this.props.store.itemData?.review_count,
               ).format('0a')}
-              개의{' ' + typeText + ' 별점'}
+              개의{' ' + typeText + ' 톡'}
             </Text>
           </View>
 
