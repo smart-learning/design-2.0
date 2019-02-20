@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
     borderRadius: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   badgeText: {
     fontSize: 12,
