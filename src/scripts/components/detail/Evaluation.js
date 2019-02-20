@@ -83,9 +83,7 @@ export default class Evaluation extends React.Component {
     let itemData = [];
     let starData = [];
     let starSum = 0;
-    let starAvg = this.props.store.itemData.meta
-      ? this.props.store.itemData.meta.star_average
-      : this.props.store.itemData.star_avg;
+    let starAvg = this.props.store.itemEvaluationData?.star_average;
 
     if (originData) {
       _.map(originData, element => {
