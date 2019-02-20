@@ -15,8 +15,8 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import Swiper from 'react-native-swiper';
 import _ from 'underscore';
-import bgLogin from '../../../images/bg-signup.jpg';
 import logo from '../../../images/logo-en-primary.png';
+import SmallLogo from '../../../images/smallLogo.png';
 import store from '../../../scripts/commons/store';
 import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
@@ -75,6 +75,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '90%',
     marginLeft: '5%',
+  },
+  smalllogo: {
+    alignItems: 'center',
+    width: 100,
+    height: 56,
+  },
+  headlineFrist: {
+    paddingBottom: 10,
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
   },
 });
 
@@ -195,42 +207,35 @@ class LoginPage extends React.Component {
             behavior="position"
             enabled
           >
-            <View style={{ width: '100%', height: this.windowHeight }}>
-              <Swiper
-                style={styles.wrapper}
-                showsButtons={false}
-                dotColor={'#888888'}
-                activeDotColor={'#ffffff'}
-                height={window.width}
-                paginationStyle={{ bottom: '50%' }}
-              >
-                <View style={styles.slide}>
-                  <ImageBackground
-                    source={bgLogin}
-                    resizeMode="cover"
-                    style={styles.thumbnail}
-                  />
-                </View>
-              </Swiper>
+            <View style={{ width: '100%', height: this.windowHeight, backgroundColor: '#00C73C' }}>
+
             </View>
 
             <View style={styles.inputContentWrap}>
               <View style={styles.logoWrap}>
-                <Image source={logo} style={styles.logo} />
+
               </View>
               <View style={styles.contentWrap}>
                 <Spinner // 로딩 인디케이터
                   visible={this.state.loading}
                 />
-                <Text style={styles.headline}>LOGIN</Text>
+                <Text style={styles.headlineFrist}>지식 콘텐츠 플랫폼</Text>
 
-                <FBLoginButton
-                  onAccess={(token, cb) => this.login('facebook', token, cb)}
-                  type={'login'}
-                />
+                <View style={{ width: '100%', alignItems: 'center', marginBottom: 50 }}>
+                  <Image
+                    source={SmallLogo}
+                    resizeMode="cover"
+                    style={styles.smalllogo}
+                  />
+                </View>
 
                 <KakaoLoginButton
                   onAccess={(token, cb) => this.login('kakaotalk', token, cb)}
+                  type={'login'}
+                />
+
+                <FBLoginButton
+                  onAccess={(token, cb) => this.login('facebook', token, cb)}
                   type={'login'}
                 />
 

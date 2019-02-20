@@ -189,7 +189,7 @@ class KakaoLoginButton extends React.Component {
         style={styles.kakaoButtonWrap}
       >
         {this.props.type === 'login' && (
-          <View style={loginStyles.kakaoButton} borderRadius={4}>
+          <View style={loginStyles.kakaoButton} borderRadius={30}>
             <Image source={icKakao} style={loginStyles.kakaoImage} />
             <Text style={loginStyles.kakaoText}>
               {this.state.token

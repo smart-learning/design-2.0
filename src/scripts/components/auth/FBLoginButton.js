@@ -126,7 +126,7 @@ class FBLoginButton extends Component {
         style={styles.FbButtonWrap}
       >
         {this.props.type === 'login' && (
-          <View style={loginStyles.FbButton} borderRadius={4}>
+          <View style={loginStyles.FbButton} borderRadius={30}>
             <Image source={icFb} style={loginStyles.FbImage} />
             <Text style={loginStyles.FbText}>
               {this.state.loginButtonDisabled

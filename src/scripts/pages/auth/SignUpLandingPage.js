@@ -53,17 +53,16 @@ const styles = StyleSheet.create({
   contentWrap: {
     // flex: 1,
     // justifyContent: 'center',
-    // alignItems: 'center',
+    // alignItems: 'center',    
     position: 'absolute',
-    bottom: 60,
+    bottom: 85,
     width: '100%',
-    marginLeft: '10%',
+    // marginLeft: '10%',
     backgroundColor: '#FFFFFF'
   },
   thumbnail: {
     width: '100%',
-    height: '75%',
-    backgroundColor: '#00C73C'
+    height: '70%',
   },
   alignJustify: {
     flex: 1,
@@ -99,6 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   loginLabel: {
+    marginTop: 17,
     fontSize: 15,
     color: '#00C73C',
   },
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   loginText: {
+    marginTop: 17,
     fontSize: 15,
     fontWeight: 'bold',
     color: '#00C73C',
@@ -159,6 +160,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 28,
   },
+  slideStyle: {
+    backgroundColor: '#00C73C',
+  }
 });
 
 class SignUpLandingPage extends React.Component {
@@ -278,75 +282,71 @@ class SignUpLandingPage extends React.Component {
             height={window.width}
             paginationStyle={{ bottom: '95%' }}
           >
-            <View style={styles.slide}>
-              <ImageBackground
-                source={Slide1}
-                resizeMode="cover"
-                style={styles.thumbnail}
-              >
-                <View style={styles.headWrap}>
-                  <Text style={styles.headline}>당신이 알아야 할 모든 것</Text>
-                </View>
-                <View>
-                  <Text style={styles.headSubline}>{'지식콘텐츠 플랫폼  '}
-                    <Image
-                      source={SmallLogo}
-                      resizeMode="cover"
-                      style={styles.smalllogo}
-                    />
-                  </Text>
-                </View>
-              </ImageBackground>
-            </View>
-            <View style={styles.slide}>
-              <ImageBackground
-                source={Slide2}
-                resizeMode="cover"
-                style={styles.thumbnail}
-              >
-                <View style={styles.headWrap}>
-                  <Text style={styles.headline}><Image
+            <View style={[styles.slide, styles.slideStyle]} >
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}>당신이 알아야 할 모든 것</Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>{'지식콘텐츠 플랫폼  '}
+                  <Image
                     source={SmallLogo}
                     resizeMode="cover"
                     style={styles.smalllogo}
-                  />{' 클래스'}</Text>
-                </View>
-                <View>
-                  <Text style={styles.headSubline}>오프라인에만 있던{"\n"}최고의 명강을 내 손 안에서!
-                  </Text>
-                </View>
-              </ImageBackground>
+                  />
+                </Text>
+              </View>
+              <ImageBackground
+                source={Slide1}
+                resizeMode="cover"
+                style={styles.thumbnail} />
             </View>
-            <View style={styles.slide}>
+            <View style={[styles.slide, styles.slideStyle]} >
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}><Image
+                  source={SmallLogo}
+                  resizeMode="cover"
+                  style={styles.smalllogo}
+                />{' 클래스'}</Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>오프라인에만 있던{"\n"}최고의 명강을 내 손 안에서!
+                  </Text>
+              </View>
+              <ImageBackground
+                source={Slide2}
+                resizeMode="cover"
+                style={styles.thumbnail} />
+            </View>
+            <View style={[styles.slide, styles.slideStyle]} >
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}><Image
+                  source={SmallLogo}
+                  resizeMode="cover"
+                  style={styles.smalllogo}
+                />{' 오디오북'}</Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>베스트셀러를{"\n"}오디오북으로 더 생생하게!</Text>
+              </View>
               <ImageBackground
                 source={Slide3}
                 resizeMode="cover"
                 style={styles.thumbnail}
               >
-                <View style={styles.headWrap}>
-                  <Text style={styles.headline}><Image
-                    source={SmallLogo}
-                    resizeMode="cover"
-                    style={styles.smalllogo}
-                  />{' 오디오북'}</Text>
-                </View>
-                <View>
-                  <Text style={styles.headSubline}>베스트셀러를{"\n"}오디오북으로 더 생생하게!</Text>
-                </View>
               </ImageBackground>
             </View>
-            <View style={styles.slide}>
+            <View style={[styles.slide, styles.slideStyle]} >
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}>{'모든 지식콘텐츠를 즐기세요'}</Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>한달간 무제한! 해지는 언제든</Text>
+              </View>
               <ImageBackground
                 source={Slide4}
                 resizeMode="cover"
                 style={styles.thumbnail}
               >
-                <View style={styles.headWrap}>
-                  <Text style={styles.headline}>{'모든 지식콘텐츠를 즐기세요'}</Text>
-                </View>
-                <View>
-                  <Text style={styles.headSubline}>한달간 무제한! 해지는 언제든</Text>
-                </View>
               </ImageBackground>
             </View>
           </Swiper>
@@ -361,7 +361,6 @@ class SignUpLandingPage extends React.Component {
               activeOpacity={0.9}
               onPress={() => this.props.navigation.navigate('Login')}
             >
-              {/* <Image source={icLogin} style={styles.loginImage} /> */}
               <Text style={styles.loginText}>로그인 ></Text>
             </TouchableOpacity>
           </View>

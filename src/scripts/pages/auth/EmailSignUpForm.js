@@ -20,8 +20,10 @@ import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import Swiper from 'react-native-swiper';
 import Spinner from 'react-native-loading-spinner-overlay';
-import bgSignUp from '../../../images/bg-join.png';
 import logo from '../../../images/logo-en-primary.png';
+import SmallLogo from '../../../images/smallLogo.png';
+import CheckedImage from '../../../images/ic_checked.png';
+import UnCheckedImage from '../../../images/ic_unchecked.png';
 import CommonStyles, { COLOR_PRIMARY } from '../../../styles/common';
 import Native from '../../commons/native';
 import Net from '../../commons/net';
@@ -59,26 +61,38 @@ const styles = StyleSheet.create({
   content: {
     width: '100%',
   },
-  headline: {
-    paddingBottom: 60,
+  headlineFrist: {
+    paddingBottom: 10,
     textAlign: 'center',
-    fontSize: 40,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  headline: {
+    paddingTop: 30,
+    paddingBottom: 16,
+    // textAlign: 'center',
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',
   },
   inputWrap: {
     width: '100%',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#00C73C',
   },
   inputBr: {
     width: '100%',
-    height: 1,
-    backgroundColor: '#d8d8d8',
+    // height: 1,
+    backgroundColor: '#ffffff',
   },
   input: {
     width: '100%',
     height: 40,
     paddingLeft: 15,
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    borderRadius: 4,
+    marginBottom: 10,
   },
   submitContainer: {
     width: '100%',
@@ -88,7 +102,7 @@ const styles = StyleSheet.create({
     height: 48,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: COLOR_PRIMARY,
+    backgroundColor: '#FFFFFF',
   },
   btnSubmitDisabled: {
     width: '100%',
@@ -105,10 +119,10 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#00C73C',
   },
   agreeReceiveMarketingStyle: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff',
   },
@@ -123,7 +137,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ffffff',
   },
+  ruleTextBottom: {
+    marginTop: 20,
+    fontSize: 12,
+    color: '#ffffff',
+  },
   ruleButton: {
+    position: 'relative',
+    top: 1,
+    paddingLeft: 3,
+    paddingRight: 3,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textDecorationLine: 'underline',
+  },
+  ruleButtonBottom: {
     position: 'relative',
     top: 1,
     paddingLeft: 3,
@@ -164,6 +193,11 @@ const styles = StyleSheet.create({
     bottom: '50%',
     width: '90%',
     marginLeft: '5%',
+  },
+  smalllogo: {
+    alignItems: 'center',
+    width: 100,
+    height: 56,
   },
 });
 
@@ -324,23 +358,7 @@ class EmailSignUpForm extends Component {
         <Spinner // 로딩 인디케이터
           visible={this.loading}
         />
-        <View style={{ width: '100%', height: this.data.windowHeight }}>
-          <Swiper
-            style={styles.wrapper}
-            showsButtons={false}
-            dotColor={'#888888'}
-            activeDotColor={'#ffffff'}
-            height={window.width}
-            paginationStyle={{ bottom: '50%' }}
-          >
-            <View style={styles.slide}>
-              <ImageBackground
-                source={bgSignUp}
-                resizeMode="cover"
-                style={styles.thumbnail}
-              />
-            </View>
-          </Swiper>
+        <View style={{ width: '100%', height: this.data.windowHeight, backgroundColor: '#00C73C' }}>
         </View>
         <View style={styles.inputContentWrap}>
           <View style={styles.logoWrap}>
@@ -348,6 +366,16 @@ class EmailSignUpForm extends Component {
           </View>
           <View style={styles.contentWrap}>
             <View style={styles.content}>
+              <Text style={styles.headlineFrist}>지식 콘텐츠 플랫폼</Text>
+
+              <View style={{ width: '100%', alignItems: 'center' }}>
+                <Image
+                  source={SmallLogo}
+                  resizeMode="cover"
+                  style={styles.smalllogo}
+                />
+              </View>
+
               <Text style={styles.headline}>이메일 간편가입</Text>
 
               <View borderRadius={4} style={styles.inputWrap}>
@@ -358,6 +386,7 @@ class EmailSignUpForm extends Component {
                   // onFocus={this.validityNameOnFocus}
                   returnKeyType="next"
                   placeholder="이름"
+                  placeholderTextColor="#ffffff"
                   onSubmitEditing={() => this.signup_email.current.focus()}
                   value={this.data.name}
                   autoCapitalize={'none'}
@@ -375,6 +404,7 @@ class EmailSignUpForm extends Component {
                   returnKeyType="next"
                   keyboardType="email-address"
                   placeholder="이메일"
+                  placeholderTextColor="#ffffff"
                   onSubmitEditing={() => this.signup_pw.current.focus()}
                   value={this.data.email}
                   autoCapitalize={'none'}
@@ -394,6 +424,7 @@ class EmailSignUpForm extends Component {
                   autoCapitalize={'none'}
                   value={this.data.password}
                   placeholder="비밀번호"
+                  placeholderTextColor="#ffffff"
                   onSubmitEditing={() => this.signup_pwconf.current.focus()}
                   onChangeText={text => {
                     this.data.password = text;
@@ -409,6 +440,7 @@ class EmailSignUpForm extends Component {
                   autoCapitalize={'none'}
                   value={this.data.passconf}
                   placeholder="비밀번호 확인"
+                  placeholderTextColor="#ffffff"
                   onSubmitEditing={Keyboard.dismiss}
                   onChangeText={text => {
                     this.data.passconf = text;
@@ -448,7 +480,7 @@ class EmailSignUpForm extends Component {
                   disabled={!this.state.agreeReceiveMarketing}
                 >
                   <View
-                    borderRadius={4}
+                    borderRadius={30}
                     style={
                       this.state.agreeReceiveMarketing
                         ? styles.btnSubmit
@@ -513,6 +545,26 @@ class EmailSignUpForm extends Component {
                   <Text style={styles.ruleText}>
                     에 동의하는 것으로 간주합니다.
                   </Text>
+                </View>
+
+                <View style={styles.ruleTextContainer}>
+                  <Text style={styles.ruleTextBottom}>
+                    윌라 서비스 이용/제휴문의
+                  </Text>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                  // onPress={() =>
+                  //   this.props.navigation.navigate('PrivacyPage')
+                  // }
+                  >
+                    <Text
+                      style={styles.ruleButtonBottom}
+                      textDecorationLine={'underline'}
+                    >
+                      문의하기>
+                    </Text>
+                  </TouchableOpacity>
+
                 </View>
               </View>
             </View>

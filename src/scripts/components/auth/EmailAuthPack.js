@@ -19,24 +19,27 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   inputWrap: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#00C73C',
   },
   inputBr: {
     width: '100%',
     height: 1,
-    backgroundColor: '#d8d8d8',
   },
   input: {
     width: '100%',
     height: 40,
     paddingLeft: 15,
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    borderRadius: 4,
+    marginBottom: 10,
   },
   btnSubmit: {
     width: '100%',
     height: 48,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: COLOR_PRIMARY,
+    backgroundColor: '#ffffff',
   },
   textSubmit: {
     flex: 1,
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#00C73C',
   },
   linkWrap: {
     flexDirection: 'row',
@@ -54,7 +57,45 @@ const styles = StyleSheet.create({
   },
   btnLinkText: {
     fontSize: 14,
-    color: COLOR_PRIMARY,
+    color: '#ffffff',
+  },
+  ruleButton: {
+    position: 'relative',
+    top: 1,
+    paddingLeft: 3,
+    paddingRight: 3,
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textDecorationLine: 'underline',
+  },
+  ruleWrap: {
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  ruleTextContainer: {
+    flexDirection: 'row',
+  },
+  ruleText: {
+    fontSize: 17,
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  ruleTextBottom: {
+    marginTop: 60,
+    fontSize: 14,
+    color: '#ffffff',
+  },
+  ruleButtonBottom: {
+    marginTop: 60,
+    position: 'relative',
+    top: 1,
+    paddingLeft: 3,
+    paddingRight: 3,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textDecorationLine: 'underline',
   },
 });
 
@@ -108,7 +149,7 @@ class EmailAuthPack extends Component {
       return;
     }
 
-    this.props.onAccess(this.data.email, this.data.password, () => {});
+    this.props.onAccess(this.data.email, this.data.password, () => { });
   };
 
   render() {
@@ -122,6 +163,7 @@ class EmailAuthPack extends Component {
             underlineColorAndroid={'rgba(0,0,0,0)'}
             value={this.data.email}
             placeholder="이메일"
+            placeholderTextColor="#ffffff"
             autoCapitalize={'none'}
             onSubmitEditing={() => this.login_pw.current.focus()}
             onChangeText={text => {
@@ -136,6 +178,7 @@ class EmailAuthPack extends Component {
             secureTextEntry={true}
             value={this.data.password}
             placeholder="비밀번호"
+            placeholderTextColor="#ffffff"
             autoCapitalize={'none'}
             onSubmitEditing={() => {
               this.handleLogin();
@@ -147,27 +190,51 @@ class EmailAuthPack extends Component {
         </View>
 
         <TouchableOpacity activeOpacity={0.9} onPress={this.handleLogin}>
-          <View borderRadius={4} style={styles.btnSubmit}>
+          <View borderRadius={30} style={styles.btnSubmit}>
             <Text style={styles.textSubmit}>이메일로 로그인</Text>
           </View>
         </TouchableOpacity>
 
-        <View style={styles.linkWrap}>
-          {1 === 2 && (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => this.props.onNavigate('FindPassword')}
-            >
-              <Text style={styles.btnLinkText}>비밀번호 찾기</Text>
-            </TouchableOpacity>
-          )}
+        <View style={styles.ruleWrap}>
+          <View style={styles.linkWrap}>
+            {1 === 2 && (
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => this.props.onNavigate('FindPassword')}
+              >
+                <Text style={styles.btnLinkText}>비밀번호 찾기</Text>
+              </TouchableOpacity>
+            )}
 
-          <View style={{ marginLeft: 'auto', marginTop: 14 }}>
+            <View style={styles.ruleTextContainer}>
+              <Text style={styles.ruleText}>윌라가 처음이신가요?       </Text>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => this.props.onNavigate('SignUpPage')}
+              >
+                <Text
+                  style={styles.ruleButton}
+                  textDecorationLine={'underline'}
+                >
+                  회원가입
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        <View style={styles.ruleWrap}>
+          <View style={styles.ruleTextContainer}>
+            <Text style={styles.ruleTextBottom}>윌라 서비스 이용/제휴문의  </Text>
             <TouchableOpacity
               activeOpacity={0.9}
-              onPress={() => this.props.onNavigate('SignUpPage')}
+            // onPress={() => this.props.navigation.navigate('PrivacyPage')}
             >
-              <Text style={styles.btnLinkText}>윌라 계정만들기</Text>
+              <Text
+                style={styles.ruleButtonBottom}
+                textDecorationLine={'underline'}
+              >
+                문의하기 >
+                </Text>
             </TouchableOpacity>
           </View>
         </View>
