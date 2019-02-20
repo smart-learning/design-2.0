@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   ruleButtonBottom: {
+    marginTop: 20,
     position: 'relative',
     top: 1,
     paddingLeft: 3,
