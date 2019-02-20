@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import {
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
   Text,
   View,
   StyleSheet,
@@ -328,7 +329,7 @@ class ReviewForm extends React.Component {
                               ]}
                             >
                               {moment(item.created_at).format(
-                                'YYYY. MM. DD hh:mm',
+                                'YYYY. MM. DD HH:mm',
                               )}
                             </Text>
                             <View style={{ marginLeft: 'auto' }}>
@@ -443,7 +444,7 @@ class ReviewForm extends React.Component {
                               </Text>
                               <Text style={styles.reviewText}>
                                 {moment(item.created_at).format(
-                                  'YYYY. MM. DD hh:mm',
+                                  'YYYY. MM. DD HH:mm',
                                 )}
                               </Text>
                             </View>

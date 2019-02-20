@@ -1,6 +1,13 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  View,
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import native from '../../commons/native';
 import net from '../../commons/net';
@@ -183,7 +190,7 @@ class AudioBookDetailPage extends React.Component {
       try {
         const evaluation = await net.getItemEvaluation(resultBookData.cid);
         this.data.itemEvaluationData = evaluation;
-        if( this.data.itemEvaluationData.my?.score > 0 ) {
+        if (this.data.itemEvaluationData.my?.score > 0) {
           this.data.reviewStar = this.data.itemEvaluationData?.my?.score;
         }
       } catch (error) {
@@ -254,36 +261,40 @@ class AudioBookDetailPage extends React.Component {
   }
 
   render() {
-    console.log('this.data', this.data);
     const { permission } = this.state;
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
-        {this.data.isLoading ? (
-          <View style={{ marginTop: 12 }}>
-            <ActivityIndicator
-              size="large"
-              color={CommonStyles.COLOR_PRIMARY}
+        <KeyboardAvoidingView
+          enabled={Platform.OS === 'ios'}
+          behavior="position"
+        >
+          {this.data.isLoading ? (
+            <View style={{ marginTop: 12 }}>
+              <ActivityIndicator
+                size="large"
+                color={CommonStyles.COLOR_PRIMARY}
+              />
+            </View>
+          ) : this.data.itemData !== null ? (
+            <DetailLayout
+              addToCart={this.addToCart}
+              iosBuy={this.iosBuy}
+              useVoucher={this.useVoucher}
+              voucherStatus={this.data.voucherStatus}
+              itemData={this.data.itemData}
+              learnType={'audioBook'}
+              store={this.data}
+              paymentType={this.state.paymentType}
+              expire={this.state.expire}
+              permission={permission}
+              permissionLoading={this.state.permissionLoading}
             />
-          </View>
-        ) : this.data.itemData !== null ? (
-          <DetailLayout
-            addToCart={this.addToCart}
-            iosBuy={this.iosBuy}
-            useVoucher={this.useVoucher}
-            voucherStatus={this.data.voucherStatus}
-            itemData={this.data.itemData}
-            learnType={'audioBook'}
-            store={this.data}
-            paymentType={this.state.paymentType}
-            expire={this.state.expire}
-            permission={permission}
-            permissionLoading={this.state.permissionLoading}
-          />
-        ) : (
-          <View>
-            <Text>데이터를 가져오는 중 오류가 발생하였습니다.</Text>
-          </View>
-        )}
+          ) : (
+            <View>
+              <Text>데이터를 가져오는 중 오류가 발생하였습니다.</Text>
+            </View>
+          )}
+        </KeyboardAvoidingView>
       </View>
     );
   }

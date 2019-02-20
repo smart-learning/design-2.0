@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { withNavigation } from 'react-navigation';
-import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 import net from '../../commons/net';
 import CommonStyles from '../../../styles/common';
 import createStore from '../../commons/createStore';
@@ -225,9 +225,14 @@ class ClassDetailPage extends React.Component {
   }
 
   render() {
+    console.log('this.data', this.data);
     const { permission, permissionLoading } = this.state;
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
+        <KeyboardAvoidingView
+          enabled={Platform.OS === 'ios'}
+          behavior="position"
+        >
         {this.data.isLoading ? (
           <View style={{ marginTop: 12 }}>
             <ActivityIndicator
@@ -249,6 +254,7 @@ class ClassDetailPage extends React.Component {
             <Text>데이터를 가져오는 중 오류가 발생하였습니다.</Text>
           </View>
         )}
+        </KeyboardAvoidingView>
       </View>
     );
   }
