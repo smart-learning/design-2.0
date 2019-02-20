@@ -53,9 +53,12 @@ const styles = StyleSheet.create({
   contentWrap: {
     // flex: 1,
     // justifyContent: 'center',
-    // alignItems: 'center',    
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+
     position: 'absolute',
-    bottom: 85,
+    bottom: 35,
     width: '100%',
     // marginLeft: '10%',
     backgroundColor: '#FFFFFF'
@@ -89,11 +92,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
   },
-  loginWrap: {
-    width: '70%',
-    marginLeft: '10%',
-    marginBottom: 10,
-  },
   loginButton: {
     flexDirection: 'row',
   },
@@ -101,18 +99,14 @@ const styles = StyleSheet.create({
     marginTop: 17,
     fontSize: 15,
     color: '#00C73C',
-  },
-  loginImage: {
-    width: 16,
-    height: 14,
-    marginRight: 5,
-    marginLeft: 15,
+    textAlign: 'center',
   },
   loginText: {
     marginTop: 17,
     fontSize: 15,
     fontWeight: 'bold',
     color: '#00C73C',
+    textDecorationLine: 'underline',
   },
   ruleWrap: {
     marginTop: 15,
@@ -354,42 +348,48 @@ class SignUpLandingPage extends React.Component {
         {/* /이미지 스와이퍼 */}
 
         <View style={styles.contentWrap}>
-          <View style={[styles.alignJustify, styles.loginWrap]}>
-            <Text style={styles.loginLabel}>이미 윌라 계정이 있으신가요?</Text>
+
+          <View style={styles.ruleWrap}>
+            <View style={styles.ruleTextContainer}>
+              <Text style={styles.loginLabel}>이미 윌라 계정이 있으신가요?{'  '}</Text>
+              <TouchableOpacity
+                style={styles.loginButton}
+                activeOpacity={0.9}
+                onPress={() => this.props.navigation.navigate('Login')}
+              >
+                <Text style={styles.loginText}>로그인 ></Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={{ marginLeft: 20, marginRight: 20, marginTop: 20 }}>
+            <KakaoLoginButton
+              onAccess={token => this.onAccessToken('kakaotalk', token)}
+              type={'landing'}
+            />
+
+            <FBLoginButton
+              onAccess={token => this.onAccessToken('facebook', token)}
+              type={'landing'}
+            />
+
             <TouchableOpacity
-              style={styles.loginButton}
               activeOpacity={0.9}
-              onPress={() => this.props.navigation.navigate('Login')}
+              onPress={() => this.props.navigation.navigate('EmailSignUpForm')}
             >
-              <Text style={styles.loginText}>로그인 ></Text>
+              <View
+                style={styles.emailButton}
+                // borderWidth={1}
+                // borderStyle={'solid'}
+                // borderColor={'#ffffff'}
+                borderRadius={30}
+              >
+                <Image source={icEmail} style={styles.emailImage} />
+                <Text style={styles.emailText}>이메일 간편 가입</Text>
+              </View>
             </TouchableOpacity>
           </View>
 
-          <KakaoLoginButton
-            onAccess={token => this.onAccessToken('kakaotalk', token)}
-            type={'landing'}
-          />
-
-          <FBLoginButton
-            onAccess={token => this.onAccessToken('facebook', token)}
-            type={'landing'}
-          />
-
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => this.props.navigation.navigate('EmailSignUpForm')}
-          >
-            <View
-              style={styles.emailButton}
-              // borderWidth={1}
-              // borderStyle={'solid'}
-              // borderColor={'#ffffff'}
-              borderRadius={30}
-            >
-              <Image source={icEmail} style={styles.emailImage} />
-              <Text style={styles.emailText}>이메일 간편 가입</Text>
-            </View>
-          </TouchableOpacity>
 
           <View style={styles.ruleWrap}>
             <View style={styles.ruleTextContainer}>
@@ -425,19 +425,21 @@ class SignUpLandingPage extends React.Component {
               </Text>
             </View>
 
-            <View style={styles.ruleTextContainer}>
-              <Text style={styles.ruleText}>윌라 서비스 이용/제휴문의</Text>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => this.props.navigation.navigate('PrivacyPage')}
-              >
-                <Text
-                  style={styles.ruleButton}
-                  textDecorationLine={'underline'}
+            <View style={{ marginTop: 20 }}>
+              <View style={styles.ruleTextContainer}>
+                <Text style={styles.ruleText}>윌라 서비스 이용/제휴문의</Text>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                // onPress={() => this.props.navigation.navigate('PrivacyPage')}
                 >
-                  문의하기 >
+                  <Text
+                    style={styles.ruleButton}
+                    textDecorationLine={'underline'}
+                  >
+                    문의하기 >
                 </Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>

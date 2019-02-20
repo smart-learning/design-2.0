@@ -116,7 +116,7 @@ class LoginPage extends React.Component {
 
   keyboardStateChanged = isKeyboardOn => {
     console.log('keyboardStateChanged isKeyboardOn: ', isKeyboardOn);
-    // 키보드 때문에 텍스트입력창이 가려지는 이슈를 해결하기 위해 KeyboardAvoidingView 를 통해
+    // 키보드 때문에 텍스트입력창이 가려지는 이슈를 해결하기 가해 KeyboardAvoidingView 를 통해
     // 자동으로 뷰가 움직이도록 처리하였으나 이 방식 말고 화면 사이즈를 수동으로 변경하여 처리하고자 하거나
     // (디바이스별 키보드 사이즈를 구해서 스크롤뷰 사이즈에서 직접 빼준다든지 하는 등의 처리)
     // 기타 키보드 show/hide 에 따른 부가적인 처리를 해줘야 할 경우 여기에서 하면 된다.
