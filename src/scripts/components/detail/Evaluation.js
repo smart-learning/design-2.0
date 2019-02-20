@@ -83,9 +83,9 @@ export default class Evaluation extends React.Component {
     let itemData = [];
     let starData = [];
     let starSum = 0;
-    let starAvg = this.props.store.itemData
-      ? this.props.store.itemData.star_avg
-      : 0;
+    let starAvg = this.props.store.itemData.meta
+      ? this.props.store.itemData.meta.star_average
+      : this.props.store.itemData.star_avg;
 
     if (originData) {
       _.map(originData, element => {
@@ -195,7 +195,7 @@ export default class Evaluation extends React.Component {
                   />
                 )}
               </View>
-              <View style={{ width: 53 }}>
+              <View style={{ width: 65 }}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -209,7 +209,7 @@ export default class Evaluation extends React.Component {
                       color: CommonStyles.COLOR_PRIMARY,
                     }}
                   >
-                    {numeral(starAvg).format('0a')}{' '}
+                    {numeral(starAvg).format('0.0')}{' '}
                   </Text>
                   / 5.0
                 </Text>
