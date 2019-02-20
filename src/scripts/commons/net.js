@@ -376,7 +376,6 @@ export default {
       scope: 'profile',
       grant_type: 'password',
     });
-    console.log('encodedParams:', params);
 
     return new Promise((resolve, reject) => {
       axios
@@ -403,7 +402,6 @@ export default {
     return axios
       .get(url, { params: params })
       .then(resp => {
-        console.log('membership_banner', resp);
         return resp.data;
       })
       .catch(error => {
@@ -425,7 +423,6 @@ export default {
     return axios
       .get(url, { params: params })
       .then(resp => {
-        console.log('popup', resp);
         return resp.data;
       })
       .catch(error => {
@@ -671,7 +668,7 @@ export default {
     return axios.post(API_PREFIX + 'v1.0/membership/vouchers/exchange', params);
   },
 
-  getReviewList(cid,page = 1) {
+  getReviewList(cid, page = 1) {
     return new Promise((resolve, reject) => {
       const params = {};
       params.count = 5;
@@ -683,8 +680,8 @@ export default {
           // 전체 목록에서도 my 에 속한 값들이 같이 내려오고 있기 때문에 앱에서 데이터를 받은 후 걸러내야 함
           const my = response.data.my;
           let all = response.data.all;
-          my.forEach( item => all = all.filter( e => e.id !== item.id ) );
-          const pagination = this.parsePaginationHeaders(response.headers)
+          my.forEach(item => (all = all.filter(e => e.id !== item.id)));
+          const pagination = this.parsePaginationHeaders(response.headers);
           resolve({ my, all, pagination });
         })
         .catch(error => {
@@ -755,9 +752,6 @@ export default {
     const versionNumber = NativeConstants.versionNumber;
     const deviceId = NativeConstants.deviceId;
     const model = NativeConstants.model;
-    console.log('versionNumber: ', versionNumber);
-    console.log('deviceId: ' + deviceId);
-    console.log('model:' + model);
 
     if (fcmToken) {
       let params = {
@@ -770,8 +764,6 @@ export default {
         fcm_token: fcmToken,
         push_receive: bool,
       };
-
-      console.log('registerFcmToken params', params);
 
       return new Promise((resolve, reject) => {
         axios
@@ -970,7 +962,6 @@ export default {
     return axios
       .post(API_PREFIX + 'v1.0/contents/add-view-count/' + cid)
       .then(data => {
-        console.log('addContentView', data);
         return data;
       });
   },

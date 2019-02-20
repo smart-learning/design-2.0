@@ -473,7 +473,7 @@ class ReviewForm extends React.Component {
                     style={styles.viewMoreContainer}
                     onPress={() =>
                       this.props.store.loadReview(
-                        this.props.store.pagination['page'] + 1,
+                        this.props.store.pagination['next-page'],
                       )
                     }
                   >
