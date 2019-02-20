@@ -191,9 +191,9 @@ export default class TopBanner extends React.Component {
             {/* 별점 */}
             {numeral(
               this.props.store.itemData.meta
-                ? this.props.store.itemData.meta.like_count
+                ? this.props.store.itemData.meta.star_average
                 : this.props.store.itemData.star_avg,
-            ).format('0a')}
+            ).format('0.0')}
           </Text>
           <Image source={IcComment} style={styles.btnSetSmall} />
           <Text style={styles.countText}>

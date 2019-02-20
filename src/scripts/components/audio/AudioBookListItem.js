@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingLeft: 10,
     borderRadius: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   badgeText: {
     fontSize: 12,
@@ -155,9 +157,9 @@ export default class AudioBookListItem extends React.Component {
                   {/* 별점 */}
                   {numeral(
                     this.props.itemData.meta
-                      ? this.props.itemData.meta.like_count
-                      : this.props.itemData.like_count,
-                  ).format('0a')}
+                      ? this.props.itemData.meta.star_average
+                      : this.props.itemData.star_avg,
+                  ).format('0.0')}
                 </Text>
                 <Image source={IcComment} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>

@@ -331,7 +331,7 @@ export default class Book extends React.Component {
                 </Text>
                 <Image source={IcHeart} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
-                  {numeral(this.props.itemData.meta?this.props.itemData.meta.like_count:this.props.itemData.like_count).format('0a')}
+                  {numeral(this.props.itemData.meta?this.props.itemData.meta.star_average:this.props.itemData.star_avg).format('0.0')}
                 </Text>
                 <Image source={IcComment} style={styles.btnSetSmall} />
                 <Text style={styles.countText}>
