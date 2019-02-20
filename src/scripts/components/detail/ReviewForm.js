@@ -225,24 +225,39 @@ class ReviewForm extends React.Component {
     this.props.store.isReviewUpdate = true;
     this.props.store.myReviewId = item.id;
     this.props.store.reviewText = item.content ? item.content : '';
-
-    console.log('this.props.store.myReviewId', this.props.store.myReviewId);
   };
 
   removeMyReview = async item => {
     this.data.myReviewId = item.id;
-    try {
-      await net.deleteReview(this.data.myReviewId);
-      // 코멘트 다시 로드
-      const comments = await net.getReviewList(this.props.store.cid);
-      this.props.store.itemReviewData = comments;
-      this.props.store.reviewText = '';
-      this.reviewInput.clearReviewText();
-      Alert.alert('Message', '삭제되었습니다.');
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Error', error.message);
-    }
+    Alert.alert(
+      'Message',
+      '삭제하시겠습니까',
+      [
+        {
+          text: '취소',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            try {
+              await net.deleteReview(this.data.myReviewId);
+              // 코멘트 다시 로드
+              const comments = await net.getReviewList(this.props.store.cid);
+              this.props.store.itemReviewData = comments;
+              this.props.store.reviewText = '';
+              this.reviewInput.clearReviewText();
+              Alert.alert('Message', '삭제되었습니다.');
+            } catch (error) {
+              console.log(error);
+              Alert.alert('Error', error.message);
+            }
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   render() {
@@ -257,6 +272,7 @@ class ReviewForm extends React.Component {
                 {...this.props}
                 formType={'create'}
                 ref={ref => (this.reviewInput = ref)}
+                onKeyboardStatus={isKeyboardOn => {}}
               />
             )}
 
@@ -388,7 +404,11 @@ class ReviewForm extends React.Component {
                               {item.content ? item.content : ''}
                             </Text>
                           ) : (
-                            <ReviewInput {...this.props} formType={'put'} />
+                            <ReviewInput
+                              {...this.props}
+                              formType={'put'}
+                              onKeyboardStatus={isKeyboardOn => {}}
+                            />
                           )}
                         </View>
                       </View>
