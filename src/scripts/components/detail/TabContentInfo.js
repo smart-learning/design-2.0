@@ -260,6 +260,8 @@ class TabContentInfo extends React.Component {
       );
     }
 
+    let typeText = this.props.learnType === 'class' ? '클래스' : '오디오북';
+
     return (
       <View>
         {/* 이미지 스와이퍼 */}
@@ -442,7 +444,7 @@ class TabContentInfo extends React.Component {
             style={[CommonStyles.alignJustifyItemCenter, { marginBottom: 20 }]}
           >
             <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-              윌라 회원님들의 평가
+              윌라 회원님들의{' ' + typeText + ' 별점'}
             </Text>
             <Text
               style={{
@@ -458,7 +460,7 @@ class TabContentInfo extends React.Component {
                   ? this.props.store.itemData?.meta.comment_count
                   : this.props.store.itemData?.review_count,
               ).format('0a')}
-              개의 리뷰
+              개의{' ' + typeText + ' 톡'}
             </Text>
           </View>
 
@@ -466,12 +468,9 @@ class TabContentInfo extends React.Component {
             <Evaluation store={this.props.store} />
           )}
 
-          <StarGrade
-            learnType={this.props.learnType}
-            store={this.props.store}
-          />
+          <StarGrade typeText={typeText} store={this.props.store} />
 
-          <ReviewForm store={this.props.store} />
+          <ReviewForm talkText={typeText + ' 톡'} store={this.props.store} />
         </View>
       </View>
     );
