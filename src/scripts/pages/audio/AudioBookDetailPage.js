@@ -254,7 +254,6 @@ class AudioBookDetailPage extends React.Component {
   }
 
   render() {
-    console.log('this.data', this.data);
     const { permission } = this.state;
     return (
       <View style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}>
