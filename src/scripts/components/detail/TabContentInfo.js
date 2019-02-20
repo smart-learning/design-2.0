@@ -444,7 +444,7 @@ class TabContentInfo extends React.Component {
             style={[CommonStyles.alignJustifyItemCenter, { marginBottom: 20 }]}
           >
             <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-              윌라 회원님들의{' ' + typeText + ' 별점'}
+              {' ' + typeText + ' 별점'}
             </Text>
             <Text
               style={{
@@ -460,7 +460,7 @@ class TabContentInfo extends React.Component {
                   ? this.props.store.itemData?.meta.comment_count
                   : this.props.store.itemData?.review_count,
               ).format('0a')}
-              개의{' ' + typeText + ' 톡'}
+              개의 톡
             </Text>
           </View>
 
