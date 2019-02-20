@@ -8,6 +8,7 @@ import {
   View,
   Linking,
 } from 'react-native';
+import net from '../../../commons/net';
 
 let navigation = null;
 export default class BotmIntroPage extends React.Component {
@@ -80,20 +81,24 @@ export default class BotmIntroPage extends React.Component {
     }
   }
 
-  gotoBotm_A = () => {
-    this.props.navigation.navigate('HomeMonthlyReviewPage', {
-      month: this.props.navigation.state.params.info,
-      sort: 'A',
-      title: '이달의 책 북리뷰',
+  getMonthlyBookItem = async (month, sort) => {
+    itemData = await net.getBotmData(month, sort);
+    this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
+      title: ' ',
+      itemData: itemData,
     });
   };
 
+  gotoBotm_A = () => {
+    let month = this.props.navigation.state.params.info;
+    let sort = 'A';
+    this.getMonthlyBookItem(month, sort);
+  };
+
   gotoBotm_B = () => {
-    this.props.navigation.navigate('HomeMonthlyReviewPage', {
-      month: this.props.navigation.state.params.info,
-      sort: 'B',
-      title: '이달의 책 북리뷰',
-    });
+    let month = this.props.navigation.state.params.info;
+    let sort = 'B';
+    this.getMonthlyBookItem(month, sort);
   };
 
   outLink = () => {
