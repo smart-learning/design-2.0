@@ -112,8 +112,8 @@ class BookMonthlySwiperItem extends React.Component {
                 })
               }
             >
-              /* TouchableOpacity 가 원인불명으로 터치가 되지 않아
-              TouchableOpacity 안으로 패딩을 이전 */
+              {/*TouchableOpacity 가 원인불명으로 터치가 되지 않아*/}
+              {/*TouchableOpacity 안으로 패딩을 이전*/}
               <View style={{ paddingTop: 20 }}>
                 <FastImage
                   source={{ uri: itemData.book_a.audiobook.images.cover }}
@@ -177,8 +177,8 @@ class BookMonthlySwiperItem extends React.Component {
                 })
               }
             >
-              /* TouchableOpacity 가 원인불명으로 터치가 되지 않아
-              TouchableOpacity 안으로 패딩을 이전 */
+              {/*TouchableOpacity 가 원인불명으로 터치가 되지 않아*/}
+              {/*TouchableOpacity 안으로 패딩을 이전*/}
               <View style={{ paddingTop: 20 }}>
                 <FastImage
                   source={{ uri: itemData.book_b.audiobook.images.cover }}
