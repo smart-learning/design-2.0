@@ -244,8 +244,7 @@ class Amount extends React.Component {
   render() {
     if (this.props.permission.type === 'free') {
       return <Text style={styles.paymentText}>무료! 마음껏 이용 :)</Text>;
-    }
-    else if (Platform.OS === 'ios' && this.props.learnType === 'class') {
+    } else if (Platform.OS === 'ios' && this.props.learnType === 'class') {
       if (this.props.permission.type !== 'membership') {
         return <Text style={styles.paymentText}>멤버십 구매 필요</Text>;
       } else if (this.props.permission.type === '오디오북 멤버쉽') {
@@ -302,12 +301,14 @@ class Amount extends React.Component {
 class Button1st extends React.Component {
   render() {
     if (Platform.OS === 'ios' && this.props.learnType === 'class') {
-      if( this.props.permission.type === 'free' ) {
+      if (this.props.permission.type === 'free') {
         return <DownloadButton {...this.props} active={true} />;
       } else if (this.props.permission.type !== 'membership') {
         return <MembershipButton {...this.props} />;
       } else if (this.props.permission.type === '오디오북 멤버쉽') {
         return <MembershipChangeButton {...this.props} />;
+      } else if (this.props.permission.type === 'membership') {
+        return <DownloadButton {...this.props} active={true} />;
       }
     } else if (this.props.permission.can_play) {
       return <DownloadButton {...this.props} active={true} />;
@@ -321,7 +322,7 @@ class Button1st extends React.Component {
 class Button2nd extends React.Component {
   render() {
     if (Platform.OS === 'ios' && this.props.learnType === 'class') {
-      if( this.props.permission.type === 'free' ) {
+      if (this.props.permission.type === 'free') {
         return <PurchaseButton {...this.props} active={false} />;
       } else if (this.props.permission.type !== 'membership') {
         return <DownloadButton {...this.props} active={false} />;
