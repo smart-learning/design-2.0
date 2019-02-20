@@ -392,8 +392,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 2 ? (
               <View style={styles.membershipPremiumBox}>
@@ -435,8 +435,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 3 ? (
               <View style={styles.membershipBox}>
@@ -467,8 +467,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 4 ? (
               <View style={styles.membershipAudioBookBox}>
@@ -507,8 +507,8 @@ export default class MembershipPage extends React.Component {
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {paidMembership
               ? this._renderUnsubscribe()
@@ -619,7 +619,7 @@ export default class MembershipPage extends React.Component {
               onActiveOpacity={0.9}
               onPress={() =>
                 this.buyMembership({
-                  title: '오디오북 멤버십 결제',
+                  title: '윌라 멤버십 가입하기',
                   type: 'bookclub',
                 })
               }
@@ -645,7 +645,7 @@ export default class MembershipPage extends React.Component {
               onActiveOpacity={0.9}
               onPress={() =>
                 this.buyMembership({
-                  title: '클래스 멤버십 결제',
+                  title: '윌라 멤버십 가입하기',
                   type: 'campus',
                 })
               }
@@ -671,7 +671,7 @@ export default class MembershipPage extends React.Component {
               onActiveOpacity={0.9}
               onPress={() =>
                 this.buyMembership({
-                  title: '프리미엄 멤버십 결제',
+                  title: '윌라 멤버십 가입하기',
                   type: 'premium',
                 })
               }
@@ -878,7 +878,7 @@ export default class MembershipPage extends React.Component {
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
-                    title: '오디오북 멤버십 결제',
+                    title: '윌라 멤버십 가입하기',
                     type: 'bookclub',
                   })
                 }
@@ -905,7 +905,7 @@ export default class MembershipPage extends React.Component {
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
-                    title: '클래스 멤버십 결제',
+                    title: '윌라 멤버십 가입하기',
                     type: 'campus',
                   })
                 }
@@ -932,7 +932,7 @@ export default class MembershipPage extends React.Component {
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
-                    title: '프리미엄 멤버십 결제',
+                    title: '윌라 멤버십 가입하기',
                     type: 'premium',
                   })
                 }
@@ -1101,8 +1101,8 @@ export default class MembershipPage extends React.Component {
                 Apple 구독 취소 또는 변경
               </Text>
             ) : (
-              <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
-            )}
+                <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+              )}
           </View>
         </TouchableOpacity>
       </View>
