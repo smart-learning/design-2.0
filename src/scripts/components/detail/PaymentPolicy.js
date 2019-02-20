@@ -11,6 +11,7 @@ import CommonStyles from '../../../styles/common';
 import _ from 'underscore';
 import numeral from 'numeral';
 import moment from 'moment';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -344,7 +345,8 @@ class Button2nd extends React.Component {
     return <View />;
   }
 }
-export default class PaymentPolicy extends React.Component {
+
+class PaymentPolicy extends React.Component {
   renderPermissionLoading() {
     return (
       <View style={[CommonStyles.alignJustifyFlex, styles.contentContainer]}>
@@ -402,3 +404,5 @@ export default class PaymentPolicy extends React.Component {
     }
   }
 }
+
+export default withNavigation(PaymentPolicy);
