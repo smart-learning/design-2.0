@@ -78,7 +78,7 @@ class ReviewInput extends React.Component {
 
   reviewSubmit = async () => {
     if (this.props.store.reviewText === '') {
-      Alert.alert('Error', '리뷰를 입력 해주세요.');
+      Alert.alert('Error', this.props.talkText + '을 입력해주세요');
       return false;
     } else if (this.props.formType === 'create') {
       try {
@@ -102,7 +102,10 @@ class ReviewInput extends React.Component {
           this.props.store.itemEvaluationData = evaluation;
           // this.props.store.reviewStar;
         } else {
-          Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
+          Alert.alert(
+            '오류',
+            this.props.talkText + '을 등록 중 오류가 발생하였습니다',
+          );
           this.props.store.isSubmitStatus = false;
         }
       } catch (error) {
@@ -111,7 +114,7 @@ class ReviewInput extends React.Component {
       }
     } else if (this.props.formType === 'put') {
       if (this.props.store.reviewText === '') {
-        Alert.alert('Error', '리뷰를 입력 해주세요.');
+        Alert.alert('Error', this.props.talkText + '을 입력해주세요');
         return false;
       } else {
         try {
@@ -123,14 +126,17 @@ class ReviewInput extends React.Component {
           this.props.store.isSubmitStatus = true;
 
           if (result) {
-            Alert.alert('알림', '리뷰가 등록되었습니다');
+            Alert.alert('알림', this.props.talkText + '이 수정되었습니다');
             this.props.store.isReviewUpdate = false;
             this.props.store.isSubmitStatus = false;
             // 코멘트 다시 로드
             const comments = await net.getReviewList(this.props.store.cid);
             this.props.store.itemReviewData = comments;
           } else {
-            Alert.alert('오류', '리뷰 등록 중 오류가 발생하였습니다');
+            Alert.alert(
+              '오류',
+              this.props.talkText + '을 수정 중 오류가 발생하였습니다',
+            );
             this.props.store.isSubmitStatus = false;
           }
         } catch (error) {
@@ -265,7 +271,7 @@ class ReviewForm extends React.Component {
             <Text
               style={{ fontSize: 17, fontWeight: 'bold', color: '#353A3C' }}
             >
-              리뷰 남기기
+              {this.props.talkText + ' 남기기'}
             </Text>
 
             <View>
@@ -445,7 +451,7 @@ class ReviewForm extends React.Component {
                   }}
                 >
                   <Text style={{ fontSize: 14, color: '#353A3C' }}>
-                    리뷰가 없습니다.
+                    {this.props.talkText + '이 없습니다'}
                   </Text>
                 </View>
               )}

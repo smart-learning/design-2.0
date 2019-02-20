@@ -83,10 +83,9 @@ class StarGrade extends React.Component {
     return (
       <View style={styles.contentContainer}>
         <Text style={styles.Paragraph}>
-          {this.props.learnType === 'audioBook' && '오디오북 '}
-          {this.props.learnType === 'class' && '강의 '} 내용은 어떠셨나요?
+          {this.props.typeText + ' 내용은 어떠셨나요?'}
         </Text>
-        <Text style={styles.Paragraph}>평점을 남겨주세요</Text>
+        <Text style={styles.Paragraph}>별점을 남겨주세요</Text>
 
         <View
           style={{
