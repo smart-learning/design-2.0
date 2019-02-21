@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 40,
+    color: 'white',
     paddingLeft: 15,
     borderColor: '#ffffff',
     borderWidth: 1,
@@ -159,6 +160,7 @@ class EmailAuthPack extends Component {
           <TextInput
             ref={this.login_id}
             style={styles.input}
+            selectionColor="#fff"
             keyboardType="email-address"
             underlineColorAndroid={'rgba(0,0,0,0)'}
             value={this.data.email}
@@ -174,6 +176,7 @@ class EmailAuthPack extends Component {
           <TextInput
             ref={this.login_pw}
             style={styles.input}
+            selectionColor="#fff"
             underlineColorAndroid={'rgba(0,0,0,0)'}
             secureTextEntry={true}
             value={this.data.password}

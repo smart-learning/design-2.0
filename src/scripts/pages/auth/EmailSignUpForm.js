@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 40,
+    color: 'white',
     paddingLeft: 15,
     borderColor: '#ffffff',
     borderWidth: 1,
@@ -388,6 +389,7 @@ class EmailSignUpForm extends Component {
                 <View style={styles.inputBr} />
                 <TextInput
                   style={styles.input}
+                  selectionColor="#fff"
                   underlineColorAndroid={'rgba(0,0,0,0)'}
                   // onFocus={this.validityNameOnFocus}
                   returnKeyType="next"
@@ -405,6 +407,7 @@ class EmailSignUpForm extends Component {
                 <TextInput
                   ref={this.signup_email}
                   style={styles.input}
+                  selectionColor="#fff"
                   underlineColorAndroid={'rgba(0,0,0,0)'}
                   // onFocus={this.validityEmailOnFocus}
                   returnKeyType="next"
@@ -422,6 +425,7 @@ class EmailSignUpForm extends Component {
                 <View style={styles.inputBr} />
                 <TextInput
                   style={styles.input}
+                  selectionColor="#fff"
                   ref={this.signup_pw}
                   underlineColorAndroid={'rgba(0,0,0,0)'}
                   // onFocus={this.validityPasswordOnFocus}
@@ -439,6 +443,7 @@ class EmailSignUpForm extends Component {
                 <View style={styles.inputBr} />
                 <TextInput
                   style={styles.input}
+                  selectionColor="#fff"
                   ref={this.signup_pwconf}
                   underlineColorAndroid={'rgba(0,0,0,0)'}
                   // onFocus={this.validityPassconfOnFocus}
