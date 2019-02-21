@@ -236,7 +236,7 @@ class HomeAudioPage extends React.Component {
         <View
           style={[
             styles.audioCategory,
-            { transform: [{ translateY: this.state.categoryY }], zIndex: 2 },
+            { top: this.state.categoryY, zIndex: 2 },
           ]}
         >
           <PageCategory
