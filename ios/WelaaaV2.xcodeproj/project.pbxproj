@@ -1778,7 +1778,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.influential.smartlearning;
 				PRODUCT_NAME = WelaaaV2;
-				PROVISIONING_PROFILE_SPECIFIER = Influential_welaaa_Production;
+				PROVISIONING_PROFILE_SPECIFIER = welaaa_provisioning_adhoc;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

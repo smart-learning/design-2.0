@@ -1,7 +1,7 @@
 # More documentation about how to customize your build
 # can be found here:
 # https://docs.fastlane.tools
-fastlane_version '2.115.0'
+fastlane_version '2.116.1'
 
 # This value helps us track success metrics for Fastfiles
 # we automatically generate. Feel free to remove this line
@@ -51,6 +51,13 @@ platform :ios do
       }
     )
 
+    # Sentry
+    upload_symbols_to_sentry(
+      auth_token: "d3470658d19140ae88d808f2ca958b0cf8e95280c12e427095b66e32a9591975",
+      org_slug: "welaaa",
+      project_slug: "welaaa-rn"
+    )
+    
     # upload to Beta by Crashlytics
     crashlytics(
       api_token: "34f42c07ec889a3a9e3fabb2c478cc9af1001fa6",
