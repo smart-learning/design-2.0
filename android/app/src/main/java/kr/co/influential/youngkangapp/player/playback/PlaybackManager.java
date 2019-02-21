@@ -429,7 +429,10 @@ public class PlaybackManager implements Playback.Callback, PallyconEventListener
       LogHelper.d(TAG, "playFromUri: ", uri, " extras=" + extras);
       if (uri != null && !Uri.EMPTY.equals(uri)) {
         setMediaFromUri(uri, extras);
-        handlePlayRequest();
+        boolean playWhenReady = extras.getBoolean(PLAY_WHEN_READY, true);
+        if (playWhenReady) {
+          handlePlayRequest();
+        }
       } else {
         handleStopRequest("Invalid uri.");
       }
