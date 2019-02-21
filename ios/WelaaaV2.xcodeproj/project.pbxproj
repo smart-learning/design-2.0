@@ -1089,7 +1089,6 @@
 				EF9A98AC2111458C00EA3A8E /* ShellScript */,
 				A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */,
 				63BB3A8821C8BE8700619717 /* Embed Frameworks */,
-				B857ED89A6B442B1BA95B58A /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -1548,7 +1547,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n$PROJECT_DIR/../node_modules/@sentry/cli/bin/sentry-cli react-native xcode\n$PROJECT_DIR/../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "#export SENTRY_PROPERTIES=sentry.properties\n#$PROJECT_DIR/../node_modules/@sentry/cli/bin/sentry-cli react-native xcode\n$PROJECT_DIR/../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		A0F0448F122687067E0B106E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1569,20 +1568,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WelaaaV2/Pods-WelaaaV2-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		B857ED89A6B442B1BA95B58A /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Debug Symbols to Sentry";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n#$PROJECT_DIR/../node_modules/@sentry/cli/bin/sentry-cli upload-dsym\n";
 		};
 		D4BD998470C3E3416B464F29 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

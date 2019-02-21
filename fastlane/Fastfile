@@ -35,6 +35,12 @@ platform :ios do
         }
       }
     )
+
+    upload_symbols_to_sentry(
+      auth_token: "d3470658d19140ae88d808f2ca958b0cf8e95280c12e427095b66e32a9591975",
+      org_slug: "welaaa",
+      project_slug: "welaaa-rn"
+    )
   end
 
   lane :beta do
