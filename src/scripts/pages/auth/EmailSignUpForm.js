@@ -462,6 +462,13 @@ class EmailSignUpForm extends Component {
               {/* 마케팅 수신 동의 체크 박스 */}
               <CheckBox
                 title="새로운 콘텐츠 및 이벤트 정보 받기"
+                checkedIcon={
+                  <Image
+                    style={{ width: 24, height: 24 }}
+                    source={CheckedImage}
+                  />
+                }
+                UnCheckedImage={<Image source={UnCheckedImage} />}
                 checked={this.state.agreeReceiveMarketing}
                 onPress={() =>
                   this.setState(previousState => ({

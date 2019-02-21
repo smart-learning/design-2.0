@@ -10,6 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import { AppEventsLogger } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
@@ -20,6 +21,8 @@ import net from '../../commons/net';
 import globalStore from '../../commons/store';
 import appsFlyer from 'react-native-appsflyer';
 import { CheckBox } from 'react-native-elements';
+import CheckedImage from '../../../images/ic_checked.png';
+import UnCheckedImage from '../../../images/ic_unchecked.png';
 
 const productItem = {
   campus: {
@@ -467,12 +470,11 @@ class MembershipFormPage extends React.Component {
           keyboardShouldPersistTaps="always"
         >
           <View style={CommonStyles.contentContainer}>
-
             <View>
               <Text style={styles.itemTextTitle}>
-                첫 달 무료 고객은 무료기간 이후부터 결제되며, 무료기간 중 해지 가능합니다.
-
-                  </Text>
+                첫 달 무료 고객은 무료기간 이후부터 결제되며, 무료기간 중 해지
+                가능합니다.
+              </Text>
             </View>
 
             <View style={styles.itemInfoContainer}>
@@ -486,7 +488,6 @@ class MembershipFormPage extends React.Component {
                   </Text>
                   <Text style={styles.itemTextTop}>
                     멤버십 혜택 :{'  '}
-
                     {this.formType === 'campus' && (
                       <Text style={styles.itemTextTop}>
                         1,000여개의 동영상 강좌 무제한 이용!
@@ -494,12 +495,14 @@ class MembershipFormPage extends React.Component {
                     )}
                     {this.formType === 'bookclub' && (
                       <Text style={styles.itemTextTop}>
-                        최신작 포함 전체 오디오북 중 2권 선택! 이용권 미사용시 무한 이월 가능!
-                    </Text>
+                        최신작 포함 전체 오디오북 중 2권 선택! 이용권 미사용시
+                        무한 이월 가능!
+                      </Text>
                     )}
                     {this.formType === 'premium' && (
                       <Text style={styles.itemTextTop}>
-                        1000여개의 클래스 무제한 이용 + 최신작 포함 오디오북 2권 선택가능
+                        1000여개의 클래스 무제한 이용 + 최신작 포함 오디오북 2권
+                        선택가능
                       </Text>
                     )}
                   </Text>
@@ -516,7 +519,9 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>이름<Text style={styles.formLabelStar}>*</Text></Text>
+                <Text style={styles.formLabel}>
+                  이름<Text style={styles.formLabelStar}>*</Text>
+                </Text>
                 <View style={styles.formInputContainer}>
                   <TextInput
                     style={styles.formInput}
@@ -535,7 +540,9 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>이메일<Text style={styles.formLabelStar}>*</Text></Text>
+                <Text style={styles.formLabel}>
+                  이메일<Text style={styles.formLabelStar}>*</Text>
+                </Text>
                 <View style={styles.formInputContainer}>
                   <TextInput
                     style={styles.formInput}
@@ -555,7 +562,9 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>휴대폰<Text style={styles.formLabelStar}>*</Text></Text>
+                <Text style={styles.formLabel}>
+                  휴대폰<Text style={styles.formLabelStar}>*</Text>
+                </Text>
                 <View style={styles.formInputContainer}>
                   <TextInput
                     style={styles.formInput}
@@ -570,10 +579,12 @@ class MembershipFormPage extends React.Component {
               </View>
             </View>
 
-
             <View>
-              <Text style={styles.itemText}>* 아래 카드정보를 입력하셔도, 바로 결제되지 않습니다.
-              {'\n'}* 첫 달 무료 체험기간 이후부터 자동결제가 시작되며, 언제든 해지가 가능합니다.</Text>
+              <Text style={styles.itemText}>
+                * 아래 카드정보를 입력하셔도, 바로 결제되지 않습니다.
+                {'\n'}* 첫 달 무료 체험기간 이후부터 자동결제가 시작되며, 언제든
+                해지가 가능합니다.
+              </Text>
             </View>
 
             <View>
@@ -583,7 +594,9 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>카드번호<Text style={styles.formLabelStar}>*</Text></Text>
+                <Text style={styles.formLabel}>
+                  카드번호<Text style={styles.formLabelStar}>*</Text>
+                </Text>
                 <View style={styles.formInputContainer}>
                   <TextInput
                     style={styles.formInput}
@@ -604,7 +617,9 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>유효기간<Text style={styles.formLabelStar}>*</Text></Text>
+                <Text style={styles.formLabel}>
+                  유효기간<Text style={styles.formLabelStar}>*</Text>
+                </Text>
                 <View style={styles.formInputContainer}>
                   <View style={styles.formValidityPeriod}>
                     <TextInput
@@ -640,7 +655,10 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>주민번호{'\n'}사업자번호<Text style={styles.formLabelStar}>*</Text></Text>
+                <Text style={styles.formLabel}>
+                  주민번호{'\n'}사업자번호
+                  <Text style={styles.formLabelStar}>*</Text>
+                </Text>
                 <View style={styles.formInputContainer}>
                   <View style={styles.formValidityPeriod}>
                     <TextInput
@@ -675,7 +693,10 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>비밀번호{'\n'}앞 두자리<Text style={styles.formLabelStar}>*</Text></Text>
+                <Text style={styles.formLabel}>
+                  비밀번호{'\n'}앞 두자리
+                  <Text style={styles.formLabelStar}>*</Text>
+                </Text>
                 <View style={styles.formInputContainer}>
                   <View style={styles.formValidityPeriod}>
                     <TextInput
@@ -782,6 +803,13 @@ class MembershipFormPage extends React.Component {
 
               <CheckBox
                 title="윌라 이용약관 및 개인정보보호정책에 동의합니다."
+                checkedIcon={
+                  <Image
+                    style={{ width: 24, height: 24 }}
+                    source={CheckedImage}
+                  />
+                }
+                UnCheckedImage={<Image source={UnCheckedImage} />}
                 checked={this.state.agreeReceive}
                 onPress={() =>
                   this.setState(previousState => ({
@@ -802,6 +830,13 @@ class MembershipFormPage extends React.Component {
               />
               <CheckBox
                 title="위 입력정보를 결제 서비스 업체에 제공하는데 동의합니다. 본 정보는 멤버십 가입 목적으로만 사용됩니다."
+                checkedIcon={
+                  <Image
+                    style={{ width: 24, height: 24 }}
+                    source={CheckedImage}
+                  />
+                }
+                UnCheckedImage={<Image source={UnCheckedImage} />}
                 checked={this.state.agreeReceivePayment}
                 onPress={() =>
                   this.setState(previousState => ({
@@ -821,7 +856,10 @@ class MembershipFormPage extends React.Component {
                 }}
               />
               <View style={styles.sectionTitleContainer}>
-                <Text style={styles.itemText}>* 멤버십 변경 등 이용문의는 [마이윌라] - [1:1문의]로 문의 부탁드립니다.</Text>
+                <Text style={styles.itemText}>
+                  * 멤버십 변경 등 이용문의는 [마이윌라] - [1:1문의]로 문의
+                  부탁드립니다.
+                </Text>
               </View>
 
               <View>
@@ -831,7 +869,9 @@ class MembershipFormPage extends React.Component {
                 >
                   <View style={styles.ruleButton} borderRadius={40}>
                     <Text style={styles.ruleButtonText}>
-                      {this.state.submitButtonDisabled ? '처리중' : '멤버십 시작하기'}
+                      {this.state.submitButtonDisabled
+                        ? '처리중'
+                        : '멤버십 시작하기'}
                     </Text>
                   </View>
                 </TouchableOpacity>
