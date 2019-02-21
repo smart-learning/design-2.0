@@ -98,6 +98,7 @@ class ReviewInput extends React.Component {
         if (result) {
           // 코멘트 다시 로드
           const comments = await net.getReviewList(this.props.store.cid);
+          this.props.store.pagination = comments.pagination;
           this.props.store.itemReviewData = comments;
           // 별점 다시 로드
           const evaluation = await net.getItemEvaluation(this.props.store.cid);
@@ -133,6 +134,7 @@ class ReviewInput extends React.Component {
             this.setState({ isSubmitStatus: false });
             // 코멘트 다시 로드
             const comments = await net.getReviewList(this.props.store.cid);
+            this.props.store.pagination = comments.pagination;
             this.props.store.itemReviewData = comments;
           } else {
             Alert.alert(
@@ -254,6 +256,7 @@ class ReviewForm extends React.Component {
               await net.deleteReview(this.data.myReviewId);
               // 코멘트 다시 로드
               const comments = await net.getReviewList(this.props.store.cid);
+              this.props.store.pagination = comments.pagination;
               this.props.store.itemReviewData = comments;
               this.props.store.reviewText = '';
               this.reviewInput.clearReviewText();
