@@ -1582,7 +1582,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n$PROJECT_DIR/../node_modules/@sentry/cli/bin/sentry-cli upload-dsym\n";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n#$PROJECT_DIR/../node_modules/@sentry/cli/bin/sentry-cli upload-dsym\n";
 		};
 		D4BD998470C3E3416B464F29 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
