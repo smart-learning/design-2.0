@@ -84,19 +84,19 @@ class BookMonthlySwiperItem extends React.Component {
           height: 450,
         }}
       >
-        <Text
-          style={{
-            width: '100%',
-            paddingTop: 20,
-            paddingBottom: 20,
-            fontSize: 22.5,
-            fontWeight: 'bold',
-            textAlign: 'center',
-            color: '#ffffff',
-          }}
-        >
-          {moment(itemData.month).format('M')}월 이달의 책
-        </Text>
+        <View style={{ paddingTop: 20 }}>
+          <Text
+            style={{
+              width: '100%',
+              fontSize: 22.5,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: '#ffffff',
+            }}
+          >
+            {moment(itemData.month).format('M')}월 이달의 책
+          </Text>
+        </View>
         <View
           style={[
             CommonStyles.alignJustifyContentBetween,
@@ -105,7 +105,6 @@ class BookMonthlySwiperItem extends React.Component {
         >
           <View style={styles.bookItem}>
             <TouchableOpacity
-              activeOpacity={0.9}
               onPress={() =>
                 this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
                   title: ' ',
@@ -113,7 +112,9 @@ class BookMonthlySwiperItem extends React.Component {
                 })
               }
             >
-              <View>
+              {/*TouchableOpacity 가 원인불명으로 터치가 되지 않아*/}
+              {/*TouchableOpacity 안으로 패딩을 이전*/}
+              <View style={{ paddingTop: 20 }}>
                 <FastImage
                   source={{ uri: itemData.book_a.audiobook.images.cover }}
                   style={styles.thumbnail}
@@ -169,7 +170,6 @@ class BookMonthlySwiperItem extends React.Component {
 
           <View style={styles.bookItem}>
             <TouchableOpacity
-              activeOpacity={0.9}
               onPress={() =>
                 this.props.navigation.navigate('HomeBookMonthlyDetailPage', {
                   title: ' ',
@@ -177,7 +177,9 @@ class BookMonthlySwiperItem extends React.Component {
                 })
               }
             >
-              <View>
+              {/*TouchableOpacity 가 원인불명으로 터치가 되지 않아*/}
+              {/*TouchableOpacity 안으로 패딩을 이전*/}
+              <View style={{ paddingTop: 20 }}>
                 <FastImage
                   source={{ uri: itemData.book_b.audiobook.images.cover }}
                   style={styles.thumbnail}
