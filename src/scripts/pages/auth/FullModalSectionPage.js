@@ -21,6 +21,7 @@ import net from '../../commons/net';
 import nav from '../../commons/nav';
 import globalStore from '../../commons/store';
 import LogoGreen from '../../../images/welaaa_logo_green.png'
+import AndroidExitPopup from '../../../images/welaaa_android_exit_popup.png'
 
 class Data {
   @observable
@@ -162,7 +163,7 @@ class FullModalSectionPage extends Component {
 
             <View style={[{ height: ad.img_height * img_ratio }]} />
             <Image
-              source={{ uri: ad.img_url }}
+              source={AndroidExitPopup}
               width={device_size.width - 30}
               style={this.style.popupInfo}
               resizeMode={'cover'}

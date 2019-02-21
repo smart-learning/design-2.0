@@ -19,6 +19,7 @@ import native from '../../commons/native';
 import net from '../../commons/net';
 import globalStore from '../../commons/store';
 import appsFlyer from 'react-native-appsflyer';
+import { CheckBox } from 'react-native-elements';
 
 const productItem = {
   campus: {
@@ -73,29 +74,58 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: '100%',
-    height: 3,
-    backgroundColor: '#d3d3d3',
+    height: 10,
+    backgroundColor: '#EDEDED',
   },
   itemInfoHrBottom: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     width: '100%',
-    height: 3,
-    backgroundColor: '#d3d3d3',
+    height: 10,
+    backgroundColor: '#EDEDED',
   },
   itemInfo: {
+    paddingTop: 5,
     justifyContent: 'center',
     alignItems: 'center',
     height: 90,
-    backgroundColor: '#f7f5fb',
+    backgroundColor: '#ffffff',
+    borderWidth: 10,
+    borderColor: '#EDEDED',
+  },
+  itemInfoBottom: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 90,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#00C73C',
   },
   itemMonthlyPrice: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  itemTitleText: {
+    fontSize: 16,
+    color: '#353A3C',
+    // marginLeft: 10,
+  },
   itemText: {
     fontSize: 16,
+    color: '#4a4a4a',
+  },
+  itemTextTop: {
+    // paddingTop: 15,
+    // paddingBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    fontSize: 16,
+    color: '#4a4a4a',
+  },
+  itemTextTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#4a4a4a',
   },
   itemTextSm: {
@@ -106,7 +136,7 @@ const styles = StyleSheet.create({
   itemTextImportant: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#5f45b4',
+    color: '#00C73C',
   },
   itemPriceOrigin: {
     fontSize: 16,
@@ -130,14 +160,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4a4a4a',
   },
+  formLabelStar: {
+    fontSize: 16,
+    color: '#EA6118',
+  },
   formInputContainer: {
-    width: '55%',
+    width: '75%',
   },
   formInput: {
     width: '100%',
     height: 50,
     borderWidth: 1,
     borderColor: '#dbdbdb',
+    borderRadius: 4,
   },
   formHr: {
     width: '100%',
@@ -153,6 +188,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderColor: '#dbdbdb',
+    borderRadius: 4,
   },
   validityPeriodBullet: {
     paddingLeft: 7,
@@ -165,12 +201,14 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderColor: '#dbdbdb',
+    borderRadius: 4,
   },
   genderInput: {
     width: 30,
     height: 50,
     borderWidth: 1,
     borderColor: '#dbdbdb',
+    borderRadius: 4,
   },
   total: {
     marginTop: 20,
@@ -228,7 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: CommonStyles.COLOR_PRIMARY,
   },
   ruleButtonText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#ffffff',
   },
 });
@@ -240,6 +278,8 @@ class MembershipFormPage extends React.Component {
 
   state = {
     submitButtonDisabled: false,
+    agreeReceive: true,
+    agreeReceivePayment: true,
 
     user_name: '',
     phone: '',
@@ -427,51 +467,46 @@ class MembershipFormPage extends React.Component {
           keyboardShouldPersistTaps="always"
         >
           <View style={CommonStyles.contentContainer}>
+
+            <View>
+              <Text style={styles.itemTextTitle}>
+                첫 달 무료 고객은 무료기간 이후부터 결제되며, 무료기간 중 해지 가능합니다.
+
+                  </Text>
+            </View>
+
             <View style={styles.itemInfoContainer}>
               <View style={styles.itemInfo}>
                 <View>
-                  <Text style={styles.itemText}>
-                    구매상품 :{' '}
+                  <Text style={styles.itemTextTop}>
+                    가입 멤버십 :{'  '}
                     <Text style={styles.itemTextImportant}>
                       {data.name} 멤버십
                     </Text>
                   </Text>
-                  <View style={styles.itemMonthlyPrice}>
-                    <Text style={styles.itemText}>매월</Text>
-                    <View>
-                      <View>
-                        {Platform.select({
-                          ios: (
-                            <Text style={styles.itemTextImportant}>
-                              {' '}
-                              {data.ios.price}{' '}
-                            </Text>
-                          ),
-                          android: (
-                            <Text>
-                              <Text style={styles.itemTextImportant}>
-                                {' '}
-                                {data.android.price}{' '}
-                              </Text>
-                              <Text style={styles.itemPriceOrigin}>
-                                {data.android.originPrice}
-                              </Text>
-                            </Text>
-                          ),
-                        })}
-                      </View>
-                    </View>
-                    <Text style={styles.itemText}> 정기결제</Text>
-                  </View>
+                  <Text style={styles.itemTextTop}>
+                    멤버십 혜택 :{'  '}
+
+                    {this.formType === 'campus' && (
+                      <Text style={styles.itemTextTop}>
+                        1,000여개의 동영상 강좌 무제한 이용!
+                      </Text>
+                    )}
+                    {this.formType === 'bookclub' && (
+                      <Text style={styles.itemTextTop}>
+                        최신작 포함 전체 오디오북 중 2권 선택! 이용권 미사용시 무한 이월 가능!
+                    </Text>
+                    )}
+                    {this.formType === 'premium' && (
+                      <Text style={styles.itemTextTop}>
+                        1000여개의 클래스 무제한 이용 + 최신작 포함 오디오북 2권 선택가능
+                      </Text>
+                    )}
+                  </Text>
                 </View>
               </View>
               <View style={styles.itemInfoHrTop} />
               <View style={styles.itemInfoHrBottom} />
-            </View>
-
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.itemText}>결제자 정보</Text>
-              <View style={styles.sectionHr} />
             </View>
 
             <View>
@@ -481,7 +516,7 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>이름</Text>
+                <Text style={styles.formLabel}>이름<Text style={styles.formLabelStar}>*</Text></Text>
                 <View style={styles.formInputContainer}>
                   <TextInput
                     style={styles.formInput}
@@ -493,14 +528,34 @@ class MembershipFormPage extends React.Component {
                   />
                 </View>
               </View>
-              <View style={styles.formHr} />
+              {/* <View style={styles.formHr} /> */}
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>휴대폰</Text>
+                <Text style={styles.formLabel}>이메일<Text style={styles.formLabelStar}>*</Text></Text>
+                <View style={styles.formInputContainer}>
+                  <TextInput
+                    style={styles.formInput}
+                    underlineColorAndroid={'rgba(0,0,0,0)'}
+                    value={email}
+                    onChangeText={email => {
+                      this.setState({ email });
+                    }}
+                  />
+                </View>
+              </View>
+
+              {/* <View style={styles.formHr} /> */}
+              <View
+                style={[
+                  CommonStyles.alignJustifyContentBetween,
+                  styles.formItem,
+                ]}
+              >
+                <Text style={styles.formLabel}>휴대폰<Text style={styles.formLabelStar}>*</Text></Text>
                 <View style={styles.formInputContainer}>
                   <TextInput
                     style={styles.formInput}
@@ -513,31 +568,12 @@ class MembershipFormPage extends React.Component {
                   />
                 </View>
               </View>
-              <View style={styles.formHr} />
-              <View
-                style={[
-                  CommonStyles.alignJustifyContentBetween,
-                  styles.formItem,
-                ]}
-              >
-                <Text style={styles.formLabel}>이메일</Text>
-                <View style={styles.formInputContainer}>
-                  <TextInput
-                    style={styles.formInput}
-                    underlineColorAndroid={'rgba(0,0,0,0)'}
-                    value={email}
-                    onChangeText={email => {
-                      this.setState({ email });
-                    }}
-                  />
-                </View>
-              </View>
-              <View style={styles.formHr} />
             </View>
 
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.itemText}>카드 정보</Text>
-              <View style={styles.sectionHr} />
+
+            <View>
+              <Text style={styles.itemText}>* 아래 카드정보를 입력하셔도, 바로 결제되지 않습니다.
+              {'\n'}* 첫 달 무료 체험기간 이후부터 자동결제가 시작되며, 언제든 해지가 가능합니다.</Text>
             </View>
 
             <View>
@@ -547,7 +583,7 @@ class MembershipFormPage extends React.Component {
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>카드번호</Text>
+                <Text style={styles.formLabel}>카드번호<Text style={styles.formLabelStar}>*</Text></Text>
                 <View style={styles.formInputContainer}>
                   <TextInput
                     style={styles.formInput}
@@ -558,17 +594,17 @@ class MembershipFormPage extends React.Component {
                       this.setState({ card_num });
                     }}
                   />
-                  <Text style={styles.itemTextSm}>'-'없이 기재해주세요.</Text>
+                  {/* <Text style={styles.itemTextSm}>'-'없이 기재해주세요.</Text> */}
                 </View>
               </View>
-              <View style={styles.formHr} />
+              {/* <View style={styles.formHr} /> */}
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>유효기간</Text>
+                <Text style={styles.formLabel}>유효기간<Text style={styles.formLabelStar}>*</Text></Text>
                 <View style={styles.formInputContainer}>
                   <View style={styles.formValidityPeriod}>
                     <TextInput
@@ -597,14 +633,14 @@ class MembershipFormPage extends React.Component {
                   </View>
                 </View>
               </View>
-              <View style={styles.formHr} />
+              {/* <View style={styles.formHr} /> */}
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>생년월일</Text>
+                <Text style={styles.formLabel}>주민번호{'\n'}사업자번호<Text style={styles.formLabelStar}>*</Text></Text>
                 <View style={styles.formInputContainer}>
                   <View style={styles.formValidityPeriod}>
                     <TextInput
@@ -632,14 +668,14 @@ class MembershipFormPage extends React.Component {
                   </View>
                 </View>
               </View>
-              <View style={styles.formHr} />
+              {/* <View style={styles.formHr} /> */}
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
                   styles.formItem,
                 ]}
               >
-                <Text style={styles.formLabel}>비밀번호 앞 두자리</Text>
+                <Text style={styles.formLabel}>비밀번호{'\n'}앞 두자리<Text style={styles.formLabelStar}>*</Text></Text>
                 <View style={styles.formInputContainer}>
                   <View style={styles.formValidityPeriod}>
                     <TextInput
@@ -656,11 +692,48 @@ class MembershipFormPage extends React.Component {
                   </View>
                 </View>
               </View>
-              <View style={styles.formHr} />
+              {/* <View style={styles.formHr} /> */}
+            </View>
+
+            <View style={styles.itemInfoContainer}>
+              <View style={styles.itemInfoBottom}>
+                <View>
+                  <Text style={styles.itemTextImportant}>
+                    한 달 무료체험 이후
+                  </Text>
+                  <View style={styles.itemMonthlyPrice}>
+                    <Text style={styles.itemText}>매월</Text>
+                    <View>
+                      <View>
+                        {Platform.select({
+                          ios: (
+                            <Text style={styles.itemTextImportant}>
+                              {' '}
+                              {data.ios.price}{' '}
+                            </Text>
+                          ),
+                          android: (
+                            <Text>
+                              <Text style={styles.itemPriceOrigin}>
+                                {data.android.originPrice}
+                              </Text>
+                              <Text style={styles.itemTextImportant}>
+                                {' '}
+                                {data.android.price}{' '}
+                              </Text>
+                            </Text>
+                          ),
+                        })}
+                      </View>
+                    </View>
+                    <Text style={styles.itemText}> 자동결제 예정</Text>
+                  </View>
+                </View>
+              </View>
             </View>
 
             <View style={styles.total}>
-              <View style={styles.totalHr} />
+              {/* <View style={styles.totalHr} />
               <View
                 style={[
                   CommonStyles.alignJustifyContentBetween,
@@ -704,16 +777,61 @@ class MembershipFormPage extends React.Component {
                     })}
                   </View>
                 )}
+              </View> */}
+              {/* <View style={styles.totalHr} /> */}
+
+              <CheckBox
+                title="윌라 이용약관 및 개인정보보호정책에 동의합니다."
+                checked={this.state.agreeReceive}
+                onPress={() =>
+                  this.setState(previousState => ({
+                    agreeReceive: !previousState.agreeReceive,
+                  }))
+                }
+                textStyle={[
+                  styles.agreeReceiveMarketingStyle,
+                  { textAlign: 'left' },
+                ]}
+                containerStyle={{
+                  backgroundColor: '#0000',
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  paddingLeft: 0,
+                  borderWidth: 0,
+                }}
+              />
+              <CheckBox
+                title="위 입력정보를 결제 서비스 업체에 제공하는데 동의합니다. 본 정보는 멤버십 가입 목적으로만 사용됩니다."
+                checked={this.state.agreeReceivePayment}
+                onPress={() =>
+                  this.setState(previousState => ({
+                    agreeReceivePayment: !previousState.agreeReceivePayment,
+                  }))
+                }
+                textStyle={[
+                  styles.agreeReceiveMarketingStyle,
+                  { textAlign: 'left' },
+                ]}
+                containerStyle={{
+                  backgroundColor: '#0000',
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  paddingLeft: 0,
+                  borderWidth: 0,
+                }}
+              />
+              <View style={styles.sectionTitleContainer}>
+                <Text style={styles.itemText}>* 멤버십 변경 등 이용문의는 [마이윌라] - [1:1문의]로 문의 부탁드립니다.</Text>
               </View>
-              <View style={styles.totalHr} />
+
               <View>
                 <TouchableOpacity
                   onPress={this.onSubmit}
                   disabled={this.state.submitButtonDisabled}
                 >
-                  <View style={styles.ruleButton} borderRadius={5}>
+                  <View style={styles.ruleButton} borderRadius={40}>
                     <Text style={styles.ruleButtonText}>
-                      {this.state.submitButtonDisabled ? '처리중' : '등록'}
+                      {this.state.submitButtonDisabled ? '처리중' : '멤버십 시작하기'}
                     </Text>
                   </View>
                 </TouchableOpacity>
