@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     color: '#34342C',
   },
   sectionList: {
+    paddingTop: 20,
     paddingBottom: 10,
   },
   sectionListItem: {
@@ -104,79 +105,114 @@ const styles = StyleSheet.create({
   paragraphText: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#34342C',
+    color: '#ffffff',
   },
   paragraphImportantText: {
     textAlign: 'center',
     fontSize: 18,
-    color: CommonStyles.COLOR_PRIMARY,
+    color: '#ffffff',
   },
   membershipBox: {
     position: 'relative',
     paddingTop: 25,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: CommonStyles.COLOR_PRIMARY,
+    borderRadius: 4,
+    backgroundColor: '#00C73C',
   },
   membershipCampusBox: {
     position: 'relative',
     paddingTop: 25,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#49ac41',
+    borderRadius: 4,
+    backgroundColor: '#00C73C',
   },
   membershipAudioBookBox: {
     position: 'relative',
     paddingTop: 25,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#afca0b',
+    borderRadius: 4,
+    backgroundColor: '#AEC90B',
+  },
+  membershipBackGroundBox: {
+    width: '100%',
+    position: 'relative',
+    backgroundColor: '#EDEDED',
   },
   membershipPremiumBox: {
     position: 'relative',
     paddingTop: 25,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#a88050',
+    borderRadius: 4,
+    backgroundColor: '#A98151',
   },
   membershipIcon: {
-    position: 'absolute',
-    top: 18,
-    right: 20,
-    width: 65,
-    height: 50,
+    alignItems: 'center',
+    position: 'relative',
+    width: 55,
+    height: 55,
   },
   membershipTitle: {
+    marginTop: 20,
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: CommonStyles.COLOR_PRIMARY,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
   },
   membershipCampusTitle: {
+    marginTop: 20,
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: '#49ac41',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
   },
   membershipAudioBookClubTitle: {
+    marginTop: 20,
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: '#afca0b',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
   },
   membershipPremiumTitle: {
+    marginTop: 20,
     marginBottom: 20,
     paddingLeft: 15,
     fontSize: 20,
-    color: '#a88050',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
   },
   membershipParagraphBox: {
     marginBottom: 20,
-    paddingLeft: 15,
+  },
+  membershipParagraphTitle: {
+    marginTop: 10,
+    fontSize: 15,
+    color: '#ffffff',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   membershipParagraph: {
     fontSize: 15,
-    color: '#666666',
+    color: '#ffffff',
+    textAlign: 'center',
   },
   memberShipButton: {
     alignItems: 'center',
@@ -234,13 +270,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
-    backgroundColor: '#00c73c',
+    backgroundColor: '#ffffff',
     marginTop: 15,
+    marginLeft: 10,
+    marginRight: 10,
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: '#00C73C',
   },
   cancelButtonText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#00C73C',
   },
   tripAroundButton: {
     width: '100%',
@@ -256,7 +297,7 @@ export default class MembershipPage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.props.navigation.setParams({ title: '윌라 멤버십 안내' });
+    this.props.navigation.setParams({ title: '나의 멤버십 현황' });
 
     this.state = {
       ads: [],
@@ -362,19 +403,26 @@ export default class MembershipPage extends React.Component {
         style={[CommonStyles.container, { backgroundColor: '#ffffff' }]}
       >
         <ScrollView style={{ width: '100%' }}>
-          <View style={{ marginLeft: 20, marginRight: 20, marginTop: 30 }}>
+          <View style={{ marginLeft: 0, marginRight: 0, marginTop: 0 }}>
             {globalStore.currentMembership.type === 1 ? (
-              <View style={styles.membershipCampusBox}>
-                <Image source={IcCampus} style={styles.membershipIcon} />
-                <Text style={styles.membershipCampusTitle}>
-                  윌라 클래스 멤버십
+              <View style={styles.membershipBackGroundBox}>
+                <View style={styles.membershipCampusBox}>
+                  <View style={{ width: '100%', alignItems: 'center' }}>
+                    <Image source={IcCampus} style={styles.membershipIcon} />
+                  </View>
+
+                  <Text style={styles.membershipCampusTitle}>
+                    윌라 클래스 멤버십
                 </Text>
-                <View style={styles.membershipParagraphBox}>
-                  <Text style={styles.membershipParagraph}>
-                    1천개의 동영상강좌 무제한 이용
+                  <View style={styles.membershipParagraphBox}>
+                    <Text style={styles.membershipParagraphTitle}>
+                      클래스
                   </Text>
-                </View>
-                <View
+                    <Text style={styles.membershipParagraph}>
+                      1,000여개의 동영상 강좌 무제한 이용
+                  </Text>
+                  </View>
+                  {/* <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipCampusButton,
@@ -389,35 +437,46 @@ export default class MembershipPage extends React.Component {
                       )}
                     </Text>
                   </View>
+                </View> */}
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 2 ? (
-              <View style={styles.membershipPremiumBox}>
-                <Image source={IcPremium} style={styles.membershipIcon} />
-                <Text style={styles.membershipPremiumTitle}>
-                  윌라 프리미엄 멤버십
-                </Text>
-                <View style={styles.membershipParagraphBox}>
-                  <Text style={styles.membershipParagraph}>
-                    1천개의 동영상강좌 무제한 이용
-                  </Text>
-                  <View style={styles.membershipParagraphBox}>
-                    <Text style={styles.membershipParagraph}>
-                      이달의 책 1권 + 인기 오디오북 1권
-                    </Text>
-                    <Text style={styles.membershipParagraph}>
-                      총 2권의 오디오북 이용
-                    </Text>
-                    <Text style={styles.membershipParagraph}>
-                      (원하는 오디오북이 없을 경우 이월 가능)
-                    </Text>
+              <View style={styles.membershipBackGroundBox}>
+                <View style={styles.membershipPremiumBox}>
+
+                  <View style={{ width: '100%', alignItems: 'center' }}>
+                    <Image source={IcPremium} style={styles.membershipIcon} />
                   </View>
-                </View>
-                <View
+
+                  <Text style={styles.membershipPremiumTitle}>
+                    윌라 프리미엄 멤버십
+                </Text>
+                  <View style={styles.membershipParagraphBox}>
+                    <Text style={styles.membershipParagraphTitle}>
+                      클래스
+                  </Text>
+
+                    <Text style={styles.membershipParagraph}>
+                      1,000여개의 동영상 강좌 무제한 이용
+                  </Text>
+
+                    <Text style={styles.membershipParagraphTitle}>
+                      오디오북
+                  </Text>
+
+                    <Text style={styles.membershipParagraph}>
+                      최신작 포함 전체 오디오북 중 2권 선택!
+                    </Text>
+                    <Text style={styles.membershipParagraph}>
+                      이용권 미사용시 무한 이월 가능!
+                    </Text>
+
+                  </View>
+                  {/* <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipPremiumButton,
@@ -432,24 +491,29 @@ export default class MembershipPage extends React.Component {
                       )}
                     </Text>
                   </View>
+                </View> */}
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 3 ? (
-              <View style={styles.membershipBox}>
-                <Image source={IcPremium} style={styles.membershipIcon} />
-                <Text style={styles.membershipTitle}>윌라 프리패스</Text>
-                <View style={styles.membershipParagraphBox}>
-                  <View style={styles.membershipParagraphBox}>
-                    <Text style={styles.membershipParagraph}>
-                      윌라의 모든 콘텐츠를 이용하실 수 있습니다.
-                    </Text>
+              <View style={styles.membershipBackGroundBox}>
+                <View style={styles.membershipBox}>
+                  <View style={{ width: '100%', alignItems: 'center' }}>
+                    <Image source={IcPremium} style={styles.membershipIcon} />
                   </View>
-                </View>
-                <View
+
+                  <Text style={styles.membershipTitle}>윌라 프리패스</Text>
+                  <View style={styles.membershipParagraphBox}>
+                    <View style={styles.membershipParagraphBox}>
+                      <Text style={styles.membershipParagraph}>
+                        윌라의 모든 콘텐츠를 이용하실 수 있습니다.
+                    </Text>
+                    </View>
+                  </View>
+                  {/* <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipButton,
@@ -464,32 +528,38 @@ export default class MembershipPage extends React.Component {
                       )}
                     </Text>
                   </View>
+                </View> */}
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {globalStore.currentMembership.type === 4 ? (
-              <View style={styles.membershipAudioBookBox}>
-                <Image source={IcClub} style={styles.membershipIcon} />
-                <Text style={styles.membershipAudioBookClubTitle}>
-                  윌라 오디오북 멤버십
-                </Text>
-                <View style={styles.membershipParagraphBox}>
-                  <View style={styles.membershipParagraphBox}>
-                    <Text style={styles.membershipParagraph}>
-                      이달의 책 1권 + 인기 오디오북 1권
-                    </Text>
-                    <Text style={styles.membershipParagraph}>
-                      총 2권의 오디오북 이용
-                    </Text>
-                    <Text style={styles.membershipParagraph}>
-                      (원하는 오디오북이 없을 경우 이월 가능)
-                    </Text>
+              <View style={styles.membershipBackGroundBox}>
+                <View style={styles.membershipAudioBookBox}>
+                  <View style={{ width: '100%', alignItems: 'center' }}>
+                    <Image source={IcClub} style={styles.membershipIcon} />
                   </View>
-                </View>
-                <View
+
+                  <Text style={styles.membershipAudioBookClubTitle}>
+                    윌라 오디오북 멤버십
+                </Text>
+                  <View style={styles.membershipParagraphBox}>
+                    <View style={styles.membershipParagraphBox}>
+                      <Text style={styles.membershipParagraphTitle}>
+                        오디오북
+                  </Text>
+
+                      <Text style={styles.membershipParagraph}>
+                        최신작 포함 전체 오디오북 중 2권 선택!
+                    </Text>
+                      <Text style={styles.membershipParagraph}>
+                        이용권 미사용시 무한 이월 가능!
+                    </Text>
+                    </View>
+                  </View>
+                  {/* <View
                   style={[
                     CommonStyles.alignJustifyContentBetween,
                     styles.memberShipAudioBookButton,
@@ -504,11 +574,12 @@ export default class MembershipPage extends React.Component {
                       )}
                     </Text>
                   </View>
+                </View> */}
                 </View>
               </View>
             ) : (
-              undefined
-            )}
+                undefined
+              )}
 
             {paidMembership
               ? this._renderUnsubscribe()
@@ -619,7 +690,7 @@ export default class MembershipPage extends React.Component {
               onActiveOpacity={0.9}
               onPress={() =>
                 this.buyMembership({
-                  title: '오디오북 멤버십 결제',
+                  title: '윌라 멤버십 가입하기',
                   type: 'bookclub',
                 })
               }
@@ -645,7 +716,7 @@ export default class MembershipPage extends React.Component {
               onActiveOpacity={0.9}
               onPress={() =>
                 this.buyMembership({
-                  title: '클래스 멤버십 결제',
+                  title: '윌라 멤버십 가입하기',
                   type: 'campus',
                 })
               }
@@ -671,7 +742,7 @@ export default class MembershipPage extends React.Component {
               onActiveOpacity={0.9}
               onPress={() =>
                 this.buyMembership({
-                  title: '프리미엄 멤버십 결제',
+                  title: '윌라 멤버십 가입하기',
                   type: 'premium',
                 })
               }
@@ -878,7 +949,7 @@ export default class MembershipPage extends React.Component {
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
-                    title: '오디오북 멤버십 결제',
+                    title: '윌라 멤버십 가입하기',
                     type: 'bookclub',
                   })
                 }
@@ -905,7 +976,7 @@ export default class MembershipPage extends React.Component {
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
-                    title: '클래스 멤버십 결제',
+                    title: '윌라 멤버십 가입하기',
                     type: 'campus',
                   })
                 }
@@ -932,7 +1003,7 @@ export default class MembershipPage extends React.Component {
                 onActiveOpacity={0.9}
                 onPress={() =>
                   this.buyMembership({
-                    title: '프리미엄 멤버십 결제',
+                    title: '윌라 멤버십 가입하기',
                     type: 'premium',
                   })
                 }
@@ -1101,8 +1172,8 @@ export default class MembershipPage extends React.Component {
                 Apple 구독 취소 또는 변경
               </Text>
             ) : (
-              <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
-            )}
+                <Text style={styles.cancelButtonText}>멤버십 구독 해지</Text>
+              )}
           </View>
         </TouchableOpacity>
       </View>
@@ -1127,20 +1198,20 @@ export default class MembershipPage extends React.Component {
         </View>
         <View style={styles.sectionList}>
           <View style={styles.sectionListItem}>
-            <View style={styles.sectionListItemBullet} borderRadius={3} />
+            {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
             <Text style={styles.sectionListItemText}>
               현재 멤버십은 {moment(expireAt).format('YYYY년 MM월 DD일')} 까지
               유효하며, 자동연장 및 결제되지 않습니다.
             </Text>
           </View>
           <View style={styles.sectionListItem}>
-            <View style={styles.sectionListItemBullet} borderRadius={3} />
+            {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
             <Text style={styles.sectionListItemText}>
               멤버십 혜택은 사용기간 동안 이용 가능합니다.
             </Text>
           </View>
           <View style={styles.sectionListItem}>
-            <View style={styles.sectionListItemBullet} borderRadius={3} />
+            {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
 
             <TouchableOpacity
               onPress={() => {
@@ -1170,45 +1241,49 @@ export default class MembershipPage extends React.Component {
     return (
       <View style={styles.sectionList}>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            유료 멤버십 구독 후 1개월은 무료로 이용 하실 수 있습니다.
+            * 멤버십 구독 후 첫 달 무료체험(가입일 기준 ~ 한 달) 이후 자동결제가 진행됩니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            유료 멤버십 구매 시 이미 무료 멤버십 기간이 남아 있다면 무료 멤버십
-            기간이 끝난 후 구매하실 수 있습니다.
+            * 멤버십 변경 및 해지는 는 App store 앱에서 로그인 후 “계정 > 구독” 에서 또는 아래 버튼 클릭 후 가능합니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            구매는 회원님의 iTunes 계정으로 비용이 청구됩니다.
+            * 멤버십 변경시 이미 무료체험 기간이 남아있다면, 기간이 끝난 후 새 멤버십으로 변경 됩니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            구매가격에는 부가세와 결제수수료가 포함되어 있습니다.
+            * 구매는 회원님의 iTunes 계정으로 비용이 청구됩니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            각 멤버십은 1개월마다 자동으로 결제됩니다.
+            * 구매가격은 부가세와 결제수수료가 포함된 금액입니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            이용권 관리는 App Store 앱에서 로그인 후 "계정 > 구독" 에서 관리하실
-            수 있습니다.
+            * 무약정으로 언제든 해지하실 수 있습니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
+          <Text style={styles.sectionListItemText}>
+            * 멤버십 변경 등 이용 문의는 1:1문의를 이용해 주세요.
+          </Text>
+        </View>
+        <View style={styles.sectionListItem}>
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
             현 구독기간 종료시점으로부터 최소 24시간전에 자동 갱신을 해지하지
             않는 한, 현 구독기간 종료시 구독이 자동으로 갱신되고 회원님의
@@ -1216,14 +1291,14 @@ export default class MembershipPage extends React.Component {
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
             구매 후 언제든 Apple ID계정 설정에서 자동갱신을 관리 또는 해지 하실
             수 있습니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
 
           <TouchableOpacity
             onPress={() => {
@@ -1245,34 +1320,34 @@ export default class MembershipPage extends React.Component {
     return (
       <View style={styles.sectionList}>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            멤버십 비용은 매월 자동결제 됩니다.
+            * 첫 달 무료체험 (가입일 기준 ~ 한 달) 후 자동결제가 진행됩니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            무약정으로 언제든지 해지하실 수 있습니다.
+            * 이용권으로 오디오북 구매시 60일 동안 소장 가능합니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <Text style={styles.sectionListItemText}>
-            해당 금액은 세금 포함 금액입니다.
+            * 무약정으로 언제든 해지하실 수 있습니다.
           </Text>
         </View>
         <View style={styles.sectionListItem}>
-          <View style={styles.sectionListItemBullet} borderRadius={3} />
+          {/* <View style={styles.sectionListItemBullet} borderRadius={3} /> */}
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('InquireListScreen');
             }}
           >
             <Text style={styles.sectionListItemText}>
-              도움이 필요하시면{' '}
+              * 멤버십 변경 등 이용 문의는{' '}
               <Text style={styles.sectionListItemTextImportant}>1:1문의</Text>를
-              이용해주세요.
+              이용해 주세요.
             </Text>
           </TouchableOpacity>
         </View>

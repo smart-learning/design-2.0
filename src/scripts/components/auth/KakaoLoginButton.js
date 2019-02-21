@@ -51,19 +51,20 @@ const landingStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: 40,
-    marginTop: 10
+    height: 48,
+    marginTop: 10,
+    backgroundColor: '#FFEB00'
   },
   kakaoImage: {
     width: 22,
     height: 20,
-    marginRight: 25
+    marginRight: 5
   },
   kakaoText: {
-    lineHeight: 40,
-    fontSize: 15,
+    lineHeight: 48,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#ffffff'
+    color: '#3C1E1E'
   }
 });
 
@@ -188,32 +189,32 @@ class KakaoLoginButton extends React.Component {
         style={styles.kakaoButtonWrap}
       >
         {this.props.type === 'login' && (
-          <View style={loginStyles.kakaoButton} borderRadius={4}>
+          <View style={loginStyles.kakaoButton} borderRadius={30}>
             <Image source={icKakao} style={loginStyles.kakaoImage} />
             <Text style={loginStyles.kakaoText}>
               {this.state.token
                 ? '카카오 로그아웃'
                 : this.state.loginButtonDisabled
                   ? '로그인중'
-                  : 'Kakaotalk 계정으로'}
+                  : '카카오톡 로그인'}
             </Text>
           </View>
         )}
         {this.props.type === 'landing' && (
           <View
             style={landingStyles.kakaoButton}
-            borderWidth={1}
-            borderStyle={'solid'}
-            borderColor={'#ffffff'}
-            borderRadius={4}
+            // borderWidth={1}
+            // borderStyle={'solid'}
+            // borderColor={'#ffffff'}
+            borderRadius={30}
           >
-            <Image source={icKakaoLight} style={landingStyles.kakaoImage} />
+            <Image source={icKakao} style={landingStyles.kakaoImage} />
             <Text style={landingStyles.kakaoText}>
               {this.state.token
                 ? '카카오 로그아웃'
                 : this.state.loginButtonDisabled
                   ? '로그인중'
-                  : '카카오톡 계정으로'}
+                  : '카카오톡 시작하기'}
             </Text>
           </View>
         )}
