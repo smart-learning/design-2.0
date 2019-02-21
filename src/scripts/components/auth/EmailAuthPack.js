@@ -149,7 +149,7 @@ class EmailAuthPack extends Component {
       return;
     }
 
-    this.props.onAccess(this.data.email, this.data.password, () => { });
+    this.props.onAccess(this.data.email, this.data.password, () => {});
   };
 
   render() {
@@ -207,7 +207,7 @@ class EmailAuthPack extends Component {
             )}
 
             <View style={styles.ruleTextContainer}>
-              <Text style={styles.ruleText}>윌라가 처음이신가요?       </Text>
+              <Text style={styles.ruleText}>윌라가 처음이신가요? </Text>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => this.props.onNavigate('SignUpPage')}
@@ -222,22 +222,28 @@ class EmailAuthPack extends Component {
             </View>
           </View>
         </View>
-        <View style={styles.ruleWrap}>
-          <View style={styles.ruleTextContainer}>
-            <Text style={styles.ruleTextBottom}>윌라 서비스 이용/제휴문의  </Text>
-            <TouchableOpacity
-              activeOpacity={0.9}
-            // onPress={() => this.props.navigation.navigate('PrivacyPage')}
-            >
-              <Text
-                style={styles.ruleButtonBottom}
-                textDecorationLine={'underline'}
+
+        {/* 2019.02.21 김중온 기능 미구현 임시 삭제 */}
+        {1 === 2 && (
+          <View style={styles.ruleWrap}>
+            <View style={styles.ruleTextContainer}>
+              <Text style={styles.ruleTextBottom}>
+                윌라 서비스 이용/제휴문의{' '}
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                // onPress={() => this.props.navigation.navigate('PrivacyPage')}
               >
-                문의하기 >
+                <Text
+                  style={styles.ruleButtonBottom}
+                  textDecorationLine={'underline'}
+                >
+                  문의하기 >
                 </Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        )}
       </View>
     );
   }

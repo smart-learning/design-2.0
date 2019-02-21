@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     bottom: 35,
     width: '100%',
     // marginLeft: '10%',
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   thumbnail: {
     width: '100%',
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 48,
     marginTop: 10,
-    backgroundColor: '#00C73C'
+    backgroundColor: '#00C73C',
   },
   emailImage: {
     width: 22,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   slideStyle: {
     backgroundColor: '#00C73C',
-  }
+  },
 });
 
 class SignUpLandingPage extends React.Component {
@@ -179,13 +179,10 @@ class SignUpLandingPage extends React.Component {
   }
 
   showFullModal() {
-    this.props.navigation.navigate('FullModalSectionPageCall'
-      , {
-        popup_type: 'AndroidMainExit',
-        preview_page: 'SignUpLandingPage',
-      }
-    );
-
+    this.props.navigation.navigate('FullModalSectionPageCall', {
+      popup_type: 'AndroidMainExit',
+      preview_page: 'SignUpLandingPage',
+    });
   }
 
   componentWillUnmount() {
@@ -248,7 +245,6 @@ class SignUpLandingPage extends React.Component {
         });
       })
       .catch(error => {
-
         try {
           const code = error.response.code;
           let message = '회원가입 실패';
@@ -276,12 +272,13 @@ class SignUpLandingPage extends React.Component {
             height={window.width}
             paginationStyle={{ bottom: '95%' }}
           >
-            <View style={[styles.slide, styles.slideStyle]} >
+            <View style={[styles.slide, styles.slideStyle]}>
               <View style={styles.headWrap}>
                 <Text style={styles.headline}>당신이 알아야 할 모든 것</Text>
               </View>
               <View>
-                <Text style={styles.headSubline}>{'지식콘텐츠 플랫폼  '}
+                <Text style={styles.headSubline}>
+                  {'지식콘텐츠 플랫폼  '}
                   <Image
                     source={SmallLogo}
                     resizeMode="cover"
@@ -292,66 +289,80 @@ class SignUpLandingPage extends React.Component {
               <ImageBackground
                 source={Slide1}
                 resizeMode="cover"
-                style={styles.thumbnail} />
+                style={styles.thumbnail}
+              />
             </View>
-            <View style={[styles.slide, styles.slideStyle]} >
+            <View style={[styles.slide, styles.slideStyle]}>
               <View style={styles.headWrap}>
-                <Text style={styles.headline}><Image
-                  source={SmallLogo}
-                  resizeMode="cover"
-                  style={styles.smalllogo}
-                />{' 클래스'}</Text>
+                <Text style={styles.headline}>
+                  <Image
+                    source={SmallLogo}
+                    resizeMode="cover"
+                    style={styles.smalllogo}
+                  />
+                  {' 클래스'}
+                </Text>
               </View>
               <View>
-                <Text style={styles.headSubline}>오프라인에만 있던{"\n"}최고의 명강을 내 손 안에서!
-                  </Text>
+                <Text style={styles.headSubline}>
+                  오프라인에만 있던{'\n'}최고의 명강을 내 손 안에서!
+                </Text>
               </View>
               <ImageBackground
                 source={Slide2}
                 resizeMode="cover"
-                style={styles.thumbnail} />
+                style={styles.thumbnail}
+              />
             </View>
-            <View style={[styles.slide, styles.slideStyle]} >
+            <View style={[styles.slide, styles.slideStyle]}>
               <View style={styles.headWrap}>
-                <Text style={styles.headline}><Image
-                  source={SmallLogo}
-                  resizeMode="cover"
-                  style={styles.smalllogo}
-                />{' 오디오북'}</Text>
+                <Text style={styles.headline}>
+                  <Image
+                    source={SmallLogo}
+                    resizeMode="cover"
+                    style={styles.smalllogo}
+                  />
+                  {' 오디오북'}
+                </Text>
               </View>
               <View>
-                <Text style={styles.headSubline}>베스트셀러를{"\n"}오디오북으로 더 생생하게!</Text>
+                <Text style={styles.headSubline}>
+                  베스트셀러를{'\n'}오디오북으로 더 생생하게!
+                </Text>
               </View>
               <ImageBackground
                 source={Slide3}
                 resizeMode="cover"
                 style={styles.thumbnail}
-              >
-              </ImageBackground>
+              />
             </View>
-            <View style={[styles.slide, styles.slideStyle]} >
+            <View style={[styles.slide, styles.slideStyle]}>
               <View style={styles.headWrap}>
-                <Text style={styles.headline}>{'모든 지식콘텐츠를 즐기세요'}</Text>
+                <Text style={styles.headline}>
+                  {'모든 지식콘텐츠를 즐기세요'}
+                </Text>
               </View>
               <View>
-                <Text style={styles.headSubline}>한달간 무제한! 해지는 언제든</Text>
+                <Text style={styles.headSubline}>
+                  한달간 무제한! 해지는 언제든
+                </Text>
               </View>
               <ImageBackground
                 source={Slide4}
                 resizeMode="cover"
                 style={styles.thumbnail}
-              >
-              </ImageBackground>
+              />
             </View>
           </Swiper>
         </View>
         {/* /이미지 스와이퍼 */}
 
         <View style={styles.contentWrap}>
-
           <View style={styles.ruleWrap}>
             <View style={styles.ruleTextContainer}>
-              <Text style={styles.loginLabel}>이미 윌라 계정이 있으신가요?{'  '}</Text>
+              <Text style={styles.loginLabel}>
+                이미 윌라 계정이 있으신가요?{'  '}
+              </Text>
               <TouchableOpacity
                 style={styles.loginButton}
                 activeOpacity={0.9}
@@ -390,7 +401,6 @@ class SignUpLandingPage extends React.Component {
             </TouchableOpacity>
           </View>
 
-
           <View style={styles.ruleWrap}>
             <View style={styles.ruleTextContainer}>
               <Text style={styles.ruleText}>윌라 계정을 생성하시면 월라</Text>
@@ -421,26 +431,28 @@ class SignUpLandingPage extends React.Component {
               </TouchableOpacity>
               <Text style={styles.ruleText}>
                 에 동의하는 것으로 간주합니다.
-
               </Text>
             </View>
 
-            <View style={{ marginTop: 20 }}>
-              <View style={styles.ruleTextContainer}>
-                <Text style={styles.ruleText}>윌라 서비스 이용/제휴문의</Text>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                // onPress={() => this.props.navigation.navigate('PrivacyPage')}
-                >
-                  <Text
-                    style={styles.ruleButton}
-                    textDecorationLine={'underline'}
+            {/* 2019.02.21 김중온 기능 미구현 임시 삭제 */}
+            {1 === 2 && (
+              <View style={{ marginTop: 20 }}>
+                <View style={styles.ruleTextContainer}>
+                  <Text style={styles.ruleText}>윌라 서비스 이용/제휴문의</Text>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    // onPress={() => this.props.navigation.navigate('PrivacyPage')}
                   >
-                    문의하기 >
-                </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={styles.ruleButton}
+                      textDecorationLine={'underline'}
+                    >
+                      문의하기 >
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            )}
           </View>
         </View>
       </View>

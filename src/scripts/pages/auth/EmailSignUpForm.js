@@ -359,8 +359,13 @@ class EmailSignUpForm extends Component {
         <Spinner // 로딩 인디케이터
           visible={this.loading}
         />
-        <View style={{ width: '100%', height: this.data.windowHeight, backgroundColor: '#00C73C' }}>
-        </View>
+        <View
+          style={{
+            width: '100%',
+            height: this.data.windowHeight,
+            backgroundColor: '#00C73C',
+          }}
+        />
         <View style={styles.inputContentWrap}>
           <View style={styles.logoWrap}>
             <Image source={logo} style={styles.logo} />
@@ -548,25 +553,27 @@ class EmailSignUpForm extends Component {
                   </Text>
                 </View>
 
-                <View style={styles.ruleTextContainer}>
-                  <Text style={styles.ruleTextBottom}>
-                    윌라 서비스 이용/제휴문의
-                  </Text>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                  // onPress={() =>
-                  //   this.props.navigation.navigate('PrivacyPage')
-                  // }
-                  >
-                    <Text
-                      style={styles.ruleButtonBottom}
-                      textDecorationLine={'underline'}
-                    >
-                      문의하기>
+                {/* 2019.02.21 김중온 기능 미구현 임시 삭제 */}
+                {1 === 2 && (
+                  <View style={styles.ruleTextContainer}>
+                    <Text style={styles.ruleTextBottom}>
+                      윌라 서비스 이용/제휴문의
                     </Text>
-                  </TouchableOpacity>
-
-                </View>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      // onPress={() =>
+                      //   this.props.navigation.navigate('PrivacyPage')
+                      // }
+                    >
+                      <Text
+                        style={styles.ruleButtonBottom}
+                        textDecorationLine={'underline'}
+                      >
+                        문의하기>
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             </View>
           </View>
