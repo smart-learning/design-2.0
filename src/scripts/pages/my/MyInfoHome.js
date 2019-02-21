@@ -206,7 +206,7 @@ export default class MyInfoHome extends React.Component {
     }
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   render() {
     const navigation = this.props.navigation;
@@ -274,7 +274,7 @@ export default class MyInfoHome extends React.Component {
                               {globalStore.currentMembership.type === 3 && (
                                 <View style={styles.buttonSmall}>
                                   <Text style={styles.buttonSmallText}>
-                                  프리패스
+                                    프리패스
                                 </Text>
                                 </View>
                               )}
@@ -291,7 +291,7 @@ export default class MyInfoHome extends React.Component {
                             >
                               <View style={styles.buttonSmall}>
                                 <Text style={styles.buttonSmallText}>
-                                윌라 멤버십 안내
+                                  나의 멤버십 현황
                               </Text>
                               </View>
                             </TouchableOpacity>

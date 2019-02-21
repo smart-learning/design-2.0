@@ -28,7 +28,7 @@ const loginStyles = StyleSheet.create({
     width: '100%',
     height: 48,
     marginTop: 10,
-    backgroundColor: '#25479b'
+    backgroundColor: '#3C5A9A'
   },
   FbImage: {
     width: 22,
@@ -49,17 +49,18 @@ const landingStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: 40,
-    marginTop: 10
+    height: 48,
+    marginTop: 10,
+    backgroundColor: '#3C5A9A'
   },
   FbImage: {
     width: 22,
     height: 20,
-    marginRight: 25
+    marginRight: 5
   },
   FbText: {
-    lineHeight: 40,
-    fontSize: 15,
+    lineHeight: 48,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff'
   }
@@ -125,28 +126,28 @@ class FBLoginButton extends Component {
         style={styles.FbButtonWrap}
       >
         {this.props.type === 'login' && (
-          <View style={loginStyles.FbButton} borderRadius={4}>
+          <View style={loginStyles.FbButton} borderRadius={30}>
             <Image source={icFb} style={loginStyles.FbImage} />
             <Text style={loginStyles.FbText}>
               {this.state.loginButtonDisabled
                 ? '로그인 중'
-                : 'Facebook 계정으로'}
+                : '페이스북 로그인'}
             </Text>
           </View>
         )}
         {this.props.type === 'landing' && (
           <View
             style={landingStyles.FbButton}
-            borderWidth={1}
-            borderStyle={'solid'}
-            borderColor={'#ffffff'}
-            borderRadius={4}
+            // borderWidth={1}
+            // borderStyle={'solid'}
+            // borderColor={'#ffffff'}
+            borderRadius={30}
           >
             <Image source={icFbBox} style={landingStyles.FbImage} />
             <Text style={landingStyles.FbText}>
               {this.state.loginButtonDisabled
                 ? '로그인 중'
-                : '페이스북 계정으로'}
+                : '페이스북 시작하기'}
             </Text>
           </View>
         )}

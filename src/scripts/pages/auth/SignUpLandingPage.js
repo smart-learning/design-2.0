@@ -20,6 +20,7 @@ import Slide1 from '../../../images/login_bg1.png';
 import Slide2 from '../../../images/login_bg2.png';
 import Slide3 from '../../../images/login_bg3.png';
 import Slide4 from '../../../images/login_bg4.png';
+import SmallLogo from '../../../images/smallLogo.png';
 import CommonStyles from '../../../styles/common';
 import Native from '../../commons/native';
 import net from '../../commons/net';
@@ -52,15 +53,19 @@ const styles = StyleSheet.create({
   contentWrap: {
     // flex: 1,
     // justifyContent: 'center',
-    // alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+
     position: 'absolute',
-    bottom: 60,
-    width: '80%',
-    marginLeft: '10%',
+    bottom: 35,
+    width: '100%',
+    // marginLeft: '10%',
+    backgroundColor: '#FFFFFF',
   },
   thumbnail: {
     width: '100%',
-    height: '100%',
+    height: '70%',
   },
   alignJustify: {
     flex: 1,
@@ -72,8 +77,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: 40,
+    height: 48,
     marginTop: 10,
+    backgroundColor: '#00C73C',
   },
   emailImage: {
     width: 22,
@@ -86,28 +92,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
   },
-  loginWrap: {
-    width: '70%',
-    marginLeft: '10%',
-    marginBottom: 10,
-  },
   loginButton: {
     flexDirection: 'row',
   },
   loginLabel: {
+    marginTop: 17,
     fontSize: 15,
-    color: '#ffffff',
-  },
-  loginImage: {
-    width: 16,
-    height: 14,
-    marginRight: 5,
-    marginLeft: 15,
+    color: '#00C73C',
+    textAlign: 'center',
   },
   loginText: {
+    marginTop: 17,
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#00C73C',
+    textDecorationLine: 'underline',
   },
   ruleWrap: {
     marginTop: 15,
@@ -117,18 +116,46 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   ruleText: {
-    fontSize: 12,
-    color: '#ffffff',
+    fontSize: 14,
+    color: '#767B80',
   },
   ruleButton: {
     position: 'relative',
     top: 1,
     paddingLeft: 3,
     paddingRight: 3,
-    fontSize: 12,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#767B80',
+    textDecorationLine: 'underline',
+  },
+  headWrap: {
+    marginTop: 50,
+    alignItems: 'center',
+  },
+  headline: {
+    textAlign: 'center',
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#ffffff',
-    textDecorationLine: 'underline',
+  },
+  headSubline: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  smalllogo: {
+    width: 50,
+    height: 28,
+  },
+  largelogo: {
+    width: 50,
+    height: 28,
+  },
+  slideStyle: {
+    backgroundColor: '#00C73C',
   },
 });
 
@@ -152,13 +179,10 @@ class SignUpLandingPage extends React.Component {
   }
 
   showFullModal() {
-    this.props.navigation.navigate('FullModalSectionPageCall'
-      , {
-        popup_type: 'AndroidMainExit',
-        preview_page: 'SignUpLandingPage',
-      }
-    );
-
+    this.props.navigation.navigate('FullModalSectionPageCall', {
+      popup_type: 'AndroidMainExit',
+      preview_page: 'SignUpLandingPage',
+    });
   }
 
   componentWillUnmount() {
@@ -221,7 +245,6 @@ class SignUpLandingPage extends React.Component {
         });
       })
       .catch(error => {
-
         try {
           const code = error.response.code;
           let message = '회원가입 실패';
@@ -247,30 +270,83 @@ class SignUpLandingPage extends React.Component {
             dotColor={'#888888'}
             activeDotColor={'#ffffff'}
             height={window.width}
-            paginationStyle={{ bottom: '50%' }}
+            paginationStyle={{ bottom: '95%' }}
           >
-            <View style={styles.slide}>
+            <View style={[styles.slide, styles.slideStyle]}>
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}>당신이 알아야 할 모든 것</Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>
+                  {'지식콘텐츠 플랫폼  '}
+                  <Image
+                    source={SmallLogo}
+                    resizeMode="cover"
+                    style={styles.smalllogo}
+                  />
+                </Text>
+              </View>
               <ImageBackground
                 source={Slide1}
                 resizeMode="cover"
                 style={styles.thumbnail}
               />
             </View>
-            <View style={styles.slide}>
+            <View style={[styles.slide, styles.slideStyle]}>
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}>
+                  <Image
+                    source={SmallLogo}
+                    resizeMode="cover"
+                    style={styles.smalllogo}
+                  />
+                  {' 클래스'}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>
+                  오프라인에만 있던{'\n'}최고의 명강을 내 손 안에서!
+                </Text>
+              </View>
               <ImageBackground
                 source={Slide2}
                 resizeMode="cover"
                 style={styles.thumbnail}
               />
             </View>
-            <View style={styles.slide}>
+            <View style={[styles.slide, styles.slideStyle]}>
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}>
+                  <Image
+                    source={SmallLogo}
+                    resizeMode="cover"
+                    style={styles.smalllogo}
+                  />
+                  {' 오디오북'}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>
+                  베스트셀러를{'\n'}오디오북으로 더 생생하게!
+                </Text>
+              </View>
               <ImageBackground
                 source={Slide3}
                 resizeMode="cover"
                 style={styles.thumbnail}
               />
             </View>
-            <View style={styles.slide}>
+            <View style={[styles.slide, styles.slideStyle]}>
+              <View style={styles.headWrap}>
+                <Text style={styles.headline}>
+                  {'모든 지식콘텐츠를 즐기세요'}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.headSubline}>
+                  한달간 무제한! 해지는 언제든
+                </Text>
+              </View>
               <ImageBackground
                 source={Slide4}
                 resizeMode="cover"
@@ -282,43 +358,48 @@ class SignUpLandingPage extends React.Component {
         {/* /이미지 스와이퍼 */}
 
         <View style={styles.contentWrap}>
-          <View style={[styles.alignJustify, styles.loginWrap]}>
-            <Text style={styles.loginLabel}>이미 윌라 계정이 있으신가요?</Text>
-            <TouchableOpacity
-              style={styles.loginButton}
-              activeOpacity={0.9}
-              onPress={() => this.props.navigation.navigate('Login')}
-            >
-              <Image source={icLogin} style={styles.loginImage} />
-              <Text style={styles.loginText}>로그인</Text>
-            </TouchableOpacity>
+          <View style={styles.ruleWrap}>
+            <View style={styles.ruleTextContainer}>
+              <Text style={styles.loginLabel}>
+                이미 윌라 계정이 있으신가요?{'  '}
+              </Text>
+              <TouchableOpacity
+                style={styles.loginButton}
+                activeOpacity={0.9}
+                onPress={() => this.props.navigation.navigate('Login')}
+              >
+                <Text style={styles.loginText}>로그인 ></Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <FBLoginButton
-            onAccess={token => this.onAccessToken('facebook', token)}
-            type={'landing'}
-          />
+          <View style={{ marginLeft: 20, marginRight: 20, marginTop: 20 }}>
+            <KakaoLoginButton
+              onAccess={token => this.onAccessToken('kakaotalk', token)}
+              type={'landing'}
+            />
 
-          <KakaoLoginButton
-            onAccess={token => this.onAccessToken('kakaotalk', token)}
-            type={'landing'}
-          />
+            <FBLoginButton
+              onAccess={token => this.onAccessToken('facebook', token)}
+              type={'landing'}
+            />
 
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => this.props.navigation.navigate('EmailSignUpForm')}
-          >
-            <View
-              style={styles.emailButton}
-              borderWidth={1}
-              borderStyle={'solid'}
-              borderColor={'#ffffff'}
-              borderRadius={4}
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => this.props.navigation.navigate('EmailSignUpForm')}
             >
-              <Image source={icEmail} style={styles.emailImage} />
-              <Text style={styles.emailText}>이메일 간편 가입</Text>
-            </View>
-          </TouchableOpacity>
+              <View
+                style={styles.emailButton}
+                // borderWidth={1}
+                // borderStyle={'solid'}
+                // borderColor={'#ffffff'}
+                borderRadius={30}
+              >
+                <Image source={icEmail} style={styles.emailImage} />
+                <Text style={styles.emailText}>이메일 간편 가입</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.ruleWrap}>
             <View style={styles.ruleTextContainer}>
@@ -352,6 +433,26 @@ class SignUpLandingPage extends React.Component {
                 에 동의하는 것으로 간주합니다.
               </Text>
             </View>
+
+            {/* 2019.02.21 김중온 기능 미구현 임시 삭제 */}
+            {1 === 2 && (
+              <View style={{ marginTop: 20 }}>
+                <View style={styles.ruleTextContainer}>
+                  <Text style={styles.ruleText}>윌라 서비스 이용/제휴문의</Text>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    // onPress={() => this.props.navigation.navigate('PrivacyPage')}
+                  >
+                    <Text
+                      style={styles.ruleButton}
+                      textDecorationLine={'underline'}
+                    >
+                      문의하기 >
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
           </View>
         </View>
       </View>
