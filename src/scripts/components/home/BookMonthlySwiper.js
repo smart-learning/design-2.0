@@ -48,7 +48,7 @@ class BookMonthlySwiper extends React.Component {
           renderItem={this._renderItem}
           sliderWidth={windowWidth}
           itemWidth={itemWidth}
-          layout={'stack'}
+          layout={'default'}
           inactiveSlideScal={0.8}
           inactiveSlideOpacity={0.8}
           firstItem={4}
